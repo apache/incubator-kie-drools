@@ -74,7 +74,7 @@ public class EntitySelectorFactory<Solution_> extends AbstractSelectorFactory<So
                         + ") has an entityClass (" + config.getEntityClass() + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + config.getEntityClass().getSimpleName()
                         + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                        + "), check your " + PlanningSolution.class.getSimpleName()
+                        + "), check your @" + PlanningSolution.class.getSimpleName()
                         + " implementation's annotated methods too.");
             }
             return entityDescriptor;

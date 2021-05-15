@@ -209,7 +209,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
                         + ") of the class (" + factClass + ") on object (" + fact + ") must not be null.\n"
                         + "Maybe initialize the planningId of the class (" + planningIdAccessor.getDeclaringClass()
                         + ") instance (" + fact + ") before solving.\n" +
-                        "Maybe remove the " + PlanningId.class.getSimpleName() + " annotation.");
+                        "Maybe remove the @" + PlanningId.class.getSimpleName() + " annotation.");
             }
         }
     }

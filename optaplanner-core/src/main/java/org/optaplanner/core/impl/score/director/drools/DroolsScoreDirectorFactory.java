@@ -104,7 +104,7 @@ public class DroolsScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
                         .filter(selectedRule -> selectedRule.getName().equals(constraintName)).findFirst().orElse(null);
                 throw new IllegalStateException("The constraintConfigurationClass ("
                         + constraintConfigurationDescriptor.getConstraintConfigurationClass()
-                        + ") has a " + ConstraintWeight.class.getSimpleName()
+                        + ") has a @" + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + constraintWeightDescriptor.getMemberAccessor()
                         + ") with constraintPackage/rulePackage (" + constraintPackage
                         + ") and constraintName/ruleName (" + constraintName

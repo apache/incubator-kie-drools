@@ -54,7 +54,7 @@ public abstract class CompositeMoveSelector<Solution_> extends AbstractMoveSelec
                                 + (childMoveSelector.isCountable() ? ""
                                         : "\nThe selector is not countable, check the "
                                                 + ValueRange.class.getSimpleName() + "s involved.\n"
-                                                + "Verify that a " + ValueRangeProvider.class.getSimpleName()
+                                                + "Verify that a @" + ValueRangeProvider.class.getSimpleName()
                                                 + " does not return " + ValueRange.class.getSimpleName()
                                                 + " when it can return " + CountableValueRange.class.getSimpleName()
                                                 + " or " + Collection.class.getSimpleName() + "."));

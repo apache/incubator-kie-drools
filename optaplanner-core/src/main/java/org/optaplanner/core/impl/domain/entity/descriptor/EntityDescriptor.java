@@ -152,7 +152,7 @@ public class EntityDescriptor<Solution_> {
         if (entityAnnotation == null) {
             throw new IllegalStateException("The entityClass (" + entityClass
                     + ") has been specified as a planning entity in the configuration," +
-                    " but does not have a " + PlanningEntity.class.getSimpleName() + " annotation.");
+                    " but does not have a @" + PlanningEntity.class.getSimpleName() + " annotation.");
         }
         processMovable(descriptorPolicy, entityAnnotation);
         processDifficulty(descriptorPolicy, entityAnnotation);
@@ -279,7 +279,7 @@ public class EntityDescriptor<Solution_> {
             Class<?> type = memberAccessor.getType();
             if (!Boolean.TYPE.isAssignableFrom(type) && !Boolean.class.isAssignableFrom(type)) {
                 throw new IllegalStateException("The entityClass (" + entityClass
-                        + ") has a " + PlanningPin.class.getSimpleName()
+                        + ") has a @" + PlanningPin.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is not a boolean or Boolean.");
             }
@@ -504,7 +504,7 @@ public class EntityDescriptor<Solution_> {
                 + (Character.isUpperCase(variableName.charAt(0))
                         ? "Maybe the variableName (" + variableName + ") should start with a lowercase.\n"
                         : "")
-                + "Maybe your planning entity's getter or field lacks a " + PlanningVariable.class.getSimpleName()
+                + "Maybe your planning entity's getter or field lacks a @" + PlanningVariable.class.getSimpleName()
                 + " annotation or a shadow variable annotation.";
     }
 

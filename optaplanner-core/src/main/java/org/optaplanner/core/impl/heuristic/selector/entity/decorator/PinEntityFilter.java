@@ -39,7 +39,7 @@ public class PinEntityFilter<Solution_> implements SelectionFilter<Solution_, Ob
     public boolean accept(ScoreDirector<Solution_> scoreDirector, Object entity) {
         Boolean pinned = (Boolean) memberAccessor.executeGetter(entity);
         if (pinned == null) {
-            throw new IllegalStateException("The entity (" + entity + ") has a " + PlanningPin.class.getSimpleName()
+            throw new IllegalStateException("The entity (" + entity + ") has a @" + PlanningPin.class.getSimpleName()
                     + " annotated property (" + memberAccessor.getName() + ") that returns null.");
         }
         return !pinned;

@@ -122,7 +122,7 @@ public class LookUpStrategyIdOrFailTest {
         TestdataObjectNoId object = new TestdataObjectNoId();
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> lookUpManager.lookUpWorkingObject(object))
-                .withMessageContaining("does not have a " + PlanningId.class.getSimpleName());
+                .withMessageContaining("does not have a @" + PlanningId.class.getSimpleName());
     }
 
     @Test

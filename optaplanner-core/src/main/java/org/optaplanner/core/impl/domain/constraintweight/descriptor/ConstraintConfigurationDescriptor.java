@@ -111,9 +111,9 @@ public class ConstraintConfigurationDescriptor<Solution_> {
         ConstraintConfiguration packAnnotation = constraintConfigurationClass.getAnnotation(ConstraintConfiguration.class);
         if (packAnnotation == null) {
             throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
-                    + ") has been specified as a " + ConstraintConfigurationProvider.class.getSimpleName()
+                    + ") has been specified as a @" + ConstraintConfigurationProvider.class.getSimpleName()
                     + " in the solution class (" + solutionDescriptor.getSolutionClass() + ")," +
-                    " but does not have a " + ConstraintConfiguration.class.getSimpleName() + " annotation.");
+                    " but does not have a @" + ConstraintConfiguration.class.getSimpleName() + " annotation.");
         }
         // If a @ConstraintConfiguration extends a @ConstraintConfiguration, their constraintPackage might differ.
         // So the ConstraintWeightDescriptors parse packAnnotation.constraintPackage() themselves.
@@ -133,14 +133,14 @@ public class ConstraintConfigurationDescriptor<Solution_> {
             if (constraintWeightDescriptorMap.containsKey(memberAccessor.getName())) {
                 MemberAccessor duplicate = constraintWeightDescriptorMap.get(memberAccessor.getName()).getMemberAccessor();
                 throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
-                        + ") has a " + ConstraintWeight.class.getSimpleName()
+                        + ") has a @" + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by a member (" + duplicate + ").\n"
                         + "Maybe the annotation is defined on both the field and its getter.");
             }
             if (!scoreDefinition.getScoreClass().isAssignableFrom(memberAccessor.getType())) {
                 throw new IllegalStateException("The constraintConfigurationClass (" + constraintConfigurationClass
-                        + ") has a " + ConstraintWeight.class.getSimpleName()
+                        + ") has a @" + ConstraintWeight.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") with a return type (" + memberAccessor.getType()
                         + ") that is not assignable to the score class (" + scoreDefinition.getScoreClass() + ").\n"

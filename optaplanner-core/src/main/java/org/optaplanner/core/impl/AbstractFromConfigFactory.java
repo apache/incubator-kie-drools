@@ -44,7 +44,7 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
                     + ") has an entityClass (" + entityClass + ") that is not a known planning entity.\n"
                     + "Check your solver configuration. If that class (" + entityClass.getSimpleName()
                     + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                    + "), check your " + PlanningSolution.class.getSimpleName()
+                    + "), check your @" + PlanningSolution.class.getSimpleName()
                     + " implementation's annotated methods too.");
         }
         return entityDescriptor;

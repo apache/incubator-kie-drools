@@ -108,8 +108,8 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
                         .map(Objects::toString)
                         .orElse("null");
                 throw new IllegalStateException(
-                        "Multiple instances of " + PlanningEntity.class.getSimpleName() + "-annotated class ("
-                                + clz.getCanonicalName() + ") share the same " + PlanningId.class.getSimpleName()
+                        "Multiple instances of @" + PlanningEntity.class.getSimpleName() + "-annotated class ("
+                                + clz.getCanonicalName() + ") share the same @" + PlanningId.class.getSimpleName()
                                 + " value (" + value + ").\n" +
                                 "The instances are (" + entry.getValue() + ").\n" +
                                 "Make sure that IDs of entities passed into the given(...) method are unique.");

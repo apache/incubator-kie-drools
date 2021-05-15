@@ -52,7 +52,7 @@ public class ConstraintWeightDescriptor<Solution_> {
                     .getAnnotation(ConstraintConfiguration.class);
             if (constraintConfigurationAnnotation == null) {
                 throw new IllegalStateException("Impossible state: " + ConstraintConfigurationDescriptor.class.getSimpleName()
-                        + " only reflects over members with a " + ConstraintConfiguration.class.getSimpleName()
+                        + " only reflects over members with a @" + ConstraintConfiguration.class.getSimpleName()
                         + " annotation.");
             }
             constraintPackage = constraintConfigurationAnnotation.constraintPackage();

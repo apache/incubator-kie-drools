@@ -71,9 +71,9 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
         arrayWrapping = type.isArray();
         if (!collectionWrapping && !arrayWrapping && !ValueRange.class.isAssignableFrom(type)) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + PlanningVariable.class.getSimpleName()
+                    + ") has a @" + PlanningVariable.class.getSimpleName()
                     + " annotated property (" + variableDescriptor.getVariableName()
-                    + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                    + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that does not return a " + Collection.class.getSimpleName()
                     + ", an array or a " + ValueRange.class.getSimpleName() + ".");
@@ -83,9 +83,9 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             // TODO reuse ConfgUtils.extractCollectionGenericTypeParameter() if possible
             if (!(genericType instanceof ParameterizedType)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that returns a " + Collection.class.getSimpleName()
                         + " which has no generic parameters.\n"
@@ -96,9 +96,9 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             Type[] typeArguments = parameterizedType.getActualTypeArguments();
             if (typeArguments.length != 1) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that returns a parameterized " + Collection.class.getSimpleName()
                         + ") with an unsupported number of generic parameters (" + typeArguments.length + ").");
@@ -116,9 +116,9 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             }
             if (!(typeArgument instanceof Class)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that returns a parameterized " + Collection.class.getSimpleName()
                         + " with an unsupported type arguments (" + typeArgument + ").");
@@ -127,13 +127,13 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
             if (!variablePropertyType.isAssignableFrom(collectionElementClass)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that returns a " + Collection.class.getSimpleName()
                         + " with elements of type (" + collectionElementClass
-                        + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
+                        + ") which cannot be assigned to the @" + PlanningVariable.class.getSimpleName()
                         + "'s type (" + variablePropertyType + ").");
             }
         } else if (arrayWrapping) {
@@ -141,12 +141,12 @@ public abstract class AbstractFromPropertyValueRangeDescriptor<Solution_>
             Class<?> variablePropertyType = variableDescriptor.getVariablePropertyType();
             if (!variablePropertyType.isAssignableFrom(arrayElementClass)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                        + ") has a " + PlanningVariable.class.getSimpleName()
+                        + ") has a @" + PlanningVariable.class.getSimpleName()
                         + " annotated property (" + variableDescriptor.getVariableName()
-                        + ") that refers to a " + ValueRangeProvider.class.getSimpleName()
+                        + ") that refers to a @" + ValueRangeProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that returns a array with elements of type (" + arrayElementClass
-                        + ") which cannot be assigned to the " + PlanningVariable.class.getSimpleName()
+                        + ") which cannot be assigned to the @" + PlanningVariable.class.getSimpleName()
                         + "'s type (" + variablePropertyType + ").");
             }
         }

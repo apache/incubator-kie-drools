@@ -120,10 +120,10 @@ public class LookUpStrategyResolver {
                             ConfigUtils.findPlanningIdMemberAccessor(objectClass, domainAccessType, generatedMemberAccessorMap);
                     if (memberAccessor2 == null) {
                         throw new IllegalArgumentException("The class (" + objectClass
-                                + ") does not have a " + PlanningId.class.getSimpleName() + " annotation,"
+                                + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation,"
                                 + " but the lookUpStrategyType (" + lookUpStrategyType + ") requires it.\n"
-                                + "Maybe add the " + PlanningId.class.getSimpleName() + " annotation"
-                                + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
+                                + "Maybe add the @" + PlanningId.class.getSimpleName() + " annotation"
+                                + " or change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
                                 + LookUpStrategyType.class.getSimpleName() + ".");
                     }
                     return new PlanningIdLookUpStrategy(memberAccessor2);

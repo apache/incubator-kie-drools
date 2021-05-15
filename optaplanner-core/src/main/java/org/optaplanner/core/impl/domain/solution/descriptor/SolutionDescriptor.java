@@ -239,8 +239,8 @@ public class SolutionDescriptor<Solution_> {
         // because they are only required for scoreDRL and ConstraintStreams.
         if (scoreDescriptor == null) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") must have 1 member with a " + PlanningScore.class.getSimpleName() + " annotation.\n"
-                    + "Maybe add a getScore() method with a " + PlanningScore.class.getSimpleName() + " annotation.");
+                    + ") must have 1 member with a @" + PlanningScore.class.getSimpleName() + " annotation.\n"
+                    + "Maybe add a getScore() method with a @" + PlanningScore.class.getSimpleName() + " annotation.");
         }
         if (constraintConfigurationMemberAccessor != null) {
             // The scoreDescriptor is definitely initialized at this point.
@@ -266,7 +266,7 @@ public class SolutionDescriptor<Solution_> {
         if (solutionAnnotation == null) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
                     + ") has been specified as a solution in the configuration," +
-                    " but does not have a " + PlanningSolution.class.getSimpleName() + " annotation.");
+                    " but does not have a @" + PlanningSolution.class.getSimpleName() + " annotation.");
         }
         autoDiscoverMemberType = solutionAnnotation.autoDiscoverMemberType();
         Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
@@ -365,7 +365,7 @@ public class SolutionDescriptor<Solution_> {
                                 + ") cannot accept a member (" + member
                                 + ") of type (" + type
                                 + ") with an elementType (" + elementType
-                                + ") that has a " + ConstraintConfiguration.class.getSimpleName() + " annotation.\n"
+                                + ") that has a @" + ConstraintConfiguration.class.getSimpleName() + " annotation.\n"
                                 + "Maybe use a member of the type (" + elementType + ") directly instead of a "
                                 + Collection.class.getSimpleName() + " or array of that type.");
                     } else {
@@ -397,7 +397,7 @@ public class SolutionDescriptor<Solution_> {
             if (!constraintConfigurationMemberAccessor.getName().equals(memberAccessor.getName())
                     || !constraintConfigurationMemberAccessor.getClass().equals(memberAccessor.getClass())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + ConstraintConfigurationProvider.class.getSimpleName()
+                        + ") has a @" + ConstraintConfigurationProvider.class.getSimpleName()
                         + " annotated member (" + memberAccessor
                         + ") that is duplicated by another member (" + constraintConfigurationMemberAccessor + ").\n"
                         + "Maybe the annotation is defined on both the field and its getter.");
@@ -413,7 +413,7 @@ public class SolutionDescriptor<Solution_> {
         Class<?> constraintConfigurationClass = constraintConfigurationMemberAccessor.getType();
         if (!constraintConfigurationClass.isAnnotationPresent(ConstraintConfiguration.class)) {
             throw new IllegalStateException("The solutionClass (" + solutionClass
-                    + ") has a " + ConstraintConfigurationProvider.class.getSimpleName()
+                    + ") has a @" + ConstraintConfigurationProvider.class.getSimpleName()
                     + " annotated member (" + member + ") that does not return a class ("
                     + constraintConfigurationClass + ") that has a "
                     + ConstraintConfiguration.class.getSimpleName() + " annotation.");
@@ -433,7 +433,7 @@ public class SolutionDescriptor<Solution_> {
             Class<?> type = memberAccessor.getType();
             if (!(Collection.class.isAssignableFrom(type) || type.isArray())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + ProblemFactCollectionProperty.class.getSimpleName()
+                        + ") has a @" + ProblemFactCollectionProperty.class.getSimpleName()
                         + " annotated member (" + member + ") that does not return a "
                         + Collection.class.getSimpleName() + " or an array.");
             }
@@ -455,7 +455,7 @@ public class SolutionDescriptor<Solution_> {
             Class<?> type = memberAccessor.getType();
             if (!(Collection.class.isAssignableFrom(type) || type.isArray())) {
                 throw new IllegalStateException("The solutionClass (" + solutionClass
-                        + ") has a " + PlanningEntityCollectionProperty.class.getSimpleName()
+                        + ") has a @" + PlanningEntityCollectionProperty.class.getSimpleName()
                         + " annotated member (" + member + ") that does not return a "
                         + Collection.class.getSimpleName() + " or an array.");
             }

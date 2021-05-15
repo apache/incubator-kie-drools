@@ -141,7 +141,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                         + ") has a @" + CustomShadowVariable.class.getSimpleName()
                         + " annotated property (" + variableMemberAccessor.getName()
                         + ") with refVariable (" + uncastRefVariableDescriptor.getSimpleEntityAndVariableName()
-                        + ") that lacks a " + CustomShadowVariable.class.getSimpleName() + " annotation.");
+                        + ") that lacks a @" + CustomShadowVariable.class.getSimpleName() + " annotation.");
             }
             refVariableDescriptor = (CustomShadowVariableDescriptor<Solution_>) uncastRefVariableDescriptor;
             if (refVariableDescriptor.isRef()) {

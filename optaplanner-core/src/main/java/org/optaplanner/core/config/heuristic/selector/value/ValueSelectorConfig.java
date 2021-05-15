@@ -294,7 +294,7 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
             throw new IllegalArgumentException("The sorterManner (" + valueSorterManner
                     + ") on entity class (" + variableDescriptor.getEntityDescriptor().getEntityClass()
                     + ")'s variable (" + variableDescriptor.getVariableName()
-                    + ") fails because that variable getter's " + PlanningVariable.class.getSimpleName()
+                    + ") fails because that variable getter's @" + PlanningVariable.class.getSimpleName()
                     + " annotation does not declare any strength comparison.");
         }
         return sorter;

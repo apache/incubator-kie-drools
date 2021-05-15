@@ -408,7 +408,7 @@ public class ConfigUtils {
                         generatedMemberAccessorMap);
         if (!memberAccessor.getType().isPrimitive() && !Comparable.class.isAssignableFrom(memberAccessor.getType())) {
             throw new IllegalArgumentException("The class (" + clazz
-                    + ") has a member (" + member + ") with a " + PlanningId.class.getSimpleName()
+                    + ") has a member (" + member + ") with a @" + PlanningId.class.getSimpleName()
                     + " annotation that returns a type (" + memberAccessor.getType()
                     + ") that does not implement " + Comparable.class.getSimpleName() + ".\n"
                     + "Maybe use an " + Integer.class.getSimpleName()

@@ -61,7 +61,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         sourceVariableDescriptor = entityDescriptor.getVariableDescriptor(sourceVariableName);
         if (sourceVariableDescriptor == null) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + AnchorShadowVariable.class.getSimpleName()
+                    + ") has a @" + AnchorShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
@@ -71,7 +71,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
         if (!(sourceVariableDescriptor instanceof GenuineVariableDescriptor) ||
                 !((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained()) {
             throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()
-                    + ") has a " + AnchorShadowVariable.class.getSimpleName()
+                    + ") has a @" + AnchorShadowVariable.class.getSimpleName()
                     + " annotated property (" + variableMemberAccessor.getName()
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not chained.");

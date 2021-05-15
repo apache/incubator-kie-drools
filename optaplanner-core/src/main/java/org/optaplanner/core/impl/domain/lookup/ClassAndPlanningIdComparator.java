@@ -70,13 +70,13 @@ public class ClassAndPlanningIdComparator implements Comparator<Object> {
         if (failFastIfNoPlanningId) {
             if (aMemberAccessor == null) {
                 throw new IllegalArgumentException("The class (" + aClass
-                        + ") does not have a " + PlanningId.class.getSimpleName() + " annotation.\n"
-                        + "Maybe add the " + PlanningId.class.getSimpleName() + " annotation.");
+                        + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation.\n"
+                        + "Maybe add the @" + PlanningId.class.getSimpleName() + " annotation.");
             }
             if (bMemberAccessor == null) {
                 throw new IllegalArgumentException("The class (" + bClass
-                        + ") does not have a " + PlanningId.class.getSimpleName() + " annotation.\n"
-                        + "Maybe add the " + PlanningId.class.getSimpleName() + " annotation.");
+                        + ") does not have a @" + PlanningId.class.getSimpleName() + " annotation.\n"
+                        + "Maybe add the @" + PlanningId.class.getSimpleName() + " annotation.");
             }
         } else {
             if (aMemberAccessor == null) {

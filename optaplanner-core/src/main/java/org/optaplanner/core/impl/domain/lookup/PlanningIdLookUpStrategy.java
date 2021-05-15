@@ -93,8 +93,8 @@ public class PlanningIdLookUpStrategy implements LookUpStrategy {
                     + ") must not be null.\n"
                     + "Maybe initialize the planningId of the class (" + externalObject.getClass().getSimpleName()
                     + ") instance (" + externalObject + ") before solving.\n" +
-                    "Maybe remove the " + PlanningId.class.getSimpleName() + " annotation"
-                    + " or change the " + PlanningSolution.class.getSimpleName() + " annotation's "
+                    "Maybe remove the @" + PlanningId.class.getSimpleName() + " annotation"
+                    + " or change the @" + PlanningSolution.class.getSimpleName() + " annotation's "
                     + LookUpStrategyType.class.getSimpleName() + ".");
         }
         return Pair.of(externalObject.getClass(), planningId);
