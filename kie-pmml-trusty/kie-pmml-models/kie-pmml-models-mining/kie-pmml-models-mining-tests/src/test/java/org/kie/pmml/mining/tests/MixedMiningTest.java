@@ -72,13 +72,13 @@ public class MixedMiningTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {"red", "classA", 25.0, "ASTRONAUT", "AP", true, 2.3724999999999987},
-//                {"blue", "classA", 2.3, "PROGRAMMER", "KN", true, 8.122499999999999},
-//                {"yellow", "classC", 333.56, "INSTRUCTOR", "TN", false, -21.502499999999998},
-//                {"orange", "classB", 0.12, "ASTRONAUT", "KN", true, 7.3725},
-//                {"green", "classC", 122.12, "TEACHER", "TN", false, 36.1225},
-//                {"green", "classB", 11.33, "INSTRUCTOR", "AP", false, 21.1225},
-//                {"orange", "classB", 423.2, "SKYDIVER", "KN", true, 14.872499999999999},
+                {"red", "classA", 25.0, "ASTRONAUT", "AP", true, 17.0},
+                {"blue", "classA", 2.3, "PROGRAMMER", "KN", true, 36.0},
+                {"yellow", "classC", 333.56, "INSTRUCTOR", "TN", false, -58.0},
+                {"orange", "classB", 0.12, "ASTRONAUT", "KN", true, 33.0},
+                {"green", "classC", 122.12, "TEACHER", "TN", false, 123.0},
+                {"green", "classB", 11.33, "INSTRUCTOR", "AP", false, 76.0},
+                {"orange", "classB", 423.2, "SKYDIVER", "KN", true, 57.0},
         });
     }
 

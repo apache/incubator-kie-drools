@@ -68,6 +68,10 @@
         </Apply>
       </OutputField>
     </Output>
+    <Targets>
+      <Target field="categoricalResult" rescaleConstant="10" rescaleFactor="3.14" castInteger="round"/>
+      <Target field="salary"/>
+    </Targets>
     <Segmentation multipleModelMethod="average">
       <Segment>
         <True/>

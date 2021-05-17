@@ -148,15 +148,15 @@ public class KiePMMLSessionUtils {
             return this;
         }
 
-//        /**
-//         * Insert <code>Map&lt;String, Object&gt;</code> <b>outputFieldsMap</b> to the underlying <code>KieSession</code>.
-//         * @param outputFieldsMap
-//         * @return
-//         */
-//        public Builder withOutputFieldsMap(final Map<String, Object> outputFieldsMap) {
-//            this.toBuild.insertObjectInSession(outputFieldsMap, OUTPUTFIELDS_MAP_IDENTIFIER);
-//            return this;
-//        }
+        /**
+         * Insert <code>Map&lt;String, Object&gt;</code> <b>outputFieldsMap</b> to the underlying <code>KieSession</code>.
+         * @param outputFieldsMap
+         * @return
+         */
+        public Builder withOutputFieldsMap(final Map<String, Object> outputFieldsMap) {
+            this.toBuild.insertObjectInSession(outputFieldsMap, OUTPUTFIELDS_MAP_IDENTIFIER);
+            return this;
+        }
 
         public KiePMMLSessionUtils build() {
             return this.toBuild;

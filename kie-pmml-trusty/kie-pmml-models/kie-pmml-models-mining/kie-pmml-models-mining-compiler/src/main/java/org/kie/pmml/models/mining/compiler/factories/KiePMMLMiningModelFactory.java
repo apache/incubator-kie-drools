@@ -77,12 +77,38 @@ public class KiePMMLMiningModelFactory {
                                                            final TransformationDictionary transformationDictionary,
                                                            final MiningModel model,
                                                            final String packageName,
-                                                           final HasClassLoader hasClassloader) {
+                                                           final HasClassLoader hasClassLoader) {
         logger.debug("getKiePMMLMiningModel {}", model);
+//        String className = getSanitizedClassName(model.getModelName());
+//        final List<KiePMMLModel> nestedModels = new ArrayList<>();
+//        Map<String, String> sourcesMap = getKiePMMLMiningModelSourcesMap(dataDictionary,
+//                                                                         transformationDictionary,
+//                                                                         model,
+//                                                                         packageName,
+//                                                                         hasClassLoader,
+//                                                                         nestedModels);
+//
+//        String fullClassName = packageName + "." + className;
+//        PMMLCompilerService.populateWithPMMLRuleMappers(nestedModels, fullClassName);
+//        nestedModels.forEach(nestedModel -> {
+//            HasSourcesMap hasSourcesMap = (HasSourcesMap) nestedModel;
+//            sourcesMap.putAll(hasSourcesMap.getSourcesMap());
+//            if (hasSourcesMap.getRulesSourcesMap() != null ) {
+//                sourcesMap.putAll(hasSourcesMap.getRulesSourcesMap());
+//            }
+//        });
+//        try {
+//            Class<?> kiePMMLMiningModel = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
+//            return (KiePMMLMiningModel) kiePMMLMiningModel.newInstance();
+//        } catch (Exception e) {
+//            throw new KiePMMLException(e);
+//        }
+//
+//
         String name = model.getModelName();
         Optional<String> targetFieldName = getTargetFieldName(dataDictionary, model);
         List<KiePMMLExtension> extensions = getKiePMMLExtensions(model.getExtensions());
-        return KiePMMLMiningModel.builder(name, extensions, MINING_FUNCTION.byName(model.getMiningFunction().value()))
+        final KiePMMLMiningModel toReturn = KiePMMLMiningModel.builder(name, extensions, MINING_FUNCTION.byName(model.getMiningFunction().value()))
                 .withAlgorithmName(model.getAlgorithmName())
                 .withScorable(model.isScorable())
                 .withSegmentation(getSegmentation(dataDictionary,
@@ -90,9 +116,21 @@ public class KiePMMLMiningModelFactory {
                                                   model.getSegmentation(),
                                                   String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName()),
                                                   packageName,
-                                                  hasClassloader))
+                                                  hasClassLoader))
                 .withTargetField(targetFieldName.orElse(null))
                 .build();
+        return toReturn;
+//        return KiePMMLMiningModel.builder(name, extensions, MINING_FUNCTION.byName(model.getMiningFunction().value()))
+//                .withAlgorithmName(model.getAlgorithmName())
+//                .withScorable(model.isScorable())
+//                .withSegmentation(getSegmentation(dataDictionary,
+//                                                  transformationDictionary,
+//                                                  model.getSegmentation(),
+//                                                  String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName()),
+//                                                  packageName,
+//                                                  hasClassLoader))
+//                .withTargetField(targetFieldName.orElse(null))
+//                .build();
     }
 
     public static Map<String, String> getKiePMMLMiningModelSourcesMap(final DataDictionary dataDictionary,
