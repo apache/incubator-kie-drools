@@ -122,7 +122,7 @@
     <version.io.quarkus>1.13.3.Final</version.io.quarkus>
 
     <!-- dependencies versions -->
-    <version.com.fasterxml.jackson>2.12.1</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
@@ -1393,7 +1393,7 @@ limitations under the License.
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
         <sonar.organization>kiegroup</sonar.organization>
-        <sonar.exclusions></sonar.exclusions> <!-- KOGITO-4895 keep it here, if removed exclusions are not scoped to a particular defining module -->
+        <sonar.exclusions/> <!-- KOGITO-4895 keep it here, if removed exclusions are not scoped to a particular defining module -->
         <enforcer.skip>true</enforcer.skip>
         <checkstyle.skip>true</checkstyle.skip>
       </properties>
