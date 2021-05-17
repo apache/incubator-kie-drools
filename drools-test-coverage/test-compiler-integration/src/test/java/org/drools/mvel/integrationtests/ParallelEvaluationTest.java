@@ -39,6 +39,8 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.CompositePartitionAwareObjectSinkAdapter;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
+import org.drools.core.reteoo.ReteDumper;
+import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.compiler.util.debug.DebugList;
@@ -561,84 +563,97 @@ public class ParallelEvaluationTest {
                 "end\n";
     }
 
-    @Test(timeout = 40000L)
+    @Test(timeout = 60000L)
     public void testFireUntilHaltWithExpiration() {
-        StringBuilder sb = new StringBuilder( 400 );
-        sb.append( "global java.util.List list;\n" );
-        sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
-        sb.append( "declare MyEvent @role( event ) @expires( 20ms ) @timestamp( timestamp ) end\n" );
-        for (int i = 0; i < 10; i++) {
-            sb.append( getRuleWithEventForExpiration( i ) );
-        }
-
-        KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
-        sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
-
-        KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
-        KieSession ksession = kbase.newKieSession(sessionConfig, null);
-
-        assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
-
-        PseudoClockScheduler sessionClock = ksession.getSessionClock();
-        sessionClock.setStartupTime(0);
-
-        DebugList<Integer> list = new DebugList<Integer>();
-        CountDownLatch done1 = new CountDownLatch(1);
-        list.onItemAdded = ( l -> { if (l.size() == 10) {
-            done1.countDown();
-        }} );
-        ksession.setGlobal( "list", list );
-
-        for (int i = 0; i < 10; i++) {
-            ksession.insert( new MyEvent( i, i*2L ) );
-        }
-
-        new Thread(ksession::fireUntilHalt).start();
+        
         try {
-            try {
-                done1.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException( e );
+            
+            ReteooRuleBuilder.debug = true;
+        
+            StringBuilder sb = new StringBuilder( 400 );
+            sb.append( "global java.util.List list;\n" );
+            sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
+            sb.append( "declare MyEvent @role( event ) @expires( 20ms ) @timestamp( timestamp ) end\n" );
+            for (int i = 0; i < 10; i++) {
+                sb.append( getRuleWithEventForExpiration( i ) );
             }
-
-            assertEquals( 10, list.size() );
-            list.clear();
-
-            CountDownLatch done2 = new CountDownLatch(1);
-            list.onItemAdded = ( l -> { if (l.size() == 5) {
-                done2.countDown();
+    
+    //        System.out.println(sb.toString());
+            
+            KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
+            sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
+    
+            KieBaseTestConfiguration streamConfig = TestParametersUtil.getStreamInstanceOf(kieBaseTestConfiguration);
+            final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", streamConfig, sb.toString());
+            final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, streamConfig, MultithreadEvaluationOption.YES );
+            KieSession ksession = kbase.newKieSession(sessionConfig, null);
+            
+    //        ReteDumper.dumpRete(ksession);
+    
+            assertTrue( ( (InternalWorkingMemory) ksession ).getAgenda().isParallelAgenda() );
+    
+            PseudoClockScheduler sessionClock = ksession.getSessionClock();
+            sessionClock.setStartupTime(0);
+    
+            DebugList<Integer> list = new DebugList<Integer>();
+            CountDownLatch done1 = new CountDownLatch(1);
+            list.onItemAdded = ( l -> { if (l.size() == 10) {
+                done1.countDown();
             }} );
-
-            ksession.insert( 1 );
-            sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
-
-            try {
-                done2.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException( e );
+            ksession.setGlobal( "list", list );
+    
+            for (int i = 0; i < 10; i++) {
+                ksession.insert( new MyEvent( i, i*2L ) );
             }
-
-            assertEquals( 5, list.size() );
-            list.clear();
-
-            CountDownLatch done3 = new CountDownLatch(1);
-            list.onItemAdded = ( l -> { if (l.size() == 5) {
-                done3.countDown();
-            }} );
-
-            sessionClock.advanceTime( 12, TimeUnit.MILLISECONDS );
+    
+            new Thread(ksession::fireUntilHalt).start();
             try {
-                done3.await();
-            } catch (InterruptedException e) {
-                throw new RuntimeException( e );
+                try {
+                    done1.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException( e );
+                }
+    
+                assertEquals( 10, list.size() );
+                list.clear();
+    
+                CountDownLatch done2 = new CountDownLatch(1);
+                list.onItemAdded = ( l -> { if (l.size() == 5) {
+                    done2.countDown();
+                }} );
+    
+                ksession.insert( 1 );
+                sessionClock.advanceTime( 29, TimeUnit.MILLISECONDS );
+    
+                try {
+                    done2.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException( e );
+                }
+    
+                assertEquals( 5, list.size() );
+                list.clear();
+    
+                CountDownLatch done3 = new CountDownLatch(1);
+                list.onItemAdded = ( l -> { if (l.size() == 5) {
+                    done3.countDown();
+                }} );
+    
+                sessionClock.advanceTime( 12, TimeUnit.MILLISECONDS );
+                try {
+                    done3.await();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException( e );
+                }
+    
+                assertEquals( 5, list.size() );
+            } finally {
+                ksession.halt();
+                ksession.dispose();
             }
-
-            assertEquals( 5, list.size() );
+        
         } finally {
-            ksession.halt();
-            ksession.dispose();
+            ReteooRuleBuilder.debug = false;
         }
     }
 

@@ -51,9 +51,14 @@ import org.drools.core.rule.constraint.XpathConstraint;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.impl.Timer;
 import org.kie.api.conf.EventProcessingOption;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ReteooRuleBuilder implements RuleBuilder {
 
+    public static boolean debug = false;
+    private static final Logger logger = LoggerFactory.getLogger(ReteooRuleBuilder.class);
+    
     protected BuildUtils utils;
 
     public ReteooRuleBuilder() {
@@ -108,17 +113,28 @@ public class ReteooRuleBuilder implements RuleBuilder {
     public List<TerminalNode> addRule( final RuleImpl rule,
                                        final InternalKnowledgeBase kBase ) throws InvalidPatternException {
 
+        if (debug) {
+            logger.info("rule = " + rule.getName());
+        }
+        
         // the list of terminal nodes
         final List<TerminalNode> nodes = new ArrayList<TerminalNode>();
 
         // transform rule and gets the array of subrules
         final GroupElement[] subrules = rule.getTransformedLhs( kBase.getConfiguration().getComponentFactory().getLogicTransformerFactory().getLogicTransformer(),
                                                                 kBase.getGlobals() );
+        if (debug) {
+            logger.info("subrules.length = " + subrules.length);
+        }
 
         for (int i = 0; i < subrules.length; i++) {
 
             // creates a clean build context for each subrule
             final BuildContext context = new BuildContext( kBase );
+            if (debug) {
+                logger.info("subrules[" + i + "] = " + subrules[i]);
+                logger.info("context = " + context);
+            }
             context.setRule( rule );
 
             // if running in STREAM mode, calculate temporal distance for events

@@ -46,11 +46,15 @@ import org.drools.core.time.Interval;
 import org.drools.core.time.TemporalDependencyMatrix;
 import org.drools.core.time.TimeUtils;
 import org.kie.api.definition.rule.Rule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Utility functions for reteoo build
  */
 public class BuildUtils {
+    
+    private static final Logger logger = LoggerFactory.getLogger(BuildUtils.class);
 
     private final Map<Class< ? >, ReteooComponentBuilder> componentBuilders = new HashMap<Class< ? >, ReteooComponentBuilder>();
 
@@ -123,6 +127,9 @@ public class BuildUtils {
             node = null;
         }
 
+        if (ReteooRuleBuilder.debug) {
+            logger.info("context.getPartitionId() : " + context.getPartitionId());
+        }
         if ( node == null ) {
             // only attach() if it is a new node
             node = candidate;
@@ -133,6 +140,9 @@ public class BuildUtils {
                 if ( context.getPartitionId() == null ) {
                     // if no label in current context, create one
                     context.setPartitionId( context.getKnowledgeBase().createNewPartitionId() );
+                    if (ReteooRuleBuilder.debug) {
+                        logger.info("newPartitionId : " + context.getPartitionId());
+                    }
                 }
                 partition = context.getPartitionId();
             }
@@ -148,6 +158,9 @@ public class BuildUtils {
                 partition = node.getPartitionId();
                 // if no label in current context, create one
                 context.setPartitionId( partition );
+                if (ReteooRuleBuilder.debug) {
+                    logger.info("shared partition : " + context.getPartitionId());
+                }
             }
         }
         // adds the node to the context list to track all added nodes
