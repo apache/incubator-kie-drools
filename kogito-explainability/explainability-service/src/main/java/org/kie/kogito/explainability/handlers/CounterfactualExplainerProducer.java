@@ -18,7 +18,10 @@ package org.kie.kogito.explainability.handlers;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.explainability.local.counterfactual.CounterfactualConfigurationFactory;
 import org.kie.kogito.explainability.local.counterfactual.CounterfactualExplainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,9 +31,21 @@ public class CounterfactualExplainerProducer {
 
     private static final Logger LOG = LoggerFactory.getLogger(CounterfactualExplainerProducer.class);
 
+    private final Long maxRunningTimeSeconds;
+
+    @Inject
+    public CounterfactualExplainerProducer(
+            @ConfigProperty(name = "trusty.explainability.counterfactuals.maxRunningTimeSeconds",
+                    defaultValue = "60") Integer maxRunningTimeSeconds) {
+        this.maxRunningTimeSeconds = Long.valueOf(maxRunningTimeSeconds);
+    }
+
     @Produces
     public CounterfactualExplainer produce() {
         LOG.debug("CounterfactualExplainer created");
-        return CounterfactualExplainer.builder().build();
+        return CounterfactualExplainer.builder()
+                .withSolverConfig(
+                        CounterfactualConfigurationFactory.builder().withSecondsSpentLimit(this.maxRunningTimeSeconds).build())
+                .build();
     }
 }

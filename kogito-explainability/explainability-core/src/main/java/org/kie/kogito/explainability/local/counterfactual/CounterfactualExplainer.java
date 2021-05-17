@@ -58,6 +58,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
     private static final Logger logger =
             LoggerFactory.getLogger(CounterfactualExplainer.class);
+
     private final SolverConfig solverConfig;
     private final Executor executor;
 
@@ -85,6 +86,10 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             Executor executor) {
         this.solverConfig = solverConfig;
         this.executor = executor;
+    }
+
+    public SolverConfig getSolverConfig() {
+        return solverConfig;
     }
 
     public static Builder builder() {

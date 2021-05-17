@@ -32,7 +32,7 @@ import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
 public class CounterfactualConfigurationFactory {
 
-    private static final long DEFAULT_TIME_LIMIT = 30;
+    private static final long DEFAULT_TIME_LIMIT = 60;
     private static final int DEFAULT_TABU_SIZE = 70;
     private static final int DEFAULT_ACCEPTED_COUNT = 5000;
 
@@ -49,10 +49,9 @@ public class CounterfactualConfigurationFactory {
         private TerminationConfig terminationConfig = new TerminationConfig();
         private int tabuSize = DEFAULT_TABU_SIZE;
         private int acceptedCount = DEFAULT_ACCEPTED_COUNT;
+        private long secondsSpentLimit = DEFAULT_TIME_LIMIT;
 
         private Builder() {
-            // Set default termination time
-            terminationConfig.setSecondsSpentLimit(DEFAULT_TIME_LIMIT);
         }
 
         public SolverConfig build() {
@@ -66,6 +65,7 @@ public class CounterfactualConfigurationFactory {
             scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(CounterFactualScoreCalculator.class);
             solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
+            terminationConfig.setSecondsSpentLimit(this.secondsSpentLimit);
             solverConfig.setTerminationConfig(terminationConfig);
 
             LocalSearchAcceptorConfig acceptorConfig = new LocalSearchAcceptorConfig();
@@ -88,6 +88,11 @@ public class CounterfactualConfigurationFactory {
 
         public Builder withTabuSize(int size) {
             this.tabuSize = size;
+            return this;
+        }
+
+        public Builder withSecondsSpentLimit(long seconds) {
+            this.secondsSpentLimit = seconds;
             return this;
         }
 
