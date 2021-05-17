@@ -24,8 +24,10 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataObject;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -48,6 +50,7 @@ import org.optaplanner.core.impl.testdata.domain.solutionproperties.autodiscover
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicatePlanningScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataDuplicateProblemFactCollectionPropertySolution;
+import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataMissingScorePropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactCollectionPropertyWithArgumentSolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataProblemFactIsPlanningEntityCollectionPropertySolution;
 import org.optaplanner.core.impl.testdata.domain.solutionproperties.invalid.TestdataUnknownFactTypeSolution;
@@ -101,6 +104,12 @@ public class SolutionDescriptorTest {
     public void duplicatePlanningScorePropertyProperty() {
         assertThatIllegalStateException().isThrownBy(
                 TestdataDuplicatePlanningScorePropertySolution::buildSolutionDescriptor);
+    }
+
+    @Test
+    public void missingPlanningScorePropertyProperty() {
+        assertThatIllegalStateException().isThrownBy(
+                TestdataMissingScorePropertySolution::buildSolutionDescriptor);
     }
 
     @Test
@@ -202,6 +211,8 @@ public class SolutionDescriptorTest {
     public void autoDiscoverFields() {
         SolutionDescriptor<TestdataAutoDiscoverFieldSolution> solutionDescriptor = TestdataAutoDiscoverFieldSolution
                 .buildSolutionDescriptor();
+        assertThat(solutionDescriptor.getScoreDefinition()).isInstanceOf(SimpleScoreDefinition.class);
+        assertThat(solutionDescriptor.getScoreDefinition().getScoreClass()).isEqualTo(SimpleScore.class);
         assertThat(solutionDescriptor.getConstraintConfigurationMemberAccessor().getName())
                 .isEqualTo("constraintConfiguration");
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("constraintConfiguration",
@@ -243,7 +254,7 @@ public class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverFieldsFactCollectionOverridenToSingleProperty() {
+    public void autoDiscoverFieldsFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverFieldOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverFieldOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
@@ -265,7 +276,7 @@ public class SolutionDescriptorTest {
     }
 
     @Test
-    public void autoDiscoverGettersFactCollectionOverridenToSingleProperty() {
+    public void autoDiscoverGettersFactCollectionOverriddenToSingleProperty() {
         SolutionDescriptor<TestdataAutoDiscoverGetterOverrideSolution> solutionDescriptor =
                 TestdataAutoDiscoverGetterOverrideSolution.buildSolutionDescriptor();
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("singleProblemFact",
