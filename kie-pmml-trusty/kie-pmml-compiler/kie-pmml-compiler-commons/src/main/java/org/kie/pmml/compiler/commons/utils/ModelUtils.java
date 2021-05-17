@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -28,6 +29,7 @@ import java.util.stream.Stream;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Interval;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -36,8 +38,7 @@ import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.Target;
-import org.dmg.pmml.TargetValue;
-import org.dmg.pmml.Targets;
+import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.Value;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -57,6 +58,8 @@ import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxe
  * <b>Kie</b> ones, etc...
  */
 public class ModelUtils {
+
+    private static final String INFINITY_SYMBOL = new String(Character.toString('\u221E').getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
     private ModelUtils() {
     }
@@ -101,10 +104,19 @@ public class ModelUtils {
      */
     public static List<KiePMMLNameOpType> getTargetFields(DataDictionary dataDictionary, Model model) {
         List<KiePMMLNameOpType> toReturn = new ArrayList<>();
-        if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
+        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
+            for (Target target : model.getTargets().getTargets()) {
+                OP_TYPE opType = target.getOpType() != null ? OP_TYPE.byName(target.getOpType().value()) :
+                        getOpType(dataDictionary, model, target.getField().getValue());
+                toReturn.add(new KiePMMLNameOpType(target.getField().getValue(), opType));
+            }
+        } else {
             for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
                 if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                    OP_TYPE opType = getOpType(dataDictionary, model, miningField.getName().getValue());
+                    OP_TYPE opType = miningField.getOpType() != null ?
+                            OP_TYPE.byName(miningField.getOpType().value()) : getOpType(dataDictionary, model,
+                                                                                        miningField.getName().getValue());
+
                     toReturn.add(new KiePMMLNameOpType(miningField.getName().getValue(), opType));
                 }
             }
@@ -121,10 +133,16 @@ public class ModelUtils {
      */
     public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(DataDictionary dataDictionary, Model model) {
         Map<String, DATA_TYPE> toReturn = new LinkedHashMap<>();
-        for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
-            if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
-                                                                           miningField.getName().getValue()));
+        if (model.getTargets() != null && model.getTargets().getTargets() != null) {
+            for (Target target : model.getTargets().getTargets()) {
+                toReturn.put(target.getField().getValue(), getDataType(dataDictionary, target.getField().getValue()));
+            }
+        } else {
+            for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
+                if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
+                    toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
+                                                                               miningField.getName().getValue()));
+                }
             }
         }
         return toReturn;
@@ -203,6 +221,25 @@ public class ModelUtils {
     /**
      * <code>DATA_TYPE</code> of the given <b>field</b>
      * @param dataDictionary
+     * @param fieldName
+     * @return
+     */
+    public static DataType getDataType(final DataDictionary dataDictionary,
+                                       final TransformationDictionary transformationDictionary,
+                                       final String fieldName) {
+        return Stream.of(getDataTypeFromDataDictionary(dataDictionary, fieldName),
+                         getDataTypeFromTransformationDictionary(transformationDictionary, fieldName))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
+                                                                                      "field %s",
+                                                                              fieldName)));
+    }
+
+    /**
+     * <code>DATA_TYPE</code> of the given <b>field</b>
+     * @param dataDictionary
      * @param targetFieldName
      * @return
      */
@@ -242,8 +279,7 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and
-     * relative <code>org.dmg.pmml.DataField</code> ones
+     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and relative <code>org.dmg.pmml.DataField</code> ones
      * @param toConvert
      * @param dataField
      * @return
@@ -270,7 +306,8 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml.Output</code>
+     * Return a <code>List&lt;org.kie.pmml.api.models.OutputField&gt;</code> out of a <code>org.dmg.pmml
+     * .Output</code> one
      * @param toConvert
      * @return
      */
@@ -301,8 +338,7 @@ public class ModelUtils {
                                                                               final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
-        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) :
-                null;
+        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
         final DATA_TYPE dataType = toConvert.getDataType() != null ?
                 DATA_TYPE.byName(toConvert.getDataType().value()) : dataFieldDataType;
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
@@ -450,6 +486,32 @@ public class ModelUtils {
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
 
+    /**
+     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
+     * @param dataDictionary
+     * @param fieldName
+     * @return
+     */
+    static Optional<DataType> getDataTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
+        return (dataDictionary != null && dataDictionary.getDataFields() != null) ? dataDictionary.getDataFields().stream()
+                .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
+                .findFirst()
+                .map(DataField::getDataType) : Optional.empty();
+    }
+
+    /**
+     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
+     * @param fieldName
+     * @param fieldName
+     * @return
+     */
+    static Optional<DataType> getDataTypeFromTransformationDictionary(TransformationDictionary transformationDictionary, String fieldName) {
+        return (transformationDictionary != null &&  transformationDictionary.getDerivedFields() != null) ?  transformationDictionary.getDerivedFields().stream()
+                .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
+                .findFirst()
+                .map(DerivedField::getDataType) : Optional.empty();
+    }
+
     static List<String> convertDataFieldValues(List<Value> toConvert) {
         return toConvert != null ? toConvert.stream()
                 .map(value -> value.getValue().toString())
@@ -458,8 +520,9 @@ public class ModelUtils {
 
     static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
         return toConvert != null ? toConvert.stream()
-                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(),
-                                                                      interval.getRightMargin()))
+                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(), interval.getRightMargin()))
                 .collect(Collectors.toList()) : null;
+
     }
+
 }

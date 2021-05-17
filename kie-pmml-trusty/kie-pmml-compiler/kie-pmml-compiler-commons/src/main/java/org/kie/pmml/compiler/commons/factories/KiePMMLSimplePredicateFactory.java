@@ -49,7 +49,7 @@ public class KiePMMLSimplePredicateFactory {
         Object value = getActualValue(predicate.getValue(), dataType);
         try {
             String methodName;
-            if (kiePMMLOperator.isNumberOperator() && !(value instanceof Number)) {
+            if (kiePMMLOperator.isOnlyNumberOperator() && !(value instanceof Number)) {
                 methodName = "evaluateFALSE";
             } else {
                 methodName = String.format("evaluate%s", kiePMMLOperator.name());

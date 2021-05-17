@@ -20,10 +20,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -36,7 +34,6 @@ import org.dmg.pmml.SimplePredicate;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.OPERATOR;
-import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 
 import static org.junit.Assert.assertEquals;
@@ -48,7 +45,6 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.ge
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomValue;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 
 public class KiePMMLSimplePredicateFactoryTest {
 
@@ -102,7 +98,7 @@ public class KiePMMLSimplePredicateFactoryTest {
                     "    return false;\n" +
                     "}";
             assertEquals(expected, blockString);
-        } else if (kiePMMLOperator.isNumberOperator() && value != null && !(value instanceof Number)) {
+        } else if (kiePMMLOperator.isOnlyNumberOperator() && value != null && !(value instanceof Number)) {
             expected = "{\n" +
                     "    return false;\n" +
                     "}";

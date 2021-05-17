@@ -247,8 +247,13 @@ public class ObjectTypeNodeCompiler {
     public static List<ObjectTypeNode> objectTypeNodes(Rete rete) {
         return rete.getEntryPointNodes().values().stream()
                 .flatMap(ep -> ep.getObjectTypeNodes().values().stream())
-                .filter(f -> !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType()))
+                .filter(ObjectTypeNodeCompiler::shouldCreateCompiledAlphaNetwork)
                 .collect(Collectors.toList());
+    }
+
+    private static boolean shouldCreateCompiledAlphaNetwork(ObjectTypeNode f) {
+        return !InitialFact.class.isAssignableFrom(f.getObjectType().getClassType())
+                && !(f.getObjectSinkPropagator() instanceof CompiledNetwork); // DROOLS-6336 Avoid generating an ANC from an ANC, it won't work anyway
     }
 
     public static Map<String, CompiledNetworkSource> compiledNetworkSourceMap(Rete rete) {

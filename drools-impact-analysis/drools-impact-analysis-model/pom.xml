@@ -10,6 +10,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>drools-impact-analysis-model</artifactId>
+  <packaging>jar</packaging>
+
+  <name>Drools :: Impact Analysis :: Model</name>
 
   <properties>
     <java.module.name>org.drools.impact.analysis.model</java.module.name>
