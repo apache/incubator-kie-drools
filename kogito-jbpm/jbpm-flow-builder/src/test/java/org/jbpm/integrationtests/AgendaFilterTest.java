@@ -36,6 +36,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class AgendaFilterTest extends AbstractBaseTest {
@@ -290,10 +293,11 @@ public class AgendaFilterTest extends AbstractBaseTest {
         }
 
         KogitoProcessRuntime kruntime = createKogitoProcessRuntime();
+        assertNotNull(kruntime);
 
-        kruntime.getKieSession().getAgendaEventListeners();
-        kruntime.getProcessEventManager().getProcessEventListeners();
-        kruntime.getKieSession().getRuleRuntimeEventListeners();
+        assertFalse(kruntime.getKieSession().getAgendaEventListeners().isEmpty());
+        assertTrue(kruntime.getProcessEventManager().getProcessEventListeners().isEmpty());
+        assertTrue(kruntime.getKieSession().getRuleRuntimeEventListeners().isEmpty());
 
         kruntime.getKieSession().dispose();
     }

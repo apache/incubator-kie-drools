@@ -18,6 +18,6 @@ package org.kie.kogito.integrationtests.quarkus;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-class NativePMMLTreeIT extends PMMLTreeTest {
+class NativePMMLTreeIT extends PMMLTreeIT {
 
 }

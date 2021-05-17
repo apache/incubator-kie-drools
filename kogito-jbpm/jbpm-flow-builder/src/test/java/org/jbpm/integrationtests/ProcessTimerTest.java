@@ -19,6 +19,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.drools.core.io.impl.ReaderResource;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
@@ -116,7 +117,7 @@ public class ProcessTimerTest extends AbstractBaseTest {
         assertEquals(KogitoProcessInstance.STATE_ACTIVE, processInstance.getState());
 
         try {
-            Thread.sleep(400);
+            TimeUnit.MILLISECONDS.sleep(400);
         } catch (InterruptedException e) {
             // do nothing
         }

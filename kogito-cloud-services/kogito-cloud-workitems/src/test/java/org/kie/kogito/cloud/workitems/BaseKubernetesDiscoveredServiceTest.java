@@ -36,7 +36,7 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 public abstract class BaseKubernetesDiscoveredServiceTest {
 
     public static final int SERVICE_PORT = 65200;
-    public KubernetesServer server = new KubernetesServer(true, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
+    public KubernetesServer server = new KubernetesServer(false, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
 
     public static final String MOCK_NAMESPACE = "mock-namespace";
 

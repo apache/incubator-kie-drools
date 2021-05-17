@@ -121,7 +121,7 @@ You can check sample generator for a full example but in general the rules are:
 - You should have functional test for each engine in a different specific module outside generators, 
   so you should not need to _execute_ generated code in this module (just write a proper integration test for that).
   If you really want/need to do that it is possible (only for `Application` related classes) to use 
-  `kogito-codegen-integration-tests` module and extend `org.kie.kogito.codegen.AbstractCodegenTest`
+  `kogito-codegen-integration-tests` module and extend `org.kie.kogito.codegen.AbstractCodegenIT`
 
 
 # Generated Application file

@@ -18,6 +18,6 @@ package org.kie.kogito.quarkus.workflows;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-class NativeConversationFlowTestIT extends ConversationFlowTest {
+class NativeConversationFlowTestIT extends ConversationFlowIT {
 
 }

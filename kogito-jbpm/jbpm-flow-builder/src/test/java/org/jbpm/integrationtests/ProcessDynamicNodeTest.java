@@ -50,7 +50,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
     private static final Logger logger = LoggerFactory.getLogger(ProcessDynamicNodeTest.class);
 
     @Test
-    @Disabled
+    @Disabled("Not done yet")
     public void TODOtestDynamicActions() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -115,7 +115,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Not done yet")
     public void TODOtestDynamicAsyncActions() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

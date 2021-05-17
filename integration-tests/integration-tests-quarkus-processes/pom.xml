@@ -163,11 +163,22 @@
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-surefire-plugin</artifactId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>integration-test</id>
+            <goals>
+              <goal>integration-test</goal>
+              <goal>verify</goal>
+            </goals>
+            <configuration>
+              <includes>
+                <include>org/kie/kogito/integrationtests/quarkus/*</include>
+              </includes>
+            </configuration>
+          </execution>
+        </executions>
         <configuration>
-          <includes>
-            <include>org/kie/kogito/integrationtests/quarkus/*</include>
-          </includes>
           <systemPropertyVariables combine.children="append">
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>

@@ -42,7 +42,7 @@ public class KubernetesServiceDiscoveryTest {
 
     public static final String SERVICE_PROTOCOL = "http";
     public static final int SERVICE_PORT = 65200;
-    public KubernetesServer server = new KubernetesServer(true, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
+    public KubernetesServer server = new KubernetesServer(false, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
 
     public KubernetesServiceDiscovery kubernetesServiceDiscovery;
 

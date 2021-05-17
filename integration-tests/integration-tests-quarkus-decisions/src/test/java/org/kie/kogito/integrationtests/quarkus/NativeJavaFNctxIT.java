@@ -18,7 +18,7 @@ package org.kie.kogito.integrationtests.quarkus;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-class NativeJavaFNctxIT extends JavaFNctxTest {
+class NativeJavaFNctxIT extends JavaFNctxIT {
 
     // Execute the same tests but in native mode.
 }

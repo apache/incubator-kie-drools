@@ -18,6 +18,6 @@ package org.kie.kogito.quarkus.pmml;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-class NativePMMLRegressionIT extends PMMLRegressionTest {
+class NativePMMLRegressionIT extends PMMLRegressionIT {
 
 }

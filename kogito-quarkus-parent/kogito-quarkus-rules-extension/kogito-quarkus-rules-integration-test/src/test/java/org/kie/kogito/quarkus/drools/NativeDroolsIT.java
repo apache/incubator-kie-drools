@@ -18,5 +18,5 @@ package org.kie.kogito.quarkus.drools;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeDroolsIT extends DroolsTest {
+public class NativeDroolsIT extends DroolsIT {
 }

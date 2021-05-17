@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.jbpm.integrationtests.test.Person;
 import org.jbpm.test.util.AbstractBaseTest;
@@ -413,7 +414,7 @@ public class ProcessStateTest extends AbstractBaseTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Needs fix")
     public void FIXMEtestDelayedStateConstraintPriorities1() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -477,7 +478,7 @@ public class ProcessStateTest extends AbstractBaseTest {
     }
 
     @Test
-    @Disabled
+    @Disabled("Needs fix")
     public void FIXMEtestDelayedStateConstraintPriorities2() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -663,7 +664,7 @@ public class ProcessStateTest extends AbstractBaseTest {
         assertEquals("State", stateInstance.getNodeName());
         assertEquals(0, list.size());
         try {
-            Thread.sleep(4000);
+            TimeUnit.SECONDS.sleep(4);
         } catch (InterruptedException e) {
         }
         assertEquals(4, list.size());
@@ -675,7 +676,7 @@ public class ProcessStateTest extends AbstractBaseTest {
         assertEquals(KogitoProcessInstance.STATE_COMPLETED, processInstance.getState());
         assertEquals(4, list.size());
         try {
-            Thread.sleep(2000);
+            TimeUnit.SECONDS.sleep(2);
         } catch (InterruptedException e) {
         }
         assertEquals(4, list.size());

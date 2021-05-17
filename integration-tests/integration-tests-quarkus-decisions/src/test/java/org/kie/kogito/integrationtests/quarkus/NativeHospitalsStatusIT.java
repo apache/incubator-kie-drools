@@ -22,6 +22,6 @@ import io.quarkus.test.junit.NativeImageTest;
  * Smoke test of kogito end-to-end scenarios.
  */
 @NativeImageTest
-public class NativeHospitalsStatusIT extends HospitalsStatusTest {
+public class NativeHospitalsStatusIT extends HospitalsStatusIT {
 
 }

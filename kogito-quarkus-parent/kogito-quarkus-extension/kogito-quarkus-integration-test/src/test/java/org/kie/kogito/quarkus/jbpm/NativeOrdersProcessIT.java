@@ -18,5 +18,5 @@ package org.kie.kogito.quarkus.jbpm;
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
-public class NativeOrdersProcessIT extends OrdersProcessTest {
+public class NativeOrdersProcessIT extends OrdersProcessIT {
 }
