@@ -28,6 +28,7 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.builder.impl.TypeDeclarationFactory;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.EnumDeclarationDescr;
@@ -291,5 +292,10 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
 
     public T getPackageSource(String packageName) {
         return packageSources.get(packageName);
+    }
+
+    @Override
+    protected BuildContext createBuildContext() {
+        return new CanonicalModelBuildContext();
     }
 }

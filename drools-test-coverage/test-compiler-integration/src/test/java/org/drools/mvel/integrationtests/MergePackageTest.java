@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -78,8 +77,6 @@ public class MergePackageTest {
             assertEquals(results.toString(), 2, results.size());
             assertTrue(results.contains("p1.r1"));
             assertTrue(results.contains("p2.r1"));
-        } catch (final KnowledgeBuilderImpl.PackageMergeException e) {
-            fail("Should not raise exception when merging different packages into the same rulebase: " + e.getMessage());
         } catch (final Exception e) {
             e.printStackTrace();
             fail("unexpected exception: " + e.getMessage());
@@ -114,8 +111,6 @@ public class MergePackageTest {
                     assertEquals("rule 1", kpkg.getRules().iterator().next().getName());
                 }
             }
-        } catch (final KnowledgeBuilderImpl.PackageMergeException e) {
-            fail("unexpected exception: " + e.getMessage());
         } catch (final RuntimeException e) {
             e.printStackTrace();
             fail("unexpected exception: " + e.getMessage());

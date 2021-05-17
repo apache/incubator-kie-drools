@@ -33,6 +33,8 @@ public class CanonicalModelBuildContext extends BuildContext {
     private final Collection<GeneratedClassWithPackage> allGeneratedPojos = new HashSet<>();
     private final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
 
+    public CanonicalModelBuildContext() { }
+
     public CanonicalModelBuildContext(ResultsImpl messages) {
         super(messages);
     }
