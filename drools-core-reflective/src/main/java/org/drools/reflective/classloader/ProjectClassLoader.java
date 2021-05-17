@@ -47,7 +47,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
                                                             null;
 
     // TODO: Consider default value
-    private static boolean enableStoreFirst = Boolean.valueOf(System.getProperty("drools.projectClassLoader.enableStoreFirst", "true"));
+    private static boolean enableStoreFirst = Boolean.valueOf(System.getProperty("drools.projectClassLoader.enableStoreFirst", "false"));
 
     static {
         registerAsParallelCapable();
