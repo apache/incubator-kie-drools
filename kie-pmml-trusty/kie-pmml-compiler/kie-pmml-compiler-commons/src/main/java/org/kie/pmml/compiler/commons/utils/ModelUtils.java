@@ -71,7 +71,8 @@ import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxe
  */
 public class ModelUtils {
 
-    private static final String INFINITY_SYMBOL = new String(Character.toString('\u221E').getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
+    private static final String INFINITY_SYMBOL =
+            new String(Character.toString('\u221E').getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
     private ModelUtils() {
     }
@@ -112,7 +113,6 @@ public class ModelUtils {
      * Return a <code>List&lt;KiePMMLNameOpType&gt;</code> of target fields
      * Please note that only <b>predicted/target</b>
      * <code>MiningField</code> are considered.
-     *
      * @param dataDictionary
      * @param model
      * @return
@@ -141,10 +141,12 @@ public class ModelUtils {
      */
     public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(DataDictionary dataDictionary, Model model) {
         Map<String, DATA_TYPE> toReturn = new LinkedHashMap<>();
-        for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
-            if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
-                toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
-                                                                           miningField.getName().getValue()));
+        if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
+            for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
+                if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
+                    toReturn.put(miningField.getName().getValue(), getDataType(dataDictionary,
+                                                                               miningField.getName().getValue()));
+                }
             }
         }
         return toReturn;
@@ -281,7 +283,8 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and relative <code>org.dmg.pmml.DataField</code> ones
+     * Return a <code>org.kie.pmml.api.models.MiningField</code> out of a <code>org.dmg.pmml.MiningField</code> and
+     * relative <code>org.dmg.pmml.DataField</code> ones
      * @param toConvert
      * @param dataField
      * @return
@@ -340,7 +343,8 @@ public class ModelUtils {
                                                                               final DataField dataField) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
-        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) : null;
+        final DATA_TYPE dataFieldDataType = dataField != null ? DATA_TYPE.byName(dataField.getDataType().value()) :
+                null;
         final DATA_TYPE dataType = toConvert.getDataType() != null ?
                 DATA_TYPE.byName(toConvert.getDataType().value()) : dataFieldDataType;
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
@@ -374,8 +378,8 @@ public class ModelUtils {
     }
 
     /**
-     * Return a <code>org.kie.pmml.commons.model.KiePMMLOutputField</code> out of a <code>org.dmg.pmml.OutputField</code>
-     *
+     * Return a <code>org.kie.pmml.commons.model.KiePMMLOutputField</code> out of a <code>org.dmg.pmml
+     * .OutputField</code>
      * @param toConvert
      * @return
      */
@@ -397,7 +401,6 @@ public class ModelUtils {
         if (toConvert.getExpression() != null) {
             KiePMMLExpression kiePMMLExpression = convertToKiePMMLExpression(toConvert.getExpression());
             builder = builder.withKiePMMLExpression(kiePMMLExpression);
-
         }
         return builder.build();
     }
@@ -407,13 +410,13 @@ public class ModelUtils {
         String expressionType = toConvert.getClass().getSimpleName();
         switch (expressionType) {
             case "Apply":
-                toReturn = convertToKiePMMLApply((Apply)toConvert);
+                toReturn = convertToKiePMMLApply((Apply) toConvert);
                 break;
             case "Constant":
-                toReturn = convertToKiePMMLConstant((Constant)toConvert);
+                toReturn = convertToKiePMMLConstant((Constant) toConvert);
                 break;
             case "FieldRef":
-                toReturn = convertToKiePMMLFieldRef((FieldRef)toConvert);
+                toReturn = convertToKiePMMLFieldRef((FieldRef) toConvert);
                 break;
             default:
                 // Not implemented, yet
@@ -426,7 +429,7 @@ public class ModelUtils {
         String name = "" + toConvert.hashCode();
         KiePMMLApply.Builder builder = KiePMMLApply.builder(name, Collections.emptyList(), toConvert.getFunction());
         if (toConvert.getExpressions() != null) {
-            List<KiePMMLExpression> kiePMMLExpressions =  toConvert.getExpressions().stream()
+            List<KiePMMLExpression> kiePMMLExpressions = toConvert.getExpressions().stream()
                     .map(ModelUtils::convertToKiePMMLExpression)
                     .collect(Collectors.toList());
             builder = builder.withKiePMMLExpressions(kiePMMLExpressions);
@@ -438,7 +441,8 @@ public class ModelUtils {
             builder = builder.withDefaultValue(toConvert.getDefaultValue());
         }
         if (toConvert.getInvalidValueTreatment() != null) {
-            builder = builder.withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()));
+            builder =
+                    builder.withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()));
         }
 
         return builder.build();
@@ -450,7 +454,8 @@ public class ModelUtils {
     }
 
     public static KiePMMLFieldRef convertToKiePMMLFieldRef(FieldRef toConvert) {
-        return new KiePMMLFieldRef(toConvert.getField().getValue(), Collections.emptyList(), toConvert.getMapMissingTo());
+        return new KiePMMLFieldRef(toConvert.getField().getValue(), Collections.emptyList(),
+                                   toConvert.getMapMissingTo());
     }
 
     /**
@@ -593,7 +598,8 @@ public class ModelUtils {
      * @return
      */
     static Optional<DataType> getDataTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
-        return (dataDictionary != null && dataDictionary.getDataFields() != null) ? dataDictionary.getDataFields().stream()
+        return (dataDictionary != null && dataDictionary.getDataFields() != null) ?
+                dataDictionary.getDataFields().stream()
                 .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
                 .findFirst()
                 .map(DataField::getDataType) : Optional.empty();
@@ -606,7 +612,8 @@ public class ModelUtils {
      * @return
      */
     static Optional<DataType> getDataTypeFromTransformationDictionary(TransformationDictionary transformationDictionary, String fieldName) {
-        return (transformationDictionary != null &&  transformationDictionary.getDerivedFields() != null) ?  transformationDictionary.getDerivedFields().stream()
+        return (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
+                transformationDictionary.getDerivedFields().stream()
                 .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
                 .findFirst()
                 .map(DerivedField::getDataType) : Optional.empty();
@@ -620,9 +627,8 @@ public class ModelUtils {
 
     static List<org.kie.pmml.api.models.Interval> convertDataFieldIntervals(List<Interval> toConvert) {
         return toConvert != null ? toConvert.stream()
-                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(), interval.getRightMargin()))
+                .map(interval -> new org.kie.pmml.api.models.Interval(interval.getLeftMargin(),
+                                                                      interval.getRightMargin()))
                 .collect(Collectors.toList()) : null;
-
     }
-
 }
