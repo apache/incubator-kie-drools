@@ -190,6 +190,7 @@ public class PostProcess {
             case "KiePMMLFieldRef":
                 toReturn =
                         Stream.of(getValueFromKiePMMLNameValuesByVariableName(((KiePMMLFieldRef) kiePMMLExpression).getName(), kiePMMLNameValues),
+                                  getValueFromKiePMMLOutputFieldsByVariableName(((KiePMMLFieldRef) kiePMMLExpression).getName(), model, kiePMMLNameValues),
                                   getMissingValueFromKiePMMLFieldRefMapMissingTo((KiePMMLFieldRef) kiePMMLExpression))
                                 .filter(Optional::isPresent)
                                 .map(Optional::get)
@@ -247,6 +248,24 @@ public class PostProcess {
                 .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(variableName))
                 .findFirst()
                 .map(KiePMMLNameValue::getValue);
+    }
+
+    static Optional<Object> getValueFromKiePMMLOutputFieldsByVariableName(final String variableName,
+                                                                          final KiePMMLModel model,
+                                                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
+        final List<KiePMMLOutputField> kiePMMLOutputFields = model.getKiePMMLOutputFields();
+        Optional<KiePMMLOutputField> found = kiePMMLOutputFields.stream()
+                .filter(kiePMMLOutputField -> variableName.equals(kiePMMLOutputField.getName()))
+                .findFirst();
+        Optional<Object> variableValue = Optional.empty();
+        if (found.isPresent()) {
+            KiePMMLOutputField  outputField = found.get();
+            if (outputField.getKiePMMLExpression() != null) {
+                final KiePMMLExpression kiePMMLExpression = outputField.getKiePMMLExpression();
+                variableValue = getValueFromKiePMMLExpression(kiePMMLExpression, model, kiePMMLNameValues);
+            }
+        }
+        return variableValue;
     }
 
     static Optional<Object> getValueFromPMMLResultByVariableName(final String variableName,

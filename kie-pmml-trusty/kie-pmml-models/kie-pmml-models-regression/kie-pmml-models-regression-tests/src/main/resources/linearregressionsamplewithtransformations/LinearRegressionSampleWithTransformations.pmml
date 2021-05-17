@@ -85,6 +85,9 @@
       <OutputField name="out_der_car_location" dataType="string" feature="transformedValue">
         <FieldRef field="der_car_location"/>
       </OutputField>
+      <OutputField name="out_der_car_location_referral" dataType="string" feature="transformedValue">
+        <FieldRef field="out_der_car_location"/>
+      </OutputField>
       <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
         <FieldRef field="der_constant"/>
       </OutputField>
