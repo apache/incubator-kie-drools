@@ -75,6 +75,7 @@ import org.drools.core.reteoo.SegmentMemory;
 import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.reteoo.builder.NodeFactory;
+import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.DialectRuntimeRegistry;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.rule.Function;
@@ -996,6 +997,12 @@ public class KnowledgeBaseImpl
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             for ( ObjectTypeNode otn : entryPointNode.getObjectTypeNodes().values() ) {
                 ObjectSinkPropagator sink = otn.getObjectSinkPropagator();
+                if (ReteooRuleBuilder.debug) {
+                    logger.info("otn = " + otn + ", sink = " + sink);
+                    if (sink instanceof CompositePartitionAwareObjectSinkAdapter) {
+                        logger.info("UsedPartitionsCount = " + ((CompositePartitionAwareObjectSinkAdapter) sink ).getUsedPartitionsCount());
+                    }
+                }
                 if (sink instanceof CompositePartitionAwareObjectSinkAdapter && ( (CompositePartitionAwareObjectSinkAdapter) sink ).getUsedPartitionsCount() > 1) {
                     return true;
                 }

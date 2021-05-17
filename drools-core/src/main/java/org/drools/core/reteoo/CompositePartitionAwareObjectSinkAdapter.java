@@ -29,13 +29,18 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter.FieldIndex;
+import org.drools.core.reteoo.builder.ReteooRuleBuilder;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.InternalReadAccessor;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.ObjectHashMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropagator {
 
+    private static final Logger logger = LoggerFactory.getLogger(CompositePartitionAwareObjectSinkAdapter.class);
+    
     private final ObjectSinkPropagator[] partitionedPropagators = new ObjectSinkPropagator[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
     private boolean hashed = true;
@@ -259,7 +264,13 @@ public class CompositePartitionAwareObjectSinkAdapter implements ObjectSinkPropa
 
     public int getUsedPartitionsCount() {
         int partitions = 0;
+        if (ReteooRuleBuilder.debug) {
+            logger.info("partitionedPropagators.length = " + partitionedPropagators.length);
+        }
         for ( int i = 0; i < partitionedPropagators.length; i++ ) {
+            if (ReteooRuleBuilder.debug) {
+                logger.info("partitionedPropagators[i].size() = " + partitionedPropagators[i].size());
+            }
             if (partitionedPropagators[i].size() > 0) {
                 partitions++;
             }

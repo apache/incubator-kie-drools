@@ -54,6 +54,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.builder.KieModule;
+import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -570,6 +571,8 @@ public class ParallelEvaluationTest {
             
             ReteooRuleBuilder.debug = true;
         
+            System.out.println("KieExecutors.Pool.SIZE = " + KieExecutors.Pool.SIZE);
+            
             StringBuilder sb = new StringBuilder( 400 );
             sb.append( "global java.util.List list;\n" );
             sb.append( "import " + MyEvent.class.getCanonicalName() + ";\n" );
