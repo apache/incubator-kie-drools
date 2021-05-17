@@ -71,11 +71,11 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {27, 34000, "street", 989.1},
-                {49, 78000, "carpark", 1301.37},
-                {57, 72000, "street", 1582.1},
-                {61, 123000, "carpark", 1836.5699999999997},
-                {18, 26000, "street", 845.1999999999999}
+                {27, 34000, "street", 3116.0},
+                {49, 78000, "carpark", 4096.0},
+                {57, 72000, "street", 4978.0},
+                {61, 123000, "carpark", 5777.0},
+                {18, 26000, "street", 2664.0},
         });
     }
 
@@ -89,9 +89,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat((double) pmml4Result.getResultVariables().get(TARGET_FIELD)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isNotNull();
-        Assertions.assertThat((double) pmml4Result.getResultVariables().get(OUT_NUMBER_OF_CLAIMS)).isCloseTo(expectedResult, TOLERANCE_PERCENTAGE);
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490/DROOLS-6028
+        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isNotNull();
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_AGE)).isEqualTo(age);
 //        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_SALARY)).isNotNull();

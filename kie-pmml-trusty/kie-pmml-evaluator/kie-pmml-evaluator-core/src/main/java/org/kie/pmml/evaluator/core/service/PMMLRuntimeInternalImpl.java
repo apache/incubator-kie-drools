@@ -42,6 +42,8 @@ import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.api.enums.ResultCode.OK;
+
 public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
 
     private static final Logger logger = LoggerFactory.getLogger(PMMLRuntimeInternalImpl.class);
@@ -99,6 +101,7 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
         PMMLModelEvaluator executor = getFromPMMLModelType(model.getPmmlMODEL())
                 .orElseThrow(() -> new KiePMMLException(String.format("PMMLModelEvaluator not found for model %s", model.getPmmlMODEL())));
         PMML4Result toReturn = executor.evaluate(knowledgeBase, model, context);
+        executeTargets(toReturn, model);
         updateTargetValueType( model, toReturn);
         return toReturn;
     }
@@ -106,11 +109,13 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
     /**
      * Add missing input values if defined in original PMML as <b>missingValueReplacement</b>.
      * <p>
-     * "missingValueReplacement: If this attribute is specified then a missing input value is automatically replaced by the given value.
+     * "missingValueReplacement: If this attribute is specified then a missing input value is automatically replaced
+     * by the given value.
      * That is, the model itself works as if the given value was found in the original input. "
      * @param model
      * @param context
-     * @see <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
     protected void addMissingValuesReplacements(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("addMissingValuesReplacements {} {}", model, context);
@@ -131,7 +136,8 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
      * @param model
      * @param context
      * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html">Transformations</a>
-     * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
      */
     protected void executeTransformations(final KiePMMLModel model, final PMMLContext context) {
         logger.debug("executeTransformations {} {}", model, context);
@@ -161,6 +167,33 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
             requestData.addRequestParam(fieldName, localTransformation);
             context.addLocalTranformation(fieldName, localTransformation);
         });
+    }
+
+    /**
+     * Execute <b>modifications</b> on target result.
+     * @param toModify
+     * @param model
+     * @see <a href="http://dmg.org/pmml/v4-4-1/Targets.html>Targets</a>
+     */
+    protected void executeTargets(final PMML4Result toModify, final KiePMMLModel model) {
+        logger.debug("executeTargets {} {}", toModify, model);
+        if (!toModify.getResultCode().equals(OK.getName())) {
+            return;
+        }
+        final String targetFieldName = toModify.getResultObjectName();
+        final Map<String, Object> resultVariables = toModify.getResultVariables();
+        model.getKiePMMLTargets()
+                .stream()
+                .filter(kiePMMLTarget -> kiePMMLTarget.getField() != null && kiePMMLTarget.getField().equals(targetFieldName))
+                .findFirst()
+                .ifPresent(kiePMMLTarget -> {
+                    Object prediction = resultVariables.get(targetFieldName);
+                    logger.debug("Original prediction {}", prediction);
+                    Object modifiedPrediction = kiePMMLTarget.modifyPrediction(resultVariables.get(targetFieldName));
+                    logger.debug("Modified prediction {}", modifiedPrediction);
+                    resultVariables.put(targetFieldName, modifiedPrediction);
+                });
+
     }
 
     /**

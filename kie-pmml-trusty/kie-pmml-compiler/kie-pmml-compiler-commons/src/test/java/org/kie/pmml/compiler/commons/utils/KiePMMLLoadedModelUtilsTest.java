@@ -38,7 +38,7 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFields;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
-public class KiePMMLModelUtilsTest {
+public class KiePMMLLoadedModelUtilsTest {
 
     private static final String NO_TARGET_SOURCE = "NoTargetFieldSample.pmml";
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
@@ -46,6 +46,7 @@ public class KiePMMLModelUtilsTest {
     private static final String NO_MODELNAME_SAMPLE_NAME = "NoModelNameSample";
     private static final String NO_MODELNAME_SAMPLE = NO_MODELNAME_SAMPLE_NAME + ".pmml";
     private static final String WHAT_I_DO_TARGET_FIELD = "whatIdo";
+    private static final String CAR_LOCATION_FIELD = "car_location";
     private static final String NUMBER_OF_CLAIMS_FIELD = "number_of_claims";
     private static final String SALARY_FIELD = "salary";
     private static final String OUTLOOK_FIELD = "outlook";
@@ -56,8 +57,8 @@ public class KiePMMLModelUtilsTest {
     @Test
     public void getTargetFieldNoTarget() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(NO_TARGET_SOURCE), NO_TARGET_SOURCE);
-        assertFalse(getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isPresent());
-        assertTrue(getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isEmpty());
+        assertTrue(getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isPresent());
+        assertFalse(getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0)).isEmpty());
     }
 
     @Test
@@ -76,11 +77,10 @@ public class KiePMMLModelUtilsTest {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         final Optional<String> retrieved = getTargetFieldName(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
         assertTrue(retrieved.isPresent());
-        assertEquals(NUMBER_OF_CLAIMS_FIELD, retrieved.get());
+        assertEquals(CAR_LOCATION_FIELD, retrieved.get());
         final List<KiePMMLNameOpType> retrieveds = getTargetFields(pmmlModel.getDataDictionary(), pmmlModel.getModels().get(0));
-        assertEquals(2, retrieveds.size());
-        assertEquals(NUMBER_OF_CLAIMS_FIELD, retrieveds.get(0).getName());
-        assertEquals(SALARY_FIELD, retrieveds.get(1).getName());
+        assertEquals(1, retrieveds.size());
+        assertEquals(CAR_LOCATION_FIELD, retrieveds.get(0).getName());
     }
 
     @Test
