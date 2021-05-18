@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
@@ -131,6 +132,20 @@ public class ConstraintParser {
                 if(isBooleanBoxedUnboxed(exprType)) {
                     singleResult.setIsPredicate(singleResult.getRight() != null);
                 }
+            } else if (result instanceof SingleDrlxParseSuccess) {
+                SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
+                String bindId = singleResult.getExprBinding();
+                if (bindId != null) {
+                    DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
+                    if (drlx.getExpr() instanceof NameExpr) {
+                        decl.setBoundVariable( drlx.getExpr().toString() );
+                    }
+                    singleResult.setExprBinding( bindId );
+                    Type exprType = singleResult.getExprType();
+                    if(isBooleanBoxedUnboxed(exprType)) {
+                        singleResult.setIsPredicate(singleResult.getRight() != null);
+                    }
+                }
             }
         });
 
@@ -139,6 +154,7 @@ public class ConstraintParser {
 
     private DrlxParseResult getDrlxParseResult(Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr, boolean hasBind, boolean isPositional ) {
         boolean isEnclosed = false;
+        SimpleName bind = null;
 
         if (drlxExpr instanceof FullyQualifiedInlineCastExpr ) {
             drlxExpr = transformFullyQualifiedInlineCastExpr( context.getTypeResolver(), (FullyQualifiedInlineCastExpr) drlxExpr );
@@ -149,12 +165,21 @@ public class ConstraintParser {
             isEnclosed = true;
         }
 
+        if ( drlxExpr instanceof DrlxExpression ) {
+            bind = ((DrlxExpression) drlxExpr).getBind();
+            drlxExpr = (( DrlxExpression ) drlxExpr).getExpr();
+        }
+
         if (drlxExpr instanceof MethodCallExpr && !(( MethodCallExpr ) drlxExpr).getScope().isPresent() && (( MethodCallExpr ) drlxExpr).getNameAsString().equals( "eval" )) {
             drlxExpr = (( MethodCallExpr ) drlxExpr).getArgument( 0 );
         }
 
         if ( drlxExpr instanceof BinaryExpr ) {
-            return parseBinaryExpr( (BinaryExpr) drlxExpr, patternType, bindingId, constraint, drlxExpr, hasBind, isPositional, isEnclosed);
+            DrlxParseResult result = parseBinaryExpr( (BinaryExpr) drlxExpr, patternType, bindingId, constraint, drlxExpr, hasBind, isPositional, isEnclosed);
+            if (result instanceof SingleDrlxParseSuccess && bind != null) {
+                ((SingleDrlxParseSuccess)result).setExprBinding(bind.asString());
+            }
+            return result;
         }
 
         if ( drlxExpr instanceof UnaryExpr ) {

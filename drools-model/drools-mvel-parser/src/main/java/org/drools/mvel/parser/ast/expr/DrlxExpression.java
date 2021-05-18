@@ -27,7 +27,7 @@ import com.github.javaparser.ast.visitor.VoidVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvel.parser.ast.visitor.DrlVoidVisitor;
 
-public class DrlxExpression extends Node {
+public class DrlxExpression extends Expression {
 
     private final SimpleName bind;
     private final Expression expr;
