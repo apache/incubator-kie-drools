@@ -170,7 +170,6 @@ public class KiePMMLPredicateFactoryTest {
         assertNotNull(model);
         derivedFields = ModelUtils.getDerivedFields(pmmlModel.getTransformationDictionary(),
                                                                              model.getLocalTransformations());
-
     }
 
     @Test
@@ -284,7 +283,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void getSimplePredicateNoRefPredicateBody() {
-        Predicate predicate = getNodeById("A_A").getPredicate();
+        Predicate predicate = getNodeById(model, "A_A").getPredicate();
         final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
         final String rootNodeClassName = "rootNodeClassName";
         final String nodeClassName = "nodeClassName";
@@ -311,7 +310,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void getSimplePredicateRefPredicateBody() {
-        Predicate predicate = getNodeById("A_A_A_A").getPredicate();
+        Predicate predicate = getNodeById(model, "A_A_A_A").getPredicate();
         final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
         final String rootNodeClassName = "rootNodeClassName";
         final String nodeClassName = "nodeClassName";
@@ -344,7 +343,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void getSimpleSetPredicatePredicateBody() {
-        Predicate predicate = getNodeById("A_A_B").getPredicate();
+        Predicate predicate = getNodeById(model, "A_A_B").getPredicate();
         final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
         final String rootNodeClassName = "rootNodeClassName";
         final String nodeClassName = "nodeClassName";
@@ -374,7 +373,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void getCompoundPredicatePredicateBody() {
-        Predicate predicate = getNodeById("A_B_A").getPredicate();
+        Predicate predicate = getNodeById(model, "A_B_A").getPredicate();
         final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
         final String rootNodeClassName = "rootNodeClassName";
         final String nodeClassName = "nodeClassName";
@@ -809,11 +808,11 @@ public class KiePMMLPredicateFactoryTest {
                 .collect(Collectors.toList());
     }
 
-    private static Node getNodeById(String id) {
-        return getNodeById(model.getNode(), id);
+    static Node getNodeById(TreeModel treeModel, String id) {
+        return getNodeById(treeModel.getNode(), id);
     }
 
-    private static Node getNodeById(Node current, String id) {
+    static Node getNodeById(Node current, String id) {
         if (id.equals(current.getId())) {
             return current;
         }
