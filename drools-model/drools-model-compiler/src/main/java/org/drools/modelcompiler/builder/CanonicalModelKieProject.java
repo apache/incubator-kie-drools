@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,6 +26,7 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
@@ -71,7 +73,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     }
 
     @Override
-    public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs, BuildContext buildContext) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
         Collection<String> modelFiles = new HashSet<>();
@@ -82,7 +84,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getValue().getPackageSources() );
             modelFiles.addAll( result.getModelFiles() );
             sourceFiles.addAll( result.getSourceFiles() );
-            modelsByKBase.put( modelBuilder.getKey(), result.getModelFiles() );
+
+            List<String> modelFilesForKieBase = new ArrayList<>();
+            modelFilesForKieBase.addAll( result.getModelFiles() );
+            modelFilesForKieBase.addAll( ((CanonicalModelBuildContext) buildContext).getNotOwnedModelFiles(modelBuilders, modelBuilder.getKey()) );
+            modelsByKBase.put( modelBuilder.getKey(), modelFilesForKieBase );
         }
 
         InternalKieModule kieModule = getInternalKieModule();
@@ -97,16 +103,16 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
             Stream.of(res.getErrors()).collect(groupingBy( CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {
-                        errors.forEach( m -> messages.addMessage(new CompilationProblemAdapter( m )) );
+                        errors.forEach( m -> buildContext.getMessages().addMessage(new CompilationProblemAdapter( m )) );
                         File srcFile = srcMfs.getFile( name );
                         if ( srcFile instanceof MemoryFile ) {
                             String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
-                            messages.addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
+                            buildContext.getMessages().addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
                         }
                     } );
 
             for (CompilationProblem problem : res.getWarnings()) {
-                messages.addMessage(new CompilationProblemAdapter(problem));
+                buildContext.getMessages().addMessage(new CompilationProblemAdapter(problem));
             }
         }
 
@@ -116,5 +122,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     @Override
     protected boolean compileIncludedKieBases() {
         return false;
+    }
+
+    @Override
+    public BuildContext createBuildContext(ResultsImpl results) {
+        return new CanonicalModelBuildContext(results);
     }
 }
