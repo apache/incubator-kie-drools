@@ -32,7 +32,6 @@ import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
 @RunWith(Parameterized.class)
-@Ignore
 public class SimpleSetPredicateTreeTest extends AbstractPMMLTest {
 
     private static final String FILE_NAME = "SimpleSetPredicateTree.pmml";
