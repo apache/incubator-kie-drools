@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -86,6 +87,7 @@ import static org.drools.core.util.StringUtils.equalsIgnoreSpaces;
 import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.core.util.StringUtils.skipBlanks;
 
+
 public class MvelConstraint extends MutableTypeConstraint implements IndexableConstraint, AcceptsReadAccessor {
     protected static final boolean TEST_JITTING = false;
 
@@ -93,6 +95,7 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
 
     protected final transient AtomicInteger invocationCounter = new AtomicInteger(1);
     protected transient volatile boolean jitted = false;
+    protected transient CountDownLatch mvelOptimized = new CountDownLatch(1);
 
     private Set<String> packageNames;
     protected String expression;
@@ -260,10 +263,39 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                     synchronized (this) {
                         if (conditionEvaluator == null) {
                             conditionEvaluator = forceJitEvaluator( handle, workingMemory, tuple );
+                            if (conditionEvaluator instanceof MvelConditionEvaluator) {
+                                // in case of jitting failed
+                                boolean result;
+                                try {
+                                    result = conditionEvaluator.evaluate(handle, workingMemory, tuple);
+                                } catch (Exception e) {
+                                    throw new ConstraintEvaluationException(expression, evaluationContext, e);
+                                } finally {
+                                    mvelOptimized.countDown();
+                                }
+                                return result;
+                            }
                         }
                     }
                 } else {
                     conditionEvaluator = createMvelConditionEvaluator( workingMemory );
+                    synchronized (this) {
+                        if (conditionEvaluator == null) {
+                            conditionEvaluator = createMvelConditionEvaluator(workingMemory);
+                            boolean result;
+                            try {
+                                result = conditionEvaluator.evaluate(handle, workingMemory, tuple);
+                            } catch (Exception e) {
+                                throw new ConstraintEvaluationException(expression, evaluationContext, e);
+                            } finally {
+                                mvelOptimized.countDown();
+                            }
+                            if (invocationCounter.getAndIncrement() == jittingThreshold) {
+                                jitEvaluator(handle, workingMemory, tuple);
+                            }
+                            return result;
+                        }
+                    }
                 }
             }
 
@@ -272,9 +304,12 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
             }
         }
         try {
+            if (conditionEvaluator instanceof MvelConditionEvaluator) {
+                mvelOptimized.await(); // The first evaluation should not be run concurrently. See DROOLS-6067
+            }
             return conditionEvaluator.evaluate( handle, workingMemory, tuple );
         } catch (Exception e) {
-            throw new RuntimeException( "Error evaluating constraint '" + expression + "' in " + evaluationContext, e );
+            throw new ConstraintEvaluationException(expression, evaluationContext, e);
         }
     }
 
