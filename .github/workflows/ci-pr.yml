@@ -4,6 +4,7 @@ on: [pull_request]
 
 jobs:
   build-chain:
+    timeout-minutes: 120
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -42,11 +43,9 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.5.4
+        uses: kiegroup/github-action-build-chain@v2.5.7
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
-        env:
-          BUILD_MVN_OPTS: "-Dmaven.test.failure.ignore=true -fae -e -Dhttp.keepAlive=false -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120"
       - name: Publish Test Report
         if: ${{ always() }}
         uses: ginxo/action-surefire-report@BXMSPROD-1311
