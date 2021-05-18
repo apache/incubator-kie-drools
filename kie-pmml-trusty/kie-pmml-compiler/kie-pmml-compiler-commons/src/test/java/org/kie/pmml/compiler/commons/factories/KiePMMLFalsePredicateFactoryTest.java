@@ -16,11 +16,10 @@
 
 package org.kie.pmml.compiler.commons.factories;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class KiePMMLFalsePredicateFactoryTest {
@@ -29,10 +28,10 @@ public class KiePMMLFalsePredicateFactoryTest {
     public void getTruePredicateBody() {
         final BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateBody();
         assertNotNull(retrieved);
-        BlockStmt expected = StaticJavaParser.parseBlock("{" +
+        BlockStmt expected = JavaParserUtils.parseBlock("{" +
                 "    return false;" +
                 "}");
 
-        assertEquals(expected, retrieved);
+        JavaParserUtils.equalsNode(expected, retrieved);
     }
 }

@@ -33,6 +33,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -86,15 +87,15 @@ public class KiePMMLSimplePredicateFactoryTest {
         Object value = getActualValue(source.getValue(), dataType);
         BlockStmt  expected;
         if (kiePMMLOperator.isValueOperator() && value == null) {
-            expected = StaticJavaParser.parseBlock("{" +
+            expected = JavaParserUtils.parseBlock("{" +
                     "    return false;" +
                     "}");
-            assertEquals(expected, toVerify);
+            JavaParserUtils.equalsNode(expected, toVerify);
         } else if (kiePMMLOperator.isOnlyNumberOperator() && value != null && !(value instanceof Number)) {
-            expected = StaticJavaParser.parseBlock("{" +
+            expected = JavaParserUtils.parseBlock("{" +
                     "    return false;" +
                     "}");
-            assertEquals(expected, toVerify);
+            JavaParserUtils.equalsNode(expected, toVerify);
         } else {
             String expectedString = source.getField().getValue();
             assertTrue(toVerify.toString().contains(expectedString));
