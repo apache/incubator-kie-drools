@@ -1549,7 +1549,10 @@ limitations under the License.
         <!--suppress UnresolvedMavenProperty -->
         <sonar.login>${env.SONARCLOUD_TOKEN}</sonar.login>
         <sonar.organization>kiegroup</sonar.organization>
-        <sonar.exclusions/> <!-- KOGITO-4895 keep it here, if removed exclusions are not scoped to a particular defining module -->
+        <!-- KOGITO-4895 keep it here in exact form <sonar.exclusions></sonar.exclusions>,
+          if removed exclusions are not scoped to a particular defining module.
+        -->
+        <sonar.exclusions></sonar.exclusions>
         <enforcer.skip>true</enforcer.skip>
         <checkstyle.skip>true</checkstyle.skip>
       </properties>
