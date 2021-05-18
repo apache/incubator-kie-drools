@@ -45,6 +45,8 @@ jobs:
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/drools/${BRANCH}/.ci/kogito-pull-request-config.yaml
           starting-project: kiegroup/kogito-examples
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
       - name: Check Surefire Report
         if: ${{ always() }}
         uses: ginxo/action-surefire-report@BXMSPROD-1311
