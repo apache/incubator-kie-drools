@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
@@ -104,20 +105,20 @@ abstract class MaterializedLambda {
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
-        compilationUnit.addImport(ruleClassName, true, true);
+        compilationUnit.addImport(new ImportDeclaration(new Name(ruleClassName), true, true));
         for (String i : imports) {
-            compilationUnit.addImport(i);
+            compilationUnit.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String si : staticImports) {
             String replace = si;
             if (si.endsWith(".*")) { // JP doesn't want the * in the import
                 replace = si.replace(".*", "");
-                compilationUnit.addImport(replace, true, true);
+                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, true));
             } else {
-                compilationUnit.addImport(replace, true, false);
+                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, false));
             }
         }
-        compilationUnit.addImport("org.drools.modelcompiler.dsl.pattern.D");
+        compilationUnit.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
     }
 
     private void parseParameters() {

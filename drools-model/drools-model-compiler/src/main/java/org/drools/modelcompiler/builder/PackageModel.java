@@ -32,6 +32,7 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -46,6 +47,7 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -757,9 +759,9 @@ public class PackageModel {
         CompilationUnit cu = new CompilationUnit();
         results.withClass(cu);
         cu.setPackageDeclaration(name);
-        cu.addImport(Arrays.class.getCanonicalName());
-        cu.addImport(List.class.getCanonicalName());
-        cu.addImport(Rule.class.getCanonicalName());
+        cu.addImport(new ImportDeclaration(new Name(Arrays.class.getCanonicalName()), false, false));
+        cu.addImport(new ImportDeclaration(new Name(List.class.getCanonicalName()), false, false));
+        cu.addImport(new ImportDeclaration(new Name(Rule.class.getCanonicalName()), false, false));
         String currentRulesMethodClassName = rulesFileName + "Rules" + index;
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
         rulesClass.addImplementedType(RulesSupplier.class);
@@ -777,18 +779,18 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
-        cu.addImport("org.drools.model.Index.ConstraintType");
+        cu.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
+        cu.addImport(new ImportDeclaration(new Name("org.drools.model.Index.ConstraintType"), false, false));
 
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
                 continue; // skip same-package star import.
             }
-            cu.addImport(i);
+            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport( i, true, false );
+            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
         }
     }
 
