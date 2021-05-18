@@ -111,10 +111,4 @@ public class PMMLRuntimeInternalImpl implements PMMLRuntimeInternal {
                 .filter(implementation -> pmmlMODEL.equals(implementation.getPMMLModelType()))
                 .findFirst();
     }
-//
-//    private List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(final Collection<ParameterInfo> parameterInfos) {
-//        return parameterInfos.stream()
-//                .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
-//                .collect(Collectors.toList());
-//    }
 }
