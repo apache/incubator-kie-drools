@@ -80,6 +80,7 @@ import org.drools.compiler.compiler.RuleBuildError;
 import org.drools.compiler.compiler.ScoreCardFactory;
 import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.compiler.xml.XmlPackageReader;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.lang.ExpanderException;
 import org.drools.compiler.lang.descr.AbstractClassTypeDeclarationDescr;
 import org.drools.compiler.lang.descr.AccumulateImportDescr;
@@ -187,7 +188,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
      */
     private final String defaultDialect;
 
-    private ClassLoader rootClassLoader;
+    private final ClassLoader rootClassLoader;
 
     private int parallelRulesBuildThreshold;
 
@@ -218,6 +219,8 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     private Map<String, Object> builderCache;
 
     private ReleaseId releaseId;
+
+    private BuildContext buildContext;
 
     /**
      * Use this when package is starting from scratch.
@@ -327,6 +330,21 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.releaseId = releaseId;
     }
 
+    public BuildContext getBuildContext() {
+        if (buildContext == null) {
+            buildContext = createBuildContext();
+        }
+        return buildContext;
+    }
+
+    protected BuildContext createBuildContext() {
+        return new BuildContext();
+    }
+
+    public void setBuildContext(BuildContext buildContext) {
+        this.buildContext = buildContext;
+    }
+
     Resource getCurrentResource() {
         return resource;
     }
@@ -383,7 +401,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     }
 
     PackageDescr decisionTableToPackageDescr(Resource resource,
-                                             ResourceConfiguration configuration) throws DroolsParserException, IOException {
+                                             ResourceConfiguration configuration) throws DroolsParserException {
         DecisionTableConfiguration dtableConfiguration = configuration instanceof DecisionTableConfiguration ?
                 (DecisionTableConfiguration) configuration :
                 new DecisionTableConfigurationImpl();
@@ -610,28 +628,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                                             e.getCause());
         }
         return xmlReader.getPackageDescr();
-    }
-
-    /**
-     * Load a rule package from DRL source using the supplied DSL configuration.
-     *
-     * @param source The source of the rules.
-     * @param dsl    The source of the domain specific language configuration.
-     * @throws DroolsParserException
-     * @throws IOException
-     */
-    public void addPackageFromDrl(final Reader source,
-                                  final Reader dsl) throws DroolsParserException,
-            IOException {
-        this.resource = new ReaderResource(source, ResourceType.DSLR);
-
-        final DrlParser parser = new DrlParser(configuration.getLanguageLevel());
-        final PackageDescr pkg = parser.parse(source, dsl);
-        this.results.addAll(parser.getErrors());
-        if (!parser.hasErrors()) {
-            addPackage(pkg);
-        }
-        this.resource = null;
     }
 
     public void addPackageFromDslr(final Resource resource) throws DroolsParserException,
@@ -1831,8 +1827,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
             String functionClassName = functionDescr.getClassName();
             JavaDialectRuntimeData runtime = ((JavaDialectRuntimeData) pkgRegistry.getDialectRuntimeRegistry().getDialectData("java"));
             try {
-                registerFunctionClassAndInnerClasses(functionClassName, runtime,
-                                                     (name, bytes) -> ((ProjectClassLoader) rootClassLoader).storeClass(name, bytes));
+                registerFunctionClassAndInnerClasses(functionClassName, runtime, ((ProjectClassLoader) rootClassLoader)::storeClass);
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
@@ -2022,28 +2017,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         this.results.clear();
         if (this.processBuilder != null) {
             this.processBuilder.getErrors().clear();
-        }
-    }
-
-    public String getDefaultDialect() {
-        return this.defaultDialect;
-    }
-
-    public static class MissingPackageNameException extends IllegalArgumentException {
-
-        private static final long serialVersionUID = 510L;
-
-        public MissingPackageNameException(final String message) {
-            super(message);
-        }
-    }
-
-    public static class PackageMergeException extends IllegalArgumentException {
-
-        private static final long serialVersionUID = 400L;
-
-        public PackageMergeException(final String message) {
-            super(message);
         }
     }
 

@@ -118,16 +118,16 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
 
-    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf );
 
     default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
 
     ClassLoader getModuleClassLoader();
 
     default ResultsImpl build() {
-        ResultsImpl messages = new ResultsImpl();
-        buildKieModule(this, messages);
-        return messages;
+        BuildContext buildContext = new BuildContext();
+        buildKieModule(this, buildContext);
+        return buildContext.getMessages();
     }
 
     default KieJarChangeSet getChanges(InternalKieModule newKieModule) {

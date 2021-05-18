@@ -242,7 +242,7 @@ public class KieBuilderImpl
             
             compileJavaClasses( kProject.getClassLoader(), classFilter );
 
-            buildKieProject( results, kProject, trgMfs );
+            buildKieProject( kProject.createBuildContext(results), kProject, trgMfs );
             kModule = kProject.getInternalKieModule();
         }
         return this;
@@ -266,23 +266,23 @@ public class KieBuilderImpl
     }
 
     public static void buildKieModule( InternalKieModule kModule,
-                                       ResultsImpl messages ) {
-        buildKieProject( messages, new KieModuleKieProject( kModule ), null );
+                                       BuildContext buildContext ) {
+        buildKieProject( buildContext, new KieModuleKieProject( kModule ), null );
     }
 
-    private static void buildKieProject( ResultsImpl messages,
+    private static void buildKieProject( BuildContext buildContext,
                                          KieModuleKieProject kProject,
                                          MemoryFileSystem trgMfs ) {
         kProject.init();
-        kProject.verify( messages );
+        kProject.verify( buildContext );
 
-        if ( messages.filterMessages( Level.ERROR ).isEmpty() ) {
+        if ( buildContext.getMessages().filterMessages( Level.ERROR ).isEmpty() ) {
             InternalKieModule kModule = kProject.getInternalKieModule();
             if ( trgMfs != null ) {
                 if (hasXSTream()) {
                     CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
                 }
-                kProject.writeProjectOutput(trgMfs, messages);
+                kProject.writeProjectOutput(trgMfs, buildContext);
             }
             KieRepository kieRepository = KieServices.Factory.get().getRepository();
             kieRepository.addKieModule( kModule );

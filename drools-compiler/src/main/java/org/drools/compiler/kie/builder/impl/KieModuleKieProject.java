@@ -130,6 +130,10 @@ public class KieModuleKieProject extends AbstractKieProject {
         return oldKieBaseModels;
     }
 
+    public BuildContext createBuildContext(ResultsImpl results) {
+        return new BuildContext(results);
+    }
+
     @Override
     public synchronized KieBaseModel getDefaultKieBaseModel() {
         return super.getDefaultKieBaseModel();
