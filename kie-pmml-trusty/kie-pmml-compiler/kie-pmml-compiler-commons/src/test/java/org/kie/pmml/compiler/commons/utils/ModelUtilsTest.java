@@ -23,11 +23,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -60,6 +62,7 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getData
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getMiningField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getParameterFields;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataField;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataType;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomOutputField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomTarget;
@@ -553,7 +556,40 @@ public class ModelUtilsTest {
     }
 
     @Test
-    public void getDataType() {
+    public void getDataTypeFromDerivedFieldsAndDataDictionary() {
+        final DataDictionary dataDictionary = new DataDictionary();
+        IntStream.range(0, 3).forEach(i -> {
+            final DataField dataField = getRandomDataField();
+            dataDictionary.addDataFields(dataField);
+        });
+        final List<DerivedField> derivedFields = dataDictionary.getDataFields()
+                .stream()
+                .map(dataField -> {
+                         DerivedField toReturn = new DerivedField();
+                         toReturn.setName(dataField.getName());
+                         DataType dataType = getRandomDataType();
+                         while (dataType.equals(dataField.getDataType())) {
+                             dataType = getRandomDataType();
+                         }
+                         toReturn.setDataType(dataType);
+                         return toReturn;
+                     })
+                .collect(Collectors.toList());
+        dataDictionary.getDataFields().forEach(dataField -> {
+            String fieldName = dataField.getName().getValue();
+            DataType retrieved = ModelUtils.getDataType(derivedFields, dataDictionary, fieldName);
+            assertNotNull(retrieved);
+            DerivedField derivedField = derivedFields.stream()
+                    .filter(derFld -> fieldName.equals(derFld.getName().getValue()))
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Missing expected DerivedField " + fieldName));
+            DataType expected = derivedField.getDataType();
+            assertEquals(expected, retrieved);
+        });
+    }
+
+    @Test
+    public void getDataTypeFromDataDictionary() {
         final DataDictionary dataDictionary = new DataDictionary();
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();

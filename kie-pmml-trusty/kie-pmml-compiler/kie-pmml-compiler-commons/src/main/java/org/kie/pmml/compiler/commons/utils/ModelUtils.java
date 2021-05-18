@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -35,6 +34,7 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Interval;
+import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
@@ -70,9 +70,6 @@ import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxe
  * <b>Kie</b> ones, etc...
  */
 public class ModelUtils {
-
-    private static final String INFINITY_SYMBOL =
-            new String(Character.toString('\u221E').getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8);
 
     private ModelUtils() {
     }
@@ -223,7 +220,27 @@ public class ModelUtils {
     }
 
     /**
-     * <code>DATA_TYPE</code> of the given <b>field</b>
+     * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in <b>dataDictionary</b>
+     * @param derivedFields
+     * @param dataDictionary
+     * @param fieldName
+     * @return
+     */
+    public static DataType getDataType(final List<DerivedField> derivedFields,
+                                       final DataDictionary dataDictionary,
+                                       final String fieldName) {
+        return Stream.of(getDataTypeFromDerivedFields(derivedFields, fieldName),
+                         getDataTypeFromDataDictionary(dataDictionary, fieldName))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
+                                                                                      "field %s",
+                                                                              fieldName)));
+    }
+
+    /**
+     * <code>DataType</code> of the given <b>field</b>
      * @param dataDictionary
      * @param fieldName
      * @return
@@ -255,6 +272,24 @@ public class ModelUtils {
         return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
                                                                                              "field %s",
                                                                                      targetFieldName)));
+    }
+
+    /**
+     * Return <code>List&lt;DerivedField&gt;</code>s from the given <code>TransformationDictionary</code> and <code>LocalTransformations</code>
+     * @param transformationDictionary
+     * @param localTransformations
+     * @return
+     */
+    public static List<DerivedField> getDerivedFields(final TransformationDictionary transformationDictionary,
+                                                      final LocalTransformations localTransformations) {
+        final List<DerivedField> toReturn = new ArrayList<>();
+        if (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) {
+            toReturn.addAll(transformationDictionary.getDerivedFields());
+        }
+        if (localTransformations != null && localTransformations.getDerivedFields() != null) {
+            toReturn.addAll(localTransformations.getDerivedFields());
+        }
+        return toReturn;
     }
 
     /**
@@ -607,7 +642,7 @@ public class ModelUtils {
 
     /**
      * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
-     * @param fieldName
+     * @param transformationDictionary
      * @param fieldName
      * @return
      */
@@ -617,6 +652,19 @@ public class ModelUtils {
                 .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
                 .findFirst()
                 .map(DerivedField::getDataType) : Optional.empty();
+    }
+
+    /**
+     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
+     * @param derivedFields
+     * @param fieldName
+     * @return
+     */
+    static Optional<DataType> getDataTypeFromDerivedFields(List<DerivedField> derivedFields, String fieldName) {
+        return derivedFields.stream()
+                        .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
+                        .map(DerivedField::getDataType)
+                        .findFirst();
     }
 
     static List<String> convertDataFieldValues(List<Value> toConvert) {
