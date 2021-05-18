@@ -19,12 +19,10 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl.PackageMergeException;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -289,45 +287,6 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
         // only adding ruleflow without any generated rules
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
         assertTrue(builder.getPackages().length > 0);
-    }
-
-    @Test
-    @Disabled("Needs fix")
-    public void FIXME_testLoadingRuleFlowInPackage4() throws Exception {
-        // adding ruleflows of different package
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
-        try {
-            builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("ruleflow.rfm")));
-            throw new Exception("An exception should have been thrown.");
-        } catch (PackageMergeException e) {
-            // do nothing
-        }
-    }
-
-    @Test
-    @Disabled("Needs fix")
-    public void FIXME_testLoadingRuleFlowInPackage5() throws Exception {
-        // adding ruleflow of different package than rules
-        builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-        try {
-            builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
-            throw new Exception("An exception should have been thrown.");
-        } catch (PackageMergeException e) {
-            // do nothing
-        }
-    }
-
-    @Test
-    @Disabled("Needs fix")
-    public void FIXME_testLoadingRuleFlowInPackage6() throws Exception {
-        // adding rules of different package than ruleflow
-        builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("empty_ruleflow.rfm")));
-        try {
-            builder.addPackageFromDrl(new InputStreamReader(getClass().getResourceAsStream("ruleflow.drl")));
-            throw new Exception("An exception should have been thrown.");
-        } catch (PackageMergeException e) {
-            // do nothing
-        }
     }
 
     @Test
