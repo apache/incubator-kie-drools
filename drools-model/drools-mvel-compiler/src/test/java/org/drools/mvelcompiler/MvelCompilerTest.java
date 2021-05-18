@@ -20,15 +20,32 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.Person;
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 public class MvelCompilerTest implements CompilerTest {
+
+    @Test
+    public void testAssignmentIncrement() {
+        test(ctx -> ctx.addDeclaration("i", Integer.class),
+             "{ i += 10 } ",
+             "{ i += 10; }");
+    }
+
+
+    @Test
+    public void testAssignmentIncrementInFieldWithPrimitive() {
+        test(ctx -> ctx.addDeclaration("p", Person.class),
+             "{ p.age += 10 } ",
+             "{ p.setAge(p.getAge() + 10); }");
+    }
 
     @Test
     public void testConvertPropertyToAccessor() {

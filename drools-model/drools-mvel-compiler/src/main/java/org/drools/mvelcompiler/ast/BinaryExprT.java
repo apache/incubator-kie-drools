@@ -24,10 +24,25 @@ import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 
-public class BinaryTExpr implements TypedExpression {
+public class BinaryExprT implements TypedExpression {
+
+    public static BinaryExpr.Operator compoundToArithmeticOperation(AssignExpr.Operator operator) {
+        switch (operator) {
+            case PLUS: // +=
+                return BinaryExpr.Operator.PLUS;
+            case MINUS: // -=
+                return BinaryExpr.Operator.MINUS;
+            case MULTIPLY: // *=
+                return BinaryExpr.Operator.MULTIPLY;
+            case DIVIDE: // /=
+                return BinaryExpr.Operator.DIVIDE;
+        }
+        throw new RuntimeException("Unknown operator");
+    }
 
     private static final List<Type> PRIORITIZED_TYPES = Arrays.asList( String.class,
             BigDecimal.class, BigInteger.class,
@@ -40,7 +55,7 @@ public class BinaryTExpr implements TypedExpression {
     private final TypedExpression right;
     private final BinaryExpr.Operator operator;
 
-    public BinaryTExpr(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
+    public BinaryExprT(TypedExpression left, TypedExpression right, BinaryExpr.Operator operator) {
         this.left = left;
         this.right = right;
         this.operator = operator;
