@@ -67,6 +67,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addSemico
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createMvelCompiler;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.forceCastForName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNamesToNewScope;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
@@ -303,7 +304,7 @@ public class AccumulateInline {
     private void parseResultMethod() {
         // <result expression>: this is a semantic expression in the selected dialect that is executed after all source objects are iterated.
         MethodDeclaration resultMethod = getMethodFromTemplateClass("getResult");
-        Type returnExpressionType = StaticJavaParser.parseType("java.lang.Object");
+        Type returnExpressionType = toClassOrInterfaceType(java.lang.Object.class);
         Expression returnExpression = StaticJavaParser.parseExpression(accumulateDescr.getResultCode());
         if (returnExpression instanceof NameExpr) {
             returnExpression = new EnclosedExpr(returnExpression);

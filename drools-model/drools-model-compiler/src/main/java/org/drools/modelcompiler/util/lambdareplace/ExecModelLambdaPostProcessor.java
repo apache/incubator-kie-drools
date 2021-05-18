@@ -29,7 +29,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -42,6 +41,7 @@ import com.github.javaparser.ast.expr.LiteralStringValueExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
@@ -56,6 +56,7 @@ import org.drools.modelcompiler.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
@@ -341,16 +342,17 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private Optional<Type> findVariableType(NameExpr nameExpr) {
-        return optionalToStream(nameExpr.findAncestor(MethodDeclaration.class))
-            .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
-            .filter(node -> node.getName().equals(nameExpr.getName()))
-            .map(VariableDeclarator::getType)
-            .filter(ClassOrInterfaceType.class::isInstance)
-            .map(ClassOrInterfaceType.class::cast)
-            .flatMap(classOrInterfaceType -> optionalToStream(classOrInterfaceType.getTypeArguments()))
-            .filter(typeArgList -> typeArgList.size() == 1)
-            .map(typeArgList -> typeArgList.get(0))
-            .findFirst();
+        return nameExpr.findAncestor(MethodDeclaration.class).flatMap(m -> findVariableType(nameExpr, m));
+    }
+
+    private Optional<Type> findVariableType(NameExpr nameExpr, MethodDeclaration m) {
+        for (Statement s : m.getBody().get().getStatements()) {
+            Optional<VariableDeclarator> vDecl = s.findFirst(VariableDeclarator.class);
+            if (vDecl.isPresent() && vDecl.get().getName().equals(nameExpr.getName())) {
+                return ((ClassOrInterfaceType)vDecl.get().getType()).getTypeArguments().map( args -> args.get(0) );
+            }
+        }
+        return Optional.empty();
     }
 
     protected Type getType(Expression argument) {
@@ -411,7 +413,7 @@ public class ExecModelLambdaPostProcessor {
     private Stream<ReplacedLambdaResult> replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
             CreatedClass externalisedLambda = lambdaExtractor.apply(exprId).create(lambdaExpr.toString(), imports, staticImports);
-            ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(externalisedLambda.getClassNameWithPackage());
+            ClassOrInterfaceType type = toClassOrInterfaceType(externalisedLambda.getClassNameWithPackage());
             return Stream.of(new ReplacedLambdaResult(lambdaExpr, lambdaInstance(type), externalisedLambda));
         } catch (DoNotConvertLambdaException e) {
             logger.debug("Cannot externalize lambdas {}", e.getMessage());

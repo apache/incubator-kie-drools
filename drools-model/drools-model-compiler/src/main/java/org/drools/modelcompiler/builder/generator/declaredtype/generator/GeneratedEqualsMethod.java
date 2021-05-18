@@ -31,7 +31,6 @@ import com.github.javaparser.ast.type.PrimitiveType;
 import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
@@ -95,7 +94,7 @@ class GeneratedEqualsMethod {
         equalsStatements.addAll(equalsFieldStatement);
         equalsStatements.add(parseStatement("return true;"));
 
-        final Type returnType = parseType(boolean.class.getSimpleName());
+        final Type returnType = toClassOrInterfaceType(boolean.class);
         final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, EQUALS);
         equals.addParameter(Object.class, "o");
         equals.addAnnotation(OVERRIDE);

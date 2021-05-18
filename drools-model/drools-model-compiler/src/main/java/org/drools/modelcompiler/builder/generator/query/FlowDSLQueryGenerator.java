@@ -30,9 +30,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class FlowDSLQueryGenerator extends Generator  {
 
@@ -98,11 +98,11 @@ public class FlowDSLQueryGenerator extends Generator  {
     }
 
     private ClassOrInterfaceType queryDef() {
-        return parseClassOrInterfaceType("Query" + arity + "Def");
+        return toClassOrInterfaceType("Query" + arity + "Def");
     }
 
     private ClassOrInterfaceType queryDefImpl() {
-        return parseClassOrInterfaceType("Query" + arity + "DefImpl<>");
+        return toClassOrInterfaceType("Query" + arity + "DefImpl<>");
     }
 
     private void queryNameClassArg(ClassOrInterfaceDeclaration clazz) {

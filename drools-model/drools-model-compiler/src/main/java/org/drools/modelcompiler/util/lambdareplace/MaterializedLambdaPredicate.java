@@ -30,7 +30,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.model.functions.PredicateInformation;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
@@ -58,7 +58,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
     private void createTestMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
-        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
         methodDeclaration.addAnnotation("Override");
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 
@@ -85,6 +85,6 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     @Override
     protected ClassOrInterfaceType functionType() {
         String type = "Predicate" + lambdaParameters.size();
-        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+        return toClassOrInterfaceType("org.drools.model.functions." + type);
     }
 }

@@ -29,9 +29,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class MaterializedLambdaExtractor extends MaterializedLambda {
 
@@ -62,7 +61,7 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     }
 
     private Type returnTypeJP() {
-        return parseType(returnType);
+        return toClassOrInterfaceType(returnType);
     }
 
     @Override
@@ -84,6 +83,6 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     @Override
     protected ClassOrInterfaceType functionType() {
         String type = "Function" + lambdaParameters.size();
-        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+        return toClassOrInterfaceType("org.drools.model.functions." + type);
     }
 }

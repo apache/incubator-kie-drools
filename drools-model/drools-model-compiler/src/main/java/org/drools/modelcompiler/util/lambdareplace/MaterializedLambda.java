@@ -45,9 +45,8 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.functions.HashedExpression;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 abstract class MaterializedLambda {
@@ -157,7 +156,7 @@ abstract class MaterializedLambda {
     private void createGetterForExpressionHashField(EnumDeclaration clazz, String expressionHashFieldName) {
         final MethodDeclaration getter;
         getter = clazz.addMethod("getExpressionHash", Modifier.Keyword.PUBLIC);
-        getter.setType(parseClassOrInterfaceType(String.class.getCanonicalName()));
+        getter.setType(toClassOrInterfaceType(String.class));
         BlockStmt blockStmt = new BlockStmt();
         getter.setBody(blockStmt);
         blockStmt.addStatement(new ReturnStmt(new NameExpr(expressionHashFieldName)));
@@ -175,7 +174,7 @@ abstract class MaterializedLambda {
     }
 
     protected ClassOrInterfaceType lambdaExtractorType() {
-        return parseClassOrInterfaceType(HashedExpression.class.getCanonicalName());
+        return toClassOrInterfaceType(HashedExpression.class);
     }
 
     List<Type> lambdaParametersToType() {
@@ -221,7 +220,7 @@ abstract class MaterializedLambda {
 
         @Override
         public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
-            Type bitMaskType = parseType(bitMaskString);
+            Type bitMaskType = toClassOrInterfaceType(bitMaskString);
 
             MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(bitMaskString), "get");
             clazz.addFieldWithInitializer(bitMaskType, maskName, methodCallExpr, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
@@ -244,7 +243,7 @@ abstract class MaterializedLambda {
 
         @Override
         public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
-            Type bitMaskType = parseType(bitMaskString);
+            Type bitMaskType = toClassOrInterfaceType(bitMaskString);
 
             NodeList<Expression> args = new NodeList<>();
             args.add(new NameExpr(domainClassMetadata));

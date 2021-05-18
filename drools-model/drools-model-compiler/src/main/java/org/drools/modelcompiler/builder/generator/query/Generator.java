@@ -24,8 +24,8 @@ import com.github.javaparser.ast.nodeTypes.NodeWithParameters;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 abstract class Generator {
 
@@ -125,10 +125,10 @@ abstract class Generator {
     }
 
     ClassOrInterfaceType queryDefImplType() {
-        return parseClassOrInterfaceType("Query" + arity + "DefImpl<>");
+        return toClassOrInterfaceType("Query" + arity + "DefImpl<>");
     }
 
     ClassOrInterfaceType queryDefType() {
-        return parseClassOrInterfaceType("Query" + arity + "Def");
+        return toClassOrInterfaceType("Query" + arity + "Def");
     }
 }

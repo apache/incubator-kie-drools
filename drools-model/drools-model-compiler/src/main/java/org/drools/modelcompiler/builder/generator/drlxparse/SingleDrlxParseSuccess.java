@@ -25,7 +25,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
@@ -36,6 +35,7 @@ import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -283,7 +283,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public com.github.javaparser.ast.type.Type getPatternJPType() {
-        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType(patternType).getCanonicalName());
+        return toClassOrInterfaceType(toNonPrimitiveType(patternType));
     }
 
     public boolean isPatternBindingUnification() {

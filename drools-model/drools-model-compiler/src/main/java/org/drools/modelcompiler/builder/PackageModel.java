@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
@@ -80,7 +79,6 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
@@ -112,47 +110,47 @@ public class PackageModel {
 
     private final String rulesFileName;
     
-    private Set<String> imports = new HashSet<>();
-    private Set<String> staticImports = new HashSet<>();
-    private Set<String> entryPoints = new HashSet<>();
+    private final Set<String> imports = new HashSet<>();
+    private final Set<String> staticImports = new HashSet<>();
+    private final Set<String> entryPoints = new HashSet<>();
     private Map<String, Method> staticMethods;
 
-    private Map<String, Class<?>> globals = new HashMap<>();
+    private final Map<String, Class<?>> globals = new HashMap<>();
 
-    private Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
+    private final Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
 
-    private Set<String> queryNames = new HashSet<>();
-    private Map<String, MethodDeclaration> queryMethods = new ConcurrentHashMap<>();
-    private Map<String, Set<QueryModel>> queriesByRuleUnit = new ConcurrentHashMap<>();
+    private final Set<String> queryNames = new HashSet<>();
+    private final Map<String, MethodDeclaration> queryMethods = new ConcurrentHashMap<>();
+    private final Map<String, Set<QueryModel>> queriesByRuleUnit = new ConcurrentHashMap<>();
 
-    private Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
+    private final Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
 
-    private Map<String, MethodCallExpr> windowReferences = new HashMap<>();
+    private final Map<String, MethodCallExpr> windowReferences = new HashMap<>();
 
-    private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
+    private final Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
-    private List<MethodDeclaration> functions = new ArrayList<>();
+    private final List<MethodDeclaration> functions = new ArrayList<>();
 
-    private List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
-    private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
+    private final List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
+    private final List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
-    private Set<Class<?>> domainClasses = new HashSet<>();
-    private Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
+    private final Set<Class<?>> domainClasses = new HashSet<>();
+    private final Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
 
-    private List<Expression> typeMetaDataExpressions = new ArrayList<>();
+    private final List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
-    private DRLIdGenerator exprIdGenerator;
+    private final DRLIdGenerator exprIdGenerator;
 
-    private KnowledgeBuilderConfigurationImpl configuration;
+    private final KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private Set<RuleUnitDescription> ruleUnits = Collections.synchronizedSet( new HashSet<>() );
+    private final Set<RuleUnitDescription> ruleUnits = Collections.synchronizedSet( new HashSet<>() );
 
-    private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new ConcurrentHashMap<>();
-    private Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
-    private Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
+    private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new ConcurrentHashMap<>();
+    private final Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
+    private final Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -364,7 +362,7 @@ public class PackageModel {
         return windowReferences;
     }
 
-    final static Type WINDOW_REFERENCE_TYPE = StaticJavaParser.parseType(WindowReference.class.getCanonicalName());
+    final static Type WINDOW_REFERENCE_TYPE = toClassOrInterfaceType(WindowReference.class);
 
     public List<MethodDeclaration> getFunctions() {
         return functions;
@@ -687,7 +685,7 @@ public class PackageModel {
                 int index = count / RULES_DECLARATION_PER_CLASS;
                 rules = buildRulesField(results, index);
 
-                ObjectCreationExpr newObject = new ObjectCreationExpr(null, parseClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
+                ObjectCreationExpr newObject = new ObjectCreationExpr(null, toClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
 
                 if (parallelRulesLoad) {
                     parallelRulesGetter.addArgument( newObject );
@@ -770,7 +768,7 @@ public class PackageModel {
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "java.util.Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(parseClassOrInterfaceType(Rule.class.getCanonicalName())));
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(toClassOrInterfaceType(Rule.class)));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );
