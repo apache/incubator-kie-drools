@@ -240,25 +240,6 @@ public class ModelUtils {
     }
 
     /**
-     * <code>DataType</code> of the given <b>field</b>
-     * @param dataDictionary
-     * @param fieldName
-     * @return
-     */
-    public static DataType getDataType(final DataDictionary dataDictionary,
-                                       final TransformationDictionary transformationDictionary,
-                                       final String fieldName) {
-        return Stream.of(getDataTypeFromDataDictionary(dataDictionary, fieldName),
-                         getDataTypeFromTransformationDictionary(transformationDictionary, fieldName))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .findFirst()
-                .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
-                                                                                      "field %s",
-                                                                              fieldName)));
-    }
-
-    /**
      * <code>DATA_TYPE</code> of the given <b>field</b>
      * @param dataDictionary
      * @param targetFieldName
