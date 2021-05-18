@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.factories;
 
+import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.junit.Test;
 
@@ -28,9 +29,10 @@ public class KiePMMLFalsePredicateFactoryTest {
     public void getTruePredicateBody() {
         final BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateBody();
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    return false;\n" +
-                "}";
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = StaticJavaParser.parseBlock("{" +
+                "    return false;" +
+                "}");
+
+        assertEquals(expected, retrieved);
     }
 }
