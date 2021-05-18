@@ -36,9 +36,11 @@ public class MvelCompiler {
 
     private final PreprocessPhase preprocessPhase = new PreprocessPhase();
     private final StatementVisitor statementVisitor;
+    private MvelCompilerContext mvelCompilerContext;
 
     public MvelCompiler(MvelCompilerContext mvelCompilerContext) {
         this.statementVisitor = new StatementVisitor(mvelCompilerContext);
+        this.mvelCompilerContext = mvelCompilerContext;
     }
 
     public CompiledBlockResult compileStatement(String mvelBlock) {
@@ -64,6 +66,7 @@ public class MvelCompiler {
 
         // Entry point of the compiler
         TypedExpression compiledRoot = mvelExpression.accept(statementVisitor, null);
+        allUsedBindings.addAll(mvelCompilerContext.getUsedBindings());
 
         Node javaRoot = compiledRoot.toJavaExpression();
 

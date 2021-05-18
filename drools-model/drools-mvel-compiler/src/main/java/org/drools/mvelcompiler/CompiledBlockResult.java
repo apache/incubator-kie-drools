@@ -26,7 +26,7 @@ import com.github.javaparser.ast.stmt.Statement;
 
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
-public class CompiledBlockResult {
+public class CompiledBlockResult implements CompiledResult{
 
     private List<Statement> statements;
     private Set<String> usedBindings = new HashSet<>();
@@ -39,6 +39,7 @@ public class CompiledBlockResult {
         return printConstraint(statementResults());
     }
 
+    @Override
     public BlockStmt statementResults() {
         return new BlockStmt(NodeList.nodeList(statements));
     }
@@ -48,6 +49,7 @@ public class CompiledBlockResult {
         return this;
     }
 
+    @Override
     public Set<String> getUsedBindings() {
         return usedBindings;
     }

@@ -28,6 +28,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -39,6 +40,7 @@ import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.AssignExprT;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
+import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.ExpressionStmtT;
 import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
@@ -129,11 +131,18 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         } else {
-            return tryParseAsBigDecimalArithmeticExpression(n, fieldAccessScope)
+            return tryParseAsArithmeticExpression(n, fieldAccessScope)
                     .map(Optional::of)
                     .orElseGet(() -> tryParseItAsSetter(n, fieldAccessScope, getRHSType()))
                     .orElse(new UnalteredTypedExpression(n));
         }
+    }
+
+    private Optional<TypedExpression> tryParseAsArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
+        Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
+        String setterName = printConstraint(n.getName());
+
+        return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
     }
 
 
@@ -161,14 +170,6 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return Optional.empty();
     }
 
-    // Conversion to BigDecimal Arithmetic operation when LHS is is a BigDecimal variable
-    private Optional<TypedExpression> tryParseAsBigDecimalArithmeticExpression(FieldAccessExpr n, TypedExpression scope) {
-        Optional<Node> optParentAssignExpr = n.getParentNode().filter(p -> p instanceof AssignExpr);
-        String setterName = printConstraint(n.getName());
-
-        return optParentAssignExpr.flatMap(parentAssignExpr -> findAccessorsAndConvert(scope, setterName, (AssignExpr) parentAssignExpr));
-    }
-
     private Optional<TypedExpression> findAccessorsAndConvert(TypedExpression fieldAccessScope,
                                                               String accessorName,
                                                               AssignExpr parentAssignExpr) {
@@ -181,8 +182,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         return optSetter.map(setter -> {
             if(parentOperator.equals(AssignExpr.Operator.ASSIGN)) {
                 return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(rhsOrError()));
-            } else {
+            } else if(setter.getParameterTypes()[0] == BigDecimal.class) {
                 return bigDecimalCompoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
+            } else {
+                return compoundOperator(fieldAccessScope, accessorName, scopeType, parentOperator, setter);
             }
         });
     }
@@ -209,6 +212,28 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
         }
         BigDecimalArithmeticExprT bigDecimalArithmeticExprT = new BigDecimalArithmeticExprT(bigDecimalArithmeticMethod, getterExpression, argument);
         return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(bigDecimalArithmeticExprT));
+    }
+
+    /**
+        Conversion of the compound operator applied to number literals
+        $p.age += 50;
+        $p.setAge($p.getAge() + 50));
+     */
+    private FieldToAccessorTExpr compoundOperator(TypedExpression fieldAccessScope,
+                                                            String accessorName,
+                                                            Class<?> scopeType,
+                                                            AssignExpr.Operator parentOperator,
+                                                            Method setter) {
+        BinaryExpr.Operator operator = BinaryExprT.compoundToArithmeticOperation(parentOperator);
+
+        Method optGetter = ofNullable(getAccessor(scopeType, accessorName))
+                .orElseThrow(() -> new MvelCompilerException("No getter found but setter is present for accessor: " + accessorName));
+
+        FieldToAccessorTExpr getterExpression = new FieldToAccessorTExpr(fieldAccessScope, optGetter, emptyList());
+        TypedExpression argument = rhsOrError();
+
+        BinaryExprT arithmeticExprT = new BinaryExprT(getterExpression, argument, operator);
+        return new FieldToAccessorTExpr(fieldAccessScope, setter, singletonList(arithmeticExprT));
     }
 
     private Optional<TypedExpression> tryParseItAsMap(FieldAccessExpr n, TypedExpression scope) {
