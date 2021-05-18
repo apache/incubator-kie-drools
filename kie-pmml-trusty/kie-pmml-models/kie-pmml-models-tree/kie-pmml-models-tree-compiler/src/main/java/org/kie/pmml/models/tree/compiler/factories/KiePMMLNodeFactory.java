@@ -44,6 +44,7 @@ import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -89,11 +90,12 @@ public class KiePMMLNodeFactory {
 
     public static KiePMMLNode getKiePMMLNode(final Node node,
                                              final DataDictionary dataDictionary,
+                                             final List<DerivedField> derivedFields,
                                              final String packageName,
                                              final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
-        final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary, packageName);
+        final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary, derivedFields, packageName);
         String fullClassName = packageName + "." + nodeNamesDTO.nodeClassName;
         try {
             Class<?> kiePMMLNodeClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
@@ -105,11 +107,12 @@ public class KiePMMLNodeFactory {
 
     public static Map<String, String> getKiePMMLNodeSourcesMap(final NodeNamesDTO nodeNamesDTO,
                                                                final DataDictionary dataDictionary,
+                                                               final List<DerivedField> derivedFields,
                                                                final String packageName) {
         logger.trace("getKiePMMLNodeSourcesMap {} {}", nodeNamesDTO, packageName);
         final JavaParserDTO javaParserDTO = new JavaParserDTO(nodeNamesDTO, packageName);
         final Map<String, String> toReturn = new HashMap<>();
-        populateJavaParserDTOAndSourcesMap(javaParserDTO, toReturn, nodeNamesDTO, dataDictionary, true);
+        populateJavaParserDTOAndSourcesMap(javaParserDTO, toReturn, nodeNamesDTO, dataDictionary, derivedFields,true);
         return toReturn;
     }
 
@@ -117,13 +120,14 @@ public class KiePMMLNodeFactory {
                                                    final Map<String, String> sourcesMap,
                                                    final NodeNamesDTO nodeNamesDTO,
                                                    final DataDictionary dataDictionary,
+                                                   final List<DerivedField> derivedFields,
                                                    final boolean isRoot) {
         // Set 'evaluatePredicate'
-        populateEvaluatePredicate(toPopulate, dataDictionary, nodeNamesDTO, isRoot);
+        populateEvaluatePredicate(toPopulate, dataDictionary, derivedFields, nodeNamesDTO, isRoot);
         // Set 'evaluateNode'
         populateEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
         // Set the nested nodes
-        populatedNestedNodes(toPopulate, sourcesMap, dataDictionary, nodeNamesDTO);
+        populatedNestedNodes(toPopulate, sourcesMap, dataDictionary,derivedFields, nodeNamesDTO);
         // merge generated methods in one class
         // dump generated sources
         sourcesMap.put(toPopulate.fullNodeClassName, toPopulate.getSource());
@@ -139,11 +143,13 @@ public class KiePMMLNodeFactory {
      * @param toPopulate
      * @param sourcesMap
      * @param dataDictionary
+     * @param derivedFields
      * @param nodeNamesDTO
      */
     static void populatedNestedNodes(final JavaParserDTO toPopulate,
                                      final Map<String, String> sourcesMap,
                                      final DataDictionary dataDictionary,
+                                     final List<DerivedField> derivedFields,
                                      final NodeNamesDTO nodeNamesDTO) {
         final Node node = nodeNamesDTO.node;
         if (node.hasNodes()) {
@@ -156,14 +162,15 @@ public class KiePMMLNodeFactory {
                     // 2) start creation of new node
                     final JavaParserDTO javaParserDTO = new JavaParserDTO(nestedNodeNamesDTO, toPopulate.packageName);
                     populateJavaParserDTOAndSourcesMap(javaParserDTO, sourcesMap, nestedNodeNamesDTO, dataDictionary,
+                                                       derivedFields,
                                                        true);
                 } else {
                     // Set 'evaluatePredicate'
-                    populateEvaluatePredicate(toPopulate, dataDictionary, nestedNodeNamesDTO, false);
+                    populateEvaluatePredicate(toPopulate, dataDictionary, derivedFields, nestedNodeNamesDTO, false);
                     // Set 'evaluateNode'
                     populateEvaluateNode(toPopulate, nestedNodeNamesDTO, false);
                     mergeNode(toPopulate, nestedNodeNamesDTO);
-                    populatedNestedNodes(toPopulate, sourcesMap, dataDictionary, nestedNodeNamesDTO);
+                    populatedNestedNodes(toPopulate, sourcesMap, dataDictionary, derivedFields, nestedNodeNamesDTO);
                 }
             }
         }
@@ -247,17 +254,20 @@ public class KiePMMLNodeFactory {
      *
      * @param toPopulate
      * @param dataDictionary
+     * @param derivedFields
      * @param nodeNamesDTO
      * @param isRoot
      */
     static void populateEvaluatePredicate(final JavaParserDTO toPopulate,
                                           final DataDictionary dataDictionary,
+                                          final List<DerivedField> derivedFields,
                                           final NodeNamesDTO nodeNamesDTO,
                                           final boolean isRoot) {
         final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
         final BlockStmt evaluatePredicateBody =
                 KiePMMLPredicateFactory.getPredicateBody(nodeNamesDTO.node.getPredicate(),
                                                          dataDictionary,
+                                                         derivedFields,
                                                          compoundPredicateMethods,
                                                          toPopulate.nodeClassName,
                                                          nodeNamesDTO.nodeClassName,
