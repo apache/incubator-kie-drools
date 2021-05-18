@@ -154,7 +154,7 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
                                 + ") has a non-null randomType (" + solverConfig.getRandomType()
                                 + ") or a non-null randomSeed (" + solverConfig.getRandomSeed() + ").");
             }
-            randomFactory = ConfigUtils.newInstance(this, "randomFactoryClass", solverConfig.getRandomFactoryClass());
+            randomFactory = ConfigUtils.newInstance(solverConfig, "randomFactoryClass", solverConfig.getRandomFactoryClass());
         } else {
             RandomType randomType_ = defaultIfNull(solverConfig.getRandomType(), RandomType.JDK);
             Long randomSeed_ = solverConfig.getRandomSeed();

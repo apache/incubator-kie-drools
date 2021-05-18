@@ -137,8 +137,8 @@ public class ScoreDescriptor {
                         + ") that must not have a bendableHardLevelsSize (" + bendableHardLevelsSize
                         + ") or a bendableSoftLevelsSize (" + bendableSoftLevelsSize + ").");
             }
-            // TODO verify whether the 1st arg should be "annotation" or "this"
-            return ConfigUtils.newInstance(annotation, "scoreDefinitionClass", scoreDefinitionClass);
+            return ConfigUtils.newInstance(() -> scoreMemberAccessor + " with @" + PlanningScore.class.getSimpleName(),
+                    "scoreDefinitionClass", scoreDefinitionClass);
         }
         if (!AbstractBendableScore.class.isAssignableFrom(scoreType)) {
             if (bendableHardLevelsSize != PlanningScore.NO_LEVEL_SIZE

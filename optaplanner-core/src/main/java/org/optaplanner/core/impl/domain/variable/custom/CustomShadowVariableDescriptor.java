@@ -225,7 +225,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                     + ") references another shadowVariableDescriptor (" + refVariableDescriptor
                     + ") so it cannot build a " + VariableListener.class.getSimpleName() + ".");
         }
-        return ConfigUtils.newInstance(this, "variableListenerClass", variableListenerClass);
+        return ConfigUtils.newInstance(this::toString, "variableListenerClass", variableListenerClass);
     }
 
 }

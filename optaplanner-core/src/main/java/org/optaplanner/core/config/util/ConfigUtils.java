@@ -37,6 +37,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -52,11 +53,46 @@ public class ConfigUtils {
 
     private static final AlphabeticMemberComparator alphabeticMemberComparator = new AlphabeticMemberComparator();
 
-    public static <T> T newInstance(Object bean, String propertyName, Class<T> clazz) {
+    /**
+     * Create a new instance of clazz from a config's property.
+     * <p>
+     * If the instantiation fails, the simple class name of {@code configBean} will be used as the owner of
+     * {@code propertyName}.
+     * <p>
+     * Intended usage:
+     *
+     * <pre>
+     * selectionFilter = ConfigUtils.newInstance(
+     *         config, "filterClass", config.getFilterClass());
+     * </pre>
+     *
+     * @param configBean the bean holding the {@code clazz} to be instantiated
+     * @param propertyName {@code configBean}'s property holding {@code clazz}
+     * @param clazz {@code Class} representation of the type {@code T}
+     * @param <T> the new instance type
+     * @return new instance of clazz
+     */
+    public static <T> T newInstance(Object configBean, String propertyName, Class<T> clazz) {
+        return ConfigUtils.newInstance(() -> configBean.getClass().getSimpleName(), propertyName, clazz);
+    }
+
+    /**
+     * Create a new instance of clazz from a general source.
+     * <p>
+     * If the instantiation fails, the result of {@code ownerDescriptor} will be used to describe the owner of
+     * {@code propertyName}.
+     *
+     * @param ownerDescriptor describes the owner of {@code propertyName}
+     * @param propertyName property holding the {@code clazz}
+     * @param clazz {@code Class} representation of the type {@code T}
+     * @param <T> the new instance type
+     * @return new instance of clazz
+     */
+    public static <T> T newInstance(Supplier<String> ownerDescriptor, String propertyName, Class<T> clazz) {
         try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new IllegalArgumentException("The " + bean.getClass().getSimpleName() + "'s " + propertyName + " ("
+            return clazz.getDeclaredConstructor().newInstance();
+        } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalArgumentException("The " + ownerDescriptor.get() + "'s " + propertyName + " ("
                     + clazz.getName() + ") does not have a public no-arg constructor"
                     // Inner classes include local, anonymous and non-static member classes
                     + ((clazz.isLocalClass() || clazz.isAnonymousClass() || clazz.isMemberClass())

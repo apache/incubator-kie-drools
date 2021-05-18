@@ -184,7 +184,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     + ") at the same time.");
         }
         if (strengthComparatorClass != null) {
-            Comparator<Object> strengthComparator = ConfigUtils.newInstance(this,
+            Comparator<Object> strengthComparator = ConfigUtils.newInstance(this::toString,
                     "strengthComparatorClass", strengthComparatorClass);
             increasingStrengthSorter = new ComparatorSelectionSorter<>(strengthComparator,
                     SelectionSorterOrder.ASCENDING);
@@ -192,7 +192,7 @@ public class GenuineVariableDescriptor<Solution_> extends VariableDescriptor<Sol
                     SelectionSorterOrder.DESCENDING);
         }
         if (strengthWeightFactoryClass != null) {
-            SelectionSorterWeightFactory<Solution_, Object> strengthWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory<Solution_, Object> strengthWeightFactory = ConfigUtils.newInstance(this::toString,
                     "strengthWeightFactoryClass", strengthWeightFactoryClass);
             increasingStrengthSorter = new WeightFactorySelectionSorter<>(strengthWeightFactory,
                     SelectionSorterOrder.ASCENDING);

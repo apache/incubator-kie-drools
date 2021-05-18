@@ -16,12 +16,11 @@
 
 package org.optaplanner.core.impl.score.director.incremental;
 
-import java.util.Map;
+import java.util.function.Supplier;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
@@ -37,15 +36,12 @@ import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
 public class IncrementalScoreDirectorFactory<Solution_, Score_ extends Score<Score_>>
         extends AbstractScoreDirectorFactory<Solution_, Score_> {
 
-    private final Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass;
-    private final Map<String, String> incrementalScoreCalculatorCustomProperties;
+    private final Supplier<IncrementalScoreCalculator<Solution_, Score_>> incrementalScoreCalculatorSupplier;
 
     public IncrementalScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
-            Class<? extends IncrementalScoreCalculator> incrementalScoreCalculatorClass,
-            Map<String, String> incrementalScoreCalculatorCustomProperties) {
+            Supplier<IncrementalScoreCalculator<Solution_, Score_>> incrementalScoreCalculatorSupplier) {
         super(solutionDescriptor);
-        this.incrementalScoreCalculatorClass = incrementalScoreCalculatorClass;
-        this.incrementalScoreCalculatorCustomProperties = incrementalScoreCalculatorCustomProperties;
+        this.incrementalScoreCalculatorSupplier = incrementalScoreCalculatorSupplier;
     }
 
     // ************************************************************************
@@ -55,12 +51,8 @@ public class IncrementalScoreDirectorFactory<Solution_, Score_ extends Score<Sco
     @Override
     public IncrementalScoreDirector<Solution_, Score_> buildScoreDirector(
             boolean lookUpEnabled, boolean constraintMatchEnabledPreference) {
-        IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator = ConfigUtils.newInstance(this,
-                "incrementalScoreCalculatorClass", incrementalScoreCalculatorClass);
-        ConfigUtils.applyCustomProperties(incrementalScoreCalculator, "incrementalScoreCalculatorClass",
-                incrementalScoreCalculatorCustomProperties, "incrementalScoreCalculatorCustomProperties");
         return new IncrementalScoreDirector<>(this,
-                lookUpEnabled, constraintMatchEnabledPreference, incrementalScoreCalculator);
+                lookUpEnabled, constraintMatchEnabledPreference, incrementalScoreCalculatorSupplier.get());
     }
 
 }

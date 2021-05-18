@@ -162,16 +162,10 @@ public class EntityDescriptor<Solution_> {
         Class<? extends PinningFilter> pinningFilterClass = entityAnnotation.pinningFilter();
         boolean hasPinningFilter = pinningFilterClass != PlanningEntity.NullPinningFilter.class;
         if (hasPinningFilter) {
-            declaredMovableEntitySelectionFilter = new SelectionFilter<Solution_, Object>() {
-
-                private final PinningFilter<Solution_, Object> pinningFilter =
-                        ConfigUtils.newInstance(this, "pinningFilterClass", pinningFilterClass);
-
-                @Override
-                public boolean accept(ScoreDirector<Solution_> scoreDirector, Object selection) {
-                    return !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
-                }
-            };
+            PinningFilter<Solution_, Object> pinningFilter = ConfigUtils.newInstance(this::toString, "pinningFilterClass",
+                    (Class<? extends PinningFilter<Solution_, Object>>) pinningFilterClass);
+            declaredMovableEntitySelectionFilter =
+                    (scoreDirector, selection) -> !pinningFilter.accept(scoreDirector.getWorkingSolution(), selection);
         }
     }
 
@@ -192,13 +186,13 @@ public class EntityDescriptor<Solution_> {
                     + ") at the same time.");
         }
         if (difficultyComparatorClass != null) {
-            Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this,
+            Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this::toString,
                     "difficultyComparatorClass", difficultyComparatorClass);
             decreasingDifficultySorter = new ComparatorSelectionSorter<Solution_, Object>(
                     difficultyComparator, SelectionSorterOrder.DESCENDING);
         }
         if (difficultyWeightFactoryClass != null) {
-            SelectionSorterWeightFactory<Solution_, Object> difficultyWeightFactory = ConfigUtils.newInstance(this,
+            SelectionSorterWeightFactory<Solution_, Object> difficultyWeightFactory = ConfigUtils.newInstance(this::toString,
                     "difficultyWeightFactoryClass", difficultyWeightFactoryClass);
             decreasingDifficultySorter = new WeightFactorySelectionSorter<>(
                     difficultyWeightFactory, SelectionSorterOrder.DESCENDING);

@@ -143,7 +143,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         @SuppressWarnings("unchecked")
         <ConstraintProvider_ extends ConstraintProvider, SolutionClass_>
                 ConstraintVerifier<ConstraintProvider_, SolutionClass_> constraintVerifier(SolverConfig solverConfig) {
-            if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() == null) {
+            ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
+            if (scoreDirectorFactoryConfig.getConstraintProviderClass() == null) {
                 // Return a mock ConstraintVerifier so not having ConstraintProvider doesn't crash tests
                 // (Cannot create custom condition that checks SolverConfig, since that
                 //  requires OptaPlannerAutoConfiguration to have a no-args constructor)
@@ -173,16 +174,14 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     }
                 };
             }
-            ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(this, "constraintProvider",
-                    (Class<ConstraintProvider_>) solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());
+            ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(scoreDirectorFactoryConfig, "constraintProvider",
+                    (Class<ConstraintProvider_>) scoreDirectorFactoryConfig.getConstraintProviderClass());
             Class<?>[] entityClasses = solverConfig.getEntityClassList().toArray(new Class<?>[0]);
-            ConstraintStreamImplType constraintStreamImplType =
-                    solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType();
-            boolean droolsAlphaNetworkCompilationEnabled =
-                    solverConfig.getScoreDirectorFactoryConfig().isDroolsAlphaNetworkCompilationEnabled();
+            ConstraintStreamImplType constraintStreamImplType = scoreDirectorFactoryConfig.getConstraintStreamImplType();
+            boolean droolsAlphaNetworkCompilationEnabled = scoreDirectorFactoryConfig.isDroolsAlphaNetworkCompilationEnabled();
 
-            return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.build(constraintProvider,
-                    solverConfig.getSolutionClass(), entityClasses)
+            return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier
+                    .build(constraintProvider, solverConfig.getSolutionClass(), entityClasses)
                     .withConstraintStreamImplType(
                             (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS)
                     .withDroolsAlphaNetworkCompilationEnabled(droolsAlphaNetworkCompilationEnabled);

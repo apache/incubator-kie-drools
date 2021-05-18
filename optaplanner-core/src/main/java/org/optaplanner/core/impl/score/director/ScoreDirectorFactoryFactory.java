@@ -245,8 +245,20 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         "The incrementalScoreCalculatorClass (" + config.getIncrementalScoreCalculatorClass()
                                 + ") does not implement " + IncrementalScoreCalculator.class.getSimpleName() + ".");
             }
-            return new IncrementalScoreDirectorFactory<>(solutionDescriptor, config.getIncrementalScoreCalculatorClass(),
-                    config.getIncrementalScoreCalculatorCustomProperties());
+            return new IncrementalScoreDirectorFactory<>(
+                    solutionDescriptor,
+                    () -> {
+                        IncrementalScoreCalculator<Solution_, Score_> incrementalScoreCalculator = ConfigUtils.newInstance(
+                                config,
+                                "incrementalScoreCalculatorClass",
+                                config.getIncrementalScoreCalculatorClass());
+                        ConfigUtils.applyCustomProperties(
+                                incrementalScoreCalculator,
+                                "incrementalScoreCalculatorClass",
+                                config.getIncrementalScoreCalculatorCustomProperties(),
+                                "incrementalScoreCalculatorCustomProperties");
+                        return incrementalScoreCalculator;
+                    });
         } else {
             if (config.getIncrementalScoreCalculatorCustomProperties() != null) {
                 throw new IllegalStateException(

@@ -193,7 +193,7 @@ public class HeuristicConfigPolicy<Solution_> {
 
     public ThreadFactory buildThreadFactory(ChildThreadType childThreadType) {
         if (threadFactoryClass != null) {
-            return ConfigUtils.newInstance(this, "threadFactoryClass", threadFactoryClass);
+            return ConfigUtils.newInstance(this::toString, "threadFactoryClass", threadFactoryClass);
         } else {
             String threadPrefix;
             switch (childThreadType) {

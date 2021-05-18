@@ -271,7 +271,7 @@ public class SolutionDescriptor<Solution_> {
         autoDiscoverMemberType = solutionAnnotation.autoDiscoverMemberType();
         Class<? extends SolutionCloner> solutionClonerClass = solutionAnnotation.solutionCloner();
         if (solutionClonerClass != PlanningSolution.NullSolutionCloner.class) {
-            solutionCloner = ConfigUtils.newInstance(this, "solutionClonerClass", solutionClonerClass);
+            solutionCloner = ConfigUtils.newInstance(this::toString, "solutionClonerClass", solutionClonerClass);
         }
         lookUpStrategyResolver =
                 new LookUpStrategyResolver(descriptorPolicy.getDomainAccessType(),

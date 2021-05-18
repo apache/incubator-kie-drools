@@ -255,6 +255,19 @@ public class ConfigUtilsTest {
     }
 
     @Test
+    void newInstanceOwnerDescription() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(
+                        this, "testProperty", StaticInnerClassWithArgsConstructor.class))
+                .withMessageContaining(ConfigUtilsTest.class.getSimpleName());
+        String owner = "OWNER";
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> ConfigUtils.newInstance(
+                        () -> owner, "testProperty", StaticInnerClassWithArgsConstructor.class))
+                .withMessageContaining(owner);
+    }
+
+    @Test
     void abbreviate() {
         assertThat(ConfigUtils.abbreviate(null)).isEmpty();
         assertThat(ConfigUtils.abbreviate(Collections.emptyList())).isEmpty();
