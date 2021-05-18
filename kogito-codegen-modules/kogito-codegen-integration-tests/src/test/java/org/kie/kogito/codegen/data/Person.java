@@ -59,8 +59,9 @@ public class Person {
         return adult;
     }
 
-    public void setAdult(boolean adult) {
+    public Person setAdult(boolean adult) {
         this.adult = adult;
+        return this;
     }
 
     public String getIgnoreMe() {

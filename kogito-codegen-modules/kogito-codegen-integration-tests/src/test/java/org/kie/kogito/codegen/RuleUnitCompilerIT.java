@@ -41,6 +41,7 @@ import org.kie.kogito.rules.RuleUnits;
 
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -153,6 +154,29 @@ public class RuleUnitCompilerIT extends AbstractCodegenIT {
 
         assertEquals(2, results.size());
         assertTrue(results.containsAll(asList(45, 47)));
+    }
+
+    @Test
+    public void testRuleUnitQueryWithNoRules() throws Exception {
+        Application application = generateCodeRulesOnly("org/kie/kogito/codegen/unit/RuleUnitQueryNoRules.drl");
+
+        AdultUnit adults = new AdultUnit();
+
+        adults.getPersons().add(new Person("Mario", 45).setAdult(true));
+        adults.getPersons().add(new Person("Marilena", 47).setAdult(true));
+        adults.getPersons().add(new Person("Sofia", 7).setAdult(true));
+
+        RuleUnit<AdultUnit> unit = application.get(RuleUnits.class).create(AdultUnit.class);
+        RuleUnitInstance<AdultUnit> instance = unit.createInstance(adults);
+
+        List<Integer> results = instance.executeQuery("FindAdultsAge")
+                .stream()
+                .map(m -> m.get("$sum"))
+                .map(Integer.class::cast)
+                .collect(toList());
+
+        assertEquals(1, results.size());
+        assertThat(results).containsExactlyInAnyOrder(99);
     }
 
     @Test
