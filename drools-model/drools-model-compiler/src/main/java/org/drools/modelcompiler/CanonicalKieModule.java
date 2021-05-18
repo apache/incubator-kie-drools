@@ -42,6 +42,7 @@ import org.drools.compiler.builder.DroolsAssemblerContext;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
@@ -206,15 +207,15 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     @Override
-    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf) {
+    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         this.moduleClassLoader = ((ProjectClassLoader) kieProject.getClassLoader());
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration(kBaseModel, moduleClassLoader, conf);
 
-        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent(kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, messages, kBaseConf));
+        CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent(kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, buildContext, kBaseConf));
         checkStreamMode(kBaseModel, conf, kpkgs.getKiePackages());
         InternalKnowledgeBase kieBase = new KieBaseBuilder(kBaseModel, kBaseConf).createKieBase(kpkgs);
 
-        registerNonNativeResources( kBaseModel, kieProject, kieBase, messages );
+        registerNonNativeResources( kBaseModel, kieProject, kieBase, buildContext );
         return kieBase;
     }
 
@@ -253,10 +254,10 @@ public class CanonicalKieModule implements InternalKieModule {
         compositeUpdater.run();
     }
 
-    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, ResultsImpl messages ) {
+    private void registerNonNativeResources( KieBaseModelImpl kBaseModel, KieProject kieProject, InternalKnowledgeBase kieBase, BuildContext buildContext ) {
         KnowledgeBuilder kbuilder = getKnowledgeBuilderForKieBase(kBaseModel.getName());
         if (kbuilder == null) {
-            kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages, NON_MODEL_RESOURCES);
+            kbuilder = kieProject.buildKnowledgePackages(kBaseModel, buildContext, NON_MODEL_RESOURCES);
         }
         if ( !kbuilder.hasErrors() ) {
             for (KiePackage pk : kbuilder.getKnowledgePackages()) {
@@ -273,7 +274,7 @@ public class CanonicalKieModule implements InternalKieModule {
         }
     }
 
-    private CanonicalKiePackages createKiePackages(KieProject kieProject, KieBaseModelImpl kBaseModel, ResultsImpl messages, KieBaseConfiguration conf) {
+    private CanonicalKiePackages createKiePackages(KieProject kieProject, KieBaseModelImpl kBaseModel, BuildContext buildContext, KieBaseConfiguration conf) {
         Set<String> includes = kieProject == null ? Collections.emptySet() : kieProject.getTransitiveIncludes(kBaseModel);
         List<Process> processes = findProcesses(internalKieModule, kBaseModel);
         Collection<Model> modelsForKBase;
@@ -290,12 +291,12 @@ public class CanonicalKieModule implements InternalKieModule {
                 InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
                 if (includeModule == null) {
                     String text = "Unable to build KieBase, could not find include: " + include;
-                    messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 if (!(includeModule instanceof CanonicalKieModule)) {
                     String text = "It is not possible to mix drl based and executable model based projects. Found a drl project: " + include;
-                    messages.addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = (KieBaseModelImpl) kieProject.getKieBaseModel(include);
