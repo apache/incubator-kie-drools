@@ -155,7 +155,7 @@ public class PackageModel {
     private final Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
     private final Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
 
-    private Map<String, CreatedClass> lambdaClasses = new ConcurrentHashMap<>();
+    private final Map<String, CreatedClass> lambdaClasses = new ConcurrentHashMap<>();
 
     private boolean oneClassPerRule;
 
