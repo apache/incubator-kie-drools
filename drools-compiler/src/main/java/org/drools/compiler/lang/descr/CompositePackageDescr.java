@@ -92,12 +92,9 @@ public class CompositePackageDescr extends PackageDescr {
             }
         }
 
-        List<RuleDescr> ruleDescrs = getRules();
         for (RuleDescr descr : packageDescr.getRules()) {
-            if (!ruleDescrs.contains(descr)) {
-                addRule(descr);
-                descr.setResource(resource);
-            }
+            addRule(descr);
+            descr.setResource(resource);
         }
 
         List<TypeDeclarationDescr> typeDeclarationDescrs = getTypeDeclarations();
