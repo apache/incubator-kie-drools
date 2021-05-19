@@ -278,7 +278,6 @@ public class MvelConstraint extends MutableTypeConstraint implements IndexableCo
                         }
                     }
                 } else {
-                    conditionEvaluator = createMvelConditionEvaluator( workingMemory );
                     synchronized (this) {
                         if (conditionEvaluator == null) {
                             conditionEvaluator = createMvelConditionEvaluator(workingMemory);
