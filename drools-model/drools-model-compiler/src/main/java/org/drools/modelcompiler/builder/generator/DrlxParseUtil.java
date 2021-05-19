@@ -579,7 +579,7 @@ public class DrlxParseUtil {
                 return PrimitiveType.intType();
             }
             else if (cls == char.class || cls == Character.class) {
-                return PrimitiveType.intType();
+                return PrimitiveType.charType();
             }
             else if (cls == long.class || cls == Long.class) {
                 return PrimitiveType.longType();
