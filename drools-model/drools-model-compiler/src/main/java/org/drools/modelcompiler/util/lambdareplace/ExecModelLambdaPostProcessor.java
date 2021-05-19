@@ -137,25 +137,22 @@ public class ExecModelLambdaPostProcessor {
 
     private void convertLambdasWithStream() {
         List<MethodCallExpr> exprMethods = new ArrayList<>();
-        List<MethodCallExpr> alphaIndexMethods = new ArrayList<>();
-        List<MethodCallExpr> betaIndexMethods = new ArrayList<>();
+        List<MethodCallExpr> indexMethods = new ArrayList<>();
         List<MethodCallExpr> bindMethods = new ArrayList<>();
         List<MethodCallExpr> fromMethods = new ArrayList<>();
         List<MethodCallExpr> executeMethods = new ArrayList<>();
 
         cu.walk(MethodCallExpr.class, mc -> {
             String methodName = mc.getNameAsString();
-            if ( EXPR_CALL.equals(methodName) || EVAL_EXPR_CALL.equals(methodName) ){
+            if ( EXPR_CALL.equals(methodName) || EVAL_EXPR_CALL.equals(methodName) ) {
                 exprMethods.add(mc);
-            } else if ( ALPHA_INDEXED_BY_CALL.contains(methodName) ){
-                alphaIndexMethods.add(mc);
-            } else if ( BETA_INDEXED_BY_CALL.contains(methodName) ){
-                betaIndexMethods.add(mc);
-            } else if ( BIND_CALL.equals(methodName) ){
+            } else if ( ALPHA_INDEXED_BY_CALL.contains(methodName) || BETA_INDEXED_BY_CALL.contains(methodName) ) {
+                indexMethods.add(mc);
+            } else if ( BIND_CALL.equals(methodName) ) {
                 bindMethods.add(mc);
-            } else if ( FROM_CALL.equals(methodName) || REACTIVE_FROM_CALL.equals(methodName) ){
+            } else if ( FROM_CALL.equals(methodName) || REACTIVE_FROM_CALL.equals(methodName) ) {
                 fromMethods.add(mc);
-            } else if ( isExecuteNonNestedCall(mc) ){
+            } else if ( isExecuteNonNestedCall(mc) ) {
                 executeMethods.add(mc);
             }
         });
@@ -170,9 +167,7 @@ public class ExecModelLambdaPostProcessor {
                     }
                 });
 
-        createStream(alphaIndexMethods).forEach(this::convertIndexedByCall);
-
-        createStream(betaIndexMethods).forEach(this::convertIndexedByCall);
+        createStream(indexMethods).forEach(this::convertIndexedByCall);
 
         createStream(bindMethods).forEach(this::convertBindCall);
 
@@ -230,25 +225,25 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
-        Expression argument = methodCallExpr.getArgument(0);
+        NodeList<Expression> arguments = methodCallExpr.getArguments();
+        Expression firstArgument = arguments.get(0);
 
-        if (!argument.isClassExpr()) {
-            logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
+        if (!firstArgument.isClassExpr()) {
+            logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", firstArgument, methodCallExpr);
             return;
         }
 
-        String returnType = getType(argument).asString();
         Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
 
-        boolean first = true;
-        for (Expression expr : methodCallExpr.getArguments()) {
+        Expression leftOperandExtractorLambda = arguments.get(3);
+        if (leftOperandExtractorLambda.isLambdaExpr()) {
+            replaceLambda(leftOperandExtractorLambda.asLambdaExpr(), id -> new MaterializedLambdaExtractor(packageName, ruleClassName, getType(firstArgument).clone()), exprId);
+        }
+
+        for (int i = 4; i < arguments.size(); i++) {
+            Expression expr = arguments.get(i);
             if (expr.isLambdaExpr()) {
-                if (first) {
-                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, returnType ), exprId );
-                    first = false;
-                } else {
-                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, "java.lang.Object" ), exprId );
-                }
+                replaceLambda(expr.asLambdaExpr(), id -> new MaterializedLambdaExtractor(packageName, ruleClassName, toClassOrInterfaceType(Object.class)), exprId);
             }
         }
     }
@@ -261,14 +256,13 @@ public class ExecModelLambdaPostProcessor {
             return;
         }
 
-        Optional<Type> optType = findVariableType((NameExpr) argument);
-        if (!optType.isPresent()) {
+        Optional<Type> optReturnType = findVariableType((NameExpr) argument);
+        if (!optReturnType.isPresent()) {
             logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
             return;
         }
-        String returnType = optType.get().asString();
 
-        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, optReturnType.get().clone()));
     }
 
     private void convertFromCall(MethodCallExpr methodCallExpr) {
@@ -296,10 +290,10 @@ public class ExecModelLambdaPostProcessor {
 
         returnType = ClassUtil.boxTypePrimitive(returnType);
 
-        String returnTypeStr;
+        Type returnTypeJp;
 
         if (returnType instanceof Class) {
-            returnTypeStr = ((Class<?>)returnType).getCanonicalName();
+            returnTypeJp = toClassOrInterfaceType((Class<?>)returnType);
         } else if (returnType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) returnType;
             java.lang.reflect.Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
@@ -309,7 +303,7 @@ public class ExecModelLambdaPostProcessor {
             java.lang.reflect.Type argType = actualTypeArguments[0];
             if (argType instanceof Class) {
                 // java.util.List<org.drools.FromTest$MyPerson> has to be resolved to canonical name java.util.List<org.drools.FromTest.MyPerson>
-                returnTypeStr = canonicalNameParameterizedType(parameterizedType, (Class<?>)argType);
+                returnTypeJp = toClassOrInterfaceType(canonicalNameParameterizedType(parameterizedType, (Class<?>)argType));
             } else {
                 return Optional.empty(); // e.g. java.util.Collection<V> (V is TypeVariable), nested ParameterizedType, GenericArrayType etc.
             }
@@ -317,7 +311,7 @@ public class ExecModelLambdaPostProcessor {
             return Optional.empty(); // e.g. GenericArrayType etc.
         }
 
-        return Optional.of(new MaterializedLambdaExtractor(packageName, ruleClassName, returnTypeStr));
+        return Optional.of(new MaterializedLambdaExtractor(packageName, ruleClassName, returnTypeJp));
     }
 
     private String canonicalNameParameterizedType(ParameterizedType parameterizedType, Class<?> argType) {
@@ -343,10 +337,7 @@ public class ExecModelLambdaPostProcessor {
 
     protected Type getType(Expression argument) {
         Type type = argument.asClassExpr().getType();
-        if (type.isPrimitiveType()) {
-            return type.asPrimitiveType().toBoxedType();
-        }
-        return type;
+        return type.isPrimitiveType() ? type.asPrimitiveType().toBoxedType() : type;
     }
 
     private FieldAccessExpr lambdaInstance(ClassOrInterfaceType type) {

@@ -34,9 +34,9 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOr
 public class MaterializedLambdaExtractor extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaExtractor";
-    private final String returnType;
+    private final Type returnType;
 
-    MaterializedLambdaExtractor(String packageName, String ruleClassName, String returnType) {
+    MaterializedLambdaExtractor(String packageName, String ruleClassName, Type returnType) {
         super(packageName, ruleClassName);
         this.returnType = returnType;
     }
@@ -45,7 +45,7 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation(createSimpleAnnotation("Override"));
-        methodDeclaration.setType(returnTypeJP());
+        methodDeclaration.setType(returnType);
 
         setMethodParameter(methodDeclaration);
 
@@ -59,16 +59,12 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
         }
     }
 
-    private Type returnTypeJP() {
-        return toClassOrInterfaceType(returnType);
-    }
-
     @Override
     protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
         NodeList<Type> typeArguments = lambdaParametersToTypeArguments();
-        typeArguments.add(returnTypeJP());
+        typeArguments.add(returnType);
         functionType.setTypeArguments(typeArguments);
         return nodeList(functionType, lambdaExtractorType());
     }

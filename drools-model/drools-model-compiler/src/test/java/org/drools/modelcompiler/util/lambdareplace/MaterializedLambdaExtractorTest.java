@@ -20,13 +20,14 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.lambdareplace.MaterializedLambdaTestUtils.verifyCreatedClass;
 
 public class MaterializedLambdaExtractorTest {
 
     @Test
     public void createExtractor() {
-        CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace", "rulename", String.class.getCanonicalName())
+        CreatedClass aClass = new MaterializedLambdaExtractor("org.drools.modelcompiler.util.lambdareplace", "rulename", toClassOrInterfaceType(String.class))
                 .create("(org.drools.modelcompiler.domain.Person p1) -> p1.getName()", new ArrayList<>(), new ArrayList<>());
 
         //language=JAVA
