@@ -110,18 +110,9 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
-        <configuration>
-          <excludes>
-            <exclude>**/Native*IT.java</exclude>
-          </excludes>
-          <systemProperties>
-            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-            <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-          </systemProperties>
-        </configuration>
         <executions>
           <execution>
-            <id>default</id>
+            <id>integration-test</id>
             <goals>
               <goal>integration-test</goal>
             </goals>

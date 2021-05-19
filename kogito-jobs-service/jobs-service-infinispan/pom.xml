@@ -114,7 +114,7 @@
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>default</id>
+                        <id>integration-test</id>
                         <goals>
                             <goal>integration-test</goal>
                         </goals>

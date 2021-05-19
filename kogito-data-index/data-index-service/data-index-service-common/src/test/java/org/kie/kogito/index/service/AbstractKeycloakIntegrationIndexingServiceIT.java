@@ -37,7 +37,7 @@ abstract class AbstractKeycloakIntegrationIndexingServiceIT {
         //alice only have role User, resource is forbidden
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
                 .auth().oauth2(getAccessToken("alice"))
-                .when().get("/graphql")
+                .when().post("/graphql")
                 .then()
                 .statusCode(403);
     }
@@ -45,7 +45,7 @@ abstract class AbstractKeycloakIntegrationIndexingServiceIT {
     @Test
     void testNoTokenProvided() {
         given().contentType(ContentType.JSON).body("{ \"query\" : \"{ProcessInstances{ id } }\" }")
-                .when().get("/graphql")
+                .when().post("/graphql")
                 .then()
                 .statusCode(401);
     }

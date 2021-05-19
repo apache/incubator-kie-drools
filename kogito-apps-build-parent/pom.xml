@@ -88,6 +88,7 @@
                             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
                             <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
                             <container.image.kafka>${container.image.kafka}</container.image.kafka>
+                            <container.image.redis>${container.image.redis}</container.image.redis>
                             <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
                             <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
                             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
