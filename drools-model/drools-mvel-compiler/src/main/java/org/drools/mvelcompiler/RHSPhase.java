@@ -51,7 +51,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.visitor.DrlGenericVisitor;
 import org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT;
 import org.drools.mvelcompiler.ast.BigDecimalConvertedExprT;
-import org.drools.mvelcompiler.ast.BinaryTExpr;
+import org.drools.mvelcompiler.ast.BinaryExprT;
 import org.drools.mvelcompiler.ast.CastExprT;
 import org.drools.mvelcompiler.ast.CharacterLiteralExpressionT;
 import org.drools.mvelcompiler.ast.FieldAccessTExpr;
@@ -244,7 +244,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
         Optional<Type> optTypeRight = right.getType();
 
         if (!optTypeLeft.isPresent() || !optTypeRight.isPresent()) { // coerce only when types are known
-            return new BinaryTExpr(left, right, operator);
+            return new BinaryExprT(left, right, operator);
         }
 
         Type typeLeft = optTypeLeft.get();
@@ -271,7 +271,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
             }
         }
 
-        return new BinaryTExpr(left, right, operator);
+        return new BinaryExprT(left, right, operator);
     }
 
     @Override
