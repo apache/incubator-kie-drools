@@ -18,13 +18,13 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.lang.reflect.ParameterizedType;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Deque;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,6 +71,7 @@ public class ExecModelLambdaPostProcessor {
 
     Logger logger = LoggerFactory.getLogger(ExecModelLambdaPostProcessor.class.getCanonicalName());
 
+    private final Map<String, CreatedClass> lambdaClasses;
     private final String packageName;
     private final String ruleClassName;
     private final Collection<String> imports;
@@ -79,6 +80,8 @@ public class ExecModelLambdaPostProcessor {
     private final Map<String, PredicateInformation> debugPredicateInformation;
     private final CompilationUnit cu;
     private final boolean isParallel;
+
+    private final List<Runnable> toBeReplacedLambdas = Collections.synchronizedList(new ArrayList<>());
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
 
@@ -90,6 +93,7 @@ public class ExecModelLambdaPostProcessor {
 
     public ExecModelLambdaPostProcessor(PackageModel pkgModel,
                                         CompilationUnit cu) {
+        this.lambdaClasses = pkgModel.getLambdaClasses();
         this.packageName = pkgModel.getName();
         this.ruleClassName = pkgModel.getRulesFileNameWithPackage();
         this.imports = pkgModel.getImports();
@@ -108,6 +112,7 @@ public class ExecModelLambdaPostProcessor {
                                         Map<String, PredicateInformation> debugPredicateInformation,
                                         CompilationUnit cu,
                                         boolean isParallel) {
+        this.lambdaClasses = new ConcurrentHashMap<>();
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
         this.imports = imports;
@@ -118,19 +123,19 @@ public class ExecModelLambdaPostProcessor {
         this.isParallel = isParallel;
     }
 
-    public List<ReplacedLambdaResult> convertLambdas() {
+    public void convertLambdas() {
         if (isParallel) {
-            return convertLambdasWithForkJoinPool();
+            convertLambdasWithForkJoinPool();
         } else {
-            return convertLambdasWithStream();
+            convertLambdasWithStream();
         }
     }
 
-    private List<ReplacedLambdaResult> convertLambdasWithForkJoinPool() {
-        return KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).join();
+    private void convertLambdasWithForkJoinPool() {
+        KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).join();
     }
 
-    private List<ReplacedLambdaResult> convertLambdasWithStream() {
+    private void convertLambdasWithStream() {
         List<MethodCallExpr> exprMethods = new ArrayList<>();
         List<MethodCallExpr> alphaIndexMethods = new ArrayList<>();
         List<MethodCallExpr> betaIndexMethods = new ArrayList<>();
@@ -155,35 +160,31 @@ public class ExecModelLambdaPostProcessor {
             }
         });
 
-        Stream<ReplacedLambdaResult> resultsFromExpr = createStream(exprMethods)
-                .flatMap( methodCallExpr1 ->
-                        containsTemporalPredicate(methodCallExpr1) ?
-                                convertTemporalExpr(methodCallExpr1) :
-                                extractLambdaFromMethodCall(methodCallExpr1, (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId))) );
+        createStream(exprMethods)
+                .forEach(methodCallExpr1 -> {
+                    if (containsTemporalPredicate(methodCallExpr1)) {
+                        this.convertTemporalExpr(methodCallExpr1);
+                    } else {
+                        extractLambdaFromMethodCall(methodCallExpr1,
+                                (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));
+                    }
+                });
 
-        Stream<ReplacedLambdaResult> resultsFromAlphaIndexedBy = createStream(alphaIndexMethods).flatMap(this::convertIndexedByCall);
+        createStream(alphaIndexMethods).forEach(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromBetaIndexedBy = createStream(betaIndexMethods).flatMap(this::convertIndexedByCall);
+        createStream(betaIndexMethods).forEach(this::convertIndexedByCall);
 
-        Stream<ReplacedLambdaResult> resultsFromBind = createStream(bindMethods).flatMap(this::convertBindCall);
+        createStream(bindMethods).forEach(this::convertBindCall);
 
-        Stream<ReplacedLambdaResult> resultsFromFrom = createStream(fromMethods).flatMap(this::convertFromCall);
+        createStream(fromMethods).forEach(this::convertFromCall);
 
-        Stream<ReplacedLambdaResult> resultsFromExecuteCall = createStream(executeMethods)
-                .flatMap(methodCallExpr -> {
-                 List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
-                 return extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
-             });
+        createStream(executeMethods)
+                .forEach(methodCallExpr -> {
+                    List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
+                    extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
+                });
 
-        return Stream.of(resultsFromAlphaIndexedBy,
-                         resultsFromBetaIndexedBy,
-                         resultsFromBind,
-                         resultsFromExecuteCall,
-                         resultsFromExpr,
-                         resultsFromFrom)
-                .reduce(Stream::concat)
-                .orElseGet(Stream::empty)
-                .collect(Collectors.toList());
+        toBeReplacedLambdas.forEach(Runnable::run);
     }
 
     private Stream<MethodCallExpr> createStream(List<MethodCallExpr> expressionLists) {
@@ -195,32 +196,30 @@ public class ExecModelLambdaPostProcessor {
                 .orElse(PredicateInformation.EMPTY_PREDICATE_INFORMATION);
     }
 
-    private Stream<ReplacedLambdaResult> convertTemporalExpr(MethodCallExpr methodCallExpr) {
+    private void convertTemporalExpr(MethodCallExpr methodCallExpr) {
         // TemporalExpr methodCallExpr may have 2 lambdas
-        return methodCallExpr.getArguments().stream().flatMap(a -> {
+        methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
                 LambdaExpr lambdaExpr = a.asLambdaExpr();
                 Optional<MaterializedLambdaExtractor> extractorOpt = createMaterializedLambdaExtractor(lambdaExpr);
                 if (!extractorOpt.isPresent()) {
                     logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
-                    return empty();
                 } else {
                     MaterializedLambdaExtractor extractor = extractorOpt.get();
-                    return replaceLambda(lambdaExpr, i -> extractor, Optional.empty());
+                    replaceLambda(lambdaExpr, (i) -> extractor, Optional.empty());
                 }
             }
-            return empty();
         });
     }
 
     private boolean containsTemporalPredicate(MethodCallExpr mc) {
         return mc.getArguments()
-                 .stream()
-                 .filter(MethodCallExpr.class::isInstance)
-                 .map(MethodCallExpr.class::cast)
-                 .map(DrlxParseUtil::findLastMethodInChain)
-                 .map(MethodCallExpr::getNameAsString)
-                 .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
+                .stream()
+                .filter(MethodCallExpr.class::isInstance)
+                .map(MethodCallExpr.class::cast)
+                .map(DrlxParseUtil::findLastMethodInChain)
+                .map(MethodCallExpr::getNameAsString)
+                .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
     }
 
     private boolean isExecuteNonNestedCall(MethodCallExpr mc) {
@@ -230,76 +229,63 @@ public class ExecModelLambdaPostProcessor {
         return !ancestor.isPresent() && EXECUTE_CALL.equals(mc.getNameAsString());
     }
 
-    private Stream<ReplacedLambdaResult> convertIndexedByCall(MethodCallExpr methodCallExpr) {
+    private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
         Expression argument = methodCallExpr.getArgument(0);
 
         if (!argument.isClassExpr()) {
             logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
-            return empty();
+            return;
         }
 
         String returnType = getType(argument).asString();
         Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
 
-        List<LambdaExpr> allLambdaArguments = methodCallExpr.getArguments().stream().filter(Expression::isLambdaExpr)
-                .map(Expression::asLambdaExpr)
-                .collect(Collectors.toList());
-
-        Stream<ReplacedLambdaResult> firstArgumentResult =
-                optionalToStream(allLambdaArguments.stream().findFirst())
-                .flatMap(a -> replaceLambda(a, i -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType), exprId));
-
-        Deque<LambdaExpr> allButFirsts = new ArrayDeque<>(allLambdaArguments);
-        if (!allButFirsts.isEmpty()) {
-            allButFirsts.removeFirst();
+        boolean first = true;
+        for (Expression expr : methodCallExpr.getArguments()) {
+            if (expr.isLambdaExpr()) {
+                if (first) {
+                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, returnType ), exprId );
+                    first = false;
+                } else {
+                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, "java.lang.Object" ), exprId );
+                }
+            }
         }
-
-        Stream<ReplacedLambdaResult> otherArguments =
-                allButFirsts.stream()
-                        .flatMap(expr -> replaceLambda(expr.asLambdaExpr(),
-                                                       i -> new MaterializedLambdaExtractor(packageName, ruleClassName, "java.lang.Object"), exprId)
-                        );
-
-        return Stream.concat(firstArgumentResult, otherArguments);
     }
 
-    private Stream<ReplacedLambdaResult> empty() {
-        return Stream.empty();
-    }
-
-    private Stream<ReplacedLambdaResult>  convertBindCall(MethodCallExpr methodCallExpr) {
+    private void convertBindCall(MethodCallExpr methodCallExpr) {
         Expression argument = methodCallExpr.getArgument(0);
 
         if (!argument.isNameExpr()) {
             logger.warn("argument is not NameExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
-            return empty();
+            return;
         }
 
         Optional<Type> optType = findVariableType((NameExpr) argument);
         if (!optType.isPresent()) {
             logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
-            return empty();
+            return;
         }
         String returnType = optType.get().asString();
 
-        return extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
     }
 
-    private Stream<ReplacedLambdaResult>  convertFromCall(MethodCallExpr methodCallExpr) {
+    private void convertFromCall(MethodCallExpr methodCallExpr) {
         Optional<LambdaExpr> lambdaOpt = methodCallExpr.getArguments().stream().filter(Expression::isLambdaExpr).map(Expression::asLambdaExpr).findFirst();
         if (!lambdaOpt.isPresent()) {
-            return empty(); // Don't need to handle. e.g. D.from(var_$children)
+            return; // Don't need to handle. e.g. D.from(var_$children)
         }
         LambdaExpr lambdaExpr = lambdaOpt.get();
 
         Optional<MaterializedLambdaExtractor> extractorOpt = createMaterializedLambdaExtractor(lambdaExpr);
         if (!extractorOpt.isPresent()) {
             logger.debug("Unable to create MaterializedLambdaExtractor for {}", lambdaExpr);
-            return empty();
+            return;
         }
 
         MaterializedLambdaExtractor extractor = extractorOpt.get();
-        return extractLambdaFromMethodCall(methodCallExpr, (i) -> extractor);
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> extractor);
     }
 
     private Optional<MaterializedLambdaExtractor> createMaterializedLambdaExtractor(LambdaExpr lambdaExpr) {
@@ -397,48 +383,26 @@ public class ExecModelLambdaPostProcessor {
         return optionalToStream(vd.findAncestor(AssignExpr.class));
     }
 
-    private Stream<ReplacedLambdaResult> extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor) {
+    private void extractLambdaFromMethodCall(MethodCallExpr methodCallExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor) {
         // Assume first argument is the exprId
         Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
 
-        return methodCallExpr.getArguments().stream().flatMap(a -> {
+        methodCallExpr.getArguments().forEach(a -> {
             if (a.isLambdaExpr()) {
-                return replaceLambda(a.asLambdaExpr(), lambdaExtractor, exprId);
+                replaceLambda(a.asLambdaExpr(), lambdaExtractor, exprId);
             }
-
-            return empty();
         });
     }
 
-    private Stream<ReplacedLambdaResult> replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
+    private void replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
-            CreatedClass externalisedLambda = lambdaExtractor.apply(exprId).create(lambdaExpr.clone(), imports, staticImports);
-            ClassOrInterfaceType type = toClassOrInterfaceType(externalisedLambda.getClassNameWithPackage());
-            return Stream.of(new ReplacedLambdaResult(lambdaExpr, lambdaInstance(type), externalisedLambda));
+            CreatedClass aClass = lambdaExtractor.apply(exprId).create(lambdaExpr.clone(), imports, staticImports);
+            lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
+            ClassOrInterfaceType type = toClassOrInterfaceType(aClass.getClassNameWithPackage());
+            FieldAccessExpr lambdaInstance = lambdaInstance(type);
+            toBeReplacedLambdas.add( () -> lambdaExpr.replace(lambdaInstance) );
         } catch (DoNotConvertLambdaException e) {
             logger.debug("Cannot externalize lambdas {}", e.getMessage());
-        }
-        return Stream.empty();
-    }
-
-    public static class ReplacedLambdaResult {
-
-        private final LambdaExpr lambdaToBeReplaced;
-        private final FieldAccessExpr externalisedLambdaCall;
-        private final CreatedClass externalisedLambda;
-
-        public ReplacedLambdaResult(LambdaExpr lambdaToBeReplaced, FieldAccessExpr externalisedLambdaCall, CreatedClass externalisedLambda) {
-            this.lambdaToBeReplaced = lambdaToBeReplaced;
-            this.externalisedLambdaCall = externalisedLambdaCall;
-            this.externalisedLambda = externalisedLambda;
-        }
-
-        public void replaceLambda() {
-            lambdaToBeReplaced.replace(externalisedLambdaCall);
-        }
-
-        public CreatedClass getExternalisedLambda() {
-            return externalisedLambda;
         }
     }
 }

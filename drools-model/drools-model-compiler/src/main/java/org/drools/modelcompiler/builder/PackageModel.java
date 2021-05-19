@@ -76,6 +76,7 @@ import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
@@ -154,6 +155,8 @@ public class PackageModel {
     private final Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
     private final Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
 
+    private Map<String, CreatedClass> lambdaClasses = new ConcurrentHashMap<>();
+
     private boolean oneClassPerRule;
 
     public PackageModel( ReleaseId releaseId, String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator) {
@@ -171,6 +174,10 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+    }
+
+    public Map<String, CreatedClass> getLambdaClasses() {
+        return lambdaClasses;
     }
 
     public boolean isOneClassPerRule() {
