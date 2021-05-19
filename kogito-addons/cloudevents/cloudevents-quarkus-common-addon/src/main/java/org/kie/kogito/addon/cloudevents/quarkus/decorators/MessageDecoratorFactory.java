@@ -20,7 +20,7 @@ package org.kie.kogito.addon.cloudevents.quarkus.decorators;
  */
 public final class MessageDecoratorFactory {
 
-    private static final String SMALLRYE_HTTP_METADATA_CLASS = "io.smallrye.reactive.messaging.http.HttpResponseMetadata";
+    private static final String SMALLRYE_HTTP_METADATA_CLASS = "io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata";
 
     private MessageDecoratorFactory() {
     }

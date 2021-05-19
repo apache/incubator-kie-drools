@@ -18,7 +18,7 @@ package org.kie.kogito.addon.cloudevents.quarkus.decorators;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Test;
 
-import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
+import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -29,6 +29,6 @@ class CloudEventHttpOutgoingMessageDecoratorTest {
         final String payload = "any message";
         final Message<String> message = new CloudEventHttpOutgoingDecorator().decorate(payload);
         assertThat(message).isNotNull();
-        assertThat(message.getMetadata(HttpResponseMetadata.class)).isPresent();
+        assertThat(message.getMetadata(OutgoingHttpMetadata.class)).isPresent();
     }
 }

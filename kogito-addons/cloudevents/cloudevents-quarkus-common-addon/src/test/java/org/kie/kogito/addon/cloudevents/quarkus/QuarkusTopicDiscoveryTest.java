@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class QuarkusTopicDiscoveryTest {
 
     @Test
-    @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.connector", value = "smallrye-http")
+    @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.connector", value = "quarkus-http")
     @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.url", value = "http://localhost:8080/")
     @SetSystemProperty(key = "mp.messaging.incoming.kogito_incoming_stream.connector", value = "smallrye-kafka")
     @SetSystemProperty(key = "mp.messaging.incoming.kogito_incoming_stream.topic", value = "mycooltopic")
@@ -50,7 +50,7 @@ class QuarkusTopicDiscoveryTest {
     }
 
     @Test
-    @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.connector", value = "smallrye-http")
+    @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.connector", value = "quarkus-http")
     @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.url", value = "http://localhost:8080/")
     @SetSystemProperty(key = "mp.messaging.outgoing.processedtravellers.topic", value = "mycooltopic")
     @SetSystemProperty(key = "mp.messaging.incoming.kogito_incoming_stream.connector", value = "smallrye-kafka")

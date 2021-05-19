@@ -15,14 +15,12 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.decorators;
 
-import java.util.Collections;
-
 import javax.ws.rs.core.HttpHeaders;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.eclipse.microprofile.reactive.messaging.Metadata;
 
-import io.smallrye.reactive.messaging.http.HttpResponseMetadata;
+import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
 /**
  * Decorators for Http CloudEvents outgoing messages
@@ -37,9 +35,7 @@ public final class CloudEventHttpOutgoingDecorator implements MessageDecorator {
      * Metadata to include content-type for structured CloudEvents messages
      */
     static final Metadata HTTP_RESPONSE_METADATA =
-            Metadata.of(HttpResponseMetadata.builder()
-                    .withQueryParameter(Collections.emptyMap())
-                    .withHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
+            Metadata.of(new OutgoingHttpMetadata.Builder().addHeader(HttpHeaders.CONTENT_TYPE, CLOUD_EVENTS_CONTENT_TYPE).build());
 
     /**
      * Decorates a given payload with custom metadata needed by Http Outgoing processing
