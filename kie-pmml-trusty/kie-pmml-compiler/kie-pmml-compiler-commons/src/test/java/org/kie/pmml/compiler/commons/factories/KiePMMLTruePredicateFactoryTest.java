@@ -18,8 +18,10 @@ package org.kie.pmml.compiler.commons.factories;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.junit.Test;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class KiePMMLTruePredicateFactoryTest {
 
@@ -27,9 +29,10 @@ public class KiePMMLTruePredicateFactoryTest {
     public void getTruePredicateBody() {
         final BlockStmt retrieved = KiePMMLTruePredicateFactory.getTruePredicateBody();
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    return true;\n" +
-                "}";
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{" +
+                "    return true;" +
+                "}");
+
+        JavaParserUtils.equalsNode(expected, retrieved);
     }
 }
