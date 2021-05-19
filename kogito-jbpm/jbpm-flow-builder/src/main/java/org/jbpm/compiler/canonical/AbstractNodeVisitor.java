@@ -44,7 +44,9 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
+import com.github.javaparser.ast.type.WildcardType;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
@@ -88,7 +90,13 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
     }
 
     protected AssignExpr getAssignedFactoryMethod(String factoryField, Class<?> typeClass, String variableName, String methodName, Expression... args) {
+        return getAssignedFactoryMethod(factoryField, typeClass, variableName, methodName, new WildcardType(), args);
+    }
+
+    protected AssignExpr getAssignedFactoryMethod(String factoryField, Class<?> typeClass, String variableName, String methodName, Type parentType, Expression... args) {
         ClassOrInterfaceType type = new ClassOrInterfaceType(null, typeClass.getCanonicalName());
+
+        type.setTypeArguments(parentType);
 
         MethodCallExpr variableMethod = new MethodCallExpr(new NameExpr(factoryField), methodName);
 
@@ -100,6 +108,7 @@ public abstract class AbstractNodeVisitor<T extends Node> extends AbstractVisito
                 new VariableDeclarationExpr(type, variableName),
                 variableMethod,
                 AssignExpr.Operator.ASSIGN);
+
     }
 
     public static Statement makeAssignment(Variable v) {

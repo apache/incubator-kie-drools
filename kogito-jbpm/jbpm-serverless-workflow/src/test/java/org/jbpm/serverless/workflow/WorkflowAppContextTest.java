@@ -15,12 +15,25 @@
  */
 package org.jbpm.serverless.workflow;
 
+import java.util.Properties;
+
 import org.jbpm.serverless.workflow.parser.util.WorkflowAppContext;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class WorkflowAppContextTest extends BaseServerlessTest {
+public class WorkflowAppContextTest {
+
+    private static Properties testWorkflowProperties() {
+        Properties properties = new Properties();
+        properties.put("kogito.sw.functions.testfunction1.testprop1", "testprop1val");
+        properties.put("kogito.sw.functions.testfunction1.testprop2", "testprop2val");
+        properties.put("kogito.sw.functions.testfunction2.testprop1", "testprop1val");
+        properties.put("kogito.sw.functions.testfunction2.testprop2", "testprop2val");
+        properties.put("kogito.sw.functions.testfunction3.ruleflowgroup", "testruleflowgroup");
+
+        return properties;
+    }
 
     @Test
     public void testOfAppResources() throws Exception {

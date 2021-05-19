@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.StateNodeFactory;
 import org.jbpm.workflow.core.node.StateNode;
 import org.kie.api.definition.process.Node;
@@ -39,7 +38,7 @@ public class StateNodeVisitor extends CompositeContextNodeVisitor<StateNode> {
     }
 
     @Override
-    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
+    protected Class<?> factoryClass() {
         return StateNodeFactory.class;
     }
 

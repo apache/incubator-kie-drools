@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.impl.WorkImpl;
+import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
+import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
 import org.jbpm.workflow.core.node.WorkItemNode;
 import org.kie.api.definition.process.Node;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
@@ -226,7 +228,26 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
             return this;
         }
 
-        public WorkItemNode build() {
+        public <T extends RuleFlowNodeContainerFactory<T, ?>> WorkItemNodeFactory<T> build(WorkItemNodeFactory<T> factory) {
+            factory.metaData(KEY_WORKITEM_TYPE, TYPE);
+            factory.workName(TYPE);
+            factory.workParameter(KEY_SERVICE_IMPL, DEFAULT_SERVICE_IMPL);
+            factory.workParameter(KEY_WORKITEM_INTERFACE, this.interfaceResource);
+            factory.workParameter(KEY_WORKITEM_OPERATION, this.operation);
+            this.paramResolvers.forEach(factory::workParameter);
+            if (this.paramResolverType != null && !this.paramResolverType.isEmpty()) {
+                factory.metaData(PARAM_META_PARAM_RESOLVER_TYPE, this.paramResolverType);
+            }
+            if (this.resultHandlerType != null && !this.resultHandlerType.isEmpty()) {
+                factory.metaData(PARAM_META_RESULT_HANDLER_TYPE, this.resultHandlerType);
+            }
+            if (this.resultHandlerExpression != null) {
+                factory.workParameter(PARAM_META_RESULT_HANDLER, this.resultHandlerExpression);
+            }
+            return factory;
+        }
+
+        protected WorkItemNode build() {
             WorkItemNode workItemNode = new WorkItemNode();
             workItemNode.setMetaData(KEY_WORKITEM_TYPE, TYPE);
 
@@ -251,7 +272,6 @@ public class OpenApiTaskDescriptor extends AbstractServiceTaskDescriptor {
             workItemNode.setWork(work);
             return workItemNode;
         }
-
     }
 
     /**

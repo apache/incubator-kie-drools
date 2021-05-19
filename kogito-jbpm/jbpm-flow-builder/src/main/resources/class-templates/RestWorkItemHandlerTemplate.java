@@ -28,4 +28,10 @@ public class xxxRestWorkItemHandler extends RestWorkItemHandler {
     public xxxRestWorkItemHandler(Vertx vertx) {
         super(WebClient.create(vertx));
     }
+    
+    @Override
+    public String getName() {
+        return this.getClass().getName();
+    }
+
 }

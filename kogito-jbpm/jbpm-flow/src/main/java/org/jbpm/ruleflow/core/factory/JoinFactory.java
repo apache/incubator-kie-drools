@@ -16,20 +16,15 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.Join;
 
-public class JoinFactory extends NodeFactory {
+public class JoinFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<JoinFactory<T>, T> {
 
     public static final String METHOD_TYPE = "type";
 
-    public JoinFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    protected Node createNode() {
-        return new Join();
+    public JoinFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new Join(), id);
     }
 
     protected Join getJoin() {
@@ -37,17 +32,17 @@ public class JoinFactory extends NodeFactory {
     }
 
     @Override
-    public JoinFactory name(String name) {
+    public JoinFactory<T> name(String name) {
         super.name(name);
         return this;
     }
 
-    public JoinFactory type(int type) {
+    public JoinFactory<T> type(int type) {
         getJoin().setType(type);
         return this;
     }
 
-    public JoinFactory type(String n) {
+    public JoinFactory<T> type(String n) {
         getJoin().setN(n);
         return this;
     }

@@ -18,58 +18,23 @@ package org.jbpm.ruleflow.core.factory;
 import java.util.function.Predicate;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.MilestoneNode;
 import org.kie.api.runtime.process.ProcessContext;
 
-public class MilestoneNodeFactory extends StateBasedNodeFactory {
+public class MilestoneNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends StateBasedNodeFactory<MilestoneNodeFactory<T>, T> {
 
     public static final String METHOD_CONDITION = "condition";
 
-    public MilestoneNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    protected Node createNode() {
-        return new MilestoneNode();
+    public MilestoneNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new MilestoneNode(), id);
     }
 
     protected MilestoneNode getMilestoneNode() {
         return (MilestoneNode) getNode();
     }
 
-    @Override
-    public MilestoneNodeFactory name(String name) {
-        super.name(name);
-        return this;
-    }
-
-    @Override
-    public MilestoneNodeFactory onEntryAction(String dialect, String action) {
-        super.onEntryAction(dialect, action);
-        return this;
-    }
-
-    @Override
-    public MilestoneNodeFactory onExitAction(String dialect, String action) {
-        super.onExitAction(dialect, action);
-        return this;
-    }
-
-    @Override
-    public MilestoneNodeFactory timer(String delay, String period, String dialect, String action) {
-        super.timer(delay, period, dialect, action);
-        return this;
-    }
-
-    @Override
-    public MilestoneNodeFactory metaData(String name, Object value) {
-        super.metaData(name, value);
-        return this;
-    }
-
-    public MilestoneNodeFactory condition(Predicate<ProcessContext> condition) {
+    public MilestoneNodeFactory<T> condition(Predicate<ProcessContext> condition) {
         getMilestoneNode().setCondition(condition);
         return this;
     }

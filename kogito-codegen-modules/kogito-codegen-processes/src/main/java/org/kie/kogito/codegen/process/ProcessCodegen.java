@@ -60,7 +60,6 @@ import org.kie.kogito.codegen.process.events.CloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
 import org.kie.kogito.codegen.process.openapi.OpenApiClientWorkItemIntrospector;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
-import org.kie.kogito.rules.units.UndefinedGeneratedRuleUnitVariable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
@@ -193,8 +192,8 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private static Process parseWorkflowFile(Resource r, String parser) {
         try (Reader reader = r.getReader()) {
-            ServerlessWorkflowParser workflowParser = new ServerlessWorkflowParser(parser);
-            return workflowParser.parseWorkFlow(reader);
+            ServerlessWorkflowParser workflowParser = ServerlessWorkflowParser.of(reader, parser);
+            return workflowParser.getProcess();
         } catch (IOException e) {
             throw new ProcessParsingException("Could not parse file " + r.getSourcePath(), e);
         } catch (RuntimeException e) {
@@ -294,11 +293,7 @@ public class ProcessCodegen extends AbstractGenerator {
                 ProcessMetaData generate = execModelGen.generate();
                 processIdToMetadata.put(id, generate);
                 processExecutableModelGenerators.add(execModelGen);
-            } catch (UndefinedGeneratedRuleUnitVariable e) {
-                LOGGER.error(e.getMessage() + "\nRemember: in this case rule unit variables are usually named after process variables.");
-                throw new ProcessCodegenException(id, packageName, e);
             } catch (RuntimeException e) {
-                LOGGER.error(e.getMessage());
                 throw new ProcessCodegenException(id, packageName, e);
             }
         }
@@ -450,7 +445,7 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         // Generic CloudEvents HTTP Endpoint will be handled by https://issues.redhat.com/browse/KOGITO-2956
-        if (context().getAddonsConfig().useCloudEvents() && context().hasREST() && context().name() == QuarkusKogitoBuildContext.CONTEXT_NAME) {
+        if (context().getAddonsConfig().useCloudEvents() && context().hasREST() && QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context().name())) {
             final CloudEventsResourceGenerator ceGenerator =
                     new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());

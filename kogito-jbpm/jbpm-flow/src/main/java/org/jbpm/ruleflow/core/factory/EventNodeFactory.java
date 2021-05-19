@@ -15,61 +15,23 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformer;
-import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventNode;
 
-public class EventNodeFactory extends ExtendedNodeFactory {
+public class EventNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractEventNodeFactory<EventNodeFactory<T>, T> {
 
     public static final String METHOD_EVENT_TYPE = "eventType";
     public static final String METHOD_SCOPE = "scope";
     public static final String METHOD_VARIABLE_NAME = "variableName";
 
-    public EventNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
+    public EventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new EventNode(), id);
     }
 
-    protected Node createNode() {
-        return new EventNode();
-    }
-
+    @Override
     protected EventNode getEventNode() {
         return (EventNode) getNode();
     }
 
-    @Override
-    public EventNodeFactory name(String name) {
-        super.name(name);
-        return this;
-    }
-
-    public EventNodeFactory variableName(String variableName) {
-        getEventNode().setVariableName(variableName);
-        return this;
-    }
-
-    public EventNodeFactory eventFilter(EventFilter eventFilter) {
-        getEventNode().addEventFilter(eventFilter);
-        return this;
-    }
-
-    public EventNodeFactory eventType(String eventType) {
-        EventTypeFilter filter = new EventTypeFilter();
-        filter.setType(eventType);
-        return eventFilter(filter);
-    }
-
-    public EventNodeFactory eventTransformer(EventTransformer transformer) {
-        getEventNode().setEventTransformer(transformer);
-        return this;
-    }
-
-    public EventNodeFactory scope(String scope) {
-        getEventNode().setScope(scope);
-        return this;
-    }
 }

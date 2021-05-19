@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.DynamicNodeFactory;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.kie.api.definition.process.Node;
@@ -39,7 +38,7 @@ public class DynamicNodeVisitor extends CompositeContextNodeVisitor<DynamicNode>
     }
 
     @Override
-    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
+    protected Class<?> factoryClass() {
         return DynamicNodeFactory.class;
     }
 

@@ -27,26 +27,21 @@ public class LightProcessRuntimeTest {
 
     static class MyProcess {
         String result;
-        RuleFlowProcess process;
-        {
-            RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess("org.kie.api2.MyProcessUnit");
-            factory
-                    // Header
-                    .name("HelloWorldProcess")
-                    .version("1.0")
-                    .packageName("org.jbpm")
-                    // Nodes
-                    .startNode(1).name("Start").done()
-                    .actionNode(2).name("Action")
-                    .action(ctx -> {
-                        result = "Hello!";
-                    }).done()
-                    .endNode(3).name("End").done()
-                    // Connections
-                    .connection(1, 2)
-                    .connection(2, 3);
-            process = factory.validate().getProcess();
-        }
+        RuleFlowProcess process = RuleFlowProcessFactory.createProcess("org.kie.api2.MyProcessUnit")
+                // Header
+                .name("HelloWorldProcess")
+                .version("1.0")
+                .packageName("org.jbpm")
+                // Nodes
+                .startNode(1).name("Start").done()
+                .actionNode(2).name("Action")
+                .action(ctx -> {
+                    result = "Hello!";
+                }).done()
+                .endNode(3).name("End").done()
+                // Connections
+                .connection(1, 2)
+                .connection(2, 3).validate().getProcess();
     }
 
     @Test

@@ -16,10 +16,8 @@
 package org.jbpm.serverless.workflow.parser.util;
 
 import java.io.Reader;
-import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 import org.drools.core.util.StringUtils;
 import org.slf4j.Logger;
@@ -30,15 +28,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.serverlessworkflow.api.Workflow;
-import io.serverlessworkflow.api.branches.Branch;
 import io.serverlessworkflow.api.events.EventDefinition;
 import io.serverlessworkflow.api.functions.FunctionDefinition;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.mapper.BaseObjectMapper;
 import io.serverlessworkflow.api.mapper.JsonObjectMapper;
 import io.serverlessworkflow.api.mapper.YamlObjectMapper;
-import io.serverlessworkflow.api.states.DefaultState;
-import io.serverlessworkflow.api.states.ParallelState;
 
 public class ServerlessWorkflowUtils {
 
@@ -75,63 +70,6 @@ public class ServerlessWorkflowUtils {
 
     public static String readWorkflowFile(Reader reader) {
         return StringUtils.readFileAsString(reader);
-    }
-
-    public static State getWorkflowStartState(Workflow workflow) {
-        String wfStart = workflow.getStart().getStateName();
-        return workflow.getStates().stream()
-                .filter(ws -> ws.getName().equals(wfStart))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("Workflow does not have a Start state"));
-    }
-
-    public static List<State> getStatesByType(Workflow workflow, DefaultState.Type type) {
-        return workflow.getStates().stream()
-                .filter(ws -> ws.getType() == type)
-                .collect(Collectors.toList());
-    }
-
-    public static List<State> getWorkflowEndStates(Workflow workflow) {
-        return workflow.getStates().stream()
-                .filter(ws -> ws.getEnd() != null)
-                .collect(Collectors.toList());
-    }
-
-    public static boolean includesSupportedStates(Workflow workflow) {
-        for (State state : workflow.getStates()) {
-            if (!state.getType().equals(DefaultState.Type.EVENT)
-                    && !state.getType().equals(DefaultState.Type.OPERATION)
-                    && !state.getType().equals(DefaultState.Type.DELAY)
-                    && !state.getType().equals(DefaultState.Type.SUBFLOW)
-                    && !state.getType().equals(DefaultState.Type.INJECT)
-                    && !state.getType().equals(DefaultState.Type.SWITCH)
-                    && !state.getType().equals(DefaultState.Type.PARALLEL)) {
-                return false;
-            }
-
-            if (state.getType().equals(DefaultState.Type.PARALLEL)) {
-                if (!supportedParallelState((ParallelState) state)) {
-                    LOGGER.warn("unsupported parallel state");
-                    return false;
-                }
-            }
-
-        }
-
-        return true;
-    }
-
-    public static boolean supportedParallelState(ParallelState parallelState) {
-        // currently support for only workflowId inside branches
-        if (parallelState.getBranches() != null && parallelState.getBranches().size() > 0) {
-            for (Branch branch : parallelState.getBranches()) {
-                if (branch.getWorkflowId() == null || branch.getWorkflowId().length() < 1) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public static EventDefinition getWorkflowEventFor(Workflow workflow, String eventName) {
@@ -180,14 +118,10 @@ public class ServerlessWorkflowUtils {
     }
 
     public static String getJsonPathScript(String script) {
-        if (script.contains("$")) {
-            String replacement = "jsonNode = com.jayway.jsonpath.JsonPath.using(jsonPathConfig)" +
-                    ".parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\")))" +
-                    ".read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class); toPrint+= jsonNode.isTextual() ? jsonNode.asText() : jsonNode;";
-            script = script.replaceAll("\\$.([A-Za-z]+)", replacement);
-            script = script.replaceAll("@@", Matcher.quoteReplacement("$"));
-        }
-        return script;
+        return script.contains("$") ? script.replaceAll("\\$.([A-Za-z]+)",
+                "jsonNode = com.jayway.jsonpath.JsonPath.using(jsonPathConfig).parse(((com.fasterxml.jackson.databind.JsonNode)kcontext.getVariable(\"workflowdata\"))).read(\"@@.$1\", com.fasterxml.jackson.databind.JsonNode.class); toPrint+= jsonNode.isTextual() ? jsonNode.asText() : jsonNode;")
+                .replaceAll("@@", Matcher.quoteReplacement("$")) : script;
+
     }
 
     public static String getInjectScript(JsonNode toInjectNode) {
@@ -218,6 +152,10 @@ public class ServerlessWorkflowUtils {
     }
 
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
+        return resolveFunctionMetadata(function, metadataKey, workflowAppContext, "");
+    }
+
+    public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext, String defaultValue) {
         if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
             return function.getMetadata().get(metadataKey);
         }
@@ -228,7 +166,7 @@ public class ServerlessWorkflowUtils {
         }
 
         LOGGER.warn("Could not resolve function metadata: {}", metadataKey);
-        return "";
+        return defaultValue;
     }
 
     public static String resolveEvenDefinitiontMetadata(EventDefinition eventDefinition, String metadataKey, WorkflowAppContext workflowAppContext) {

@@ -16,45 +16,34 @@
 package org.jbpm.ruleflow.core.factory;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.FaultNode;
 
-public class FaultNodeFactory extends ExtendedNodeFactory {
+public class FaultNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends ExtendedNodeFactory<FaultNodeFactory<T>, T> {
 
     public static final String METHOD_FAULT_NAME = "faultName";
     public static final String METHOD_FAULT_VARIABLE = "faultVariable";
     public static final String METHOD_TERMINATE_PARENT = "terminateParent";
 
-    public FaultNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    protected Node createNode() {
-        return new FaultNode();
+    public FaultNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new FaultNode(), id);
     }
 
     protected FaultNode getFaultNode() {
         return (FaultNode) getNode();
     }
 
-    @Override
-    public FaultNodeFactory name(String name) {
-        super.name(name);
+    public FaultNodeFactory<T> faultVariable(String faultVariable) {
+        ((FaultNode) getNode()).setFaultVariable(faultVariable);
         return this;
     }
 
-    public FaultNodeFactory faultVariable(String faultVariable) {
-        getFaultNode().setFaultVariable(faultVariable);
+    public FaultNodeFactory<T> faultName(String faultName) {
+        ((FaultNode) getNode()).setFaultName(faultName);
         return this;
     }
 
-    public FaultNodeFactory faultName(String faultName) {
-        getFaultNode().setFaultName(faultName);
-        return this;
-    }
-
-    public FaultNodeFactory terminateParent(Boolean terminateParent) {
+    public FaultNodeFactory<T> terminateParent(Boolean terminateParent) {
         getFaultNode().setTerminateParent(terminateParent);
         return this;
     }

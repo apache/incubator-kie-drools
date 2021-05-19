@@ -18,45 +18,34 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.timer.Timer;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.EventTrigger;
 import org.jbpm.workflow.core.node.StartNode;
 
-public class StartNodeFactory extends ExtendedNodeFactory {
+public class StartNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<StartNodeFactory<T>, T> {
 
     public static final String METHOD_INTERRUPTING = "interrupting";
     public static final String METHOD_TRIGGER = "trigger";
     public static final String METHOD_TIMER = "timer";
 
-    public StartNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    protected Node createNode() {
-        return new StartNode();
+    public StartNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new StartNode(), id);
     }
 
     protected StartNode getStartNode() {
         return (StartNode) getNode();
     }
 
-    @Override
-    public StartNodeFactory name(String name) {
-        super.name(name);
-        return this;
-    }
-
-    public StartNodeFactory interrupting(boolean interrupting) {
+    public StartNodeFactory<T> interrupting(boolean interrupting) {
         getStartNode().setInterrupting(interrupting);
         return this;
     }
 
-    public StartNodeFactory trigger(String triggerEventType, String mapping) {
+    public StartNodeFactory<T> trigger(String triggerEventType, String mapping) {
         return trigger(triggerEventType, mapping, null);
     }
 
-    public StartNodeFactory trigger(String triggerEventType, String mapping, String variableName) {
+    public StartNodeFactory<T> trigger(String triggerEventType, String mapping, String variableName) {
         EventTrigger trigger = new EventTrigger();
         EventTypeFilter eventFilter = new EventTypeFilter();
         eventFilter.setType(triggerEventType);
@@ -68,7 +57,7 @@ public class StartNodeFactory extends ExtendedNodeFactory {
         return this;
     }
 
-    public StartNodeFactory timer(String delay, String period, String date, int timeType) {
+    public StartNodeFactory<T> timer(String delay, String period, String date, int timeType) {
         Timer timer = new Timer();
         timer.setDate(date);
         timer.setDelay(delay);

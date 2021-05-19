@@ -15,6 +15,11 @@
  */
 package org.jbpm.ruleflow.core;
 
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.context.exception.ActionExceptionHandler;
+import org.jbpm.process.core.context.exception.ExceptionHandler;
+import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
 import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
 import org.jbpm.ruleflow.core.factory.CatchLinkNodeFactory;
@@ -28,6 +33,7 @@ import org.jbpm.ruleflow.core.factory.ForEachNodeFactory;
 import org.jbpm.ruleflow.core.factory.HumanTaskNodeFactory;
 import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.MilestoneNodeFactory;
+import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.RuleSetNodeFactory;
 import org.jbpm.ruleflow.core.factory.SplitFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
@@ -36,139 +42,159 @@ import org.jbpm.ruleflow.core.factory.SubProcessNodeFactory;
 import org.jbpm.ruleflow.core.factory.ThrowLinkNodeFactory;
 import org.jbpm.ruleflow.core.factory.TimerNodeFactory;
 import org.jbpm.ruleflow.core.factory.WorkItemNodeFactory;
-import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.ConnectionImpl;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.kie.api.definition.process.Node;
 
 import static org.jbpm.ruleflow.core.Metadata.ASSOCIATION;
 import static org.jbpm.ruleflow.core.Metadata.HIDDEN;
 import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
+import static org.jbpm.workflow.core.Node.CONNECTION_DEFAULT_TYPE;
 
-public abstract class RuleFlowNodeContainerFactory {
+public abstract class RuleFlowNodeContainerFactory<T extends RuleFlowNodeContainerFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends NodeFactory<T, P> {
 
     public static final String METHOD_CONNECTION = "connection";
     public static final String METHOD_ASSOCIATION = "association";
 
-    private NodeContainer nodeContainer;
-
-    protected void setNodeContainer(NodeContainer nodeContainer) {
-        this.nodeContainer = nodeContainer;
+    protected RuleFlowNodeContainerFactory(P nodeContainerFactory, NodeContainer nodeContainer, NodeContainer node, Object id) {
+        super(nodeContainerFactory, nodeContainer, node, id);
     }
 
-    protected NodeContainer getNodeContainer() {
-        return nodeContainer;
+    public StartNodeFactory<T> startNode(long id) {
+        return new StartNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public StartNodeFactory startNode(long id) {
-        return new StartNodeFactory(this, nodeContainer, id);
+    public EndNodeFactory<T> endNode(long id) {
+        return new EndNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public EndNodeFactory endNode(long id) {
-        return new EndNodeFactory(this, nodeContainer, id);
+    public CatchLinkNodeFactory<T> catchLinkNode(long id) {
+        return new CatchLinkNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public CatchLinkNodeFactory catchLinkNode(long id) {
-        return new CatchLinkNodeFactory(this, nodeContainer, id);
+    public ThrowLinkNodeFactory<T> throwLinkNode(long id) {
+        return new ThrowLinkNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public ThrowLinkNodeFactory throwLinkNode(long id) {
-        return new ThrowLinkNodeFactory(this, nodeContainer, id);
+    public ActionNodeFactory<T> actionNode(long id) {
+        return new ActionNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public ActionNodeFactory actionNode(long id) {
-        return new ActionNodeFactory(this, nodeContainer, id);
+    public MilestoneNodeFactory<T> milestoneNode(long id) {
+        return new MilestoneNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public MilestoneNodeFactory milestoneNode(long id) {
-        return new MilestoneNodeFactory(this, nodeContainer, id);
+    public TimerNodeFactory<T> timerNode(long id) {
+        return new TimerNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public TimerNodeFactory timerNode(long id) {
-        return new TimerNodeFactory(this, nodeContainer, id);
+    public HumanTaskNodeFactory<T> humanTaskNode(long id) {
+        return new HumanTaskNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public HumanTaskNodeFactory humanTaskNode(long id) {
-        return new HumanTaskNodeFactory(this, nodeContainer, id);
+    public SubProcessNodeFactory<T> subProcessNode(long id) {
+        return new SubProcessNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public SubProcessNodeFactory subProcessNode(long id) {
-        return new SubProcessNodeFactory(this, nodeContainer, id);
+    public SplitFactory<T> splitNode(long id) {
+        return new SplitFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public SplitFactory splitNode(long id) {
-        return new SplitFactory(this, nodeContainer, id);
+    public JoinFactory<T> joinNode(long id) {
+        return new JoinFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public JoinFactory joinNode(long id) {
-        return new JoinFactory(this, nodeContainer, id);
+    public RuleSetNodeFactory<T> ruleSetNode(long id) {
+        return new RuleSetNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public RuleSetNodeFactory ruleSetNode(long id) {
-        return new RuleSetNodeFactory(this, nodeContainer, id);
+    public FaultNodeFactory<T> faultNode(long id) {
+        return new FaultNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public FaultNodeFactory faultNode(long id) {
-        return new FaultNodeFactory(this, nodeContainer, id);
+    public EventNodeFactory<T> eventNode(long id) {
+        return new EventNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public EventNodeFactory eventNode(long id) {
-        return new EventNodeFactory(this, nodeContainer, id);
+    public BoundaryEventNodeFactory<T> boundaryEventNode(long id) {
+        return new BoundaryEventNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public BoundaryEventNodeFactory boundaryEventNode(long id) {
-        return new BoundaryEventNodeFactory(this, nodeContainer, id);
+    public CompositeContextNodeFactory<T> compositeContextNode(long id) {
+        return new CompositeContextNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public CompositeContextNodeFactory compositeContextNode(long id) {
-        return new CompositeContextNodeFactory(this, nodeContainer, id);
+    public ForEachNodeFactory<T> forEachNode(long id) {
+        return new ForEachNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public ForEachNodeFactory forEachNode(long id) {
-        return new ForEachNodeFactory(this, nodeContainer, id);
+    public DynamicNodeFactory<T> dynamicNode(long id) {
+        return new DynamicNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public DynamicNodeFactory dynamicNode(long id) {
-        return new DynamicNodeFactory(this, nodeContainer, id);
+    public WorkItemNodeFactory<T> workItemNode(long id) {
+        return new WorkItemNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public WorkItemNodeFactory workItemNode(long id) {
-        return new WorkItemNodeFactory(this, nodeContainer, id);
+    public EventSubProcessNodeFactory<T> eventSubProcessNode(long id) {
+        return new EventSubProcessNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public EventSubProcessNodeFactory eventSubProcessNode(long id) {
-        return new EventSubProcessNodeFactory(this, nodeContainer, id);
+    public StateNodeFactory<T> stateNode(long id) {
+        return new StateNodeFactory<>((T) this, (NodeContainer) node, id);
     }
 
-    public StateNodeFactory stateNode(long id) {
-        return new StateNodeFactory(this, nodeContainer, id);
+    public T connection(long fromId, long toId) {
+        return connection(fromId, toId, fromId + "_" + toId);
     }
 
-    public RuleFlowNodeContainerFactory connection(long fromId, long toId) {
-        return connection(fromId, toId, "");
+    public T connection(long fromId, long toId, String uniqueId) {
+        getConnection(fromId, toId, uniqueId);
+        return (T) this;
     }
 
-    public RuleFlowNodeContainerFactory connection(long fromId, long toId, String uniqueId) {
-        org.kie.api.definition.process.Node from = nodeContainer.getNode(fromId);
-        org.kie.api.definition.process.Node to = nodeContainer.getNode(toId);
-        ConnectionImpl connection = new ConnectionImpl(
-                from, Node.CONNECTION_DEFAULT_TYPE,
-                to, Node.CONNECTION_DEFAULT_TYPE);
-        connection.setMetaData(UNIQUE_ID, uniqueId);
-        return this;
-    }
-
-    public RuleFlowNodeContainerFactory association(long fromId, long toId, String uniqueId) {
-        org.kie.api.definition.process.Node from = nodeContainer.getNode(fromId);
-        org.kie.api.definition.process.Node to = nodeContainer.getNode(toId);
-        ConnectionImpl connection = new ConnectionImpl(
-                from, Node.CONNECTION_DEFAULT_TYPE,
-                to, Node.CONNECTION_DEFAULT_TYPE);
+    public T association(long fromId, long toId, String uniqueId) {
+        Connection connection = getConnection(fromId, toId, uniqueId);
         connection.setMetaData(ASSOCIATION, Boolean.TRUE);
-        connection.setMetaData(UNIQUE_ID, uniqueId);
         connection.setMetaData(HIDDEN, Boolean.TRUE);
-        return this;
+        return (T) this;
     }
 
-    public abstract RuleFlowNodeContainerFactory done();
+    private Connection getConnection(long fromId, long toId, String uniqueId) {
+        Node from = ((NodeContainer) node).getNode(fromId);
+        Node to = ((NodeContainer) node).getNode(toId);
+        Connection connection = new ConnectionImpl(from, CONNECTION_DEFAULT_TYPE, to, CONNECTION_DEFAULT_TYPE);
+        if (uniqueId != null) {
+            connection.setMetaData(UNIQUE_ID, uniqueId);
+        }
+        return connection;
+    }
 
+    public T exceptionHandler(String exception, ExceptionHandler exceptionHandler) {
+        getScope(ExceptionScope.EXCEPTION_SCOPE, ExceptionScope.class).setExceptionHandler(exception, exceptionHandler);
+        return (T) this;
+    }
+
+    public T exceptionHandler(String exception, String dialect, String action) {
+        ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+        exceptionHandler.setAction(new DroolsConsequenceAction(dialect, action));
+        return exceptionHandler(exception, exceptionHandler);
+    }
+
+    private <S extends Context> S getScope(String scopeType, Class<S> scopeClass) {
+        ContextContainer contextContainer = (ContextContainer) node;
+        Context scope = contextContainer.getDefaultContext(scopeType);
+        if (scope == null) {
+            try {
+                scope = scopeClass.getConstructor().newInstance();
+            } catch (ReflectiveOperationException ex) {
+                throw new IllegalStateException(ex);
+            }
+            contextContainer.addContext(scope);
+            contextContainer.setDefaultContext(scope);
+        }
+        return scopeClass.cast(scope);
+    }
 }

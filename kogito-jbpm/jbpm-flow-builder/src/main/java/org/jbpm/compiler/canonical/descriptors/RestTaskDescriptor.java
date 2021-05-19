@@ -18,8 +18,13 @@ package org.jbpm.compiler.canonical.descriptors;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 
@@ -51,6 +56,8 @@ public class RestTaskDescriptor implements TaskDescriptor {
         compilationUnit.setPackageDeclaration("org.kie.kogito.handlers");
         compilationUnit.findFirst(ClassOrInterfaceDeclaration.class).ifPresent(c -> c.setName(className));
         compilationUnit.findAll(ConstructorDeclaration.class).forEach(c -> c.setName(className));
+        compilationUnit.findAll(MethodDeclaration.class, m -> m.getNameAsString().equals("getName"))
+                .forEach(m -> m.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(new StringLiteralExpr(className))))));
         return compilationUnit;
     }
 }

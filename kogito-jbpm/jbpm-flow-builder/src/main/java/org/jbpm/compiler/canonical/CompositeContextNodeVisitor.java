@@ -50,7 +50,7 @@ public class CompositeContextNodeVisitor<T extends CompositeContextNode> extends
         return "compositeContextNode";
     }
 
-    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
+    protected Class<?> factoryClass() {
         return CompositeContextNodeFactory.class;
     }
 

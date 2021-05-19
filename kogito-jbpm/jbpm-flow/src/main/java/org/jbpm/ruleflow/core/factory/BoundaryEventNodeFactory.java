@@ -19,89 +19,43 @@ import org.jbpm.process.core.Context;
 import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.CompensationHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
-import org.jbpm.process.core.event.EventFilter;
-import org.jbpm.process.core.event.EventTransformer;
 import org.jbpm.process.core.event.EventTypeFilter;
 import org.jbpm.process.core.event.NonAcceptingEventTypeFilter;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
 
 import static org.jbpm.ruleflow.core.Metadata.ATTACHED_TO;
 
-public class BoundaryEventNodeFactory extends EventNodeFactory {
+public class BoundaryEventNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractEventNodeFactory<BoundaryEventNodeFactory<T>, T> {
 
     public static final String METHOD_ATTACHED_TO = "attachedTo";
     public static final String METHOD_ADD_COMPENSATION_HANDLER = "addCompensationHandler";
 
-    private NodeContainer nodeContainer;
-
     private String attachedToUniqueId;
 
-    public BoundaryEventNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-        this.nodeContainer = nodeContainer;
+    public BoundaryEventNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new BoundaryEventNode(), id);
+
     }
 
     protected BoundaryEventNode getBoundaryEventNode() {
         return (BoundaryEventNode) getNode();
     }
 
-    @Override
-    protected Node createNode() {
-        return new BoundaryEventNode();
-    }
-
-    @Override
-    public BoundaryEventNodeFactory name(String name) {
-        super.name(name);
-        return this;
-    }
-
-    @Override
-    public BoundaryEventNodeFactory variableName(String variableName) {
-        super.variableName(variableName);
-        return this;
-    }
-
-    @Override
-    public BoundaryEventNodeFactory eventFilter(EventFilter eventFilter) {
-        super.eventFilter(eventFilter);
-        return this;
-    }
-
-    @Override
-    public BoundaryEventNodeFactory eventTransformer(EventTransformer transformer) {
-        super.eventTransformer(transformer);
-        return this;
-    }
-
-    @Override
-    public BoundaryEventNodeFactory scope(String scope) {
-        super.scope(scope);
-        return this;
-    }
-
-    @Override
-    public BoundaryEventNodeFactory metaData(String name, Object value) {
-        super.metaData(name, value);
-        return this;
-    }
-
-    public BoundaryEventNodeFactory attachedTo(long attachedToId) {
+    public BoundaryEventNodeFactory<T> attachedTo(long attachedToId) {
         return attachedTo((String) nodeContainer.getNode(attachedToId).getMetaData().get("UniqueId"));
     }
 
-    public BoundaryEventNodeFactory attachedTo(String attachedToId) {
+    public BoundaryEventNodeFactory<T> attachedTo(String attachedToId) {
         attachedToUniqueId = attachedToId;
         getBoundaryEventNode().setAttachedToNodeId(attachedToUniqueId);
         getBoundaryEventNode().setMetaData(ATTACHED_TO, attachedToUniqueId);
         return this;
     }
 
-    public BoundaryEventNodeFactory addCompensationHandler(String compensationHandlerId) {
+    public BoundaryEventNodeFactory<T> addCompensationHandler(String compensationHandlerId) {
         if (!(nodeContainer instanceof ContextContainer)) {
             return this;
         }
@@ -116,7 +70,7 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
     }
 
     @Override
-    public BoundaryEventNodeFactory eventType(String eventType) {
+    public BoundaryEventNodeFactory<T> eventType(String eventType) {
         if (Metadata.EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType)) {
             EventTypeFilter eventFilter = new NonAcceptingEventTypeFilter();
             eventFilter.setType(eventType);
@@ -127,7 +81,7 @@ public class BoundaryEventNodeFactory extends EventNodeFactory {
         return this;
     }
 
-    public BoundaryEventNodeFactory eventType(String eventTypePrefix, String eventTypeSuffix) {
+    public BoundaryEventNodeFactory<T> eventType(String eventTypePrefix, String eventTypeSuffix) {
         if (attachedToUniqueId == null) {
             throw new IllegalStateException("attachedTo() must be called before");
         }

@@ -18,11 +18,10 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.impl.WorkImpl;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.node.HumanTaskNode;
 
-public class HumanTaskNodeFactory extends WorkItemNodeFactory {
+public class HumanTaskNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractWorkItemNodeFactory<HumanTaskNodeFactory<T>, T> {
 
     public static final String WORK_TASK_NAME = "TaskName";
     public static final String WORK_ACTOR_ID = "ActorId";
@@ -32,56 +31,15 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
     public static final String WORK_SKIPPABLE = "Skippable";
     public static final String WORK_CONTENT = "Content";
 
-    public HumanTaskNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    @Override
-    protected Node createNode() {
-        return new HumanTaskNode();
+    public HumanTaskNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new HumanTaskNode(), id);
     }
 
     protected HumanTaskNode getHumanTaskNode() {
         return (HumanTaskNode) getNode();
     }
 
-    @Override
-    public HumanTaskNodeFactory name(String name) {
-        getNode().setName(name);
-        return this;
-    }
-
-    @Override
-    public HumanTaskNodeFactory inMapping(String parameterName, String variableName) {
-        super.inMapping(parameterName, variableName);
-        return this;
-    }
-
-    @Override
-    public HumanTaskNodeFactory outMapping(String parameterName, String variableName) {
-        super.outMapping(parameterName, variableName);
-        return this;
-    }
-
-    @Override
-    public HumanTaskNodeFactory waitForCompletion(boolean waitForCompletion) {
-        super.waitForCompletion(waitForCompletion);
-        return this;
-    }
-
-    @Override
-    public HumanTaskNodeFactory timer(String delay, String period, String dialect, String action) {
-        super.timer(delay, period, dialect, action);
-        return this;
-    }
-
-    @Override
-    public HumanTaskNodeFactory workParameter(String name, Object value) {
-        super.workParameter(name, value);
-        return this;
-    }
-
-    public HumanTaskNodeFactory taskName(String taskName) {
+    public HumanTaskNodeFactory<T> taskName(String taskName) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -91,7 +49,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory actorId(String actorId) {
+    public HumanTaskNodeFactory<T> actorId(String actorId) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -101,7 +59,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory groupId(String groupId) {
+    public HumanTaskNodeFactory<T> groupId(String groupId) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -111,7 +69,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory priority(String priority) {
+    public HumanTaskNodeFactory<T> priority(String priority) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -121,7 +79,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory comment(String comment) {
+    public HumanTaskNodeFactory<T> comment(String comment) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -131,7 +89,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory skippable(boolean skippable) {
+    public HumanTaskNodeFactory<T> skippable(boolean skippable) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -141,7 +99,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory content(String content) {
+    public HumanTaskNodeFactory<T> content(String content) {
         Work work = getHumanTaskNode().getWork();
         if (work == null) {
             work = new WorkImpl();
@@ -151,7 +109,7 @@ public class HumanTaskNodeFactory extends WorkItemNodeFactory {
         return this;
     }
 
-    public HumanTaskNodeFactory swimlane(String swimlane) {
+    public HumanTaskNodeFactory<T> swimlane(String swimlane) {
         getHumanTaskNode().setSwimlane(swimlane);
         return this;
     }

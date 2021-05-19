@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,22 +15,19 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.core.context.variable.Mappable;
+import org.jbpm.process.core.Context;
+import org.jbpm.process.core.ContextContainer;
 
-public interface MappableNodeFactory<T extends NodeFactory<T, ?>> {
+public interface ContextContainerFactory<T extends NodeFactory<T, ?>> {
+    ContextContainer getContextNode();
 
-    String METHOD_IN_MAPPING = "inMapping";
-    String METHOD_OUT_MAPPING = "outMapping";
-
-    Mappable getMappableNode();
-
-    default T inMapping(String parameterName, String variableName) {
-        getMappableNode().addInMapping(parameterName, variableName);
+    default T context(Context context) {
+        getContextNode().addContext(context);
         return (T) this;
     }
 
-    default T outMapping(String parameterName, String variableName) {
-        getMappableNode().addOutMapping(parameterName, variableName);
+    default T defaultContext(Context context) {
+        getContextNode().setDefaultContext(context);
         return (T) this;
     }
 }

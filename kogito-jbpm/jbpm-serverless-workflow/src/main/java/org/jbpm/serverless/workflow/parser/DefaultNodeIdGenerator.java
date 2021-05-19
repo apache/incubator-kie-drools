@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
-import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.node.CatchLinkNode;
+package org.jbpm.serverless.workflow.parser;
 
-public class CatchLinkNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends ExtendedNodeFactory<CatchLinkNodeFactory<T>, T> {
+import java.util.concurrent.atomic.AtomicLong;
 
-    public CatchLinkNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, new CatchLinkNode(), id);
+public class DefaultNodeIdGenerator implements NodeIdGenerator {
+
+    private DefaultNodeIdGenerator() {
     }
+
+    private AtomicLong idCounter = new AtomicLong(1);
+
+    public static DefaultNodeIdGenerator get() {
+        return new DefaultNodeIdGenerator();
+    }
+
+    @Override
+    public long getId() {
+        return idCounter.getAndIncrement();
+    }
+
 }

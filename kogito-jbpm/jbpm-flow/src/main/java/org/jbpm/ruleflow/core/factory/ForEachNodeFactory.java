@@ -15,90 +15,47 @@
  */
 package org.jbpm.ruleflow.core.factory;
 
-import org.jbpm.process.core.context.exception.ExceptionHandler;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.NodeContainer;
-import org.jbpm.workflow.core.node.CompositeContextNode;
 import org.jbpm.workflow.core.node.ForEachNode;
 
-public class ForEachNodeFactory extends CompositeContextNodeFactory {
+public class ForEachNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends AbstractCompositeNodeFactory<ForEachNodeFactory<T>, T> {
 
     public static final String METHOD_COLLECTION_EXPRESSION = "collectionExpression";
     public static final String METHOD_OUTPUT_COLLECTION_EXPRESSION = "outputCollectionExpression";
     public static final String METHOD_OUTPUT_VARIABLE = "outputVariable";
 
-    public ForEachNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
+    public ForEachNodeFactory(T nodeContainerFactory, NodeContainer nodeContainer, long id) {
+        super(nodeContainerFactory, nodeContainer, new ForEachNode(), id);
     }
 
     protected ForEachNode getForEachNode() {
-        return (ForEachNode) getNodeContainer();
+        return (ForEachNode) node;
     }
 
-    @Override
-    protected CompositeContextNode createNode() {
-        return new ForEachNode();
-    }
-
-    @Override
-    public ForEachNodeFactory name(String name) {
-        super.name(name);
-        return this;
-    }
-
-    public ForEachNodeFactory collectionExpression(String collectionExpression) {
+    public ForEachNodeFactory<T> collectionExpression(String collectionExpression) {
         getForEachNode().setCollectionExpression(collectionExpression);
         return this;
     }
 
     @Override
-    public ForEachNodeFactory exceptionHandler(String exception, ExceptionHandler exceptionHandler) {
-        super.exceptionHandler(exception, exceptionHandler);
+    public ForEachNodeFactory<T> variable(String variableName, DataType dataType) {
+        getForEachNode().setVariable(variableName, dataType);
         return this;
     }
 
-    @Override
-    public ForEachNodeFactory exceptionHandler(String exception, String dialect, String action) {
-        super.exceptionHandler(exception, dialect, action);
-        return this;
-    }
-
-    @Override
-    public ForEachNodeFactory autoComplete(boolean autoComplete) {
-        super.autoComplete(autoComplete);
-        return this;
-    }
-
-    @Override
-    public ForEachNodeFactory linkIncomingConnections(long nodeId) {
-        super.linkIncomingConnections(nodeId);
-        return this;
-    }
-
-    @Override
-    public ForEachNodeFactory linkOutgoingConnections(long nodeId) {
-        super.linkOutgoingConnections(nodeId);
-        return this;
-    }
-
-    @Override
-    public ForEachNodeFactory variable(String name, DataType type) {
-        getForEachNode().setVariable(name, type);
-        return this;
-    }
-
-    public ForEachNodeFactory outputCollectionExpression(String collectionExpression) {
+    public ForEachNodeFactory<T> outputCollectionExpression(String collectionExpression) {
         getForEachNode().setOutputCollectionExpression(collectionExpression);
         return this;
     }
 
-    public ForEachNodeFactory outputVariable(String variableName, DataType dataType) {
+    public ForEachNodeFactory<T> outputVariable(String variableName, DataType dataType) {
         getForEachNode().setOutputVariable(variableName, dataType);
         return this;
     }
 
-    public ForEachNodeFactory waitForCompletion(boolean waitForCompletion) {
+    public ForEachNodeFactory<T> waitForCompletion(boolean waitForCompletion) {
         getForEachNode().setWaitForCompletion(waitForCompletion);
         return this;
     }

@@ -18,23 +18,18 @@ package org.jbpm.ruleflow.core.factory;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;
-import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.node.ActionNode;
 
-import static org.jbpm.ruleflow.core.Metadata.ACTION;
-
-public class ActionNodeFactory extends ExtendedNodeFactory {
+public class ActionNodeFactory<T extends RuleFlowNodeContainerFactory<T, ?>> extends NodeFactory<ActionNodeFactory<T>, T> {
 
     public static final String METHOD_ACTION = "action";
 
-    public ActionNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
-    }
-
-    protected Node createNode() {
-        return new ActionNode();
+    public ActionNodeFactory(T nodeContainerFactory,
+            NodeContainer nodeContainer,
+            long id) {
+        super(nodeContainerFactory, nodeContainer, new ActionNode(), id);
     }
 
     protected ActionNode getActionNode() {
@@ -42,21 +37,22 @@ public class ActionNodeFactory extends ExtendedNodeFactory {
     }
 
     @Override
-    public ActionNodeFactory name(String name) {
-        super.name(name);
+    public ActionNodeFactory<T> name(String name) {
+        getNode().setName(name);
         return this;
     }
 
-    public ActionNodeFactory action(String dialect, String action) {
+    public ActionNodeFactory<T> action(String dialect,
+            String action) {
         return action(dialect, action, false);
     }
 
-    public ActionNodeFactory action(String dialect,
+    public ActionNodeFactory<T> action(String dialect,
             String action,
             boolean isDroolsAction) {
         if (isDroolsAction) {
             DroolsAction droolsAction = new DroolsAction();
-            droolsAction.setMetaData(ACTION, action);
+            droolsAction.setMetaData("Action", action);
             getActionNode().setAction(droolsAction);
         } else {
             getActionNode().setAction(new DroolsConsequenceAction(dialect, action));
@@ -64,9 +60,9 @@ public class ActionNodeFactory extends ExtendedNodeFactory {
         return this;
     }
 
-    public ActionNodeFactory action(Action action) {
+    public ActionNodeFactory<T> action(Action action) {
         DroolsAction droolsAction = new DroolsAction();
-        droolsAction.setMetaData(ACTION, action);
+        droolsAction.setMetaData("Action", action);
         getActionNode().setAction(droolsAction);
         return this;
     }

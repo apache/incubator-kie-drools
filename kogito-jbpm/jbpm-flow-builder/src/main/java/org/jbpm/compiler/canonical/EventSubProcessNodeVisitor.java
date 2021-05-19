@@ -21,7 +21,6 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.EventSubProcessNodeFactory;
 import org.jbpm.workflow.core.node.EventSubProcessNode;
 import org.kie.api.definition.process.Node;
@@ -40,7 +39,7 @@ public class EventSubProcessNodeVisitor extends CompositeContextNodeVisitor<Even
     }
 
     @Override
-    protected Class<? extends CompositeContextNodeFactory> factoryClass() {
+    protected Class<?> factoryClass() {
         return EventSubProcessNodeFactory.class;
     }
 

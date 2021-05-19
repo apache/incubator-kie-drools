@@ -20,21 +20,22 @@ import java.util.List;
 
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.workflow.core.DroolsAction;
+import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.NodeContainer;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 
-public abstract class ExtendedNodeFactory extends NodeFactory {
+public abstract class ExtendedNodeFactory<T extends NodeFactory<T, P>, P extends RuleFlowNodeContainerFactory<P, ?>> extends NodeFactory<T, P> {
 
-    protected ExtendedNodeFactory(RuleFlowNodeContainerFactory nodeContainerFactory, NodeContainer nodeContainer, long id) {
-        super(nodeContainerFactory, nodeContainer, id);
+    protected ExtendedNodeFactory(P nodeContainerFactory, NodeContainer nodeContainer, Node node, long id) {
+        super(nodeContainerFactory, nodeContainer, node, id);
     }
 
     protected ExtendedNodeImpl getExtendedNode() {
         return (ExtendedNodeImpl) getNode();
     }
 
-    public ExtendedNodeFactory onEntryAction(String dialect, String action) {
+    public T onEntryAction(String dialect, String action) {
         if (getExtendedNode().getActions(dialect) != null) {
             getExtendedNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
         } else {
@@ -42,10 +43,10 @@ public abstract class ExtendedNodeFactory extends NodeFactory {
             actions.add(new DroolsConsequenceAction(dialect, action));
             getExtendedNode().setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, actions);
         }
-        return this;
+        return (T) this;
     }
 
-    public ExtendedNodeFactory onExitAction(String dialect, String action) {
+    public T onExitAction(String dialect, String action) {
         if (getExtendedNode().getActions(dialect) != null) {
             getExtendedNode().getActions(dialect).add(new DroolsConsequenceAction(dialect, action));
         } else {
@@ -53,6 +54,6 @@ public abstract class ExtendedNodeFactory extends NodeFactory {
             actions.add(new DroolsConsequenceAction(dialect, action));
             getExtendedNode().setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, actions);
         }
-        return this;
+        return (T) this;
     }
 }
