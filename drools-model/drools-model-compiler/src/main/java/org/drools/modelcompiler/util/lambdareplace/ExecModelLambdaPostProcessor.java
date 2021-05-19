@@ -412,7 +412,7 @@ public class ExecModelLambdaPostProcessor {
 
     private Stream<ReplacedLambdaResult> replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
-            CreatedClass externalisedLambda = lambdaExtractor.apply(exprId).create(lambdaExpr.toString(), imports, staticImports);
+            CreatedClass externalisedLambda = lambdaExtractor.apply(exprId).create(lambdaExpr.clone(), imports, staticImports);
             ClassOrInterfaceType type = toClassOrInterfaceType(externalisedLambda.getClassNameWithPackage());
             return Stream.of(new ReplacedLambdaResult(lambdaExpr, lambdaInstance(type), externalisedLambda));
         } catch (DoNotConvertLambdaException e) {
