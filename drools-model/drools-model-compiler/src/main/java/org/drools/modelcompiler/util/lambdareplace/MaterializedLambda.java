@@ -47,6 +47,7 @@ import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.functions.HashedExpression;
 
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
@@ -98,7 +99,6 @@ abstract class MaterializedLambda {
         return new CreatedClass(compilationUnit, className, isolatedPackageName);
     }
 
-
     /*
         Externalised Lambda need to be isolated in a separate packages because putting too many classes
         in the same package as the rule might break Java 8 compiler while importing *
@@ -144,7 +144,7 @@ abstract class MaterializedLambda {
 
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
         EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
-        lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
+        lambdaClass.addAnnotation(createSimpleAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class));
         lambdaClass.setImplementedTypes(createImplementedTypes());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
@@ -170,9 +170,8 @@ abstract class MaterializedLambda {
     protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
-        List<Type> typeArguments = lambdaParametersToType();
-        if (!typeArguments.isEmpty()) {
-            functionType.setTypeArguments(NodeList.nodeList(typeArguments));
+        if (!lambdaParameters.isEmpty()) {
+            functionType.setTypeArguments(lambdaParametersToTypeArguments());
         }
 
         return NodeList.nodeList(functionType, lambdaExtractorType());
@@ -182,10 +181,12 @@ abstract class MaterializedLambda {
         return toClassOrInterfaceType(HashedExpression.class);
     }
 
-    List<Type> lambdaParametersToType() {
-        return lambdaParameters.stream()
-                .map(p -> p.type)
-                .collect(Collectors.toList());
+    NodeList<Type> lambdaParametersToTypeArguments() {
+        NodeList<Type> typeArguments = new NodeList<>();
+        for (LambdaParameter lp : lambdaParameters) {
+            typeArguments.add(lp.type);
+        }
+        return typeArguments;
     }
 
     protected String classHash(String sourceCode) {

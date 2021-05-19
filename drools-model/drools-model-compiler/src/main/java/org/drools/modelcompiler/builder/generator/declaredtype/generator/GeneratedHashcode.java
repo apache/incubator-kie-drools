@@ -32,8 +32,8 @@ import com.github.javaparser.ast.type.Type;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 
 class GeneratedHashcode {
 
@@ -54,7 +54,7 @@ class GeneratedHashcode {
 
         final Type returnType = toClassOrInterfaceType(int.class);
         final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, HASH_CODE);
-        equals.addAnnotation(OVERRIDE);
+        equals.addAnnotation( createSimpleAnnotation(Override.class) );
         equals.setBody(new BlockStmt(hashCodeStatements));
         return equals;
     }

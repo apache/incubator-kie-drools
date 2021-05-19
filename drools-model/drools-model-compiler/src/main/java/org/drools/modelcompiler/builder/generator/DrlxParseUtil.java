@@ -42,7 +42,9 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -60,8 +62,11 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -547,6 +552,14 @@ public class DrlxParseUtil {
             return new UnknownType();
         }
         return ruleContext.getDelarationType(variableName);
+    }
+
+    public static AnnotationExpr createSimpleAnnotation(Class<?> annotationClass) {
+        return createSimpleAnnotation(annotationClass.getCanonicalName());
+    }
+
+    public static AnnotationExpr createSimpleAnnotation(String className) {
+        return new NormalAnnotationExpr(new Name(className), new NodeList<MemberValuePair>());
     }
 
     public static Type classToReferenceType(Class<?> declarationClass) {

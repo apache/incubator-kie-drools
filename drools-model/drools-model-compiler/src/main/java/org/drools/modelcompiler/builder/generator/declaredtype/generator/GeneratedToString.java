@@ -29,9 +29,9 @@ import com.github.javaparser.ast.type.Type;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 
 public class GeneratedToString {
 
@@ -57,7 +57,7 @@ public class GeneratedToString {
 
         final Type returnType = toClassOrInterfaceType(String.class);
         final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, TO_STRING);
-        equals.addAnnotation(OVERRIDE);
+        equals.addAnnotation( createSimpleAnnotation(Override.class) );
         equals.setBody(new BlockStmt(nodeList(toStringStatement)));
         return equals;
     }
