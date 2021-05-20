@@ -131,7 +131,6 @@ public abstract class AbstractTrustyServiceIT {
     @Test
     public void givenAModelWhenGetModelByIdIsCalledThenTheModelIsReturned() {
         String model = "definition";
-        String modelId = "name:namespace";
         storeModel(model);
 
         DMNModelWithMetadata result = getModel();
@@ -153,7 +152,7 @@ public abstract class AbstractTrustyServiceIT {
     @Test
     public void searchExecutionsByPrefixTest() {
         String executionId = "da8ad1e9-a679-4ded-a6d5-53fd019e7002";
-        Long executionTimestamp = 1617270053L;
+        long executionTimestamp = 1617270053L;
         Instant instant = Instant.ofEpochMilli(executionTimestamp);
         storeExecution(executionId, executionTimestamp);
 
@@ -404,7 +403,7 @@ public abstract class AbstractTrustyServiceIT {
         assertNotNull(result);
     }
 
-    private Decision storeExecution(String executionId, Long timestamp) {
+    private void storeExecution(String executionId, Long timestamp) {
         Decision decision = new Decision();
         decision.setExecutionId(executionId);
         decision.setExecutionTimestamp(timestamp);
@@ -412,10 +411,9 @@ public abstract class AbstractTrustyServiceIT {
         decision.setExecutedModelNamespace("executedModelNamespace");
         decision.setExecutedModelName("executedModelName");
         trustyService.storeDecision(decision.getExecutionId(), decision);
-        return decision;
     }
 
-    private DMNModelWithMetadata storeModel(String model) {
+    private void storeModel(String model) {
         DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "modelVersion", "dmnVersion", "name", "namespace", model);
         ModelIdentifier identifier = new ModelIdentifier("groupId",
                 "artifactId",
@@ -423,7 +421,6 @@ public abstract class AbstractTrustyServiceIT {
                 "name",
                 "namespace");
         trustyService.storeModel(identifier, dmnModelWithMetadata);
-        return dmnModelWithMetadata;
     }
 
     private DMNModelWithMetadata getModel() {

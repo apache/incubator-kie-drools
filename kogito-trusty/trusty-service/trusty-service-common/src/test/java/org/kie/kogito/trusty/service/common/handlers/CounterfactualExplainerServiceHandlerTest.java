@@ -73,6 +73,7 @@ public class CounterfactualExplainerServiceHandlerTest
     @Override
     public void setup() {
         super.setup();
+        when(result.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.FINAL);
         when(result.getSolutionId()).thenReturn(SOLUTION_ID);
     }
 
@@ -82,6 +83,30 @@ public class CounterfactualExplainerServiceHandlerTest
         when(query.execute()).thenReturn(List.of(result));
 
         assertEquals(result, handler.getExplainabilityResultById(EXECUTION_ID));
+    }
+
+    @Test
+    public void testGetExplainabilityResultById_WhenMultipleStored() {
+        CounterfactualExplainabilityResult intermediate = mock(CounterfactualExplainabilityResult.class);
+        when(intermediate.getExecutionId()).thenReturn(EXECUTION_ID);
+        when(intermediate.getSolutionId()).thenReturn(SOLUTION_ID);
+        when(intermediate.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.INTERMEDIATE);
+
+        when(query.execute()).thenReturn(List.of(intermediate, result));
+
+        assertEquals(result, handler.getExplainabilityResultById(EXECUTION_ID));
+    }
+
+    @Test
+    public void testGetExplainabilityResultById_WhenOnlyIntermediateStored() {
+        CounterfactualExplainabilityResult intermediate = mock(CounterfactualExplainabilityResult.class);
+        when(intermediate.getExecutionId()).thenReturn(EXECUTION_ID);
+        when(intermediate.getSolutionId()).thenReturn(SOLUTION_ID);
+        when(intermediate.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.INTERMEDIATE);
+
+        when(query.execute()).thenReturn(List.of(intermediate));
+
+        assertThrows(IllegalArgumentException.class, () -> handler.getExplainabilityResultById(EXECUTION_ID));
     }
 
     @Test

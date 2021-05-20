@@ -39,9 +39,11 @@ import org.eclipse.microprofile.openapi.annotations.responses.APIResponses;
 import org.jboss.resteasy.annotations.jaxrs.PathParam;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
+import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
 import org.kie.kogito.trusty.service.common.responses.DecisionStructuredInputsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
@@ -129,15 +131,15 @@ public class ExplainabilityApiV1 {
     @GET
     @Path("/{executionId}/explanations/counterfactuals")
     @APIResponses(value = {
-            @APIResponse(description = "All counterfactuals for a decision.", responseCode = "200",
+            @APIResponse(description = "A summary of all counterfactuals for a decision.", responseCode = "200",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(
-            summary = "Returns all of the counterfactuals for a decision.",
-            description = "Returns all of the counterfactuals for a particular decision.")
+            summary = "Returns a summary of all of the counterfactuals for a decision.",
+            description = "Returns a summary of all of the counterfactuals for a particular decision.")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllCounterfactuals(
+    public Response getAllCounterfactualsSummary(
             @Parameter(
                     name = "executionId",
                     description = "The execution ID.",
@@ -161,15 +163,15 @@ public class ExplainabilityApiV1 {
     @GET
     @Path("/{executionId}/explanations/counterfactuals/{counterfactualId}")
     @APIResponses(value = {
-            @APIResponse(description = "A specific counterfactuals for a decision.", responseCode = "200",
+            @APIResponse(description = "Details of a specific counterfactual explanation for a decision.", responseCode = "200",
                     content = @Content(mediaType = MediaType.APPLICATION_JSON, schema = @Schema(type = SchemaType.OBJECT, implementation = DecisionStructuredInputsResponse.class))),
             @APIResponse(description = "Bad Request", responseCode = "400", content = @Content(mediaType = MediaType.TEXT_PLAIN))
     })
     @Operation(
-            summary = "Returns a specific counterfactual for a decision.",
-            description = "Returns a specific counterfactual for a particular decision.")
+            summary = "Returns details of a specific counterfactual explanation for a decision.",
+            description = "Returns details of a specific counterfactual explanation for a particular decision.")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getCounterfactual(
+    public Response getCounterfactualDetails(
             @Parameter(
                     name = "executionId",
                     description = "The execution ID.",
@@ -180,14 +182,21 @@ public class ExplainabilityApiV1 {
                     description = "The Counterfactual ID.",
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("counterfactualId") String counterfactualId) {
-        return getCounterfactualForExecution(executionId, counterfactualId)
-                .map(obj -> new CounterfactualRequestResponse(obj.getExecutionId(), obj.getCounterfactualId()))
+        return getCounterfactualRequestForExecution(executionId, counterfactualId)
+                .map(request -> {
+                    List<CounterfactualExplainabilityResult> results = trustyService.getCounterfactualResults(executionId, counterfactualId);
+                    return new CounterfactualResultsResponse(executionId,
+                            counterfactualId,
+                            request.getGoals(),
+                            request.getSearchDomains(),
+                            results);
+                })
                 .map(Response::ok)
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
                 .build();
     }
 
-    private Optional<CounterfactualExplainabilityRequest> getCounterfactualForExecution(String executionId, String counterfactualId) {
+    private Optional<CounterfactualExplainabilityRequest> getCounterfactualRequestForExecution(String executionId, String counterfactualId) {
         try {
             return Optional.ofNullable(trustyService.getCounterfactualRequest(executionId, counterfactualId));
         } catch (IllegalArgumentException ex) {

@@ -82,9 +82,13 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
         if (Objects.isNull(counterfactuals) || counterfactuals.isEmpty()) {
             throw new IllegalArgumentException(String.format("A Counterfactual result for Execution ID '%s' does not exist in the Counterfactual results storage.", executionId));
         }
-        // TODO {manstis} See https://issues.redhat.com/browse/FAI-440. 
-        // CounterfactualExplainabilityResult is a single solution however we need to return a collection of solutions.
-        return counterfactuals.get(0);
+
+        return counterfactuals
+                .stream()
+                .filter(counterfactual -> counterfactual.getStage().equals(CounterfactualExplainabilityResult.Stage.FINAL))
+                .findFirst()
+                .orElseThrow(
+                        () -> new IllegalArgumentException(String.format("A FINAL Counterfactual result for Execution ID '%s' does not exist in the Counterfactual results storage.", executionId)));
     }
 
     @Override

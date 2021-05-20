@@ -17,6 +17,7 @@
 package org.kie.kogito.trusty.service.common.api;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,11 +28,13 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
+import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
@@ -70,6 +73,25 @@ class ExplainabilityApiV1IT {
 
     private static final String TEST_COUNTERFACTUAL_ID = "counterfactualId";
 
+    private static final CounterfactualExplainabilityResult SOLUTION1 = new CounterfactualExplainabilityResult(TEST_EXECUTION_ID,
+            TEST_COUNTERFACTUAL_ID,
+            "solution1",
+            ExplainabilityStatus.SUCCEEDED,
+            "",
+            true,
+            CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
+            Collections.emptyList(),
+            Collections.emptyList());
+    private static final CounterfactualExplainabilityResult SOLUTION2 = new CounterfactualExplainabilityResult(TEST_EXECUTION_ID,
+            TEST_COUNTERFACTUAL_ID,
+            "solution2",
+            ExplainabilityStatus.SUCCEEDED,
+            "",
+            true,
+            CounterfactualExplainabilityResult.Stage.FINAL,
+            Collections.emptyList(),
+            Collections.emptyList());
+
     @InjectMock
     TrustyService executionService;
 
@@ -89,6 +111,10 @@ class ExplainabilityApiV1IT {
 
     private static CounterfactualExplainabilityRequest buildValidCounterfactual() {
         return new CounterfactualExplainabilityRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID);
+    }
+
+    private static List<CounterfactualExplainabilityResult> buildValidCounterfactualResults() {
+        return List.of(SOLUTION1, SOLUTION2);
     }
 
     @Test
@@ -157,7 +183,8 @@ class ExplainabilityApiV1IT {
                 .filter(new ResponseLoggingFilter())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(getCounterfactualJsonRequest())
-                .when().post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
+                .when()
+                .post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
                 .as(CounterfactualRequestResponse.class);
 
         assertNotNull(response);
@@ -230,7 +257,8 @@ class ExplainabilityApiV1IT {
                 .filter(new ResponseLoggingFilter())
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(getCounterfactualWithStructuredModelJsonRequest())
-                .when().post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
+                .when()
+                .post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
                 .as(CounterfactualRequestResponse.class);
 
         assertNotNull(response);
@@ -314,6 +342,71 @@ class ExplainabilityApiV1IT {
         assertEquals(100, domain1Child3Def.getUpperBound().asInt());
     }
 
+    @Test
+    void testCounterfactualResultsWithRequest() {
+        mockServiceWithCounterfactualRequest();
+        mockServiceWithCounterfactualResults();
+
+        given()
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(getCounterfactualJsonRequest())
+                .when()
+                .post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
+                .as(CounterfactualRequestResponse.class);
+
+        CounterfactualResultsResponse resultsResponse = given()
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .when()
+                .get("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals/" + TEST_COUNTERFACTUAL_ID)
+                .as(CounterfactualResultsResponse.class);
+
+        assertNotNull(resultsResponse);
+        assertNotNull(resultsResponse.getExecutionId());
+        assertNotNull(resultsResponse.getCounterfactualId());
+        assertEquals(resultsResponse.getExecutionId(), TEST_EXECUTION_ID);
+        assertEquals(resultsResponse.getCounterfactualId(), TEST_COUNTERFACTUAL_ID);
+        assertEquals(2, resultsResponse.getSolutions().size());
+    }
+
+    @Test
+    void testCounterfactualResultsWithRequestWithoutResults() {
+        mockServiceWithCounterfactualRequest();
+
+        given()
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(getCounterfactualJsonRequest())
+                .when()
+                .post("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals")
+                .as(CounterfactualRequestResponse.class);
+
+        CounterfactualResultsResponse resultsResponse = given()
+                .filter(new RequestLoggingFilter())
+                .filter(new ResponseLoggingFilter())
+                .when()
+                .get("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals/" + TEST_COUNTERFACTUAL_ID)
+                .as(CounterfactualResultsResponse.class);
+
+        assertNotNull(resultsResponse);
+        assertNotNull(resultsResponse.getExecutionId());
+        assertNotNull(resultsResponse.getCounterfactualId());
+        assertEquals(resultsResponse.getExecutionId(), TEST_EXECUTION_ID);
+        assertEquals(resultsResponse.getCounterfactualId(), TEST_COUNTERFACTUAL_ID);
+        assertTrue(resultsResponse.getSolutions().isEmpty());
+    }
+
+    @Test
+    void testCounterfactualResultsWithoutRequest() {
+        given().filter(new ResponseLoggingFilter())
+                .when()
+                .get("/executions/decisions/" + TEST_EXECUTION_ID + "/explanations/counterfactuals/" + TEST_COUNTERFACTUAL_ID)
+                .then().statusCode(400);
+    }
+
     private void mockServiceWithExplainabilityResult() {
         when(executionService.getExplainabilityResultById(eq(TEST_EXECUTION_ID), any()))
                 .thenReturn(buildValidExplainabilityResult());
@@ -332,5 +425,13 @@ class ExplainabilityApiV1IT {
     private void mockServiceWithCounterfactualRequest() {
         when(executionService.requestCounterfactuals(eq(TEST_EXECUTION_ID), any(), any()))
                 .thenReturn(buildValidCounterfactual());
+        when(executionService.getCounterfactualRequest(eq(TEST_EXECUTION_ID), eq(TEST_COUNTERFACTUAL_ID)))
+                .thenReturn(buildValidCounterfactual());
     }
+
+    private void mockServiceWithCounterfactualResults() {
+        when(executionService.getCounterfactualResults(eq(TEST_EXECUTION_ID), eq(TEST_COUNTERFACTUAL_ID)))
+                .thenReturn(buildValidCounterfactualResults());
+    }
+
 }

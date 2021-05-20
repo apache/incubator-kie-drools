@@ -24,6 +24,7 @@ import javax.enterprise.inject.Instance;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.function.ThrowingSupplier;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ExplainabilityStatus;
@@ -92,17 +93,28 @@ class ExplanationServiceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testLIMEExplainAsyncSucceeded() {
+        testLIMEExplainAsyncSuccess(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+    }
+
+    @Test
+    void testLIMEExplainAsyncSucceededWithoutCallback() {
+        testLIMEExplainAsyncSuccess(() -> explanationService.explainAsync(LIME_REQUEST)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+    }
+
+    @SuppressWarnings("unchecked")
+    void testLIMEExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResultDto> invocation) {
         when(instance.stream()).thenReturn(Stream.of(limeExplainerServiceHandlerMock));
         when(limeExplainerMock.explainAsync(any(Prediction.class),
                 eq(predictionProviderMock),
                 any(Consumer.class)))
                         .thenReturn(CompletableFuture.completedFuture(SALIENCY_MAP));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(LIME_REQUEST, callbackMock)
-                .toCompletableFuture()
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(invocation);
 
         assertNotNull(resultDto);
         assertTrue(resultDto instanceof LIMEExplainabilityResultDto);
@@ -123,17 +135,28 @@ class ExplanationServiceImplTest {
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     void testCounterfactualsExplainAsyncSucceeded() {
+        testCounterfactualsExplainAsyncSuccess(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+    }
+
+    @Test
+    void testCounterfactualsExplainAsyncSucceededWithoutCallback() {
+        testCounterfactualsExplainAsyncSuccess(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST)
+                .toCompletableFuture()
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+    }
+
+    @SuppressWarnings("unchecked")
+    void testCounterfactualsExplainAsyncSuccess(ThrowingSupplier<BaseExplainabilityResultDto> invocation) {
         when(instance.stream()).thenReturn(Stream.of(cfExplainerServiceHandlerMock));
 
         when(cfExplainerMock.explainAsync(any(Prediction.class),
                 eq(predictionProviderMock),
                 any(Consumer.class))).thenReturn(CompletableFuture.completedFuture(COUNTERFACTUAL_RESULT));
 
-        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(() -> explanationService.explainAsync(COUNTERFACTUAL_REQUEST, callbackMock)
-                .toCompletableFuture()
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit()));
+        BaseExplainabilityResultDto resultDto = assertDoesNotThrow(invocation);
 
         assertNotNull(resultDto);
         assertTrue(resultDto instanceof CounterfactualExplainabilityResultDto);

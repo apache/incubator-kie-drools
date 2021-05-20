@@ -32,6 +32,8 @@ import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -104,17 +106,52 @@ public class ExplainerServiceHandlerRegistryTest {
 
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public void testCounterfactual_getExplainabilityResultById() {
+    public void testCounterfactual_getExplainabilityResultByIdWithFinalResult() {
         Query query = mock(Query.class);
         CounterfactualExplainabilityResult result = mock(CounterfactualExplainabilityResult.class);
+        when(result.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.FINAL);
         when(storageCounterfactual.containsKey(eq(EXECUTION_ID))).thenReturn(true);
         when(storageCounterfactual.query()).thenReturn(query);
         when(query.filter(any())).thenReturn(query);
         when(query.execute()).thenReturn(List.of(result));
 
-        registry.getExplainabilityResultById(EXECUTION_ID, CounterfactualExplainabilityResult.class);
+        CounterfactualExplainabilityResult actual = registry.getExplainabilityResultById(EXECUTION_ID, CounterfactualExplainabilityResult.class);
 
         verify(counterfactualExplainerServiceHandler).getExplainabilityResultById(eq(EXECUTION_ID));
+        assertEquals(result, actual);
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void testCounterfactual_getExplainabilityResultByIdWithOnlyIntermediateResults() {
+        Query query = mock(Query.class);
+        CounterfactualExplainabilityResult result = mock(CounterfactualExplainabilityResult.class);
+        when(result.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.INTERMEDIATE);
+        when(storageCounterfactual.containsKey(eq(EXECUTION_ID))).thenReturn(true);
+        when(storageCounterfactual.query()).thenReturn(query);
+        when(query.filter(any())).thenReturn(query);
+        when(query.execute()).thenReturn(List.of(result));
+
+        assertThrows(IllegalArgumentException.class, () -> registry.getExplainabilityResultById(EXECUTION_ID, CounterfactualExplainabilityResult.class));
+    }
+
+    @Test
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public void testCounterfactual_getExplainabilityResultByIdWithAllResults() {
+        Query query = mock(Query.class);
+        CounterfactualExplainabilityResult result1 = mock(CounterfactualExplainabilityResult.class);
+        CounterfactualExplainabilityResult result2 = mock(CounterfactualExplainabilityResult.class);
+        when(result1.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.INTERMEDIATE);
+        when(result2.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.FINAL);
+        when(storageCounterfactual.containsKey(eq(EXECUTION_ID))).thenReturn(true);
+        when(storageCounterfactual.query()).thenReturn(query);
+        when(query.filter(any())).thenReturn(query);
+        when(query.execute()).thenReturn(List.of(result1, result2));
+
+        CounterfactualExplainabilityResult actual = registry.getExplainabilityResultById(EXECUTION_ID, CounterfactualExplainabilityResult.class);
+
+        verify(counterfactualExplainerServiceHandler).getExplainabilityResultById(eq(EXECUTION_ID));
+        assertEquals(result2, actual);
     }
 
     @Test

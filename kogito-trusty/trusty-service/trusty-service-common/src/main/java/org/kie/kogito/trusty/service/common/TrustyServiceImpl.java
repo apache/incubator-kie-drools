@@ -22,6 +22,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -43,6 +44,7 @@ import org.kie.kogito.trusty.service.common.messaging.outgoing.ExplainabilityReq
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -249,21 +251,34 @@ public class TrustyServiceImpl implements TrustyService {
 
     @Override
     public CounterfactualExplainabilityRequest getCounterfactualRequest(String executionId, String counterfactualId) {
-        Storage<String, CounterfactualExplainabilityRequest> storage = storageService.getCounterfactualRequestStorage();
+        List<CounterfactualExplainabilityRequest> requests = getCounterfactualsFromStorage(executionId,
+                counterfactualId,
+                storageService.getCounterfactualRequestStorage());
 
-        AttributeFilter<String> filterExecutionId = QueryFilterFactory.equalTo(CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD, executionId);
-        AttributeFilter<String> filterCounterfactualId = QueryFilterFactory.equalTo(CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD, counterfactualId);
-        List<AttributeFilter<?>> filters = List.of(filterExecutionId, filterCounterfactualId);
-        List<CounterfactualExplainabilityRequest> counterfactuals = storage.query().filter(filters).execute();
-
-        if (counterfactuals.isEmpty()) {
+        if (requests.isEmpty()) {
             throw new IllegalArgumentException(String.format("Counterfactual for Execution Id '%s' and Counterfactual Id '%s' does not exist in the storage.", executionId, counterfactualId));
         }
-        if (counterfactuals.size() > 1) {
+        if (requests.size() > 1) {
             throw new IllegalArgumentException(String.format("Multiple Counterfactuals for Execution Id '%s' and Counterfactual Id '%s' found in the storage.", executionId, counterfactualId));
         }
 
-        return counterfactuals.get(0);
+        return requests.get(0);
+    }
+
+    @Override
+    public List<CounterfactualExplainabilityResult> getCounterfactualResults(String executionId, String counterfactualId) {
+        return getCounterfactualsFromStorage(executionId,
+                counterfactualId,
+                storageService.getCounterfactualResultStorage());
+    }
+
+    private <T> List<T> getCounterfactualsFromStorage(String executionId, String counterfactualId, Storage<String, T> storage) {
+        AttributeFilter<String> filterExecutionId = QueryFilterFactory.equalTo(CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD, executionId);
+        AttributeFilter<String> filterCounterfactualId = QueryFilterFactory.equalTo(CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD, counterfactualId);
+        List<AttributeFilter<?>> filters = List.of(filterExecutionId, filterCounterfactualId);
+        List<T> result = storage.query().filter(filters).execute();
+
+        return Objects.nonNull(result) ? result : Collections.emptyList();
     }
 
     private ModelIdentifierDto createDecisionModelIdentifierDto(Decision decision) {

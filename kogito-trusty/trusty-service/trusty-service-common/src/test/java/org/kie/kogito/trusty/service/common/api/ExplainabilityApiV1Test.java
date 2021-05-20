@@ -26,8 +26,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.responses.CounterfactualRequestResponse;
+import org.kie.kogito.trusty.service.common.responses.CounterfactualResultsResponse;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
+import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.mockito.Mockito;
+
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -90,17 +98,17 @@ public class ExplainabilityApiV1Test {
     public void testGetAllCounterfactualsWhenExecutionDoesNotExist() {
         when(trustyService.getCounterfactualRequests(anyString())).thenThrow(new IllegalArgumentException());
 
-        Response response = explainabilityEndpoint.getAllCounterfactuals(EXECUTION_ID);
+        Response response = explainabilityEndpoint.getAllCounterfactualsSummary(EXECUTION_ID);
         assertNotNull(response);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test
-    @SuppressWarnings({ "unchecked" })
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testGetAllCounterfactualsWhenExecutionDoesExist() {
         when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID)));
 
-        Response response = explainabilityEndpoint.getAllCounterfactuals(EXECUTION_ID);
+        Response response = explainabilityEndpoint.getAllCounterfactualsSummary(EXECUTION_ID);
         assertNotNull(response);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Object entity = response.getEntity();
@@ -115,26 +123,99 @@ public class ExplainabilityApiV1Test {
     }
 
     @Test
-    public void testGetCounterfactualWhenExecutionDoesNotExist() {
+    public void testGetCounterfactualResultsWhenExecutionDoesNotExist() {
         when(trustyService.getCounterfactualRequest(anyString(), anyString())).thenThrow(new IllegalArgumentException());
 
-        Response response = explainabilityEndpoint.getCounterfactual(EXECUTION_ID, COUNTERFACTUAL_ID);
+        Response response = explainabilityEndpoint.getCounterfactualDetails(EXECUTION_ID, COUNTERFACTUAL_ID);
         assertNotNull(response);
         assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
     }
 
     @Test
-    public void testGetCounterfactualWhenExecutionDoesExist() {
-        when(trustyService.getCounterfactualRequest(anyString(), anyString())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
+    public void testGetCounterfactualResultsWhenExecutionDoesExist() {
+        TypedVariableWithValue goal = TypedVariableWithValue.buildUnit("unit",
+                "string",
+                new TextNode("hello"));
+        CounterfactualSearchDomain searchDomain =
+                CounterfactualSearchDomain.buildUnit("unit",
+                        "string",
+                        true,
+                        new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
+        when(trustyService.getCounterfactualRequest(anyString(), anyString()))
+                .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                        COUNTERFACTUAL_ID,
+                        List.of(goal),
+                        List.of(searchDomain)));
 
-        Response response = explainabilityEndpoint.getCounterfactual(EXECUTION_ID, COUNTERFACTUAL_ID);
+        Response response = explainabilityEndpoint.getCounterfactualDetails(EXECUTION_ID, COUNTERFACTUAL_ID);
         assertNotNull(response);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         Object entity = response.getEntity();
         assertNotNull(entity);
-        assertTrue(entity instanceof CounterfactualRequestResponse);
-        CounterfactualRequestResponse counterfactualRequestResponse = (CounterfactualRequestResponse) entity;
-        assertEquals(EXECUTION_ID, counterfactualRequestResponse.getExecutionId());
-        assertEquals(COUNTERFACTUAL_ID, counterfactualRequestResponse.getCounterfactualId());
+        assertTrue(entity instanceof CounterfactualResultsResponse);
+        CounterfactualResultsResponse resultsResponse = (CounterfactualResultsResponse) entity;
+        assertEquals(EXECUTION_ID, resultsResponse.getExecutionId());
+        assertEquals(COUNTERFACTUAL_ID, resultsResponse.getCounterfactualId());
+        assertEquals(1, resultsResponse.getGoals().size());
+        assertEquals(goal, resultsResponse.getGoals().iterator().next());
+        assertEquals(1, resultsResponse.getSearchDomains().size());
+        assertEquals(searchDomain, resultsResponse.getSearchDomains().iterator().next());
+        assertTrue(resultsResponse.getSolutions().isEmpty());
     }
+
+    @Test
+    public void testGetCounterfactualResultsWhenExecutionDoesExistAndResultsHaveBeenCreated() {
+        TypedVariableWithValue goal = TypedVariableWithValue.buildUnit("unit",
+                "string",
+                new TextNode("hello"));
+        CounterfactualSearchDomain searchDomain =
+                CounterfactualSearchDomain.buildUnit("unit",
+                        "string",
+                        true,
+                        new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
+
+        CounterfactualExplainabilityResult solution1 = new CounterfactualExplainabilityResult(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                "solution1",
+                ExplainabilityStatus.SUCCEEDED,
+                "",
+                true,
+                CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
+                Collections.emptyList(),
+                Collections.emptyList());
+        CounterfactualExplainabilityResult solution2 = new CounterfactualExplainabilityResult(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                "solution2",
+                ExplainabilityStatus.SUCCEEDED,
+                "",
+                true,
+                CounterfactualExplainabilityResult.Stage.FINAL,
+                Collections.emptyList(),
+                Collections.emptyList());
+
+        when(trustyService.getCounterfactualRequest(anyString(), anyString()))
+                .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                        COUNTERFACTUAL_ID,
+                        List.of(goal),
+                        List.of(searchDomain)));
+        when(trustyService.getCounterfactualResults(anyString(), anyString())).thenReturn(List.of(solution1, solution2));
+
+        Response response = explainabilityEndpoint.getCounterfactualDetails(EXECUTION_ID, COUNTERFACTUAL_ID);
+        assertNotNull(response);
+        assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+        Object entity = response.getEntity();
+        assertNotNull(entity);
+        assertTrue(entity instanceof CounterfactualResultsResponse);
+        CounterfactualResultsResponse resultsResponse = (CounterfactualResultsResponse) entity;
+        assertEquals(EXECUTION_ID, resultsResponse.getExecutionId());
+        assertEquals(COUNTERFACTUAL_ID, resultsResponse.getCounterfactualId());
+        assertEquals(1, resultsResponse.getGoals().size());
+        assertEquals(goal, resultsResponse.getGoals().iterator().next());
+        assertEquals(1, resultsResponse.getSearchDomains().size());
+        assertEquals(searchDomain, resultsResponse.getSearchDomains().iterator().next());
+        assertEquals(2, resultsResponse.getSolutions().size());
+        assertEquals(solution1, resultsResponse.getSolutions().get(0));
+        assertEquals(solution2, resultsResponse.getSolutions().get(1));
+    }
+
 }

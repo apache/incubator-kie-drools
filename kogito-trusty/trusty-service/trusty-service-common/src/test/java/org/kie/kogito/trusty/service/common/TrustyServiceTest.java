@@ -20,6 +20,7 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -46,6 +47,7 @@ import org.kie.kogito.trusty.service.common.mocks.StorageImplMock;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
@@ -77,7 +79,8 @@ import static org.mockito.Mockito.when;
 
 public class TrustyServiceTest {
 
-    private static final String TEST_EXECUTION_ID = "executionId";
+    private static final String TEST_EXECUTION_ID = UUID.randomUUID().toString();
+    private static final String TEST_COUNTERFACTUAL_ID = UUID.randomUUID().toString();
     private static final String TEST_MODEL = "definition";
     private static final String TEST_SOURCE_URL = "http://localhost:8080/model/service";
     private static final String TEST_SERVICE_URL = "http://localhost:8080/model";
@@ -495,6 +498,91 @@ public class TrustyServiceTest {
         CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) unit.getDomain();
         assertEquals(10, range.getLowerBound().asInt());
         assertEquals(30, range.getUpperBound().asInt());
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenStoredCounterfactualRequestsWhenGetCounterfactualRequestsThenRequestsAreReturned() {
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
+        CounterfactualExplainabilityRequest request1 = mock(CounterfactualExplainabilityRequest.class);
+        CounterfactualExplainabilityRequest request2 = mock(CounterfactualExplainabilityRequest.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(List.of(request1, request2));
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
+
+        assertTrue(trustyService.getCounterfactualRequests(TEST_EXECUTION_ID).containsAll(List.of(request1, request2)));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenNoStoredCounterfactualRequestWhenGetCounterfactualRequestThenIllegalArgumentExceptionIsThrown() {
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(new ArrayList<>());
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
+
+        assertThrows(IllegalArgumentException.class, () -> trustyService.getCounterfactualRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenMultipleStoredCounterfactualRequestsWhenGetCounterfactualRequestThenIllegalArgumentExceptionIsThrown() {
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
+        CounterfactualExplainabilityRequest request1 = mock(CounterfactualExplainabilityRequest.class);
+        CounterfactualExplainabilityRequest request2 = mock(CounterfactualExplainabilityRequest.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(List.of(request1, request2));
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
+
+        assertThrows(IllegalArgumentException.class, () -> trustyService.getCounterfactualRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenSingleStoredCounterfactualRequestWhenGetCounterfactualRequestThenRequestIsReturned() {
+        Storage<String, CounterfactualExplainabilityRequest> counterfactualStorage = mock(Storage.class);
+        CounterfactualExplainabilityRequest request = mock(CounterfactualExplainabilityRequest.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(List.of(request));
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
+
+        assertEquals(request, trustyService.getCounterfactualRequest(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenStoredCounterfactualResultsWhenGetCounterfactualResultsThenResultsAreReturned() {
+        Storage<String, CounterfactualExplainabilityResult> counterfactualStorage = mock(Storage.class);
+        CounterfactualExplainabilityResult result1 = mock(CounterfactualExplainabilityResult.class);
+        CounterfactualExplainabilityResult result2 = mock(CounterfactualExplainabilityResult.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(List.of(result1, result2));
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualResultStorage()).thenReturn(counterfactualStorage);
+
+        assertTrue(trustyService.getCounterfactualResults(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID).containsAll(List.of(result1, result2)));
+    }
+
+    @Test
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    void givenNoStoredCounterfactualResultsWhenGetCounterfactualResultsThenEmptyCollectionIsReturned() {
+        Storage<String, CounterfactualExplainabilityResult> counterfactualStorage = mock(Storage.class);
+        Query queryMock = mock(Query.class);
+        when(queryMock.filter(any(List.class))).thenReturn(queryMock);
+        when(queryMock.execute()).thenReturn(new ArrayList());
+        when(counterfactualStorage.query()).thenReturn(queryMock);
+        when(trustyStorageServiceMock.getCounterfactualResultStorage()).thenReturn(counterfactualStorage);
+
+        assertTrue(trustyService.getCounterfactualResults(TEST_EXECUTION_ID, TEST_COUNTERFACTUAL_ID).isEmpty());
     }
 
     private DMNModelWithMetadata buildDmnModel(String model) {
