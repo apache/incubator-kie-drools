@@ -35,7 +35,7 @@ import org.drools.mvel.parser.ast.expr.InlineCastExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class FlattenScope {
 
@@ -91,7 +91,7 @@ public class FlattenScope {
             scope = transformFullyQualifiedInlineCastExpr( typeResolver, (FullyQualifiedInlineCastExpr) scope );
         }
 
-        Expression expr = new InlineCastExpr( parseType(className), scope );
+        Expression expr = new InlineCastExpr( toClassOrInterfaceType(className), scope );
         // last element is the one with the actual arguments and need a special case
         if(!expressionNamesWithoutType.isEmpty()) {
             String lastElement = expressionNamesWithoutType.removeLast();

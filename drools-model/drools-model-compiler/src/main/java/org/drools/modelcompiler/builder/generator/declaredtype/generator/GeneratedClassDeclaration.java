@@ -50,11 +50,10 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getGetter;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedClassDeclaration {
-
-    public static final String OVERRIDE = "Override";
 
     private final TypeDefinition typeDefinition;
     private GeneratedHashcode generatedHashcode;
@@ -156,7 +155,7 @@ public class GeneratedClassDeclaration {
         }
 
         for(AnnotationDefinition a : methodDefinition.getAnnotations()) {
-            methodDeclaration.addAnnotation(a.getName());
+            methodDeclaration.addAnnotation( createSimpleAnnotation(a.getName()) );
         }
 
         methodDeclaration.setBody(StaticJavaParser.parseBlock(methodDefinition.getBody()));
@@ -175,7 +174,7 @@ public class GeneratedClassDeclaration {
             if (fieldDefinition.createAccessors()) {
                 String getterName = getGetter(fieldName);
                 MethodDeclaration getter = generatedClass.addMethod( getterName, Modifier.Keyword.PUBLIC );
-                getter.addAnnotation( "Override" );
+                getter.addAnnotation( createSimpleAnnotation(Override.class) );
                 getter.setType( fieldDefinition.getObjectType() );
                 BlockStmt block = new BlockStmt();
                 block.addStatement( "return (" + fieldDefinition.getObjectType() + ") super." + getterName + "();" );

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.PackageDeclaration;
@@ -45,9 +46,9 @@ import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.model.functions.HashedExpression;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
 
 abstract class MaterializedLambda {
@@ -72,8 +73,12 @@ abstract class MaterializedLambda {
             throw new NotLambdaException();
         }
 
-        lambdaExpr = expression.asLambdaExpr();
-        temporaryClassHash = classHash(expressionString);
+        return create(expression.asLambdaExpr(), imports, staticImports);
+    }
+
+    public CreatedClass create(LambdaExpr lambdaExpr, Collection<String> imports, Collection<String> staticImports) {
+        this.lambdaExpr = lambdaExpr;
+        this.temporaryClassHash = classHash(lambdaExpr.toString());
 
         parseParameters();
 
@@ -94,7 +99,6 @@ abstract class MaterializedLambda {
         return new CreatedClass(compilationUnit, className, isolatedPackageName);
     }
 
-
     /*
         Externalised Lambda need to be isolated in a separate packages because putting too many classes
         in the same package as the rule might break Java 8 compiler while importing *
@@ -105,20 +109,20 @@ abstract class MaterializedLambda {
     }
 
     private void addImports(Collection<String> imports, Collection<String> staticImports, CompilationUnit compilationUnit) {
-        compilationUnit.addImport(ruleClassName, true, true);
+        compilationUnit.addImport(new ImportDeclaration(new Name(ruleClassName), true, true));
         for (String i : imports) {
-            compilationUnit.addImport(i);
+            compilationUnit.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String si : staticImports) {
             String replace = si;
             if (si.endsWith(".*")) { // JP doesn't want the * in the import
                 replace = si.replace(".*", "");
-                compilationUnit.addImport(replace, true, true);
+                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, true));
             } else {
-                compilationUnit.addImport(replace, true, false);
+                compilationUnit.addImport(new ImportDeclaration(new Name(replace), true, false));
             }
         }
-        compilationUnit.addImport("org.drools.modelcompiler.dsl.pattern.D");
+        compilationUnit.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
     }
 
     private void parseParameters() {
@@ -140,7 +144,7 @@ abstract class MaterializedLambda {
 
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
         EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
-        lambdaClass.addAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class.getCanonicalName());
+        lambdaClass.addAnnotation(createSimpleAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class));
         lambdaClass.setImplementedTypes(createImplementedTypes());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
@@ -157,7 +161,7 @@ abstract class MaterializedLambda {
     private void createGetterForExpressionHashField(EnumDeclaration clazz, String expressionHashFieldName) {
         final MethodDeclaration getter;
         getter = clazz.addMethod("getExpressionHash", Modifier.Keyword.PUBLIC);
-        getter.setType(parseClassOrInterfaceType(String.class.getCanonicalName()));
+        getter.setType(toClassOrInterfaceType(String.class));
         BlockStmt blockStmt = new BlockStmt();
         getter.setBody(blockStmt);
         blockStmt.addStatement(new ReturnStmt(new NameExpr(expressionHashFieldName)));
@@ -166,22 +170,23 @@ abstract class MaterializedLambda {
     protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
-        List<Type> typeArguments = lambdaParametersToType();
-        if (!typeArguments.isEmpty()) {
-            functionType.setTypeArguments(NodeList.nodeList(typeArguments));
+        if (!lambdaParameters.isEmpty()) {
+            functionType.setTypeArguments(lambdaParametersToTypeArguments());
         }
 
         return NodeList.nodeList(functionType, lambdaExtractorType());
     }
 
     protected ClassOrInterfaceType lambdaExtractorType() {
-        return parseClassOrInterfaceType(HashedExpression.class.getCanonicalName());
+        return toClassOrInterfaceType(HashedExpression.class);
     }
 
-    List<Type> lambdaParametersToType() {
-        return lambdaParameters.stream()
-                .map(p -> p.type)
-                .collect(Collectors.toList());
+    NodeList<Type> lambdaParametersToTypeArguments() {
+        NodeList<Type> typeArguments = new NodeList<>();
+        for (LambdaParameter lp : lambdaParameters) {
+            typeArguments.add(lp.type);
+        }
+        return typeArguments;
     }
 
     protected String classHash(String sourceCode) {
@@ -221,7 +226,7 @@ abstract class MaterializedLambda {
 
         @Override
         public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
-            Type bitMaskType = parseType(bitMaskString);
+            Type bitMaskType = toClassOrInterfaceType(bitMaskString);
 
             MethodCallExpr methodCallExpr = new MethodCallExpr(new NameExpr(bitMaskString), "get");
             clazz.addFieldWithInitializer(bitMaskType, maskName, methodCallExpr, Modifier.Keyword.PRIVATE, Modifier.Keyword.FINAL);
@@ -244,7 +249,7 @@ abstract class MaterializedLambda {
 
         @Override
         public void generateBitMaskField(NodeWithMembers<EnumDeclaration> clazz) {
-            Type bitMaskType = parseType(bitMaskString);
+            Type bitMaskType = toClassOrInterfaceType(bitMaskString);
 
             NodeList<Expression> args = new NodeList<>();
             args.add(new NameExpr(domainClassMetadata));

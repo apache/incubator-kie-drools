@@ -26,7 +26,9 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -120,10 +122,10 @@ public class JavaParserCompiler {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
         for (String i : imports) {
-            cu.addImport(i);
+            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport(i, true, false);
+            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
         }
         cu.addType(pojo);
         return getPrettyPrinter().print(cu);
