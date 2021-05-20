@@ -17,6 +17,7 @@ package org.kie.kogito.explainability.local.counterfactual;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.model.Output;
@@ -35,8 +36,13 @@ import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDeci
 @PlanningSolution
 public class CounterfactualSolution {
 
-    @PlanningEntityCollectionProperty
     private List<CounterfactualEntity> entities;
+
+    @PlanningEntityCollectionProperty
+    public List<CounterfactualEntity> getVaryingEntities() {
+        return entities.stream().filter(counterfactualEntity -> !counterfactualEntity.isConstrained())
+                .collect(Collectors.toList());
+    }
 
     private List<Output> goal;
 

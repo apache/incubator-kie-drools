@@ -16,7 +16,6 @@
 package org.kie.kogito.explainability.local.counterfactual;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -25,23 +24,18 @@ import java.util.concurrent.ForkJoinPool;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntity;
 import org.kie.kogito.explainability.local.counterfactual.entities.CounterfactualEntityFactory;
 import org.kie.kogito.explainability.model.CounterfactualPrediction;
-import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.DataDomain;
-import org.kie.kogito.explainability.model.Feature;
-import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionFeatureDomain;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.model.domain.FeatureDomain;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
@@ -96,23 +90,6 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         return new Builder();
     }
 
-    private static List<CounterfactualEntity> createEntities(PredictionInput predictionInput,
-            PredictionFeatureDomain featureDomain, List<Boolean> constraints, DataDistribution dataDistribution) {
-        final List<FeatureDomain> domains = featureDomain.getFeatureDomains();
-        return IntStream.range(0, predictionInput.getFeatures().size())
-                .mapToObj(featureIndex -> {
-                    final Feature feature = predictionInput.getFeatures().get(featureIndex);
-                    final Boolean isConstrained = constraints.get(featureIndex);
-                    final FeatureDomain domain = domains.get(featureIndex);
-                    final FeatureDistribution featureDistribution = Optional
-                            .ofNullable(dataDistribution)
-                            .map(dd -> dd.asFeatureDistributions().get(featureIndex))
-                            .orElse(null);
-                    return CounterfactualEntityFactory
-                            .from(feature, isConstrained, domain, featureDistribution);
-                }).collect(Collectors.toList());
-    }
-
     private Consumer<CounterfactualSolution> createSolutionConsumer(Consumer<CounterfactualResult> consumer) {
         return counterfactualSolution -> {
             CounterfactualResult result = new CounterfactualResult(counterfactualSolution.getEntities(),
@@ -132,7 +109,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         final List<Boolean> constraints = cfPrediction.getConstraints();
         final UUID executionId = cfPrediction.getExecutionId();
         final List<CounterfactualEntity> entities =
-                CounterfactualExplainer.createEntities(prediction.getInput(), featureDomain, constraints,
+                CounterfactualEntityFactory.createEntities(prediction.getInput(), featureDomain, constraints,
                         cfPrediction.getDataDistribution());
 
         final List<Output> goal = prediction.getOutput().getOutputs();
