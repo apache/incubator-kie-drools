@@ -563,6 +563,40 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalPatternWithString() {
+        // DROOLS-6356
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $p : Person(money == \"90\" )\n" +
+                "then\n" +
+                "    if($p.money == \"90\") {\n" +
+                "       results.add($p);\n" +
+                "    }\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsOnly(john);
+    }
+
+    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =

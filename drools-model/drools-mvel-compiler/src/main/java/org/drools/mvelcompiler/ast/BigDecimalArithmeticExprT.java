@@ -23,8 +23,10 @@ import java.util.Optional;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BinaryExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.UnaryExpr;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -32,6 +34,7 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
 
     private final String name;
     private final TypedExpression argument;
+    private boolean isNegated;
     private final TypedExpression scope;
     private final Type type = BigDecimal.class;
 
@@ -47,6 +50,10 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
                 return "divide";
             case REMAINDER: // %
                 return "remainder";
+            case EQUALS: // ==
+                return "equals";
+            case NOT_EQUALS: // != , it gets negated subsequently
+                return "equals";
         }
         throw new RuntimeException("Unknown operator");
     }
@@ -69,10 +76,18 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
 
     public BigDecimalArithmeticExprT(String bigDecimalMethod,
                                      TypedExpression scope,
-                                     TypedExpression argument) {
+                                     TypedExpression argument,
+                                     boolean isNegated) {
         this.name = bigDecimalMethod;
         this.scope = scope;
         this.argument = argument;
+        this.isNegated = isNegated;
+    }
+
+    public BigDecimalArithmeticExprT(String bigDecimalMethod,
+                                     TypedExpression scope,
+                                     TypedExpression argument) {
+        this(bigDecimalMethod, scope, argument, false);
     }
 
     @Override
@@ -83,9 +98,13 @@ public class BigDecimalArithmeticExprT implements TypedExpression {
     @Override
     public Node toJavaExpression() {
 
-        return new MethodCallExpr((Expression) scope.toJavaExpression(),
-                                  name,
-                                  nodeList((Expression) argument.toJavaExpression()));
+        Expression methodCallExpr = new MethodCallExpr((Expression) scope.toJavaExpression(),
+                                                           name,
+                                                           nodeList((Expression) argument.toJavaExpression()));
+        if(isNegated) {
+            methodCallExpr = new UnaryExpr(new EnclosedExpr(methodCallExpr), UnaryExpr.Operator.LOGICAL_COMPLEMENT);
+        }
+        return methodCallExpr;
     }
 
     @Override
