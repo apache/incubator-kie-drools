@@ -30,8 +30,8 @@ jobs:
       with:
         java-version: 1.8
 
-    - name: Install shared libraries
-      run: cd $GITHUB_WORKSPACE/shared-libs && mvn -B clean install -DskipTests
+    - name: Setup pipeline env
+      run: cd $GITHUB_WORKSPACE/main/.jenkins/tests && ./setup_pipeline_env.sh
       
     - name: Test pipelines
       run: cd $GITHUB_WORKSPACE/main/.jenkins/tests && mvn -B clean test
