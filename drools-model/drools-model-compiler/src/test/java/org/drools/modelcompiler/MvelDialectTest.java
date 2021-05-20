@@ -564,18 +564,24 @@ public class MvelDialectTest extends BaseModelTest {
 
     @Test
     public void testBigDecimalPatternWithString() {
-        // DROOLS-6356
+        // DROOLS-6356 // DROOLS-6361
         String drl =
                 "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
                 "global java.util.List results;\n" +
                 "dialect \"mvel\"\n" +
                 "rule R\n" +
                 "when\n" +
-                "    $p : Person(money == \"90\" )\n" +
+                "    $p : Person($m : money == \"90\" )\n" +
                 "then\n" +
                 "    if($p.money == \"90\") {\n" +
                 "       results.add($p);\n" +
                 "    }\n" +
+                "    $p.name = $m;\n"  +
+                "    $p.name = $p.money;"  +
+                "    $p.name = BigDecimal.ZERO;\n"  +
+                "    $p.name = BigDecimal.valueOf(133);\n"  +
+                "    $p.name = 144B;\n"  +
                 "end";
 
         KieSession ksession = getKieSession(drl);
@@ -594,6 +600,7 @@ public class MvelDialectTest extends BaseModelTest {
 
         assertEquals(1, ksession.fireAllRules());
         assertThat(results).containsOnly(john);
+        assertThat(results.iterator().next().getName()).isEqualTo("144");
     }
 
     @Test
