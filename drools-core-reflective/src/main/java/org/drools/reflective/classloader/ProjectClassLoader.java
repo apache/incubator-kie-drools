@@ -64,7 +64,7 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     private final Map<String, Class<?>> loadedClasses = new ConcurrentHashMap<String, Class<?>>();
 
-    private Set<String> generatedClassNames = new HashSet<>();
+    protected Set<String> generatedClassNames = new HashSet<>();
 
     private ResourceProvider resourceProvider;
 
@@ -154,8 +154,8 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
         return cls;
     }
 
-    private boolean isStoreFirst(String name) {
-        return enableStoreFirst && isDynamic() && generatedClassNames.contains(name) && containsInStore(ClassUtils.convertClassToResourcePath(name));
+    protected boolean isStoreFirst(String name) {
+        return false;
     }
 
     // This method has to be public because is also used by the android ClassLoader
@@ -380,10 +380,6 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
 
     public byte[] getBytecode(String resourceName) {
         return store == null ? null : store.get(resourceName);
-    }
-
-    public boolean containsInStore(String resourceName) {
-        return store == null ? false : store.containsKey(resourceName);
     }
 
     @Override

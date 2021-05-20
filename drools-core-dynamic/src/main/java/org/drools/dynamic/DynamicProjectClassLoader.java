@@ -41,6 +41,11 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         return true;
     }
 
+    @Override
+    protected boolean isStoreFirst(String name) {
+        return isEnableStoreFirst() && generatedClassNames.contains(name);
+    }
+
     public static class IBMDynamicClassLoader extends DynamicProjectClassLoader {
 
         private final boolean parentImplementsFindResources;
@@ -123,7 +128,7 @@ public class DynamicProjectClassLoader extends ProjectClassLoader {
         }
 
         private boolean isStoreFirst(String name) {
-            return ProjectClassLoader.isEnableStoreFirst() && projectClassLoader.getGeneratedClassNames().contains(name) && projectClassLoader.containsInStore(ClassUtils.convertClassToResourcePath(name));
+            return ProjectClassLoader.isEnableStoreFirst() && projectClassLoader.getGeneratedClassNames().contains(name);
         }
 
         public Class<?> loadType(String name, boolean resolve) throws ClassNotFoundException {
