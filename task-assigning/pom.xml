@@ -12,7 +12,7 @@
 
   <artifactId>task-assigning</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Task Assigning</name>
+  <name>Kogito Apps :: Task Assigning</name>
 
   <modules>
     <module>task-assigning-core</module>

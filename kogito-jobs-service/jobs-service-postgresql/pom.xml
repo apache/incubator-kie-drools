@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>jobs-service-postgresql</artifactId>
-    <name>Kogito :: Jobs Service PostgreSQL</name>
+    <name>Kogito Apps :: Jobs Service PostgreSQL</name>
     <description>Jobs Service (Timers and Async Jobs) with PostgreSQL</description>
 
     <dependencies>

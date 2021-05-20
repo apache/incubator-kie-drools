@@ -11,7 +11,7 @@
 
   <artifactId>task-assigning-user-service</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Task Assigning :: User Service</name>
+  <name>Kogito Apps :: Task Assigning :: User Service</name>
 
   <modules>
     <module>task-assigning-user-service-properties</module>

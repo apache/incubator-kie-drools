@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>jitexecutor-runner</artifactId>
-  <name>Kogito :: JIT Executor Runner</name>
+  <name>Kogito Apps :: JIT Executor Runner</name>
 
   <dependencies>
     <!-- ensure Quarkus' openapi takes precedence over the v7 dependency -->

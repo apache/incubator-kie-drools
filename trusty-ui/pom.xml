@@ -11,7 +11,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>trusty-ui</artifactId>
-  <name>Kogito :: Trusty UI</name>
+  <name>Kogito Apps :: Trusty UI</name>
 
   <properties>
     <path.to.frontend.app>../ui-packages/packages/trusty</path.to.frontend.app>

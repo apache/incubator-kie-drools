@@ -11,7 +11,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>management-console</artifactId>
-  <name>Kogito :: Management Console</name>
+  <name>Kogito Apps :: Management Console</name>
 
   <properties>
     <path.to.frontend.app>../ui-packages/packages/management-console</path.to.frontend.app>

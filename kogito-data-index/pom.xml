@@ -12,7 +12,7 @@
 
   <artifactId>data-index</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Data Index</name>
+  <name>Kogito Apps :: Data Index</name>
 
   <modules>
     <module>data-index-storage</module>

@@ -10,7 +10,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Kogito :: Security Commons</name>
+  <name>Kogito Apps :: Security Commons</name>
   <artifactId>security-commons</artifactId>
 
   <dependencies>

@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>jobs-service</artifactId>
-    <name>Kogito :: Jobs Service</name>
+    <name>Kogito Apps :: Jobs Service</name>
     <description>Jobs Service (Timers and Async Jobs)</description>
     <packaging>pom</packaging>
 

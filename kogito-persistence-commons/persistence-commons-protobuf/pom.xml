@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>persistence-commons-protobuf</artifactId>
-  <name>Kogito :: Persistence Commons Protobuf</name>
+  <name>Kogito Apps :: Persistence Commons Protobuf</name>
 
   <dependencies>
     <dependency>

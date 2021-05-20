@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>jobs-service-infinispan</artifactId>
-    <name>Kogito :: Jobs Service Infinispan</name>
+    <name>Kogito Apps :: Jobs Service Infinispan</name>
     <description>Jobs Service (Timers and Async Jobs) with Infinispan</description>
 
     <dependencies>

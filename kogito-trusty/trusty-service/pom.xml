@@ -11,7 +11,7 @@
 
   <artifactId>trusty-service</artifactId>
 
-  <name>Kogito :: Trusty Service</name>
+  <name>Kogito Apps :: Trusty Service</name>
   <packaging>pom</packaging>
 
   <modules>

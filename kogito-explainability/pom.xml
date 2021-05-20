@@ -10,7 +10,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>explainability</artifactId>
-  <name>Kogito :: Explainability</name>
+  <name>Kogito Apps :: Explainability</name>
   <packaging>pom</packaging>
 
   <modules>

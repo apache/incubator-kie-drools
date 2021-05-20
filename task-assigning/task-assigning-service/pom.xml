@@ -11,7 +11,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>task-assigning-service</artifactId>
-  <name>kogito :: Task Assigning Service</name>
+  <name>Kogito Apps :: Task Assigning Service</name>
 
   <dependencies>
     <dependency>

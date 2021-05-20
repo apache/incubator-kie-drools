@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>trusty-service-api</artifactId>
-  <name>Kogito :: Trusty Service :: API</name>
+  <name>Kogito Apps :: Trusty Service :: API</name>
 
   <dependencies>
     <dependency>

@@ -10,7 +10,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Kogito :: Persistence Commons</name>
+  <name>Kogito Apps :: Persistence Commons</name>
   <artifactId>persistence-commons</artifactId>
   <packaging>pom</packaging>
 

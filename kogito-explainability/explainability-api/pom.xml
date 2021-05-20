@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>explainability-api</artifactId>
-  <name>Kogito :: Explainability Api</name>
+  <name>Kogito Apps :: Explainability Api</name>
 
   <dependencies>
     <dependency>

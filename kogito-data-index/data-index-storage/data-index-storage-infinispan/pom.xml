@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>data-index-storage-infinispan</artifactId>
-  <name>Kogito :: Data Index Storage Infinispan</name>
+  <name>Kogito Apps :: Data Index Storage Infinispan</name>
 
   <dependencies>
     <dependency>

@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>task-assigning-integration-api</artifactId>
-  <name>Kogito :: Task Assigning :: Integration API</name>
+  <name>Kogito Apps :: Task Assigning :: Integration API</name>
 
   <dependencies>
     <dependency>

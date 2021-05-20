@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>persistence-commons-infinispan</artifactId>
-  <name>Kogito :: Persistence Commons Infinispan</name>
+  <name>Kogito Apps :: Persistence Commons Infinispan</name>
 
   <dependencies>
     <dependency>

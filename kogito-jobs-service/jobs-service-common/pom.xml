@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>jobs-service-common</artifactId>
-  <name>Kogito :: Jobs Service Common</name>
+  <name>Kogito Apps :: Jobs Service Common</name>
   <description>Jobs Service (Timers and Async Jobs) Common</description>
 
   <dependencies>

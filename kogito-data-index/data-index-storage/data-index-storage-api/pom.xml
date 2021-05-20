@@ -10,7 +10,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>data-index-storage-api</artifactId>
-  <name>Kogito :: Data Index Storage API</name>
+  <name>Kogito Apps :: Data Index Storage API</name>
 
   <dependencies>
     <dependency>

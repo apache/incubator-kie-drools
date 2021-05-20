@@ -12,6 +12,8 @@
     <artifactId>kogito-apps-build-parent</artifactId>
     <packaging>pom</packaging>
 
+    <name>Kogito Apps :: Build Parent BOM</name>
+
     <properties>
         <skip.springboot>false</skip.springboot>
         <failsafe.include>**/*IT.java</failsafe.include>

@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>data-index-service-common</artifactId>
-  <name>Kogito :: Data Index Service Common</name>
+  <name>Kogito Apps :: Data Index Service Common</name>
 
   <dependencies>
     <dependency>

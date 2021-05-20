@@ -9,7 +9,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>explainability-core</artifactId>
-  <name>Kogito :: Explainability Core</name>
+  <name>Kogito Apps :: Explainability Core</name>
 
   <properties>
     <version.org.apache.commons.math>3.6.1</version.org.apache.commons.math>

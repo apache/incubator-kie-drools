@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>jobs-service-mongodb</artifactId>
-    <name>Kogito :: Jobs Service :: MongoDB</name>
+    <name>Kogito Apps :: Jobs Service :: MongoDB</name>
     <description>Jobs Service (Timers and Async Jobs) with MongoDB</description>
 
     <dependencies>

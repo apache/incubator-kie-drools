@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Kogito :: Trusty Storage Common</name>
+  <name>Kogito Apps :: Trusty Storage Common</name>
   <artifactId>trusty-storage-common</artifactId>
 
   <dependencies>

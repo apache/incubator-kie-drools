@@ -9,7 +9,7 @@
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <name>Kogito :: Explainability Service Rest</name>
+  <name>Kogito Apps :: Explainability Service Rest</name>
   <artifactId>explainability-service-rest</artifactId>
 
   <dependencies>

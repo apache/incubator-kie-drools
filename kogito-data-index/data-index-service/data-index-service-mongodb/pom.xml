@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>data-index-service-mongodb</artifactId>
-  <name>Kogito :: Data Index Service with MongoDB</name>
+  <name>Kogito Apps :: Data Index Service with MongoDB</name>
 
   <dependencies>
     <dependency>

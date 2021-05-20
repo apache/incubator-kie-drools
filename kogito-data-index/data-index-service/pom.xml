@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>data-index-service</artifactId>
-  <name>Kogito :: Data Index Service</name>
+  <name>Kogito Apps :: Data Index Service</name>
   <packaging>pom</packaging>
 
   <modules>

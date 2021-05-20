@@ -11,7 +11,7 @@
 
   <artifactId>data-index-storage</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Data Index Storage</name>
+  <name>Kogito Apps :: Data Index Storage</name>
 
   <modules>
     <module>data-index-storage-api</module>

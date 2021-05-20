@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>persistence-commons-mongodb</artifactId>
-  <name>Kogito :: Persistence Commons MongoDB</name>
+  <name>Kogito Apps :: Persistence Commons MongoDB</name>
 
   <dependencies>
     <dependency>

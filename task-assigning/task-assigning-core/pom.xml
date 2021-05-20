@@ -11,7 +11,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>task-assigning-core</artifactId>
-  <name>kogito :: Task Assigning Core</name>
+  <name>Kogito Apps :: Task Assigning Core</name>
 
   <dependencies>
     <dependency>

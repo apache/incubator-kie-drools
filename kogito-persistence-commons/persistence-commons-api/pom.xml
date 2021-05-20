@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
-  <name>Kogito :: Persistence Commons API</name>
+  <name>Kogito Apps :: Persistence Commons API</name>
   <artifactId>persistence-commons-api</artifactId>
 
   <dependencies>
