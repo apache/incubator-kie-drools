@@ -17,14 +17,16 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.mvelcompiler.util.CoercionUtils.PUT_CALL;
@@ -35,12 +37,17 @@ public class MethodCallExprT implements TypedExpression {
     private final String name;
     private final Optional<TypedExpression> scope;
     private final List<TypedExpression> arguments;
+    private List<Class<?>> actualMethodArgumentType;
     private final Optional<Type> type;
 
-    public MethodCallExprT(String name, Optional<TypedExpression> scope, List<TypedExpression> arguments, Optional<Type> type) {
+    public MethodCallExprT(String name, Optional<TypedExpression> scope,
+                           List<TypedExpression> arguments,
+                           List<Class<?>> actualMethodArgumentType,
+                           Optional<Type> type) {
         this.name = name;
         this.scope = scope;
         this.arguments = arguments;
+        this.actualMethodArgumentType = actualMethodArgumentType;
         this.type = type;
     }
 
@@ -65,10 +72,33 @@ public class MethodCallExprT implements TypedExpression {
     }
 
     private List<Expression> toJavaExpressionArgument() {
-        return this.arguments
-                .stream()
-                .map(a -> (Expression) a.toJavaExpression())
-                .collect(Collectors.toList());
+        List<Expression> list = new ArrayList<>();
+        List<TypedExpression> typedArguments = this.arguments;
+        for (int i = 0; i < typedArguments.size(); i++) {
+            Expression expression = toJavaArgument(typedArguments, i);
+            list.add(expression);
+        }
+        return list;
+    }
+
+    private Expression toJavaArgument(List<TypedExpression> typedExpressions, int i) {
+        TypedExpression a = typedExpressions.get(i);
+
+        Optional<Class<?>> optionalActualType = Optional.empty();
+        if(actualMethodArgumentType.size() == typedExpressions.size()) {
+            optionalActualType = Optional.ofNullable(actualMethodArgumentType.get(i));
+        }
+
+        if(optionalActualType.isPresent() && a.getType().isPresent()) {
+            Class<?> argumentType = (Class<?>) a.getType().get();
+            Class<?> actualType = optionalActualType.get();
+
+            if(argumentType != actualType) {
+                return new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualType, (Expression) a.toJavaExpression());
+            }
+        }
+
+        return (Expression) a.toJavaExpression();
     }
 
     private List<Expression> coercedMapArguments() {

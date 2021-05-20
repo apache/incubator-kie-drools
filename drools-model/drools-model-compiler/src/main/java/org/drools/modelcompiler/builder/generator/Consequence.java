@@ -62,9 +62,7 @@ import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
-import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -194,16 +192,9 @@ public class Consequence {
 
     private MethodCallExpr createExecuteCallMvel(String consequenceString, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
         String mvelBlock = addCurlyBracesToBlock(consequenceString);
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-
-        for(DeclarationSpec d : context.getAllDeclarations()) {
-            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getRawType());
-            mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
-        }
-
         CompiledBlockResult compile;
         try {
-            compile = new MvelCompiler(mvelCompilerContext).compileStatement(mvelBlock);
+            compile = DrlxParseUtil.createMvelCompiler(context).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;

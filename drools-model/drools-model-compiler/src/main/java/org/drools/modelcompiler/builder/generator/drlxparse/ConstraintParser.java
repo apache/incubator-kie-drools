@@ -489,12 +489,11 @@ public class ConstraintParser {
         } else if(arithmeticExpr && (left.isBigDecimal())) {
             MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
 
-            mvelCompilerContext.setRootTypePrefix(THIS_PLACEHOLDER);
-            mvelCompilerContext.setRootPattern(patternType);
+            mvelCompilerContext.setRootPatternPrefix(patternType, THIS_PLACEHOLDER);
 
             ConstraintCompiler constraintCompiler = new ConstraintCompiler(mvelCompilerContext);
 
-            CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr.toString());
+            CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
 
             Expression expression = compiledExpressionResult.getExpression();
             combo = expression;
@@ -696,11 +695,9 @@ public class ConstraintParser {
         MethodCallExpr toBigDecimalMethod = new MethodCallExpr( null, "org.drools.modelcompiler.util.EvaluationUtil.toBigDecimal" );
         Expression arg = typedExpression.getExpression();
 
-        List<DeclarationSpec> allDeclarations = new ArrayList<>();
-        allDeclarations.addAll(context.getAllDeclarations());
-        typedExpression.getOriginalPatternType().ifPresent(pt -> allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt)));
+        Optional<Class<?>> originalPatternType = typedExpression.getOriginalPatternType();
 
-        ConstraintCompiler constraintCompiler = createConstraintCompiler(context, allDeclarations);
+        ConstraintCompiler constraintCompiler = createConstraintCompiler(context, originalPatternType);
 
         CompiledExpressionResult compiledBlockResult = constraintCompiler.compileExpression(arg.toString());
 
