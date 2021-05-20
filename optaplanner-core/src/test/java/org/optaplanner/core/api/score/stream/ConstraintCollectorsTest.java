@@ -1813,8 +1813,8 @@ public class ConstraintCollectorsTest {
 
     @Test
     public void toSortedSetBi() {
-        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector = ConstraintCollectors
-                .toSortedSet(Integer::sum);
+        BiConstraintCollector<Integer, Integer, ?, SortedSet<Integer>> collector =
+                ConstraintCollectors.toSortedSet((BiFunction<Integer, Integer, Integer>) Integer::sum);
         Object container = collector.supplier().get();
         // Add first value, we have one now.
         int firstValueA = 2;
