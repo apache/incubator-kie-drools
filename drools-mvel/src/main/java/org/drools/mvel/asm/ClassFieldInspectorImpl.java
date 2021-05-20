@@ -160,14 +160,12 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
             }
         });
 
+        final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
         for ( Method method : methods ) {
-            // modifiers mask
-            final int mask = includeFinalMethods ? Modifier.PUBLIC : Modifier.PUBLIC | Modifier.FINAL;
-
             if ( ( method.getModifiers() & mask ) == Opcodes.ACC_PUBLIC ) {
                 if ( method.getParameterTypes().length == 0 &&
                      !method.getName().equals( "<init>" ) && !method.getName().equals( "<clinit>" ) &&
-                     method.getReturnType() != void.class && !method.isDefault() ) {
+                     method.getReturnType() != void.class ) {
 
                     // want public methods that start with 'get' or 'is' and have no args, and return a value
                     final int fieldIndex = this.fieldNames.size();
