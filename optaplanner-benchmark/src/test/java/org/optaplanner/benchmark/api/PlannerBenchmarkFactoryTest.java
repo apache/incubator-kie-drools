@@ -125,7 +125,7 @@ class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/testdataBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -136,7 +136,7 @@ class PlannerBenchmarkFactoryTest {
                 "divertThroughClassLoader/org/optaplanner/benchmark/api/classloaderTestdataBenchmarkConfig.xml", classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -179,7 +179,7 @@ class PlannerBenchmarkFactoryTest {
         solverBenchmarkConfig.getSolverConfig().setPhaseConfigList(Collections.singletonList(phaseConfig));
         PlannerBenchmark plannerBenchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -190,7 +190,7 @@ class PlannerBenchmarkFactoryTest {
         solverBenchmarkConfig.setSubSingleCount(3);
         PlannerBenchmark plannerBenchmark = PlannerBenchmarkFactory.create(benchmarkConfig).buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -203,7 +203,7 @@ class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlFile(file);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -218,7 +218,7 @@ class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromXmlFile(file, classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     // ************************************************************************
@@ -231,7 +231,7 @@ class PlannerBenchmarkFactoryTest {
                 "org/optaplanner/benchmark/api/testdataBenchmarkConfigTemplate.xml.ftl");
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -243,7 +243,7 @@ class PlannerBenchmarkFactoryTest {
                 classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -262,7 +262,7 @@ class PlannerBenchmarkFactoryTest {
         PlannerBenchmarkFactory plannerBenchmarkFactory = PlannerBenchmarkFactory.createFromFreemarkerXmlFile(file);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     @Test
@@ -278,7 +278,7 @@ class PlannerBenchmarkFactoryTest {
                 classLoader);
         PlannerBenchmark plannerBenchmark = plannerBenchmarkFactory.buildPlannerBenchmark();
         assertThat(plannerBenchmark).isNotNull();
-        plannerBenchmark.benchmark();
+        assertThat(plannerBenchmark.benchmark()).exists();
     }
 
     // ************************************************************************

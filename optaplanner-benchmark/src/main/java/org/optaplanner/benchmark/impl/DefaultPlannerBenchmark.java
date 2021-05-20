@@ -93,11 +93,12 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     // ************************************************************************
 
     @Override
-    public void benchmark() {
+    public File benchmark() {
         benchmarkingStarted();
         warmUp();
         runSingleBenchmarks();
         benchmarkingEnded();
+        return getBenchmarkDirectory();
     }
 
     public void benchmarkingStarted() {
@@ -419,9 +420,10 @@ public class DefaultPlannerBenchmark implements PlannerBenchmark {
     }
 
     @Override
-    public void benchmarkAndShowReportInBrowser() {
-        benchmark();
+    public File benchmarkAndShowReportInBrowser() {
+        File benchmarkDirectoryPath = benchmark();
         showReportInBrowser();
+        return benchmarkDirectoryPath;
     }
 
     private void showReportInBrowser() {
