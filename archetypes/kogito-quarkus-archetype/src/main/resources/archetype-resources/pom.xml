@@ -22,7 +22,7 @@
       <dependency>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-bom</artifactId>
-        <version>${kogito.version}</version>
+        <version>\${kogito.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -72,15 +72,15 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>${compiler.version}</version>
+        <version>\${compiler.version}</version>
         <configuration>
-          <release>${maven.compiler.release}</release>
+          <release>\${maven.compiler.release}</release>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>${surefire.version}</version>
+        <version>\${surefire.version}</version>
         <configuration>
           <systemPropertyVariables>
             <java.util.logging.manager>${quarkus.logging.manager}</java.util.logging.manager>
@@ -91,7 +91,7 @@
       <plugin>
         <groupId>io.quarkus</groupId>
         <artifactId>quarkus-maven-plugin</artifactId>
-        <version>${quarkus.version}</version>
+        <version>\${quarkus.version}</version>
         <executions>
           <execution>
             <goals>
@@ -116,7 +116,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <version>${surefire.version}</version>
+            <version>\${surefire.version}</version>
             <executions>
               <execution>
                 <goals>
