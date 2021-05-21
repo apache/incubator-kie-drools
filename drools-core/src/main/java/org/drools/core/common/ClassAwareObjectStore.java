@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -28,9 +30,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 
 import org.drools.core.factmodel.traits.CoreWrapper;
-import org.drools.core.util.HashTableIterator;
-import org.drools.core.util.JavaIteratorAdapter;
-import org.drools.core.util.ObjectHashMap;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.ObjectFilter;
 
@@ -41,7 +40,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     private Map<String, SingleClassStore> storesMap = new HashMap<>();
     private List<ConcreteClassStore> concreteStores = new CopyOnWriteArrayList<>();
 
-    private ObjectHashMap equalityMap;
+    private FactHandleMap equalityMap;
 
     private boolean isEqualityBehaviour;
 
@@ -53,8 +52,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         this.lock = lock;
         this.isEqualityBehaviour = isEqualityBehaviour;
         if (isEqualityBehaviour) {
-            this.equalityMap = new ObjectHashMap();
-            this.equalityMap.setComparator( new EqualityAssertMapComparator() );
+            this.equalityMap = new FactHandleMap(false);
         }
     }
 
@@ -72,7 +70,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
         storesMap = (Map<String, SingleClassStore>) in.readObject();
         concreteStores = (List<ConcreteClassStore>) in.readObject();
-        equalityMap = (ObjectHashMap) in.readObject();
+        equalityMap = (FactHandleMap) in.readObject();
         size = in.readInt();
         isEqualityBehaviour = in.readBoolean();
         lock = (Lock)in.readObject();
@@ -91,7 +89,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     @Override
     public void clear() {
         storesMap.clear();
-        concreteStores = new CopyOnWriteArrayList<ConcreteClassStore>();
+        concreteStores = new CopyOnWriteArrayList<>();
         if (isEqualityBehaviour) {
             equalityMap.clear();
         }
@@ -122,18 +120,18 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
             }
 
             return handle.isNegated() ?
-                   (InternalFactHandle) ((ConcreteClassStore) store).getNegMap().get(handle) :
-                   (InternalFactHandle) ((ConcreteClassStore) store).getIdentityMap().get(handle);
+                   ((ConcreteClassStore) store).getNegMap().get(handle) :
+                   ((ConcreteClassStore) store).getIdentityMap().get(handle);
         }
 
         if (isEqualityBehaviour) {
-            return (InternalFactHandle) equalityMap.get(handle);
+            return equalityMap.get(handle);
         }
 
         for (ConcreteClassStore stores : concreteStores) {
-            Object reconnectedHandle = stores.getAssertMap().get(handle);
+            InternalFactHandle reconnectedHandle = stores.getAssertMap().get(handle);
             if (reconnectedHandle != null) {
-                return (InternalFactHandle) reconnectedHandle;
+                return reconnectedHandle;
             }
         }
 
@@ -147,13 +145,13 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         }
 
         return isEqualityBehaviour ?
-               (InternalFactHandle) equalityMap.get(object) :
-               (InternalFactHandle) getOrCreateConcreteClassStore(object).getAssertMap().get(object);
+               equalityMap.get(object) :
+               getOrCreateConcreteClassStore(object).getAssertMap().get(object);
     }
 
     @Override
     public InternalFactHandle getHandleForObjectIdentity(Object object) {
-        return (InternalFactHandle) getOrCreateConcreteClassStore(object).getIdentityMap().get(object);
+        return getOrCreateConcreteClassStore(object).getIdentityMap().get(object);
     }
 
     @Override
@@ -246,7 +244,12 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
     }
 
     public SingleClassStore getOrCreateClassStore(Class<?> clazz) {
-        return storesMap.computeIfAbsent(clazz.getName(), c -> createClassStoreAndAddConcreteSubStores(clazz));
+        SingleClassStore store = storesMap.get(clazz.getName());
+        if (store == null) {
+            store = createClassStoreAndAddConcreteSubStores(clazz);
+            storesMap.put(clazz.getName(), store);
+        }
+        return store;
     }
 
     private ConcreteClassStore getOrCreateConcreteClassStore(Object object) {
@@ -304,7 +307,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
     private abstract static class AbstractClassStore implements SingleClassStore {
         private Class<?> storedClass;
-        private List<ConcreteClassStore> concreteStores = new ArrayList<ConcreteClassStore>();
+        private List<ConcreteClassStore> concreteStores = new ArrayList<>();
 
         public AbstractClassStore() { }
 
@@ -351,16 +354,16 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         boolean addHandle(InternalFactHandle handle, Object object);
         InternalFactHandle removeHandle(InternalFactHandle handle);
 
-        ObjectHashMap getAssertMap();
-        ObjectHashMap getIdentityMap();
-        ObjectHashMap getNegMap();
+        FactHandleMap getAssertMap();
+        FactHandleMap getIdentityMap();
+        FactHandleMap getNegMap();
     }
 
     private static class ConcreteIdentityClassStore extends AbstractClassStore implements ConcreteClassStore {
 
-        private ObjectHashMap identityMap;
+        private FactHandleMap identityMap;
 
-        private ObjectHashMap negMap;
+        private FactHandleMap negMap;
 
         public ConcreteIdentityClassStore() { }
 
@@ -371,33 +374,39 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         public boolean addHandle(InternalFactHandle handle, Object object) {
             if ( handle.isNegated() ) {
-                negMap.put(handle, handle, false);
+                if (negMap == null) {
+                    negMap = new FactHandleMap(true);
+                }
+                negMap.put(object, handle);
                 return false;
             }
-            return identityMap.put(handle, handle, false) == null;
+            return identityMap.put(object, handle) == null;
         }
 
         @Override
         public InternalFactHandle removeHandle(InternalFactHandle handle) {
             if ( handle.isNegated() ) {
+                if (negMap == null) {
+                    negMap = new FactHandleMap(true);
+                }
                 negMap.remove(handle);
                 return null;
             }
-            return (InternalFactHandle) identityMap.remove(handle);
+            return identityMap.remove(handle);
         }
 
         @Override
-        public ObjectHashMap getAssertMap() {
+        public FactHandleMap getAssertMap() {
             return identityMap;
         }
 
         @Override
-        public ObjectHashMap getNegMap() {
+        public FactHandleMap getNegMap() {
             return negMap;
         }
 
         @Override
-        public ObjectHashMap getIdentityMap() {
+        public FactHandleMap getIdentityMap() {
             return identityMap;
         }
 
@@ -411,8 +420,8 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            identityMap = (ObjectHashMap)in.readObject();
-            negMap = (ObjectHashMap)in.readObject();
+            identityMap = (FactHandleMap)in.readObject();
+            negMap = (FactHandleMap)in.readObject();
         }
 
         @Override
@@ -422,20 +431,18 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         @Override
         public ConcreteClassStore makeConcrete() {
-            negMap = new ObjectHashMap();
-            identityMap = new ObjectHashMap();
-            identityMap.setComparator( new IdentityAssertMapComparator() );
+            identityMap = new FactHandleMap(true);
             return this;
         }
     }
 
     private static class ConcreteEqualityClassStore extends ConcreteIdentityClassStore {
 
-        private ObjectHashMap equalityMap;
+        private FactHandleMap equalityMap;
 
         public ConcreteEqualityClassStore() { }
 
-        public ConcreteEqualityClassStore(Class<?> storedClass, ObjectHashMap equalityMap) {
+        public ConcreteEqualityClassStore(Class<?> storedClass, FactHandleMap equalityMap) {
             super(storedClass);
             this.equalityMap = equalityMap;
         }
@@ -443,7 +450,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         public boolean addHandle(InternalFactHandle handle, Object object) {
             boolean isNew = super.addHandle(handle, object);
-            equalityMap.put(handle, handle, false);
+            equalityMap.put(object, handle);
             return isNew;
         }
 
@@ -455,7 +462,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         }
 
         @Override
-        public ObjectHashMap getAssertMap() {
+        public FactHandleMap getAssertMap() {
             return equalityMap;
         }
 
@@ -468,7 +475,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         @Override
         public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
             super.readExternal(in);
-            equalityMap = (ObjectHashMap)in.readObject();
+            equalityMap = (FactHandleMap)in.readObject();
         }
     }
 
@@ -549,11 +556,15 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         @Override
         protected void fetchNextIterator() {
-            HashTableIterator iterator = assrt ?
-                                         new HashTableIterator( stores.next().getIdentityMap() ) :
-                                         new HashTableIterator( stores.next().getNegMap() );
-            iterator.reset();
-            currentIterator = new JavaIteratorAdapter<Object>( iterator, JavaIteratorAdapter.OBJECT );
+            if (assrt) {
+                currentIterator = stores.next().getIdentityMap().getObjects().iterator();
+            } else {
+                FactHandleMap negMap = stores.next().getNegMap();
+                while (negMap == null && stores.hasNext()) {
+                    negMap = stores.next().getNegMap();
+                }
+                currentIterator = negMap != null ? negMap.getObjects().iterator() : null;
+            }
         }
 
         @Override
@@ -573,16 +584,92 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
 
         @Override
         protected void fetchNextIterator() {
-            HashTableIterator iterator = assrt ?
-                                         new HashTableIterator( stores.next().getIdentityMap() ) :
-                                         new HashTableIterator( stores.next().getNegMap() );
-            iterator.reset();
-            currentIterator = new JavaIteratorAdapter<InternalFactHandle>( iterator, JavaIteratorAdapter.FACT_HANDLE );
+            if (assrt) {
+                currentIterator = stores.next().getIdentityMap().getFacts().iterator();
+            } else {
+                FactHandleMap negMap = stores.next().getNegMap();
+                while (negMap == null && stores.hasNext()) {
+                    negMap = stores.next().getNegMap();
+                }
+                currentIterator = negMap != null ? negMap.getFacts().iterator() : null;
+            }
         }
 
         @Override
         protected boolean accept() {
             return filter.accept(currentNext.getObject());
+        }
+    }
+
+    private static class FactHandleMap implements Externalizable {
+        private Map<Object, InternalFactHandle> facts;
+        private Map<Long, InternalFactHandle> factsById;
+
+        public FactHandleMap() { }
+
+        public FactHandleMap(boolean identity) {
+            facts = identity ? new IdentityHashMap<>() : new HashMap<>();
+        }
+
+        @Override
+        public void writeExternal(ObjectOutput out) throws IOException {
+            out.writeObject(facts);
+        }
+
+        @Override
+        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+            facts = (Map<Object, InternalFactHandle>) in.readObject();
+        }
+
+        public InternalFactHandle get(Object obj) {
+            return facts.get(obj);
+        }
+
+        public InternalFactHandle put(Object obj, InternalFactHandle fh) {
+            InternalFactHandle existing = facts.put(obj, fh);
+            if (factsById != null) {
+                factsById.put(fh.getId(), fh);
+            }
+            return existing;
+        }
+
+        public InternalFactHandle get(InternalFactHandle fh) {
+            InternalFactHandle retrieved = facts.get(fh.getObject());
+            if (retrieved == null && fh.isDisconnected()) {
+                retrieved = factsIndexedById().get(fh.getId());
+            }
+            return retrieved;
+        }
+
+        public InternalFactHandle remove(InternalFactHandle fh) {
+            InternalFactHandle retrieved = facts.remove(fh.getObject());
+            if (factsById != null) {
+                factsById.remove(fh.getId());
+            }
+            return retrieved;
+        }
+
+        private Map<Long, InternalFactHandle> factsIndexedById() {
+            if (factsById == null) {
+                factsById = new HashMap<>();
+                for (InternalFactHandle fh : facts.values()) {
+                    factsById.put(fh.getId(), fh);
+                }
+            }
+            return factsById;
+        }
+
+        public Collection<Object> getObjects() {
+            return facts.keySet();
+        }
+
+        public Collection<InternalFactHandle> getFacts() {
+            return facts.values();
+        }
+
+        public void clear() {
+            facts.clear();
+            factsById = null;
         }
     }
 }
