@@ -423,7 +423,7 @@ class MatrixUtilsTest {
     void testInvertNormal() {
         double[][] inv = MatrixUtils.jitterInvert(matSquareNonSingular, 1, 1e-9, rn);
         for (int i = 0; i < inv.length; i++) {
-            assertArrayEquals(matSNSInv[i], inv[i], 1e-6);
+            assertArrayEquals(matSNSInv[i], inv[i], 1e-4);
         }
     }
 
@@ -444,7 +444,7 @@ class MatrixUtilsTest {
             // key properties of the inverse matrix hold true; namely M*M_inv = Identity
             double[][] prod = MatrixUtils.matrixMultiply(matSquareSingular, inv);
             for (int i = 0; i < prod.length; i++) {
-                assertArrayEquals(prod[i], identity[i], 1e-6);
+                assertArrayEquals(prod[i], identity[i], 1e-4);
             }
         }
     }
@@ -459,7 +459,7 @@ class MatrixUtilsTest {
             // key properties of the inverse matrix hold true; namely M*M_inv = Identity
             double[][] prod = MatrixUtils.matrixMultiply(matSquareSingular, inv);
             for (int i = 0; i < prod.length; i++) {
-                assertArrayEquals(prod[i], identity[i], 1e-6);
+                assertArrayEquals(prod[i], identity[i], 1e-4);
             }
         }
     }
