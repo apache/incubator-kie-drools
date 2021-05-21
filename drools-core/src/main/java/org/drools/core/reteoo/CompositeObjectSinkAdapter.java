@@ -896,64 +896,36 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         return hashedFieldIndexes;
     }
 
-    public static class HashKey
-        implements
-        Externalizable {
-        private static final long serialVersionUID = 510l;
+    public static class HashKey implements Externalizable {
 
-        private static final byte OBJECT           = 1;
-        private static final byte LONG             = 2;
-        private static final byte DOUBLE           = 3;
-        private static final byte BOOL             = 4;
+        private int index;
+        private Object value;
+        private boolean isNull;
+        private int hashCode;
 
-        private int               index;
-
-        private byte              type;
-        private Object            ovalue;
-        private long              lvalue;
-        private boolean           bvalue;
-        private double            dvalue;
-
-        private boolean           isNull;
-
-        private int               hashCode;
-
-        public HashKey() {
-        }
+        public HashKey() { }
 
         public HashKey(FieldIndex fieldIndex, Object value) {
-            this.setValue( fieldIndex.getIndex(),
-                           value,
-                           fieldIndex.getFieldExtractor() );
+            this.setValue( fieldIndex.getIndex(), value, fieldIndex.getFieldExtractor() );
         }
 
         public HashKey(final int index,
                        final FieldValue value,
                        final InternalReadAccessor extractor) {
-            this.setValue( index,
-                           extractor,
-                           value );
+            this.setValue( index, extractor, value );
         }
 
         public void readExternal(ObjectInput in) throws IOException,
                                                 ClassNotFoundException {
             index = in.readInt();
-            type = in.readByte();
-            ovalue = in.readObject();
-            lvalue = in.readLong();
-            bvalue = in.readBoolean();
-            dvalue = in.readDouble();
+            value = in.readObject();
             isNull = in.readBoolean();
             hashCode = in.readInt();
         }
 
         public void writeExternal(ObjectOutput out) throws IOException {
             out.writeInt( index );
-            out.writeByte( type );
-            out.writeObject( ovalue );
-            out.writeLong( lvalue );
-            out.writeBoolean( bvalue );
-            out.writeDouble( dvalue );
+            out.writeObject(value);
             out.writeBoolean( isNull );
             out.writeInt( hashCode );
         }
@@ -966,47 +938,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                              final Object value,
                              final InternalReadAccessor extractor) {
             this.index = index;
-            final ValueType vtype = extractor.getValueType();
-
             isNull = extractor.isNullValue( null, value );
 
-            if ( vtype.isBoolean() ) {
-                this.type = BOOL;
-                if ( !isNull ) {
-                    this.bvalue = extractor.getBooleanValue( null,
-                                                             value );
-                    this.setHashCode( this.bvalue ? 1231 : 1237 );
-                } else {
-                    this.setHashCode( 0 );
-                }
-            } else if ( vtype.isIntegerNumber() || vtype.isChar() ) {
-                this.type = LONG;
-                if ( !isNull ) {
-                    this.lvalue = extractor.getLongValue( null,
-                                                          value );
-                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
-                } else {
-                    this.setHashCode( 0 );
-                }
-            } else if ( vtype.isDecimalNumber() ) {
-                this.type = DOUBLE;
-                if ( !isNull ) {
-                    this.dvalue = extractor.getDoubleValue( null,
-                                                            value );
-                    final long temp = Double.doubleToLongBits( this.dvalue );
-                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
-                } else {
-                    this.setHashCode( 0 );
-                }
+            if ( !isNull ) {
+                this.value = extractor.getValue( null, value );
+                this.setHashCode( this.value != null ? this.value.hashCode() : 0 );
             } else {
-                this.type = OBJECT;
-                if ( !isNull ) {
-                    this.ovalue = extractor.getValue( null,
-                                                      value );
-                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
-                } else {
-                    this.setHashCode( 0 );
-                }
+                this.setHashCode( 0 );
             }
         }
 
@@ -1016,41 +954,11 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             this.index = index;
 
             this.isNull = value.isNull();
-            final ValueType vtype = extractor.getValueType();
-
-            if ( vtype.isBoolean() ) {
-                this.type = BOOL;
-                if ( !isNull ) {
-                    this.bvalue = value.getBooleanValue();
-                    this.setHashCode( this.bvalue ? 1231 : 1237 );
-                } else {
-                    this.setHashCode( 0 );
-                }
-            } else if ( vtype.isIntegerNumber() ) {
-                this.type = LONG;
-                if ( !isNull ) {
-                    this.lvalue = value.getLongValue();
-                    this.setHashCode( (int) (this.lvalue ^ (this.lvalue >>> 32)) );
-                } else {
-                    this.setHashCode( 0 );
-                }
-            } else if ( vtype.isDecimalNumber() ) {
-                this.type = DOUBLE;
-                if ( !isNull ) {
-                    this.dvalue = value.getDoubleValue();
-                    final long temp = Double.doubleToLongBits( this.dvalue );
-                    this.setHashCode( (int) (temp ^ (temp >>> 32)) );
-                } else {
-                    this.setHashCode( 0 );
-                }
+            if ( !isNull ) {
+                this.value = extractor.getValueType().coerce( value.getValue() );
+                this.setHashCode( this.value != null ? this.value.hashCode() : 0 );
             } else {
-                this.type = OBJECT;
-                if ( !isNull ) {
-                    this.ovalue = vtype.coerce( value.getValue() );
-                    this.setHashCode( this.ovalue != null ? this.ovalue.hashCode() : 0 );
-                } else {
-                    this.setHashCode( 0 );
-                }
+                this.setHashCode( 0 );
             }
         }
 
@@ -1062,88 +970,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
             this.hashCode = result;
         }
 
-        public boolean getBooleanValue() {
-            switch ( this.type ) {
-                case BOOL :
-                    return this.bvalue;
-                case OBJECT :
-                    if ( this.ovalue == null ) {
-                        return false;
-                    } else if ( this.ovalue instanceof Boolean ) {
-                        return (Boolean) this.ovalue;
-                    } else if ( this.ovalue instanceof String ) {
-                        return Boolean.parseBoolean( (String) this.ovalue );
-                    } else {
-                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a boolean value." );
-                    }
-                case LONG :
-                    throw new ClassCastException( "Can't convert long to a boolean value." );
-                case DOUBLE :
-                    throw new ClassCastException( "Can't convert double to a boolean value." );
-
-            }
-            return false;
-        }
-
-        public long getLongValue() {
-            switch ( this.type ) {
-                case BOOL :
-                    return this.bvalue ? 1 : 0;
-                case OBJECT :
-                    if ( this.ovalue == null ) {
-                        return 0;
-                    } else if ( this.ovalue instanceof Number ) {
-                        return ((Number) this.ovalue).longValue();
-                    } else if ( this.ovalue instanceof String ) {
-                        return Long.parseLong( (String) this.ovalue );
-                    } else if ( this.ovalue instanceof Character ) {
-                        return (long) (char) this.ovalue;
-                    } else {
-                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a long value." );
-                    }
-                case LONG :
-                    return this.lvalue;
-                case DOUBLE :
-                    return (long) this.dvalue;
-
-            }
-            return 0;
-        }
-
-        public double getDoubleValue() {
-            switch ( this.type ) {
-                case BOOL :
-                    return this.bvalue ? 1 : 0;
-                case OBJECT :
-                    if ( this.ovalue == null ) {
-                        return 0;
-                    } else if ( this.ovalue instanceof Number ) {
-                        return ((Number) this.ovalue).doubleValue();
-                    } else if ( this.ovalue instanceof String ) {
-                        return Double.parseDouble( (String) this.ovalue );
-                    } else {
-                        throw new ClassCastException( "Can't convert " + this.ovalue.getClass() + " to a double value." );
-                    }
-                case LONG :
-                    return this.lvalue;
-                case DOUBLE :
-                    return this.dvalue;
-            }
-            return 0;
-        }
-
         public Object getObjectValue() {
-            switch ( this.type ) {
-                case BOOL :
-                    return this.bvalue ? Boolean.TRUE : Boolean.FALSE;
-                case OBJECT :
-                    return this.ovalue;
-                case LONG :
-                    return this.lvalue;
-                case DOUBLE :
-                    return this.dvalue;
-            }
-            return null;
+            return this.value;
         }
 
         public int hashCode() {
@@ -1160,20 +988,8 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
                 return false;
             }
 
-            switch ( this.type ) {
-                case BOOL :
-                    return this.bvalue == other.getBooleanValue();
-                case LONG :
-                    return this.lvalue == other.getLongValue();
-                case DOUBLE :
-                    return this.dvalue == other.getDoubleValue();
-                case OBJECT :
-                    final Object otherValue = other.getObjectValue();
-                    return Objects.equals(this.ovalue, otherValue);
-            }
-            return false;
+            return Objects.equals(this.value, other.getObjectValue());
         }
-
     }
 
     public static class FieldIndex implements Externalizable {
