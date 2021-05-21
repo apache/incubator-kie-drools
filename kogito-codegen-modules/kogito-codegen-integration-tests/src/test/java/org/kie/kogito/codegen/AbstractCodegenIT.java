@@ -74,7 +74,6 @@ public class AbstractCodegenIT {
 
     private TestClassLoader classloader;
     private AddonsConfig addonsConfig = AddonsConfig.DEFAULT;
-    private final KogitoBuildContext context = this.newContext();
 
     private static final JavaCompiler JAVA_COMPILER = JavaCompilerFactory.loadCompiler(JavaConfiguration.CompilerType.NATIVE, "11");
     private static final String TEST_JAVA = "src/test/java/";
@@ -163,8 +162,11 @@ public class AbstractCodegenIT {
     }
 
     protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap) throws Exception {
-        ApplicationGenerator appGen =
-                new ApplicationGenerator(context);
+        return generateCode(resourcesTypeMap, this.newContext());
+    }
+
+    protected Application generateCode(Map<TYPE, List<String>> resourcesTypeMap, KogitoBuildContext context) throws Exception {
+        ApplicationGenerator appGen = new ApplicationGenerator(context);
 
         for (TYPE type : TYPE.values()) {
             if (resourcesTypeMap.containsKey(type) && !resourcesTypeMap.get(type).isEmpty()) {
