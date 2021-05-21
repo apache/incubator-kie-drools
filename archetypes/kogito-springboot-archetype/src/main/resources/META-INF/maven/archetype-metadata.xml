@@ -43,6 +43,7 @@ under the License.
         <include>**/*.dmn</include>
         <include>**/*.properties</include>
         <include>**/*.xml</include>
+        <include>**/*.html</include>
       </includes>
     </fileSet>
     <fileSet filtered="true" packaged="false" encoding="UTF-8">

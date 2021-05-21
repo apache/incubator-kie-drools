@@ -1,0 +1,150 @@
+<!--
+  ~ Copyright 2021 Red Hat, Inc. and/or its affiliates.
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~       http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+
+  <!DOCTYPE html>
+  <html lang="en">
+  
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Kogito service</title>
+      <link rel="stylesheet" href="styles.css" type="text/css">
+      <link rel="icon" href="https://kogito.kie.org/favicon.ico" type="image/icon type">
+      <link href='https://fonts.googleapis.com/css?family=Abril Fatface' rel='stylesheet'>
+      <link href='https://fonts.googleapis.com/css?family=Josefin Sans' rel='stylesheet'>
+      <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+      <link rel="stylesheet" href="http://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
+          crossorigin="anonymous"></script>
+  
+  </head>
+  
+  <body>
+      <section class="nav-content" style="padding: 0 13rem; height: 78px;">
+          <div class="row gx-5" style="padding-top: 8px;">
+              <div class="col-lg-6" style="margin-top: 8px;">
+                  <a href="/"><img class="project-logo"
+                                   src="https://kogito.kie.org/assets/images/kogito_logo_rgb_color_horizontal_default_450px.png"
+                                   alt="Kogito Logo" width="180px"></a>
+              </div>
+              <div class="col-lg-6">
+                  <nav style="float: right; padding-top: 10px;">
+                      <ul style="list-style: none;">
+                          <li>
+                              <a href="http://localhost:8080/q/swagger-ui/"
+                                 style="text-transform: uppercase;
+                                  color: #fff;
+                                  line-height: 2.5;
+                                  padding: 2px 10px 0 10px;
+                                  background-color: #F5891F;
+                                  border: 2px solid #F5891F;
+                                  display: inline-block;
+                                  text-decoration: none;"
+                              >
+                                  Swagger-UI
+                              </a>
+                          </li>
+                      </ul> 
+                  </nav>
+              </div>
+          </div>
+      </section>
+      <section class="row" >
+          <div class="col-lg-12" style="
+              background: linear-gradient(135deg, #085870 0%, #085870 50%, #97d4e8 100%);
+              height: 524px; 
+          ">
+              <div style="
+                  background-image: url(https://kogito.kie.org/assets/images/homepage/hero_background.svg);
+                  background-repeat: repeat-x;
+                  background-size: auto;
+                  background-position: left;
+                  padding: 6rem 13rem 8rem 13rem;
+                  height: 524px; 
+              ">
+                  <div style="height: 300px">
+                      <h1 style="
+                      font-family: 'Abril Fatface', sans-serif;
+                      font-weight: 400;
+                      font-size: 96px;
+                    line-height: 96px;
+                    color: #fff;">Welcome to Kogito</h1>
+                      <h2 style="font-family: 'Josefin Sans', sans-serif;
+                          text-transform: uppercase;
+                          font-size: 19.2px;
+                          line-height: 1;
+                          max-width: 42rem;
+                          font-weight: 400;
+                          color: #fff;
+                          margin: 32px 8px;"
+                      >
+                          Cloud-native business automation for building intelligent applications, backed by
+                              battle-tested capabilities.
+                      </h2>
+                      <a href="https://kogito.kie.org/get-started/" style="
+                          font-family: 'Josefin Sans', sans-serif;
+                          font-size: 20px;
+                          margin: 8px;
+                          text-transform: uppercase;
+                          color: #fff;
+                          line-height: 2.5;
+                          padding: 2px 10px 0 10px;
+                          background-color: #F5891F;
+                          border: 2px solid #fff;
+                          padding: 16px 64px 12px 64px;
+                          text-decoration: none"
+                      >
+                          Get Started
+                      </a>
+                      <a href="https://docs.jboss.org/kogito/release/latest/html_single/#chap-kogito-release-notes"
+                          id="latestVersion" style="
+                          font-family: 'Josefin Sans', sans-serif;
+                          font-size: 20px;
+                          margin: 8px;
+                          text-transform: uppercase;
+                          color: #fff;
+                          line-height: 2.5;
+                          padding: 2px 10px 0 10px;
+                          background-color: #F5891F;
+                          border: 2px solid #fff;
+                          padding: 16px 64px 12px 64px;
+                          text-decoration: none"
+                      >
+                          Latest updates
+                      </a>
+                  </div>
+              </div>
+          </div>
+      </section>
+      <section style="height: 350px; margin-top: 24px;">
+          <div class="container">
+              <div class="row">
+                  <h2> Quick Links</h2>
+                  <ul style="list-style: none;">
+                      <li style="line-height: 40px;"><a href="https://kogito.kie.org/get-started/">Documentation</a></li>
+                      <li style="line-height: 40px;"><a href="https://kie.zulipchat.com/#narrow/stream/232659-general">Getting Help</a></li>
+                  </ul>
+              </div>
+          </div>
+      </section>
+  </body>
+  
+  </html>
