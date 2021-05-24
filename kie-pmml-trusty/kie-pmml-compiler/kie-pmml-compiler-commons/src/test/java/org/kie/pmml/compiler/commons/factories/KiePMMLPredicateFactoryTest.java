@@ -79,6 +79,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
@@ -296,15 +297,15 @@ public class KiePMMLPredicateFactoryTest {
                                                nodeClassName,
                                                counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Object value = \"sunny\";\n" +
-                "    if (stringObjectMap.containsKey(\"outlook\")) {\n" +
-                "        return value.equals(stringObjectMap.get(\"outlook\"));\n" +
-                "    } else {\n" +
-                "        return false;\n" +
-                "    }\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Object value = \"sunny\";\n" +
+                                                                "    if (stringObjectMap.containsKey(\"outlook\")) {\n" +
+                                                                "        return value.equals(stringObjectMap.get(\"outlook\"));\n" +
+                                                                "    } else {\n" +
+                                                                "        return false;\n" +
+                                                                "    }\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         assertTrue(compoundPredicateMethods.isEmpty());
     }
 
@@ -323,21 +324,21 @@ public class KiePMMLPredicateFactoryTest {
                                                nodeClassName,
                                                counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Object inputValue = null;\n" +
-                "    Object value = 80.0;\n" +
-                "    if (stringObjectMap.containsKey(\"HumidityRef\")) {\n" +
-                "        inputValue = stringObjectMap.get(\"HumidityRef\");\n" +
-                "    } else {\n" +
-                "        return false;\n" +
-                "    }\n" +
-                "    if (inputValue instanceof Number && value instanceof Number) {\n" +
-                "        return ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();\n" +
-                "    } else {\n" +
-                "        return false;\n" +
-                "    }\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock( "{\n" +
+                                                                 "    Object inputValue = null;\n" +
+                                                                 "    Object value = 80.0;\n" +
+                                                                 "    if (stringObjectMap.containsKey(\"HumidityRef\")) {\n" +
+                                                                 "        inputValue = stringObjectMap.get(\"HumidityRef\");\n" +
+                                                                 "    } else {\n" +
+                                                                 "        return false;\n" +
+                                                                 "    }\n" +
+                                                                 "    if (inputValue instanceof Number && value instanceof Number) {\n" +
+                                                                 "        return ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();\n" +
+                                                                 "    } else {\n" +
+                                                                 "        return false;\n" +
+                                                                 "    }\n" +
+                                                                 "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         assertTrue(compoundPredicateMethods.isEmpty());
     }
 
@@ -356,18 +357,18 @@ public class KiePMMLPredicateFactoryTest {
                                                nodeClassName,
                                                counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    org.kie.pmml.api.enums.ARRAY_TYPE arrayType = org.kie.pmml.api.enums.ARRAY_TYPE.STRING;\n" +
-                "    if (!stringObjectMap.containsKey(\"occupation\")) {\n" +
-                "        return false;\n" +
-                "    }\n" +
-                "    final String stringValue = (String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(String" +
-                ".class, stringObjectMap.get(\"occupation\"));\n" +
-                "    final Object value = arrayType.getValue(stringValue);\n" +
-                "    final List values = java.util.Arrays.asList(\"SKYDIVER\", \"ASTRONAUT\");\n" +
-                "    return values.contains(value);\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    org.kie.pmml.api.enums.ARRAY_TYPE arrayType = org.kie.pmml.api.enums.ARRAY_TYPE.STRING;\n" +
+                                                                "    if (!stringObjectMap.containsKey(\"occupation\")) {\n" +
+                                                                "        return false;\n" +
+                                                                "    }\n" +
+                                                                "    final String stringValue = (String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(String" +
+                                                                ".class, stringObjectMap.get(\"occupation\"));\n" +
+                                                                "    final Object value = arrayType.getValue(stringValue);\n" +
+                                                                "    final List values = java.util.Arrays.asList(\"SKYDIVER\", \"ASTRONAUT\");\n" +
+                                                                "    return values.contains(value);\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         assertTrue(compoundPredicateMethods.isEmpty());
     }
 
@@ -386,22 +387,22 @@ public class KiePMMLPredicateFactoryTest {
                                                nodeClassName,
                                                counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Boolean toReturn = null;\n" +
-                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
-                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName2, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName3, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName4, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName5);\n" +
-                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
-                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
-                "        // generated\n" +
-                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
-                "    }\n" +
-                "    return toReturn != null && toReturn;\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Boolean toReturn = null;\n" +
+                                                                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
+                                                                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName2, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName3, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName4, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName5);\n" +
+                                                                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
+                                                                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
+                                                                "        // generated\n" +
+                                                                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
+                                                                "    }\n" +
+                                                                "    return toReturn != null && toReturn;\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         Optional<VariableDeclarator> optVar = CommonCodegenUtils.getVariableDeclarator(retrieved, "functions");
         assertTrue(optVar.isPresent());
         VariableDeclarator variableDeclarator = optVar.get();

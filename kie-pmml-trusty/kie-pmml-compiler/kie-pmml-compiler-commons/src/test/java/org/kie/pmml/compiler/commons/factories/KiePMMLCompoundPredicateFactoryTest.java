@@ -36,6 +36,7 @@ import org.dmg.pmml.tree.TreeModel;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
@@ -82,19 +83,19 @@ public class KiePMMLCompoundPredicateFactoryTest {
                                                        nodeClassName,
                                                        counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Boolean toReturn = null;\n" +
-                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
-                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName2);\n" +
-                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
-                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
-                "        // generated\n" +
-                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
-                "    }\n" +
-                "    return toReturn != null && toReturn;\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Boolean toReturn = null;\n" +
+                                                                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
+                                                                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName2);\n" +
+                                                                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
+                                                                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
+                                                                "        // generated\n" +
+                                                                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
+                                                                "    }\n" +
+                                                                "    return toReturn != null && toReturn;\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         commonValidateBlockStmt(retrieved, compoundPredicateMethods, rootNodeClassName, predicate.getPredicates().size());
     }
 
@@ -113,19 +114,19 @@ public class KiePMMLCompoundPredicateFactoryTest {
                                                        nodeClassName,
                                                        counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Boolean toReturn = null;\n" +
-                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
-                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName2);\n" +
-                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
-                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
-                "        // generated\n" +
-                "        toReturn = toReturn != null ? toReturn || evaluation : evaluation;\n" +
-                "    }\n" +
-                "    return toReturn != null && toReturn;\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Boolean toReturn = null;\n" +
+                                                                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
+                                                                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName2);\n" +
+                                                                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
+                                                                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
+                                                                "        // generated\n" +
+                                                                "        toReturn = toReturn != null ? toReturn || evaluation : evaluation;\n" +
+                                                                "    }\n" +
+                                                                "    return toReturn != null && toReturn;\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         commonValidateBlockStmt(retrieved, compoundPredicateMethods, rootNodeClassName, predicate.getPredicates().size());
     }
 
@@ -144,22 +145,22 @@ public class KiePMMLCompoundPredicateFactoryTest {
                                                nodeClassName,
                                                counter);
         assertNotNull(retrieved);
-        String expected = "{\n" +
-                "    Boolean toReturn = null;\n" +
-                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
-                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName2, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName3, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName4, " +
-                "rootNodeClassName::evaluateNestedPredicatenodeClassName5);\n" +
-                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
-                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
-                "        // generated\n" +
-                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
-                "    }\n" +
-                "    return toReturn != null && toReturn;\n" +
-                "}".replace("\n", System.lineSeparator());
-        assertEquals(expected, retrieved.toString());
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Boolean toReturn = null;\n" +
+                                                                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
+                                                                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName2, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName3, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName4, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName5);\n" +
+                                                                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
+                                                                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
+                                                                "        // generated\n" +
+                                                                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
+                                                                "    }\n" +
+                                                                "    return toReturn != null && toReturn;\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
         commonValidateBlockStmt(retrieved, compoundPredicateMethods, rootNodeClassName, predicate.getPredicates().size());
     }
 
