@@ -1,5 +1,5 @@
 [id="proc-kogito-modelers-install_{context}"]
-=== Installing and using the {KOGITO} Business Modeler Hub
+= Installing and using the {KOGITO} Business Modeler Hub
 
 {KOGITO} provides a https://kiegroup.github.io/kogito-online/#/download[Business Modeler Hub] desktop application with all extensions or applications for modeling Decision Model and Notation (DMN) decision models in {KOGITO} microservices.
 
