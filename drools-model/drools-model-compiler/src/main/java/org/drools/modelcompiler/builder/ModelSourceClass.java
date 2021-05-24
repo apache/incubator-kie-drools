@@ -33,7 +33,7 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.joining;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelSourceClass {
@@ -184,7 +184,7 @@ public class ModelSourceClass {
         public String toGetKieModuleModelMethod() {
             MethodDeclaration methodDeclaration = new MethodDeclaration(nodeList(publicModifier()), new ClassOrInterfaceType(null, kieModuleModelCanonicalName), "getKieModuleModel");
             methodDeclaration.setBody(stmt);
-            methodDeclaration.addAnnotation( "Override" );
+            methodDeclaration.addAnnotation( createSimpleAnnotation(Override.class) );
             return methodDeclaration.toString();
         }
 

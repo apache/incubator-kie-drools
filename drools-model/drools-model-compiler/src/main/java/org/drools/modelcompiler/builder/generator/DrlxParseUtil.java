@@ -42,7 +42,9 @@ import java.util.stream.Stream;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
 import com.github.javaparser.ast.expr.ArrayCreationExpr;
 import com.github.javaparser.ast.expr.AssignExpr;
@@ -60,8 +62,11 @@ import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MemberValuePair;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -102,8 +107,6 @@ import org.drools.mvelcompiler.context.MvelCompilerContext;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
-
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
@@ -551,29 +554,66 @@ public class DrlxParseUtil {
         return ruleContext.getDelarationType(variableName);
     }
 
+    public static AnnotationExpr createSimpleAnnotation(Class<?> annotationClass) {
+        return createSimpleAnnotation(annotationClass.getCanonicalName());
+    }
+
+    public static AnnotationExpr createSimpleAnnotation(String className) {
+        return new NormalAnnotationExpr(new Name(className), new NodeList<MemberValuePair>());
+    }
+
     public static Type classToReferenceType(Class<?> declarationClass) {
-        String className = declarationClass.getCanonicalName();
-        return classNameToReferenceTypeWithBoxing(className).parsedType;
+        return classNameToReferenceTypeWithBoxing(declarationClass).parsedType;
     }
 
     public static Type classToReferenceType(DeclarationSpec declaration) {
         Class<?> declarationClass = declaration.getDeclarationClass();
         String className = declarationClass.getCanonicalName();
-        ReferenceType parsedType = classNameToReferenceTypeWithBoxing(className);
+        ReferenceType parsedType = classNameToReferenceTypeWithBoxing(declarationClass);
         declaration.setBoxed(parsedType.wasBoxed);
         return parsedType.parsedType;
     }
 
-    public static Type classNameToReferenceType(String className) {
-        return classNameToReferenceTypeWithBoxing(className).parsedType;
-    }
-
-    private static ReferenceType classNameToReferenceTypeWithBoxing(String className) {
-        Type parsedType = parseType(className);
+    private static ReferenceType classNameToReferenceTypeWithBoxing(Class<?> declarationClass) {
+        Type parsedType = toJavaParserType(declarationClass);
         if (parsedType instanceof PrimitiveType) {
             return new ReferenceType(((PrimitiveType) parsedType).toBoxedType(), true);
         }
         return new ReferenceType(parsedType, false);
+    }
+
+    public static Type toJavaParserType(Class<?> cls) {
+        return toJavaParserType( cls, cls.isPrimitive() );
+    }
+
+    public static Type toJavaParserType(Class<?> cls, boolean primitive) {
+        if (primitive) {
+            if (cls == int.class || cls == Integer.class) {
+                return PrimitiveType.intType();
+            }
+            else if (cls == char.class || cls == Character.class) {
+                return PrimitiveType.charType();
+            }
+            else if (cls == long.class || cls == Long.class) {
+                return PrimitiveType.longType();
+            }
+            else if (cls == short.class || cls == Short.class) {
+                return PrimitiveType.shortType();
+            }
+            else if (cls == double.class || cls == Double.class) {
+                return PrimitiveType.doubleType();
+            }
+            else if (cls == float.class || cls == Float.class) {
+                return PrimitiveType.floatType();
+            }
+            else if (cls == boolean.class || cls == Boolean.class) {
+                return PrimitiveType.booleanType();
+            }
+            else if (cls == byte.class || cls == Byte.class) {
+                return PrimitiveType.byteType();
+            }
+        }
+        return toClassOrInterfaceType(cls);
     }
 
     static class ReferenceType {
@@ -586,17 +626,13 @@ public class DrlxParseUtil {
         }
     }
 
-    public static Type toType(Class<?> declClass) {
-        return parseType(declClass.getCanonicalName());
-    }
-
     public static ClassOrInterfaceType toClassOrInterfaceType( Class<?> declClass ) {
-        return toClassOrInterfaceType(declClass.getCanonicalName());
+        return new ClassOrInterfaceType(null, declClass.getCanonicalName());
     }
 
     public static ClassOrInterfaceType toClassOrInterfaceType( String className ) {
         String withoutDollars = className.replace("$", "."); // nested class in Java cannot be used in casts
-        return StaticJavaParser.parseClassOrInterfaceType(withoutDollars);
+        return withoutDollars.indexOf('<') >= 0 ? StaticJavaParser.parseClassOrInterfaceType(withoutDollars) : new ClassOrInterfaceType(null, withoutDollars);
     }
 
     public static Optional<String> findBindingIdFromDotExpression(String expression) {

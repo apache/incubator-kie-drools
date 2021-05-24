@@ -29,7 +29,8 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.VoidType;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class MaterializedLambdaConsequence extends MaterializedLambda {
 
@@ -44,8 +45,8 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
     @Override
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("execute", Modifier.Keyword.PUBLIC);
-        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
-        methodDeclaration.addAnnotation("Override");
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
+        methodDeclaration.addAnnotation(createSimpleAnnotation("Override"));
         methodDeclaration.setType(new VoidType());
 
         setMethodParameter(methodDeclaration);
@@ -84,7 +85,7 @@ public class MaterializedLambdaConsequence extends MaterializedLambda {
     @Override
     protected ClassOrInterfaceType functionType() {
         String type = "Block" + lambdaParameters.size();
-        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+        return toClassOrInterfaceType("org.drools.model.functions." + type);
     }
 }
 

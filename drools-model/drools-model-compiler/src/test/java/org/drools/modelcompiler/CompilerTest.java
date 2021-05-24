@@ -2858,4 +2858,37 @@ public class CompilerTest extends BaseModelTest {
             return clazz.equals(String.class);
         }
     }
+
+    public interface MyInterface {
+        default String getDefaultString() {
+            return "DEFAULT";
+        }
+    }
+
+    public static class MyClass implements MyInterface { }
+
+    @Test
+    public void testUseDefaultMethod() {
+        // DROOLS-6358
+        final String str =
+                "package org.drools.mvel.compiler\n" +
+                "global java.util.List list;\n" +
+                "import " + MyClass.class.getCanonicalName() + ";" +
+                "rule r1\n" +
+                "when\n" +
+                "    MyClass( val: defaultString )\n" +
+                "then\n" +
+                "    list.add(val);" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        final FactWithMethod fact = new FactWithMethod();
+        ksession.insert(new MyClass());
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("DEFAULT", list.get(0));
+    }
 }

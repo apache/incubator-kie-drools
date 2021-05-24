@@ -45,7 +45,7 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 /* Used to generate Block DSL */
 class BlockGenerator {
@@ -78,7 +78,7 @@ class BlockGenerator {
                 .orElseThrow(() -> new RuntimeException("Inner class not found"));
 
         cloneCU.findAll(Type.class, t -> "BlockTemplate".equals(t.asString()))
-                .forEach(t -> t.replace(parseClassOrInterfaceType(arityName(arity))));
+                .forEach(t -> t.replace(toClassOrInterfaceType(arityName(arity))));
 
         replaceGenericType(arity, blockClass, templateInnerClass);
 
@@ -139,7 +139,7 @@ class BlockGenerator {
     }
 
     private static ClassOrInterfaceType parseType(int genericTypeIndex) {
-        return parseClassOrInterfaceType(argumentTypeName(genericTypeIndex));
+        return toClassOrInterfaceType(argumentTypeName(genericTypeIndex));
     }
 
     private static String argumentTypeName(int genericTypeIndex) {

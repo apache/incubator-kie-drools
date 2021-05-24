@@ -1,3 +1,19 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.util.ArrayList;
@@ -17,12 +33,12 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.P98;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PDB;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequence982E2B99D4259D0E7765315FCEE7EA31 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum LambdaConsequenceDBAE2B827A3FDBA91B7A83284F221949 implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "INSTANCE;\n" +
                 "public static final String EXPRESSION_HASH = \"8305FF24AC76CB49E7AAE2C10356A105\";" +
                 "    public java.lang.String getExpressionHash() {\n" +
@@ -48,12 +64,12 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.P28;\n" +
+                "package defaultpkg.PF5;\n" +
                 "import static defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequence282F12790B6346F38DD05CDBDFFB4034 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum LambdaConsequenceF5221449583BE216D72583C108D17451 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "        INSTANCE;\n" +
                 "        public static final String EXPRESSION_HASH = \"1FE08C27A04F37AADD1A62E562519E8D\";\n" +
                 "    public java.lang.String getExpressionHash() {\n" +
@@ -89,12 +105,12 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PFB;\n" +
+                "package defaultpkg.PAE;\n" +
                 "import static defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaConsequenceFB58D60433E3A0DF3C5210777CC663FC implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum LambdaConsequenceAE1C6782AAF9C3BD8D8E87E6F3650620 implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"2ABFB3D359AC0D0C1F6C1BAF91E05544\";\n" +
@@ -134,13 +150,13 @@ public class MaterializedLambdaConsequenceTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PF6;\n" +
+                "package defaultpkg.PB9;\n" +
                 "\n" +
                 "import static defaultpkg.Rules53448E6B9A07CB05B976425EF329E308.*;\n" +
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "\n" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
-                "public enum LambdaConsequenceF69C3927DEB639FE700B69B42338E5F0 implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum LambdaConsequenceB90161D3D33552C502EC4AF0435E3FAB implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"15102979E2E45F1A4617C12D3517D6B5\";\n" +

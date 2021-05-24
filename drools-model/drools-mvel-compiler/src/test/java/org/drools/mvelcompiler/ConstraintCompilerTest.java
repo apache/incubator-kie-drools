@@ -38,6 +38,24 @@ public class ConstraintCompilerTest implements CompilerTest {
                        "_this.getSalary().add(_this.getSalary())");
     }
 
+    @Test
+    public void testBigDecimalStringEquality() {
+        testExpression(c -> {
+                           c.setRootPattern(Person.class);
+                           c.setRootTypePrefix("_this");
+                       }, "salary == \"90\"",
+                       "_this.getSalary().equals(new java.math.BigDecimal(\"90\"))");
+    }
+
+    @Test
+    public void testBigDecimalStringNonEquality() {
+        testExpression(c -> {
+                           c.setRootPattern(Person.class);
+                           c.setRootTypePrefix("_this");
+                       }, "salary != \"90\"",
+                       "!(_this.getSalary().equals(new java.math.BigDecimal(\"90\")))");
+    }
+
     public void testExpression(Consumer<MvelCompilerContext> testFunction,
                                String inputExpression,
                                String expectedResult,
