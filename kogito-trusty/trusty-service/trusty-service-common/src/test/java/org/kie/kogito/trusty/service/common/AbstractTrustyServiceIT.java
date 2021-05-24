@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.kie.kogito.trusty.service.common.messaging.incoming.ModelIdentifier;
 import org.kie.kogito.trusty.service.common.models.MatchedExecutionHeaders;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
@@ -39,6 +40,7 @@ import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResul
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
@@ -48,6 +50,7 @@ import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -113,6 +116,15 @@ public abstract class AbstractTrustyServiceIT {
 
         Decision result = trustyService.getDecisionById(executionId);
         Assertions.assertEquals(executionId, result.getExecutionId());
+    }
+
+    @Test
+    public void givenAnExecutionWhenGetDecisionByIdThenTheComponentsInUnitTypesIsNull() {
+        String executionId = "myExecution";
+        storeExecution(executionId, 1591692950000L);
+
+        Decision result = trustyService.getDecisionById(executionId);
+        Assertions.assertNull(result.getInputs().stream().findFirst().get().getValue().getComponents());
     }
 
     @Test
@@ -403,14 +415,22 @@ public abstract class AbstractTrustyServiceIT {
         assertNotNull(result);
     }
 
-    private void storeExecution(String executionId, Long timestamp) {
+    private Decision storeExecution(String executionId, Long timestamp) {
+        DecisionInput decisionInput = new DecisionInput();
+        decisionInput.setId("inputId");
+        decisionInput.setName("inputName");
+        decisionInput.setValue(new TypedVariableWithValue(TypedValue.Kind.UNIT, "test", "number", JsonNodeFactory.instance.numberNode(10), null));
+
         Decision decision = new Decision();
         decision.setExecutionId(executionId);
         decision.setExecutionTimestamp(timestamp);
         decision.setServiceUrl("serviceUrl");
         decision.setExecutedModelNamespace("executedModelNamespace");
         decision.setExecutedModelName("executedModelName");
+        decision.setInputs(Collections.singletonList(decisionInput));
+
         trustyService.storeDecision(decision.getExecutionId(), decision);
+        return decision;
     }
 
     private void storeModel(String model) {

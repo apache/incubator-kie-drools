@@ -31,12 +31,15 @@ public class TypedVariableWithValueMarshaller extends AbstractModelMarshaller<Ty
 
     @Override
     public TypedVariableWithValue readFrom(ProtoStreamReader reader) throws IOException {
+        Kind kind = enumFromString(reader.readString(TypedVariableWithValue.KIND_FIELD), Kind.class);
+        ArrayList<TypedVariableWithValue> components = reader.readCollection(TypedVariableWithValue.COMPONENTS_FIELD, new ArrayList<>(), TypedVariableWithValue.class);
+
         return new TypedVariableWithValue(
-                enumFromString(reader.readString(TypedVariableWithValue.KIND_FIELD), Kind.class),
+                kind,
                 reader.readString(TypedVariableWithValue.NAME_FIELD),
                 reader.readString(TypedVariableWithValue.TYPE_REF_FIELD),
                 jsonFromString(reader.readString(TypedVariableWithValue.VALUE_FIELD)),
-                reader.readCollection(TypedVariableWithValue.COMPONENTS_FIELD, new ArrayList<>(), TypedVariableWithValue.class));
+                Kind.UNIT.equals(kind) ? null : components);
     }
 
     @Override

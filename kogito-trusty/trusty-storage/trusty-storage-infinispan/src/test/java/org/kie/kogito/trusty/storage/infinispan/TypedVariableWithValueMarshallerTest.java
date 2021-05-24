@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.infinispan.protostream.MessageMarshaller;
@@ -42,7 +41,7 @@ public class TypedVariableWithValueMarshallerTest extends MarshallerTestTemplate
             new StringTestField<>(NAME_FIELD, "testName", TypedVariableWithValue::getName, TypedVariableWithValue::setName),
             new StringTestField<>(TYPE_REF_FIELD, "testTypeRef", TypedVariableWithValue::getTypeRef, TypedVariableWithValue::setTypeRef),
             new JsonNodeTestField<>(VALUE_FIELD, null, TypedVariableWithValue::getValue, TypedVariableWithValue::setValue),
-            new CollectionTestField<>(COMPONENTS_FIELD, Collections.emptyList(), TypedVariableWithValue::getComponents, TypedVariableWithValue::setComponents, TypedVariableWithValue.class));
+            new CollectionTestField<>(COMPONENTS_FIELD, null, TypedVariableWithValue::getComponents, TypedVariableWithValue::setComponents, TypedVariableWithValue.class));
 
     public TypedVariableWithValueMarshallerTest() {
         super(TypedVariableWithValue.class);
