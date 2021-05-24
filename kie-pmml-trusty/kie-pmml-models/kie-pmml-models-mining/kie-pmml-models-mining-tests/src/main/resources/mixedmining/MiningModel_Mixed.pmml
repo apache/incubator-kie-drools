@@ -64,7 +64,7 @@
       </OutputField>
       <OutputField name="out_fun_occupation_referred" dataType="string" feature="transformedValue">
         <Apply function="fun_occupation_referred">
-          <Constant>occupation</Constant>
+          <Constant>CONSTANT_OCCUPATION</Constant>
         </Apply>
       </OutputField>
     </Output>
