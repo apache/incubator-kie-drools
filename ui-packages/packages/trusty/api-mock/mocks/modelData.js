@@ -1,6 +1,6 @@
 const executionIdBase = require('./executionIdBase');
 const DMN_1 = `
-  <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_84627CF5-6B15-47D8-A943-40555270CCEC" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_66A7B1AB-61EF-4E13-B41E-46C928698EE2" name="example" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_84627CF5-6B15-47D8-A943-40555270CCEC">
+  <dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_84627CF5-6B15-47D8-A943-40555270CCEC" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" id="_66A7B1AB-61EF-4E13-B41E-46C928698EE2" name="fraud-score" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_84627CF5-6B15-47D8-A943-40555270CCEC">
     <dmn:extensionElements/>
     <dmn:inputData id="_70F1A759-16EA-44EE-98C1-E9B3726382FF" name="Name">
       <dmn:extensionElements/>
@@ -86,141 +86,111 @@ const modelData = [
   {
     executionId: executionIdBase + 1000,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'myMortgage',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1001,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'myMortgage',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1002,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'myMortgage',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1003,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'myMortgage',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1004,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'myMortgage',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1005,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'fraud-scoring',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1006,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'fraud-scoring',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1007,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'fraud-scoring',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1008,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'fraud-scoring',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   },
   {
     executionId: executionIdBase + 1009,
     deploymentDate: '01012020',
-    modelId: '1234567890',
-    name: 'fraud-scoring',
+    groupId: 'groupId',
+    artifactId: 'artifactId',
+    modelVersion: 'version',
+    dmnVersion: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
+    name: 'fraud-score',
     namespace: 'modelNameSpace',
-    type: 'http://www.omg.org/spec/DMN/20151101/dmn.xsd',
-    serviceIdentifier: {
-      groupId: 'groupId',
-      artifactId: 'artifactId',
-      version: 'version'
-    },
     model: DMN_1
   }
 ];
