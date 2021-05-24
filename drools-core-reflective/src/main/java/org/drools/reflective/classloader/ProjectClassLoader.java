@@ -45,6 +45,9 @@ public abstract class ProjectClassLoader extends ClassLoader implements KieTypeR
                                                             new ClassNotFoundException("This is just a cached Exception. Disable non existing classes cache to see the actual one.") :
                                                             null;
 
+    // just to test a PR
+
+
     static {
         registerAsParallelCapable();
     }
