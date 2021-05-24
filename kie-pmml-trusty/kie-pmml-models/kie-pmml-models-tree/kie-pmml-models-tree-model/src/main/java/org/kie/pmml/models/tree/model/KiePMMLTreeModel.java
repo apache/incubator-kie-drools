@@ -20,7 +20,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 
 public class KiePMMLTreeModel extends KiePMMLModel {
 
@@ -35,12 +34,6 @@ public class KiePMMLTreeModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         return nodeFunction.apply(requestData);
-    }
-
-    @Override
-    public Map<String, Object> getOutputFieldsMap() {
-        // TODO fix with common management of outputfields ticket DROOLS-6218
-        throw new UnsupportedOperationException();
     }
 
 }
