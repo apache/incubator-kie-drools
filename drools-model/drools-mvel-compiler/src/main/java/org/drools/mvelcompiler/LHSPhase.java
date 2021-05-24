@@ -249,7 +249,10 @@ public class LHSPhase implements DrlGenericVisitor<TypedExpression, Void> {
     private Optional<TypedExpression> tryParseItAsSetter(FieldAccessExpr n, TypedExpression scope, Class<?> setterArgumentType) {
         return scope.getType().flatMap(scopeType -> {
             String setterName = printConstraint(n.getName());
-            Optional<Method> optAccessor = ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType));
+            Optional<Method> optAccessor =
+                    ofNullable(getSetter((Class<?>) scopeType, setterName, setterArgumentType))
+                    .map(Optional::of)
+                    .orElse(ofNullable(getSetter((Class<?>) scopeType, setterName, String.class)));
 
             List<TypedExpression> arguments = rhs.map(Collections::singletonList)
                     .orElse(emptyList());

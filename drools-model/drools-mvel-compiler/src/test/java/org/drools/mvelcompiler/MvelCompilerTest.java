@@ -256,6 +256,57 @@ public class MvelCompilerTest implements CompilerTest {
     }
 
     @Test
+    public void testSetterStringWithBigDecimal() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.name = BigDecimal.valueOf(1); }",
+             "{ $p.setName((BigDecimal.valueOf(1)).toString()); }");
+    }
+
+    @Test
+    public void testSetterStringWithBigDecimalFromField() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{ $p.name = $p.salary; }",
+             "{ $p.setName(($p.getSalary()).toString()); }");
+    }
+
+    @Test
+    public void testSetterStringWithBigDecimalFromVariable() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+                 ctx.addDeclaration("$m", BigDecimal.class);
+             },
+             "{ $p.name = $m; }",
+             "{ $p.setName(($m).toString()); }");
+    }
+
+    @Test
+    public void testSetterStringWithBigDecimalFromBigDecimalLiteral() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             "{ $p.name = 10000B; }",
+             "{ $p.setName((new java.math.BigDecimal(\"10000\")).toString()); }");
+    }
+
+    @Test
+    public void testSetterStringWithBigDecimalFromBigDecimalConstant() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             "{ $p.name = BigDecimal.ZERO; }",
+             "{ $p.setName((BigDecimal.ZERO).toString()); }");
+    }
+
+    @Test
+    public void testSetterStringWithNull() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+             },
+             "{ $p.name = null; }",
+             "{ $p.setName(null); }");
+    }
+
+    @Test
     public void testSetterBigDecimalConstantModify() {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { salary = 50000 }; }",
@@ -412,6 +463,17 @@ public class MvelCompilerTest implements CompilerTest {
              "{ " +
                      "java.lang.String key3 = \"key3\";\n" +
                      "$p.getItems().put(key3, java.lang.String.valueOf(\"value3\")); " +
+                     "}");
+    }
+
+    @Test
+    public void testMapSetWithConstant() {
+        test(ctx -> ctx.addDeclaration("$p", Person.class),
+             "{" +
+                     "$p.items[\"key3\"] = \"value3\";\n" +
+                     "}",
+             "{ " +
+                     "$p.getItems().put(\"key3\", java.lang.String.valueOf(\"value3\")); " +
                      "}");
     }
 
@@ -625,6 +687,17 @@ public class MvelCompilerTest implements CompilerTest {
         test(ctx -> ctx.addDeclaration("$p", Person.class),
              "{ modify ( $p )  { name = \"Luca\", age = 35 }; }",
              "{\n {\n $p.setName(\"Luca\");\n $p.setAge(35);\n }\n }",
+             result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
+    }
+
+    @Test
+    public void testModifyMap() {
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+                 ctx.addDeclaration("$p2", Person.class);
+             },
+             "{ modify ( $p )  { items = $p2.items }; }",
+             "{\n {\n $p.setItems($p2.getItems());\n }\n }",
              result -> assertThat(allUsedBindings(result), containsInAnyOrder("$p")));
     }
 
