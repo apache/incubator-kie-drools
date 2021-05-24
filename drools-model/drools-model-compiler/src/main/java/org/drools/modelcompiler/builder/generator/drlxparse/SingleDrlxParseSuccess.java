@@ -402,7 +402,8 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
                 .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
                 .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class))
-                .setIsPredicate(this.isPredicate && otherDrlx.isPredicate);
+                .setIsPredicate(this.isPredicate && otherDrlx.isPredicate)
+                .setExprBinding(this.exprBinding); // only left exprBinding
     }
 
     @Override
