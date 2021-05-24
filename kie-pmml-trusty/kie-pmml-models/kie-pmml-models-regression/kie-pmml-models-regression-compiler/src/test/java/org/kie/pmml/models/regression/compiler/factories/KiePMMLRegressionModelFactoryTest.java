@@ -182,15 +182,16 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void setConstructor() {
-        ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
         String nestedTable = "NestedTable";
         String targetField = "targetField";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
+        final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         KiePMMLRegressionModelFactory.setConstructor(regressionModel,
                                                      dataDictionary,
-                                                     nestedTable,
-                                                     constructorDeclaration,
-                                                     targetField);
+                                                     transformationDictionary,
+                                                     modelTemplate,
+                                                     targetField,
+                                                     nestedTable);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
@@ -200,6 +201,7 @@ public class KiePMMLRegressionModelFactoryTest {
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         assignExpressionMap.put("regressionTable", objectCreationExpr);
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
         assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(regressionModel.getModelName()), superInvocationExpressionsMap, assignExpressionMap));
     }
 

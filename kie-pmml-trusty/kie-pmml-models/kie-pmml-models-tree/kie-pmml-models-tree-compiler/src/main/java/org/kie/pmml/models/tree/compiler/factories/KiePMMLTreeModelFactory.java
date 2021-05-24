@@ -21,9 +21,10 @@ import java.util.Map;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
@@ -34,18 +35,18 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.getKiePMMLNodeSourcesMap;
@@ -92,24 +93,48 @@ public class KiePMMLTreeModelFactory {
         String fullNodeClassName =  packageName + "." + nodeNamesDTO.nodeClassName;
         final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary, model.getLocalTransformations());
         Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, derivedFields, packageName);
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
-        setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullNodeClassName);
-        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
+        setConstructor(model,
+                       dataDictionary,
+                       transformationDictionary,
+                       modelTemplate,
+                       targetFieldName,
+                       fullNodeClassName);
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
         return toReturn;
     }
 
-    static void setConstructor(final TreeModel treeModel, final DataDictionary dataDictionary, final ConstructorDeclaration constructorDeclaration, final String targetField, final String fullNodeClassName) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(treeModel.getMiningSchema(), dataDictionary);
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(treeModel.getOutput(), dataDictionary);
-        setKiePMMLModelConstructor( getSanitizedClassName(treeModel.getModelName()), constructorDeclaration, treeModel.getModelName(), miningFields, outputFields);
-        MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
+    static void setConstructor(final TreeModel treeModel,
+                               final DataDictionary dataDictionary,
+                               final TransformationDictionary transformationDictionary,
+                               final ClassOrInterfaceDeclaration modelTemplate,
+                               final String targetField,
+                               final String fullNodeClassName) {
+        final List<KiePMMLOutputField> outputFields = getOutputFields(treeModel);
+        Expression miningFunctionExpression;
+        if (treeModel.getMiningFunction() != null) {
+            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(treeModel.getMiningFunction().value());
+            miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
+        } else {
+            miningFunctionExpression = new NullLiteralExpr();
+        }
+        final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
+                                                                                          getSanitizedClassName(treeModel.getModelName()),
+                                                                                          treeModel.getModelName(),
+                                                                                          dataDictionary)
+                .withMiningFields(treeModel.getMiningSchema())
+                .withOutputFields(treeModel.getOutput())
+                .withTransformationDictionary(transformationDictionary)
+                .withLocalTransformations(treeModel.getLocalTransformations())
+                .withKiePMMLOutputFields(outputFields)
+                .withTargetField(targetField)
+                .withMiningFunction(miningFunctionExpression)
+                .withPMMLModel(PMML_MODEL.TREE_MODEL.name());
+        builder.build();
+        final ConstructorDeclaration constructorDeclaration =
+                modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
-        CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
-        CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
-        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", new NameExpr(PMML_MODEL.TREE_MODEL.getClass().getName() + "." + PMML_MODEL.TREE_MODEL.name()));
         // set predicate function
         MethodReferenceExpr nodeReference = new MethodReferenceExpr();
         nodeReference.setScope(new NameExpr(fullNodeClassName));
