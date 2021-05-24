@@ -123,33 +123,30 @@ public class ConstraintParser {
             if (hasBind) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
                 String bindId = drlx.getBind().asString();
-                DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
-                if (drlx.getExpr() instanceof NameExpr) {
-                    decl.setBoundVariable( drlx.getExpr().toString() );
-                }
-                singleResult.setExprBinding( bindId );
-                Type exprType = singleResult.getExprType();
-                if(isBooleanBoxedUnboxed(exprType)) {
-                    singleResult.setIsPredicate(singleResult.getRight() != null);
-                }
+                addDeclaration(drlx, singleResult, bindId);
             } else if (result instanceof SingleDrlxParseSuccess) {
                 SingleDrlxParseSuccess singleResult = (SingleDrlxParseSuccess) result;
+                // a constraint has a binding inside its expression (not in top level DrlxExpression)
                 String bindId = singleResult.getExprBinding();
                 if (bindId != null) {
-                    DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
-                    if (drlx.getExpr() instanceof NameExpr) {
-                        decl.setBoundVariable( drlx.getExpr().toString() );
-                    }
-                    singleResult.setExprBinding( bindId );
-                    Type exprType = singleResult.getExprType();
-                    if(isBooleanBoxedUnboxed(exprType)) {
-                        singleResult.setIsPredicate(singleResult.getRight() != null);
-                    }
+                    addDeclaration(drlx, singleResult, bindId);
                 }
             }
         });
 
         return drlxParseResult;
+    }
+
+    private void addDeclaration(DrlxExpression drlx, SingleDrlxParseSuccess singleResult, String bindId) {
+        DeclarationSpec decl = context.addDeclaration( bindId, singleResult.getLeftExprRawClass() );
+        if (drlx.getExpr() instanceof NameExpr) {
+            decl.setBoundVariable( drlx.getExpr().toString() );
+        }
+        singleResult.setExprBinding( bindId );
+        Type exprType = singleResult.getExprType();
+        if(isBooleanBoxedUnboxed(exprType)) {
+            singleResult.setIsPredicate(singleResult.getRight() != null);
+        }
     }
 
     private DrlxParseResult getDrlxParseResult(Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr, boolean hasBind, boolean isPositional ) {

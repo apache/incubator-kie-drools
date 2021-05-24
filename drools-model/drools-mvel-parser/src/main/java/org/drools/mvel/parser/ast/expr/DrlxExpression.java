@@ -19,7 +19,6 @@
 package org.drools.mvel.parser.ast.expr;
 
 import com.github.javaparser.TokenRange;
-import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.visitor.GenericVisitor;

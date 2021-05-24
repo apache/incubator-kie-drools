@@ -27,7 +27,6 @@ package org.drools.mvel.parser;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javaparser.ParseProblemException;
