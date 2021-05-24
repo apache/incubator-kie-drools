@@ -26,7 +26,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.model.ProcessInstance;
-import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.AttributeFilter;
 
 import static java.util.Arrays.asList;
@@ -48,7 +47,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThan;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.lessThanEqual;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 
-abstract class AbstractQueryIT {
+public abstract class AbstractQueryIT {
 
     @Inject
     DataIndexStorageService cacheService;
@@ -60,8 +59,7 @@ abstract class AbstractQueryIT {
 
     @AfterEach
     void tearDown() {
-        Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
-        cache.clear();
+        cacheService.getProcessInstancesCache().clear();
     }
 
     @Test

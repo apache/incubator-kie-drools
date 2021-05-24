@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.service;
+package org.kie.kogito.index.messaging;
 
+import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.index.TestUtils;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
@@ -24,15 +26,12 @@ import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)
-class MongoIndexingServiceIT extends AbstractIndexingServiceIT {
+@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@Disabled
+class MongoMessagingLoadKafkaIT extends AbstractMessagingLoadKafkaIT {
 
     @Override
-    protected String getProcessProtobufFileContent() throws Exception {
+    protected String getTestProtobufFileContent() throws Exception {
         return TestUtils.readFileContent("travels-mongo.proto");
-    }
-
-    @Override
-    protected String getUserTaskProtobufFileContent() throws Exception {
-        return TestUtils.readFileContent("deals-mongo.proto");
     }
 }

@@ -19,7 +19,6 @@ package org.kie.kogito.persistence.redis;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
@@ -31,6 +30,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 
 import io.redisearch.Client;
 import io.redisearch.Document;
+import io.smallrye.mutiny.Multi;
 
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;
 import static org.kie.kogito.persistence.redis.Constants.RAW_OBJECT_FIELD;
@@ -52,17 +52,17 @@ public class RedisStorage<V> implements Storage<String, V> {
     }
 
     @Override
-    public void addObjectCreatedListener(Consumer<V> consumer) {
+    public Multi<V> objectCreatedListener() {
         throw new UnsupportedOperationException("addObjectCreatedListener operation is not supported for Redis yet.");
     }
 
     @Override
-    public void addObjectUpdatedListener(Consumer<V> consumer) {
+    public Multi<V> objectUpdatedListener() {
         throw new UnsupportedOperationException("addObjectUpdatedListener operation is not supported for Redis yet.");
     }
 
     @Override
-    public void addObjectRemovedListener(Consumer<String> consumer) {
+    public Multi<String> objectRemovedListener() {
         throw new UnsupportedOperationException("addObjectRemovedListener operation is not supported for Redis yet.");
     }
 

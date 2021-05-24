@@ -31,7 +31,7 @@ import org.kie.kogito.persistence.api.Storage;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.TestUtils.getProcessInstance;
 
-abstract class AbstractStorageIT {
+public abstract class AbstractStorageIT {
 
     @Inject
     DataIndexStorageService cacheService;
@@ -43,7 +43,7 @@ abstract class AbstractStorageIT {
 
         CompletableFuture<ProcessInstance> cf = new CompletableFuture<>();
         Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
-        cache.addObjectCreatedListener(pi -> cf.complete(pi));
+        cache.objectCreatedListener().subscribe().with(pi -> cf.complete(pi));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
 
         ProcessInstance pi = cf.get(1, TimeUnit.MINUTES);
@@ -57,7 +57,7 @@ abstract class AbstractStorageIT {
 
         CompletableFuture<ProcessInstance> cf = new CompletableFuture<>();
         Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
-        cache.addObjectUpdatedListener(pi -> cf.complete(pi));
+        cache.objectUpdatedListener().subscribe().with(pi -> cf.complete(pi));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.COMPLETED.ordinal(), null, null));
 
@@ -72,7 +72,7 @@ abstract class AbstractStorageIT {
 
         CompletableFuture<String> cf = new CompletableFuture<>();
         Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
-        cache.addObjectRemovedListener(id -> cf.complete(id));
+        cache.objectRemovedListener().subscribe().with(id -> cf.complete(id));
         cache.put(processInstanceId, getProcessInstance(processId, processInstanceId, ProcessInstanceState.ACTIVE.ordinal(), null, null));
         cache.remove(processInstanceId);
 
@@ -82,7 +82,6 @@ abstract class AbstractStorageIT {
 
     @AfterEach
     void tearDown() {
-        Storage<String, ProcessInstance> cache = cacheService.getProcessInstancesCache();
-        cache.clear();
+        cacheService.getProcessInstancesCache().clear();
     }
 }

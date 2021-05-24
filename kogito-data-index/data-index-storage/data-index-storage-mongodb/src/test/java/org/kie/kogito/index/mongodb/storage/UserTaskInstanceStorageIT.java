@@ -25,9 +25,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.UserTaskInstance;
-import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntity;
 import org.kie.kogito.index.mongodb.model.UserTaskInstanceEntityMapper;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
@@ -50,7 +50,6 @@ class UserTaskInstanceStorageIT extends StorageTestBase<String, UserTaskInstance
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection(USER_TASK_INSTANCES_STORAGE, UserTaskInstanceEntity.class),
-                mongoClientManager.getReactiveCollection(USER_TASK_INSTANCES_STORAGE, UserTaskInstanceEntity.class),
                 UserTaskInstance.class.getName(), new UserTaskInstanceEntityMapper());
     }
 

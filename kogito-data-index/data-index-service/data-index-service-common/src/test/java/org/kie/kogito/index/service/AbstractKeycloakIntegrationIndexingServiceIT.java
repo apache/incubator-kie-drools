@@ -27,9 +27,9 @@ import io.restassured.response.Response;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
-abstract class AbstractKeycloakIntegrationIndexingServiceIT {
+public abstract class AbstractKeycloakIntegrationIndexingServiceIT {
 
-    @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
+    @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY, defaultValue = "")
     String keycloakURL;
 
     @Test

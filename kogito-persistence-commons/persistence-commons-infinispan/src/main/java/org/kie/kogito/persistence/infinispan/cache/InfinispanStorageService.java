@@ -40,9 +40,9 @@ import static org.kie.kogito.persistence.infinispan.Constants.INFINISPAN_STORAGE
 
 @ApplicationScoped
 @IfBuildProperty(name = PERSISTENCE_TYPE_PROPERTY, stringValue = INFINISPAN_STORAGE)
-public class InfinispanCacheManager implements StorageService {
+public class InfinispanStorageService implements StorageService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanCacheManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanStorageService.class);
 
     @Inject
     JsonDataFormatMarshaller marshaller;
@@ -98,16 +98,16 @@ public class InfinispanCacheManager implements StorageService {
 
     @Override
     public Storage<String, String> getCache(String name) {
-        return new StorageImpl<>(getOrCreateCache(name), String.class.getName());
+        return new InfinispanStorage<>(getOrCreateCache(name), String.class.getName());
     }
 
     @Override
     public <T> Storage<String, T> getCache(String name, Class<T> type) {
-        return new StorageImpl<>(getOrCreateCache(name), type.getName());
+        return new InfinispanStorage<>(getOrCreateCache(name), type.getName());
     }
 
     @Override
     public <T> Storage<String, T> getCache(String name, Class<T> type, String rootType) {
-        return new StorageImpl<>(getOrCreateCache(name).withDataFormat(jsonDataFormat), rootType);
+        return new InfinispanStorage<>(getOrCreateCache(name).withDataFormat(jsonDataFormat), rootType);
     }
 }

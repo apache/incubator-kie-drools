@@ -30,8 +30,8 @@ import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 import org.kie.kogito.index.model.ProcessInstanceState;
+import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
 
 import io.restassured.http.ContentType;
@@ -52,10 +52,7 @@ import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 
-abstract class AbstractWebSocketSubscriptionIT {
-
-    @Inject
-    ReactiveMessagingEventConsumer consumer;
+public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT {
 
     @Inject
     ProtobufService protobufService;
@@ -140,7 +137,7 @@ abstract class AbstractWebSocketSubscriptionIT {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
-        consumer.onProcessInstanceDomainEvent(() -> event);
+        indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -159,7 +156,7 @@ abstract class AbstractWebSocketSubscriptionIT {
                 .then().log().ifValidationFails().statusCode(200).body("data.Travels", isA(Collection.class));
 
         KogitoProcessCloudEvent event = getProcessCloudEvent(processId, processInstanceId, state, null, null, null);
-        consumer.onProcessInstanceEvent(() -> event);
+        indexProcessCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -178,7 +175,7 @@ abstract class AbstractWebSocketSubscriptionIT {
                 .then().log().ifValidationFails().statusCode(200).body("data.Deals", isA(Collection.class));
 
         KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null, null, state);
-        consumer.onUserTaskInstanceEvent(() -> event);
+        indexUserTaskCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 
@@ -198,7 +195,7 @@ abstract class AbstractWebSocketSubscriptionIT {
                 .then().log().ifValidationFails().statusCode(200).body("data.Jobs", isA(Collection.class));
 
         KogitoJobCloudEvent event = getJobCloudEvent(taskId, processId, processInstanceId, null, null, status);
-        consumer.onJobEvent(() -> event);
+        indexJobCloudEvent(event);
 
         JsonObject json = cf.get(1, TimeUnit.MINUTES);
 

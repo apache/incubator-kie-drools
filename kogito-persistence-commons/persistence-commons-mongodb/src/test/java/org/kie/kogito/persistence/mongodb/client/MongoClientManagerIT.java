@@ -52,21 +52,6 @@ class MongoClientManagerIT {
         assertTrue(mongoCollection.getDocumentClass().isAssignableFrom(TestClass.class));
     }
 
-    @Test
-    void testGetReactiveCollection() {
-        com.mongodb.reactivestreams.client.MongoCollection<Document> mongoCollection = mongoClientManager.getReactiveCollection("test");
-        assertEquals(mongoClientManager.database, mongoCollection.getNamespace().getDatabaseName());
-        assertEquals("test", mongoCollection.getNamespace().getCollectionName());
-    }
-
-    @Test
-    void testGetReactiveCollection_withDocumentClass() {
-        com.mongodb.reactivestreams.client.MongoCollection<TestClass> mongoCollection = mongoClientManager.getReactiveCollection("test", TestClass.class);
-        assertEquals(mongoClientManager.database, mongoCollection.getNamespace().getDatabaseName());
-        assertEquals("test", mongoCollection.getNamespace().getCollectionName());
-        assertTrue(mongoCollection.getDocumentClass().isAssignableFrom(TestClass.class));
-    }
-
     private static class TestClass {
 
     }

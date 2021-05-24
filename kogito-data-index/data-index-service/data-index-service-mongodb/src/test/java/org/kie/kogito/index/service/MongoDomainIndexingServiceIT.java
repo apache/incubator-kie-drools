@@ -17,22 +17,22 @@
 package org.kie.kogito.index.service;
 
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
-class InfinispanIndexingServiceIT extends AbstractIndexingServiceIT {
+@QuarkusTestResource(MongoDBQuarkusTestResource.class)
+class MongoDomainIndexingServiceIT extends AbstractDomainIndexingServiceIT {
 
     @Override
     protected String getProcessProtobufFileContent() throws Exception {
-        return TestUtils.getTravelsProtoBufferFile();
+        return TestUtils.readFileContent("travels-mongo.proto");
     }
 
     @Override
     protected String getUserTaskProtobufFileContent() throws Exception {
-        return TestUtils.getDealsProtoBufferFile();
+        return TestUtils.readFileContent("deals-mongo.proto");
     }
 }

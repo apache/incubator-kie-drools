@@ -16,84 +16,67 @@
 
 package org.kie.kogito.persistence.mongodb.storage;
 
-import java.util.Objects;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import org.bson.BsonDocument;
-import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.kie.kogito.persistence.mongodb.model.MongoEntityMapper;
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.mongodb.client.ChangeStreamIterable;
+import com.mongodb.client.MongoChangeStreamCursor;
+import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.changestream.ChangeStreamDocument;
-import com.mongodb.reactivestreams.client.MongoCollection;
+
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 
 import static com.mongodb.client.model.Aggregates.match;
 import static com.mongodb.client.model.changestream.FullDocument.UPDATE_LOOKUP;
 import static java.util.Collections.singletonList;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
-import static org.kie.kogito.persistence.mongodb.model.ModelUtils.documentToObject;
 
 public class StorageUtils {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(StorageUtils.class);
 
     private StorageUtils() {
 
     }
 
-    public static <V, E> void watchCollection(MongoCollection<E> reactiveMongoCollection, Bson operationType,
-            BiConsumer<String, V> consumer, MongoEntityMapper<V, E> mongoEntityMapper) {
-        reactiveMongoCollection.watch(singletonList(match(operationType)))
-                .fullDocument(UPDATE_LOOKUP).subscribe(new ObjectListenerSubscriber<>(consumer, mongoEntityMapper));
-
-        // There is no way to check if MongoDB Change Stream is ready https://jira.mongodb.org/browse/NODE-2247
-        // Pause the execution to wait for the Change Stream to be ready
-        try {
-            TimeUnit.MILLISECONDS.sleep(1500L);
-        } catch (InterruptedException ie) {
-            Thread.currentThread().interrupt();
-        }
+    public static <V, E> Multi<V> watchCollectionEntries(MongoCollection<E> collection, Bson operationType, MongoEntityMapper<V, E> mapper) {
+        return createMulti(collection, operationType, csd -> {
+            E document = csd.getFullDocument();
+            return document == null ? null : mapper.mapToModel(document);
+        });
     }
 
-    private static class ObjectListenerSubscriber<V, E> implements Subscriber<ChangeStreamDocument<Document>> {
+    public static <E> Multi<String> watchCollectionKeys(MongoCollection<E> collection, Bson operationType) {
+        return createMulti(collection, operationType, csd -> {
+            BsonDocument keyDocument = csd.getDocumentKey();
+            return keyDocument == null ? null : keyDocument.getString(MONGO_ID).getValue();
+        });
+    }
 
-        Subscription subscription;
-        BiConsumer<String, V> consumer;
-        MongoEntityMapper<V, E> mongoEntityMapper;
+    private static <T, E> Multi<T> createMulti(MongoCollection<E> collection, Bson operationType, Function<ChangeStreamDocument<E>, T> mapper) {
+        ChangeStreamIterable<E> changeStream = collection.watch(singletonList(match(operationType))).fullDocument(UPDATE_LOOKUP);
 
-        ObjectListenerSubscriber(BiConsumer<String, V> consumer, MongoEntityMapper<V, E> mongoEntityMapper) {
-            this.consumer = consumer;
-            this.mongoEntityMapper = mongoEntityMapper;
-        }
+        MongoChangeStreamCursor<ChangeStreamDocument<E>> cursor = changeStream.cursor();
 
-        @Override
-        public void onSubscribe(Subscription subscription) {
-            this.subscription = subscription;
-            this.subscription.request(Long.MAX_VALUE);
-        }
-
-        @Override
-        public void onNext(ChangeStreamDocument<Document> changeStreamDocument) {
-            BsonDocument keyDocument = changeStreamDocument.getDocumentKey();
-            Document document = changeStreamDocument.getFullDocument();
-            consumer.accept(Optional.ofNullable(keyDocument).map(key -> key.getString(MONGO_ID).getValue()).orElse(null),
-                    Optional.ofNullable(document).map(doc -> mongoEntityMapper.mapToModel(documentToObject(doc, mongoEntityMapper.getEntityClass(), mongoEntityMapper::convertToModelAttribute)))
-                            .orElse(null));
-        }
-
-        @Override
-        public void onError(Throwable throwable) {
-            this.onComplete();
-            throw new MongoObjectListenerException(throwable);
-        }
-
-        @Override
-        public void onComplete() {
-            if (Objects.nonNull(this.subscription)) {
-                this.subscription.cancel();
-            }
-        }
+        return Multi.createFrom()
+                .<ChangeStreamDocument<E>> emitter(emitter -> {
+                    try {
+                        while (cursor.hasNext()) {
+                            emitter.emit(cursor.next());
+                        }
+                    } catch (IllegalStateException ex) {
+                        LOGGER.warn("MongoDB cursor exception: " + ex.getMessage());
+                    }
+                })
+                .runSubscriptionOn(Infrastructure.getDefaultWorkerPool())
+                .onTermination().invoke(() -> cursor.close())
+                .onFailure().recoverWithCompletion()
+                .onItem().transform(mapper);
     }
 }

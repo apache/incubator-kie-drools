@@ -39,7 +39,13 @@ public class MockGraphQLInstrumentation extends GraphQLInstrumentation {
     public CompletableFuture<ExecutionResult> instrumentExecutionResult(ExecutionResult executionResult, InstrumentationExecutionParameters parameters) {
         CompletableFuture<ExecutionResult> result = super.instrumentExecutionResult(executionResult, parameters);
         if (future != null && executionResult.getData() instanceof CompletionStageMappingPublisher) {
-            return result.whenComplete((r, t) -> future.complete(null));
+            return result.whenComplete((r, t) -> {
+                if (t == null) {
+                    future.complete(null);
+                } else {
+                    future.completeExceptionally(t);
+                }
+            });
         } else {
             return result;
         }

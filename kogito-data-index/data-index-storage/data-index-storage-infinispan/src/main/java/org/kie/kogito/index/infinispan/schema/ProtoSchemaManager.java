@@ -34,8 +34,8 @@ import org.kie.kogito.persistence.infinispan.cache.ProtobufCacheService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.qute.Location;
 import io.quarkus.qute.Template;
-import io.quarkus.qute.api.ResourcePath;
 
 import static java.util.Collections.emptyList;
 
@@ -56,7 +56,7 @@ public class ProtoSchemaManager {
     @Inject
     ProtobufCacheService protobufCacheService;
 
-    @ResourcePath("kogito-cache-default.xml")
+    @Location("kogito-cache-default.xml")
     Template cacheTemplate;
 
     public void onSchemaRegisteredEvent(@Observes SchemaRegisteredEvent event) {

@@ -38,8 +38,8 @@ public class InfinispanCacheShutdownObserver {
     StorageService cacheService;
 
     public void stop(@Observes ShutdownEvent event) {
-        if (INFINISPAN_STORAGE.equals(storageType) && cacheService instanceof InfinispanCacheManager) {
-            ((InfinispanCacheManager) cacheService).destroy();
+        if (INFINISPAN_STORAGE.equals(storageType) && cacheService instanceof InfinispanStorageService) {
+            ((InfinispanStorageService) cacheService).destroy();
         }
     }
 }

@@ -16,32 +16,27 @@
 package org.kie.kogito.persistence.api;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.kie.kogito.persistence.api.query.Query;
+
+import io.smallrye.mutiny.Multi;
 
 public interface Storage<K, V> {
 
     /**
      * Adds a listener on the create events.
-     *
-     * @param consumer The listener.
      */
-    void addObjectCreatedListener(Consumer<V> consumer);
+    Multi<V> objectCreatedListener();
 
     /**
      * Adds a listener on the update events.
-     *
-     * @param consumer The listener.
      */
-    void addObjectUpdatedListener(Consumer<V> consumer);
+    Multi<V> objectUpdatedListener();
 
     /**
      * Adds a listener on the remove events.
-     *
-     * @param consumer The listener.
      */
-    void addObjectRemovedListener(Consumer<K> consumer);
+    Multi<K> objectRemovedListener();
 
     /**
      * Gets the `Query` object to query the storage.

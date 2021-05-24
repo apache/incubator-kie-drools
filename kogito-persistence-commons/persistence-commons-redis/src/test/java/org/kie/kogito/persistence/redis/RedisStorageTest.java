@@ -27,6 +27,7 @@ import org.mockito.Mockito;
 
 import io.redisearch.Schema;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.kie.kogito.persistence.redis.Constants.INDEX_NAME_FIELD;
 import static org.kie.kogito.persistence.redis.Constants.RAW_OBJECT_FIELD;
 import static org.kie.kogito.persistence.redis.Person.AGE_PROPERTY;
@@ -56,25 +57,25 @@ public class RedisStorageTest {
 
     @Test
     public void addObjectCreatedListenerOperationShouldThrowException() {
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> redisStorage.addObjectCreatedListener((x) -> {
+        assertThrows(UnsupportedOperationException.class, () -> redisStorage.objectCreatedListener().subscribe().with(x -> {
         }));
     }
 
     @Test
     public void addObjectUpdatedListenerOperationShouldThrowException() {
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> redisStorage.addObjectUpdatedListener((x) -> {
+        assertThrows(UnsupportedOperationException.class, () -> redisStorage.objectUpdatedListener().subscribe().with(x -> {
         }));
     }
 
     @Test
     public void addObjectRemovedListenerOperationShouldThrowException() {
-        Assertions.assertThrows(UnsupportedOperationException.class, () -> redisStorage.addObjectRemovedListener((x) -> {
+        assertThrows(UnsupportedOperationException.class, () -> redisStorage.objectRemovedListener().subscribe().with(x -> {
         }));
     }
 
     @Test
     public void entrySetOperationShouldThrowException() {
-        Assertions.assertThrows(UnsupportedOperationException.class, redisStorage::entries);
+        assertThrows(UnsupportedOperationException.class, redisStorage::entries);
     }
 
     @Test

@@ -19,7 +19,6 @@ package org.kie.kogito.persistence.mongodb.storage;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import org.bson.Document;
 import org.kie.kogito.persistence.api.Storage;
@@ -30,50 +29,49 @@ import org.kie.kogito.persistence.mongodb.query.MongoQuery;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.ReplaceOptions;
 
+import io.smallrye.mutiny.Multi;
+
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Filters.in;
 import static java.util.Arrays.asList;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
-import static org.kie.kogito.persistence.mongodb.storage.StorageUtils.watchCollection;
+import static org.kie.kogito.persistence.mongodb.storage.StorageUtils.watchCollectionEntries;
+import static org.kie.kogito.persistence.mongodb.storage.StorageUtils.watchCollectionKeys;
 
 public class MongoStorage<V, E> implements Storage<String, V> {
 
     static final String OPERATION_TYPE = "operationType";
 
-    MongoEntityMapper<V, E> mongoEntityMapper;
+    MongoEntityMapper<V, E> mapper;
 
     MongoCollection<E> mongoCollection;
 
-    com.mongodb.reactivestreams.client.MongoCollection<E> reactiveMongoCollection;
-
     String rootType;
 
-    public MongoStorage(MongoCollection<E> mongoCollection, com.mongodb.reactivestreams.client.MongoCollection<E> reactiveMongoCollection,
-            String rootType, MongoEntityMapper<V, E> mongoEntityMapper) {
+    public MongoStorage(MongoCollection<E> mongoCollection, String rootType, MongoEntityMapper<V, E> mapper) {
         this.mongoCollection = mongoCollection;
         this.rootType = rootType;
-        this.mongoEntityMapper = mongoEntityMapper;
-        this.reactiveMongoCollection = reactiveMongoCollection;
+        this.mapper = mapper;
     }
 
     @Override
-    public void addObjectCreatedListener(Consumer<V> consumer) {
-        watchCollection(this.reactiveMongoCollection, eq(OPERATION_TYPE, "insert"), (k, v) -> consumer.accept(v), this.mongoEntityMapper);
+    public Multi<V> objectCreatedListener() {
+        return watchCollectionEntries(this.mongoCollection, eq(OPERATION_TYPE, "insert"), this.mapper);
     }
 
     @Override
-    public void addObjectUpdatedListener(Consumer<V> consumer) {
-        watchCollection(this.reactiveMongoCollection, in(OPERATION_TYPE, asList("update", "replace")), (k, v) -> consumer.accept(v), this.mongoEntityMapper);
+    public Multi<V> objectUpdatedListener() {
+        return watchCollectionEntries(this.mongoCollection, in(OPERATION_TYPE, asList("update", "replace")), this.mapper);
     }
 
     @Override
-    public void addObjectRemovedListener(Consumer<String> consumer) {
-        watchCollection(this.reactiveMongoCollection, eq(OPERATION_TYPE, "delete"), (k, v) -> consumer.accept(k), this.mongoEntityMapper);
+    public Multi<String> objectRemovedListener() {
+        return watchCollectionKeys(this.mongoCollection, eq(OPERATION_TYPE, "delete"));
     }
 
     @Override
     public Query<V> query() {
-        return new MongoQuery<>(this.mongoCollection, this.mongoEntityMapper);
+        return new MongoQuery<>(this.mongoCollection, this.mapper);
     }
 
     @Override
@@ -88,18 +86,18 @@ public class MongoStorage<V, E> implements Storage<String, V> {
 
     @Override
     public V get(String o) {
-        return Optional.ofNullable(this.mongoCollection.find(new Document(MONGO_ID, o)).first()).map(e -> mongoEntityMapper.mapToModel(e)).orElse(null);
+        return Optional.ofNullable(this.mongoCollection.find(new Document(MONGO_ID, o)).first()).map(e -> mapper.mapToModel(e)).orElse(null);
     }
 
     @Override
     public V put(String s, V v) {
         V oldValue = this.get(s);
         Optional.ofNullable(oldValue).ifPresentOrElse(
-                o -> Optional.ofNullable(v).map(n -> mongoEntityMapper.mapToEntity(s, n)).ifPresent(
+                o -> Optional.ofNullable(v).map(n -> mapper.mapToEntity(s, n)).ifPresent(
                         e -> this.mongoCollection.replaceOne(
                                 new Document(MONGO_ID, s),
                                 e, new ReplaceOptions().upsert(true))),
-                () -> Optional.ofNullable(v).map(n -> mongoEntityMapper.mapToEntity(s, n)).ifPresent(
+                () -> Optional.ofNullable(v).map(n -> mapper.mapToEntity(s, n)).ifPresent(
                         e -> this.mongoCollection.insertOne(e)));
         return Objects.nonNull(v) ? oldValue : null;
     }

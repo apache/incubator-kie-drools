@@ -59,7 +59,7 @@ class StorageListenerIT {
     void testObjectCreatedListener() throws Exception {
         TestListener testListener = new TestListener(3);
         Storage<String, String> storage = storageService.getCache("test");
-        storage.addObjectCreatedListener(testListener::add);
+        storage.objectCreatedListener().subscribe().with(testListener::add);
         storage.put("testKey_insert_1", "testValue1");
         storage.put("testKey_insert_2", "testValue2");
         storage.put("testKey_insert_3", "testValue3");
@@ -73,7 +73,7 @@ class StorageListenerIT {
     void testObjectUpdatedListener() throws Exception {
         TestListener testListener = new TestListener(2);
         Storage<String, String> cache = storageService.getCache("test");
-        cache.addObjectUpdatedListener(testListener::add);
+        cache.objectUpdatedListener().subscribe().with(testListener::add);
         cache.put("testKey_update_1", "testValue1");
         cache.put("testKey_update_1", "testValue2");
         cache.put("testKey_update_2", "testValue3");
@@ -88,7 +88,7 @@ class StorageListenerIT {
     void testObjectRemovedListener() throws Exception {
         TestListener testListener = new TestListener(2);
         Storage<String, String> cache = storageService.getCache("test");
-        cache.addObjectRemovedListener(testListener::add);
+        cache.objectRemovedListener().subscribe().with(testListener::add);
         cache.put("testKey_remove_1", "testValue1");
         cache.put("testKey_remove_2", "testValue2");
         cache.remove("testKey_remove_1");

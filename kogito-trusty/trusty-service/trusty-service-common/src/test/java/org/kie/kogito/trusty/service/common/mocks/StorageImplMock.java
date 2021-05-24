@@ -16,23 +16,19 @@
 
 package org.kie.kogito.trusty.service.common.mocks;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import javax.ws.rs.NotFoundException;
 
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 
+import io.smallrye.mutiny.Multi;
+
 public class StorageImplMock<K, V> implements Storage<K, V> {
 
     private Map<K, V> storage = new HashMap<>();
-    private List<Consumer<V>> createdListeners = new ArrayList<>();
-    private List<Consumer<V>> updateListeners = new ArrayList<>();
-    private List<Consumer<K>> removedListeners = new ArrayList<>();
 
     private Class<K> rootType;
 
@@ -41,18 +37,18 @@ public class StorageImplMock<K, V> implements Storage<K, V> {
     }
 
     @Override
-    public void addObjectCreatedListener(Consumer<V> consumer) {
-        createdListeners.add(consumer);
+    public Multi<V> objectCreatedListener() {
+        return Multi.createFrom().empty();
     }
 
     @Override
-    public void addObjectUpdatedListener(Consumer<V> consumer) {
-        updateListeners.add(consumer);
+    public Multi<V> objectUpdatedListener() {
+        return Multi.createFrom().empty();
     }
 
     @Override
-    public void addObjectRemovedListener(Consumer<K> consumer) {
-        removedListeners.add(consumer);
+    public Multi<K> objectRemovedListener() {
+        return Multi.createFrom().empty();
     }
 
     @Override
@@ -70,14 +66,12 @@ public class StorageImplMock<K, V> implements Storage<K, V> {
 
     @Override
     public V put(K key, V value) {
-        createdListeners.forEach(x -> x.accept(value));
         storage.put(key, value);
         return value;
     }
 
     @Override
     public V remove(K key) {
-        removedListeners.forEach(x -> x.accept(key));
         V element = storage.get(key);
         storage.remove(key);
         return element;

@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.mongodb.query;
+package org.kie.kogito.index.messaging;
 
-import java.util.List;
-import java.util.function.BiConsumer;
+import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
-import org.kie.kogito.persistence.api.Storage;
-import org.kie.kogito.persistence.api.query.AttributeFilter;
-import org.kie.kogito.persistence.api.query.AttributeSort;
+import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.junit.QuarkusTest;
 
-class QueryTestBase<K, V> {
+@QuarkusTest
+@QuarkusTestResource(InfinispanQuarkusTestResource.class)
+@QuarkusTestResource(KafkaQuarkusTestResource.class)
+class InfinispanMessagingConsumerKafkaIT extends AbstractMessagingConsumerKafkaIT {
 
-    void queryAndAssert(BiConsumer<List<V>, String[]> assertConsumer, Storage<K, V> storage, List<AttributeFilter<?>> filters, List<AttributeSort> sort, Integer offset, Integer limit, String... ids) {
-        assertConsumer.accept(storage.query().filter(filters).sort(sort).offset(offset).limit(limit).execute(), ids);
-    }
 }

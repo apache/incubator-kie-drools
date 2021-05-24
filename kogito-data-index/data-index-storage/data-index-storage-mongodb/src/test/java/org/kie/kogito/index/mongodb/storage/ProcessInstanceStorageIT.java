@@ -26,9 +26,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.model.ProcessInstanceState;
-import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntity;
 import org.kie.kogito.index.mongodb.model.ProcessInstanceEntityMapper;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
@@ -51,7 +51,6 @@ class ProcessInstanceStorageIT extends StorageTestBase<String, ProcessInstance> 
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection(PROCESS_INSTANCES_STORAGE, ProcessInstanceEntity.class),
-                mongoClientManager.getReactiveCollection(PROCESS_INSTANCES_STORAGE, ProcessInstanceEntity.class),
                 ProcessInstance.class.getName(), new ProcessInstanceEntityMapper());
     }
 

@@ -21,11 +21,11 @@ import java.util.UUID;
 import javax.inject.Inject;
 
 import org.bson.Document;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.DomainEntityMapper;
+import org.kie.kogito.index.test.QueryTestBase;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.SortDirection;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
@@ -39,8 +39,8 @@ import io.quarkus.test.junit.QuarkusTest;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.kie.kogito.index.mongodb.query.QueryTestUtils.assertWithObjectNode;
-import static org.kie.kogito.index.mongodb.query.QueryTestUtils.assertWithObjectNodeInOrder;
+import static org.kie.kogito.index.test.QueryTestUtils.assertWithObjectNode;
+import static org.kie.kogito.index.test.QueryTestUtils.assertWithObjectNodeInOrder;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.and;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.between;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.contains;
@@ -70,13 +70,12 @@ class DomainQueryIT extends QueryTestBase<String, ObjectNode> {
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection("travels_domain", Document.class),
-                mongoClientManager.getReactiveCollection("travels_domain", Document.class),
                 "org.acme.travels.travels.Travels", new DomainEntityMapper());
     }
 
-    @AfterEach
-    void tearDown() {
-        storage.clear();
+    @Override
+    public Storage<String, ObjectNode> getStorage() {
+        return storage;
     }
 
     @Test

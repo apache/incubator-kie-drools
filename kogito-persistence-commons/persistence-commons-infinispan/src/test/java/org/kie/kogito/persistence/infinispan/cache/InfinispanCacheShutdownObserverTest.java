@@ -31,7 +31,7 @@ class InfinispanCacheShutdownObserverTest {
 
     StorageService nonInfinispanStorageService = mock(StorageService.class);
 
-    InfinispanCacheManager infinispanStorageService = mock(InfinispanCacheManager.class);
+    InfinispanStorageService infinispanStorageService = mock(InfinispanStorageService.class);
 
     String nonInfinispanStorageType = "testStorage";
 

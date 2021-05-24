@@ -97,14 +97,11 @@ public class IndexingService {
             builder.setAll(model);
         } else {
             JsonNode id = indexPIArray.get(0).get(ID);
-            if (processInstanceId.equals(id.asText())) {
-                //For processes simply copy all values
-                builder.setAll(json);
-            } else {
+            if (!processInstanceId.equals(id.asText())) {
                 //For sub-process merge with current values
                 builder.setAll(model);
-                builder.setAll(json);
             }
+            builder.setAll(json);
         }
     }
 

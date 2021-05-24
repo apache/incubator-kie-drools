@@ -21,13 +21,10 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
@@ -47,11 +44,6 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import io.quarkus.arc.Arc;
-import io.vertx.mutiny.core.eventbus.EventBus;
-import io.vertx.mutiny.core.eventbus.MessageConsumer;
-import io.vertx.mutiny.core.eventbus.MessageProducer;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -86,7 +78,6 @@ public class GraphQLSchemaManager {
     @Inject
     GraphQLScalarType qlDateTimeScalarType;
 
-    private ConcurrentMap<String, MessageProducer> producers = new ConcurrentHashMap<>();
     private GraphQLSchema schema;
 
     @PostConstruct
@@ -97,11 +88,6 @@ public class GraphQLSchemaManager {
                 (GraphQLInputObjectType) schema.getType("UserTaskInstanceArgument"),
                 (GraphQLInputObjectType) schema.getType("JobArgument"),
                 (GraphQLInputObjectType) schema.getType("KogitoMetadataArgument"));
-    }
-
-    @PreDestroy
-    public void destroy() {
-        producers.values().forEach(MessageProducer::close);
     }
 
     private GraphQLSchema createSchema() {
@@ -240,60 +226,43 @@ public class GraphQLSchemaManager {
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceAddedDataFetcher() {
-        return objectCreatedPublisher(PROCESS_INSTANCE_ADDED, () -> cacheService.getProcessInstancesCache());
+        return objectCreatedPublisher(() -> cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getProcessInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(PROCESS_INSTANCE_UPDATED, () -> cacheService.getProcessInstancesCache());
+        return objectUpdatedPublisher(() -> cacheService.getProcessInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceAddedDataFetcher() {
-        return objectCreatedPublisher(USER_TASK_INSTANCE_ADDED, () -> cacheService.getUserTaskInstancesCache());
+        return objectCreatedPublisher(() -> cacheService.getUserTaskInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getUserTaskInstanceUpdatedDataFetcher() {
-        return objectUpdatedPublisher(USER_TASK_INSTANCE_UPDATED, () -> cacheService.getUserTaskInstancesCache());
+        return objectUpdatedPublisher(() -> cacheService.getUserTaskInstancesCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobUpdatedDataFetcher() {
-        return objectUpdatedPublisher(JOB_UPDATED, () -> cacheService.getJobsCache());
+        return objectUpdatedPublisher(() -> cacheService.getJobsCache());
     }
 
     private DataFetcher<Publisher<ObjectNode>> getJobAddedDataFetcher() {
-        return objectCreatedPublisher(JOB_ADDED, () -> cacheService.getJobsCache());
+        return objectCreatedPublisher(() -> cacheService.getJobsCache());
     }
 
-    private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(String address, Supplier<Storage> cache) {
-        return env -> createPublisher(address, producer -> cache.get().addObjectCreatedListener(ut -> producer.writeAndForget(getObjectMapper().convertValue(ut, ObjectNode.class))));
+    private DataFetcher<Publisher<ObjectNode>> objectCreatedPublisher(Supplier<Storage> cache) {
+        return env -> cache.get().objectCreatedListener();
     }
 
-    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(String address, Supplier<Storage> cache) {
-        return env -> createPublisher(address, producer -> cache.get().addObjectUpdatedListener(ut -> producer.writeAndForget(getObjectMapper().convertValue(ut, ObjectNode.class))));
-    }
-
-    private Publisher<ObjectNode> createPublisher(String address, Consumer<MessageProducer<ObjectNode>> consumer) {
-        EventBus eventBus = Arc.container().instance(EventBus.class).get();
-
-        LOGGER.debug("Creating new message consumer for EventBus address: {}", address);
-        MessageConsumer<ObjectNode> messageConsumer = eventBus.consumer(address);
-        Publisher<ObjectNode> publisher = messageConsumer.bodyStream().toMulti();
-
-        producers.computeIfAbsent(address, key -> {
-            LOGGER.debug("Creating new message publisher for EventBus address: {}", address);
-            MessageProducer<ObjectNode> producer = eventBus.publisher(address);
-            consumer.accept(producer);
-            return producer;
-        });
-
-        return publisher;
+    private DataFetcher<Publisher<ObjectNode>> objectUpdatedPublisher(Supplier<Storage> cache) {
+        return env -> cache.get().objectUpdatedListener();
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelUpdatedDataFetcher(String processId) {
-        return env -> createPublisher(processId + "Updated", producer -> cacheService.getDomainModelCache(processId).addObjectUpdatedListener(producer::writeAndForget));
+        return env -> cacheService.getDomainModelCache(processId).objectUpdatedListener();
     }
 
     protected DataFetcher<Publisher<ObjectNode>> getDomainModelAddedDataFetcher(String processId) {
-        return env -> createPublisher(processId + "Added", producer -> cacheService.getDomainModelCache(processId).addObjectCreatedListener(producer::writeAndForget));
+        return env -> cacheService.getDomainModelCache(processId).objectCreatedListener();
     }
 
     protected DataFetcher<Collection<ObjectNode>> getDomainModelDataFetcher(String processId) {

@@ -18,7 +18,6 @@ package org.kie.kogito.persistence.postgresql;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import org.kie.kogito.persistence.api.Storage;
@@ -30,6 +29,8 @@ import org.kie.kogito.persistence.postgresql.model.CacheId;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.smallrye.mutiny.Multi;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
@@ -56,17 +57,17 @@ public class PostgresStorage<V> implements Storage<String, V> {
     }
 
     @Override
-    public void addObjectCreatedListener(Consumer<V> consumer) {
+    public Multi<V> objectCreatedListener() {
         throw new UnsupportedOperationException(LISTENER_NOT_AVAILABLE_IN_POSTGRES_SQL);
     }
 
     @Override
-    public void addObjectUpdatedListener(Consumer<V> consumer) {
+    public Multi<V> objectUpdatedListener() {
         throw new UnsupportedOperationException(LISTENER_NOT_AVAILABLE_IN_POSTGRES_SQL);
     }
 
     @Override
-    public void addObjectRemovedListener(Consumer<String> consumer) {
+    public Multi<String> objectRemovedListener() {
         throw new UnsupportedOperationException(LISTENER_NOT_AVAILABLE_IN_POSTGRES_SQL);
     }
 

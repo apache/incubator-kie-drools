@@ -24,8 +24,8 @@ import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.index.mongodb.TestUtils;
 import org.kie.kogito.index.mongodb.model.DomainEntityMapper;
+import org.kie.kogito.index.test.TestUtils;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.mongodb.client.MongoClientManager;
 import org.kie.kogito.persistence.mongodb.storage.MongoStorage;
@@ -48,7 +48,6 @@ class DomainStorageIT extends StorageTestBase<String, ObjectNode> {
     @BeforeEach
     void setUp() {
         this.storage = new MongoStorage<>(mongoClientManager.getCollection("travels_domain", Document.class),
-                mongoClientManager.getReactiveCollection("travels_domain", Document.class),
                 "org.acme.travels.travels.Travels", new DomainEntityMapper());
     }
 

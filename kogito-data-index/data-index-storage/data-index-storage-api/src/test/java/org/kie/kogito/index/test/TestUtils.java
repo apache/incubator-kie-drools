@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.mongodb;
+package org.kie.kogito.index.test;
 
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -64,7 +64,7 @@ public class TestUtils {
         if (ProcessInstanceState.ERROR.ordinal() == status) {
             pi.setError(new ProcessInstanceError("StartEvent_1", "Something went wrong"));
         }
-        pi.setMilestones(singletonList(Milestone.builder().id("testMilestone").name("testMilestone").status(MilestoneStatus.COMPLETED.name()).build()));
+        pi.setMilestones(singletonList(Milestone.builder().id(UUID.randomUUID().toString()).name("testMilestone").status(MilestoneStatus.COMPLETED.name()).build()));
         return pi;
     }
 
@@ -151,7 +151,7 @@ public class TestUtils {
         task.setState(state);
         task.setPriority("High");
         task.setStarted(Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli() + timeInterval).atZone(ZoneOffset.UTC));
-        task.setCompleted(Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli() + timeInterval).atZone(ZoneOffset.UTC).plus(1, ChronoUnit.HOURS));
+        task.setCompleted("Completed".equals(state) ? Instant.ofEpochMilli(ZonedDateTime.now().toInstant().toEpochMilli() + timeInterval).atZone(ZoneOffset.UTC).plus(1, ChronoUnit.HOURS) : null);
         task.setActualOwner("kogito");
         task.setAdminUsers(singleton("kogito"));
         task.setAdminGroups(singleton("admin"));

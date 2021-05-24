@@ -14,22 +14,25 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.messaging;
+package org.kie.kogito.index.service;
 
 import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 @QuarkusTest
 @QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
-class InfinispanReactiveMessagingEventConsumerKafkaIT extends AbstractReactiveMessagingEventConsumerKafkaIT {
+class InfinispanDomainIndexingServiceIT extends AbstractDomainIndexingServiceIT {
 
     @Override
-    protected String getTestProtobufFileContent() throws Exception {
+    protected String getProcessProtobufFileContent() throws Exception {
         return TestUtils.getTravelsProtoBufferFile();
+    }
+
+    @Override
+    protected String getUserTaskProtobufFileContent() throws Exception {
+        return TestUtils.getDealsProtoBufferFile();
     }
 }

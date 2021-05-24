@@ -18,7 +18,6 @@ package org.kie.kogito.persistence.infinispan.cache;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import org.infinispan.client.hotrod.RemoteCache;
 import org.kie.kogito.persistence.api.Storage;
@@ -30,14 +29,17 @@ import org.kie.kogito.persistence.infinispan.query.InfinispanQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class StorageImpl<K, V> implements Storage<K, V> {
+import io.smallrye.mutiny.Multi;
+import io.smallrye.mutiny.operators.multi.processors.UnicastProcessor;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(StorageImpl.class);
+public class InfinispanStorage<K, V> implements Storage<K, V> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(InfinispanStorage.class);
 
     private RemoteCache<K, V> delegate;
     private String rootType;
 
-    public StorageImpl(RemoteCache<K, V> delegate, String rootType) {
+    public InfinispanStorage(RemoteCache<K, V> delegate, String rootType) {
         this.delegate = delegate;
         this.rootType = rootType;
     }
@@ -69,21 +71,33 @@ public class StorageImpl<K, V> implements Storage<K, V> {
     }
 
     @Override
-    public void addObjectCreatedListener(Consumer<V> consumer) {
+    public Multi<V> objectCreatedListener() {
         LOGGER.debug("Adding new object created listener into Cache: {}", delegate.getName());
-        delegate.addClientListener(new CacheObjectCreatedListener<>(delegate, consumer));
+        UnicastProcessor<V> processor = UnicastProcessor.create();
+        CacheObjectCreatedListener<K, V> listener = new CacheObjectCreatedListener<>(delegate, v -> processor.onNext(v));
+        return processor
+                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 
     @Override
-    public void addObjectUpdatedListener(Consumer<V> consumer) {
+    public Multi<V> objectUpdatedListener() {
         LOGGER.debug("Adding new object updated listener into Cache: {}", delegate.getName());
-        delegate.addClientListener(new CacheObjectUpdatedListener<>(delegate, consumer));
+        UnicastProcessor<V> processor = UnicastProcessor.create();
+        CacheObjectUpdatedListener<K, V> listener = new CacheObjectUpdatedListener<>(delegate, v -> processor.onNext(v));
+        return processor
+                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 
     @Override
-    public void addObjectRemovedListener(Consumer<K> consumer) {
+    public Multi<K> objectRemovedListener() {
         LOGGER.debug("Adding new object removed listener into Cache: {}", delegate.getName());
-        delegate.addClientListener(new CacheObjectRemovedListener<>(consumer));
+        UnicastProcessor<K> processor = UnicastProcessor.create();
+        CacheObjectRemovedListener<K> listener = new CacheObjectRemovedListener<>(v -> processor.onNext(v));
+        return processor
+                .onSubscribe().invoke(s -> delegate.addClientListener(listener))
+                .onTermination().invoke(() -> delegate.removeClientListener(listener));
     }
 
     public RemoteCache<K, V> getDelegate() {

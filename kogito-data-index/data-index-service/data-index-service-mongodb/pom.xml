@@ -97,7 +97,7 @@
             </goals>
             <configuration>
               <excludes combine.children="append"> <!-- Add the exclude to existing ones -->
-                <exclude>**/*Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
+                <exclude>**/Keycloak*IT.java</exclude> <!-- Separate execution for this one -->
               </excludes>
             </configuration>
           </execution>

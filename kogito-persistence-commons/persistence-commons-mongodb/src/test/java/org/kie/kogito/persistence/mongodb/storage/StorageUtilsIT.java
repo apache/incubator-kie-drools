@@ -42,6 +42,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.persistence.mongodb.model.ModelUtils.MONGO_ID;
 import static org.kie.kogito.persistence.mongodb.storage.MongoStorage.OPERATION_TYPE;
+import static org.kie.kogito.persistence.mongodb.storage.StorageUtils.watchCollectionEntries;
+import static org.kie.kogito.persistence.mongodb.storage.StorageUtils.watchCollectionKeys;
 
 @QuarkusTest
 @QuarkusTestResource(MongoDBQuarkusTestResource.class)
@@ -52,22 +54,20 @@ class StorageUtilsIT {
 
     @AfterEach
     void tearDown() {
-        MongoCollection<Document> collection = mongoClientManager.getCollection("test");
-        collection.drop();
+        mongoClientManager.getCollection("test").drop();
     }
 
     @Test
     void testWatchCollection_insert() throws Exception {
-        com.mongodb.reactivestreams.client.MongoCollection<Document> reactiveMongoCollection = mongoClientManager.getReactiveCollection("test");
+        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         MongoEntityMapper<String, Document> mongoEntityMapper = new MockMongoEntityMapper();
 
         TestListener testListenerInsert1 = new TestListener(2);
-        StorageUtils.watchCollection(reactiveMongoCollection, eq(OPERATION_TYPE, "insert"), (k, v) -> testListenerInsert1.add(v), mongoEntityMapper);
+        watchCollectionEntries(mongoCollection, eq(OPERATION_TYPE, "insert"), mongoEntityMapper).subscribe().with(testListenerInsert1::add);
 
         TestListener testListenerInsert2 = new TestListener(2);
-        StorageUtils.watchCollection(reactiveMongoCollection, eq(OPERATION_TYPE, "insert"), (k, v) -> testListenerInsert2.add(v), mongoEntityMapper);
+        watchCollectionEntries(mongoCollection, eq(OPERATION_TYPE, "insert"), mongoEntityMapper).subscribe().with(testListenerInsert2::add);
 
-        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey1", "testValue1"));
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey2", "testValue2"));
 
@@ -81,16 +81,15 @@ class StorageUtilsIT {
 
     @Test
     void testWatchCollection_update() throws Exception {
-        com.mongodb.reactivestreams.client.MongoCollection<Document> mongoReactiveCollection = mongoClientManager.getReactiveCollection("test");
+        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         MongoEntityMapper<String, Document> mongoEntityMapper = new MockMongoEntityMapper();
 
         TestListener testListenerUpdate1 = new TestListener(2);
-        StorageUtils.watchCollection(mongoReactiveCollection, eq(OPERATION_TYPE, "replace"), (k, v) -> testListenerUpdate1.add(v), mongoEntityMapper);
+        watchCollectionEntries(mongoCollection, eq(OPERATION_TYPE, "replace"), mongoEntityMapper).subscribe().with(testListenerUpdate1::add);
 
         TestListener testListenerUpdate2 = new TestListener(2);
-        StorageUtils.watchCollection(mongoReactiveCollection, eq(OPERATION_TYPE, "replace"), (k, v) -> testListenerUpdate2.add(v), mongoEntityMapper);
+        watchCollectionEntries(mongoCollection, eq(OPERATION_TYPE, "replace"), mongoEntityMapper).subscribe().with(testListenerUpdate2::add);
 
-        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey1", "testValue1"));
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey2", "testValue2"));
 
@@ -107,16 +106,15 @@ class StorageUtilsIT {
 
     @Test
     void testWatchCollection_delete() throws Exception {
-        com.mongodb.reactivestreams.client.MongoCollection<Document> mongoReactiveCollection = mongoClientManager.getReactiveCollection("test");
+        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         MongoEntityMapper<String, Document> mongoEntityMapper = new MockMongoEntityMapper();
 
         TestListener testListenerRemove1 = new TestListener(2);
-        StorageUtils.watchCollection(mongoReactiveCollection, eq(OPERATION_TYPE, "insert"), (k, v) -> testListenerRemove1.add(k), mongoEntityMapper);
+        watchCollectionKeys(mongoCollection, eq(OPERATION_TYPE, "delete")).subscribe().with(testListenerRemove1::add);
 
         TestListener testListenerRemove2 = new TestListener(2);
-        StorageUtils.watchCollection(mongoReactiveCollection, eq(OPERATION_TYPE, "insert"), (k, v) -> testListenerRemove2.add(k), mongoEntityMapper);
+        watchCollectionKeys(mongoCollection, eq(OPERATION_TYPE, "delete")).subscribe().with(testListenerRemove2::add);
 
-        MongoCollection<Document> mongoCollection = mongoClientManager.getCollection("test");
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey1", "testValue1"));
         mongoCollection.insertOne(mongoEntityMapper.mapToEntity("testKey2", "testValue2"));
 

@@ -72,7 +72,6 @@ class ProcessIndexObserverIT {
         processIndexObserver.onProcessIndexEvent(processIndexEvent);
 
         Storage<String, String> processIdStorage = new MongoStorage<>(mongoClientManager.getCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
-                mongoClientManager.getReactiveCollection(PROCESS_ID_MODEL_STORAGE, ProcessIdEntity.class),
                 String.class.getName(), new ProcessIdEntityMapper());
         assertTrue(processIdStorage.containsKey(processId));
         assertEquals(processType, processIdStorage.get(processId));
