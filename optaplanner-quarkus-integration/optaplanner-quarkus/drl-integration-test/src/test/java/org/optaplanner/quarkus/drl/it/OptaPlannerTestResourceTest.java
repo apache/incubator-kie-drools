@@ -20,7 +20,6 @@ import java.io.StringReader;
 import java.util.Properties;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 
@@ -36,7 +35,6 @@ public class OptaPlannerTestResourceTest {
 
     @Test
     @Timeout(600)
-    @Disabled("Enable when https://issues.redhat.com/browse/DROOLS-6336 is fixed")
     public void solveWithSolverFactory() throws Exception {
         Properties result = new Properties();
         result.load(new StringReader(RestAssured.given()
