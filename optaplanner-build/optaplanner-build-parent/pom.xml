@@ -23,7 +23,7 @@
     <!-- SNAPSHOT and KIE dependency versions -->
     <version.org.kie.kogito>2.0.0-SNAPSHOT</version.org.kie.kogito>
     <!-- Keep in sync with version.org.kie7 in kogito-runtimes: https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build-parent/pom.xml#L185 -->
-    <version.org.kie7>7.54.0.Final</version.org.kie7>
+    <version.org.kie7>7.55.0.Beta1</version.org.kie7>
 
     <!-- Normal dependency versions -->
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
