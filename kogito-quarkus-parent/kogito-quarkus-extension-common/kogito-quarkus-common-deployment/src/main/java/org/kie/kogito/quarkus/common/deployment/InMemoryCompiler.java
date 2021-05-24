@@ -57,10 +57,10 @@ public class InMemoryCompiler {
             compilerSettings.addOption("-parameters");
         }
         for (Path classPath : classesPaths) {
-            compilerSettings.addClasspath(classPath.toString());
+            compilerSettings.addClasspath(classPath.toFile());
         }
         for (AppDependency i : userDependencies) {
-            compilerSettings.addClasspath(i.getArtifact().getPaths().getSinglePath().toAbsolutePath().toString());
+            compilerSettings.addClasspath(i.getArtifact().getPaths().getSinglePath().toFile());
         }
     }
 

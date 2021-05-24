@@ -72,8 +72,9 @@ public class ProcessClassesMojo extends AbstractKieMojo {
             JavaCompilerSettings settings = new JavaCompilerSettings();
             List<URL> pathUrls = new ArrayList<>();
             for (String path : project.getRuntimeClasspathElements()) {
-                pathUrls.add(new File(path).toURI().toURL());
-                settings.addClasspath(path);
+                File pathFile = new File(path);
+                pathUrls.add(pathFile.toURI().toURL());
+                settings.addClasspath(pathFile);
             }
 
             URL[] urlsForClassLoader = pathUrls.toArray(new URL[pathUrls.size()]);

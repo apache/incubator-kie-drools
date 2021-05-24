@@ -54,7 +54,7 @@ import com.github.javaparser.ast.type.Type;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classNameToReferenceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
 import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
 
@@ -274,7 +274,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
     }
 
     static void setGeneric(Type type, RuleUnitDescription ruleUnit) {
-        type.asClassOrInterfaceType().setTypeArguments(classNameToReferenceType(ruleUnit.getCanonicalName()));
+        type.asClassOrInterfaceType().setTypeArguments(toClassOrInterfaceType(ruleUnit.getCanonicalName()));
     }
 
     static void setGeneric(Type type, String typeArgument) {
