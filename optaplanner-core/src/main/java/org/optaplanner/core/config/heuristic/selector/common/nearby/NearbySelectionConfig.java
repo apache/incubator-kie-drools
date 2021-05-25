@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.common.nearby;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -211,6 +213,14 @@ public class NearbySelectionConfig extends SelectorConfig<NearbySelectionConfig>
     @Override
     public NearbySelectionConfig copyConfig() {
         return new NearbySelectionConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (originEntitySelectorConfig != null) {
+            originEntitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        classVisitor.accept(nearbyDistanceMeterClass);
     }
 
 }

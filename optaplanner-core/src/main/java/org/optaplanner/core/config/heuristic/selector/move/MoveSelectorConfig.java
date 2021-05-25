@@ -18,6 +18,7 @@ package org.optaplanner.core.config.heuristic.selector.move;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
@@ -246,6 +247,14 @@ public abstract class MoveSelectorConfig<Config_ extends MoveSelectorConfig<Conf
      */
     public void inheritFolded(MoveSelectorConfig<Config_> foldedConfig) {
         inheritCommon(foldedConfig);
+    }
+
+    protected void visitCommonReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(filterClass);
+        classVisitor.accept(sorterComparatorClass);
+        classVisitor.accept(sorterWeightFactoryClass);
+        classVisitor.accept(sorterClass);
+        classVisitor.accept(probabilityWeightFactoryClass);
     }
 
     private void inheritCommon(MoveSelectorConfig<Config_> inheritedConfig) {

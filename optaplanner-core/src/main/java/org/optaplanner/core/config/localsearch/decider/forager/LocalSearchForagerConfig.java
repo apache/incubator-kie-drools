@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.localsearch.decider.forager;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.AbstractConfig;
@@ -106,6 +108,11 @@ public class LocalSearchForagerConfig extends AbstractConfig<LocalSearchForagerC
     @Override
     public LocalSearchForagerConfig copyConfig() {
         return new LocalSearchForagerConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        // No referenced classes
     }
 
 }

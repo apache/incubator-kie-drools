@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.constructionheuristic.placer;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
@@ -103,6 +105,17 @@ public class QueuedValuePlacerConfig extends EntityPlacerConfig<QueuedValuePlace
     @Override
     public QueuedValuePlacerConfig copyConfig() {
         return new QueuedValuePlacerConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(entityClass);
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (moveSelectorConfig != null) {
+            moveSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

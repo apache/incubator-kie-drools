@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.exhaustivesearch;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
@@ -148,6 +150,19 @@ public class ExhaustiveSearchPhaseConfig extends PhaseConfig<ExhaustiveSearchPha
     @Override
     public ExhaustiveSearchPhaseConfig copyConfig() {
         return new ExhaustiveSearchPhaseConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (getTerminationConfig() != null) {
+            getTerminationConfig().visitReferencedClasses(classVisitor);
+        }
+        if (entitySelectorConfig != null) {
+            entitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (moveSelectorConfig != null) {
+            moveSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
 }

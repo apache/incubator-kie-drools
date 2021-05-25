@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.entity.pillar;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -73,6 +75,13 @@ public class PillarSelectorConfig extends SelectorConfig<PillarSelectorConfig> {
     @Override
     public PillarSelectorConfig copyConfig() {
         return new PillarSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (entitySelectorConfig != null) {
+            entitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

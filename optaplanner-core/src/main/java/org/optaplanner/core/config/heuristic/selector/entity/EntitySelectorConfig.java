@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.entity;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -242,6 +243,19 @@ public class EntitySelectorConfig extends SelectorConfig<EntitySelectorConfig> {
     @Override
     public EntitySelectorConfig copyConfig() {
         return new EntitySelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(entityClass);
+        if (nearbySelectionConfig != null) {
+            nearbySelectionConfig.visitReferencedClasses(classVisitor);
+        }
+        classVisitor.accept(filterClass);
+        classVisitor.accept(sorterComparatorClass);
+        classVisitor.accept(sorterWeightFactoryClass);
+        classVisitor.accept(sorterClass);
+        classVisitor.accept(probabilityWeightFactoryClass);
     }
 
     @Override

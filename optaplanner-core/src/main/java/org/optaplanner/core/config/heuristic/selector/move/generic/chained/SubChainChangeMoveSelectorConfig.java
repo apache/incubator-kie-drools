@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic.chained;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -88,6 +90,18 @@ public class SubChainChangeMoveSelectorConfig extends MoveSelectorConfig<SubChai
     @Override
     public SubChainChangeMoveSelectorConfig copyConfig() {
         return new SubChainChangeMoveSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        classVisitor.accept(entityClass);
+        if (subChainSelectorConfig != null) {
+            subChainSelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

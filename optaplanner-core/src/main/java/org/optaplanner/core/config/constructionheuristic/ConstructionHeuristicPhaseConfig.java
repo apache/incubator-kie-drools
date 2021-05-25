@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -201,6 +202,22 @@ public class ConstructionHeuristicPhaseConfig extends PhaseConfig<ConstructionHe
     @Override
     public ConstructionHeuristicPhaseConfig copyConfig() {
         return new ConstructionHeuristicPhaseConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (getTerminationConfig() != null) {
+            getTerminationConfig().visitReferencedClasses(classVisitor);
+        }
+        if (entityPlacerConfig != null) {
+            entityPlacerConfig.visitReferencedClasses(classVisitor);
+        }
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        }
+        if (foragerConfig != null) {
+            foragerConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
 }

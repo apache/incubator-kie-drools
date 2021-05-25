@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.value.chained;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -76,6 +78,13 @@ public class SubChainSelectorConfig extends SelectorConfig<SubChainSelectorConfi
     @Override
     public SubChainSelectorConfig copyConfig() {
         return new SubChainSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

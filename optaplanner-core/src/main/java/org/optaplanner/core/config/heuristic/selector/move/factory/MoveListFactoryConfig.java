@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.factory;
 
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -72,6 +73,12 @@ public class MoveListFactoryConfig extends MoveSelectorConfig<MoveListFactoryCon
     @Override
     public MoveListFactoryConfig copyConfig() {
         return new MoveListFactoryConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        classVisitor.accept(moveListFactoryClass);
     }
 
     @Override

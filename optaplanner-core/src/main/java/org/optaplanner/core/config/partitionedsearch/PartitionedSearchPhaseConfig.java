@@ -18,6 +18,7 @@ package org.optaplanner.core.config.partitionedsearch;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -142,6 +143,17 @@ public class PartitionedSearchPhaseConfig extends PhaseConfig<PartitionedSearchP
     @Override
     public PartitionedSearchPhaseConfig copyConfig() {
         return new PartitionedSearchPhaseConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (getTerminationConfig() != null) {
+            getTerminationConfig().visitReferencedClasses(classVisitor);
+        }
+        classVisitor.accept(solutionPartitionerClass);
+        if (phaseConfigList != null) {
+            phaseConfigList.forEach(pc -> pc.visitReferencedClasses(classVisitor));
+        }
     }
 
 }

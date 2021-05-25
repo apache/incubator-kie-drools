@@ -28,11 +28,13 @@ import java.io.UncheckedIOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
+import java.util.function.Consumer;
 
 import org.apache.commons.io.IOUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.mockito.Mockito;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
@@ -47,11 +49,13 @@ import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
 import org.optaplanner.core.impl.io.OptaPlannerXmlSerializationException;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
+import org.optaplanner.core.impl.phase.custom.CustomPhaseCommand;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
 
-class SolverConfigTest {
+public class SolverConfigTest {
 
     private static final String TEST_SOLVER_CONFIG_WITH_NAMESPACE = "testSolverConfigWithNamespace.xml";
     private static final String TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE = "testSolverConfigWithoutNamespace.xml";
@@ -165,36 +169,55 @@ class SolverConfigTest {
         assertThat(inheritedSolverConfig).usingRecursiveComparison().isEqualTo(originalSolverConfig);
     }
 
-    /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */
-
-    private static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+    @Test
+    void visitReferencedClasses() {
+        SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
+        Consumer<Class<?>> classVisitor = Mockito.mock(Consumer.class);
+        solverConfig.visitReferencedClasses(classVisitor);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataSolution.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataEntity.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataAnnotatedExtendedEntity.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyEasyScoreCalculator.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyConstraintProvider.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyIncrementalScoreCalculator.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyEntityFilter.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyValueFilter.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyChangeMoveFilter.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyMoveIteratorFactory.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyMoveListFactory.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(CustomPhaseCommand.class);
     }
 
-    private static abstract class DummyEasyScoreCalculator
+    /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */
+
+    public static abstract class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+    }
+
+    public static abstract class DummyEasyScoreCalculator
             implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
-    private static abstract class DummyIncrementalScoreCalculator
+    public static abstract class DummyIncrementalScoreCalculator
             implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
     }
 
-    private static abstract class DummyConstraintProvider implements ConstraintProvider {
+    public static abstract class DummyConstraintProvider implements ConstraintProvider {
     }
 
-    private abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+    public abstract class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
     }
 
-    private abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
+    public abstract class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
     }
 
-    private abstract class DummyChangeMoveFilter
+    public abstract class DummyChangeMoveFilter
             implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
     }
 
-    private abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
+    public abstract class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
     }
 
-    private abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
+    public abstract class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
     }
 
 }

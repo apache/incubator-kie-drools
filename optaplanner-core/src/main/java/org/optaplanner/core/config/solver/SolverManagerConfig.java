@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.solver;
 
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlType;
 
@@ -131,6 +132,11 @@ public class SolverManagerConfig extends AbstractConfig<SolverManagerConfig> {
     @Override
     public SolverManagerConfig copyConfig() {
         return new SolverManagerConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(threadFactoryClass);
     }
 
 }

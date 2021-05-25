@@ -16,6 +16,8 @@
 
 package org.optaplanner.benchmark.config;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -89,6 +91,16 @@ public class SolverBenchmarkConfig extends AbstractConfig<SolverBenchmarkConfig>
     @Override
     public SolverBenchmarkConfig copyConfig() {
         return new SolverBenchmarkConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (solverConfig != null) {
+            solverConfig.visitReferencedClasses(classVisitor);
+        }
+        if (problemBenchmarksConfig != null) {
+            problemBenchmarksConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
 }

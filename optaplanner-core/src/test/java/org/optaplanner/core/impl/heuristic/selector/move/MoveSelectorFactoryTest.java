@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -240,6 +241,11 @@ class MoveSelectorFactoryTest extends AbstractSelectorFactoryTest {
 
         @Override
         public DummyMoveSelectorConfig copyConfig() {
+            throw new UnsupportedOperationException();
+        }
+
+        @Override
+        public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
             throw new UnsupportedOperationException();
         }
     }

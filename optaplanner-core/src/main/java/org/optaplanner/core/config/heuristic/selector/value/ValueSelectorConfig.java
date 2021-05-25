@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.value;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -247,6 +248,19 @@ public class ValueSelectorConfig extends SelectorConfig<ValueSelectorConfig> {
     @Override
     public ValueSelectorConfig copyConfig() {
         return new ValueSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(downcastEntityClass);
+        if (nearbySelectionConfig != null) {
+            nearbySelectionConfig.visitReferencedClasses(classVisitor);
+        }
+        classVisitor.accept(filterClass);
+        classVisitor.accept(sorterComparatorClass);
+        classVisitor.accept(sorterWeightFactoryClass);
+        classVisitor.accept(sorterClass);
+        classVisitor.accept(probabilityWeightFactoryClass);
     }
 
     @Override

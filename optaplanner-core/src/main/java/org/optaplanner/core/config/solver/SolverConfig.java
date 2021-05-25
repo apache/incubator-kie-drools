@@ -32,6 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -636,4 +637,22 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
         return new SolverConfig().inherit(this);
     }
 
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(randomFactoryClass);
+        classVisitor.accept(threadFactoryClass);
+        classVisitor.accept(solutionClass);
+        if (entityClassList != null) {
+            entityClassList.forEach(classVisitor);
+        }
+        if (scoreDirectorFactoryConfig != null) {
+            scoreDirectorFactoryConfig.visitReferencedClasses(classVisitor);
+        }
+        if (terminationConfig != null) {
+            terminationConfig.visitReferencedClasses(classVisitor);
+        }
+        if (phaseConfigList != null) {
+            phaseConfigList.forEach(pc -> pc.visitReferencedClasses(classVisitor));
+        }
+    }
 }

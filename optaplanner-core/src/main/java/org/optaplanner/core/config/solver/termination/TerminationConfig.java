@@ -18,6 +18,7 @@ package org.optaplanner.core.config.solver.termination;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -560,6 +561,14 @@ public class TerminationConfig extends AbstractConfig<TerminationConfig> {
     @Override
     public TerminationConfig copyConfig() {
         return new TerminationConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(terminationClass);
+        if (terminationConfigList != null) {
+            terminationConfigList.forEach(tc -> tc.visitReferencedClasses(classVisitor));
+        }
     }
 
 }

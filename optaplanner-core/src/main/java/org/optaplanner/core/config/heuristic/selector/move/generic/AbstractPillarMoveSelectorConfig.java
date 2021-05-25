@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
 import java.util.Comparator;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -70,6 +71,15 @@ public abstract class AbstractPillarMoveSelectorConfig<Config_ extends AbstractP
                 inheritedConfig.getSubPillarSequenceComparatorClass());
         pillarSelectorConfig = ConfigUtils.inheritConfig(pillarSelectorConfig, inheritedConfig.getPillarSelectorConfig());
         return (Config_) this;
+    }
+
+    @Override
+    protected void visitCommonReferencedClasses(Consumer<Class<?>> classVisitor) {
+        super.visitCommonReferencedClasses(classVisitor);
+        classVisitor.accept(subPillarSequenceComparatorClass);
+        if (pillarSelectorConfig != null) {
+            pillarSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
 }

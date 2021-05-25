@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -50,6 +52,14 @@ public class PillarChangeMoveSelectorConfig extends AbstractPillarMoveSelectorCo
     @Override
     public PillarChangeMoveSelectorConfig copyConfig() {
         return new PillarChangeMoveSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

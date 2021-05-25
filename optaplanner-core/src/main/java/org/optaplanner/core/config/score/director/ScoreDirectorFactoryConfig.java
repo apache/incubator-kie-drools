@@ -20,6 +20,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -326,6 +327,16 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @Override
     public ScoreDirectorFactoryConfig copyConfig() {
         return new ScoreDirectorFactoryConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(easyScoreCalculatorClass);
+        classVisitor.accept(constraintProviderClass);
+        classVisitor.accept(incrementalScoreCalculatorClass);
+        if (assertionScoreDirectorFactory != null) {
+            assertionScoreDirectorFactory.visitReferencedClasses(classVisitor);
+        }
     }
 
     private boolean isUsingDrools() {

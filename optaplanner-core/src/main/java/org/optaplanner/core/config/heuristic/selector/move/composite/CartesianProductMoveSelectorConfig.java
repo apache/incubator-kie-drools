@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -107,6 +108,14 @@ public class CartesianProductMoveSelectorConfig extends MoveSelectorConfig<Carte
     @Override
     public CartesianProductMoveSelectorConfig copyConfig() {
         return new CartesianProductMoveSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        }
     }
 
     @Override

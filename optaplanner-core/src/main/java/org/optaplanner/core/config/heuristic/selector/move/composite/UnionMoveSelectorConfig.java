@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.heuristic.selector.move.composite;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -109,6 +110,15 @@ public class UnionMoveSelectorConfig extends MoveSelectorConfig<UnionMoveSelecto
     @Override
     public UnionMoveSelectorConfig copyConfig() {
         return new UnionMoveSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        }
+        classVisitor.accept(selectorProbabilityWeightFactoryClass);
     }
 
     @Override

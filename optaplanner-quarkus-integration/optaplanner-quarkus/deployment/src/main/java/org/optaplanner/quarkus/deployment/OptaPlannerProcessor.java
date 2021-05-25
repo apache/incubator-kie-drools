@@ -186,20 +186,9 @@ class OptaPlannerProcessor {
         }
 
         Set<Class<?>> reflectiveClassSet = new LinkedHashSet<>();
-        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = solverConfig.getScoreDirectorFactoryConfig();
-        if (scoreDirectorFactoryConfig != null) {
-            if (scoreDirectorFactoryConfig.getEasyScoreCalculatorClass() != null) {
-                reflectiveClassSet.add(scoreDirectorFactoryConfig.getEasyScoreCalculatorClass());
-            }
-            if (scoreDirectorFactoryConfig.getConstraintProviderClass() != null) {
-                reflectiveClassSet.add(scoreDirectorFactoryConfig.getConstraintProviderClass());
-            }
-            if (scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass() != null) {
-                reflectiveClassSet.add(scoreDirectorFactoryConfig.getIncrementalScoreCalculatorClass());
-            }
-        }
 
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
+        registerCustomClassesFromSolverConfig(solverConfig, reflectiveClassSet);
         generateConstraintVerifier(solverConfig, syntheticBeanBuildItemBuildProducer);
         GeneratedGizmoClasses generatedGizmoClasses =
                 generateDomainAccessors(solverConfig, indexView, generatedBeans, generatedClasses, unremovableBeans,
@@ -623,6 +612,14 @@ class OptaPlannerProcessor {
     private boolean shouldIgnoreMember(ClassInfo declaringClass) {
         // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
         return declaringClass.name().toString().startsWith(SolutionDescriptor.class.getName());
+    }
+
+    private void registerCustomClassesFromSolverConfig(SolverConfig solverConfig, Set<Class<?>> reflectiveClassSet) {
+        solverConfig.visitReferencedClasses(clazz -> {
+            if (clazz != null) {
+                reflectiveClassSet.add(clazz);
+            }
+        });
     }
 
 }

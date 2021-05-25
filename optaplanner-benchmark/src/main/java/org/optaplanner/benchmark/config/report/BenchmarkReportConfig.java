@@ -18,6 +18,7 @@ package org.optaplanner.benchmark.config.report;
 
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -103,6 +104,12 @@ public class BenchmarkReportConfig extends AbstractConfig<BenchmarkReportConfig>
     @Override
     public BenchmarkReportConfig copyConfig() {
         return new BenchmarkReportConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        classVisitor.accept(solverRankingComparatorClass);
+        classVisitor.accept(solverRankingWeightFactoryClass);
     }
 
 }

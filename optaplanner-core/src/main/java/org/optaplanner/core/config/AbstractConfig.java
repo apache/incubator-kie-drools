@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 
@@ -50,6 +52,16 @@ public abstract class AbstractConfig<Config_ extends AbstractConfig<Config_>> {
      * @return new instance
      */
     public abstract Config_ copyConfig();
+
+    /**
+     * Call the class visitor on each (possibly null) Class instance provided to this config by the user
+     * (including those provided in child configs).
+     * Required to create the bean factory in Quarkus.
+     *
+     * @param classVisitor The visitor of classes, never null. Can accept null instances
+     *        of Class
+     */
+    public abstract void visitReferencedClasses(Consumer<Class<?>> classVisitor);
 
     @Override
     public String toString() {

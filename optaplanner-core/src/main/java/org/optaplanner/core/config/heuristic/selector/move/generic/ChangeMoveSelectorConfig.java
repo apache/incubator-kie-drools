@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.heuristic.selector.move.generic;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -65,6 +67,17 @@ public class ChangeMoveSelectorConfig extends MoveSelectorConfig<ChangeMoveSelec
     @Override
     public ChangeMoveSelectorConfig copyConfig() {
         return new ChangeMoveSelectorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        visitCommonReferencedClasses(classVisitor);
+        if (entitySelectorConfig != null) {
+            entitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (valueSelectorConfig != null) {
+            valueSelectorConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
     @Override

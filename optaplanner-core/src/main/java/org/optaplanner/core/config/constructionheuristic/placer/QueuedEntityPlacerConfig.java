@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.constructionheuristic.placer;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
@@ -93,6 +94,16 @@ public class QueuedEntityPlacerConfig extends EntityPlacerConfig<QueuedEntityPla
     @Override
     public QueuedEntityPlacerConfig copyConfig() {
         return new QueuedEntityPlacerConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (entitySelectorConfig != null) {
+            entitySelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (moveSelectorConfigList != null) {
+            moveSelectorConfigList.forEach(ms -> ms.visitReferencedClasses(classVisitor));
+        }
     }
 
     @Override

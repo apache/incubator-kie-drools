@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.localsearch;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
@@ -151,6 +153,22 @@ public class LocalSearchPhaseConfig extends PhaseConfig<LocalSearchPhaseConfig> 
     @Override
     public LocalSearchPhaseConfig copyConfig() {
         return new LocalSearchPhaseConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (getTerminationConfig() != null) {
+            getTerminationConfig().visitReferencedClasses(classVisitor);
+        }
+        if (moveSelectorConfig != null) {
+            moveSelectorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (acceptorConfig != null) {
+            acceptorConfig.visitReferencedClasses(classVisitor);
+        }
+        if (foragerConfig != null) {
+            foragerConfig.visitReferencedClasses(classVisitor);
+        }
     }
 
 }

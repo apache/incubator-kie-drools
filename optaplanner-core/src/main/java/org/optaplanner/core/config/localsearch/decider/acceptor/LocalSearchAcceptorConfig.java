@@ -17,6 +17,7 @@
 package org.optaplanner.core.config.localsearch.decider.acceptor;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
@@ -378,6 +379,11 @@ public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAccepto
     @Override
     public LocalSearchAcceptorConfig copyConfig() {
         return new LocalSearchAcceptorConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        // No referenced classes
     }
 
 }

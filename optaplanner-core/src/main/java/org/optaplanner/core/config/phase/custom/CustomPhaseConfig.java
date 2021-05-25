@@ -19,6 +19,7 @@ package org.optaplanner.core.config.phase.custom;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -117,6 +118,16 @@ public class CustomPhaseConfig extends PhaseConfig<CustomPhaseConfig> {
     @Override
     public CustomPhaseConfig copyConfig() {
         return new CustomPhaseConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        if (getTerminationConfig() != null) {
+            getTerminationConfig().visitReferencedClasses(classVisitor);
+        }
+        if (customPhaseCommandClassList != null) {
+            customPhaseCommandClassList.forEach(classVisitor);
+        }
     }
 
 }

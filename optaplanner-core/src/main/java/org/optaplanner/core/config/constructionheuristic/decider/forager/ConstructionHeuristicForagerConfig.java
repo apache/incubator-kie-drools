@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.config.constructionheuristic.decider.forager;
 
+import java.util.function.Consumer;
+
 import javax.xml.bind.annotation.XmlType;
 
 import org.optaplanner.core.config.AbstractConfig;
@@ -45,6 +47,11 @@ public class ConstructionHeuristicForagerConfig extends AbstractConfig<Construct
     @Override
     public ConstructionHeuristicForagerConfig copyConfig() {
         return new ConstructionHeuristicForagerConfig().inherit(this);
+    }
+
+    @Override
+    public void visitReferencedClasses(Consumer<Class<?>> classVisitor) {
+        // No referenced classes
     }
 
 }
