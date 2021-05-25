@@ -28,7 +28,7 @@ import {
 
 jest.mock('../../JobsPanel/JobsPanel');
 jest.mock('../../ProcessDiagram/ProcessDiagram');
-jest.mock('../../ProcessDiagramErrorModal/ProcessDiagramErrorModal');
+jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('ProcessDetails tests', () => {
   describe('ProcessDetails tests with success results', () => {
@@ -328,12 +328,12 @@ describe('ProcessDetails tests', () => {
       wrapper = wrapper.update();
       await act(async () => {
         wrapper
-          .find('MockedProcessDiagramErrorModal')
+          .find('MockedProcessDetailsErrorModal')
           .props()
           ['handleErrorModal']();
       });
       expect(
-        wrapper.find('MockedProcessDiagramErrorModal').props()['errorModalOpen']
+        wrapper.find('MockedProcessDetailsErrorModal').props()['errorModalOpen']
       ).toEqual(true);
     });
 

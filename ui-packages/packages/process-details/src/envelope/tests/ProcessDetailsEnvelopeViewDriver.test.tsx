@@ -183,6 +183,29 @@ describe('ProcessDetailsEnvelopeViewDriver tests', () => {
       expect(requests.processDetails__cancelJob).toHaveBeenCalledWith(Jobs);
     });
 
+    it('get triggerable nodes', () => {
+      driver.getTriggerableNodes(data);
+
+      expect(requests.processDetails__getTriggerableNodes).toHaveBeenCalledWith(
+        data
+      );
+    });
+
+    it('get triggerable nodes', () => {
+      const node = {
+        nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+        name: 'Send visa application',
+        id: 1,
+        type: 'ActionNode',
+        uniqueId: '1'
+      };
+      driver.handleNodeTrigger(data, node);
+      expect(requests.processDetails__handleNodeTrigger).toHaveBeenCalledWith(
+        data,
+        node
+      );
+    });
+
     it('processDetailsQuery', () => {
       driver.processDetailsQuery(id);
 

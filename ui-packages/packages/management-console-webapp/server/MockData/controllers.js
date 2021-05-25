@@ -120,16 +120,14 @@ module.exports = controller = {
   },
 
   callNodeTrigger: (req, res) => {
-    const graphData = require('./graphql');
     const processInstance = graphData.ProcessInstanceData.filter((process) => {
       return process.id === req.params.processInstanceId
     });
     const nodeObject = processInstance[0].nodes.filter((node, index) => {
       if (index !== processInstance[0].nodes.length - 1) {
-        return node.definitionId === req.params.nodeId
+        return node.id === req.params.nodeId
       }
     });
-
     if (nodeObject.length === 0) {
       res.status(404).send('node not found');
     } else {

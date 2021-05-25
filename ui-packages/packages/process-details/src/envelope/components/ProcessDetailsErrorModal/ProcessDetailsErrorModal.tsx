@@ -22,7 +22,7 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
 
 interface IOwnProps {
   errorString: string;
@@ -32,7 +32,7 @@ interface IOwnProps {
   label: string;
   title: JSX.Element;
 }
-const ProcessDiagramErrorModal: React.FC<IOwnProps & OUIAProps> = ({
+const ProcessDetailsErrorModal: React.FC<IOwnProps & OUIAProps> = ({
   errorString,
   errorModalOpen,
   errorModalAction,
@@ -62,11 +62,11 @@ const ProcessDiagramErrorModal: React.FC<IOwnProps & OUIAProps> = ({
       isOpen={errorModalOpen}
       onClose={handleErrorModal}
       actions={errorModalAction}
-      {...componentOuiaProps(ouiaId, 'process-diagram-error-modal', ouiaSafe)}
+      {...componentOuiaProps(ouiaId, 'process-details-error-modal', ouiaSafe)}
     >
       {errorModalContent()}
     </Modal>
   );
 };
 
-export default ProcessDiagramErrorModal;
+export default ProcessDetailsErrorModal;

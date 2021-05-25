@@ -18,7 +18,8 @@ import { GraphQL } from '@kogito-apps/consoles-common';
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
-  ProcessInstance
+  ProcessInstance,
+  TriggerableNode
 } from '@kogito-apps/management-console-shared';
 import axios from 'axios';
 
@@ -199,5 +200,39 @@ export const handleProcessMultipleAction = async (
     }
 
     resolve({ successProcessInstances, failedProcessInstances });
+  });
+};
+export const getTriggerableNodes = async (
+  processInstance: ProcessInstance
+): Promise<TriggerableNode[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/nodes`
+      )
+      .then(result => {
+        resolve(result.data);
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
+
+export const handleNodeTrigger = async (
+  processInstance: ProcessInstance,
+  node: TriggerableNode
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/nodes/${node.nodeDefinitionId}`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => {
+        reject(error);
+      });
   });
 };

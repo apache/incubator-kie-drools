@@ -52,10 +52,11 @@ import {
 import { ProcessDetailsDriver } from '../../../api';
 import ProcessDiagram from '../ProcessDiagram/ProcessDiagram';
 import JobsPanel from '../JobsPanel/JobsPanel';
-import ProcessDiagramErrorModal from '../ProcessDiagramErrorModal/ProcessDiagramErrorModal';
+import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 import SVG from 'react-inlinesvg';
 import '../styles.css';
 import ProcessDetailsPanel from '../ProcessDetailsPanel/ProcessDetailsPanel';
+import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -99,8 +100,8 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       response && setData(response);
       jobsResponse && setJobs(jobsResponse);
       setIsLoading(false);
-    } catch (error) {
-      setError(error);
+    } catch (errorString) {
+      setError(errorString);
       setIsLoading(false);
     }
   };
@@ -481,7 +482,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                     data.state !== ProcessInstanceState.Aborted &&
                     data.serviceUrl &&
                     data.addons.includes('process-management') && (
-                      <FlexItem>Node Trigger</FlexItem>
+                      <FlexItem>
+                        <ProcessDetailsNodeTrigger
+                          driver={driver}
+                          processInstanceData={data}
+                        />
+                      </FlexItem>
                     )}
                 </Flex>
                 {errorModal()}
@@ -494,7 +500,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
             </Card>
           )}
           {svgErrorModalOpen && (
-            <ProcessDiagramErrorModal
+            <ProcessDetailsErrorModal
               errorString={svgError}
               errorModalOpen={svgErrorModalOpen}
               errorModalAction={errorModalAction}

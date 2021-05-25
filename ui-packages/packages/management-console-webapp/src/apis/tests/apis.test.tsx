@@ -20,12 +20,14 @@ import wait from 'waait';
 import {
   getSvg,
   handleProcessAbort,
-  handleJobReschedule,
-  handleProcessMultipleAction,
   handleProcessRetry,
   handleProcessSkip,
+  handleJobReschedule,
+  handleProcessMultipleAction,
   jobCancel,
-  performMultipleCancel
+  performMultipleCancel,
+  getTriggerableNodes,
+  handleNodeTrigger
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -547,5 +549,93 @@ describe('test utility of svg panel', () => {
         '404 error'
       );
     });
+  });
+});
+
+describe('retrieve list of triggerable nodes test', () => {
+  const mockTriggerableNodes = [
+    {
+      nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+      name: 'Send visa application',
+      id: 1,
+      type: 'ActionNode',
+      uniqueId: '1'
+    },
+    {
+      nodeDefinitionId: '_175DC79D-C2F1-4B28-BE2D-B583DFABF70D',
+      name: 'Book',
+      id: 2,
+      type: 'Split',
+      uniqueId: '2'
+    },
+    {
+      nodeDefinitionId: '_E611283E-30B0-46B9-8305-768A002C7518',
+      name: 'visasrejected',
+      id: 3,
+      type: 'EventNode',
+      uniqueId: '3'
+    }
+  ];
+
+  it('successfully retrieves the list of nodes', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: mockTriggerableNodes
+    });
+    let result = null;
+    await getTriggerableNodes(processInstance)
+      .then(nodes => {
+        result = nodes;
+      })
+      .catch(error => {
+        result = error;
+      });
+    expect(result).toEqual(mockTriggerableNodes);
+  });
+  it('fails to retrieve the list of nodes', async () => {
+    mockedAxios.get.mockRejectedValue({ message: '403 error' });
+    let result = null;
+    await getTriggerableNodes(processInstance)
+      .then(nodes => {
+        result = nodes;
+      })
+      .catch(error => {
+        result = error.message;
+      });
+    expect(result).toEqual('403 error');
+  });
+});
+
+describe('handle node trigger click tests', () => {
+  const node = {
+    nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+    name: 'Send visa application',
+    id: 1,
+    type: 'ActionNode',
+    uniqueId: '1'
+  };
+  it('executes node trigger successfully', async () => {
+    let result = '';
+    mockedAxios.post.mockResolvedValue({});
+    await handleNodeTrigger(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('success');
+  });
+
+  it('fails to execute node trigger', async () => {
+    mockedAxios.post.mockRejectedValue({ message: '404 error' });
+    let result = '';
+    await handleNodeTrigger(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('error');
   });
 });

@@ -21,7 +21,8 @@ import {
   Job,
   JobCancel,
   SvgSuccessResponse,
-  SvgErrorResponse
+  SvgErrorResponse,
+  TriggerableNode
 } from '@kogito-apps/management-console-shared';
 
 export default class ProcessDetailsEnvelopeViewDriver
@@ -57,6 +58,24 @@ export default class ProcessDetailsEnvelopeViewDriver
       repeatInterval,
       repeatLimit,
       scheduleDate
+    );
+  }
+
+  getTriggerableNodes(
+    processInstance: ProcessInstance
+  ): Promise<TriggerableNode[]> {
+    return this.channelApi.requests.processDetails__getTriggerableNodes(
+      processInstance
+    );
+  }
+
+  handleNodeTrigger(
+    processInstance: ProcessInstance,
+    node: TriggerableNode
+  ): Promise<void> {
+    return this.channelApi.requests.processDetails__handleNodeTrigger(
+      processInstance,
+      node
     );
   }
 

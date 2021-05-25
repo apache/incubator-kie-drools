@@ -87,6 +87,14 @@ export interface NodeInstance {
   nodeId: string;
 }
 
+export interface TriggerableNode {
+  id: number;
+  name: string;
+  type: string;
+  uniqueId: string;
+  nodeDefinitionId: string;
+}
+
 export interface Milestone {
   __typename?: 'Milestone';
   id: string;

@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Process diagram error modal tests Snapshot test with default props 1`] = `
-<ProcessDiagramErrorModal
+exports[`Process details error modal tests Snapshot test with default props 1`] = `
+<ProcessDetailsErrorModal
   errorModalAction={
     Array [
       <Button
@@ -45,7 +45,7 @@ exports[`Process diagram error modal tests Snapshot test with default props 1`] 
     aria-label="Error modal"
     aria-labelledby="Error modal"
     className=""
-    data-ouia-component-type="process-diagram-error-modal"
+    data-ouia-component-type="process-details-error-modal"
     data-ouia-safe={true}
     hasNoBodyWrapper={false}
     header={
@@ -128,7 +128,7 @@ exports[`Process diagram error modal tests Snapshot test with default props 1`] 
                 </header>
                 <div
                   class="pf-c-modal-box__body"
-                  data-ouia-component-type="process-diagram-error-modal"
+                  data-ouia-component-type="process-details-error-modal"
                   data-ouia-safe="true"
                   id="pf-modal-part-2"
                 >
@@ -182,7 +182,7 @@ exports[`Process diagram error modal tests Snapshot test with default props 1`] 
         aria-labelledby="Error modal"
         boxId="pf-modal-part-0"
         className=""
-        data-ouia-component-type="process-diagram-error-modal"
+        data-ouia-component-type="process-details-error-modal"
         data-ouia-safe={true}
         descriptorId="pf-modal-part-2"
         hasNoBodyWrapper={false}
@@ -328,13 +328,13 @@ exports[`Process diagram error modal tests Snapshot test with default props 1`] 
                       </header>
                     </ModalBoxHeader>
                     <ModalBoxBody
-                      data-ouia-component-type="process-diagram-error-modal"
+                      data-ouia-component-type="process-details-error-modal"
                       data-ouia-safe={true}
                       id="pf-modal-part-2"
                     >
                       <div
                         className="pf-c-modal-box__body"
-                        data-ouia-component-type="process-diagram-error-modal"
+                        data-ouia-component-type="process-details-error-modal"
                         data-ouia-safe={true}
                         id="pf-modal-part-2"
                       >
@@ -393,5 +393,5 @@ exports[`Process diagram error modal tests Snapshot test with default props 1`] 
       </ModalContent>
     </Portal>
   </Modal>
-</ProcessDiagramErrorModal>
+</ProcessDetailsErrorModal>
 `;

@@ -15,10 +15,10 @@
  */
 
 import React from 'react';
-import ProcessDiagramErrorModal from '../ProcessDiagramErrorModal';
-import { getWrapper } from '@kogito-apps/components-common';
-import { setTitle } from '@kogito-apps/management-console-shared';
+import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal';
 import { Button } from '@patternfly/react-core';
+import { setTitle } from '@kogito-apps/management-console-shared';
+import { getWrapper } from '@kogito-apps/components-common';
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;
@@ -35,7 +35,7 @@ const errorModalAction: JSX.Element[] = [
     OK
   </Button>
 ];
-describe('Process diagram error modal tests', () => {
+describe('Process details error modal tests', () => {
   const props = {
     errorString: '404-not found',
     errorModalOpen: true,
@@ -47,8 +47,8 @@ describe('Process diagram error modal tests', () => {
 
   it('Snapshot test with default props', () => {
     const wrapper = getWrapper(
-      <ProcessDiagramErrorModal {...props} />,
-      'ProcessDiagramErrorModal'
+      <ProcessDetailsErrorModal {...props} />,
+      'ProcessDetailsErrorModal'
     );
     expect(wrapper).toMatchSnapshot();
     expect(

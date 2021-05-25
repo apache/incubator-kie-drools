@@ -18,6 +18,7 @@ import {
   Job,
   JobStatus,
   MilestoneStatus,
+  ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
 import { ProcessDetailsChannelApiImpl } from '../ProcessDetailsChannelApiImpl';
@@ -48,17 +49,13 @@ let api: ProcessDetailsChannelApiImpl;
 
 const id = 'a1e139d5-4e77-48c9-84ae-34578e904e5a';
 
-const data: any = {
+const data: ProcessInstance = {
   id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
   processId: 'hotelBooking',
   processName: 'HotelBooking',
   businessKey: 'T1234HotelBooking01',
   parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
-  parentProcessInstance: {
-    id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
-    processName: 'travels',
-    businessKey: 'T1234'
-  },
+  parentProcessInstance: null,
   roles: [],
   variables:
     '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
@@ -166,6 +163,23 @@ describe('ProcessDetailsChannelApiImpl tests', () => {
   it('processDetails__cancelJob', () => {
     api.processDetails__cancelJob(Jobs);
     expect(driver.cancelJob).toHaveBeenCalledWith(Jobs);
+  });
+
+  it('processDetails__getTriggerableNodes', () => {
+    api.processDetails__getTriggerableNodes(data);
+    expect(driver.getTriggerableNodes).toHaveBeenCalledWith(data);
+  });
+
+  it('processDetails__handleNodeTrigger', () => {
+    const node = {
+      nodeDefinitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+      name: 'Send visa application',
+      id: 1,
+      type: 'ActionNode',
+      uniqueId: '1'
+    };
+    api.processDetails__handleNodeTrigger(data, node);
+    expect(driver.handleNodeTrigger).toHaveBeenCalledWith(data, node);
   });
 
   it('processDetails__processDetailsQuery', () => {

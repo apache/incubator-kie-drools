@@ -20,13 +20,16 @@ import {
   Job,
   JobCancel,
   SvgSuccessResponse,
-  SvgErrorResponse
+  SvgErrorResponse,
+  TriggerableNode
 } from '@kogito-apps/management-console-shared';
 import {
   getSvg,
   handleJobReschedule,
   handleProcessAbort,
-  jobCancel
+  jobCancel,
+  getTriggerableNodes,
+  handleNodeTrigger
 } from '../../apis';
 
 export interface OnOpenProcessInstanceDetailsListener {
@@ -54,6 +57,10 @@ export interface ProcessDetailsGatewayApi {
     repeatLimit: number | string,
     scheduleDate: Date
   ) => Promise<{ modalTitle: string; modalContent: string }>;
+  getTriggerableNodes(
+    processInstance: ProcessInstance
+  ): Promise<TriggerableNode[]>;
+  handleNodeTrigger(processInstance: ProcessInstance, node: any): Promise<void>;
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
   openProcessInstanceDetails(id: string): Promise<void>;
@@ -99,6 +106,19 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
   ): Promise<{ modalTitle: string; modalContent: string }> => {
     return handleJobReschedule(job, repeatInterval, repeatLimit, scheduleDate);
   };
+
+  getTriggerableNodes(
+    processInstance: ProcessInstance
+  ): Promise<TriggerableNode[]> {
+    return getTriggerableNodes(processInstance);
+  }
+
+  handleNodeTrigger(
+    processInstance: ProcessInstance,
+    node: TriggerableNode
+  ): Promise<void> {
+    return handleNodeTrigger(processInstance, node);
+  }
 
   processDetailsQuery(id: string): Promise<ProcessInstance> {
     return new Promise<any>((resolve, reject) => {

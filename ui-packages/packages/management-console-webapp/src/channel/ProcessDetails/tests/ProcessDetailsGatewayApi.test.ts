@@ -19,7 +19,9 @@ import {
   Job,
   JobStatus,
   MilestoneStatus,
-  ProcessInstanceState
+  ProcessInstance,
+  ProcessInstanceState,
+  TriggerableNode
 } from '@kogito-apps/management-console-shared';
 import {
   OnOpenProcessInstanceDetailsListener,
@@ -31,14 +33,18 @@ import {
   handleJobReschedule,
   jobCancel,
   getSvg,
-  handleProcessAbort
+  handleProcessAbort,
+  getTriggerableNodes,
+  handleNodeTrigger
 } from '../../../apis/apis';
 
 jest.mock('../../../apis/apis', () => ({
   handleJobReschedule: jest.fn(),
   jobCancel: jest.fn(),
   getSvg: jest.fn(),
-  handleProcessAbort: jest.fn()
+  handleProcessAbort: jest.fn(),
+  getTriggerableNodes: jest.fn(),
+  handleNodeTrigger: jest.fn()
 }));
 
 export const JobData: Job = {
@@ -91,17 +97,13 @@ const job = {
   status: JobStatus.Scheduled
 };
 
-const data: any = {
+const data: ProcessInstance = {
   id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
   processId: 'hotelBooking',
   processName: 'HotelBooking',
   businessKey: 'T1234HotelBooking01',
   parentProcessInstanceId: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
-  parentProcessInstance: {
-    id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
-    processName: 'travels',
-    businessKey: 'T1234'
-  },
+  parentProcessInstance: null,
   roles: [],
   variables:
     '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
@@ -127,26 +129,6 @@ const data: any = {
       exit: new Date('2019-10-22T03:37:30.798Z'),
       type: 'EndNode',
       definitionId: 'EndEvent_1',
-      __typename: 'NodeInstance'
-    },
-    {
-      id: '41b3f49e-beb3-4b5f-8130-efd28f82b971',
-      nodeId: '2',
-      name: 'Book hotel',
-      enter: new Date('2019-10-22T03:37:30.795Z'),
-      exit: new Date('2019-10-22T03:37:30.798Z'),
-      type: 'WorkItemNode',
-      definitionId: 'ServiceTask_1',
-      __typename: 'NodeInstance'
-    },
-    {
-      id: '4165a571-2c79-4fd0-921e-c6d5e7851b67',
-      nodeId: '2',
-      name: 'StartProcess',
-      enter: new Date('2019-10-22T03:37:30.793Z'),
-      exit: new Date('2019-10-22T03:37:30.795Z'),
-      type: 'StartNode',
-      definitionId: 'StartEvent_1',
       __typename: 'NodeInstance'
     }
   ],
@@ -225,6 +207,23 @@ describe('ProcessDetailsGatewayApi tests', () => {
     await gatewayApi.handleProcessAbort(data);
     expect(handleProcessAbort).toHaveBeenCalledWith(data);
   });
+  it('get triggerable node', () => {
+    gatewayApi.getTriggerableNodes(data);
+    expect(getTriggerableNodes).toHaveBeenCalledWith(data);
+  });
+
+  it('handle node trigger test', () => {
+    const node: TriggerableNode = {
+      id: 1234,
+      name: 'book_travel',
+      type: 'start',
+      uniqueId: 'avg3-wwr2-bgh5t6',
+      nodeDefinitionId: '_aabfr245kgtgiy'
+    };
+    gatewayApi.handleNodeTrigger(data, node);
+    expect(handleNodeTrigger).toHaveBeenCalledWith(data, node);
+  });
+
   it('processDetailsQuery- success response', () => {
     getProcessDetailsMock.mockReturnValue(Promise.resolve([]));
     gatewayApi.processDetailsQuery(id);

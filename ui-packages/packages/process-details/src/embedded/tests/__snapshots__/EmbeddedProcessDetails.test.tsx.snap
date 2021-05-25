@@ -6,6 +6,8 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
     Object {
       "cancelJob": [MockFunction],
       "getProcessDiagram": [MockFunction],
+      "getTriggerableNodes": [MockFunction],
+      "handleNodeTrigger": [MockFunction],
       "handleProcessAbort": [MockFunction],
       "jobsQuery": [MockFunction],
       "openProcessInstanceDetails": [MockFunction],

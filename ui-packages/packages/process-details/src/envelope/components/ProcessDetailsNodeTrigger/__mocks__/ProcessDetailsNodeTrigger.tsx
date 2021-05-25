@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
 
-.kogito-process-details--details__title small {
-    --pf-c-content--small--Color: var(--pf-global--Color--100) !important;
-}
-.kogito-process-details--details__buttonMargin {
-    margin-right: var(--pf-global--spacer--md) !important;
-}
-.kogito-process-details--details__marginSpaces {
-    margin-top: 20px; 
-}
-.kogito-process-details--NodeTrigger-cardHeight {
-    height: 494px;
-}
+const MockedProcessDetailsNodeTrigger = (): React.ReactElement => {
+  return <></>;
+};
+
+export default MockedProcessDetailsNodeTrigger;

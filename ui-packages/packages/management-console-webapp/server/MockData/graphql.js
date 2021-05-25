@@ -893,7 +893,7 @@ module.exports ={ ProcessInstanceData : [
         nodeId: '5',
         name: 'Book',
         definitionId: 'ParallelGateway_1',
-        id: 'af0d984c-4abd-4f5c-83a8-426e6b3d102a',
+        id: '_175DC79D-C2F1-4B28-BE2D-B583DFABF70D',
         enter: '2019-10-22T04:43:01.143Z',
         exit: '2019-10-22T04:43:01.146Z',
         type: 'Split'
