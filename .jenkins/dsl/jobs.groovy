@@ -217,8 +217,14 @@ void setupOptaPlannerTurtleTestsJob(String jobFolder) {
     def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, 'Jenkinsfile.turtle',
             'Run OptaPlanner turtle tests on a weekly basis.')
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
-        triggers {
-            cron('H H * * 5') // Run every Friday.
+        properties {
+            pipelineTriggers {
+                triggers {
+                    cron {
+                        spec('H H * * 5') // Run every Friday.
+                    }
+                }
+            }
         }
         
         parameters {
