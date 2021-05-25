@@ -109,24 +109,4 @@ public class KiePMMLSessionUtilsTest {
         assertEquals(globalName, setGlobalCommand.getIdentifier());
         assertEquals(toInsert, setGlobalCommand.getObject());
     }
-
-    @Test
-    public void BuilderWithOutputFieldsMap() {
-        final List<Command> retrieved = kiePMMLSessionUtils.commands;
-        assertNotNull(retrieved);
-        assertEquals(3, retrieved.size());
-        Map<String, Object> outputFieldsMap = new HashMap<>();
-        builder.withOutputFieldsMap(outputFieldsMap);
-        assertEquals(5, retrieved.size());
-        assertTrue(retrieved.get(3) instanceof InsertObjectCommand);
-        InsertObjectCommand insertObjectCommand = (InsertObjectCommand) retrieved.get(3);
-        assertEquals("DEFAULT", insertObjectCommand.getEntryPoint());
-        assertNotNull(insertObjectCommand.getObject());
-        assertEquals(outputFieldsMap, insertObjectCommand.getObject());
-        assertTrue(retrieved.get(4) instanceof SetGlobalCommand);
-        SetGlobalCommand setGlobalCommand = (SetGlobalCommand) retrieved.get(4);
-        assertEquals(OUTPUTFIELDS_MAP_IDENTIFIER, setGlobalCommand.getIdentifier());
-        assertEquals(outputFieldsMap, setGlobalCommand.getObject());
-
-    }
 }

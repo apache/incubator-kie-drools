@@ -145,7 +145,8 @@ public class KiePMMLModelFactoryUtils {
      * @param localTransformations
      */
     public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate,
-                                                                       final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
+                                                                       final TransformationDictionary transformationDictionary,
+                                                                       final LocalTransformations localTransformations) {
         final AtomicInteger arityCounter = new AtomicInteger(0);
         final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap =
                 (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
@@ -164,8 +165,11 @@ public class KiePMMLModelFactoryUtils {
         populateMethodDeclarations(toPopulate, defineFunctionsMethodMap.values());
         final ConstructorDeclaration constructorDeclaration =
                 toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
-        populateTransformationsInConstructor(constructorDeclaration, commonDerivedFieldsMethodMap,
+        populateTransformationsInConstructor(constructorDeclaration,
+                                             commonDerivedFieldsMethodMap,
                                              localDerivedFieldsMethodMap);
+        populateFunctionsInConstructor(constructorDeclaration,
+                                             defineFunctionsMethodMap);
     }
 
     /**
@@ -286,5 +290,17 @@ public class KiePMMLModelFactoryUtils {
                                                      final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap, final Map<String, MethodDeclaration> localDerivedFieldsMethodMap) {
         addMapPopulation(commonDerivedFieldsMethodMap, constructorDeclaration.getBody(), "commonTransformationsMap");
         addMapPopulation(localDerivedFieldsMethodMap, constructorDeclaration.getBody(), "localTransformationsMap");
+    }
+
+    /**
+     * Populating the <b>functionsMap</b> <code>Map&lt;String,
+     * Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
+     *
+     * @param constructorDeclaration
+     * @param defineFunctionsMethodMap
+     */
+    static void populateFunctionsInConstructor(final ConstructorDeclaration constructorDeclaration,
+                                               final Map<String, MethodDeclaration> defineFunctionsMethodMap) {
+        addMapPopulation(defineFunctionsMethodMap, constructorDeclaration.getBody(), "functionsMap");
     }
 }

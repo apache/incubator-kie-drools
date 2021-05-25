@@ -26,6 +26,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -45,6 +46,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.getKiePMMLNodeSourcesMap;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
@@ -88,7 +90,8 @@ public class KiePMMLTreeModelFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(model.getNode(), createNodeClassName(), null);
         String fullNodeClassName =  packageName + "." + nodeNamesDTO.nodeClassName;
-        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, packageName);
+        final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary, model.getLocalTransformations());
+        Map<String, String> toReturn = getKiePMMLNodeSourcesMap(nodeNamesDTO,  dataDictionary, derivedFields, packageName);
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullNodeClassName);

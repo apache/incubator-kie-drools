@@ -19,8 +19,8 @@ import java.util.Map;
 
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.tree.model.KiePMMLTreeModel;
 import org.slf4j.Logger;
@@ -54,8 +54,6 @@ public class PMMLTreeModelEvaluator implements PMMLModelEvaluator<KiePMMLTreeMod
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());
-        // TODO fix with common management of outputfields ticket DROOLS-6218
-        //model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
 }
