@@ -53,7 +53,6 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.RuleTerminalNodeLeftTuple;
 import org.drools.core.rule.EntryPointId;
 import org.drools.core.util.HierarchyEncoder;
-import org.drools.serialization.protobuf.SerializationHelper;
 import org.drools.traits.compiler.CommonTraitTest;
 import org.drools.traits.compiler.Person;
 import org.drools.traits.compiler.ReviseTraitTestWithPRAlwaysCategory;
@@ -99,14 +98,14 @@ import org.kie.internal.io.ResourceFactory;
 import org.kie.internal.utils.KieHelper;
 import org.mockito.ArgumentCaptor;
 
-import static org.drools.serialization.protobuf.SerializationHelper.*;
+import static org.drools.serialization.protobuf.SerializationHelper.serializeObject;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
@@ -5389,7 +5388,7 @@ public class TraitTest extends CommonTraitTest {
 
 
 
-    @Test
+    @Test @Ignore
     public void testDonThenReinsert() throws InterruptedException {
         final String s1 = "package test;\n" +
                           "import org.drools.core.factmodel.traits.*; \n" +

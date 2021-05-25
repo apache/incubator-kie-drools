@@ -128,14 +128,6 @@ public class ObjectHashMap extends AbstractHashTable implements Externalizable {
         return null;
     }
 
-    public Entry getBucket(final Object object) {
-        final int hashCode = this.comparator.hashCodeOf( object );
-        final int index = indexOf( hashCode,
-                                   this.table.length );
-
-        return this.table[index];
-    }
-
     @Override
     public int getResizeHashcode(Entry entry) {
         // ObjectEntry always caches after rehash, so use the cached value
