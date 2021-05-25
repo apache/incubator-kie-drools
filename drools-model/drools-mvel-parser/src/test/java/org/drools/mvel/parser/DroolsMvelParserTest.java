@@ -35,9 +35,11 @@ import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.BinaryExpr.Operator;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.apache.commons.lang3.SystemUtils;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -1081,5 +1083,73 @@ public class DroolsMvelParserTest {
 
     private String newLine() {
         return System.lineSeparator();
+    }
+
+    @Test
+    public void testBindVariable() {
+        String expr = "$n : name == \"Mark\"";
+        DrlxExpression drlxExpression = parseExpression( parser, expr );
+        SimpleName bind = drlxExpression.getBind();
+        assertEquals("$n", bind.asString());
+
+        Expression expression = drlxExpression.getExpr();
+        BinaryExpr binaryExpr = ( (BinaryExpr) expression );
+        assertEquals("name", toString(binaryExpr.getLeft()));
+        assertEquals("\"Mark\"", toString(binaryExpr.getRight()));
+        assertEquals(Operator.EQUALS, binaryExpr.getOperator());
+    }
+
+    @Test
+    public void testEnclosedBindVariable() {
+        String expr = "($n : name == \"Mario\")";
+
+        DrlxExpression drlxExpression = parseExpression(parser, expr);
+        Expression enclosedExpr = drlxExpression.getExpr();
+        assertTrue(enclosedExpr instanceof EnclosedExpr);
+        Expression inner = ((EnclosedExpr) enclosedExpr).getInner();
+        assertTrue(inner instanceof DrlxExpression);
+        DrlxExpression innerDrlxExpression = (DrlxExpression) inner;
+
+        SimpleName bind = innerDrlxExpression.getBind();
+        assertEquals("$n", bind.asString());
+
+        Expression expression = innerDrlxExpression.getExpr();
+        BinaryExpr binaryExpr = ((BinaryExpr) expression);
+        assertEquals("name", toString(binaryExpr.getLeft()));
+        assertEquals("\"Mario\"", toString(binaryExpr.getRight()));
+        assertEquals(Operator.EQUALS, binaryExpr.getOperator());
+    }
+
+    @Test
+    public void testComplexEnclosedBindVariable() {
+        String expr = "($n : name == \"Mario\") && (age > 20)";
+
+        DrlxExpression drlxExpression = parseExpression(parser, expr);
+        Expression bExpr = drlxExpression.getExpr();
+        assertTrue(bExpr instanceof BinaryExpr);
+
+        Node left = ((BinaryExpr) bExpr).getLeft();
+        assertTrue(left instanceof EnclosedExpr);
+        Expression inner = ((EnclosedExpr) left).getInner();
+        assertTrue(inner instanceof DrlxExpression);
+        DrlxExpression innerDrlxExpression = (DrlxExpression) inner;
+
+        SimpleName bind = innerDrlxExpression.getBind();
+        assertEquals("$n", bind.asString());
+
+        Expression expression = innerDrlxExpression.getExpr();
+        BinaryExpr binaryExpr = ((BinaryExpr) expression);
+        assertEquals("name", toString(binaryExpr.getLeft()));
+        assertEquals("\"Mario\"", toString(binaryExpr.getRight()));
+        assertEquals(Operator.EQUALS, binaryExpr.getOperator());
+
+        Node right = ((BinaryExpr) bExpr).getRight();
+        assertTrue(right instanceof EnclosedExpr);
+        Expression expression2 = ((EnclosedExpr) right).getInner();
+
+        BinaryExpr binaryExpr2 = ((BinaryExpr) expression2);
+        assertEquals("age", toString(binaryExpr2.getLeft()));
+        assertEquals("20", toString(binaryExpr2.getRight()));
+        assertEquals(Operator.GREATER, binaryExpr2.getOperator());
     }
 }

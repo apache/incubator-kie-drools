@@ -109,7 +109,7 @@ public abstract class AbstractExpressionBuilder {
     public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult);
 
     protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined()) {
+        if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined() && !drlxParseResult.isPredicate()) {
             return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
         } else {
             final TypedExpression left = drlxParseResult.getLeft();
