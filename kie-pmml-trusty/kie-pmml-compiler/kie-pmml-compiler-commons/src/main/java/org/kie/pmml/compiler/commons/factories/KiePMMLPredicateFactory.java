@@ -46,11 +46,11 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.True;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
@@ -67,7 +67,6 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -90,6 +89,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDataType;
 
 public class KiePMMLPredicateFactory {
 
@@ -174,20 +174,19 @@ public class KiePMMLPredicateFactory {
 
     public static BlockStmt getPredicateBody(final Predicate predicate,
                                              final DataDictionary dataDictionary,
-                                             final TransformationDictionary transformationDictionary,
+                                             final List<DerivedField> derivedFields,
                                              final List<MethodDeclaration> compoundPredicateMethods,
                                              final String rootNodeClassName,
                                              final String nodeClassName,
                                              final AtomicInteger counter) {
         logger.trace("getPredicateBody {}", predicate);
         if (predicate instanceof SimplePredicate) {
-            String fieldName = ((SimplePredicate) predicate).getField().getValue();
-            final DataType dataType = ModelUtils.getDataType(dataDictionary, transformationDictionary, fieldName);
-            return getSimplePredicateBody((SimplePredicate) predicate, dataType);
+            final DataType dataType = getDataType(derivedFields, dataDictionary, ((SimplePredicate) predicate).getField().getValue());
+           return getSimplePredicateBody((SimplePredicate) predicate, dataType);
         } else if (predicate instanceof SimpleSetPredicate) {
             return getSimpleSetPredicateBody((SimpleSetPredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
-            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, transformationDictionary, compoundPredicateMethods,
+            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, derivedFields, compoundPredicateMethods,
                                             rootNodeClassName,
                                             nodeClassName,
                                             counter);

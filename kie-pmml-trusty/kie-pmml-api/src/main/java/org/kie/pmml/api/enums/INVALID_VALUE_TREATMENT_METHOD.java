@@ -25,13 +25,10 @@ import org.kie.pmml.api.exceptions.KieEnumException;
  */
 public enum INVALID_VALUE_TREATMENT_METHOD {
 
-    ASSOCIATION_RULES("associationRules"),
-    SEQUENCES("sequences"),
-    CLASSIFICATION("classification"),
-    REGRESSION("regression"),
-    CLUSTERING("clustering"),
-    TIME_SERIES("timeSeries"),
-    MIXED("mixed");
+    RETURN_INVALID("returnInvalid"),
+    AS_IS("asIs"),
+    AS_MISSING("asMissing"),
+    AS_VALUE("asValue");
 
     private String name;
 
@@ -40,7 +37,7 @@ public enum INVALID_VALUE_TREATMENT_METHOD {
     }
 
     public static INVALID_VALUE_TREATMENT_METHOD byName(String name) {
-        return Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+        return Arrays.stream(INVALID_VALUE_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find INVALID_VALUE_TREATMENT_METHOD with name: " + name));
     }
 
     public String getName() {

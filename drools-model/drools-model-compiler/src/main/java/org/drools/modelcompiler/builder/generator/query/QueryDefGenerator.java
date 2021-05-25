@@ -28,10 +28,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.TypeParameter;
+import org.drools.model.view.QueryCallViewItem;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class QueryDefGenerator extends Generator {
 
@@ -79,7 +80,7 @@ public class QueryDefGenerator extends Generator {
 
     private void callMethod(ClassOrInterfaceDeclaration clazz) {
         MethodDeclaration method = clazz.addMethod("call", Modifier.Keyword.DEFAULT);
-        method.setType(parseClassOrInterfaceType("QueryCallViewItem"));
+        method.setType(toClassOrInterfaceType(QueryCallViewItem.class));
 
         BlockStmt stmts = new BlockStmt();
         NodeList<Expression> arguments = nodeList();
@@ -101,7 +102,7 @@ public class QueryDefGenerator extends Generator {
 
 
     private void callMethodInterface(ClassOrInterfaceDeclaration clazz) {
-        MethodDeclaration method = new MethodDeclaration(nodeList(), parseClassOrInterfaceType("QueryCallViewItem"), "call");
+        MethodDeclaration method = new MethodDeclaration(nodeList(), toClassOrInterfaceType(QueryCallViewItem.class), "call");
         method.addParameter("boolean", "open");
         method.setBody(null);
 

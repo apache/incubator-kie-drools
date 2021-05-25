@@ -33,18 +33,20 @@ public class BUILTIN_FUNCTIONSTest {
 
     static {
         supportedBuiltinFunctions = new ArrayList<>();
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.AVG);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LOWERCASE);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MAX);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MEDIAN);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MIN);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MINUS);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MULTI);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DIVISION);
         supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.PLUS);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.PRODUCT);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SUM);
+        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.UPPERCASE);
 
         unsupportedBuiltinFunctions = new ArrayList<>();
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MINUS);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MULTI);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DIVISION);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MIN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MAX);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SUM);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.AVG);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MEDIAN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.PRODUCT);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LOG10);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LN);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SQRT);
@@ -72,8 +74,6 @@ public class BUILTIN_FUNCTIONSTest {
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_IN);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_NOT_IN);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.UPPERCASE);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LOWERCASE);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.STRING_LENGTH);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SUBSTRING);
         unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.TRIM_BLANKS);
@@ -108,6 +108,20 @@ public class BUILTIN_FUNCTIONSTest {
     }
 
     @Test
+    public void getSupportedValueEmptyInput() {
+        final Object[] input = {};
+        supportedBuiltinFunctions.forEach(builtinFunction -> {
+            try {
+                builtinFunction.getValue(input);
+                fail("Expecting IllegalArgumentException");
+            } catch (Exception e) {
+                assertTrue(e instanceof IllegalArgumentException);
+            }
+        });
+
+    }
+
+    @Test
     public void getUnsupportedValue() {
         final Object[] input = {35, 12};
         unsupportedBuiltinFunctions.forEach(builtinFunction -> {
@@ -119,6 +133,146 @@ public class BUILTIN_FUNCTIONSTest {
             }
         });
 
+    }
+
+    @Test
+    public void getAvgValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.AVG.getValue(input1);
+        assertEquals(103.8, retrieved);
+        Object[] input2 = {35, 12, -347, 2, 123};
+        retrieved = BUILTIN_FUNCTIONS.AVG.getValue(input2);
+        assertEquals(-35.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getAvgValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.AVG.getValue(input);
+    }
+
+    @Test
+    public void getDivisionValueCorrectInput() {
+        final Object[] input = {35, 5};
+        Object retrieved = BUILTIN_FUNCTIONS.DIVISION.getValue(input);
+        assertEquals(7.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getDivisionValueWrongSizeInput() {
+        final Object[] input = {35};
+        BUILTIN_FUNCTIONS.DIVISION.getValue(input);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getDivisionValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.DIVISION.getValue(input);
+    }
+
+    @Test
+    public void getLowercaseValueCorrectInput() {
+        final Object[] input = {"AwdC"};
+        Object retrieved = BUILTIN_FUNCTIONS.LOWERCASE.getValue(input);
+        assertEquals("awdc", retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLowercaseValueWrongSizeInput() {
+        final Object[] input = {"AwdC", "AwdB"};
+        BUILTIN_FUNCTIONS.LOWERCASE.getValue(input);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLowercaseValueWrongTypeInput() {
+        final Object[] input = {34};
+        BUILTIN_FUNCTIONS.LOWERCASE.getValue(input);
+    }
+
+    @Test
+    public void getMaxValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.MAX.getValue(input1);
+        assertEquals(347.0, retrieved);
+        Object[] input2 = {35, 12, -347, 2, 123};
+        retrieved = BUILTIN_FUNCTIONS.MAX.getValue(input2);
+        assertEquals(123.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMaxValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.MAX.getValue(input);
+    }
+
+    @Test
+    public void getMedianValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.MEDIAN.getValue(input1);
+        assertEquals(35.0, retrieved);
+        Object[] input2 = {35, 12, 2, 123};
+        retrieved = BUILTIN_FUNCTIONS.MEDIAN.getValue(input2);
+        assertEquals(23.5, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMedianValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.MEDIAN.getValue(input);
+    }
+
+    @Test
+    public void getMinValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.MIN.getValue(input1);
+        assertEquals(2.0, retrieved);
+        Object[] input2 = {35, 12, -347, 2, 123};
+        retrieved = BUILTIN_FUNCTIONS.MIN.getValue(input2);
+        assertEquals(-347.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMinValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.MIN.getValue(input);
+    }
+
+    @Test
+    public void getMinusValueCorrectInput() {
+        final Object[] input = {35, 12};
+        Object retrieved = BUILTIN_FUNCTIONS.MINUS.getValue(input);
+        assertEquals(23.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMinusValueWrongSizeInput() {
+        final Object[] input = {35};
+        BUILTIN_FUNCTIONS.MINUS.getValue(input);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMinusValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.MINUS.getValue(input);
+    }
+
+    @Test
+    public void getMultiValueCorrectInput() {
+        final Object[] input = {7, 5};
+        Object retrieved = BUILTIN_FUNCTIONS.MULTI.getValue(input);
+        assertEquals(35.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMultiValueWrongSizeInput() {
+        final Object[] input = {35};
+        BUILTIN_FUNCTIONS.MULTI.getValue(input);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getMultiValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.MULTI.getValue(input);
     }
 
     @Test
@@ -138,5 +292,56 @@ public class BUILTIN_FUNCTIONSTest {
     public void getPlusValueWrongTypeInput() {
         final Object[] input = {"A", 34};
         BUILTIN_FUNCTIONS.PLUS.getValue(input);
+    }
+
+    @Test
+    public void getProductValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.PRODUCT.getValue(input1);
+        assertEquals(35852040.0, retrieved);
+        Object[] input2 = {35, 12, -2, 123};
+        retrieved = BUILTIN_FUNCTIONS.PRODUCT.getValue(input2);
+        assertEquals(-103320.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getProductValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.PRODUCT.getValue(input);
+    }
+
+    @Test
+    public void getSumValueCorrectInput() {
+        Object[] input1 = {35, 12, 347, 2, 123};
+        Object retrieved = BUILTIN_FUNCTIONS.SUM.getValue(input1);
+        assertEquals(519.0, retrieved);
+        Object[] input2 = {35, 12, -347, 2, 123};
+        retrieved = BUILTIN_FUNCTIONS.SUM.getValue(input2);
+        assertEquals(-175.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getSumValueWrongTypeInput() {
+        final Object[] input = {"A", 34};
+        BUILTIN_FUNCTIONS.SUM.getValue(input);
+    }
+
+    @Test
+    public void getUppercaseValueCorrectInput() {
+        final Object[] input = {"AwdC"};
+        Object retrieved = BUILTIN_FUNCTIONS.UPPERCASE.getValue(input);
+        assertEquals("AWDC", retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUppercaseValueWrongSizeInput() {
+        final Object[] input = {"AwdC", "AwdB"};
+        BUILTIN_FUNCTIONS.UPPERCASE.getValue(input);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getUppercaseValueWrongTypeInput() {
+        final Object[] input = {34};
+        BUILTIN_FUNCTIONS.UPPERCASE.getValue(input);
     }
 }

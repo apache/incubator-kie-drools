@@ -38,9 +38,10 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String MODEL_NAME = "SampleMineTreeModelWithTransformations";
     private static final String TARGET_FIELD = "decision";
     private static final String OUT_DER_TEMPERATURE = "out_der_temperature";
-    private static final String OUT_DER_HUMIDITY = "out_der_humidity";
+    private static final String OUT_DER_FUN_HUMIDITY_APPLY = "out_der_fun_humidity_apply";
     private static final String OUT_DER_CONSTANT = "out_der_constant";
     private static final String CONSTANT = "constant";
+    private static final String WEATHERDECISION = "weatherdecision";
 
 
     private static PMMLRuntime pmmlRuntime;
@@ -75,12 +76,11 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
-
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
-        // TODO {gcardosi} TO BE FIXED WITH DROOLS-5490
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_HUMIDITY)).isEqualTo(humidity);
-//        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_TEMPERATURE)).isEqualTo(temperature);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_HUMIDITY_APPLY)).isEqualTo(humidity);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(WEATHERDECISION)).isEqualTo(expectedResult);
     }
 }

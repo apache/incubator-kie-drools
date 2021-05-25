@@ -29,7 +29,6 @@ import org.junit.runners.Parameterized;
 import org.kie.pmml.api.iinterfaces.SerializableFunction;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class KiePMMLRegressionTableTest {
@@ -79,9 +78,6 @@ public class KiePMMLRegressionTableTest {
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
         Object retrieved = regressionTable.evaluateRegression(input);
         assertEquals(expectedResult, retrieved);
-        final Map<String, Object> outputFieldsMap = regressionTable.getOutputFieldsMap();
-        assertTrue(outputFieldsMap.containsKey(TARGET_FIELD));
-        assertEquals(expectedResult, outputFieldsMap.get(TARGET_FIELD));
     }
 
     private KiePMMLRegressionTable getKiePMMLRegressionTable() {
@@ -94,11 +90,6 @@ public class KiePMMLRegressionTableTest {
             @Override
             protected void updateResult(AtomicReference<Double> toUpdate) {
 
-            }
-
-            @Override
-            protected void populateOutputFieldsMapWithResult(Object result) {
-                outputFieldsMap.put(targetField, result);
             }
         };
         toReturn.targetField = TARGET_FIELD;

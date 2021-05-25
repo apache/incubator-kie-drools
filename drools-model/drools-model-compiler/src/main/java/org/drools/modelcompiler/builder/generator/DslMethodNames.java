@@ -71,7 +71,6 @@ public class DslMethodNames {
     public static final String EXPR_END_AND_CALL = "endAnd";
 
     // indexing
-    public static final String INDEXED_BY_CALL = "indexedBy";
     public static final String ALPHA_INDEXED_BY_CALL = "D.alphaIndexedBy";
     public static final String BETA_INDEXED_BY_CALL = "D.betaIndexedBy";
 

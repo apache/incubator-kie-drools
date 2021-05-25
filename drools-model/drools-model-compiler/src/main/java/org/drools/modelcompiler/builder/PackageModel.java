@@ -28,9 +28,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.TreeMap;
+import java.util.concurrent.ConcurrentHashMap;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
@@ -45,6 +47,7 @@ import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
@@ -74,19 +77,17 @@ import org.drools.modelcompiler.builder.generator.QueryGenerator;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.util.lambdareplace.CreatedClass;
-import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.rule.AccumulateFunction;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
-
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.Modifier.finalModifier;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.Modifier.staticModifier;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -112,49 +113,49 @@ public class PackageModel {
 
     private final String rulesFileName;
     
-    private Set<String> imports = new HashSet<>();
-    private Set<String> staticImports = new HashSet<>();
-    private Set<String> entryPoints = new HashSet<>();
+    private final Set<String> imports = new HashSet<>();
+    private final Set<String> staticImports = new HashSet<>();
+    private final Set<String> entryPoints = new HashSet<>();
     private Map<String, Method> staticMethods;
 
-    private Map<String, Class<?>> globals = new HashMap<>();
+    private final Map<String, Class<?>> globals = new HashMap<>();
 
-    private Map<String, List<MethodDeclaration>> ruleMethods = new HashMap<>();
+    private final Map<String, Map<Integer, MethodDeclaration>> ruleMethods = new ConcurrentHashMap<>();
 
-    private Set<String> queryNames = new HashSet<>();
-    private Map<String, MethodDeclaration> queryMethods = new HashMap<>();
-    private Map<String, Set<QueryModel>> queriesByRuleUnit = new HashMap<>();
+    private final Set<String> queryNames = new HashSet<>();
+    private final Map<String, MethodDeclaration> queryMethods = new ConcurrentHashMap<>();
+    private final Map<String, Set<QueryModel>> queriesByRuleUnit = new ConcurrentHashMap<>();
 
-    private Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
+    private final Map<String, QueryGenerator.QueryDefWithType> queryDefWithType = new HashMap<>();
 
-    private Map<String, MethodCallExpr> windowReferences = new HashMap<>();
+    private final Map<String, MethodCallExpr> windowReferences = new HashMap<>();
 
-    private Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
+    private final Map<String, List<QueryParameter>> queryVariables = new HashMap<>();
 
-    private List<MethodDeclaration> functions = new ArrayList<>();
+    private final List<MethodDeclaration> functions = new ArrayList<>();
 
-    private List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
-    private List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
+    private final List<TypeDeclaration> generatedPOJOs = new ArrayList<>();
+    private final List<GeneratedClassWithPackage> generatedAccumulateClasses = new ArrayList<>();
 
-    private Set<Class<?>> domainClasses = new HashSet<>();
-    private Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
+    private final Set<Class<?>> domainClasses = new HashSet<>();
+    private final Map<Class<?>, ClassDefinition> classDefinitionsMap = new HashMap<>();
 
-    private List<Expression> typeMetaDataExpressions = new ArrayList<>();
+    private final List<Expression> typeMetaDataExpressions = new ArrayList<>();
 
-    private DRLIdGenerator exprIdGenerator;
+    private final DRLIdGenerator exprIdGenerator;
 
-    private KnowledgeBuilderConfigurationImpl configuration;
+    private final KnowledgeBuilderConfigurationImpl configuration;
     private Map<String, AccumulateFunction> accumulateFunctions;
     private InternalKnowledgePackage pkg;
 
     private final String pkgUUID;
-    private Set<RuleUnitDescription> ruleUnits = new HashSet<>();
+    private final Set<RuleUnitDescription> ruleUnits = Collections.synchronizedSet( new HashSet<>() );
 
-    private Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new HashMap<>();
+    private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes = new ConcurrentHashMap<>();
+    private final Map<String, PredicateInformation> allConstraintsMap = new ConcurrentHashMap<>();
+    private final Map<String, TypedExpression> dateFields = new ConcurrentHashMap<>();
 
-    private Map<String, PredicateInformation> allConstraintsMap = new HashMap<>();
-
-    private Map<String, TypedExpression> dateFields = new HashMap<>();
+    private final Map<String, CreatedClass> lambdaClasses = new ConcurrentHashMap<>();
 
     private boolean oneClassPerRule;
 
@@ -173,6 +174,10 @@ public class PackageModel {
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
+    }
+
+    public Map<String, CreatedClass> getLambdaClasses() {
+        return lambdaClasses;
     }
 
     public boolean isOneClassPerRule() {
@@ -253,7 +258,7 @@ public class PackageModel {
 
     private Map<String, Method> getStaticMethods() {
         if (staticMethods == null) {
-            staticMethods = new HashMap<>();
+            Map<String, Method> methodsMap = new HashMap<>();
             for (String i : staticImports) {
                 if (i.endsWith( ".*" )) {
                     String className = i.substring( 0, i.length()-2 );
@@ -261,7 +266,7 @@ public class PackageModel {
                         Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
                         for (Method m : importedClass.getMethods()) {
                             if (java.lang.reflect.Modifier.isStatic(m.getModifiers())) {
-                                staticMethods.put(m.getName(), m);
+                                methodsMap.put(m.getName(), m);
                             }
                         }
                     } catch (ClassNotFoundException e1) {
@@ -275,7 +280,7 @@ public class PackageModel {
                         Class<?> importedClass = pkg.getTypeResolver().resolveType( className );
                         for (Method m : importedClass.getMethods()) {
                             if (java.lang.reflect.Modifier.isStatic(m.getModifiers()) && m.getName().equals( methodName )) {
-                                staticMethods.put(methodName, m);
+                                methodsMap.put(methodName, m);
                                 break;
                             }
                         }
@@ -284,6 +289,7 @@ public class PackageModel {
                     }
                 }
             }
+            staticMethods = methodsMap;
         }
         return staticMethods;
     }
@@ -304,12 +310,12 @@ public class PackageModel {
         typeMetaDataExpressions.add(typeMetaDataExpression);
     }
 
-    public void putRuleMethod(String unitName, MethodDeclaration ruleMethod) {
-        ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>()).add( ruleMethod );
+    public void putRuleMethod(String unitName, MethodDeclaration ruleMethod, int ruleIndex) {
+        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() )).put( ruleIndex, ruleMethod );
     }
 
     public void putRuleUnit(String unitName) {
-        ruleMethods.computeIfAbsent(unitName, k -> new ArrayList<>());
+        ruleMethods.computeIfAbsent(unitName, k -> Collections.synchronizedMap( new TreeMap<>() ));
     }
 
     public void putQueryMethod(MethodDeclaration queryMethod) {
@@ -365,7 +371,7 @@ public class PackageModel {
         return windowReferences;
     }
 
-    final static Type WINDOW_REFERENCE_TYPE = StaticJavaParser.parseType(WindowReference.class.getCanonicalName());
+    final static Type WINDOW_REFERENCE_TYPE = toClassOrInterfaceType(WindowReference.class);
 
     public List<MethodDeclaration> getFunctions() {
         return functions;
@@ -398,7 +404,7 @@ public class PackageModel {
 
     public void addQueryInRuleUnit(RuleUnitDescription ruleUnitDescription, QueryModel query) {
         addRuleUnit(ruleUnitDescription);
-        queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> new HashSet<>() ).add(query);
+        queriesByRuleUnit.computeIfAbsent( ruleUnitDescription.getSimpleName(), k -> Collections.synchronizedSet( new HashSet<>() ) ).add(query);
     }
 
     public Collection<QueryModel> getQueriesInRuleUnit(Class<?> ruleUnitType) {
@@ -617,7 +623,7 @@ public class PackageModel {
 
         results.withModel( name + "." + ruleUnitName, name + "." + rulesClass.getNameAsString() );
 
-        List<MethodDeclaration> ruleMethodsInUnit = ruleMethods.get(ruleUnitName);
+        Collection<MethodDeclaration> ruleMethodsInUnit = ofNullable(ruleMethods.get(ruleUnitName)).map(Map::values).orElse(null);
         if (ruleMethodsInUnit == null || ruleMethodsInUnit.isEmpty()) {
             BodyDeclaration<?> getQueriesMethod = parseBodyDeclaration(
                     "    @Override\n" +
@@ -688,7 +694,7 @@ public class PackageModel {
                 int index = count / RULES_DECLARATION_PER_CLASS;
                 rules = buildRulesField(results, index);
 
-                ObjectCreationExpr newObject = new ObjectCreationExpr(null, parseClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
+                ObjectCreationExpr newObject = new ObjectCreationExpr(null, toClassOrInterfaceType(rulesFileName + "Rules" + index), NodeList.nodeList());
 
                 if (parallelRulesLoad) {
                     parallelRulesGetter.addArgument( newObject );
@@ -760,9 +766,9 @@ public class PackageModel {
         CompilationUnit cu = new CompilationUnit();
         results.withClass(cu);
         cu.setPackageDeclaration(name);
-        cu.addImport(Arrays.class.getCanonicalName());
-        cu.addImport(List.class.getCanonicalName());
-        cu.addImport(Rule.class.getCanonicalName());
+        cu.addImport(new ImportDeclaration(new Name(Arrays.class.getCanonicalName()), false, false));
+        cu.addImport(new ImportDeclaration(new Name(List.class.getCanonicalName()), false, false));
+        cu.addImport(new ImportDeclaration(new Name(Rule.class.getCanonicalName()), false, false));
         String currentRulesMethodClassName = rulesFileName + "Rules" + index;
         ClassOrInterfaceDeclaration rulesClass = cu.addClass(currentRulesMethodClassName);
         rulesClass.addImplementedType(RulesSupplier.class);
@@ -771,7 +777,7 @@ public class PackageModel {
 
     private MethodCallExpr buildRulesField( ClassOrInterfaceDeclaration rulesClass ) {
         MethodCallExpr rulesInit = new MethodCallExpr( null, "java.util.Arrays.asList" );
-        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(parseClassOrInterfaceType(Rule.class.getCanonicalName())));
+        ClassOrInterfaceType rulesType = new ClassOrInterfaceType(null, new SimpleName("java.util.List"), new NodeList<Type>(toClassOrInterfaceType(Rule.class)));
         MethodDeclaration rulesGetter = new MethodDeclaration( NodeList.nodeList( publicModifier()), rulesType, "getRulesList" );
         rulesGetter.createBody().addStatement( new ReturnStmt(rulesInit ) );
         rulesClass.addMember( rulesGetter );
@@ -780,18 +786,18 @@ public class PackageModel {
 
     private void manageImportForCompilationUnit(CompilationUnit cu) {
         // fixed part
-        cu.addImport("org.drools.modelcompiler.dsl.pattern.D");
-        cu.addImport("org.drools.model.Index.ConstraintType");
+        cu.addImport(new ImportDeclaration(new Name("org.drools.modelcompiler.dsl.pattern.D"), false, false));
+        cu.addImport(new ImportDeclaration(new Name("org.drools.model.Index.ConstraintType"), false, false));
 
         // imports from DRL:
         for ( String i : imports ) {
             if ( i.equals(name+".*") ) {
                 continue; // skip same-package star import.
             }
-            cu.addImport(i);
+            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport( i, true, false );
+            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
         }
     }
 
@@ -810,7 +816,7 @@ public class PackageModel {
         field.getVariables().get(0).setInitializer(declarationOfCall);
     }
 
-    public void addAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
+    public void setAccumulateFunctions(Map<String, AccumulateFunction> accumulateFunctions) {
         this.accumulateFunctions = accumulateFunctions;
     }
 
@@ -820,8 +826,11 @@ public class PackageModel {
 
     public boolean registerDomainClass(Class<?> domainClass) {
         if (!domainClass.isPrimitive() && !domainClass.isArray()) {
-            domainClasses.add( domainClass );
-            classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
+            synchronized (domainClasses) {
+                if (domainClasses.add(domainClass)) {
+                    classDefinitionsMap.put(domainClass, createClassDefinition(domainClass));
+                }
+            }
             return true;
         }
         return false;
@@ -885,7 +894,7 @@ public class PackageModel {
     }
 
     public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
-        return Optional.ofNullable(allConstraintsMap.get(exprId));
+        return ofNullable(allConstraintsMap.get(exprId));
     }
 
     public Map<String, PredicateInformation> getAllConstraintsMap() {

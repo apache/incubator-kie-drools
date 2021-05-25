@@ -35,9 +35,6 @@ public class MethodUtils {
     }
 
     private static Method getBestCandidate(Class clazz, Class[] argsType, String methodName, Method[] methods) {
-        if (methods.length == 0) {
-            return null;
-        }
         final Method bestCandidate = getBestCandidateMethod(methodName, argsType, methods, null);
         if (bestCandidate != null) {
             return bestCandidate;

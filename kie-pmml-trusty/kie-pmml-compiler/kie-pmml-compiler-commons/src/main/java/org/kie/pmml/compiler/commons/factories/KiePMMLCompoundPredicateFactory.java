@@ -37,8 +37,8 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Predicate;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.slf4j.Logger;
@@ -66,14 +66,14 @@ public class KiePMMLCompoundPredicateFactory {
 
     public static BlockStmt getCompoundPredicateBody(final CompoundPredicate predicate,
                                                      final DataDictionary dataDictionary,
-                                                     final TransformationDictionary transformationDictionary,
+                                                     final List<DerivedField> derivedFields,
                                                      final List<MethodDeclaration> toPopulate,
                                                      final String rootNodeClassName,
                                                      final String nodeClassName,
                                                      final AtomicInteger counter) {
         final List<String> methodNames = new ArrayList<>();
         for (Predicate nestedPredicate : predicate.getPredicates()) {
-            final BlockStmt nestedPredicateBody = KiePMMLPredicateFactory.getPredicateBody(nestedPredicate, dataDictionary, transformationDictionary, toPopulate, rootNodeClassName, nodeClassName, counter);
+            final BlockStmt nestedPredicateBody = KiePMMLPredicateFactory.getPredicateBody(nestedPredicate, dataDictionary, derivedFields, toPopulate, rootNodeClassName, nodeClassName, counter);
             final MethodDeclaration toAdd = new MethodDeclaration();
             toAdd.setModifiers(Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
             toAdd.setType("boolean");

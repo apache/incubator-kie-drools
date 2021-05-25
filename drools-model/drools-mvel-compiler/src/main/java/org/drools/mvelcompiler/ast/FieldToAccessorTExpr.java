@@ -17,6 +17,7 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
@@ -24,8 +25,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.drools.core.util.MethodUtils;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
@@ -45,7 +48,7 @@ public class FieldToAccessorTExpr implements TypedExpression {
     }
 
     private Type parseType(Method accessor) {
-        if(accessor.getParameterTypes().length == 1) {
+        if (accessor.getParameterTypes().length == 1) {
             return accessor.getParameterTypes()[0]; // setter
         } else {
             return accessor.getGenericReturnType(); // getter
@@ -64,10 +67,33 @@ public class FieldToAccessorTExpr implements TypedExpression {
     @Override
     public Node toJavaExpression() {
         List<Expression> expressionArguments = this.arguments.stream()
-                .map(a -> (Expression) (a.toJavaExpression()))
+                .map(this::convertToStringIfNeeded)
                 .collect(Collectors.toList());
 
         return new MethodCallExpr((Expression) scope.toJavaExpression(), accessor.getName(), nodeList(expressionArguments));
+    }
+
+    private Expression convertToStringIfNeeded(TypedExpression argumentExpression) {
+        boolean argumentCanBeToStringed = argumentExpression.getType().filter(this::typeCanBeToStringed).isPresent();
+        boolean fieldIsString = String.class.equals(this.type);
+        if (fieldIsString && argumentCanBeToStringed) {
+            return new MethodCallExpr(new EnclosedExpr((Expression) argumentExpression.toJavaExpression()), "toString");
+        } else {
+            return (Expression) argumentExpression.toJavaExpression();
+        }
+    }
+
+    private Boolean typeCanBeToStringed(Type t) {
+        if(t instanceof ParameterizedType) {
+            return false;
+        }
+
+        Class<?> clazz = (Class<?>) t;
+        boolean isNotPrimitive = !clazz.isPrimitive();
+        boolean isNotString = !t.equals(String.class); // no need to toString a String
+        boolean isNotNull = !t.equals(MethodUtils.NullType.class);
+
+        return isNotString && isNotPrimitive && isNotNull;
     }
 
     @Override

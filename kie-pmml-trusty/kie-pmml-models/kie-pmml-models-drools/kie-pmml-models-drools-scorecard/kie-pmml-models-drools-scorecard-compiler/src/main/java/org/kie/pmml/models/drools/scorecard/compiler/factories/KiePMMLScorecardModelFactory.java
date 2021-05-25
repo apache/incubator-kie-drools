@@ -21,15 +21,12 @@ import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.SimpleName;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
+import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
@@ -37,12 +34,9 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
 
 /**
@@ -83,9 +77,10 @@ public class KiePMMLScorecardModelFactory {
         String className = getSanitizedClassName(model.getModelName());
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        setConstructor(model,  dataDictionary, constructorDeclaration, modelTemplate.getName());
-        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, model.getLocalTransformations());
+        setConstructor(model,
+                       dataDictionary,
+                       transformationDictionary,
+                       modelTemplate);
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
@@ -112,10 +107,12 @@ public class KiePMMLScorecardModelFactory {
 
     static void setConstructor(final Scorecard scorecard,
                                final DataDictionary dataDictionary,
-                               final ConstructorDeclaration constructorDeclaration,
-                               final SimpleName modelName) {
-        final List<org.kie.pmml.api.models.MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(scorecard.getMiningSchema(), dataDictionary);
-        final List<org.kie.pmml.api.models.OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(scorecard.getOutput(), dataDictionary);
-        setKiePMMLModelConstructor(modelName.asString(), constructorDeclaration, scorecard.getModelName(), miningFields, outputFields);
+                               final TransformationDictionary transformationDictionary,
+                               final ClassOrInterfaceDeclaration modelTemplate) {
+        final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
+                                                                                          dataDictionary,
+                                                                                          transformationDictionary,
+                                                                                          scorecard);
+        builder.build();
     }
 }

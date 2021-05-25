@@ -17,8 +17,6 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
-import java.util.List;
-
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
@@ -29,16 +27,16 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class MaterializedLambdaExtractor extends MaterializedLambda {
 
     private final static String CLASS_NAME_PREFIX = "LambdaExtractor";
-    private String returnType;
+    private final Type returnType;
 
-    MaterializedLambdaExtractor(String packageName, String ruleClassName, String returnType) {
+    MaterializedLambdaExtractor(String packageName, String ruleClassName, Type returnType) {
         super(packageName, ruleClassName);
         this.returnType = returnType;
     }
@@ -46,8 +44,8 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     @Override
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("apply", Modifier.Keyword.PUBLIC);
-        methodDeclaration.addAnnotation("Override");
-        methodDeclaration.setType(returnTypeJP());
+        methodDeclaration.addAnnotation(createSimpleAnnotation("Override"));
+        methodDeclaration.setType(returnType);
 
         setMethodParameter(methodDeclaration);
 
@@ -61,18 +59,13 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
         }
     }
 
-    private Type returnTypeJP() {
-        return parseType(returnType);
-    }
-
     @Override
     protected NodeList<ClassOrInterfaceType> createImplementedTypes() {
         ClassOrInterfaceType functionType = functionType();
 
-        List<Type> typeArguments = lambdaParametersToType();
-        NodeList<Type> implementedGenericType = nodeList(typeArguments);
-        implementedGenericType.add(returnTypeJP());
-        functionType.setTypeArguments(implementedGenericType);
+        NodeList<Type> typeArguments = lambdaParametersToTypeArguments();
+        typeArguments.add(returnType);
+        functionType.setTypeArguments(typeArguments);
         return nodeList(functionType, lambdaExtractorType());
     }
 
@@ -84,6 +77,6 @@ public class MaterializedLambdaExtractor extends MaterializedLambda {
     @Override
     protected ClassOrInterfaceType functionType() {
         String type = "Function" + lambdaParameters.size();
-        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+        return toClassOrInterfaceType("org.drools.model.functions." + type);
     }
 }

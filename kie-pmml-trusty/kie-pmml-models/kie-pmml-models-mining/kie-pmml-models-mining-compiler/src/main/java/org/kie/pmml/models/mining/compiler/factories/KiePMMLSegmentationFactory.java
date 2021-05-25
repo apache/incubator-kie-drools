@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -57,6 +59,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassNa
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegments;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMapCompiled;
 
 public class KiePMMLSegmentationFactory {
 
@@ -101,6 +104,33 @@ public class KiePMMLSegmentationFactory {
                                                                    segmentation.getSegments(),
                                                                    hasClassloader,
                                                                    nestedModels);
+        return getSegmentationSourcesMapCommon(parentPackageName, segmentation, segmentationName, toReturn);
+    }
+
+    public static Map<String, String> getSegmentationSourcesMapCompiled(final String parentPackageName,
+                                                                final DataDictionary dataDictionary,
+                                                                final TransformationDictionary transformationDictionary,
+                                                                final Segmentation segmentation,
+                                                                final String segmentationName,
+                                                                final HasClassLoader hasClassloader,
+                                                                final List<KiePMMLModel> nestedModels) {
+        logger.debug("getSegmentationSourcesMapCompiled {}", segmentation);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
+        final Map<String, String> toReturn = getSegmentsSourcesMapCompiled(packageName,
+                                                                   dataDictionary,
+                                                                   transformationDictionary,
+                                                                   segmentation.getSegments(),
+                                                                   hasClassloader,
+                                                                   nestedModels);
+        return getSegmentationSourcesMapCommon(parentPackageName, segmentation, segmentationName, toReturn);
+    }
+
+    static Map<String, String> getSegmentationSourcesMapCommon(final String parentPackageName,
+                                                                        final Segmentation segmentation,
+                                                                        final String segmentationName,
+                                                                        final Map<String, String> toReturn) {
+        logger.debug("getSegmentationSourcesMapCommon {}", segmentation);
+        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         String className = getSanitizedClassName(segmentationName);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
                                                                                  KIE_PMML_SEGMENTATION_TEMPLATE_JAVA,
@@ -109,9 +139,14 @@ public class KiePMMLSegmentationFactory {
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration =
                 segmentationTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, segmentationName)));
-        Set<String> segmentsClasses = segmentation.getSegments().stream()
-                .map(segment -> getSanitizedPackageName(packageName + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()))
-                .collect(Collectors.toSet());
+
+        // Avoid stream/map to preserve insertion order and then execution order
+        final List<String> segmentsClasses = new ArrayList<>();
+        if (segmentation.getSegments() != null) {
+            for (Segment segment : segmentation.getSegments()) {
+                segmentsClasses.add(getSanitizedPackageName(packageName + "." + segment.getId()) + "." + getSanitizedClassName(segment.getId()));
+            }
+        }
         if (!toReturn.keySet().containsAll(segmentsClasses)) {
             String missingClasses = String.join(", ", segmentsClasses);
             throw new KiePMMLException("Expected generated class " + missingClasses + " not found");
@@ -129,7 +164,7 @@ public class KiePMMLSegmentationFactory {
                                final String segmentationName,
                                final ConstructorDeclaration constructorDeclaration,
                                final MULTIPLE_MODEL_METHOD multipleModelMethod,
-                               final Set<String> segmentsClasses) {
+                               final List<String> segmentsClasses) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, segmentationName);
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =

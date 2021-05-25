@@ -23,6 +23,7 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
 public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
+    private static final long serialVersionUID = 4576394527423997787L;
     private final String mapMissingTo;
 
     public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {

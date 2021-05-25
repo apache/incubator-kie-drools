@@ -47,6 +47,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE;
@@ -123,6 +127,34 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
+    public void getSegmentSourcesMapCompiled() throws Exception {
+        final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
+        final List<KiePMMLModel> nestedModels = new ArrayList<>();
+        final String modelName = segment.getModel().getModelName();
+        final String sanitizedPackageName = getSanitizedPackageName(PACKAGE_NAME + "."
+                                                                      + segment.getId() + "."
+                                                                      + modelName);
+        final String sanitizedClassName = getSanitizedClassName(modelName);
+        final String expectedGeneratedClass = String.format(PACKAGE_CLASS_TEMPLATE, sanitizedPackageName, sanitizedClassName);
+        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
+        try {
+            hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
+            fail("Expecting class not found: " + expectedGeneratedClass);
+        } catch (Exception e) {
+            assertTrue(e instanceof ClassNotFoundException);
+        }
+        final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMapCompiled(PACKAGE_NAME,
+                                                                                                 DATA_DICTIONARY,
+                                                                                                 TRANSFORMATION_DICTIONARY,
+                                                                                                 segment,
+                                                                                                 hasKnowledgeBuilderMock,
+                                                                                                 nestedModels);
+        commonEvaluateNestedModels(nestedModels);
+        commonEvaluateMap(retrieved, segment);
+        hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
+    }
+
+    @Test
     public void getSegmentSourcesMapHasSourcesWithKiePMMLModelClass() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
         final String regressionModelName = "CategoricalVariablesRegression";
@@ -177,7 +209,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         assertNotNull(toEvaluate);
     }
 
-    private void commonEvaluateNestedModels(final List<KiePMMLModel> toEvaluate ) {
+    private void commonEvaluateNestedModels(final List<KiePMMLModel> toEvaluate) {
         assertFalse(toEvaluate.isEmpty());
         toEvaluate.forEach(kiePMMLModel -> assertTrue(kiePMMLModel instanceof HasSourcesMap));
     }

@@ -18,14 +18,8 @@ package org.drools.modelcompiler.builder;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutionException;
-import java.util.stream.Collectors;
 
-import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -64,62 +58,19 @@ public class PackageSources {
         RuleWriter rules = packageModelWriter.getRules();
         sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
 
-        List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults = new ArrayList<>();
-
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
             sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
-            allReplacedLambdaResults.addAll(ruleSource.getLambdaResults());
         }
 
+        pkgModel.getLambdaClasses()
+                .values()
+                .stream()
+                .map(gc -> new GeneratedFile(gc.getClassNamePath(), logSource(gc.getCompilationUnitAsString())))
+                .forEach(sources.lambdaClasses::add);
 
-        if(pkgModel.getConfiguration().isParallelLambdaExternalization()) {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Using parallel lambda externalization");
-            }
-            parallelWriteLambdaClasses(sources, allReplacedLambdaResults);
-
-        } else {
-            if(logger.isDebugEnabled()) {
-                logger.debug("Using sequential lambda externalization");
-            }
-            sequentialWriteLambdaClasses(sources, allReplacedLambdaResults);
-        }
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
         sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
         return rules;
-    }
-
-    private static void parallelWriteLambdaClasses(PackageSources sources, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults) {
-        try {
-            KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(() -> {
-                Map<String, String> distinctLambdaClasses =
-                        allReplacedLambdaResults
-                        .parallelStream()
-                        .collect(Collectors.toMap(k -> k.getExternalisedLambda().getClassNamePath(),
-                                                  v -> v.getExternalisedLambda().getCompilationUnitAsString(), (a, b) -> a));
-
-                writeLambdaClasses(sources, distinctLambdaClasses);
-            }).get();
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Externalized Lambda Creation Interrupted", e);
-        }
-    }
-
-    private static void sequentialWriteLambdaClasses(PackageSources sources, List<ExecModelLambdaPostProcessor.ReplacedLambdaResult> allReplacedLambdaResults) {
-        Map<String, String> distinctLambdaClasses = new HashMap<>();
-        for (ExecModelLambdaPostProcessor.ReplacedLambdaResult k : (allReplacedLambdaResults)) {
-            distinctLambdaClasses.putIfAbsent(k.getExternalisedLambda().getClassNamePath(), k.getExternalisedLambda().getCompilationUnitAsString());
-        }
-
-        writeLambdaClasses(sources, distinctLambdaClasses);
-    }
-
-    private static void writeLambdaClasses(PackageSources sources, Map<String, String> distinctLambdaClasses) {
-        List<GeneratedFile> generatedFiles = sources.lambdaClasses;
-        for (Map.Entry<String, String> gc : distinctLambdaClasses.entrySet()) {
-            GeneratedFile generatedFile = new GeneratedFile(gc.getKey(), logSource(gc.getValue()));
-            generatedFiles.add(generatedFile);
-        }
     }
 
     public Collection<String> getModelNames() {

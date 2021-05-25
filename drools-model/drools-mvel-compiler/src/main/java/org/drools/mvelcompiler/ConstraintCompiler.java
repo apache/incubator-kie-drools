@@ -41,7 +41,8 @@ public class ConstraintCompiler {
         Expression parsedExpression = MvelParser.parseExpression(mvelExpressionString);
         Node compiled = compileExpression(parsedExpression);
 
-        return new CompiledExpressionResult((Expression) compiled);
+        return new CompiledExpressionResult((Expression) compiled)
+                .setUsedBindings(mvelCompilerContext.getUsedBindings());
     }
 
     // Avoid processing the LHS as it's not present while compiling an expression

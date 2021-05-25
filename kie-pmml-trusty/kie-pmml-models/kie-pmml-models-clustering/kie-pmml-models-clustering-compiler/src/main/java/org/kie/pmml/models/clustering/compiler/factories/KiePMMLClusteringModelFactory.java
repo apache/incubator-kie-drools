@@ -17,7 +17,6 @@ package  org.kie.pmml.models.clustering.compiler.factories;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -39,15 +38,11 @@ import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.dmg.pmml.clustering.MissingValueWeights;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.api.models.MiningField;
-import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
-import org.kie.pmml.compiler.commons.utils.ModelUtils;
 import org.kie.pmml.models.clustering.model.KiePMMLCluster;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringField;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
@@ -63,8 +58,6 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExpr
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.methodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.aggregateFunctionFrom;
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.compareFunctionFrom;
 import static org.kie.pmml.models.clustering.compiler.factories.KiePMMLClusteringConversionUtils.comparisonMeasureKindFrom;
@@ -110,41 +103,45 @@ public class KiePMMLClusteringModelFactory {
         CompilationUnit compilationUnit = JavaParserUtils.getKiePMMLModelCompilationUnit(simpleClassName, packageName, KIE_PMML_CLUSTERING_MODEL_TEMPLATE_JAVA, KIE_PMML_CLUSTERING_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = compilationUnit.getClassByName(simpleClassName)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + simpleClassName));
-
-        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        constructorDeclaration.setName(simpleClassName);
-
-        List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(model.getMiningSchema(), dataDictionary);
-        List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(model.getOutput(), dataDictionary);
-        setKiePMMLModelConstructor(simpleClassName, constructorDeclaration, model.getModelName(), miningFields, outputFields);
-
-        BlockStmt body = constructorDeclaration.getBody();
-        body.addStatement(assignExprFrom("pmmlMODEL", PMML_MODEL.CLUSTERING_MODEL));
-        body.addStatement(assignExprFrom("miningFunction", MINING_FUNCTION.byName(model.getMiningFunction().value())));
-        body.addStatement(assignExprFrom("targetField", getTargetFieldName(dataDictionary, model).orElse(null)));
-
-        body.addStatement(assignExprFrom("modelClass", modelClassFrom(model.getModelClass())));
-
-        model.getClusters().stream()
-                .map(KiePMMLClusteringModelFactory::clusterCreationExprFrom)
-                .map(expr -> methodCallExprFrom("clusters", "add", expr))
-                .forEach(body::addStatement);
-
-        model.getClusteringFields().stream()
-                .map(KiePMMLClusteringModelFactory::clusteringFieldCreationExprFrom)
-                .map(expr -> methodCallExprFrom("clusteringFields", "add", expr))
-                .forEach(body::addStatement);
-
-        body.addStatement(assignExprFrom("comparisonMeasure", comparisonMeasureCreationExprFrom(model.getComparisonMeasure())));
-
-        if (model.getMissingValueWeights() != null) {
-            body.addStatement(assignExprFrom("missingValueWeights", missingValueWeightsCreationExprFrom(model.getMissingValueWeights())));
-        }
-
+        setConstructor(model,
+                       dataDictionary,
+                       transformationDictionary,
+                       modelTemplate);
         Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(getFullClassName(compilationUnit), compilationUnit.toString());
 
         return sourcesMap;
+    }
+
+    static void setConstructor(final ClusteringModel clusteringModel,
+                               final DataDictionary dataDictionary,
+                               final TransformationDictionary transformationDictionary,
+                               final ClassOrInterfaceDeclaration modelTemplate) {
+        final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
+                                                                                          dataDictionary,
+                                                                                          transformationDictionary,
+                                                                                          clusteringModel);
+        builder.build();
+        final ConstructorDeclaration constructorDeclaration =
+                modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        final BlockStmt body = constructorDeclaration.getBody();
+        body.addStatement(assignExprFrom("modelClass", modelClassFrom(clusteringModel.getModelClass())));
+
+        clusteringModel.getClusters().stream()
+                .map(KiePMMLClusteringModelFactory::clusterCreationExprFrom)
+                .map(expr -> methodCallExprFrom("clusters", "add", expr))
+                .forEach(body::addStatement);
+
+        clusteringModel.getClusteringFields().stream()
+                .map(KiePMMLClusteringModelFactory::clusteringFieldCreationExprFrom)
+                .map(expr -> methodCallExprFrom("clusteringFields", "add", expr))
+                .forEach(body::addStatement);
+
+        body.addStatement(assignExprFrom("comparisonMeasure", comparisonMeasureCreationExprFrom(clusteringModel.getComparisonMeasure())));
+
+        if (clusteringModel.getMissingValueWeights() != null) {
+            body.addStatement(assignExprFrom("missingValueWeights", missingValueWeightsCreationExprFrom(clusteringModel.getMissingValueWeights())));
+        }
     }
 
     private static ObjectCreationExpr clusterCreationExprFrom(Cluster cluster) {
