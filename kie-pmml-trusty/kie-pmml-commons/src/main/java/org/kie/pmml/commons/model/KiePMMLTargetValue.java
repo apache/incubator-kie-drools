@@ -94,24 +94,31 @@ public class KiePMMLTargetValue extends AbstractKiePMMLComponent {
         }
 
         public Builder withValue(String value) {
-            toBuild.value = value;
+            if (value != null) {
+                toBuild.value = value;
+            }
             return this;
         }
 
         public Builder withDisplayValue(String displayValue) {
-            toBuild.displayValue = displayValue;
+            if (displayValue != null) {
+                toBuild.displayValue = displayValue;
+            }
             return this;
         }
 
-        public Builder withPriorProbability(Double priorProbability) {
-            toBuild.priorProbability = priorProbability;
+        public Builder withPriorProbability(Number priorProbability) {
+            if (priorProbability != null) {
+                toBuild.priorProbability =  priorProbability.doubleValue();
+            }
             return this;
         }
 
-        public Builder withDefaultValue(Double defaultValue) {
-            toBuild.defaultValue = defaultValue;
+        public Builder withDefaultValue(Number defaultValue) {
+            if (defaultValue != null) {
+                toBuild.defaultValue = defaultValue.doubleValue();
+            }
             return this;
         }
-
     }
 }

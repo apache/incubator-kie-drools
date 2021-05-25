@@ -108,12 +108,16 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         }
 
         public Builder withResultFeature(RESULT_FEATURE resultFeature) {
-            toBuild.resultFeature = resultFeature;
+            if (resultFeature != null) {
+                toBuild.resultFeature = resultFeature;
+            }
             return this;
         }
 
         public Builder withTargetField(String targetField) {
-            toBuild.targetField = targetField;
+            if (targetField != null) {
+                toBuild.targetField = targetField;
+            }
             return this;
         }
 
@@ -123,12 +127,16 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         }
 
         public Builder withRank(Integer rank) {
-            toBuild.rank = rank;
+            if (rank != null) {
+                toBuild.rank = rank;
+            }
             return this;
         }
 
         public Builder withKiePMMLExpression(KiePMMLExpression kiePMMLExpression) {
-            toBuild.kiePMMLExpression = kiePMMLExpression;
+            if (kiePMMLExpression != null) {
+                toBuild.kiePMMLExpression = kiePMMLExpression;
+            }
             return this;
         }
 

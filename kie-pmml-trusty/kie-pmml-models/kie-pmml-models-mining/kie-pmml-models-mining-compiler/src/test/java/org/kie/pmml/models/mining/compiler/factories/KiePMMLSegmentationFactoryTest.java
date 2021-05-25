@@ -18,7 +18,6 @@ package org.kie.pmml.models.mining.compiler.factories;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,7 +32,6 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -115,6 +113,7 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                 hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
             } catch (Exception e) {
                 fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }

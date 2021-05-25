@@ -220,7 +220,8 @@ public class ModelUtils {
     }
 
     /**
-     * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in <b>dataDictionary</b>
+     * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in
+     * <b>dataDictionary</b>
      * @param derivedFields
      * @param dataDictionary
      * @param fieldName
@@ -256,7 +257,8 @@ public class ModelUtils {
     }
 
     /**
-     * Return <code>List&lt;DerivedField&gt;</code>s from the given <code>TransformationDictionary</code> and <code>LocalTransformations</code>
+     * Return <code>List&lt;DerivedField&gt;</code>s from the given <code>TransformationDictionary</code> and
+     * <code>LocalTransformations</code>
      * @param transformationDictionary
      * @param localTransformations
      * @return
@@ -387,9 +389,7 @@ public class ModelUtils {
         }
         return toConvert.getOutputFields()
                 .stream()
-                .map(outputField -> {
-                    return convertToKiePMMLOutputField(outputField);
-                })
+                .map(ModelUtils::convertToKiePMMLOutputField)
                 .collect(Collectors.toList());
     }
 
@@ -401,27 +401,31 @@ public class ModelUtils {
      */
     public static KiePMMLOutputField convertToKiePMMLOutputField(final OutputField toConvert) {
         String name = toConvert.getName() != null ? toConvert.getName().getValue() : "" + toConvert.hashCode();
-        KiePMMLOutputField.Builder builder = KiePMMLOutputField.builder(name, Collections.emptyList());
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
-        if (targetField != null) {
-            builder.withTargetField(targetField);
-        }
         final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
                 RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
-        if (resultFeature != null) {
-            builder = builder.withResultFeature(resultFeature);
-        }
-        if (toConvert.getRank() != null) {
-            builder = builder.withRank(toConvert.getRank());
-        }
-        if (toConvert.getExpression() != null) {
-            KiePMMLExpression kiePMMLExpression = convertToKiePMMLExpression(toConvert.getExpression());
-            builder = builder.withKiePMMLExpression(kiePMMLExpression);
-        }
+        final KiePMMLExpression kiePMMLExpression = convertToKiePMMLExpression(toConvert.getExpression());
+        final KiePMMLOutputField.Builder builder = KiePMMLOutputField.builder(name, Collections.emptyList())
+                .withTargetField(targetField)
+                .withResultFeature(resultFeature)
+                .withRank(toConvert.getRank())
+                .withKiePMMLExpression(kiePMMLExpression);
         return builder.build();
     }
 
+    public static List<KiePMMLExpression> convertToKiePMMLExpressions(List<Expression> toConvert) {
+        if (toConvert == null) {
+            return null;
+        }
+        return toConvert.stream()
+                .map(ModelUtils::convertToKiePMMLExpression)
+                .collect(Collectors.toList());
+    }
+
     public static KiePMMLExpression convertToKiePMMLExpression(Expression toConvert) {
+        if (toConvert == null) {
+            return null;
+        }
         KiePMMLExpression toReturn = null;
         String expressionType = toConvert.getClass().getSimpleName();
         switch (expressionType) {
@@ -443,24 +447,15 @@ public class ModelUtils {
 
     public static KiePMMLApply convertToKiePMMLApply(Apply toConvert) {
         String name = "" + toConvert.hashCode();
-        KiePMMLApply.Builder builder = KiePMMLApply.builder(name, Collections.emptyList(), toConvert.getFunction());
-        if (toConvert.getExpressions() != null) {
-            List<KiePMMLExpression> kiePMMLExpressions = toConvert.getExpressions().stream()
-                    .map(ModelUtils::convertToKiePMMLExpression)
-                    .collect(Collectors.toList());
-            builder = builder.withKiePMMLExpressions(kiePMMLExpressions);
-        }
-        if (toConvert.getMapMissingTo() != null) {
-            builder = builder.withMapMissingTo(toConvert.getMapMissingTo());
-        }
-        if (toConvert.getDefaultValue() != null) {
-            builder = builder.withDefaultValue(toConvert.getDefaultValue());
-        }
-        if (toConvert.getInvalidValueTreatment() != null) {
-            builder =
-                    builder.withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()));
-        }
-
+        final String invalidValueTreatment = toConvert.getInvalidValueTreatment() != null ?
+                toConvert.getInvalidValueTreatment().value() : null;
+        final List<KiePMMLExpression> kiePMMLExpressions = convertToKiePMMLExpressions(toConvert.getExpressions());
+        final KiePMMLApply.Builder builder = KiePMMLApply.builder(name, Collections.emptyList(),
+                                                                  toConvert.getFunction())
+                .withKiePMMLExpressions(kiePMMLExpressions)
+                .withMapMissingTo(toConvert.getMapMissingTo())
+                .withDefaultValue(toConvert.getDefaultValue())
+                .withInvalidValueTreatmentMethod(invalidValueTreatment);
         return builder.build();
     }
 
@@ -486,9 +481,7 @@ public class ModelUtils {
         }
         return toConvert.getTargets()
                 .stream()
-                .map(target -> {
-                    return convertToKiePMMLTarget(target);
-                })
+                .map(ModelUtils::convertToKiePMMLTarget)
                 .collect(Collectors.toList());
     }
 
@@ -560,26 +553,14 @@ public class ModelUtils {
      * @return
      */
     public static KiePMMLTargetValue convertToKiePMMLTargetValue(final TargetValue toConvert) {
-        final KiePMMLTargetValue.Builder builder = KiePMMLTargetValue.builder("" + toConvert.hashCode(),
-                                                                              Collections.emptyList());
         final String value = toConvert.getValue() != null ? toConvert.getValue().toString() : null;
-        if (value != null) {
-            builder.withValue(value);
-        }
         final String displayValue = toConvert.getDisplayValue() != null ? toConvert.getDisplayValue() : null;
-        if (displayValue != null) {
-            builder.withDisplayValue(displayValue);
-        }
-        final Double priorProbability = toConvert.getPriorProbability() != null ?
-                (double) toConvert.getPriorProbability() : null;
-        if (priorProbability != null) {
-            builder.withPriorProbability(priorProbability);
-        }
-        final Double defaultValue = toConvert.getDefaultValue() != null ? toConvert.getDefaultValue().doubleValue() :
-                null;
-        if (defaultValue != null) {
-            builder.withDefaultValue(defaultValue);
-        }
+        final KiePMMLTargetValue.Builder builder = KiePMMLTargetValue.builder("" + toConvert.hashCode(),
+                                                                              Collections.emptyList())
+                .withValue(value)
+                .withDisplayValue(displayValue)
+                .withPriorProbability(toConvert.getPriorProbability())
+                .withDefaultValue(toConvert.getDefaultValue());
         return builder.build();
     }
 
@@ -616,9 +597,9 @@ public class ModelUtils {
     static Optional<DataType> getDataTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
         return (dataDictionary != null && dataDictionary.getDataFields() != null) ?
                 dataDictionary.getDataFields().stream()
-                .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
-                .findFirst()
-                .map(DataField::getDataType) : Optional.empty();
+                        .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
+                        .findFirst()
+                        .map(DataField::getDataType) : Optional.empty();
     }
 
     /**
@@ -630,9 +611,9 @@ public class ModelUtils {
     static Optional<DataType> getDataTypeFromTransformationDictionary(TransformationDictionary transformationDictionary, String fieldName) {
         return (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
                 transformationDictionary.getDerivedFields().stream()
-                .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
-                .findFirst()
-                .map(DerivedField::getDataType) : Optional.empty();
+                        .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
+                        .findFirst()
+                        .map(DerivedField::getDataType) : Optional.empty();
     }
 
     /**
@@ -643,9 +624,9 @@ public class ModelUtils {
      */
     static Optional<DataType> getDataTypeFromDerivedFields(List<DerivedField> derivedFields, String fieldName) {
         return derivedFields.stream()
-                        .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
-                        .map(DerivedField::getDataType)
-                        .findFirst();
+                .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
+                .map(DerivedField::getDataType)
+                .findFirst();
     }
 
     static List<String> convertDataFieldValues(List<Value> toConvert) {

@@ -103,22 +103,30 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
         }
 
         public Builder withMapMissingTo(String mapMissingTo) {
-            toBuild.mapMissingTo = mapMissingTo;
+            if (mapMissingTo != null) {
+                toBuild.mapMissingTo = mapMissingTo;
+            }
             return this;
         }
 
         public Builder withDefaultValue(String defaultValue) {
-            toBuild.defaultValue = defaultValue;
+            if (defaultValue != null) {
+                toBuild.defaultValue = defaultValue;
+            }
             return this;
         }
 
-        public Builder withInvalidValueTreatmentMethod(INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod) {
-            toBuild.invalidValueTreatmentMethod = invalidValueTreatmentMethod;
+        public Builder withInvalidValueTreatmentMethod(String invalidValueTreatment) {
+            if (invalidValueTreatment != null) {
+                toBuild.invalidValueTreatmentMethod = INVALID_VALUE_TREATMENT_METHOD.byName(invalidValueTreatment);
+            }
             return this;
         }
 
         public Builder withKiePMMLExpressions(List<KiePMMLExpression> kiePMMLExpressions) {
-            toBuild.kiePMMLExpressions = kiePMMLExpressions;
+            if (kiePMMLExpressions != null) {
+                toBuild.kiePMMLExpressions = kiePMMLExpressions;
+            }
             return this;
         }
 

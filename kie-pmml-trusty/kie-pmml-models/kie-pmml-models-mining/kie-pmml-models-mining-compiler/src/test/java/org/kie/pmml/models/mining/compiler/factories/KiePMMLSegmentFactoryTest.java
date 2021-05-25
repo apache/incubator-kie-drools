@@ -53,7 +53,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
-import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.SEGMENTATIONNAME_TEMPLATE;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE_JAVA;
 
@@ -128,7 +127,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     }
 
     @Test
-    public void getSegmentSourcesMapCompiled() {
+    public void getSegmentSourcesMapCompiled() throws Exception {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final String modelName = segment.getModel().getModelName();
@@ -152,11 +151,7 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
                                                                                                  nestedModels);
         commonEvaluateNestedModels(nestedModels);
         commonEvaluateMap(retrieved, segment);
-        try {
-            hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
-        } catch (Exception e) {
-            fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
-        }
+        hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
     }
 
     @Test
