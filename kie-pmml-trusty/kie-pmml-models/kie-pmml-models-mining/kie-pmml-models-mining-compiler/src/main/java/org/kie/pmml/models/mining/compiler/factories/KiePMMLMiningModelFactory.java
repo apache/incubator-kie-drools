@@ -32,7 +32,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
+import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -45,7 +45,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled;
 
@@ -69,11 +68,11 @@ public class KiePMMLMiningModelFactory {
         String className = getSanitizedClassName(model.getModelName());
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         Map<String, String> sourcesMap = getKiePMMLMiningModelSourcesMapCompiled(dataDictionary,
-                                                                         transformationDictionary,
-                                                                         model,
-                                                                         packageName,
-                                                                         hasClassLoader,
-                                                                         nestedModels);
+                                                                                 transformationDictionary,
+                                                                                 model,
+                                                                                 packageName,
+                                                                                 hasClassLoader,
+                                                                                 nestedModels);
 
         String fullClassName = packageName + "." + className;
         try {
@@ -103,7 +102,6 @@ public class KiePMMLMiningModelFactory {
                                                      model,
                                                      parentPackageName,
                                                      toReturn);
-
     }
 
     public static Map<String, String> getKiePMMLMiningModelSourcesMapCompiled(final DataDictionary dataDictionary,
@@ -115,12 +113,12 @@ public class KiePMMLMiningModelFactory {
         logger.trace("getKiePMMLMiningModelSourcesMapCompiled {} {} {}", dataDictionary, model, parentPackageName);
         final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, model.getModelName());
         final Map<String, String> toReturn = getSegmentationSourcesMapCompiled(parentPackageName,
-                                                                       dataDictionary,
-                                                                       transformationDictionary,
-                                                                       model.getSegmentation(),
-                                                                       segmentationName,
-                                                                       hasClassloader,
-                                                                       nestedModels);
+                                                                               dataDictionary,
+                                                                               transformationDictionary,
+                                                                               model.getSegmentation(),
+                                                                               segmentationName,
+                                                                               hasClassloader,
+                                                                               nestedModels);
         return getKiePMMLMiningModelSourcesMapCommon(dataDictionary, transformationDictionary,
                                                      model,
                                                      parentPackageName,
@@ -159,11 +157,10 @@ public class KiePMMLMiningModelFactory {
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String segmentationClass) {
-        final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
-                                                                                          dataDictionary,
-                                                                                          transformationDictionary,
-                                                                                          miningModel);
-        builder.build();
+        KiePMMLModelCodegenUtils.init(modelTemplate,
+                                      dataDictionary,
+                                      transformationDictionary,
+                                      miningModel);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
