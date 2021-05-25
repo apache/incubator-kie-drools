@@ -222,12 +222,11 @@ public class PostProcess {
                                                                    final String functionName,
                                                                    final List<KiePMMLNameValue> kiePMMLNameValues,
                                                                    final Object objectParameter) {
-        return functionsMap.keySet()
-                .stream()
-                .filter(funName -> funName.equals(functionName))
-                .findFirst()
-                .map(functionsMap::get)
-                .map(function -> function.apply(kiePMMLNameValues, objectParameter));
+        return functionsMap.entrySet()
+                .parallelStream()
+                .filter(entry -> entry.getKey().equals(functionName))
+                .map(entry -> entry.getValue().apply(kiePMMLNameValues, objectParameter))
+                .findFirst();
     }
 
     static Optional<Object> getValueFromKiePMMLConstant(final KiePMMLConstant kiePMMLConstant) {
@@ -246,8 +245,8 @@ public class PostProcess {
                                                                         final List<KiePMMLNameValue> kiePMMLNameValues) {
         return kiePMMLNameValues.stream()
                 .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(variableName))
-                .findFirst()
-                .map(KiePMMLNameValue::getValue);
+                .map(KiePMMLNameValue::getValue)
+                .findFirst();
     }
 
     static Optional<Object> getValueFromKiePMMLOutputFieldsByVariableName(final String variableName,

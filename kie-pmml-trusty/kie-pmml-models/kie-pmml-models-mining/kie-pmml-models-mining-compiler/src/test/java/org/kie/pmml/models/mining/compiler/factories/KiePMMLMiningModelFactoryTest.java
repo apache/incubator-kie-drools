@@ -144,6 +144,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
                 hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
             } catch (Exception e) {
                 fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
+                e.printStackTrace();
             }
         });
     }
