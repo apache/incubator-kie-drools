@@ -57,9 +57,9 @@ public class KiePMMLModelConstructorBuilder {
     private TransformationDictionary transformationDictionary;
     private LocalTransformations localTransformations;
     private List<KiePMMLOutputField> kiePMMLOutputFields;
-    private String targetField;
+    private Expression targetFieldExpression;
     private Expression miningFunctionExpression;
-    private String pmmlMODEL;
+    private NameExpr pmmlMODELExpression;
 
 
     public static KiePMMLModelConstructorBuilder get(final ClassOrInterfaceDeclaration modelTemplate,
@@ -90,23 +90,25 @@ public class KiePMMLModelConstructorBuilder {
             this.miningFunctionExpression = new NullLiteralExpr();
         }
         final PMML_MODEL pmmlModelEnum = PMML_MODEL.byName(pmmlModel.getClass().getSimpleName());
-        this.pmmlMODEL = pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name();
-        this.targetField = getTargetFieldName(dataDictionary, pmmlModel).orElse(null);
+        this.pmmlMODELExpression = new NameExpr(pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name());
+        String targetFieldName = getTargetFieldName(dataDictionary, pmmlModel).orElse(null);
+        if (targetFieldName != null) {
+            targetFieldExpression = new StringLiteralExpr(targetFieldName);
+        } else {
+            targetFieldExpression = new NullLiteralExpr();
+        }
     }
 
     public void build() {
         setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, name, miningFields, outputFields);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, localTransformations);
         final BlockStmt body = constructorDeclaration.getBody();
-        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL",  new NameExpr(pmmlMODEL));
+        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", pmmlMODELExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
+        CommonCodegenUtils.setAssignExpressionValue(body, "targetField", targetFieldExpression);
         if (kiePMMLOutputFields != null) {
             addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
         }
-        if (targetField != null) {
-            CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
-        }
-
     }
 
 }
