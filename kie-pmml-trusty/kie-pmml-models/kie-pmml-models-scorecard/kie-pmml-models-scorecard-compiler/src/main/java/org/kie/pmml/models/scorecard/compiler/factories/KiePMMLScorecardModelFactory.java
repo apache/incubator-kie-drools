@@ -30,6 +30,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -57,6 +58,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap;
 
@@ -98,7 +100,8 @@ public class KiePMMLScorecardModelFactory {
         String characteristicsClassName = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullCharacteristicsClassName = String.format(PACKAGE_CLASS_TEMPLATE, packageName, characteristicsClassName);
         final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm = model.getReasonCodeAlgorithm() != null ? model.getReasonCodeAlgorithm() : Scorecard.ReasonCodeAlgorithm.POINTS_BELOW;
-        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(), dataDictionary, transformationDictionary, model.getInitialScore(), reasonCodeAlgorithm, characteristicsClassName, packageName);
+        final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary, model.getLocalTransformations());
+        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(), dataDictionary, derivedFields, model.getInitialScore(), reasonCodeAlgorithm, characteristicsClassName, packageName);
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model, dataDictionary, constructorDeclaration, targetFieldName, fullCharacteristicsClassName);

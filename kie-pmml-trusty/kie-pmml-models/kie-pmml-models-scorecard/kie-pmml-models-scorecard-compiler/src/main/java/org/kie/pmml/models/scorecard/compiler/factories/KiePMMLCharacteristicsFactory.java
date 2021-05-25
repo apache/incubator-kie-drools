@@ -37,6 +37,7 @@ import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Attribute;
@@ -96,7 +97,7 @@ public class KiePMMLCharacteristicsFactory {
 
     public static KiePMMLCharacteristics getKiePMMLCharacteristics(final Characteristics characteristics,
                                                                    final DataDictionary dataDictionary,
-                                                                   final TransformationDictionary transformationDictionary,
+                                                                   final List<DerivedField> derivedFields,
                                                                    final Number initialScore,
                                                                    final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                                                    final String packageName,
@@ -105,7 +106,7 @@ public class KiePMMLCharacteristicsFactory {
         String className = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullClassName = packageName + "." + className;
         final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(characteristics, dataDictionary,
-                                                                                   transformationDictionary,
+                                                                                   derivedFields,
                                                                                    initialScore,
                                                                                    reasonCodeAlgorithm,
                                                                                    className, packageName);
@@ -119,7 +120,7 @@ public class KiePMMLCharacteristicsFactory {
 
     public static Map<String, String> getKiePMMLCharacteristicsSourcesMap(final Characteristics characteristics,
                                                                           final DataDictionary dataDictionary,
-                                                                          final TransformationDictionary transformationDictionary,
+                                                                          final List<DerivedField> derivedFields,
                                                                           final Number initialScore,
                                                                           final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                                                           final String containerClassName,
@@ -142,7 +143,7 @@ public class KiePMMLCharacteristicsFactory {
         final NodeList<Expression> evaluateCharacteristicsReferences = new NodeList<>();
         for (Characteristic characteristic : characteristics) {
             String characteristicName = containerClassName + "Characteristic_" + atomicInteger.addAndGet(1);
-            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary,  transformationDictionary,reasonCodeAlgorithm, characteristic,
+            addCharacteristic(characteristicsTemplate, characteristicTemplate, dataDictionary,  derivedFields, reasonCodeAlgorithm, characteristic,
                               containerClassName, characteristicName);
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
             toAdd.setScope(new NameExpr(containerClassName));
@@ -187,7 +188,7 @@ public class KiePMMLCharacteristicsFactory {
     static void addCharacteristic(final ClassOrInterfaceDeclaration characteristicsTemplate,
                                   final ClassOrInterfaceDeclaration characteristicTemplate,
                                   final DataDictionary dataDictionary,
-                                  final TransformationDictionary transformationDictionary,
+                                  final List<DerivedField> derivedFields,
                                   final Scorecard.ReasonCodeAlgorithm reasonCodeAlgorithm,
                                   final Characteristic characteristic,
                                   final String containerClassName, final String characteristicName) {
@@ -197,7 +198,7 @@ public class KiePMMLCharacteristicsFactory {
         for (Attribute attribute : characteristic.getAttributes()) {
             String attributeName = characteristicName + "_" + atomicInteger.addAndGet(1);
             addAttribute(characteristicsTemplate, characteristicTemplate, dataDictionary,
-                         transformationDictionary,
+                         derivedFields,
                          attribute,
                          containerClassName, attributeName);
             MethodReferenceExpr toAdd = new MethodReferenceExpr();
@@ -264,11 +265,11 @@ public class KiePMMLCharacteristicsFactory {
     static void addAttribute(final ClassOrInterfaceDeclaration characteristicsTemplate,
                              final ClassOrInterfaceDeclaration characteristicTemplate,
                              final DataDictionary dataDictionary,
-                             final TransformationDictionary transformationDictionary,
+                             final List<DerivedField> derivedFields,
                              final Attribute attribute,
                              final String containerClassName, final String attributeName) {
         // Add predicate
-        addPredicate(characteristicsTemplate, characteristicTemplate, dataDictionary, transformationDictionary, attribute.getPredicate(),
+        addPredicate(characteristicsTemplate, characteristicTemplate, dataDictionary, derivedFields, attribute.getPredicate(),
                      containerClassName, attributeName);
         // Add complex score
         final ComplexPartialScore complexPartialScore = attribute.getComplexPartialScore();
@@ -352,7 +353,7 @@ public class KiePMMLCharacteristicsFactory {
     static void addPredicate(final ClassOrInterfaceDeclaration characteristicsTemplate,
                              final ClassOrInterfaceDeclaration characteristicTemplate,
                              final DataDictionary dataDictionary,
-                             final TransformationDictionary transformationDictionary,
+                             final List<DerivedField> derivedFields,
                              final Predicate predicate,
                              final String containerClassName,
                              final String attributeName) {
@@ -362,7 +363,7 @@ public class KiePMMLCharacteristicsFactory {
         evaluatePredicateMethod.setName(EVALUATE_PREDICATE + attributeName);
         final BlockStmt evaluatePredicateBody = KiePMMLPredicateFactory.getPredicateBody(predicate,
                                                                                          dataDictionary,
-                                                                                         transformationDictionary,
+                                                                                         derivedFields,
                                                                                          compoundPredicateMethods,
                                                                                          containerClassName,
                                                                                          attributeName,

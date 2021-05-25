@@ -18,6 +18,7 @@ package org.kie.pmml.models.scorecard.compiler.factories;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
@@ -33,6 +34,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.TransformationDictionary;
@@ -65,6 +67,7 @@ import static org.kie.pmml.commons.Constants.REASON_CODE;
 import static org.kie.pmml.commons.Constants.REASON_CODE_ALGORITHM;
 import static org.kie.pmml.commons.Constants.SCORE;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.ATTRIBUTE_FUNCTIONS;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.COMPLEX_SCORE_FUNCTION;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.EVALUATE_ATTRIBUTE;
@@ -85,6 +88,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     private static DataDictionary basicComplexPartialScoreDataDictionary;
     private static TransformationDictionary basicComplexPartialScoreTransformationDictionary;
     private static Scorecard basicComplexPartialScore;
+    private static List<DerivedField> basicComplexPartialScoreDerivedFields;
     private static Characteristics basicComplexPartialScoreCharacteristics;
     private static Characteristic basicComplexPartialScoreFirstCharacteristic;
     private ClassOrInterfaceDeclaration characteristicsTemplate;
@@ -99,6 +103,8 @@ public class KiePMMLCharacteristicsFactoryTest {
         basicComplexPartialScoreCharacteristics = basicComplexPartialScore.getCharacteristics();
         basicComplexPartialScoreFirstCharacteristic =
                 basicComplexPartialScoreCharacteristics.getCharacteristics().get(0);
+        basicComplexPartialScoreDerivedFields = getDerivedFields(basicComplexPartialScoreTransformationDictionary, basicComplexPartialScore.getLocalTransformations());
+
     }
 
     @Before
@@ -124,7 +130,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         final KiePMMLCharacteristics retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(basicComplexPartialScoreCharacteristics,
                                                                         basicComplexPartialScoreDataDictionary,
-                                                                        basicComplexPartialScoreTransformationDictionary,
+                                                                        basicComplexPartialScoreDerivedFields,
                                                                         basicComplexPartialScore.getInitialScore(),
                                                                         basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                                         PACKAGE_NAME,
@@ -137,7 +143,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         final Map<String, String> retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(basicComplexPartialScoreCharacteristics,
                                                                                   basicComplexPartialScoreDataDictionary,
-                                                                                  basicComplexPartialScoreTransformationDictionary,
+                                                                                  basicComplexPartialScoreDerivedFields,
                                                                                   basicComplexPartialScore.getInitialScore(),
                                                                                   basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                                                   CONTAINER_CLASS_NAME,
@@ -163,7 +169,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addCharacteristic(characteristicsTemplate,
                                                         characteristicTemplate,
                                                         basicComplexPartialScoreDataDictionary,
-                                                        basicComplexPartialScoreTransformationDictionary,
+                                                        basicComplexPartialScoreDerivedFields,
                                                         basicComplexPartialScore.getReasonCodeAlgorithm(),
                                                         basicComplexPartialScoreFirstCharacteristic,
                                                         CONTAINER_CLASS_NAME,
@@ -262,7 +268,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addAttribute(characteristicsTemplate,
                                                    characteristicTemplate,
                                                    basicComplexPartialScoreDataDictionary,
-                                                   basicComplexPartialScoreTransformationDictionary,
+                                                   basicComplexPartialScoreDerivedFields,
                                                    attribute,
                                                    CONTAINER_CLASS_NAME,
                                                    attributeName);
@@ -329,7 +335,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         KiePMMLCharacteristicsFactory.addPredicate(characteristicsTemplate,
                                                    characteristicTemplate,
                                                    basicComplexPartialScoreDataDictionary,
-                                                   basicComplexPartialScoreTransformationDictionary,
+                                                   basicComplexPartialScoreDerivedFields,
                                                    predicate,
                                                    CONTAINER_CLASS_NAME,
                                                    attributeName);

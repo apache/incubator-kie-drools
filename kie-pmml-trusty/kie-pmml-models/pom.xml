@@ -21,7 +21,6 @@
     <module>kie-pmml-models-clustering</module>
     <module>kie-pmml-models-scorecard</module>
     <module>kie-pmml-models-tests</module>
-    <module>kie-pmml-models-tests</module>
   </modules>
 
 </project>
