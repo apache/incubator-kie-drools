@@ -32,7 +32,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.utils.KiePMMLModelUtils;
-import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
+import org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.scorecard.model.KiePMMLScorecardModel;
@@ -101,11 +101,10 @@ public class KiePMMLScorecardModelFactory {
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullCharacteristicsClassName) {
-        final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
-                                                                                          dataDictionary,
-                                                                                          transformationDictionary,
-                                                                                          scorecardModel);
-        builder.build();
+        KiePMMLModelCodegenUtils.init(modelTemplate,
+                                      dataDictionary,
+                                      transformationDictionary,
+                                      scorecardModel);
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
