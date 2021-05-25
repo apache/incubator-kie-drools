@@ -25,9 +25,6 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
@@ -36,8 +33,6 @@ import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.regression.RegressionModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
@@ -108,7 +103,6 @@ public class KiePMMLRegressionModelFactory {
                        dataDictionary,
                        transformationDictionary,
                        modelTemplate,
-                       targetFieldName,
                        nestedTable);
         Map<String, String> toReturn = tablesSourceMap.entrySet()
                 .stream()
@@ -148,28 +142,11 @@ public class KiePMMLRegressionModelFactory {
                                final DataDictionary dataDictionary,
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
-                               final String targetField,
                                final String nestedTable) {
-        final List<KiePMMLOutputField> outputFields = getOutputFields(regressionModel);
-        Expression miningFunctionExpression;
-        if (regressionModel.getMiningFunction() != null) {
-            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
-            miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
-        } else {
-            miningFunctionExpression = new NullLiteralExpr();
-        }
         final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
-                                                                                          getSanitizedClassName(regressionModel.getModelName()),
-                                                                                          regressionModel.getModelName(),
-                                                                                          dataDictionary)
-                .withMiningFields(regressionModel.getMiningSchema())
-                .withOutputFields(regressionModel.getOutput())
-                .withTransformationDictionary(transformationDictionary)
-                .withLocalTransformations(regressionModel.getLocalTransformations())
-                .withKiePMMLOutputFields(outputFields)
-                .withTargetField(targetField)
-                .withMiningFunction(miningFunctionExpression)
-                .withPMMLModel(PMML_MODEL.REGRESSION_MODEL.name());
+                                                                                          dataDictionary,
+                                                                                          transformationDictionary,
+                                                                                          regressionModel);
         builder.build();
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));

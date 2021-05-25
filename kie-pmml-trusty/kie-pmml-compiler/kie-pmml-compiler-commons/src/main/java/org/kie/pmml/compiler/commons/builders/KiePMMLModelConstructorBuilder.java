@@ -21,13 +21,14 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.LocalTransformations;
-import org.dmg.pmml.MiningSchema;
-import org.dmg.pmml.Output;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.models.MiningField;
@@ -37,9 +38,12 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addTransformationsInClassOrInterfaceDeclaration;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setKiePMMLModelConstructor;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 public class KiePMMLModelConstructorBuilder {
 
@@ -59,79 +63,50 @@ public class KiePMMLModelConstructorBuilder {
 
 
     public static KiePMMLModelConstructorBuilder get(final ClassOrInterfaceDeclaration modelTemplate,
-                                                     final String generatedClassName,
-                                                     final String name,
-                                                     final DataDictionary dataDictionary) {
-        return new KiePMMLModelConstructorBuilder(modelTemplate, generatedClassName, name, dataDictionary);
+                                                     final DataDictionary dataDictionary,
+                                                     final TransformationDictionary transformationDictionary,
+                                                     final Model pmmlModel) {
+        return new KiePMMLModelConstructorBuilder(modelTemplate, dataDictionary, transformationDictionary, pmmlModel);
     }
 
     private KiePMMLModelConstructorBuilder(final ClassOrInterfaceDeclaration modelTemplate,
-                                           final String generatedClassName,
-                                           final String name,
-                                           final DataDictionary dataDictionary) {
+                                           final DataDictionary dataDictionary,
+                                           final TransformationDictionary transformationDictionary,
+                                           final Model pmmlModel) {
         this.modelTemplate = modelTemplate;
         this.constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        this.generatedClassName = generatedClassName;
-        this.name = name;
+        this.name = pmmlModel.getModelName();
+        this.generatedClassName = getSanitizedClassName(name);
         this.dataDictionary = dataDictionary;
-    }
-
-    public KiePMMLModelConstructorBuilder withMiningFields(final MiningSchema miningSchema) {
-        this.miningFields = ModelUtils.convertToKieMiningFieldList(miningSchema, dataDictionary);
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withOutputFields(final Output output) {
-        this.outputFields = ModelUtils.convertToKieOutputFieldList(output, dataDictionary);
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withTransformationDictionary(final TransformationDictionary transformationDictionary) {
+        this.miningFields = ModelUtils.convertToKieMiningFieldList(pmmlModel.getMiningSchema(), dataDictionary);
+        this.outputFields = ModelUtils.convertToKieOutputFieldList(pmmlModel.getOutput(), dataDictionary);
         this.transformationDictionary = transformationDictionary;
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withLocalTransformations(final LocalTransformations localTransformations) {
-        this.localTransformations = localTransformations;
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withKiePMMLOutputFields(final List<KiePMMLOutputField> kiePMMLOutputFields) {
-        this.kiePMMLOutputFields = kiePMMLOutputFields;
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withTargetField(final String targetField) {
-        this.targetField = targetField;
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withMiningFunction(final Expression miningFunctionExpression) {
-        this.miningFunctionExpression = miningFunctionExpression;
-        return this;
-    }
-
-    public KiePMMLModelConstructorBuilder withPMMLModel(final String pmmlModel) {
-        this.pmmlMODEL = PMML_MODEL.MINING_MODEL.getClass().getName() + "." + pmmlModel;
-        return this;
+        this.localTransformations = pmmlModel.getLocalTransformations();
+        this.kiePMMLOutputFields = getOutputFields(pmmlModel);
+        if (pmmlModel.getMiningFunction() != null) {
+            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(pmmlModel.getMiningFunction().value());
+            this.miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
+        } else {
+            this.miningFunctionExpression = new NullLiteralExpr();
+        }
+        final PMML_MODEL pmmlModelEnum = PMML_MODEL.byName(pmmlModel.getClass().getSimpleName());
+        this.pmmlMODEL = pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name();
+        this.targetField = getTargetFieldName(dataDictionary, pmmlModel).orElse(null);
     }
 
     public void build() {
         setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, name, miningFields, outputFields);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, localTransformations);
         final BlockStmt body = constructorDeclaration.getBody();
+        CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL",  new NameExpr(pmmlMODEL));
+        CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
         if (kiePMMLOutputFields != null) {
             addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
         }
         if (targetField != null) {
             CommonCodegenUtils.setAssignExpressionValue(body, "targetField", new StringLiteralExpr(targetField));
         }
-        if (miningFunctionExpression != null) {
-            CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
-        }
-        if (pmmlMODEL != null) {
-            CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL",  new NameExpr(pmmlMODEL));
-        }
+
     }
 
 }

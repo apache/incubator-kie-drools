@@ -31,6 +31,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -156,19 +157,17 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         model.setMiningFunction(MiningFunction.CLASSIFICATION);
         PMML_MODEL pmmlModel = PMML_MODEL.byName(model.getClass().getSimpleName());
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
-        String targetField = "TARGET_FIELD";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         String segmentationClass = "SEGMENTATIONCLASS";
         KiePMMLMiningModelFactory.setConstructor(model,
                                                  new DataDictionary(),
                                                  new TransformationDictionary(),
                                                  modelTemplate,
-                                                 targetField,
                                                  segmentationClass);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", model.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
-        assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
+        assignExpressionMap.put("targetField", new NullLiteralExpr());
         assignExpressionMap.put("miningFunction",
                                 new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(pmmlModel.getClass().getName() + "." + pmmlModel.name()));

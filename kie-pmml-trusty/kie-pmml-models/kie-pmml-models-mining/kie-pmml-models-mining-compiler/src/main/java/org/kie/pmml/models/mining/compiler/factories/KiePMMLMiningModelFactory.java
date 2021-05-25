@@ -22,22 +22,16 @@ import java.util.Map;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -49,7 +43,6 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
@@ -152,12 +145,10 @@ public class KiePMMLMiningModelFactory {
                                                                                  KIE_PMML_MINING_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model,
                        dataDictionary,
                        transformationDictionary,
                        modelTemplate,
-                       targetFieldName,
                        segmentationClass);
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
@@ -167,28 +158,11 @@ public class KiePMMLMiningModelFactory {
                                final DataDictionary dataDictionary,
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
-                               final String targetField,
                                final String segmentationClass) {
-        final List<KiePMMLOutputField> outputFields = getOutputFields(miningModel);
-        Expression miningFunctionExpression;
-        if (miningModel.getMiningFunction() != null) {
-            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(miningModel.getMiningFunction().value());
-            miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
-        } else {
-            miningFunctionExpression = new NullLiteralExpr();
-        }
         final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
-                                                                                          getSanitizedClassName(miningModel.getModelName()),
-                                                                                          miningModel.getModelName(),
-                                                                                          dataDictionary)
-                .withMiningFields(miningModel.getMiningSchema())
-                .withOutputFields(miningModel.getOutput())
-                .withTransformationDictionary(transformationDictionary)
-                .withLocalTransformations(miningModel.getLocalTransformations())
-                .withKiePMMLOutputFields(outputFields)
-                .withTargetField(targetField)
-                .withMiningFunction(miningFunctionExpression)
-                .withPMMLModel(PMML_MODEL.MINING_MODEL.name());
+                                                                                          dataDictionary,
+                                                                                          transformationDictionary,
+                                                                                          miningModel);
         builder.build();
         final ConstructorDeclaration constructorDeclaration =
                 modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));

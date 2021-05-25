@@ -114,13 +114,12 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void setConstructor() {
-        final String targetField = "targetField";
+        final String targetField = "overallScore";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
                                                     pmml.getDataDictionary(),
                                                     pmml.getTransformationDictionary(),
-                                                    modelTemplate,
-                                                    targetField);
+                                                    modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", scorecardModel.getModelName())));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(scorecardModel.getMiningFunction().value());

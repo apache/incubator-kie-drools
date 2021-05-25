@@ -117,13 +117,12 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void setConstructor() {
-        final String targetField = "targetField";
+        final String targetField = "whatIdo";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         KiePMMLTreeModelFactory.setConstructor(treeModel,
                                                pmml.getDataDictionary(),
                                                pmml.getTransformationDictionary(),
-                                               modelTemplate,
-                                               targetField);
+                                               modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", treeModel.getModelName())));
         superInvocationExpressionsMap.put(2, new NameExpr(String.format("\"%s\"", treeModel.getAlgorithmName())));

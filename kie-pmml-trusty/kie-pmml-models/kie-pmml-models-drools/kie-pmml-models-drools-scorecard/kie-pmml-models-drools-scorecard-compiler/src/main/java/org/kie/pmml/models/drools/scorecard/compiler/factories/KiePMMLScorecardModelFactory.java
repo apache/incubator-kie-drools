@@ -21,17 +21,11 @@ import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.compiler.commons.builders.KiePMMLModelConstructorBuilder;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
@@ -41,7 +35,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 import static org.kie.pmml.models.drools.utils.KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit;
@@ -84,12 +77,10 @@ public class KiePMMLScorecardModelFactory {
         String className = getSanitizedClassName(model.getModelName());
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
         setConstructor(model,
                        dataDictionary,
                        transformationDictionary,
-                       modelTemplate,
-                       targetFieldName);
+                       modelTemplate);
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + className;
         toReturn.put(fullClassName, cloneCU.toString());
@@ -117,28 +108,11 @@ public class KiePMMLScorecardModelFactory {
     static void setConstructor(final Scorecard scorecard,
                                final DataDictionary dataDictionary,
                                final TransformationDictionary transformationDictionary,
-                               final ClassOrInterfaceDeclaration modelTemplate,
-                               final String targetField) {
-        final List<KiePMMLOutputField> outputFields = getOutputFields(scorecard);
-        Expression miningFunctionExpression;
-        if (scorecard.getMiningFunction() != null) {
-            MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(scorecard.getMiningFunction().value());
-            miningFunctionExpression = new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name());
-        } else {
-            miningFunctionExpression = new NullLiteralExpr();
-        }
+                               final ClassOrInterfaceDeclaration modelTemplate) {
         final KiePMMLModelConstructorBuilder builder = KiePMMLModelConstructorBuilder.get(modelTemplate,
-                                                                                          getSanitizedClassName(scorecard.getModelName()),
-                                                                                          scorecard.getModelName(),
-                                                                                          dataDictionary)
-                .withMiningFields(scorecard.getMiningSchema())
-                .withOutputFields(scorecard.getOutput())
-                .withTransformationDictionary(transformationDictionary)
-                .withLocalTransformations(scorecard.getLocalTransformations())
-                .withKiePMMLOutputFields(outputFields)
-                .withTargetField(targetField)
-                .withMiningFunction(miningFunctionExpression)
-                .withPMMLModel(PMML_MODEL.SCORECARD_MODEL.name());
+                                                                                          dataDictionary,
+                                                                                          transformationDictionary,
+                                                                                          scorecard);
         builder.build();
     }
 }
