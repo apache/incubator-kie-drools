@@ -62,6 +62,13 @@ public interface Tuple extends Serializable, Entry<Tuple> {
     InternalFactHandle get(int pattern);
 
     /**
+     * Returns the tuple at the given index
+     * @param index
+     * @return
+     */
+    Tuple getTuple(int index);
+
+    /**
      * Returns the <code>FactHandle</code> for the given <code>Declaration</code>, which in turn
      * specifcy the <code>Pattern</code> that they depend on.
      *
