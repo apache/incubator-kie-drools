@@ -113,7 +113,7 @@ public class KiePMMLRegressionTableClassificationFactory {
                 REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
         final OP_TYPE opTypePmml = opType != null ? OP_TYPE.byName(opType.value()) : null;
         populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
-        populateOutputFieldsMap(tableTemplate, outputFields);
+        populateOutputFieldsMapWithProbability(tableTemplate, outputFields);
         populateIsBinaryMethod(opType, regressionTablesMap.size(), tableTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, tableTemplate.getName())));
@@ -166,14 +166,10 @@ public class KiePMMLRegressionTableClassificationFactory {
      * @param tableTemplate
      * @param outputFields
      */
-    static void populateOutputFieldsMap(final ClassOrInterfaceDeclaration tableTemplate,
+    static void populateOutputFieldsMapWithProbability(final ClassOrInterfaceDeclaration tableTemplate,
                                                 final List<KiePMMLOutputField> outputFields) {
-        MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
+        MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
         BlockStmt body =
-                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, "populateOutputFieldsMapWithResult")));
-        populateOutputFieldsMapWithResult(body, outputFields);
-        methodDeclaration = tableTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-        body =
                 methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, "populateOutputFieldsMapWithProbability")));
         populateOutputFieldsMapWithProbability(body, outputFields);
     }

@@ -21,13 +21,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
@@ -78,7 +78,7 @@ public class ReplaceTypeInLambda {
 
             if (!a.getType().isUnknownType() &&
                     (a.getNameAsString().equals("_this") || a.getNameAsString().equals(bindingId))) {
-                a.setType( StaticJavaParser.parseClassOrInterfaceType(accumulateFunctionResultType.getCanonicalName()));
+                a.setType( toClassOrInterfaceType(accumulateFunctionResultType) );
             }
         }
     }

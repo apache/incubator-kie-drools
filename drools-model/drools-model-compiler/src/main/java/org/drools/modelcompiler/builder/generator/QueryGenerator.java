@@ -43,7 +43,6 @@ import org.drools.modelcompiler.builder.QueryModel;
 import org.drools.modelcompiler.builder.generator.visitor.ModelGeneratorVisitor;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromContext;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -71,7 +70,7 @@ public class QueryGenerator {
         }
         queryCall.addArgument(new StringLiteralExpr(queryName));
         for (QueryParameter qp : context.getQueryParameters()) {
-            queryCall.addArgument(new ClassExpr(parseType(qp.type.getCanonicalName())));
+            queryCall.addArgument(new ClassExpr(toClassOrInterfaceType(qp.type)));
             queryCall.addArgument(new StringLiteralExpr(qp.name));
         }
         packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
@@ -120,7 +119,7 @@ public class QueryGenerator {
             packageModel.addQueryInRuleUnit( context.getRuleUnitDescr(), queryModel );
         }
 
-        final Type queryType = parseType(Query.class.getCanonicalName());
+        final Type queryType = toClassOrInterfaceType(Query.class);
         MethodDeclaration queryMethod = new MethodDeclaration(NodeList.nodeList(Modifier.privateModifier()), queryType, QUERY_METHOD_PREFIX + toId(queryDescr.getName()));
 
         BlockStmt queryBody = new BlockStmt();

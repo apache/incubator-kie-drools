@@ -43,6 +43,7 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.util.ClassUtils;
 import org.drools.testcoverage.common.model.Address;
 import org.drools.testcoverage.common.model.Message;
 import org.drools.testcoverage.common.model.Person;
@@ -2962,6 +2963,11 @@ public class IncrementalCompilationTest {
 
     @Test(timeout = 20000L)
     public void testMultipleIncrementalCompilationsWithFireUntilHalt() throws Exception {
+        if (ClassUtils.isWindows()) {
+            // To be fixed : See DROOLS-6364
+            return;
+        }
+
         // DROOLS-1406
         final KieServices ks = KieServices.Factory.get();
 
@@ -2994,6 +3000,7 @@ public class IncrementalCompilationTest {
 
                 final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
                 KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(i));
+
                 kc.updateToVersion(releaseIdI);
 
                 done.await();

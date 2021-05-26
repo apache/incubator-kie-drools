@@ -19,20 +19,31 @@
     </DataField>
     <DataField name="age" optype="continuous" dataType="double"/>
     <DataField name="occupation" optype="categorical" dataType="string">
-      <Value value="SKYDIVER" />
-      <Value value="ASTRONAUT" />
-      <Value value="PROGRAMMER" />
-      <Value value="TEACHER" />
-      <Value value="INSTRUCTOR" />
+      <Value value="SKYDIVER"/>
+      <Value value="ASTRONAUT"/>
+      <Value value="PROGRAMMER"/>
+      <Value value="TEACHER"/>
+      <Value value="INSTRUCTOR"/>
     </DataField>
     <DataField name="residenceState" optype="categorical" dataType="string">
-      <Value value="AP" />
-      <Value value="KN" />
-      <Value value="TN" />
+      <Value value="AP"/>
+      <Value value="KN"/>
+      <Value value="TN"/>
     </DataField>
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
-    <DataField name="overallScore" optype="continuous" dataType="double" />
+    <DataField name="overallScore" optype="continuous" dataType="double"/>
   </DataDictionary>
+  <TransformationDictionary>
+    <DefineFunction name="fun_occupation_referred" optype="categorical" dataType="string">
+      <ParameterField name="occupation_referred"/>
+      <FieldRef field="occupation_referred"/>
+    </DefineFunction>
+    <DerivedField name="out_der_fun_occupation_referred" optype="categorical" dataType="string">
+      <Apply function="fun_occupation_referred">
+        <FieldRef field="occupation"/>
+      </Apply>
+    </DerivedField>
+  </TransformationDictionary>
   <MiningModel functionName="regression" modelName="MixedMining">
     <MiningSchema>
       <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
@@ -43,6 +54,24 @@
       <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
     </MiningSchema>
+    <Output>
+      <OutputField name="Number of Claims" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="out_der_fun_occupation" dataType="string" feature="transformedValue">
+        <FieldRef field="out_der_fun_occupation_referred"/>
+      </OutputField>
+      <OutputField name="out_residenceState" dataType="string" feature="transformedValue">
+        <FieldRef field="residenceState"/>
+      </OutputField>
+      <OutputField name="out_fun_occupation_referred" dataType="string" feature="transformedValue">
+        <Apply function="fun_occupation_referred">
+          <Constant>CONSTANT_OCCUPATION</Constant>
+        </Apply>
+      </OutputField>
+    </Output>
+    <Targets>
+      <Target field="categoricalResult" rescaleConstant="10" rescaleFactor="3.14" castInteger="round"/>
+      <Target field="salary"/>
+    </Targets>
     <Segmentation multipleModelMethod="average">
       <Segment>
         <True/>

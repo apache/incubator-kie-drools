@@ -421,12 +421,6 @@ public class KiePMMLRegressionTableRegressionFactoryTest extends AbstractKiePMML
                 .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
                 .collect(Collectors.toList());
         outputFields.addAll(probabilityOutputFields);
-        KiePMMLRegressionTableRegressionFactory.populateOutputFieldsMap(modelTemplate, outputFields);
-        MethodDeclaration methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
-        BlockStmt body = methodDeclaration.getBody().get();
-        NodeList<Statement> retrieved = body.getStatements();
-        assertEquals(1, retrieved.size());
     }
 
     private void commonEvaluateGetTargetCategory(final ClassOrInterfaceDeclaration tableTemplate,

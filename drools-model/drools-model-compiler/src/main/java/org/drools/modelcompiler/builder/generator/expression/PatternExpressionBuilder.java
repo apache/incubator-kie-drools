@@ -38,10 +38,9 @@ import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuc
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
 import static java.util.Optional.of;
-
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
@@ -202,7 +201,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         FieldAccessExpr indexedBy_constraintType = new FieldAccessExpr(new NameExpr(org.drools.model.Index.ConstraintType.class.getCanonicalName()), drlxParseResult.getDecodeConstraintType().toString()); // not 100% accurate as the type in "nameExpr" is actually parsed if it was JavaParsers as a big chain of FieldAccessExpr
         LambdaExpr indexedBy_leftOperandExtractor = new LambdaExpr();
         indexedBy_leftOperandExtractor.setEnclosingParameters(true);
-        indexedBy_leftOperandExtractor.addParameter(new Parameter(parseClassOrInterfaceType(drlxParseResult.getPatternType().getCanonicalName()), THIS_PLACEHOLDER));
+        indexedBy_leftOperandExtractor.addParameter(new Parameter(toClassOrInterfaceType(drlxParseResult.getPatternType()), THIS_PLACEHOLDER));
         boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 

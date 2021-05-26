@@ -58,6 +58,7 @@ import org.slf4j.LoggerFactory;
 import static java.util.stream.Collectors.toList;
 
 import static org.drools.core.util.StringUtils.getPkgUUID;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
 
 /**
@@ -114,6 +115,41 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, pkgUUID, sourcesMap
                     , rulesSourceMap);
             knowledgeBuilder.registerPackage(packageDescr);
+            return toReturn;
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
+    }
+
+    @Override
+    public E getKiePMMLModelWithSourcesCompiled(final String packageName, final DataDictionary dataDictionary,
+                                        final TransformationDictionary transformationDictionary, final T model,
+                                        final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, hasClassloader);
+        if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
+            throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s",
+                                                     hasClassloader.getClass().getName()));
+        }
+        try {
+            HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) hasClassloader;
+            KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
+            final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
+            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary,
+                                                                          model, fieldTypeMap);
+            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary
+                    , model, fieldTypeMap, packageName);
+            String className = getSanitizedClassName(model.getModelName());
+            String fullClassName = packageName + "." + className;
+            hasClassloader.compileAndLoadClass(sourcesMap, fullClassName);
+            PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
+            String pkgUUID = getPkgUUID(knowledgeBuilder.getReleaseId(), packageName);
+            packageDescr.setPreferredPkgUUID(pkgUUID);
+            Map<String, String> rulesSourceMap = Collections.unmodifiableMap(getRulesSourceMap(packageDescr));
+            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, pkgUUID, sourcesMap
+                    , rulesSourceMap);
+            // Needed to compile Rules from PackageDescr
+            CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
+            knowledgeBuilder.buildPackages(Collections.singletonList(compositePackageDescr));
             return toReturn;
         } catch (Exception e) {
             throw new KiePMMLException(e);

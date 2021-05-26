@@ -48,8 +48,7 @@ public class KnowledgePackageMetaDataTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM failed with testMetaData. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     private String drl ="" +
@@ -97,9 +96,12 @@ public class KnowledgePackageMetaDataTest {
 
         assertNotNull( pack );
 
-        assertEquals( 2, pack.getFunctionNames().size() );
-        assertTrue( pack.getFunctionNames().contains( "fun1" ) );
-        assertTrue( pack.getFunctionNames().contains( "fun2" ) );
+        if (!kieBaseTestConfiguration.isExecutableModel()) {
+            // With executable model functions becomes plain static methods and then now longer distinguishable from any other static method
+            assertEquals(2, pack.getFunctionNames().size());
+            assertTrue(pack.getFunctionNames().contains("fun1"));
+            assertTrue(pack.getFunctionNames().contains("fun2"));
+        }
 
         assertEquals( 2, pack.getGlobalVariables().size() );
         GlobalImpl g1 = new GlobalImpl( "N", "java.lang.Integer" );

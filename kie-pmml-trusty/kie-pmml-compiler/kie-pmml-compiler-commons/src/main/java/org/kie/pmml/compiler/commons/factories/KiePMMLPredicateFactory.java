@@ -46,6 +46,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
@@ -88,6 +89,7 @@ import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDataType;
 
 public class KiePMMLPredicateFactory {
 
@@ -172,22 +174,19 @@ public class KiePMMLPredicateFactory {
 
     public static BlockStmt getPredicateBody(final Predicate predicate,
                                              final DataDictionary dataDictionary,
+                                             final List<DerivedField> derivedFields,
                                              final List<MethodDeclaration> compoundPredicateMethods,
                                              final String rootNodeClassName,
                                              final String nodeClassName,
                                              final AtomicInteger counter) {
         logger.trace("getPredicateBody {}", predicate);
         if (predicate instanceof SimplePredicate) {
-            final DataType dataType = dataDictionary.getDataFields().stream()
-                    .filter(dataField -> dataField.getName().getValue().equals(((SimplePredicate) predicate).getField().getValue()))
-                    .map(DataField::getDataType)
-                    .findFirst()
-                    .orElseThrow(() -> new KiePMMLException("Failed to find DataField for predicate " + ((SimplePredicate) predicate).getField().getValue()));
-            return getSimplePredicateBody((SimplePredicate) predicate, dataType);
+            final DataType dataType = getDataType(derivedFields, dataDictionary, ((SimplePredicate) predicate).getField().getValue());
+           return getSimplePredicateBody((SimplePredicate) predicate, dataType);
         } else if (predicate instanceof SimpleSetPredicate) {
             return getSimpleSetPredicateBody((SimpleSetPredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
-            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, compoundPredicateMethods,
+            return getCompoundPredicateBody((CompoundPredicate) predicate, dataDictionary, derivedFields, compoundPredicateMethods,
                                             rootNodeClassName,
                                             nodeClassName,
                                             counter);

@@ -2299,7 +2299,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             assertContains(new String[]{"crackers", "apple"}, food);
 
             assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(2, existsMemory.getRightTupleMemory().size());
+            assertEquals(0, existsMemory.getRightTupleMemory().size()); // This is zero, as it's held directly on the LeftTuple context
             assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
             assertEquals(0, notMemory.getRightTupleMemory().size());
 
@@ -2315,7 +2315,7 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             assertContains(new String[]{"crackers", "apple"}, food);
 
             assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(2, existsMemory.getRightTupleMemory().size());
+            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
             assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
             assertEquals(0, notMemory.getRightTupleMemory().size());
             food.clear();
@@ -2326,9 +2326,10 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(2, existsMemory.getRightTupleMemory().size());
+            assertEquals(1, existsMemory.getLeftTupleMemory().size());
+            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
             assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
-            assertEquals(1, notMemory.getRightTupleMemory().size());
+            assertEquals(0, notMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
 
             assertEquals(0, foodUpdated.size());
 
@@ -2338,7 +2339,8 @@ public class BackwardChainingTest extends AbstractBackwardChainingTest {
             ksession.fireAllRules();
 
             assertEquals(2, accMemory.getBetaMemory().getRightTupleMemory().size());
-            assertEquals(2, existsMemory.getRightTupleMemory().size());
+            assertEquals(1, existsMemory.getLeftTupleMemory().size());
+            assertEquals(0, existsMemory.getRightTupleMemory().size());  // This is zero, as it's held directly on the LeftTuple context
             assertEquals(2, fromMemory.getBetaMemory().getLeftTupleMemory().size());
             assertEquals(0, notMemory.getRightTupleMemory().size());
 

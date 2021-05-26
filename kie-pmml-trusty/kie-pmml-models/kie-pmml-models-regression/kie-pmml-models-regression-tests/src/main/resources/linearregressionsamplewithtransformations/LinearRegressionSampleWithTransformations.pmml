@@ -11,8 +11,8 @@
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="fun_salary_fieldref" optype="continuous" dataType="double">
-      <ParameterField name="salary_pippo"/>
-      <FieldRef field="salary_pippo"/>
+      <ParameterField name="salary_foo"/>
+      <FieldRef field="salary_foo"/>
     </DefineFunction>
     <DefineFunction name="fun_salary_constant" optype="categorical" dataType="string">
       <ParameterField name="empty"/>
@@ -85,6 +85,9 @@
       <OutputField name="out_der_car_location" dataType="string" feature="transformedValue">
         <FieldRef field="der_car_location"/>
       </OutputField>
+      <OutputField name="out_der_car_location_referral" dataType="string" feature="transformedValue">
+        <FieldRef field="out_der_car_location"/>
+      </OutputField>
       <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
         <FieldRef field="der_constant"/>
       </OutputField>
@@ -97,7 +100,15 @@
       <OutputField name="out_der_fun_salary_apply" dataType="string" feature="transformedValue">
         <FieldRef field="der_fun_salary_apply"/>
       </OutputField>
+      <OutputField name="out_der_fun_salary_apply_fun_salary_fieldref" dataType="string" feature="transformedValue">
+        <Apply function="fun_salary_fieldref">
+          <Constant>987654321</Constant>
+        </Apply>
+      </OutputField>
     </Output>
+    <Targets>
+      <Target field="number_of_claims" rescaleConstant="10" rescaleFactor="3.14" castInteger="round"/>
+    </Targets>
     <RegressionTable intercept="132.37">
       <NumericPredictor name="der_age" exponent="1" coefficient="7.1"/>
       <NumericPredictor name="der_salary" exponent="1" coefficient="0.01"/>

@@ -20,12 +20,9 @@ package org.drools.core.reteoo.builder;
 import java.io.Serializable;
 import java.util.List;
 
-import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.ValueType;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.RuleBasePartitionId;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.factmodel.traits.TraitProxy;
 import org.drools.core.reteoo.AccumulateNode;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.AlphaTerminalNode;
@@ -50,7 +47,6 @@ import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TimerNode;
-import org.drools.core.reteoo.TraitProxyObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
 import org.drools.core.rule.AsyncReceive;
@@ -121,8 +117,8 @@ public class PhreakNodeFactory implements NodeFactory, Serializable {
 
     public AccumulateNode buildAccumulateNode(int id, LeftTupleSource leftInput, ObjectSource rightInput,
                                               AlphaNodeFieldConstraint[] resultConstraints, BetaConstraints sourceBinder,
-                                              BetaConstraints resultBinder, Accumulate accumulate, boolean unwrapRightObject, BuildContext context ) {
-        return new AccumulateNode( id, leftInput, rightInput, resultConstraints, sourceBinder,resultBinder, accumulate, unwrapRightObject, context );
+                                              BetaConstraints resultBinder, Accumulate accumulate, BuildContext context) {
+        return new AccumulateNode(id, leftInput, rightInput, resultConstraints, sourceBinder, resultBinder, accumulate, context );
     }
 
     public LeftInputAdapterNode buildLeftInputAdapterNode( int id, ObjectSource objectSource, BuildContext context, boolean terminal ) {

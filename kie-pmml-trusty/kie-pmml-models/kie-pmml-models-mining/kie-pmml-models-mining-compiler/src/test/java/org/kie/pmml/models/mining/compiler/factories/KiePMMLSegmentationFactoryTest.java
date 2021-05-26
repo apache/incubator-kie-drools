@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
@@ -31,8 +32,13 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.SEGMENTATIONNAME_TEMPLATE;
 
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
 
@@ -68,5 +74,47 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
         assertNotNull(retrieved);
         int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
         assertEquals(expectedNestedModels, nestedModels.size());
+    }
+
+    @Test
+    public void getSegmentationSourcesMapCompiled() {
+        final String segmentationName = String.format(SEGMENTATIONNAME_TEMPLATE, MINING_MODEL.getModelName());
+        final List<KiePMMLModel> nestedModels = new ArrayList<>();
+        final HasKnowledgeBuilderMock hasKnowledgeBuilderMock = new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER);
+        final List<String> expectedGeneratedClasses =
+                MINING_MODEL.getSegmentation().getSegments().stream().map(segment -> {
+                    String modelName = segment.getModel().getModelName();
+                    String sanitizedPackageName = getSanitizedPackageName(PACKAGE_NAME + "."
+                                                                                  + segmentationName + "."
+                                                                                  + segment.getId() + "."
+                                                                                  + modelName);
+                    String sanitizedClassName = getSanitizedClassName(modelName);
+                    return String.format(PACKAGE_CLASS_TEMPLATE, sanitizedPackageName, sanitizedClassName);
+                }).collect(Collectors.toList());expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
+            try {
+                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
+                fail("Expecting class not found: " + expectedGeneratedClass);
+            } catch (Exception e) {
+                assertTrue(e instanceof ClassNotFoundException);
+            }
+        });
+        final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled(PACKAGE_NAME,
+                                                                                                           DATA_DICTIONARY,
+                                                                                                           TRANSFORMATION_DICTIONARY,
+                                                                                                           MINING_MODEL.getSegmentation(),
+                                                                                                           segmentationName,
+                                                                                                           hasKnowledgeBuilderMock,
+                                                                                                           nestedModels);
+        assertNotNull(retrieved);
+        int expectedNestedModels = MINING_MODEL.getSegmentation().getSegments().size();
+        assertEquals(expectedNestedModels, nestedModels.size());
+        expectedGeneratedClasses.forEach(expectedGeneratedClass -> {
+            try {
+                hasKnowledgeBuilderMock.getClassLoader().loadClass(expectedGeneratedClass);
+            } catch (Exception e) {
+                fail("Expecting class to be loaded, but got: " + e.getClass().getName() + " -> " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
 }

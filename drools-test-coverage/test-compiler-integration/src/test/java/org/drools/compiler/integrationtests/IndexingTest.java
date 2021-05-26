@@ -38,7 +38,6 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
@@ -155,15 +154,15 @@ public class IndexingTest {
             assertNotNull(otn);
             final AlphaNode alphaNode1 = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
             final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) alphaNode1.getObjectSinkPropagator();
-            final ObjectSinkNodeList hashableSinks = sinkAdapter.getHashableSinks();
+            final List<AlphaNode> hashableSinks = sinkAdapter.getHashableSinks();
             assertNotNull(hashableSinks);
             assertEquals(2, hashableSinks.size());
 
             final AlphaNode alphaNode2 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[0];
-            assertSame(hashableSinks.getFirst(), alphaNode2);
+            assertSame(hashableSinks.get(0), alphaNode2);
 
             final AlphaNode alphaNode3 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[1];
-            assertSame(hashableSinks.getLast(), alphaNode3);
+            assertSame(hashableSinks.get(1), alphaNode3);
         } finally {
             wm.dispose();
         }

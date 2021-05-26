@@ -31,6 +31,8 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
 import com.github.javaparser.ast.expr.Expression;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+
 public class DeclarationSpec {
     private final String bindingId;
     private final Class<?> declarationClass;
@@ -100,7 +102,7 @@ public class DeclarationSpec {
     }
 
     public Type getRawType() {
-        return DrlxParseUtil.toType(getDeclarationClass());
+        return toClassOrInterfaceType(getDeclarationClass());
     }
 
     public Boolean isGlobal() {

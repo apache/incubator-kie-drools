@@ -1872,7 +1872,7 @@ Expression PrimaryExpressionWithoutSuperSuffix():
 Expression PrimaryPrefix():
 {
 	Expression ret = null;
-	SimpleName name;
+	SimpleName name = null;
 	RangedList<Type> typeArgs = new RangedList<Type>(null);
 	NodeList<Expression> args = emptyList();
 	NodeList<Parameter> params = emptyList();
@@ -1919,6 +1919,9 @@ Expression PrimaryPrefix():
             params = LambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
         | LOOKAHEAD(VariableDeclaratorId() ",")
             params = InferredLambdaParameters() ")" { ret = new LambdaExpr(range(begin, token()), params, new BlockStmt(), true); }
+        | LOOKAHEAD(SimpleName() ":")
+            name = SimpleName() ":"
+            ret = Expression() ")" { ret = new DrlxExpression(name, ret); ret = new EnclosedExpr(range(begin, token()), ret); }
         |
             // This could still be a lambda expression, but this is handled after matching -> elsewhere
             ret = Expression() ")" { ret = new EnclosedExpr(range(begin, token()), ret); }

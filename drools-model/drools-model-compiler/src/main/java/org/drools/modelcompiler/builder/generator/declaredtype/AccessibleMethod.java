@@ -43,7 +43,6 @@ import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 
 public class AccessibleMethod {
 
@@ -68,14 +67,14 @@ public class AccessibleMethod {
     public MethodDefinition getterMethod() {
         return new MethodWithStringBody(GET_VALUE, Object.class.getSimpleName(), getterSwitchStatement().toString())
                 .addParameter(String.class.getCanonicalName(), FIELD_NAME)
-                .addAnnotation(OVERRIDE);
+                .addAnnotation("Override");
     }
 
     public MethodDefinition setterMethod() {
         return new MethodWithStringBody(SET_VALUE, "void", setterSwitchStatement().toString())
                 .addParameter(String.class.getCanonicalName(), FIELD_NAME)
                 .addParameter(Object.class.getCanonicalName(), "value")
-                .addAnnotation(OVERRIDE);
+                .addAnnotation("Override");
     }
 
     private Statement getterSwitchStatement() {

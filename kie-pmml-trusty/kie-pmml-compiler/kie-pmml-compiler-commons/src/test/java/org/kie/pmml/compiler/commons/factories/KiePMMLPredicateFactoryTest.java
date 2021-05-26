@@ -27,17 +27,23 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
@@ -46,21 +52,25 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
 import org.dmg.pmml.FieldName;
+import org.dmg.pmml.PMML;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 import org.dmg.pmml.Visitor;
 import org.dmg.pmml.VisitorAction;
+import org.dmg.pmml.tree.Node;
+import org.dmg.pmml.tree.TreeModel;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.enums.IN_NOTIN;
 import org.kie.pmml.api.enums.OPERATOR;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
@@ -68,6 +78,10 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.kie.pmml.compiler.commons.utils.ModelUtils;
 
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
@@ -84,6 +98,7 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KI
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_TEMPLATE;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicateBody;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
@@ -93,9 +108,15 @@ import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRand
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomValue;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getStringObjects;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
+import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLPredicateFactoryTest {
 
+    private static final String SOURCE = "TreeSample.pmml";
+    private static PMML pmmlModel;
+    private static TreeModel model;
+    private static DataDictionary pmmlDataDictionary;
+    private static List<DerivedField> derivedFields;
     private static Map<String, DataType> simplePredicateNameType;
     private static List<SimplePredicate> simplePredicates;
     private static Map<String, Array.Type> simpleSetPredicateNameType;
@@ -106,7 +127,7 @@ public class KiePMMLPredicateFactoryTest {
     private List<AssignExpr> assignExprs;
 
     @BeforeClass
-    public static void setup() {
+    public static void setup() throws Exception {
         simplePredicateNameType = new HashMap<>();
         simplePredicateNameType.put("age", DataType.INTEGER);
         simplePredicateNameType.put("weight", DataType.DOUBLE);
@@ -142,6 +163,14 @@ public class KiePMMLPredicateFactoryTest {
                                                                     getRandomSimpleSetPredicateOperator());
                 })
                 .collect(Collectors.toList());
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(SOURCE), "");
+        assertNotNull(pmmlModel);
+        pmmlDataDictionary = pmmlModel.getDataDictionary();
+        assertNotNull(pmmlDataDictionary);
+        model = (TreeModel) pmmlModel.getModels().get(0);
+        assertNotNull(model);
+        derivedFields = ModelUtils.getDerivedFields(pmmlModel.getTransformationDictionary(),
+                                                                             model.getLocalTransformations());
     }
 
     @Test
@@ -251,6 +280,145 @@ public class KiePMMLPredicateFactoryTest {
         KiePMMLFalsePredicate expected = KiePMMLFalsePredicate.builder(Collections.emptyList()).build();
         assertEquals(expected.getName(), retrieved.getName());
         assertNotEquals(expected.getId(), retrieved.getId());
+    }
+
+    @Test
+    public void getSimplePredicateNoRefPredicateBody() {
+        Predicate predicate = getNodeById(model, "A_A").getPredicate();
+        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
+        final String rootNodeClassName = "rootNodeClassName";
+        final String nodeClassName = "nodeClassName";
+        final AtomicInteger counter = new AtomicInteger();
+        BlockStmt retrieved = getPredicateBody(predicate,
+                                               pmmlDataDictionary,
+                                               derivedFields,
+                                               compoundPredicateMethods,
+                                               rootNodeClassName,
+                                               nodeClassName,
+                                               counter);
+        assertNotNull(retrieved);
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Object value = \"sunny\";\n" +
+                                                                "    if (stringObjectMap.containsKey(\"outlook\")) {\n" +
+                                                                "        return value.equals(stringObjectMap.get(\"outlook\"));\n" +
+                                                                "    } else {\n" +
+                                                                "        return false;\n" +
+                                                                "    }\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
+        assertTrue(compoundPredicateMethods.isEmpty());
+    }
+
+    @Test
+    public void getSimplePredicateRefPredicateBody() {
+        Predicate predicate = getNodeById(model, "A_A_A_A").getPredicate();
+        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
+        final String rootNodeClassName = "rootNodeClassName";
+        final String nodeClassName = "nodeClassName";
+        final AtomicInteger counter = new AtomicInteger();
+        BlockStmt retrieved = getPredicateBody(predicate,
+                                               pmmlDataDictionary,
+                                               derivedFields,
+                                               compoundPredicateMethods,
+                                               rootNodeClassName,
+                                               nodeClassName,
+                                               counter);
+        assertNotNull(retrieved);
+        BlockStmt expected = JavaParserUtils.parseBlock( "{\n" +
+                                                                 "    Object inputValue = null;\n" +
+                                                                 "    Object value = 80.0;\n" +
+                                                                 "    if (stringObjectMap.containsKey(\"HumidityRef\")) {\n" +
+                                                                 "        inputValue = stringObjectMap.get(\"HumidityRef\");\n" +
+                                                                 "    } else {\n" +
+                                                                 "        return false;\n" +
+                                                                 "    }\n" +
+                                                                 "    if (inputValue instanceof Number && value instanceof Number) {\n" +
+                                                                 "        return ((Number) inputValue).doubleValue() < ((Number) value).doubleValue();\n" +
+                                                                 "    } else {\n" +
+                                                                 "        return false;\n" +
+                                                                 "    }\n" +
+                                                                 "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
+        assertTrue(compoundPredicateMethods.isEmpty());
+    }
+
+    @Test
+    public void getSimpleSetPredicatePredicateBody() {
+        Predicate predicate = getNodeById(model, "A_A_B").getPredicate();
+        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
+        final String rootNodeClassName = "rootNodeClassName";
+        final String nodeClassName = "nodeClassName";
+        final AtomicInteger counter = new AtomicInteger();
+        BlockStmt retrieved = getPredicateBody(predicate,
+                                               pmmlDataDictionary,
+                                               derivedFields,
+                                               compoundPredicateMethods,
+                                               rootNodeClassName,
+                                               nodeClassName,
+                                               counter);
+        assertNotNull(retrieved);
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    org.kie.pmml.api.enums.ARRAY_TYPE arrayType = org.kie.pmml.api.enums.ARRAY_TYPE.STRING;\n" +
+                                                                "    if (!stringObjectMap.containsKey(\"occupation\")) {\n" +
+                                                                "        return false;\n" +
+                                                                "    }\n" +
+                                                                "    final String stringValue = (String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(String" +
+                                                                ".class, stringObjectMap.get(\"occupation\"));\n" +
+                                                                "    final Object value = arrayType.getValue(stringValue);\n" +
+                                                                "    final List values = java.util.Arrays.asList(\"SKYDIVER\", \"ASTRONAUT\");\n" +
+                                                                "    return values.contains(value);\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
+        assertTrue(compoundPredicateMethods.isEmpty());
+    }
+
+    @Test
+    public void getCompoundPredicatePredicateBody() {
+        Predicate predicate = getNodeById(model, "A_B_A").getPredicate();
+        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
+        final String rootNodeClassName = "rootNodeClassName";
+        final String nodeClassName = "nodeClassName";
+        final AtomicInteger counter = new AtomicInteger();
+        BlockStmt retrieved = getPredicateBody(predicate,
+                                               pmmlDataDictionary,
+                                               derivedFields,
+                                               compoundPredicateMethods,
+                                               rootNodeClassName,
+                                               nodeClassName,
+                                               counter);
+        assertNotNull(retrieved);
+        BlockStmt expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    Boolean toReturn = null;\n" +
+                                                                "    final List<Function<Map<String, Object>, Boolean>> functions = java.util.Arrays.asList" +
+                                                                "(rootNodeClassName::evaluateNestedPredicatenodeClassName1, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName2, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName3, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName4, " +
+                                                                "rootNodeClassName::evaluateNestedPredicatenodeClassName5);\n" +
+                                                                "    for (Function<Map<String, Object>, Boolean> function : functions) {\n" +
+                                                                "        Boolean evaluation = function.apply(stringObjectMap);\n" +
+                                                                "        // generated\n" +
+                                                                "        toReturn = toReturn != null ? toReturn && evaluation : evaluation;\n" +
+                                                                "    }\n" +
+                                                                "    return toReturn != null && toReturn;\n" +
+                                                                "}");
+        JavaParserUtils.equalsNode(expected, retrieved);
+        Optional<VariableDeclarator> optVar = CommonCodegenUtils.getVariableDeclarator(retrieved, "functions");
+        assertTrue(optVar.isPresent());
+        VariableDeclarator variableDeclarator = optVar.get();
+        Optional<Expression> optInit = variableDeclarator.getInitializer();
+        assertTrue(optInit.isPresent());
+        MethodCallExpr methodCallExpr = (MethodCallExpr) optInit.get();
+        NodeList<Expression> arguments = methodCallExpr.getArguments();
+        assertEquals(5, arguments.size());
+        assertEquals(arguments.size(), compoundPredicateMethods.size());
+        arguments.forEach(expression -> {
+            assertTrue(expression instanceof MethodReferenceExpr);
+            MethodReferenceExpr methodReferenceExpr = (MethodReferenceExpr)expression;
+            assertEquals(rootNodeClassName, methodReferenceExpr.getScope().toString());
+            String identifier = methodReferenceExpr.getIdentifier();
+            assertTrue(compoundPredicateMethods.stream().anyMatch(methodDeclaration -> identifier.equals(methodDeclaration.getName().asString())) );
+        });
     }
 
     @Test
@@ -639,5 +807,25 @@ public class KiePMMLPredicateFactoryTest {
             }
         })
                 .collect(Collectors.toList());
+    }
+
+    static Node getNodeById(TreeModel treeModel, String id) {
+        return getNodeById(treeModel.getNode(), id);
+    }
+
+    static Node getNodeById(Node current, String id) {
+        if (id.equals(current.getId())) {
+            return current;
+        }
+        Node toReturn = null;
+        if (current.hasNodes()) {
+            for (Node child : current.getNodes()) {
+                toReturn = getNodeById(child, id);
+                if (toReturn != null) {
+                    break;
+                }
+            }
+        }
+        return toReturn;
     }
 }

@@ -19,6 +19,7 @@ import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.BetaMemory;
+import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.ExistsNode;
 import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
@@ -30,13 +31,6 @@ import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:46
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakExistsNode {
     public void doNode(ExistsNode existsNode,
                        LeftTupleSink sink,
@@ -45,52 +39,67 @@ public class PhreakExistsNode {
                        TupleSets<LeftTuple> srcLeftTuples,
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
-
-        TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
-
-        if (srcLeftTuples.getDeleteFirst() != null) {
-            doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        if (!existsNode.isRightInputIsRiaNode()) {
+            doNormalNode(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        } else {
+            PhreakSubnetworkNotExistsNode.doSubNetworkNode(existsNode, sink, bm,
+                                                           srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
-
-        if (srcLeftTuples.getUpdateFirst() != null )  {
-            RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
-                                                                       srcLeftTuples);
-        }
-
-        if ( srcRightTuples.getUpdateFirst() != null ) {
-            RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
-                                                                        existsNode,
-                                                                        srcRightTuples); // this also preserves the next rightTuple
-        }
-
-        if (srcRightTuples.getInsertFirst() != null) {
-            // left deletes must come before right deletes. Otherwise right deletes could
-            // stage a deletion, that is later deleted in the rightDelete, causing potential problems
-            doRightInserts(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
-        }
-
-        if (srcRightTuples.getUpdateFirst() != null) {
-            // must come after rightInserts and before rightDeletes, to avoid staging clash
-            doRightUpdates(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcRightTuples.getDeleteFirst() != null) {
-            // must come after rightUpdetes, to avoid staging clash
-            doRightDeletes(existsNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-
-        if (srcLeftTuples.getUpdateFirst() != null) {
-            doLeftUpdates(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
-        }
-
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
-        }
-
-        srcRightTuples.resetAll();
-        srcLeftTuples.resetAll();
     }
+
+public void doNormalNode(ExistsNode existsNode,
+                         LeftTupleSink sink,
+                         BetaMemory bm,
+                         InternalWorkingMemory wm,
+                         TupleSets<LeftTuple> srcLeftTuples,
+                         TupleSets<LeftTuple> trgLeftTuples,
+                         TupleSets<LeftTuple> stagedLeftTuples) {
+
+    TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
+
+    if (srcLeftTuples.getDeleteFirst() != null) {
+        doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+    }
+
+    if (srcLeftTuples.getUpdateFirst() != null )  {
+        RuleNetworkEvaluator.doUpdatesExistentialReorderLeftMemory(bm,
+                                                                   srcLeftTuples);
+    }
+
+    if ( srcRightTuples.getUpdateFirst() != null ) {
+        RuleNetworkEvaluator.doUpdatesExistentialReorderRightMemory(bm,
+                                                                    existsNode,
+                                                                    srcRightTuples); // this also preserves the next rightTuple
+    }
+
+    if (srcRightTuples.getInsertFirst() != null) {
+        // left deletes must come before right deletes. Otherwise right deletes could
+        // stage a deletion, that is later deleted in the rightDelete, causing potential problems
+        doRightInserts(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples);
+    }
+
+    if (srcRightTuples.getUpdateFirst() != null) {
+        // must come after rightInserts and before rightDeletes, to avoid staging clash
+        doRightUpdates(existsNode, sink, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+    }
+
+    if (srcRightTuples.getDeleteFirst() != null) {
+        // must come after rightUpdetes, to avoid staging clash
+        doRightDeletes(existsNode, bm, wm, srcRightTuples, trgLeftTuples, stagedLeftTuples);
+    }
+
+
+    if (srcLeftTuples.getUpdateFirst() != null) {
+        doLeftUpdates(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+    }
+
+    if (srcLeftTuples.getInsertFirst() != null) {
+        doLeftInserts(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples);
+    }
+
+    srcRightTuples.resetAll();
+    srcLeftTuples.resetAll();
+}
 
     public void doLeftInserts(ExistsNode existsNode,
                               LeftTupleSink sink,

@@ -109,7 +109,7 @@ public abstract class AbstractExpressionBuilder {
     public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult);
 
     protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined()) {
+        if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined() && !drlxParseResult.isPredicate()) {
             return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
         } else {
             final TypedExpression left = drlxParseResult.getLeft();
@@ -253,11 +253,13 @@ public abstract class AbstractExpressionBuilder {
                 return toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
             }
             if (leftType.equals(BigDecimal.class)) {
-                final BigDecimal bigDecimal = new BigDecimal( expression.toString() );
+                String expressionString = stringValue(expression);
+                final BigDecimal bigDecimal = new BigDecimal( expressionString );
                 return toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
             }
             if (leftType.equals(BigInteger.class)) {
-                final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
+                String expressionString = stringValue(expression);
+                final BigInteger bigInteger = new BigDecimal(expressionString).toBigInteger();
                 return toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
             }
 
@@ -273,6 +275,14 @@ public abstract class AbstractExpressionBuilder {
         }
 
         return expression;
+    }
+
+    private String stringValue(Expression expression) {
+        if(expression.isStringLiteralExpr()) {
+            return expression.asStringLiteralExpr().getValue();
+        } else {
+            return expression.toString();
+        }
     }
 
     private static Expression toNewExpr(Class<?> clazz, Expression initExpression) {

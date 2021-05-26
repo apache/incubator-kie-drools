@@ -15,13 +15,19 @@
  */
 package org.kie.pmml.compiler.api.provider;
 
+import java.util.Map;
+
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
+import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.PMML_MODEL;
+
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 
 /**
  * API for actual PMML model implementations
@@ -55,4 +61,29 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * @throws KiePMMLInternalException
      */
     E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
+
+    /**
+     * Method provided only to have <b>drools</b> models working when invoked by a <code>KiePMMLMiningModel</code>
+     * Default implementation provided for <b>not-drools</b> models.
+     *
+     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
+     * @param dataDictionary
+     * @param transformationDictionary
+     * @param model
+     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
+     * @return
+     * @throws KiePMMLInternalException
+     */
+    default E getKiePMMLModelWithSourcesCompiled(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader) {
+        E toReturn = getKiePMMLModelWithSources(packageName, dataDictionary, transformationDictionary, model, hasClassloader);
+        final Map<String, String> sourcesMap = ((HasSourcesMap)toReturn).getSourcesMap();
+        String className = getSanitizedClassName(model.getModelName());
+        String fullClassName = packageName + "." + className;
+        try {
+            hasClassloader.compileAndLoadClass(sourcesMap, fullClassName);
+        } catch (Exception e) {
+            throw new KiePMMLException(e);
+        }
+        return toReturn;
+    }
 }

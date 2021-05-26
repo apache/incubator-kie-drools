@@ -16,6 +16,7 @@
 
 package org.kie.dmn.feel.lang.types.impl;
 
+import java.io.Serializable;
 import java.time.Period;
 import java.time.chrono.ChronoPeriod;
 import java.time.chrono.Chronology;
@@ -27,7 +28,7 @@ import java.util.List;
 
 import org.kie.dmn.feel.util.TypeUtil;
 
-public class ComparablePeriod implements Comparable<ChronoPeriod>, ChronoPeriod {
+public class ComparablePeriod implements Comparable<ChronoPeriod>, ChronoPeriod, Serializable {
     private final int left;
     private final String toStringRep;
     private final Period period;
