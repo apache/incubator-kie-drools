@@ -128,7 +128,9 @@ public abstract class BaseNode
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
     public void attach(BuildContext context) {
+        // do common shared code here, so it executes for all nodes
         doAttach(context);
+        // do common shared code here, so it executes for all nodes
     }
 
     public void doAttach(BuildContext context) {

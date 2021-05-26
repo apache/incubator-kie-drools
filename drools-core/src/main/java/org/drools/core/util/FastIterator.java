@@ -16,6 +16,18 @@
 package org.drools.core.util;
 
 public interface FastIterator {
+    public class NullFastIterator implements FastIterator {
+        public static final NullFastIterator INSTANCE = new NullFastIterator();
+
+        @Override public Entry next(Entry object) {
+            return null;
+        }
+
+        @Override public boolean isFullIterator() {
+            return true;
+        }
+    }
+
     Entry next(Entry object);
     
     boolean isFullIterator();

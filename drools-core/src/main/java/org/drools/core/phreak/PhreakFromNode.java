@@ -40,13 +40,6 @@ import org.drools.core.util.LinkedList;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:43
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakFromNode {
     public void doNode(FromNode fromNode,
                        FromMemory fm,

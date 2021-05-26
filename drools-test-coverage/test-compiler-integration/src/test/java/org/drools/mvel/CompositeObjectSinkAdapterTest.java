@@ -117,7 +117,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 1,
                       ad.getOtherSinks().size() );
         assertEquals( beta,
-                      ad.getOtherSinks().getFirst() );
+                      ad.getOtherSinks().get(0) );
 
         assertNull( ad.getHashableSinks() );
         assertNull( ad.getHashedFieldIndexes() );
@@ -144,7 +144,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 1,
                       ad.getOtherSinks().size() );
         assertEquals( al,
-                      ad.getOtherSinks().getFirst() );
+                      ad.getOtherSinks().get(0) );
 
         ad.removeObjectSink( al );
         assertEquals( 0,
@@ -231,7 +231,7 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 1,
                       ad.getOtherSinks().size() );
         assertEquals( beta,
-                      ad.getOtherSinks().getFirst() );
+                      ad.getOtherSinks().get(0) );
 
         ad.removeObjectSink( beta );
         assertNull( ad.getOtherSinks() );

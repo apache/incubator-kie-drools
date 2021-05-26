@@ -2006,13 +2006,17 @@ public class AccumulateTest extends BaseModelTest {
 
         ksession.insert(parent1);
         ksession.insert(parent2);
-        FactHandle toRemove = ksession.insert(child1);
+       FactHandle toRemove = ksession.insert(child1);
         ksession.insert(child2);
+        ksession.fireAllRules();
+        Assertions.assertThat(results)
+                  .containsOnly(Arrays.asList(child1, 2L), Arrays.asList(child2, 2L));
 
         // Remove child1, therefore it does not exist, therefore there should be no groupBy matches for the child.
+        results.clear();
         ksession.delete(toRemove);
 
-        // Yet, we still get (Child1, 0).
+        // Yet, we still get (Child2, 0).
         ksession.fireAllRules();
         Assertions.assertThat(results)
                 .containsOnly(Arrays.asList(child2, 1L));

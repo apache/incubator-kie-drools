@@ -18,6 +18,7 @@ package org.drools.ancompiler;
 
 import java.util.Collection;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -32,15 +33,12 @@ import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.ObjectSink;
 import org.drools.core.reteoo.ObjectSinkNode;
-import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectSinkPropagator;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.SingleObjectSinkAdapter;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.IndexableConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.util.Iterator;
-import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.index.AlphaRangeIndex;
 
 /**
@@ -122,9 +120,9 @@ public class ObjectTypeNodeParser {
             traverseSinkList(composite.getSinks(), handler);
         }
     }
-    private void traverseSinkList(ObjectSinkNodeList sinks, NetworkHandler handler) {
+    private void traverseSinkList(List<? extends ObjectSinkNode> sinks, NetworkHandler handler) {
         if (sinks != null) {
-            for (ObjectSinkNode sink = sinks.getFirst(); sink != null; sink = sink.getNextObjectSinkNode()) {
+            for (ObjectSinkNode sink : sinks) {
                 traverseSink(sink, handler);
             }
         }
@@ -138,20 +136,19 @@ public class ObjectTypeNodeParser {
         }
     }
 
-    private void traverseHashedAlphaNodes(ObjectHashMap hashedAlphaNodes, NetworkHandler handler) {
-        if (hashedAlphaNodes != null && hashedAlphaNodes.size() > 0) {
-            AlphaNode firstAlpha = getFirstAlphaNode(hashedAlphaNodes);
+    private void traverseHashedAlphaNodes(Map<CompositeObjectSinkAdapter.HashKey, AlphaNode> hashedAlphaNodes, NetworkHandler handler) {
+        if (hashedAlphaNodes != null && !hashedAlphaNodes.isEmpty()) {
+            AlphaNode firstAlpha = hashedAlphaNodes.values().iterator().next();
             IndexableConstraint hashedFieldReader = getClassFieldReaderForHashedAlpha(firstAlpha);
             indexableConstraints.add(hashedFieldReader);
 
             // start the hashed alphas
             handler.startHashedAlphaNodes(hashedFieldReader);
 
-            Iterator<ObjectHashMap.ObjectEntry> iter = hashedAlphaNodes.iterator();
             AlphaNode optionalNullAlphaNodeCase = null;
-            for (ObjectHashMap.ObjectEntry entry = iter.next(); entry != null; entry = iter.next()) {
-                CompositeObjectSinkAdapter.HashKey hashKey = (CompositeObjectSinkAdapter.HashKey) entry.getKey();
-                AlphaNode alphaNode = (AlphaNode) entry.getValue();
+            for (Map.Entry<CompositeObjectSinkAdapter.HashKey, AlphaNode> entry : hashedAlphaNodes.entrySet()) {
+                CompositeObjectSinkAdapter.HashKey hashKey = entry.getKey();
+                AlphaNode alphaNode = entry.getValue();
 
                 final Object objectValue = hashKey.getObjectValue();
                 if (objectValue != null) {
@@ -219,28 +216,6 @@ public class ObjectTypeNodeParser {
             handler.startWindowNode(windowNode);
             handler.endWindowNode(windowNode);
         }
-    }
-
-    /**
-     * Returns the first {@link AlphaNode} from the specified {@link ObjectHashMap}.
-     *
-     * @param hashedAlphaNodes map of hashed AlphaNodes
-     * @return first alpha from the specified map
-     * @throws IllegalArgumentException thrown if the map doesn't contain any alpha nodes
-     */
-    private AlphaNode getFirstAlphaNode(final ObjectHashMap hashedAlphaNodes) throws IllegalArgumentException {
-        AlphaNode firstAlphaNode;
-
-        final Iterator iter = hashedAlphaNodes.iterator();
-        final ObjectHashMap.ObjectEntry entry = (ObjectHashMap.ObjectEntry) iter.next();
-
-        if (entry != null) {
-            firstAlphaNode = (AlphaNode) entry.getValue();
-        } else {
-            throw new IllegalArgumentException("ObjectHashMap does not contain any hashed AlphaNodes!");
-        }
-
-        return firstAlphaNode;
     }
 
     /**

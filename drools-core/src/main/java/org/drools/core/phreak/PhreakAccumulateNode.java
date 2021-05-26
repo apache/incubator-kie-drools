@@ -40,13 +40,6 @@ import org.drools.core.util.FastIterator;
 
 import static org.drools.core.phreak.RuleNetworkEvaluator.normalizeStagedTuples;
 
-/**
-* Created with IntelliJ IDEA.
-* User: mdproctor
-* Date: 03/05/2013
-* Time: 15:45
-* To change this template use File | Settings | File Templates.
-*/
 public class PhreakAccumulateNode {
 
     public void doNode(AccumulateNode accNode,
@@ -60,8 +53,8 @@ public class PhreakAccumulateNode {
         BetaMemory bm = am.getBetaMemory();
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
-        // order of left and right operations is to minimise wasted of innefficient joins.
 
+        // order of left and right operations is to minimise wasted of innefficient joins.
         if (srcLeftTuples.getDeleteFirst() != null) {
             // use the real target here, as dealing direct with left tuples
             doLeftDeletes(accNode, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
@@ -85,12 +78,26 @@ public class PhreakAccumulateNode {
             doLeftUpdates(accNode, am, wm, srcLeftTuples, tempLeftTuples);
         }
 
-        if (srcRightTuples.getInsertFirst() != null) {
-            doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
-        }
+        if (!accNode.isRightInputIsRiaNode()) {
+            // Non subnetworks ore process right then left. This because it's typically faster to ensure all RightTuples
+            // are in place then you can iterate with the left evaluation cached.
+            if (srcRightTuples.getInsertFirst() != null) {
+                doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            }
 
-        if (srcLeftTuples.getInsertFirst() != null) {
-            doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            }
+        } else {
+            // subnetworks process left then right. It ensures the LTM is not empty and the acctx is initialised.
+            // It then returns and all the matching can safely be done by the RightTuple
+            if (srcLeftTuples.getInsertFirst() != null) {
+                doLeftInserts(accNode, am, wm, srcLeftTuples, tempLeftTuples);
+            }
+
+            if (srcRightTuples.getInsertFirst() != null) {
+                doRightInserts(accNode, am, wm, srcRightTuples, tempLeftTuples);
+            }
         }
 
         Accumulate accumulate = accNode.getAccumulate();
@@ -144,6 +151,17 @@ public class PhreakAccumulateNode {
             }
 
             BaseAccumulation accresult = initAccumulationContext( am, wm, accumulate, leftTuple );
+            if (accNode.isRightInputIsRiaNode()) {
+                // This is a subnetwork, do not process further. As all matches will processed
+                // by the right insert. This is to avoid double iteration (first right side iteration
+                // then left side iteration) or for the join to find matching tuple chains, which it previously
+                // did via subsumption checking.
+                leftTuple.clearStaged();
+                trgLeftTuples.addInsert( leftTuple );
+                leftTuple = next;
+
+                continue;
+            }
 
             constraints.updateFromTuple( contextEntry,
                                          wm,
@@ -163,11 +181,6 @@ public class PhreakAccumulateNode {
                     addMatch(accNode, accumulate, leftTuple, rightTuple,
                              null, null, wm, am,
                              accresult, useLeftMemory, true);
-
-                    if (!useLeftMemory && accNode.isRightInputIsRiaNode()) {
-                        // RIAN with no left memory must have their right tuples removed
-                        rtm.remove(rightTuple);
-                    }
                 }
 
                 rightTuple = nextRightTuple;
@@ -215,11 +228,18 @@ public class PhreakAccumulateNode {
             ((AbstractHashTable) rtm).ensureCapacity(srcRightTuples.getInsertSize());
         }
 
+        boolean tupleMemoryEnabled = accNode.isLeftTupleMemoryEnabled();
+
         for (RightTuple rightTuple = srcRightTuples.getInsertFirst(); rightTuple != null; ) {
             RightTuple next = rightTuple.getStagedNext();
-            rtm.add( rightTuple );
+            boolean useTupleMemory = tupleMemoryEnabled || RuleNetworkEvaluator.useLeftMemory(accNode, rightTuple);
 
-            if ( ltm != null && ltm.size() > 0 ) {
+            if (useTupleMemory || !accNode.isRightInputIsRiaNode()) {
+                // If tuple memory is off, it will still be when it is not a subnetwork.
+                rtm.add(rightTuple);
+            }
+
+            if (accNode.isRightInputIsRiaNode() || (ltm != null && ltm.size() > 0)) {
                 constraints.updateFromFactHandle( contextEntry,
                                                   wm,
                                                   rightTuple.getFactHandleForEvaluation() );
@@ -263,8 +283,16 @@ public class PhreakAccumulateNode {
         for (LeftTuple leftTuple = srcLeftTuples.getUpdateFirst(); leftTuple != null; ) {
             LeftTuple next = leftTuple.getStagedNext();
             BaseAccumulation accctx = (BaseAccumulation) leftTuple.getContextObject();
-            if (accctx == null) {
-                accctx = initAccumulationContext( am, wm, accumulate, leftTuple );
+
+            if (accNode.isRightInputIsRiaNode()) {
+                // This is a subnetwork, do not process further. As all matches will processed
+                // by the right updates. This is to avoid double iteration (first right side iteration
+                // then left side iteration) or for the join to find matching tuple chains, which it previously
+                // did via subsumption checking.
+                leftTuple.clearStaged();
+                trgLeftTuples.addUpdate(leftTuple);
+                leftTuple = next;
+                continue;
             }
 
             constraints.updateFromTuple(contextEntry,
@@ -693,7 +721,7 @@ public class PhreakAccumulateNode {
         LeftTuple tuple = leftTuple;
         InternalFactHandle handle = rightTuple.getFactHandle();
 
-        if (accNode.isUnwrapRightObject()) {
+        if (accNode.isRightInputIsRiaNode()) {
             // if there is a subnetwork, handle must be unwrapped
             tuple = (LeftTuple) rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
@@ -748,7 +776,7 @@ public class PhreakAccumulateNode {
         // if there is a subnetwork, we need to unwrap the object from inside the tuple
         InternalFactHandle handle = rightTuple.getFactHandle();
         LeftTuple tuple = leftParent;
-        if (accNode.isUnwrapRightObject()) {
+        if (accNode.isRightInputIsRiaNode()) {
             tuple = (LeftTuple) rightTuple;
             handle = rightTuple.getFactHandleForEvaluation();
         }
@@ -794,7 +822,7 @@ public class PhreakAccumulateNode {
                 RightTuple         rightTuple  = childMatch.getRightParent();
                 InternalFactHandle childHandle = rightTuple.getFactHandle();
                 LeftTuple          tuple       = leftParent;
-                if (accNode.isUnwrapRightObject()) {
+                if (accNode.isRightInputIsRiaNode()) {
                     // if there is a subnetwork, handle must be unwrapped
                     tuple = (LeftTuple) rightTuple;
                     childHandle = rightTuple.getFactHandleForEvaluation();

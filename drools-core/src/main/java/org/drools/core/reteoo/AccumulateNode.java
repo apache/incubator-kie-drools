@@ -45,6 +45,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
@@ -60,7 +61,6 @@ public class AccumulateNode extends BetaNode {
 
     private static final long          serialVersionUID = 510l;
 
-    protected boolean                    unwrapRightObject;
     protected Accumulate                 accumulate;
     protected AlphaNodeFieldConstraint[] resultConstraints;
     protected BetaConstraints            resultBinder;
@@ -75,7 +75,6 @@ public class AccumulateNode extends BetaNode {
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
                           final Accumulate accumulate,
-                          final boolean unwrapRightObject,
                           final BuildContext context) {
         super( id,
                leftInput,
@@ -87,7 +86,6 @@ public class AccumulateNode extends BetaNode {
         this.resultBinder.init( context, getType() );
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
-        this.unwrapRightObject = unwrapRightObject;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         addAccFunctionDeclarationsToLeftMask( context.getKnowledgeBase(), leftInput, accumulate );
@@ -127,7 +125,6 @@ public class AccumulateNode extends BetaNode {
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         super.readExternal( in );
-        unwrapRightObject = in.readBoolean();
         accumulate = (Accumulate) in.readObject();
         resultConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         resultBinder = (BetaConstraints) in.readObject();
@@ -135,7 +132,6 @@ public class AccumulateNode extends BetaNode {
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
-        out.writeBoolean( unwrapRightObject );
         out.writeObject( accumulate );
         out.writeObject( resultConstraints );
         out.writeObject( resultBinder );
@@ -155,10 +151,6 @@ public class AccumulateNode extends BetaNode {
 
     public BetaConstraints getResultBinder() {
         return resultBinder;
-    }
-
-    public boolean isUnwrapRightObject() {
-        return unwrapRightObject;
     }
 
     public InternalFactHandle createResultFactHandle(final PropagationContext context,

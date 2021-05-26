@@ -152,13 +152,17 @@ public abstract class BaseTuple implements Tuple {
     }
 
     @Override
-    public Tuple getRootTuple() {
-        Tuple tuple = this;
-
-        while (tuple.getParent() != null ) {
-            tuple = tuple.getParent();
+    public Tuple getTuple(int index) {
+        Tuple entry = this;
+        while ( entry.getIndex() != index) {
+            entry = entry.getParent();
         }
-        return tuple;
+        return entry;
+    }
+
+    @Override
+    public Tuple getRootTuple() {
+        return getTuple(0);
     }
 
     @Override
