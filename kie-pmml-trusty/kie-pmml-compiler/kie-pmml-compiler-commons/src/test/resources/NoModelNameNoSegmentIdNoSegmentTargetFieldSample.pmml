@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PMML version="4.4" xmlns="http://www.dmg.org/PMML-4_4">
+  <Header copyright="KNIME">
+    <Application name="KNIME" version="2.8.0"/>
+  </Header>
+  <DataDictionary>
+    <DataField name="categoricalResult" optype="continuous" dataType="double"/>
+    <DataField name="categoricalX" optype="categorical" dataType="string">
+      <Value value="red"/>
+      <Value value="green"/>
+      <Value value="blue"/>
+      <Value value="orange"/>
+      <Value value="yellow"/>
+    </DataField>
+    <DataField name="categoricalY" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+    <DataField name="age" optype="continuous" dataType="double"/>
+    <DataField name="occupation" optype="categorical" dataType="string">
+      <Value value="SKYDIVER" />
+      <Value value="ASTRONAUT" />
+      <Value value="PROGRAMMER" />
+      <Value value="TEACHER" />
+      <Value value="INSTRUCTOR" />
+    </DataField>
+    <DataField name="residenceState" optype="categorical" dataType="string">
+      <Value value="AP" />
+      <Value value="KN" />
+      <Value value="TN" />
+    </DataField>
+    <DataField name="validLicense" optype="categorical" dataType="boolean"/>
+    <DataField name="overallScore" optype="continuous" dataType="double" />
+  </DataDictionary>
+  <MiningModel functionName="regression" >
+    <MiningSchema>
+      <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
+    </MiningSchema>
+    <Segmentation multipleModelMethod="average">
+      <Segment>
+        <True/>
+        <RegressionModel functionName="regression">
+          <MiningSchema>
+            <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+          </Output>
+          <RegressionTable intercept="-22.1">
+            <CategoricalPredictor name="categoricalX" value="red" coefficient="5.5"/>
+            <CategoricalPredictor name="categoricalX" value="green" coefficient="15"/>
+            <CategoricalPredictor name="categoricalX" value="blue" coefficient="12"/>
+            <CategoricalPredictor name="categoricalX" value="orange" coefficient="5.5"/>
+            <CategoricalPredictor name="categoricalX" value="yellow" coefficient="-100.25"/>
+            <CategoricalPredictor name="categoricalY" value="classA" coefficient="0"/>
+            <CategoricalPredictor name="categoricalY" value="classB" coefficient="20"/>
+            <CategoricalPredictor name="categoricalY" value="classC" coefficient="40"/>
+          </RegressionTable>
+        </RegressionModel>
+      </Segment>
+      <Segment>
+        <True/>
+        <Scorecard useReasonCodes="true" isScorable="true" functionName="regression" baselineScore="0.0" initialScore="0.345">
+          <MiningSchema>
+            <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
+            <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
+          </MiningSchema>
+          <Output>
+            <OutputField name="calculatedScore" displayName="Final Score" dataType="double" feature="predictedValue" targetField="overallScore"/>
+          </Output>
+          <Characteristics>
+            <Characteristic name="AgeScore" baselineScore="0.0" reasonCode="ABZ">
+              <Extension name="cellRef" value="$B$8"/>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$10"/>
+                <SimplePredicate field="age" operator="lessOrEqual" value="5"/>
+              </Attribute>
+              <Attribute partialScore="30.0" reasonCode="CX1">
+                <Extension name="cellRef" value="$C$11"/>
+                <CompoundPredicate booleanOperator="and">
+                  <SimplePredicate field="age" operator="greaterOrEqual" value="5"/>
+                  <SimplePredicate field="age" operator="lessThan" value="12"/>
+                </CompoundPredicate>
+              </Attribute>
+              <Attribute partialScore="40.0" reasonCode="CX2">
+                <Extension name="cellRef" value="$C$12"/>
+                <CompoundPredicate booleanOperator="and">
+                  <SimplePredicate field="age" operator="greaterOrEqual" value="13"/>
+                  <SimplePredicate field="age" operator="lessThan" value="44"/>
+                </CompoundPredicate>
+              </Attribute>
+              <Attribute partialScore="25.0">
+                <Extension name="cellRef" value="$C$13"/>
+                <SimplePredicate field="age" operator="greaterOrEqual" value="45"/>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="OccupationScore" baselineScore="0.0" reasonCode="OCC">
+              <Extension name="cellRef" value="$B$16"/>
+              <Attribute partialScore="-10.0" reasonCode="CX2">
+                <Extension name="description" value="skydiving is a risky occupation"/>
+                <Extension name="cellRef" value="$C$18"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">SKYDIVER ASTRONAUT</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$19"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">TEACHER INSTRUCTOR</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+              <Attribute partialScore="5.0">
+                <Extension name="cellRef" value="$C$20"/>
+                <SimpleSetPredicate field="occupation" booleanOperator="isIn">
+                  <Array n="2" type="string">PROGRAMMER STUDENT</Array>
+                </SimpleSetPredicate>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="ResidenceStateScore" baselineScore="0.0" reasonCode="RES">
+              <Extension name="cellRef" value="$B$22"/>
+              <Attribute partialScore="-10.0">
+                <Extension name="cellRef" value="$C$24"/>
+                <SimplePredicate field="residenceState" operator="equal" value="AP"/>
+              </Attribute>
+              <Attribute partialScore="10.0">
+                <Extension name="cellRef" value="$C$25"/>
+                <SimplePredicate field="residenceState" operator="equal" value="KN"/>
+              </Attribute>
+              <Attribute partialScore="5.0">
+                <Extension name="cellRef" value="$C$26"/>
+                <SimplePredicate field="residenceState" operator="equal" value="TN"/>
+              </Attribute>
+            </Characteristic>
+            <Characteristic name="ValidLicenseScore" baselineScore="0.0">
+              <Extension name="cellRef" value="$B$28"/>
+              <Attribute partialScore="1.0" reasonCode="LX00">
+                <Extension name="cellRef" value="$C$30"/>
+                <SimplePredicate field="validLicense" operator="equal" value="true"/>
+              </Attribute>
+              <Attribute partialScore="-1.0" reasonCode="LX00">
+                <Extension name="cellRef" value="$C$31"/>
+                <SimplePredicate field="validLicense" operator="equal" value="false"/>
+              </Attribute>
+            </Characteristic>
+          </Characteristics>
+        </Scorecard>
+      </Segment>
+    </Segmentation>
+  </MiningModel>
+</PMML>

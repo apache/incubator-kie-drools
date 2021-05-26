@@ -143,7 +143,6 @@ public class KiePMMLRegressionTableRegressionFactory {
         addMapPopulation(predictorTermsMap, body, "predictorTermsFunctionMap");
         populateGetTargetCategory(tableTemplate, regressionTable.getTargetCategory());
         populateUpdateResult(tableTemplate, normalizationMethod);
-        populateOutputFieldsMap(tableTemplate, outputFields);
         return new AbstractMap.SimpleEntry<>(getFullClassName(cloneCU), cloneCU.toString());
     }
 
@@ -443,17 +442,4 @@ public class KiePMMLRegressionTableRegressionFactory {
         }
     }
 
-    /**
-     * Add entries <b>output field/output value</b> inside <b>populateOutputFieldsMap</b> method
-     * @param tableTemplate
-     * @param outputFields
-     */
-    static void populateOutputFieldsMap(final ClassOrInterfaceDeclaration tableTemplate,
-                                        final List<KiePMMLOutputField> outputFields) {
-        MethodDeclaration methodDeclaration =
-                tableTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
-        BlockStmt body =
-                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, "populateOutputFieldsMapWithResult")));
-        populateOutputFieldsMapWithResult(body, outputFields);
-    }
 }

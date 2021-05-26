@@ -115,17 +115,17 @@ public class KiePMMLTreeModelFactoryTest {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, PACKAGE_NAME, KIE_PMML_TREE_MODEL_TEMPLATE_JAVA, KIE_PMML_TREE_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
+        String targetField = "whatIdo";
+        String fullNodeClassName = "full.Node.ClassName";
+        KiePMMLTreeModelFactory.setConstructor(treeModel1,
+                                               dataDictionary1,
+                                               transformationDictionary1,
+                                               modelTemplate,
+                                               fullNodeClassName);
         ConstructorDeclaration constructorDeclaration = modelTemplate
                 .getDefaultConstructor()
                 .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())))
                 .clone();
-        String targetField = "TARGETFIELD";
-        String fullNodeClassName = "full.Node.ClassName";
-        KiePMMLTreeModelFactory.setConstructor(treeModel1,
-                                               dataDictionary1,
-                                               constructorDeclaration,
-                                               targetField,
-                                               fullNodeClassName);
         BlockStmt body = constructorDeclaration.getBody();
         // targetField
         Optional<AssignExpr> optRetrieved = CommonCodegenUtils.getAssignExpression(body, "targetField");

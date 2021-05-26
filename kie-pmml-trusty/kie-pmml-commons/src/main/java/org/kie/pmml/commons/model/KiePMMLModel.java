@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -43,9 +44,11 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
     protected Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = new HashMap<>();
     protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
+    protected Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
+    protected List<KiePMMLTarget> kiePMMLTargets = new ArrayList<>();
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -79,6 +82,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         return Collections.unmodifiableMap(localTransformationsMap);
     }
 
+    public Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> getFunctionsMap() {
+        return Collections.unmodifiableMap(functionsMap);
+    }
+
     /**
      * Method to retrieve the <b>package</b> name to be used inside kiebase/package attribute of
      * kmodule.xml and to use for package creation inside PMMLAssemblerService
@@ -107,6 +114,22 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public void setOutputFields(List<OutputField> outputFields) {
         this.outputFields = Collections.unmodifiableList(outputFields);
+    }
+
+    public void setKiePMMLOutputFields(List<KiePMMLOutputField> kiePMMLOutputFields) {
+        this.kiePMMLOutputFields = Collections.unmodifiableList(kiePMMLOutputFields);
+    }
+
+    public List<KiePMMLTarget> getKiePMMLTargets() {
+        return kiePMMLTargets;
+    }
+
+    public void setKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
+        this.kiePMMLTargets = Collections.unmodifiableList(kiePMMLTargets);
+    }
+
+    public List<KiePMMLOutputField> getKiePMMLOutputFields() {
+        return Collections.unmodifiableList(kiePMMLOutputFields);
     }
 
     /**

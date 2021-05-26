@@ -182,24 +182,24 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void setConstructor() {
-        ConstructorDeclaration constructorDeclaration = MODEL_TEMPLATE.getDefaultConstructor().get();
         String nestedTable = "NestedTable";
-        String targetField = "targetField";
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
+        final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         KiePMMLRegressionModelFactory.setConstructor(regressionModel,
                                                      dataDictionary,
-                                                     nestedTable,
-                                                     constructorDeclaration,
-                                                     targetField);
+                                                     transformationDictionary,
+                                                     modelTemplate,
+                                                     nestedTable);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();
         superInvocationExpressionsMap.put(0, new NameExpr(String.format("\"%s\"", regressionModel.getModelName())));
         Map<String, Expression> assignExpressionMap = new HashMap<>();
-        assignExpressionMap.put("targetField", new StringLiteralExpr(targetField));
+        assignExpressionMap.put("targetField", new StringLiteralExpr(targetMiningField.getName().getValue()));
         assignExpressionMap.put("miningFunction", new NameExpr(miningFunction.getClass().getName() + "." + miningFunction.name()));
         assignExpressionMap.put("pmmlMODEL", new NameExpr(PMML_MODEL.class.getName() + "." + PMML_MODEL.REGRESSION_MODEL.name()));
         ObjectCreationExpr objectCreationExpr = new ObjectCreationExpr();
         objectCreationExpr.setType(nestedTable);
         assignExpressionMap.put("regressionTable", objectCreationExpr);
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
         assertTrue(commonEvaluateConstructor(constructorDeclaration, getSanitizedClassName(regressionModel.getModelName()), superInvocationExpressionsMap, assignExpressionMap));
     }
 

@@ -16,7 +16,6 @@
 
 package org.kie.pmml.models.regression.compiler.factories;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -47,10 +46,10 @@ import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.junit.Before;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.models.regression.model.enums.REGRESSION_NORMALIZATION_METHOD;
 import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 
@@ -174,29 +173,6 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
            ObjectCreationExpr objectCreationExpr = (ObjectCreationExpr) methodCallExpr.getArguments().get(1);
            assertEquals(key, objectCreationExpr.getTypeAsString());
        });
-    }
-
-    @Test
-    public void populateOutputFieldsMap() {
-        final List<KiePMMLOutputField> outputFields = new ArrayList<>();
-        KiePMMLOutputField predictedOutputField = getOutputField("KOF-TARGET", RESULT_FEATURE.PREDICTED_VALUE,
-                                                                 "TARGET");
-        outputFields.add(predictedOutputField);
-        final List<KiePMMLOutputField> probabilityOutputFields = IntStream.range(0, 2)
-                .mapToObj(index -> getOutputField("KOF-PROB-" + index, RESULT_FEATURE.PROBABILITY, "PROB-" + index))
-                .collect(Collectors.toList());
-        outputFields.addAll(probabilityOutputFields);
-        KiePMMLRegressionTableClassificationFactory.populateOutputFieldsMap(modelTemplate, outputFields);
-        MethodDeclaration methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithResult").get(0);
-        BlockStmt body = methodDeclaration.getBody().get();
-        NodeList<Statement> retrieved = body.getStatements();
-        assertEquals(1, retrieved.size());
-        methodDeclaration =
-                modelTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-        body = methodDeclaration.getBody().get();
-        retrieved = body.getStatements();
-        assertEquals(probabilityOutputFields.size(), retrieved.size());
     }
 
     @Test
