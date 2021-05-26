@@ -1,0 +1,8 @@
+[id="proc-kogito-microservices-deploying-on-openshift_{context}"]
+= Deploying {KOGITO} microservices on {OPENSHIFT}
+
+As a business rules developer, you can deploy {KOGITO} microservices on {OPENSHIFT} for cloud implementation. The {PRODUCT} {KOGITO} Operator automates many of the deployment steps for you or guides you through the deployment process.
+
+.Prerequisites
+* {OPENSHIFT} 4.6 or 4.7 is installed.
+* The OpenShift project for the deployment is created.

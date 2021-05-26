@@ -1,0 +1,18 @@
+[id="proc-kogito-enable-probes-quarkus_{context}"]
+= Adding health check extension for Quarkus-based {KOGITO} microservices on {OPENSHIFT}
+
+You can add the health check extension for the Quarkus-based {KOGITO} services on {OPENSHIFT}.
+
+.Procedure
+In a command terminal, navigate to the `pom.xml` file of your project and add the following dependency for the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health`] extension:
+
+.SmallRye Health dependency for Quarkus applications on {OPENSHIFT}
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>io.quarkus</groupId>
+    <artifactId>quarkus-smallrye-health</artifactId>
+  </dependency>
+</dependencies>
+----

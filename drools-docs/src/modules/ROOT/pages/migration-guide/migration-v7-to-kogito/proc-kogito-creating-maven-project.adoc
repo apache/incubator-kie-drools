@@ -13,9 +13,9 @@ Before you can begin developing {KOGITO} microservices, you need to create a Mav
 ----
 $ mvn archetype:generate \
     -DarchetypeGroupId=org.kie.kogito \
-    -DarchetypeArtifactId=kogito-quarkus-archetype \
+    -DarchetypeArtifactId=kogito-quarkus-dm-archetype \
     -DgroupId=org.acme -DartifactId=sample-kogito \
-    -DarchetypeVersion={COMMUNITY_VERSION_FINAL} \
+    -DarchetypeVersion={KOGITO_VERSION_LONG} \
     -Dversion=1.0-SNAPSHOT
 ----
 
@@ -24,9 +24,9 @@ $ mvn archetype:generate \
 ----
 $ mvn archetype:generate \
     -DarchetypeGroupId=org.kie.kogito \
-    -DarchetypeArtifactId=kogito-springboot-archetype \
+    -DarchetypeArtifactId=kogito-springboot-dm-archetype \
     -DgroupId=org.acme -DartifactId=sample-kogito \
-    -DarchetypeVersion={COMMUNITY_VERSION_FINAL} \
+    -DarchetypeVersion={KOGITO_VERSION_LONG} \
     -Dversion=1.0-SNAPSHOT
 ----
 
