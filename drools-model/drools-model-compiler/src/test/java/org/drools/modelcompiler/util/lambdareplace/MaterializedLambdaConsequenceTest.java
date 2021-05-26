@@ -34,15 +34,16 @@ public class MaterializedLambdaConsequenceTest {
         String classNameWithPackage = aClass.getClassNameWithPackage();
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
         // so current "CreatedClass" contains a CompilationUnit that is different from the one used to calculate the hashcode
+        String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
         String expectedClassName = classNameWithPackage.substring(classNameWithPackage.lastIndexOf('.')+1);
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PDB;\n" +
+                "package PACKAGE_TOREPLACE;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum TOREPLACE implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "INSTANCE;\n" +
                 "public static final String EXPRESSION_HASH = \"8305FF24AC76CB49E7AAE2C10356A105\";" +
                 "    public java.lang.String getExpressionHash() {\n" +
@@ -54,7 +55,9 @@ public class MaterializedLambdaConsequenceTest {
                 "        }\n" +
                 "    }\n";
         // Workaround to keep the "//language=JAVA" working
-        expectedResult = expectedResult.replace("TOREPLACE", expectedClassName);
+        expectedResult = expectedResult
+                .replace("PACKAGE_TOREPLACE", expectedPackageName)
+                .replace("CLASS_TOREPLACE", expectedClassName);
 
         verifyCreatedClass(aClass, expectedResult);
     }
@@ -67,19 +70,19 @@ public class MaterializedLambdaConsequenceTest {
 
         CreatedClass aClass = new MaterializedLambdaConsequence("defaultpkg", "defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729", Collections.singletonList(bitMaskVariable))
                 .create("(org.drools.model.Drools drools, org.drools.modelcompiler.domain.Person $p) -> {{($p).setAge($p.getAge() + 1); drools.update($p, mask_$p);}}", new ArrayList<>(), new ArrayList<>());
-
         String classNameWithPackage = aClass.getClassNameWithPackage();
+        String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
         // so current "CreatedClass" contains a CompilationUnit that is different from the one used to calculate the hashcode
         String expectedClassName = classNameWithPackage.substring(classNameWithPackage.lastIndexOf('.')+1);
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PF5;\n" +
+                "package PACKAGE_TOREPLACE;\n" +
                 "import static defaultpkg.RulesA3B8DE4BEBF13D94572A10FD20BBE729.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 "        INSTANCE;\n" +
                 "        public static final String EXPRESSION_HASH = \"1FE08C27A04F37AADD1A62E562519E8D\";\n" +
                 "    public java.lang.String getExpressionHash() {\n" +
@@ -95,7 +98,9 @@ public class MaterializedLambdaConsequenceTest {
                 "        }\n" +
                 "    }\n";
         // Workaround to keep the "//language=JAVA" working
-        expectedResult = expectedResult.replace("TOREPLACE", expectedClassName);
+        expectedResult = expectedResult
+                .replace("PACKAGE_TOREPLACE", expectedPackageName)
+                .replace("CLASS_TOREPLACE", expectedClassName);
 
         verifyCreatedClass(aClass, expectedResult);
     }
@@ -118,15 +123,16 @@ public class MaterializedLambdaConsequenceTest {
         String classNameWithPackage = aClass.getClassNameWithPackage();
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
         // so current "CreatedClass" contains a CompilationUnit that is different from the one used to calculate the hashcode
+        String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
         String expectedClassName = classNameWithPackage.substring(classNameWithPackage.lastIndexOf('.')+1);
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PAE;\n" +
+                "package PACKAGE_TOREPLACE;\n" +
                 "import static defaultpkg.RulesB45236F6195B110E0FA3A5447BC53274.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "\n"+
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum TOREPLACE implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block3<org.drools.model.Drools, org.drools.modelcompiler.domain.Pet, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"2ABFB3D359AC0D0C1F6C1BAF91E05544\";\n" +
@@ -148,7 +154,9 @@ public class MaterializedLambdaConsequenceTest {
                 "    }\n" +
                 "}";
         // Workaround to keep the "//language=JAVA" working
-        expectedResult = expectedResult.replace("TOREPLACE", expectedClassName);
+        expectedResult = expectedResult
+                .replace("PACKAGE_TOREPLACE", expectedPackageName)
+                .replace("CLASS_TOREPLACE", expectedClassName);
 
         verifyCreatedClass(aClass, expectedResult);
     }
@@ -169,16 +177,17 @@ public class MaterializedLambdaConsequenceTest {
         String classNameWithPackage = aClass.getClassNameWithPackage();
         // There is no easy way to retrieve the originally created "hashcode" because it is calculated over a CompilationUnit that soon after is modified;
         // so current "CreatedClass" contains a CompilationUnit that is different from the one used to calculate the hashcode
+        String expectedPackageName = classNameWithPackage.substring(0, classNameWithPackage.lastIndexOf('.'));
         String expectedClassName = classNameWithPackage.substring(classNameWithPackage.lastIndexOf('.')+1);
         //language=JAVA
         String expectedResult = "" +
-                "package defaultpkg.PB9;\n" +
+                "package PACKAGE_TOREPLACE;\n" +
                 "\n" +
                 "import static defaultpkg.Rules53448E6B9A07CB05B976425EF329E308.*;\n" +
                 "import org.drools.modelcompiler.dsl.pattern.D;\n" +
                 "\n" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda()\n" +
-                "public enum TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum CLASS_TOREPLACE implements org.drools.model.functions.Block2<org.drools.model.Drools, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 "\n" +
                 "    INSTANCE;\n" +
                 "    public static final String EXPRESSION_HASH = \"15102979E2E45F1A4617C12D3517D6B5\";\n" +
@@ -197,7 +206,9 @@ public class MaterializedLambdaConsequenceTest {
                 "    }\n" +
                 "}";
         // Workaround to keep the "//language=JAVA" working
-        expectedResult = expectedResult.replace("TOREPLACE", expectedClassName);
+        expectedResult = expectedResult
+                .replace("PACKAGE_TOREPLACE", expectedPackageName)
+                .replace("CLASS_TOREPLACE", expectedClassName);
 
         verifyCreatedClass(aClass, expectedResult);
     }
