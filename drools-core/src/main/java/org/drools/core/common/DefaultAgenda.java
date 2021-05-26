@@ -1185,7 +1185,8 @@ public class DefaultAgenda
 
         @Override
         public boolean toExecuteTaskState() {
-            throw new UnsupportedOperationException( "Not permitted in non-thread-safe mode" );
+            currentState = ExecutionState.EXECUTING_TASK;
+            return true;
         }
 
         @Override
