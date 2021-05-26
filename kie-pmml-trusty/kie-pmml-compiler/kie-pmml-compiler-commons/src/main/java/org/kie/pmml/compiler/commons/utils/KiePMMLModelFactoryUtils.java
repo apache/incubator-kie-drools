@@ -25,8 +25,11 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.CharLiteralExpr;
+import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -94,13 +97,44 @@ public class KiePMMLModelFactoryUtils {
                                                   final ConstructorDeclaration constructorDeclaration,
                                                   final String name,
                                                   final List<MiningField> miningFields,
-                                                  final List<OutputField> outputFields) {
+                                                  final List<OutputField> outputFields,
+                                                  final Map<String, Object> missingValueReplacements) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
         addListPopulation(miningFieldsObjectCreations, body, "miningFields");
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
+
+        missingValueReplacements.forEach((fieldName, replacement) -> {
+            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(fieldName), literalExprFrom(replacement));
+            body.addStatement(new MethodCallExpr(new NameExpr("missingValueReplacementMap"), "put", expressions));
+        });
+    }
+
+    private static Expression literalExprFrom(Object input) {
+        if (input == null) {
+            return new NullLiteralExpr();
+        }
+        if (input instanceof Character) {
+            return new CharLiteralExpr((Character) input);
+        }
+        if (input instanceof Double) {
+            return new DoubleLiteralExpr((Double) input);
+        }
+        if (input instanceof Integer) {
+            return new IntegerLiteralExpr((Integer) input);
+        }
+        if (input instanceof Long) {
+            return new LongLiteralExpr((Long) input);
+        }
+        if (input instanceof String) {
+            return new StringLiteralExpr((String) input);
+        }
+        if (input instanceof Enum<?>) {
+            return CommonCodegenUtils.literalExprFrom((Enum<?>) input);
+        }
+        throw new IllegalArgumentException("Can't create literal from class " + input.getClass());
     }
 
     /**
@@ -145,8 +179,7 @@ public class KiePMMLModelFactoryUtils {
      * @param localTransformations
      */
     public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate,
-                                                                       final TransformationDictionary transformationDictionary,
-                                                                       final LocalTransformations localTransformations) {
+                                                                       final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
         final AtomicInteger arityCounter = new AtomicInteger(0);
         final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap =
                 (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
