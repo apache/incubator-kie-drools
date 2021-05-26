@@ -10,6 +10,18 @@
   <artifactId>jitexecutor-dmn</artifactId>
   <name>Kogito Apps :: JIT Executor DMN</name>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie7-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>
