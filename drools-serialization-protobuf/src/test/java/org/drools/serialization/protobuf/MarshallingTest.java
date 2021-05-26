@@ -256,12 +256,12 @@ public class MarshallingTest extends CommonTestMethodBase {
         map = SerializationHelper.serializeObject( map );
         kBase = (InternalKnowledgeBase) map.get( "x" );
 
+        kBase.addPackages(kpkgs);
+
         KieSession session = kBase.newKieSession();
 
         // serialise the working memory before population
         session = getSerialisedStatefulKnowledgeSession(session, kBase, true);
-
-        kBase.addPackages(kpkgs);
 
         session.setGlobal( "list",
                            new ArrayList() );
@@ -314,9 +314,9 @@ public class MarshallingTest extends CommonTestMethodBase {
         Collection<KiePackage>  kpkgs = loadKnowledgePackages("test_Serializable.drl" );
 
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) getKnowledgeBase();
-        KieSession session = kBase.newKieSession();
-
         kBase.addPackages(kpkgs);
+
+        KieSession session = kBase.newKieSession();
 
         session.setGlobal( "list",
                            new ArrayList() );
