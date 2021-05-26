@@ -39,6 +39,8 @@ const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
   ouiaId,
   ouiaSafe
 }) => {
+  const tooltipContainerId = `kogito-consoles-tooltip-${itemDescription.id}`;
+
   const idStringModifier = (strId: string) => {
     return (
       <TextContent className="pf-u-display-inline">
@@ -51,6 +53,7 @@ const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <>
       <Tooltip
+        appendTo={() => document.getElementById(tooltipContainerId)}
         content={itemDescription.id}
         {...componentOuiaProps(ouiaId, 'item-descriptor', ouiaSafe)}
       >
@@ -63,6 +66,7 @@ const ItemDescriptor: React.FC<IOwnProps & OUIAProps> = ({
           )}
         </span>
       </Tooltip>
+      <div id={tooltipContainerId}></div>
     </>
   );
 };

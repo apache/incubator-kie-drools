@@ -58,6 +58,7 @@ exports[`TaskDescription test Render task description with task des 1`] = `
           }
         >
           <Tooltip
+            appendTo={[Function]}
             content="45a73767-5da3-49bf-9c40-d533c3e77ef3"
             data-ouia-component-type="item-descriptor"
             data-ouia-safe={true}
@@ -169,6 +170,9 @@ exports[`TaskDescription test Render task description with task des 1`] = `
               </FindRefWrapper>
             </Popper>
           </Tooltip>
+          <div
+            id="kogito-consoles-tooltip-45a73767-5da3-49bf-9c40-d533c3e77ef3"
+          />
         </ItemDescriptor>
       </strong>
     </button>

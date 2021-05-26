@@ -898,6 +898,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 }
                               >
                                 <Tooltip
+                                  appendTo={[Function]}
                                   content="538f9feb-5a14-4096-b791-2055b38da7c6"
                                   data-ouia-component-type="item-descriptor"
                                   data-ouia-safe={true}
@@ -990,6 +991,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     </FindRefWrapper>
                                   </Popper>
                                 </Tooltip>
+                                <div
+                                  id="kogito-consoles-tooltip-538f9feb-5a14-4096-b791-2055b38da7c6"
+                                />
                               </ItemDescriptor>
                             </strong>
                           </a>
@@ -1493,6 +1497,7 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                 }
                               >
                                 <Tooltip
+                                  appendTo={[Function]}
                                   content="538f9feb-5a14-4096-b791-2055b38da7c6"
                                   data-ouia-component-type="item-descriptor"
                                   data-ouia-safe={true}
@@ -1585,6 +1590,9 @@ exports[`ProcessListTable test initial render with data 1`] = `
                                     </FindRefWrapper>
                                   </Popper>
                                 </Tooltip>
+                                <div
+                                  id="kogito-consoles-tooltip-538f9feb-5a14-4096-b791-2055b38da7c6"
+                                />
                               </ItemDescriptor>
                             </strong>
                           </a>
