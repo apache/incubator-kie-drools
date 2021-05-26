@@ -15,6 +15,8 @@
 
 package org.drools.core.phreak;
 
+import java.util.Iterator;
+
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
 import org.drools.core.reteoo.LeftTuple;
@@ -41,49 +43,36 @@ public class SegmentPropagator {
                 
         processPeers(sourceSegment, leftTuples, wm);
 
-        // @TODO Could a boolean be cached on sourceSegment, to avoid this forloop (mdp)?
-        for (SegmentMemory smem = sourceSegment.getFirst(); smem != null; smem = smem.getNext() ) {
-            if (smem.hasDataDrivenPathMemories()) {
-                for (PathMemory dataDrivenPmem : smem.getDataDrivenPathMemories()) {
-                    if (smem.getStagedLeftTuples().getDeleteFirst() == null &&
-                        smem.getStagedLeftTuples().getUpdateFirst() == null &&
-                        !dataDrivenPmem.isRuleLinked()) {
-                        // skip flushing segments that have only inserts staged and the path is not linked
-                        continue;
-                    }
-                    forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
-                    forceFlushWhenRiaNode(wm, dataDrivenPmem);
+        Iterator<SegmentMemory> peersIterator = sourceSegment.getPeersWithDataDrivenPathMemoriesIterator();
+        while (peersIterator.hasNext()) {
+            SegmentMemory smem = peersIterator.next();
+            for (PathMemory dataDrivenPmem : smem.getDataDrivenPathMemories()) {
+                if (smem.getStagedLeftTuples().getDeleteFirst() == null &&
+                    smem.getStagedLeftTuples().getUpdateFirst() == null &&
+                    !dataDrivenPmem.isRuleLinked()) {
+                    // skip flushing segments that have only inserts staged and the path is not linked
+                    continue;
                 }
+                forceFlushLeftTuple(dataDrivenPmem, smem, wm, smem.getStagedLeftTuples());
+                forceFlushWhenRiaNode(wm, dataDrivenPmem);
             }
         }
-
     }
 
     private static void processPeers(SegmentMemory sourceSegment, TupleSets<LeftTuple> leftTuples, InternalWorkingMemory wm) {
         SegmentMemory firstSmem = sourceSegment.getFirst();
 
-        // Process Deletes
         processPeerDeletes( leftTuples, leftTuples.getDeleteFirst(), firstSmem, wm );
         processPeerDeletes( leftTuples, leftTuples.getNormalizedDeleteFirst(), firstSmem, wm );
+        processPeerUpdates( leftTuples, firstSmem );
+        processPeerInserts( leftTuples, firstSmem );
 
-        // Process Updates
-        for ( LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
-            SegmentMemory smem = firstSmem.getNext();
-            if ( smem != null ) {
-                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
-                    // only stage, if not already staged, if insert, leave as insert
-                    if ( peer.getStagedType() == LeftTuple.NONE ) {
-                        peer.setPropagationContext( leftTuple.getPropagationContext() );
-                        smem.getStagedLeftTuples().addUpdate( peer );
-                    }
+        firstSmem.getStagedLeftTuples().addAll( leftTuples );
+        leftTuples.resetAll();
+    }
 
-                    smem = smem.getNext();
-                }
-            }
-        }
-
-        // Process Inserts
-        for ( LeftTuple leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple =  leftTuple.getStagedNext()) {
+    private static void processPeerInserts(TupleSets<LeftTuple> leftTuples, SegmentMemory firstSmem) {
+        for (LeftTuple leftTuple = leftTuples.getInsertFirst(); leftTuple != null; leftTuple =  leftTuple.getStagedNext()) {
             SegmentMemory smem = firstSmem.getNext();
             if ( smem != null ) {
                 // It's possible for a deleted tuple and set of peers, to be cached on a delete (such as with accumulates).
@@ -108,9 +97,23 @@ public class SegmentPropagator {
                 }
             }
         }
+    }
 
-        firstSmem.getStagedLeftTuples().addAll( leftTuples );
-        leftTuples.resetAll();
+    private static void processPeerUpdates(TupleSets<LeftTuple> leftTuples, SegmentMemory firstSmem) {
+        for (LeftTuple leftTuple = leftTuples.getUpdateFirst(); leftTuple != null; leftTuple = leftTuple.getStagedNext()) {
+            SegmentMemory smem = firstSmem.getNext();
+            if ( smem != null ) {
+                for ( LeftTuple peer = leftTuple.getPeer(); peer != null; peer = peer.getPeer() ) {
+                    // only stage, if not already staged, if insert, leave as insert
+                    if ( peer.getStagedType() == LeftTuple.NONE ) {
+                        peer.setPropagationContext( leftTuple.getPropagationContext() );
+                        smem.getStagedLeftTuples().addUpdate( peer );
+                    }
+
+                    smem = smem.getNext();
+                }
+            }
+        }
     }
 
     public static void updateChildLeftTupleDuringInsert(LeftTuple childLeftTuple,
