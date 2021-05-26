@@ -47,7 +47,7 @@ class PostgrePersistenceGeneratorTest {
             .build();
 
     @Test
-    void test() {
+    void testGeneratedFiles() {
         context.setApplicationProperty("kogito.persistence.type", POSTGRESQL_PERSISTENCE_TYPE);
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
@@ -62,9 +62,21 @@ class PostgrePersistenceGeneratorTest {
                 .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
                 .findFirst();
 
-        assertThat(persistenceFactoryImpl).isNotEmpty();
+        assertThat(persistenceFactoryImpl).isPresent();
 
-        final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
+        validateClassInCompilationUnit(persistenceFactoryImpl.get().contents());
+
+        Optional<GeneratedFile> pgClientProducer = generatedFiles.stream()
+                .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/PgClientProducer.java"))
+                .findFirst();
+
+        assertThat(pgClientProducer).isPresent();
+
+        validateClassInCompilationUnit(pgClientProducer.get().contents());
+    }
+
+    private void validateClassInCompilationUnit(byte[] contents) {
+        final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(contents));
 
         compilationUnit
                 .findFirst(ClassOrInterfaceDeclaration.class)

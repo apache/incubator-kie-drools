@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +25,6 @@ import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL
 
 /**
  * PostgreSQL quarkus resource that works within the test lifecycle.
- *
  */
 public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResource<KogitoPostgreSqlContainer> {
 
@@ -34,8 +32,6 @@ public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResourc
     public static final String QUARKUS_DATASOURCE_JDBC_URL = "quarkus.datasource.jdbc.url";
     public static final String QUARKUS_DATASOURCE_USERNAME = "quarkus.datasource.username";
     public static final String QUARKUS_DATASOURCE_PASSWORD = "quarkus.datasource.password";
-    public static final String QUARKUS_DATASOURCE_REACTIVE_URL_TEMPLATE = "postgresql://{0}:{1}/{2}";
-    public static final String QUARKUS_DATASOURCE_JDBC_URL_TEMPLATE = "jdbc:postgresql://{0}:{1}/{2}";
 
     private static final KogitoPostgreSqlContainer container = new KogitoPostgreSqlContainer();
 
@@ -51,20 +47,10 @@ public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResourc
         }
 
         Map<String, String> properties = new HashMap<>(start);
-        properties.put(QUARKUS_DATASOURCE_REACTIVE_URL,
-                MessageFormat.format(QUARKUS_DATASOURCE_REACTIVE_URL_TEMPLATE,
-                        container.getHost(),
-                        String.valueOf(container.getMappedPort()),
-                        container.getDatabaseName()));
-        properties.put(QUARKUS_DATASOURCE_JDBC_URL,
-                MessageFormat.format(QUARKUS_DATASOURCE_JDBC_URL_TEMPLATE,
-                        container.getHost(),
-                        String.valueOf(container.getMappedPort()),
-                        container.getDatabaseName()));
-        properties.put(QUARKUS_DATASOURCE_USERNAME,
-                container.getUsername());
-        properties.put(QUARKUS_DATASOURCE_PASSWORD,
-                container.getPassword());
+        properties.put(QUARKUS_DATASOURCE_REACTIVE_URL, container.getReactiveUrl());
+        properties.put(QUARKUS_DATASOURCE_JDBC_URL, container.getJdbcUrl());
+        properties.put(QUARKUS_DATASOURCE_USERNAME, container.getUsername());
+        properties.put(QUARKUS_DATASOURCE_PASSWORD, container.getPassword());
         return properties;
     }
 
@@ -75,7 +61,7 @@ public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResourc
 
     @Override
     protected String getKogitoPropertyValue() {
-        return getTestResource().getConnectionUri();
+        return getTestResource().getReactiveUrl();
     }
 
     public static class Conditional extends PostgreSqlQuarkusTestResource {

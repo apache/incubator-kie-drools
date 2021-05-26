@@ -52,6 +52,7 @@ import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
+import com.github.javaparser.ast.expr.ConditionalExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
@@ -77,23 +78,20 @@ public class PersistenceGenerator extends AbstractGenerator {
     public static final String POSTGRESQL_PERSISTENCE_TYPE = "postgresql";
     public static final String KAFKA_PERSISTENCE_TYPE = "kafka";
     public static final String GENERATOR_NAME = "persistence";
-
+    public static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
+    public static final String KOGITO_PERSISTENCE_AUTO_DDL = "kogito.persistence.auto.ddl";
+    public static final String KOGITO_POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
     protected static final String TEMPLATE_NAME = "templateName";
     protected static final String PATH_NAME = "path";
-
     private static final String KOGITO_PERSISTENCE_FS_PATH_PROP = "kogito.persistence.filesystem.path";
-
     private static final String KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private static final String KOGITO_PROCESS_INSTANCE_FACTORY_IMPL = "KogitoProcessInstancesFactoryImpl";
     private static final String KOGITO_PROCESS_INSTANCE_PACKAGE = "org.kie.kogito.persistence";
     private static final String MONGODB_DB_NAME = "dbName";
-    public static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
     private static final String QUARKUS_PERSISTENCE_MONGODB_NAME_PROP = "quarkus.mongodb.database";
     private static final String SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP = "spring.data.mongodb.database";
     private static final String OR_ELSE = "orElse";
     private static final String JAVA = ".java";
-    public static final String KOGITO_PERSISTENCE_AUTO_DDL = "kogito.persistence.auto.ddl";
-    public static final String KOGITO_POSTGRESQL_CONNECTION_URI = "kogito.persistence.postgresql.connection.uri";
     private static final String KOGITO_PERSISTENCE_QUERY_TIMEOUT = "kogito.persistence.query.timeout.millis";
 
     private final ProtoGenerator protoGenerator;
@@ -493,16 +491,21 @@ public class PersistenceGenerator extends AbstractGenerator {
                     .setModifiers(Modifier.Keyword.PUBLIC);
 
             //creating PgClient producer
-            Parameter uriConfigParam =
-                    new Parameter(StaticJavaParser.parseClassOrInterfaceType(String.class.getName()),
-                            "uri");
+            Parameter uriConfigParam = new Parameter()
+                    .setType(StaticJavaParser.parseClassOrInterfaceType(Optional.class.getName())
+                            .setTypeArguments(StaticJavaParser.parseClassOrInterfaceType(String.class.getName())))
+                    .setName("uri");
+
             MethodDeclaration clientProviderMethod = pgClientProducerClazz.addMethod("client", Keyword.PUBLIC)
                     .setType(pgPoolClass)//PgPool
                     .addParameter(uriConfigParam)
-                    .setBody(new BlockStmt() // PgPool.pool(connectionUri);
+                    .setBody(new BlockStmt()// return uri.isPresent() ?  PgPool.pool(connectionUri) : PgPool.pool()
                             .addStatement(new ReturnStmt(
-                                    new MethodCallExpr(new NameExpr(pgPoolClass), "pool")
-                                            .addArgument(new NameExpr("uri")))));
+                                    new ConditionalExpr(
+                                            new MethodCallExpr(new NameExpr(uriConfigParam.getName()), "isPresent"),
+                                            new MethodCallExpr(new NameExpr(pgPoolClass), "pool").addArgument(new MethodCallExpr(new NameExpr("uri"), "get")),
+                                            new MethodCallExpr(new NameExpr(pgPoolClass), "pool")))));
+
             //inserting DI annotations
             context().getDependencyInjectionAnnotator().withConfigInjection(uriConfigParam, KOGITO_POSTGRESQL_CONNECTION_URI);
             context().getDependencyInjectionAnnotator().withProduces(clientProviderMethod, true);

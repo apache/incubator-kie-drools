@@ -37,7 +37,7 @@ public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestR
 
     @Override
     protected String getKogitoPropertyValue() {
-        return getTestResource().getConnectionUri();
+        return getTestResource().getReactiveUrl();
     }
 
     public static class Conditional extends PostgreSqlSpringBootTestResource {

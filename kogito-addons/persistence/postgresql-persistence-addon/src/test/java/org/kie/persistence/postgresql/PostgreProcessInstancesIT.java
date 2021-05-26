@@ -76,7 +76,7 @@ class PostgreProcessInstancesIT {
     }
 
     private static PgPool client() {
-        return PgPool.pool(container.getConnectionUri());
+        return PgPool.pool(container.getReactiveUrl());
     }
 
     @Test
