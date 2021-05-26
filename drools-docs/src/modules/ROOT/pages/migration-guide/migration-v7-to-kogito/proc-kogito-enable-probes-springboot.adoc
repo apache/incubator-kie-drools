@@ -1,0 +1,18 @@
+[id="proc-kogito-enable-probes-springboot_{context}"]
+= Adding health check extension for Spring Boot-based {KOGITO} microservices on {OPENSHIFT}
+
+You can add the health check extension for the Spring Boot-based {KOGITO} microservices on {OPENSHIFT}.
+
+.Procedure
+In a command terminal, navigate to the `pom.xml` file of your project and add the following https://docs.spring.io/spring-boot/docs/2.3.0.RELEASE/reference/html/production-ready-features.html[Spring Boot actuator dependency]:
+
+.Spring Boot actuator dependency for Spring Boot applications on {OPENSHIFT}
+[source,xml]
+----
+<dependencies>
+  <dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+  </dependency>
+</dependencies>
+----

@@ -1,0 +1,111 @@
+[id="ref-kogito-microservice-deploy-troubleshooting_{context}"]
+= {KOGITO} microservice deployment troubleshooting
+
+Use the information in this section to troubleshoot issues that you might encounter when using the operator to deploy {KOGITO} microservices. The following information is updated as new issues and workarounds are discovered.
+
+No builds are running::
+If you do not see any builds running nor any resources created in the relevant namespace, enter the following commands to retrieve running pods and to view the operator log for the pod:
++
+--
+.View {KOGITO} Operator log for a specified pod
+[source,subs="attributes+,+quotes"]
+----
+// Retrieves running pods
+$ oc get pods
+
+NAME                                     READY   STATUS      RESTARTS   AGE
+kogito-operator-6d7b6d4466-9ng8t   1/1     Running     0          26m
+
+// Opens {KOGITO} Operator log for the pod
+$ oc logs -f kogito-operator-6d7b6d4466-9ng8t
+----
+--
+
+Verify `KogitoRuntime` status::
+If you create, for example, `KogitoRuntime` application with a non-existing image using the following YAML definition:
++
+--
+.Example YAML definition for a `KogitoRuntime` application
+[source,yaml,subs="attributes+"]
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this microservice
+kind: KogitoRuntime # Application type
+metadata:
+  name: example # Application name
+spec:
+  image: 'not-existing-image:latest'
+  replicas: 1
+----
+
+You can verify the status of the `KogitoRuntime` application using the `oc describe KogitoRuntime example` command in the bash console. When you run the `oc describe KogitoRuntime example` command in the bash console, you receive the following output:
+
+.Example `KogitoRuntime` status
+[source,subs="attributes+"]
+----
+[user@localhost ~]$ oc describe KogitoRuntime example
+Name:         example
+Namespace:    username-test
+Labels:       <none>
+Annotations:  <none>
+API Version:  rhpam.kiegroup.org/v1
+Kind:         KogitoRuntime
+Metadata:
+  Creation Timestamp:  2021-05-20T07:19:41Z
+  Generation:          1
+  Managed Fields:
+    API Version:  rhpam.kiegroup.org/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        .:
+        f:image:
+        f:replicas:
+    Manager:      Mozilla
+    Operation:    Update
+    Time:         2021-05-20T07:19:41Z
+    API Version:  rhpam.kiegroup.org/v1
+    Fields Type:  FieldsV1
+    fieldsV1:
+      f:spec:
+        f:monitoring:
+        f:probes:
+          .:
+          f:livenessProbe:
+          f:readinessProbe:
+        f:resources:
+        f:runtime:
+      f:status:
+        .:
+        f:cloudEvents:
+        f:conditions:
+    Manager:         main
+    Operation:       Update
+    Time:            2021-05-20T07:19:45Z
+  Resource Version:  272185
+  Self Link:         /apis/rhpam.kiegroup.org/v1/namespaces/ksuta-test/kogitoruntimes/example
+  UID:               edbe0bf1-554e-4523-9421-d074070df982
+Spec:
+  Image:     not-existing-image:latest
+  Replicas:  1
+Status:
+  Cloud Events:
+  Conditions:
+    Last Transition Time:  2021-05-20T07:19:44Z
+    Message:
+    Reason:                NoPodAvailable
+    Status:                False
+    Type:                  Deployed
+    Last Transition Time:  2021-05-20T07:19:44Z
+    Message:
+    Reason:                RequestedReplicasNotEqualToAvailableReplicas
+    Status:                True
+    Type:                  Provisioning
+    Last Transition Time:  2021-05-20T07:19:45Z
+    Message:               you may not have access to the container image "quay.io/kiegroup/not-existing-image:latest"
+    Reason:                ImageStreamNotReadyReason
+    Status:                True
+    Type:                  Failed
+----
+
+At the end of the output, you can see the `KogitoRuntime` status with a relevant message.
+--

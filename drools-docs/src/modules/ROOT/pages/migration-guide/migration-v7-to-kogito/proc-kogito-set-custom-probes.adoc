@@ -1,0 +1,30 @@
+[id="proc-kogito-set-custom-probes_{context}"]
+= Setting custom probes for {KOGITO} microservices on {OPENSHIFT}
+
+You can also configure the custom endpoints for the liveness, readiness, and startup probes.
+
+.Procedure
+. Define the probes in the `KogitoRuntime` YAML file of your project, as shown in the following example:
+
+[source,yaml,subs="attributes+"]
+.Example {KOGITO} microservice custom resource with custom probe endpoints
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this service
+kind: KogitoRuntime
+metadata:
+  name: process-quarkus-example # Application name
+spec:
+  replicas: 1
+  probes:
+    livenessProbe:
+      httpGet:
+        path: /probes/live # Liveness endpoint
+        port: 8080
+    readinessProbe:
+      httpGet:
+        path: /probes/ready # Readiness endpoint
+        port: 8080
+    startupProbe:
+      tcpSocket:
+        port: 8080
+----

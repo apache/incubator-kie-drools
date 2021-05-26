@@ -1,0 +1,121 @@
+[id="proc-kogito-microservices-deploying-on-ocp-console-binary-build_{context}"]
+= Deploying {KOGITO} microservices on OpenShift using binary build and OpenShift web console
+
+OpenShift builds can require extensive amounts of time. As a faster alternative for building and deploying your {KOGITO} microservices on OpenShift, you can use a binary build.
+
+The operator uses the following custom resources to deploy domain-specific microservices (the microservices that you develop):
+
+* `KogitoBuild` processes an uploaded application and produces a runtime image.
+* `KogitoRuntime` starts the runtime image and configures it as per your requirements.
+
+.Prerequisites
+* The Red Hat Process Automation Manager {KOGITO} Operator is installed.
+* The `oc` OpenShift CLI is installed and you are logged in to the relevant OpenShift cluster. For `oc` installation and login instructions, see the https://access.redhat.com/documentation/en-us/openshift_container_platform/4.2/html/cli_tools/openshift-cli-oc[OpenShift documentation].
+* You have access to the OpenShift web console with the necessary permissions to create and edit `KogitoBuild` and `KogitoRuntime`.
+* (Quarkus only) The `pom.xml` file of your project contains the following dependency for the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension]. This extension enables the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes] that are required for Quarkus-based projects on OpenShift.
++
+.SmallRye Health dependency for Quarkus applications on OpenShift
+[source,xml]
+----
+<dependency>
+  <groupId>io.quarkus</groupId>
+  <artifactId>quarkus-smallrye-health</artifactId>
+</dependency>
+----
+
+.Procedure
+. Build an application locally.
+. Go to *Operators* -> *Installed Operators* and select *RHPAM Kogito Operator*.
+. To create the {KOGITO} build definition, on the operator page, select the *Kogito Build* tab and click *Create KogitoBuild*.
+. In the application window, use *Form View* or *YAML View* to configure the build definition.
++
+--
+At a minimum, define the application configurations shown in the following example YAML file:
+
+.Example YAML definition for a Quarkus application with {KOGITO} build
+[source,yaml,subs="attributes+"]
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this service
+kind: KogitoBuild  # Application type
+metadata:
+  name: example-quarkus  # Application name
+spec:
+  type: Binary
+----
+
+.Example YAML definition for a Spring Boot application with {KOGITO} build
+[source,yaml,subs="attributes+"]
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this service
+kind: KogitoBuild  # Application type
+metadata:
+  name: example-springboot  # Application name
+spec:
+  runtime: springboot
+  type: Binary
+----
+--
+
+. After you define your application data, click *Create* to generate the {KOGITO} build.
++
+Your application is listed in the *{KOGITO}Builds* page. You can select the application name to view or modify application settings and YAML details.
+
+. Upload the built binary using the following command:
++
+--
+[source]
+----
+$ oc start-build example-quarkus --from-dir=target/ -n namespace
+----
+
+* `from-dir` is equals to the `target` folder path of the built application.
+* `namespace` is the namespace where `KogitoBuild` is created.
+--
+
+. To create the {KOGITO} microservice definition, on the operator page, select the *Kogito Runtime* tab and click *Create KogitoRuntime*.
+. In the application window, use *Form View* or *YAML View* to configure the microservice definition.
++
+--
+At a minimum, define the application configurations shown in the following example YAML file:
+
+.Example YAML definition for a Quarkus application with {KOGITO} microservices
+[source,yaml,subs="attributes+"]
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this microservice
+kind: KogitoRuntime  # Application type
+metadata:
+  name: example-quarkus  # Application name
+----
+
+.Example YAML definition for a Spring Boot application with {KOGITO} microservices
+[source,yaml,subs="attributes+"]
+----
+apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this microservice
+kind: KogitoRuntime  # Application type
+metadata:
+  name: example-springboot  # Application name
+spec:
+  runtime: springboot
+----
+
+[NOTE]
+====
+In this case, the application is built locally and deployed using KogitoRuntime. You must ensure that the application name is same in `KogitoBuild` and `KogitoRuntime`.
+====
+--
+
+. After you define your application data, click *Create* to generate the {KOGITO} microservice.
++
+Your application is listed in the {KOGITO} microservice page. You can select the application name to view or modify application settings and the contents of the YAML file.
+
+. In the left menu of the web console, go to *Builds* -> *Builds* to view the status of your application build.
++
+You can select a specific build to view build details.
+
+. After the application build is complete, go to *Workloads* -> *Deployments* to view the application deployments, pod status, and other details.
+
+. After your {KOGITO} microservice is deployed, in the left menu of the web console, go to *Networking* -> *Routes* to view the access link to the deployed application.
++
+You can select the application name to view or modify route settings.
++
+With the application route, you can integrate your {KOGITO} microservices with your business automation solutions as needed.
