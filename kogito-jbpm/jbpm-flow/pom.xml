@@ -20,6 +20,18 @@
     <java.module.name>org.kie.kogito.jbpm.flow.core</java.module.name>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie7-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -49,7 +61,6 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
-      <version>${version.org.kie7}</version>
       <exclusions>
         <exclusion>
           <groupId>org.drools</groupId>

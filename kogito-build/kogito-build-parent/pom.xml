@@ -14,8 +14,8 @@
   <artifactId>kogito-build-parent</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kogito Runtimes Build BOM</name>
-  <description>Kogito Runtimes Dependency Management Project BOM</description>
+  <name>Kogito :: Runtimes Build Parent</name>
+  <description>Kogito Runtimes Build Parent</description>
 
   <!--
       CONVENTIONS:
@@ -173,7 +173,6 @@
     <version.org.junit.pioneer>1.0.0</version.org.junit.pioneer>
     <version.org.keycloak>12.0.4</version.org.keycloak>
     <version.org.confluent.kafka>5.4.3</version.org.confluent.kafka>
-    <version.org.kie7>7.55.0.Beta1</version.org.kie7>
     <version.org.mockito>3.6.0</version.org.mockito>
     <version.org.mongo>4.2.3</version.org.mongo>
     <version.org.mongo.springboot>4.1.0</version.org.mongo.springboot> <!-- https://issues.redhat.com/browse/KOGITO-5031 -->
@@ -195,28 +194,6 @@
         <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <!-- DMN -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-openapi</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-dmn-jpmml</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-      <!-- PMML -->
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-api</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie7}</version>
       </dependency>
 
       <dependency>

@@ -19,18 +19,14 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-evaluator-api</artifactId>
-        <version>${version.org.kie7}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.kie</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <version>${version.org.kie7}</version>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-kie7-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
-
 
   <dependencies>
     <dependency>
