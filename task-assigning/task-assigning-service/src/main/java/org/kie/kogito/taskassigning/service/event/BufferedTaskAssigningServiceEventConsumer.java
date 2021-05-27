@@ -19,7 +19,6 @@ package org.kie.kogito.taskassigning.service.event;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Consumer;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -32,11 +31,9 @@ public class BufferedTaskAssigningServiceEventConsumer implements TaskAssigningS
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BufferedTaskAssigningServiceEventConsumer.class);
 
-    private List<DataEvent<?>> buffer = new ArrayList<>();
+    private final List<DataEvent<?>> buffer = new ArrayList<>();
 
-    private AtomicBoolean paused = new AtomicBoolean(true);
-
-    private ReentrantLock lock = new ReentrantLock();
+    private final AtomicBoolean paused = new AtomicBoolean(true);
 
     private Consumer<List<DataEvent<?>>> consumer;
 
@@ -45,65 +42,40 @@ public class BufferedTaskAssigningServiceEventConsumer implements TaskAssigningS
     }
 
     @Override
-    public void pause() {
-        lock.lock();
+    public synchronized void pause() {
         LOGGER.debug("pause was invoked with current buffer.size: {}", buffer.size());
-        try {
-            paused.set(true);
-        } finally {
-            lock.unlock();
-        }
+        paused.set(true);
     }
 
     @Override
-    public void resume() {
-        lock.lock();
+    public synchronized void resume() {
         LOGGER.debug("resume was invoked with current buffer.size: {}", buffer.size());
-        try {
-            paused.set(false);
-            if (!buffer.isEmpty()) {
-                deliverToConsumer();
-            }
-        } finally {
-            lock.unlock();
+        paused.set(false);
+        if (!buffer.isEmpty()) {
+            deliverToConsumer();
         }
     }
 
     @Override
-    public List<DataEvent<?>> pollEvents() {
-        lock.lock();
-        try {
-            LOGGER.debug("pollEvents was invoked with current buffer.size: {}", buffer.size());
-            List<DataEvent<?>> result = new ArrayList<>(buffer);
-            buffer.clear();
-            return result;
-        } finally {
-            lock.unlock();
-        }
+    public synchronized List<DataEvent<?>> pollEvents() {
+        LOGGER.debug("pollEvents was invoked with current buffer.size: {}", buffer.size());
+        List<DataEvent<?>> result = new ArrayList<>(buffer);
+        buffer.clear();
+        return result;
     }
 
     @Override
-    public int queuedEvents() {
-        lock.lock();
-        try {
-            return buffer.size();
-        } finally {
-            lock.unlock();
-        }
+    public synchronized int queuedEvents() {
+        return buffer.size();
     }
 
     @Override
-    public void accept(DataEvent<?> dataEvent) {
-        lock.lock();
-        try {
-            LOGGER.debug("Event {} being accepted, current buffer.size: {},  paused: {}", dataEvent.getDataEventType(), buffer.size(), paused.get());
-            buffer.add(dataEvent);
-            if (!paused.get()) {
-                LOGGER.debug("Delivering to consumer, current buffer.size: {}, paused: {}", buffer.size(), paused.get());
-                deliverToConsumer();
-            }
-        } finally {
-            lock.unlock();
+    public synchronized void accept(DataEvent<?> dataEvent) {
+        LOGGER.debug("Event {} being accepted, current buffer.size: {},  paused: {}", dataEvent.getDataEventType(), buffer.size(), paused.get());
+        buffer.add(dataEvent);
+        if (!paused.get()) {
+            LOGGER.debug("Delivering to consumer, current buffer.size: {}, paused: {}", buffer.size(), paused.get());
+            deliverToConsumer();
         }
     }
 

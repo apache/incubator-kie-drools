@@ -44,4 +44,9 @@ public class TaskAssigningConfigProperties {
     public static final String USER_SERVICE_CONNECTOR = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-connector";
 
     public static final String USER_SERVICE_SYNC_INTERVAL = TASK_ASSIGNING_PROPERTY_PREFIX + ".user-service-sync.interval";
+
+    public static final String WAIT_FOR_IMPROVED_SOLUTION_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".wait-for-improved-solution-duration";
+
+    public static final String IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".improve-solution-on-background-duration";
+
 }

@@ -22,10 +22,8 @@
 
   <localSearch>
     <termination>
-      <!-- for testing purposes by now just execute 2 secs -->
-      <secondsSpentLimit>2</secondsSpentLimit>
       <!-- NOTE: please keep this termination period inside the localSearch configuration. -->
-      <!--<unimprovedSpentLimit>PT2M</unimprovedSpentLimit>-->
+      <unimprovedSpentLimit>PT2M</unimprovedSpentLimit>
     </termination>
   </localSearch>
 </solver>

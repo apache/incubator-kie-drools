@@ -26,6 +26,7 @@ import org.kie.kogito.taskassigning.service.TaskAssigningServiceContext;
 import org.kie.kogito.taskassigning.service.TaskData;
 import org.kie.kogito.taskassigning.service.TestUtil;
 import org.kie.kogito.taskassigning.service.event.DataEvent;
+import org.kie.kogito.taskassigning.service.event.SolutionUpdatedOnBackgroundDataEvent;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
 
@@ -60,6 +61,13 @@ class EventUtilTest {
     private static final UserDataEvent USER_DATA_EVENT_2 = mockUserDataEvent(TestUtil.parseZonedDateTime("2021-03-31T08:00:00.002Z"));
     private static final UserDataEvent USER_DATA_EVENT_3 = mockUserDataEvent(TestUtil.parseZonedDateTime("2021-03-31T08:00:00.003Z"));
 
+    private static final SolutionUpdatedOnBackgroundDataEvent SOLUTION_UPDATED_DATA_EVENT_1 =
+            new SolutionUpdatedOnBackgroundDataEvent(1, TestUtil.parseZonedDateTime("2021-05-19T08:00:00.001Z"));
+    private static final SolutionUpdatedOnBackgroundDataEvent SOLUTION_UPDATED_DATA_EVENT_2 =
+            new SolutionUpdatedOnBackgroundDataEvent(2, TestUtil.parseZonedDateTime("2021-05-19T08:00:00.002Z"));
+    private static final SolutionUpdatedOnBackgroundDataEvent SOLUTION_UPDATED_DATA_EVENT_3 =
+            new SolutionUpdatedOnBackgroundDataEvent(3, TestUtil.parseZonedDateTime("2021-05-19T08:00:00.003Z"));
+
     @Test
     void filterNewestTaskEventsInContext() {
         TaskAssigningServiceContext context = new TaskAssigningServiceContext();
@@ -92,6 +100,16 @@ class EventUtilTest {
         UserDataEvent result = EventUtil.filterNewestUserEvent(eventList);
         assertThat(result)
                 .isSameAs(USER_DATA_EVENT_3);
+    }
+
+    @Test
+    void filterNewestSolutionUpdatedOnBackgroundEvent() {
+        List<DataEvent<?>> eventList = Arrays.asList(SOLUTION_UPDATED_DATA_EVENT_2,
+                SOLUTION_UPDATED_DATA_EVENT_3,
+                SOLUTION_UPDATED_DATA_EVENT_1);
+        SolutionUpdatedOnBackgroundDataEvent result = EventUtil.filterNewestSolutionUpdatedOnBackgroundEvent(eventList);
+        assertThat(result).isSameAs(SOLUTION_UPDATED_DATA_EVENT_3);
+
     }
 
     private static List<DataEvent<?>> buildDataEvents() {

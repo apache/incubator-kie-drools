@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.kogito.taskassigning.service.TaskAssigningServiceContext;
 import org.kie.kogito.taskassigning.service.event.DataEvent;
+import org.kie.kogito.taskassigning.service.event.SolutionUpdatedOnBackgroundDataEvent;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
 
@@ -86,6 +87,14 @@ public class EventUtil {
         return dataEvents.stream()
                 .filter(event -> event.getDataEventType() == DataEvent.DataEventType.USER_DATA_EVENT)
                 .map(UserDataEvent.class::cast)
+                .max(Comparator.comparing(DataEvent::getEventTime))
+                .orElse(null);
+    }
+
+    public static SolutionUpdatedOnBackgroundDataEvent filterNewestSolutionUpdatedOnBackgroundEvent(List<DataEvent<?>> dataEvents) {
+        return dataEvents.stream()
+                .filter(event -> event.getDataEventType() == DataEvent.DataEventType.SOLUTION_UPDATED_ON_BACKGROUND_DATA_EVENT)
+                .map(SolutionUpdatedOnBackgroundDataEvent.class::cast)
                 .max(Comparator.comparing(DataEvent::getEventTime))
                 .orElse(null);
     }

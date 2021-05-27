@@ -19,7 +19,6 @@ package org.kie.kogito.taskassigning.service.config;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -58,7 +57,9 @@ class TaskAssigningConfigUtilTest {
     private static final String CREDENTIALS_SECRET = "CREDENTIALS_SECRET";
     private static final String CLIENT_USER = "CLIENT_USER";
     private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
-    private static final Duration SYNC_INTERVAL = Duration.of(1, ChronoUnit.MILLIS);
+    private static final Duration SYNC_INTERVAL = Duration.ofMillis(1);
+    private static final Duration WAIT_FOR_IMPROVED_SOLUTION_DURATION = Duration.ofMillis(2);
+    private static final Duration IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = Duration.ofMillis(3);
 
     @Mock
     ClientServices clientServices;
@@ -170,6 +171,8 @@ class TaskAssigningConfigUtilTest {
         TaskAssigningConfig config = new TaskAssigningConfig();
         config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
         config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.waitForImprovedSolutionDuration = WAIT_FOR_IMPROVED_SOLUTION_DURATION;
+        config.improveSolutionOnBackgroundDuration = IMPROVE_SOLUTION_ON_BACKGROUND_DURATION;
         return config;
     }
 

@@ -30,6 +30,7 @@ import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigPro
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_USER;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_INDEX_SERVER_URL;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_LOADER_PAGE_SIZE;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.IMPROVE_SOLUTION_ON_BACKGROUND_DURATION;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.PUBLISH_WINDOW_SIZE;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_AUTH_SERVER_URL;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CLIENT_ID;
@@ -37,6 +38,7 @@ import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigPro
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_TENANT_ENABLED;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_CONNECTOR;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.WAIT_FOR_IMPROVED_SOLUTION_DURATION;
 
 @ApplicationScoped
 public class TaskAssigningConfig {
@@ -92,6 +94,14 @@ public class TaskAssigningConfig {
     @Inject
     @ConfigProperty(name = USER_SERVICE_SYNC_INTERVAL, defaultValue = "PT2H")
     Duration userServiceSyncInterval;
+
+    @Inject
+    @ConfigProperty(name = WAIT_FOR_IMPROVED_SOLUTION_DURATION, defaultValue = "PT0S")
+    Duration waitForImprovedSolutionDuration;
+
+    @Inject
+    @ConfigProperty(name = IMPROVE_SOLUTION_ON_BACKGROUND_DURATION, defaultValue = "PT1M")
+    Duration improveSolutionOnBackgroundDuration;
 
     public boolean isOidcTenantEnabled() {
         return oidcTenantEnabled;
@@ -175,6 +185,14 @@ public class TaskAssigningConfig {
         return userServiceSyncInterval;
     }
 
+    public Duration getWaitForImprovedSolutionDuration() {
+        return waitForImprovedSolutionDuration;
+    }
+
+    public Duration getImproveSolutionOnBackgroundDuration() {
+        return improveSolutionOnBackgroundDuration;
+    }
+
     @Override
     public String toString() {
         return "TaskAssigningConfig{" +
@@ -189,6 +207,8 @@ public class TaskAssigningConfig {
                 ", publishWindowSize=" + publishWindowSize +
                 ", userServiceConnector=" + userServiceConnector +
                 ", userServiceSyncInterval=" + userServiceSyncInterval +
+                ", waitForImprovedSolutionDuration=" + waitForImprovedSolutionDuration +
+                ", improveSolutionOnBackgroundDuration= " + improveSolutionOnBackgroundDuration +
                 '}';
     }
 }

@@ -89,7 +89,7 @@ public class TestUtil {
     }
 
     public static User mockUser(String userId, List<TaskAssignment> taskAssignments) {
-        User result = new User(userId);
+        User result = new User(userId, true);
         ChainElement previousElement = result;
         for (TaskAssignment taskAssignment : taskAssignments) {
             taskAssignment.setUser(result);

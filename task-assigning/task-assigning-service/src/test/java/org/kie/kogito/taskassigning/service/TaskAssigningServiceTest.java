@@ -17,6 +17,7 @@
 package org.kie.kogito.taskassigning.service;
 
 import java.net.URL;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import javax.enterprise.event.Event;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.junit.jupiter.api.BeforeEach;
@@ -44,6 +47,7 @@ import org.kie.kogito.taskassigning.core.model.solver.realtime.RemoveTaskProblem
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfig;
 import org.kie.kogito.taskassigning.service.event.BufferedTaskAssigningServiceEventConsumer;
 import org.kie.kogito.taskassigning.service.event.DataEvent;
+import org.kie.kogito.taskassigning.service.event.SolutionUpdatedOnBackgroundDataEvent;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
 import org.kie.kogito.taskassigning.service.messaging.ReactiveMessagingEventConsumer;
@@ -60,16 +64,20 @@ import org.optaplanner.core.api.solver.event.BestSolutionChangedEvent;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 
 import io.quarkus.runtime.ShutdownEvent;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockTaskAssignment;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockTaskData;
 import static org.kie.kogito.taskassigning.service.TestUtil.mockUser;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
@@ -104,6 +112,12 @@ class TaskAssigningServiceTest {
 
     private static final int DATA_LOADER_PAGE_SIZE = 10;
     private static final int PUBLISH_WINDOW_SIZE = 5;
+
+    private static final long TIMER_ID = 1;
+    private static final Duration IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = Duration.ofMillis(100);
+    private static final Duration WAIT_FOR_IMPROVED_SOLUTION_DURATION = Duration.ofMillis(200);
+    private static final BendableLongScore INITIAL_SCORE = BendableLongScore.of(new long[] { 1 }, new long[] { 1 });
+    private static final BendableLongScore IMPROVED_SCORE = BendableLongScore.of(new long[] { 2 }, new long[] { 2 });
 
     @Mock
     private SolverFactory<TaskAssigningSolution> solverFactory;
@@ -151,6 +165,12 @@ class TaskAssigningServiceTest {
     @Mock
     private AttributesProcessorRegistry processorRegistry;
 
+    @Mock
+    private Vertx vertx;
+
+    @Mock
+    private Event<TaskAssigningService.TimerBasedEvent> timerBasedEvent;
+
     private TaskAssigningServiceContext context;
 
     @Captor
@@ -158,6 +178,9 @@ class TaskAssigningServiceTest {
 
     @Captor
     private ArgumentCaptor<Consumer<List<DataEvent<?>>>> dataEventsConsumerCaptor;
+
+    @Captor
+    private ArgumentCaptor<DataEvent<?>> dataEventCaptor;
 
     @Captor
     private ArgumentCaptor<List<PlanningItem>> planningCaptor;
@@ -170,6 +193,12 @@ class TaskAssigningServiceTest {
 
     @Captor
     private ArgumentCaptor<Runnable> managedExecutorCaptor;
+
+    @Captor
+    private ArgumentCaptor<Handler<Long>> timerHandlerCaptor;
+
+    @Captor
+    private ArgumentCaptor<TaskAssigningService.TimerBasedEvent> timerBasedEventCaptor;
 
     @Mock
     private SolverEventListener<TaskAssigningSolution> solverEventListener;
@@ -191,6 +220,8 @@ class TaskAssigningServiceTest {
         taskAssigningService.userServiceAdapter = userServiceAdapter;
         taskAssigningService.solutionDataLoader = solutionDataLoader;
         taskAssigningService.processorRegistry = processorRegistry;
+        taskAssigningService.vertx = vertx;
+        taskAssigningService.timerBasedEvent = timerBasedEvent;
     }
 
     @Test
@@ -582,6 +613,123 @@ class TaskAssigningServiceTest {
         verify(serviceEventConsumer, times(2)).resume();
     }
 
+    @Test
+    void onSolutionUpdatedOnBackgroundWithScoreImprovement() throws Exception {
+        TaskAssigningSolution newBestSolution = buildSolutionWithScore(IMPROVED_SCORE);
+        prepareOnSolutionUpdatedOnBackground(INITIAL_SCORE, newBestSolution);
+        verify(taskAssigningService).executeSolutionChange(newBestSolution);
+    }
+
+    @Test
+    void onSolutionUpdatedOnBackgroundWithNoScoreImprovement() throws Exception {
+        TaskAssigningSolution newBestSolution = buildSolutionWithScore(INITIAL_SCORE);
+        prepareOnSolutionUpdatedOnBackground(INITIAL_SCORE, newBestSolution);
+        verify(taskAssigningService, never()).executeSolutionChange(newBestSolution);
+    }
+
+    @SuppressWarnings("unchecked")
+    private void prepareOnSolutionUpdatedOnBackground(BendableLongScore initialSolutionScore,
+            TaskAssigningSolution newBestSolution) throws Exception {
+        prepareStart();
+        TaskAssigningSolution initialSolution = buildSolutionWithScore(initialSolutionScore);
+
+        context.setTaskPublished(TASK_1_ID, true);
+        context.setTaskPublished(TASK_2_ID, true);
+        context.setTaskPublished(TASK_3_ID, true);
+        context.setTaskPublished(TASK_4_ID, true);
+
+        doReturn(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION).when(config).getImproveSolutionOnBackgroundDuration();
+        doReturn(TIMER_ID).when(vertx).setTimer(eq(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION.toMillis()), any(Handler.class));
+
+        taskAssigningService.onBestSolutionChange(mockEvent(initialSolution));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
+        taskAssigningService.onBestSolutionChange(mockEvent(newBestSolution));
+
+        List<DataEvent<?>> eventList = Collections.singletonList(new SolutionUpdatedOnBackgroundDataEvent(TIMER_ID, ZonedDateTime.now()));
+        dataEventsConsumerCaptor.getValue().accept(eventList);
+        verify(managedExecutor, times(2)).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
+        verify(taskAssigningService).executeSolutionChange(initialSolution);
+    }
+
+    @Test
+    void onSolutionImprovedOnBackgroundEventIsDeliveredToConsumer() {
+        taskAssigningService.onSolutionImprovedOnBackgroundEvent(new TaskAssigningService.SolutionImprovedOnBackgroundEvent(TIMER_ID));
+        verify(serviceEventConsumer).accept(dataEventCaptor.capture());
+        assertNotNull(dataEventCaptor.getValue());
+        assertThat(dataEventCaptor.getValue()).isInstanceOf(SolutionUpdatedOnBackgroundDataEvent.class);
+        assertThat(((SolutionUpdatedOnBackgroundDataEvent) dataEventCaptor.getValue()).getData()).isEqualTo(TIMER_ID);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void onImproveSolutionOnBackgroundTimerFiredProduceTheEvent() throws Exception {
+        prepareStart();
+        TaskAssigningSolution initialSolution = buildSolutionWithScore(INITIAL_SCORE);
+
+        context.setTaskPublished(TASK_1_ID, true);
+        context.setTaskPublished(TASK_2_ID, true);
+        context.setTaskPublished(TASK_3_ID, true);
+        context.setTaskPublished(TASK_4_ID, true);
+
+        doReturn(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION).when(config).getImproveSolutionOnBackgroundDuration();
+        doReturn(TIMER_ID).when(vertx).setTimer(eq(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION.toMillis()), any(Handler.class));
+
+        taskAssigningService.onBestSolutionChange(mockEvent(initialSolution));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+
+        verify(vertx).setTimer(eq(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION.toMillis()), timerHandlerCaptor.capture());
+        timerHandlerCaptor.getValue().handle(TIMER_ID);
+        verify(timerBasedEvent).fire(timerBasedEventCaptor.capture());
+        assertThat(timerBasedEventCaptor.getValue()).isNotNull();
+        assertThat(timerBasedEventCaptor.getValue().getTimerId()).isEqualTo(TIMER_ID);
+    }
+
+    @Test
+    void onWaitForImprovedSolutionTimerFiredProduceTheEvent() throws Exception {
+        prepareStart();
+        doReturn(WAIT_FOR_IMPROVED_SOLUTION_DURATION).when(config).getWaitForImprovedSolutionDuration();
+        doReturn(TIMER_ID).when(vertx).setTimer(eq(WAIT_FOR_IMPROVED_SOLUTION_DURATION.toMillis()), any(Handler.class));
+
+        TaskAssigningSolution initialSolution = buildSolutionWithScore(INITIAL_SCORE);
+        taskAssigningService.onBestSolutionChange(mockEvent(initialSolution));
+        verify(managedExecutor, never()).runAsync(any());
+
+        verify(vertx).setTimer(anyLong(), timerHandlerCaptor.capture());
+        timerHandlerCaptor.getValue().handle(TIMER_ID);
+        verify(timerBasedEvent).fire(timerBasedEventCaptor.capture());
+        assertThat(timerBasedEventCaptor.getValue()).isNotNull();
+        assertThat(timerBasedEventCaptor.getValue().getTimerId()).isEqualTo(TIMER_ID);
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void onSolutionImproved() throws Exception {
+        prepareStart();
+        doReturn(WAIT_FOR_IMPROVED_SOLUTION_DURATION).when(config).getWaitForImprovedSolutionDuration();
+        doReturn(TIMER_ID).when(vertx).setTimer(anyLong(), any(Handler.class));
+
+        TaskAssigningSolution initialSolution = buildSolutionWithScore(INITIAL_SCORE);
+        taskAssigningService.onBestSolutionChange(mockEvent(initialSolution));
+        verify(managedExecutor, never()).runAsync(any());
+
+        verify(vertx).setTimer(anyLong(), any(Handler.class));
+
+        TaskAssigningSolution newSolution = buildSolutionWithScore(IMPROVED_SCORE);
+        taskAssigningService.onBestSolutionChange(mockEvent(newSolution));
+        verify(managedExecutor, never()).runAsync(any());
+        verify(taskAssigningService, never()).executeSolutionChange(any());
+
+        taskAssigningService.onSolutionImprovedEvent(new TaskAssigningService.SolutionImprovedEvent(TIMER_ID, initialSolution));
+        verify(managedExecutor).runAsync(managedExecutorCaptor.capture());
+        managedExecutorCaptor.getValue().run();
+        verify(taskAssigningService).executeSolutionChange(newSolution);
+    }
+
     private void preparePlanningExecutionWithNoPinningChanges(int queuedEvents) throws Exception {
         prepareStart();
         TaskAssigningSolution solution = new TaskAssigningSolution("1",
@@ -669,6 +817,12 @@ class TaskAssigningServiceTest {
         return new TaskAssigningSolution("1", Arrays.asList(user1, user2), assignments);
     }
 
+    private TaskAssigningSolution buildSolutionWithScore(BendableLongScore score) {
+        TaskAssigningSolution solution = buildSolution();
+        solution.setScore(score);
+        return solution;
+    }
+
     private void prepareStart() throws Exception {
         doReturn(context).when(taskAssigningService).createContext();
         doReturn(new URL(DATA_INDEX_SERVER_URL)).when(config).getDataIndexServerUrl();
@@ -731,6 +885,13 @@ class TaskAssigningServiceTest {
         TaskAssigningSolution spySolution = spy(solution);
         doReturn(score).when(spySolution).getScore();
         doReturn(spySolution).when(event).getNewBestSolution();
+        return event;
+    }
+
+    private static BestSolutionChangedEvent<TaskAssigningSolution> mockEvent(TaskAssigningSolution solution) {
+        BestSolutionChangedEvent<TaskAssigningSolution> event = mock(BestSolutionChangedEvent.class);
+        doReturn(true).when(event).isEveryProblemFactChangeProcessed();
+        doReturn(solution).when(event).getNewBestSolution();
         return event;
     }
 

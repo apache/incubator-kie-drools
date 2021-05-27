@@ -16,18 +16,22 @@
 
 package org.kie.kogito.taskassigning.service;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 
@@ -42,6 +46,7 @@ import org.kie.kogito.taskassigning.service.config.TaskAssigningConfig;
 import org.kie.kogito.taskassigning.service.config.TaskAssigningConfigValidator;
 import org.kie.kogito.taskassigning.service.event.BufferedTaskAssigningServiceEventConsumer;
 import org.kie.kogito.taskassigning.service.event.DataEvent;
+import org.kie.kogito.taskassigning.service.event.SolutionUpdatedOnBackgroundDataEvent;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.event.UserDataEvent;
 import org.kie.kogito.taskassigning.service.messaging.ReactiveMessagingEventConsumer;
@@ -56,8 +61,10 @@ import org.slf4j.LoggerFactory;
 
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.Startup;
+import io.vertx.core.Vertx;
 
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.filterNonDummyAssignments;
+import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestSolutionUpdatedOnBackgroundEvent;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEvents;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEventsInContext;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestUserEvent;
@@ -109,6 +116,12 @@ public class TaskAssigningService {
     @Inject
     AttributesProcessorRegistry processorRegistry;
 
+    @Inject
+    Vertx vertx;
+
+    @Inject
+    Event<TimerBasedEvent> timerBasedEvent;
+
     private SolverExecutor solverExecutor;
 
     private PlanningExecutor planningExecutor;
@@ -117,16 +130,17 @@ public class TaskAssigningService {
 
     private final AtomicReference<TaskAssigningSolution> currentSolution = new AtomicReference<>(null);
 
+    private final AtomicReference<TaskAssigningSolution> lastBestSolution = new AtomicReference<>(null);
+
     private final AtomicBoolean applyingPlanningExecutionResult = new AtomicBoolean();
 
     private final AtomicBoolean startingFromEvents = new AtomicBoolean();
 
     private List<TaskDataEvent> startingEvents;
 
-    /**
-     * Synchronizes potential concurrent accesses between the different components that invoke callbacks on the service.
-     */
-    private final ReentrantLock lock = new ReentrantLock();
+    private final AtomicLong waitForImprovedSolutionTimer = new AtomicLong(-1);
+
+    private final AtomicLong improveSolutionOnBackgroundTimer = new AtomicLong(-1);
 
     /**
      * Handles the TaskAssigningService initialization procedure and instructs the SolutionDataLoader for getting the
@@ -156,8 +170,7 @@ public class TaskAssigningService {
      *
      * @param result contains the requested data for creating the initial solution.
      */
-    void onSolutionDataLoad(SolutionDataLoader.Result result) {
-        lock.lock();
+    synchronized void onSolutionDataLoad(SolutionDataLoader.Result result) {
         try {
             LOGGER.debug("Solution data loading has finished, startingFromEvents: {}, includeTasks: {}"
                     + ", includeUsers: {}, tasks: {}, users: {}", startingFromEvents,
@@ -202,8 +215,6 @@ public class TaskAssigningService {
             }
         } catch (Exception e) {
             failFast(e);
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -221,33 +232,29 @@ public class TaskAssigningService {
                 .collect(Collectors.toList());
     }
 
-    private void onDataEvents(List<DataEvent<?>> events) {
-        lock.lock();
-        try {
-            pauseEvents();
-            managedExecutor.runAsync(() -> processDataEvents(events));
-        } finally {
-            lock.unlock();
-        }
+    private synchronized void onDataEvents(List<DataEvent<?>> events) {
+        pauseEvents();
+        managedExecutor.runAsync(() -> processDataEvents(events));
     }
 
     /**
      * Invoked when a set of events are received for processing.
-     * Two main scenarios might happen:
+     * Three main scenarios might happen:
      * a) A solution already exists and thus the proper problem fact changes are calculated and passed to the solver for
      * execution. If there are no changes to apply, wait for more events.
      *
      * b) No solution exists. Instruct the solution data loader to read the users information and the solver will be
      * started when this information is returned plus the information collected from the events.
-     * 
+     *
+     * c) A solution improved on background event arrives and must be processed accordingly.
+     *
      * @param events a list of events to process.
      */
-    void processDataEvents(List<DataEvent<?>> events) {
+    synchronized void processDataEvents(List<DataEvent<?>> events) {
         if (isNotOperative()) {
             LOGGER.warn(SERVICE_INOPERATIVE_MESSAGE, context.getStatus());
             return;
         }
-        lock.lock();
         try {
             List<TaskDataEvent> newTaskDataEvents = filterNewestTaskEventsInContext(context, events);
             if (currentSolution.get() == null) {
@@ -274,16 +281,43 @@ public class TaskAssigningService {
                         .fromUserDataEvent(userDataEvent)
                         .build();
                 if (!changes.isEmpty()) {
+                    LOGGER.debug("processDataEvents - there are changes: {} to apply", changes.size());
+                    cancelScheduledImproveSolutionOnBackgroundTimer();
                     solverExecutor.addProblemFactChanges(changes);
                 } else {
-                    executePlanOrResumeEvents(currentSolution.get());
+                    // c) check if an event for the improve solution on background period has arrived and a better
+                    // solution was produced
+                    SolutionUpdatedOnBackgroundDataEvent solutionImprovedOnBackgroundEvent = filterNewestSolutionUpdatedOnBackgroundEvent(events);
+                    TaskAssigningSolution currentLastBestSolution = lastBestSolution.get();
+                    if (solutionImprovedOnBackgroundEvent != null && hasToApplyImprovedOnBackgroundSolution(solutionImprovedOnBackgroundEvent, currentLastBestSolution)) {
+                        // a better solution was produced during the improveSolutionOnBackgroundDuration period
+                        LOGGER.debug("processDataEvents - apply the improved on background solution: {}", currentLastBestSolution);
+                        executeSolutionChange(currentLastBestSolution);
+                    } else {
+                        executePlanOrResumeEvents(currentSolution.get());
+                    }
                 }
             }
         } catch (Exception e) {
             failFast(e);
-        } finally {
-            lock.unlock();
         }
+    }
+
+    private boolean hasToApplyImprovedOnBackgroundSolution(SolutionUpdatedOnBackgroundDataEvent dataEvent,
+            TaskAssigningSolution currentLastBestSolution) {
+        if (isScheduledImproveSolutionOnBackgroundTimerEqualsTo(dataEvent.getData())) {
+            boolean wasImproved = currentLastBestSolution.getScore().compareTo(currentSolution.get().getScore()) > 0;
+            if (wasImproved) {
+                LOGGER.debug("ON_BACKGROUND SCORE IMPROVEMENT: lastBestSolution calculated on background has a better" +
+                        " score than the currentSolution, currentSolution.score: {}, lastBestSolution.score: {}",
+                        currentSolution.get().getScore(), currentLastBestSolution.getScore());
+            } else {
+                LOGGER.debug("ON_BACKGROUND SAME SCORE: lastBestSolution calculated on background is the same as" +
+                        " the currentSolution or has the same score");
+            }
+            return wasImproved;
+        }
+        return false;
     }
 
     /**
@@ -308,29 +342,63 @@ public class TaskAssigningService {
         }
         TaskAssigningSolution newBestSolution = event.getNewBestSolution();
         if (event.isEveryProblemFactChangeProcessed() && newBestSolution.getScore().isSolutionInitialized()) {
-            onBestSolutionChange(newBestSolution);
+            lastBestSolution.set(newBestSolution);
+            if (!applyingPlanningExecutionResult.get() && hasWaitForImprovedSolutionDuration()) {
+                scheduleOnBestSolutionChange(newBestSolution, config.getWaitForImprovedSolutionDuration());
+            } else {
+                onBestSolutionChange(newBestSolution);
+            }
         }
     }
 
     private void onBestSolutionChange(TaskAssigningSolution newBestSolution) {
         if (!context.isCurrentChangeSetProcessed()) {
+            context.setProcessedChangeSet(context.getCurrentChangeSetId());
             managedExecutor.runAsync(() -> executeSolutionChange(newBestSolution));
         }
     }
 
-    private void executeSolutionChange(TaskAssigningSolution solution) {
+    private void scheduleOnBestSolutionChange(TaskAssigningSolution chBestSolution, Duration duration) {
+        if (!isWaitForImprovedSolutionTimerScheduled() && !context.isCurrentChangeSetProcessed()) {
+            LOGGER.debug("Schedule execute solution change with waiting duration: {}", duration);
+            scheduleWaitForImprovedSolutionTimer(duration, chBestSolution);
+        }
+    }
+
+    private void executeSolutionChange(TaskAssigningSolution chBestSolution, Supplier<TaskAssigningSolution> solutionSupplier) {
+        TaskAssigningSolution currentLastBestSolution = solutionSupplier.get();
+        LOGGER.debug("Executing delayed solution change for currentChangeSetId: {}, the first CH generated solution after the changes is chBestSolution: {}, lastBestSolution: {}",
+                context.getCurrentChangeSetId(), chBestSolution, currentLastBestSolution);
+
+        if (chBestSolution == currentLastBestSolution) {
+            LOGGER.debug("SAME SOLUTION: lastBestSolution is the same as the chBestSolution");
+        } else {
+            if (chBestSolution.getScore().compareTo(currentLastBestSolution.getScore()) < 0) {
+                LOGGER.debug("SCORE IMPROVEMENT: lastBestSolution has a better score than the chBestSolution: " +
+                        "currentChangeSetId: {}, chBestSolution.score: {}, lastBestSolution.score: {}",
+                        context.getCurrentChangeSetId(), chBestSolution.getScore(), currentLastBestSolution.getScore());
+            } else {
+                LOGGER.debug("SAME SCORE: lastBestSolution is not the same as the chBestSolution BUT the score has not improved" +
+                        ", currentChangeSetId: {}, chBestSolution.score: {}, lastBestSolution.score: {}",
+                        context.getCurrentChangeSetId(), chBestSolution.getScore(), currentLastBestSolution.getScore());
+            }
+        }
+        context.setProcessedChangeSet(context.getCurrentChangeSetId());
+        managedExecutor.runAsync(() -> executeSolutionChange(currentLastBestSolution));
+    }
+
+    synchronized void executeSolutionChange(TaskAssigningSolution solution) {
         if (isNotOperative()) {
             LOGGER.warn(SERVICE_INOPERATIVE_MESSAGE, context.getStatus());
             return;
         }
-        lock.lock();
         try {
             LOGGER.debug("process the next generated solution, applyingPlanningExecutionResult: {}", applyingPlanningExecutionResult.get());
             if (LOGGER.isTraceEnabled()) {
                 traceSolution(LOGGER, solution);
             }
+            clearWaitForImprovedSolutionTimer();
             currentSolution.set(solution);
-            context.setProcessedChangeSet(context.getCurrentChangeSetId());
             List<ProblemFactChange<TaskAssigningSolution>> pendingEventsChanges = null;
             if (applyingPlanningExecutionResult.get()) {
                 // solution is the result of applying the pinning changes corresponding to the last executed plan,
@@ -351,15 +419,25 @@ public class TaskAssigningService {
                 }
             }
             if (pendingEventsChanges != null && !pendingEventsChanges.isEmpty()) {
+                LOGGER.debug("executeSolutionChange - we have pendingEventsChanges: {} to apply", pendingEventsChanges.size());
+                cancelScheduledImproveSolutionOnBackgroundTimer();
                 solverExecutor.addProblemFactChanges(pendingEventsChanges);
             } else {
                 executePlanOrResumeEvents(solution);
             }
         } catch (Exception e) {
             failFast(e);
-        } finally {
-            lock.unlock();
         }
+    }
+
+    void onSolutionImprovedEvent(@Observes SolutionImprovedEvent event) {
+        LOGGER.debug("onSolutionImprovedEvent: timerId: {}", event.getTimerId());
+        executeSolutionChange(event.getChBestSolution(), lastBestSolution::get);
+    }
+
+    void onSolutionImprovedOnBackgroundEvent(@Observes SolutionImprovedOnBackgroundEvent event) {
+        LOGGER.debug("onSolutionImprovedOnBackgroundEvent: timerId: {}", event.getTimerId());
+        serviceEventConsumer.accept(new SolutionUpdatedOnBackgroundDataEvent(event.getTimerId(), ZonedDateTime.now()));
     }
 
     private void executePlanOrResumeEvents(TaskAssigningSolution solution) {
@@ -372,8 +450,12 @@ public class TaskAssigningService {
             tracePlanning(LOGGER, planningItems);
         }
         if (!planningItems.isEmpty()) {
+            cancelScheduledImproveSolutionOnBackgroundTimer();
             planningExecutor.start(planningItems, this::onPlanningExecuted);
         } else {
+            if (hasImproveSolutionOnBackgroundDuration() && !isImproveSolutionOnBackgroundTimerScheduled()) {
+                scheduleImproveSolutionOnBackgroundTimer(config.getImproveSolutionOnBackgroundDuration());
+            }
             resumeEvents();
         }
     }
@@ -390,12 +472,11 @@ public class TaskAssigningService {
      *
      * @param result a PlanningExecutionResult with results of the planning execution.
      */
-    void onPlanningExecuted(PlanningExecutionResult result) {
+    synchronized void onPlanningExecuted(PlanningExecutionResult result) {
         if (isNotOperative()) {
             LOGGER.warn(SERVICE_INOPERATIVE_MESSAGE, context.getStatus());
             return;
         }
-        lock.lock();
         try {
             LOGGER.debug("Planning was executed");
             applyingPlanningExecutionResult.set(false);
@@ -420,6 +501,7 @@ public class TaskAssigningService {
                 LOGGER.debug("Pinning changes must be executed for the successful invocations: {}", pinningChanges.size());
                 pinningChanges.add(0, scoreDirector -> context.setCurrentChangeSetId(context.nextChangeSetId()));
                 applyingPlanningExecutionResult.set(true);
+                cancelScheduledImproveSolutionOnBackgroundTimer();
                 solverExecutor.addProblemFactChanges(pinningChanges);
             } else if (!hasQueuedEvents()) {
                 List<PlanningItem> failingItems = result.getItems().stream()
@@ -427,6 +509,7 @@ public class TaskAssigningService {
                         .map(PlanningExecutionResultItem::getItem)
                         .collect(Collectors.toList());
                 LOGGER.debug("No new events to process, but some items failed: {}, we must retry", failingItems.size());
+                cancelScheduledImproveSolutionOnBackgroundTimer();
                 planningExecutor.start(failingItems, this::onPlanningExecuted);
             } else {
                 LOGGER.debug("Some items failed but there are events to process, try to adjust the solution accordingly.");
@@ -434,8 +517,6 @@ public class TaskAssigningService {
             }
         } catch (Exception e) {
             failFast(e);
-        } finally {
-            lock.unlock();
         }
     }
 
@@ -452,13 +533,19 @@ public class TaskAssigningService {
         try {
             context.setStatus(ServiceStatus.SHUTDOWN);
             LOGGER.info("Service is going down and will be destroyed.");
-            userServiceAdapter.destroy();
-            solverExecutor.destroy();
-            planningExecutor.destroy();
+            destroyExecutableObjects();
             LOGGER.info("Service destroy sequence was executed successfully.");
         } catch (Exception e) {
             LOGGER.error("An error was produced during service destroy, but it'll go down anyway.", e);
         }
+    }
+
+    private void destroyExecutableObjects() {
+        userServiceAdapter.destroy();
+        solverExecutor.destroy();
+        planningExecutor.destroy();
+        cancelScheduledWaitForImprovedSolutionTimer();
+        cancelScheduledImproveSolutionOnBackgroundTimer();
     }
 
     private void loadSolutionData(boolean includeTasks, boolean includeUsers, int pageSize) {
@@ -474,9 +561,7 @@ public class TaskAssigningService {
         String msg = String.format("An unrecoverable error was produced: %s", cause.getMessage());
         LOGGER.error(msg, cause);
         context.setStatus(ServiceStatus.ERROR, ServiceMessage.error(msg));
-        solverExecutor.destroy();
-        planningExecutor.destroy();
-        userServiceAdapter.destroy();
+        destroyExecutableObjects();
         serviceMessageConsumer.failFast();
     }
 
@@ -532,5 +617,90 @@ public class TaskAssigningService {
 
     PlanningExecutor createPlanningExecutor(ClientServices clientServices, TaskAssigningConfig config) {
         return new PlanningExecutor(clientServices, config);
+    }
+
+    private boolean isWaitForImprovedSolutionTimerScheduled() {
+        return waitForImprovedSolutionTimer.get() >= 0;
+    }
+
+    private void clearWaitForImprovedSolutionTimer() {
+        waitForImprovedSolutionTimer.set(-1);
+    }
+
+    private void cancelScheduledWaitForImprovedSolutionTimer() {
+        long currentTimerId = waitForImprovedSolutionTimer.getAndSet(-1);
+        LOGGER.debug("cancelling waitForImprovedSolutionTimer: {}", currentTimerId);
+        cancelIfSet(currentTimerId);
+    }
+
+    private void scheduleWaitForImprovedSolutionTimer(Duration duration, TaskAssigningSolution chBestSolution) {
+        LOGGER.debug("scheduleWaitForImprovedSolutionTimer with duration: {}", duration);
+        long createdTimerId = vertx.setTimer(duration.toMillis(), timerId -> timerBasedEvent.fire(new SolutionImprovedEvent(timerId, chBestSolution)));
+        waitForImprovedSolutionTimer.set(createdTimerId);
+    }
+
+    private boolean isImproveSolutionOnBackgroundTimerScheduled() {
+        return improveSolutionOnBackgroundTimer.get() >= 0;
+    }
+
+    private boolean isScheduledImproveSolutionOnBackgroundTimerEqualsTo(long timerId) {
+        return improveSolutionOnBackgroundTimer.get() == timerId;
+    }
+
+    private void scheduleImproveSolutionOnBackgroundTimer(Duration duration) {
+        LOGGER.debug("scheduleImproveSolutionOnBackgroundTimer with duration: {}", duration);
+        long createdTimerId = vertx.setTimer(duration.toMillis(), timerId -> timerBasedEvent.fire(new SolutionImprovedOnBackgroundEvent(timerId)));
+        improveSolutionOnBackgroundTimer.set(createdTimerId);
+    }
+
+    private void cancelScheduledImproveSolutionOnBackgroundTimer() {
+        long currentTimerId = improveSolutionOnBackgroundTimer.getAndSet(-1);
+        LOGGER.debug("cancelling improveSolutionOnBackgroundTimer: {}", currentTimerId);
+        cancelIfSet(currentTimerId);
+    }
+
+    private void cancelIfSet(long timerId) {
+        if (timerId >= 0) {
+            vertx.cancelTimer(timerId);
+        }
+    }
+
+    private boolean hasWaitForImprovedSolutionDuration() {
+        return !config.getWaitForImprovedSolutionDuration().isZero();
+    }
+
+    private boolean hasImproveSolutionOnBackgroundDuration() {
+        return !config.getImproveSolutionOnBackgroundDuration().isZero();
+    }
+
+    static class TimerBasedEvent {
+        protected long timerId;
+
+        public TimerBasedEvent(long timerId) {
+            this.timerId = timerId;
+        }
+
+        public long getTimerId() {
+            return timerId;
+        }
+    }
+
+    static class SolutionImprovedEvent extends TimerBasedEvent {
+        TaskAssigningSolution chBestSolution;
+
+        public SolutionImprovedEvent(long timerId, TaskAssigningSolution chBestSolution) {
+            super(timerId);
+            this.chBestSolution = chBestSolution;
+        }
+
+        public TaskAssigningSolution getChBestSolution() {
+            return chBestSolution;
+        }
+    }
+
+    static class SolutionImprovedOnBackgroundEvent extends TimerBasedEvent {
+        public SolutionImprovedOnBackgroundEvent(long timerId) {
+            super(timerId);
+        }
     }
 }

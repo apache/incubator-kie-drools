@@ -41,6 +41,8 @@ class TaskAssigningConfigTest {
     private static final int PUBLISH_WINDOW_SIZE = 3;
     private static final String USER_SERVICE_CONNECTOR = "USER_SERVICE_CONNECTOR";
     private static final Duration USER_SERVICE_SYNC_INTERVAL = Duration.ofMillis(2000);
+    private static final Duration WAIT_FOR_IMPROVED_SOLUTION_DURATION = Duration.ofMillis(3000);
+    private static final Duration IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = Duration.ofMillis(4000);
 
     private TaskAssigningConfig config;
 
@@ -189,5 +191,17 @@ class TaskAssigningConfigTest {
     void getUserServiceSyncInterval() {
         config.userServiceSyncInterval = USER_SERVICE_SYNC_INTERVAL;
         assertThat(config.getUserServiceSyncInterval()).isEqualTo(USER_SERVICE_SYNC_INTERVAL);
+    }
+
+    @Test
+    void getWaitForImprovedSolutionDuration() {
+        config.waitForImprovedSolutionDuration = WAIT_FOR_IMPROVED_SOLUTION_DURATION;
+        assertThat(config.getWaitForImprovedSolutionDuration()).isEqualTo(WAIT_FOR_IMPROVED_SOLUTION_DURATION);
+    }
+
+    @Test
+    void getImproveSolutionOnBackgroundDuration() {
+        config.improveSolutionOnBackgroundDuration = IMPROVE_SOLUTION_ON_BACKGROUND_DURATION;
+        assertThat(config.getImproveSolutionOnBackgroundDuration()).isEqualTo(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION);
     }
 }

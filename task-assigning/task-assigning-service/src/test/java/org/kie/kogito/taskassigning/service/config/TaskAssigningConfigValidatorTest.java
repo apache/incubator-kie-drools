@@ -36,6 +36,9 @@ class TaskAssigningConfigValidatorTest {
     private static final String CLIENT_USER = "CLIENT_USER";
     private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
     private static final Duration SYNC_INTERVAL = Duration.of(1, ChronoUnit.MILLIS);
+    private static final Duration INVALID_NEGATIVE_TIMER_DURATION = Duration.parse("-PT0.001S");
+    private static final Duration INVALID_NON_NEGATIVE_TIMER_DURATION = Duration.parse("PT0.00001S");
+    private static final Duration VALID_TIMER_DURATION = Duration.parse("PT0.001S");
 
     @Test
     void validateDataIndexUrlNotSet() {
@@ -98,6 +101,8 @@ class TaskAssigningConfigValidatorTest {
         config.clientAuthUser = Optional.of(CLIENT_USER);
         config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
         config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.waitForImprovedSolutionDuration = VALID_TIMER_DURATION;
+        config.improveSolutionOnBackgroundDuration = VALID_TIMER_DURATION;
         Assertions.assertDoesNotThrow(() -> TaskAssigningConfigValidator.of(config).validate());
     }
 
@@ -107,6 +112,53 @@ class TaskAssigningConfigValidatorTest {
         config.userServiceSyncInterval = Duration.of(-1, ChronoUnit.MILLIS);
         assertThatThrownBy(() -> TaskAssigningConfigValidator.of(config).validate())
                 .hasMessageContaining(TaskAssigningConfigProperties.USER_SERVICE_SYNC_INTERVAL);
+    }
+
+    @Test
+    void validateWaitForImprovedSolutionDurationSuccessful() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.waitForImprovedSolutionDuration = VALID_TIMER_DURATION;
+        Assertions.assertDoesNotThrow(() -> TaskAssigningConfigValidator.of(config).validate());
+    }
+
+    @Test
+    void validateWaitForImprovedSolutionDurationInvalidNegative() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.waitForImprovedSolutionDuration = INVALID_NEGATIVE_TIMER_DURATION;
+        executeInvalidTimerDuration(config, TaskAssigningConfigProperties.WAIT_FOR_IMPROVED_SOLUTION_DURATION);
+    }
+
+    @Test
+    void validateWaitForImprovedSolutionDurationInvalidNonNegative() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.waitForImprovedSolutionDuration = INVALID_NON_NEGATIVE_TIMER_DURATION;
+        executeInvalidTimerDuration(config, TaskAssigningConfigProperties.WAIT_FOR_IMPROVED_SOLUTION_DURATION);
+    }
+
+    @Test
+    void validateImproveSolutionOnBackgroundDurationSuccessful() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.improveSolutionOnBackgroundDuration = VALID_TIMER_DURATION;
+        Assertions.assertDoesNotThrow(() -> TaskAssigningConfigValidator.of(config).validate());
+    }
+
+    @Test
+    void validateImproveSolutionOnBackgroundDurationInvalidNegative() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.improveSolutionOnBackgroundDuration = INVALID_NEGATIVE_TIMER_DURATION;
+        executeInvalidTimerDuration(config, TaskAssigningConfigProperties.IMPROVE_SOLUTION_ON_BACKGROUND_DURATION);
+    }
+
+    @Test
+    void validateImproveSolutionOnBackgroundDurationInvalidNonNegative() throws MalformedURLException {
+        TaskAssigningConfig config = createValidConfigForTimerDurationTest();
+        config.improveSolutionOnBackgroundDuration = INVALID_NON_NEGATIVE_TIMER_DURATION;
+        executeInvalidTimerDuration(config, TaskAssigningConfigProperties.IMPROVE_SOLUTION_ON_BACKGROUND_DURATION);
+    }
+
+    private void executeInvalidTimerDuration(TaskAssigningConfig config, String propertyName) throws MalformedURLException {
+        assertThatThrownBy(() -> TaskAssigningConfigValidator.of(config).validate())
+                .hasMessageContaining(propertyName);
     }
 
     private TaskAssigningConfig createValidKeycloakSet() throws MalformedURLException {
@@ -119,6 +171,8 @@ class TaskAssigningConfigValidatorTest {
         config.clientAuthUser = Optional.of(CLIENT_USER);
         config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
         config.userServiceSyncInterval = SYNC_INTERVAL;
+        config.waitForImprovedSolutionDuration = VALID_TIMER_DURATION;
+        config.improveSolutionOnBackgroundDuration = VALID_TIMER_DURATION;
         return config;
     }
 
@@ -126,6 +180,16 @@ class TaskAssigningConfigValidatorTest {
         TaskAssigningConfig config = new TaskAssigningConfig();
         config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
         config.clientAuthUser = Optional.empty();
+        return config;
+    }
+
+    private TaskAssigningConfig createValidConfigForTimerDurationTest() throws MalformedURLException {
+        TaskAssigningConfig config = new TaskAssigningConfig();
+        config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
+        config.clientAuthUser = Optional.empty();
+        config.userServiceSyncInterval = Duration.ZERO;
+        config.waitForImprovedSolutionDuration = Duration.ZERO;
+        config.improveSolutionOnBackgroundDuration = Duration.ZERO;
         return config;
     }
 }

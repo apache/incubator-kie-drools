@@ -22,7 +22,8 @@ public abstract class DataEvent<T> {
 
     public enum DataEventType {
         TASK_DATA_EVENT,
-        USER_DATA_EVENT;
+        USER_DATA_EVENT,
+        SOLUTION_UPDATED_ON_BACKGROUND_DATA_EVENT;
     }
 
     protected DataEventType dataEventType;
