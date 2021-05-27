@@ -105,10 +105,10 @@ public class KiePMMLModelFactoryUtils {
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
 
-        missingValueReplacements.forEach((fieldName, replacement) -> {
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(fieldName), literalExprFrom(replacement.a, replacement.b));
-            body.addStatement(new MethodCallExpr(new NameExpr("missingValueReplacementMap"), "put", expressions));
-        });
+        addMapPopulation(missingValueReplacements, body, "missingValueReplacementMap",
+                (fieldName, replacement) -> new StringLiteralExpr(fieldName),
+                (fieldName, replacement) -> literalExprFrom(replacement.a, replacement.b)
+        );
     }
 
     /**
