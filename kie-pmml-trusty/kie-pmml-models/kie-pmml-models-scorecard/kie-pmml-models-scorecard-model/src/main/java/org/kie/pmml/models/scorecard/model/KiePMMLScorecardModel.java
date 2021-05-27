@@ -35,14 +35,8 @@ public abstract class KiePMMLScorecardModel extends KiePMMLModel {
         super(modelName, Collections.emptyList());
     }
 
-
-
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         return characteristicsFunction.apply(requestData, outputFieldsMap);
     }
-
-
-
-
 }
