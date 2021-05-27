@@ -136,7 +136,7 @@ public class CounterfactualExplainerServiceHandler
     @Override
     public BaseExplainabilityResultDto createSucceededResultDto(CounterfactualExplainabilityRequest request,
             CounterfactualResult result) {
-        return buildResultDtoFromExplanation(request, result);
+        return buildResultDtoFromExplanation(request, result, CounterfactualExplainabilityResultDto.Stage.FINAL);
     }
 
     @Override
@@ -148,11 +148,12 @@ public class CounterfactualExplainerServiceHandler
 
     @Override
     public BaseExplainabilityResultDto createIntermediateResultDto(CounterfactualExplainabilityRequest request, CounterfactualResult result) {
-        return buildResultDtoFromExplanation(request, result);
+        return buildResultDtoFromExplanation(request, result, CounterfactualExplainabilityResultDto.Stage.INTERMEDIATE);
     }
 
     private CounterfactualExplainabilityResultDto buildResultDtoFromExplanation(CounterfactualExplainabilityRequest request,
-            CounterfactualResult result) {
+            CounterfactualResult result,
+            CounterfactualExplainabilityResultDto.Stage stage) {
         List<Feature> features = result.getEntities().stream().map(CounterfactualEntity::asFeature).collect(Collectors.toList());
         List<PredictionOutput> predictionOutputs = result.getOutput();
         if (Objects.isNull(predictionOutputs)) {
@@ -174,7 +175,7 @@ public class CounterfactualExplainerServiceHandler
                 request.getCounterfactualId(),
                 result.getSolutionId().toString(),
                 result.isValid(),
-                CounterfactualExplainabilityResultDto.Stage.FINAL,
+                stage,
                 ConversionUtils.fromFeatureList(features),
                 ConversionUtils.fromOutputs(outputs));
     }

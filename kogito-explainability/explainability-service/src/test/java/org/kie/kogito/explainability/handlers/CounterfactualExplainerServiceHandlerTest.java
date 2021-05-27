@@ -335,6 +335,7 @@ public class CounterfactualExplainerServiceHandlerTest {
         CounterfactualExplainabilityResultDto result = (CounterfactualExplainabilityResultDto) base;
 
         assertEquals(ExplainabilityStatus.SUCCEEDED, result.getStatus());
+        assertEquals(CounterfactualExplainabilityResultDto.Stage.FINAL, result.getStage());
         assertEquals(EXECUTION_ID, result.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, result.getCounterfactualId());
         assertEquals(1, result.getInputs().size());
@@ -431,6 +432,7 @@ public class CounterfactualExplainerServiceHandlerTest {
         CounterfactualExplainabilityResultDto result = (CounterfactualExplainabilityResultDto) base;
 
         assertEquals(ExplainabilityStatus.SUCCEEDED, result.getStatus());
+        assertEquals(CounterfactualExplainabilityResultDto.Stage.INTERMEDIATE, result.getStage());
         assertEquals(EXECUTION_ID, result.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, result.getCounterfactualId());
         assertEquals(1, result.getInputs().size());
