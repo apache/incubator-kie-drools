@@ -25,11 +25,8 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.CharLiteralExpr;
-import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
-import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -38,6 +35,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -55,6 +53,7 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
@@ -98,7 +97,7 @@ public class KiePMMLModelFactoryUtils {
                                                   final String name,
                                                   final List<MiningField> miningFields,
                                                   final List<OutputField> outputFields,
-                                                  final Map<String, Object> missingValueReplacements) {
+                                                  final Map<String, Pair<DATA_TYPE, String>> missingValueReplacements) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
@@ -107,34 +106,9 @@ public class KiePMMLModelFactoryUtils {
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
 
         missingValueReplacements.forEach((fieldName, replacement) -> {
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(fieldName), literalExprFrom(replacement));
+            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(fieldName), literalExprFrom(replacement.a, replacement.b));
             body.addStatement(new MethodCallExpr(new NameExpr("missingValueReplacementMap"), "put", expressions));
         });
-    }
-
-    private static Expression literalExprFrom(Object input) {
-        if (input == null) {
-            return new NullLiteralExpr();
-        }
-        if (input instanceof Character) {
-            return new CharLiteralExpr((Character) input);
-        }
-        if (input instanceof Double) {
-            return new DoubleLiteralExpr((Double) input);
-        }
-        if (input instanceof Integer) {
-            return new IntegerLiteralExpr((Integer) input);
-        }
-        if (input instanceof Long) {
-            return new LongLiteralExpr((Long) input);
-        }
-        if (input instanceof String) {
-            return new StringLiteralExpr((String) input);
-        }
-        if (input instanceof Enum<?>) {
-            return CommonCodegenUtils.literalExprFrom((Enum<?>) input);
-        }
-        throw new IllegalArgumentException("Can't create literal from class " + input.getClass());
     }
 
     /**

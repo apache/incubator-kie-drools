@@ -26,6 +26,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
@@ -89,14 +90,7 @@ public class KiePMMLModelCodegenUtils {
         } else {
             targetFieldExpression = new NullLiteralExpr();
         }
-        Map<String, DATA_TYPE> dataFieldMap = dataDictionary.getDataFields().stream()
-                .collect(Collectors.toMap(i -> i.getName().getValue(), i -> DATA_TYPE.byName(i.getDataType().value())));
-        Map<String, Object> missingValueReplacements = pmmlModel.getMiningSchema().getMiningFields().stream()
-                .filter(mf -> mf.getMissingValueReplacement() != null)
-                .collect(Collectors.toMap(
-                        mf -> mf.getName().getValue(),
-                        mf -> dataFieldMap.get(mf.getName().getValue()).getActualValue(mf.getMissingValueReplacement())
-                ));
+        Map<String, Pair<DATA_TYPE, String>> missingValueReplacements = getMissingValueReplacementsMap(dataDictionary, pmmlModel);
         setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, name, miningFields, outputFields, missingValueReplacements);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, pmmlModel.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();
@@ -104,6 +98,22 @@ public class KiePMMLModelCodegenUtils {
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", targetFieldExpression);
         addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
+    }
+
+    private static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(DataDictionary dataDictionary, Model pmmlModel) {
+        Map<String, DATA_TYPE> dataTypeMap = dataDictionary.getDataFields().stream()
+                .collect(Collectors.toMap(i -> i.getName().getValue(), i -> DATA_TYPE.byName(i.getDataType().value())));
+        Map<String, String> valueMap = pmmlModel.getMiningSchema().getMiningFields().stream()
+                .filter(mf -> mf.getMissingValueReplacement() instanceof String)
+                .collect(Collectors.toMap(
+                        mf -> mf.getName().getValue(),
+                        mf -> (String) mf.getMissingValueReplacement()
+                ));
+        return valueMap.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        e -> new Pair<>(dataTypeMap.get(e.getKey()), e.getValue())
+                ));
     }
 
 }
