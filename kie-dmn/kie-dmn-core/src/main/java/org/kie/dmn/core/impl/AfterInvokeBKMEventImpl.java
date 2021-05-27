@@ -25,10 +25,12 @@ public class AfterInvokeBKMEventImpl
 
     private BusinessKnowledgeModelNode bkm;
     private DMNResult                  result;
+    private Object invocationResult;
 
-    public AfterInvokeBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResult result) {
+    public AfterInvokeBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResult result, Object invocationResult) {
         this.bkm = bkm;
         this.result = result;
+        this.invocationResult = invocationResult;
     }
 
     @Override
@@ -39,6 +41,11 @@ public class AfterInvokeBKMEventImpl
     @Override
     public DMNResult getResult() {
         return this.result;
+    }
+
+    @Override
+    public Object getInvocationResult() {
+        return invocationResult;
     }
 
     @Override

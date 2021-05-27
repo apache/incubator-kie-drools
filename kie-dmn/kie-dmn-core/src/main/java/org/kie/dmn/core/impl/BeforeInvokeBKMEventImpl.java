@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.impl;
 
+import java.util.List;
+
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.BusinessKnowledgeModelNode;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
@@ -25,10 +27,12 @@ public class BeforeInvokeBKMEventImpl
 
     private BusinessKnowledgeModelNode bkm;
     private DMNResult                  result;
+    private List<Object> invocationParameters;
 
-    public BeforeInvokeBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResult result) {
+    public BeforeInvokeBKMEventImpl(BusinessKnowledgeModelNode bkm, DMNResult result, List<Object> invocationParameters) {
         this.bkm = bkm;
         this.result = result;
+        this.invocationParameters = invocationParameters;
     }
 
     @Override
@@ -39,6 +43,11 @@ public class BeforeInvokeBKMEventImpl
     @Override
     public DMNResult getResult() {
         return this.result;
+    }
+
+    @Override
+    public List<Object> getInvocationParameters() {
+        return this.invocationParameters;
     }
 
     @Override

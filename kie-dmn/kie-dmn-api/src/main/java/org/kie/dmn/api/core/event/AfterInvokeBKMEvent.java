@@ -23,4 +23,8 @@ public interface AfterInvokeBKMEvent
 
     BusinessKnowledgeModelNode getBusinessKnowledgeModel();
 
+    default Object getInvocationResult() {
+        return null;
+    }
+
 }
