@@ -27,10 +27,10 @@
     <!-- TODO Do we want import the quarkus-bom instead of defining these ourselves? -->
     <version.ch.qos.logback>1.2.3</version.ch.qos.logback>
     <version.commons-io>2.8.0</version.commons-io>
-    <version.com.fasterxml.jackson.core>2.12.1</version.com.fasterxml.jackson.core>
+    <version.com.fasterxml.jackson.core>2.12.3</version.com.fasterxml.jackson.core>
     <version.com.h2database>1.4.197</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.16</version.com.thoughtworks.xstream>
-    <version.io.quarkus>1.13.3.Final</version.io.quarkus>
+    <version.io.quarkus>1.13.4.Final</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.7.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.1</version.org.ow2.asm>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
@@ -46,7 +46,7 @@
     <version.org.jfree.jfreechart>1.5.3</version.org.jfree.jfreechart>
     <version.org.junit>5.7.1</version.org.junit>
     <version.org.mockito>3.8.0</version.org.mockito>
-    <version.org.postgresql>42.2.19</version.org.postgresql>
+    <version.org.postgresql>42.2.20</version.org.postgresql>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.org.springframework>5.3.6</version.org.springframework>
     <version.org.springframework.boot>2.4.5</version.org.springframework.boot>
