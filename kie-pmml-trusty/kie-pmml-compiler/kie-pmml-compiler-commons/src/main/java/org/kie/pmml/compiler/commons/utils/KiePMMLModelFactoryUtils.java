@@ -53,6 +53,7 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
@@ -105,10 +106,11 @@ public class KiePMMLModelFactoryUtils {
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
 
-        addMapPopulation(missingValueReplacements, body, "missingValueReplacementMap",
-                (fieldName, replacement) -> new StringLiteralExpr(fieldName),
-                (fieldName, replacement) -> literalExprFrom(replacement.a, replacement.b)
-        );
+        Map<String, Expression> missingValueReplacementsExpr = missingValueReplacements.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> literalExprFrom(entry.getValue().a, entry.getValue().b)
+        ));
+        addMapPopulationExpressions(missingValueReplacementsExpr, body, "missingValueReplacementMap");
     }
 
     /**

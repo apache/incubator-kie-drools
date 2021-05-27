@@ -25,7 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.StaticJavaParser;
@@ -194,29 +193,27 @@ public class CommonCodegenUtils {
     public static void addMapPopulation(final Map<String, MethodDeclaration> toAdd,
                                         final BlockStmt body,
                                         final String mapName) {
-        addMapPopulation(toAdd, body, mapName,
-                (methodName, methodDeclaration) -> new StringLiteralExpr(methodName),
-                (methodName, methodDeclaration) -> {
+        Map<String, Expression> toAddExpr = toAdd.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
                     MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
                     methodReferenceExpr.setScope(new ThisExpr());
-                    methodReferenceExpr.setIdentifier(methodDeclaration.getNameAsString());
+                    methodReferenceExpr.setIdentifier(entry.getValue().getNameAsString());
                     return methodReferenceExpr;
                 }
-        );
+        ));
+        addMapPopulationExpressions(toAddExpr, body, mapName);
     }
 
     /**
-     * For every entry in the given map, transform its key and value to {@link Expression}s for the codegenerated key and valye
-     * using the provided functions and add a "put" statement to the provided {@link BlockStmt} body.
+     * For every entry in the given map, add a "put" statement to the provided {@link BlockStmt} body.
      * @param toAdd the map containing the input values to process
      * @param body the destination body
      * @param mapName the name of the map to populate in the codegenerated statements
-     * @param keyFn the function to transform a single input map (key,value) pair to the expression to generate the corresponding key
-     * @param valueFn the function to transform a single input map (key,value) pair to the expression to generate the corresponding value
      */
-    public static <K,V> void addMapPopulation(Map<K, V> toAdd, BlockStmt body, String mapName, BiFunction<K, V, Expression> keyFn, BiFunction<K, V, Expression> valueFn) {
+    public static void addMapPopulationExpressions(Map<String, Expression> toAdd, BlockStmt body, String mapName) {
         toAdd.forEach((key, value) -> {
-            NodeList<Expression> expressions = NodeList.nodeList(keyFn.apply(key, value), valueFn.apply(key, value));
+            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(key), value);
             body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
         });
     }
