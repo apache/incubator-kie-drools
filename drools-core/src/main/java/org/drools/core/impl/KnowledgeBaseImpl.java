@@ -192,6 +192,8 @@ public class KnowledgeBaseImpl
 
     private boolean mutable = true;
 
+    private boolean hasMultipleAgendaGroups = false;
+
     public KnowledgeBaseImpl() { }
 
     public KnowledgeBaseImpl(final String id,
@@ -438,8 +440,7 @@ public class KnowledgeBaseImpl
             droolsStream = new DroolsObjectInputStream(bytes);
         }
 
-        // boolean classLoaderCacheEnabled field
-        droolsStream.readBoolean();
+        this.hasMultipleAgendaGroups = droolsStream.readBoolean();
         Map<String, byte[]> store = (Map<String, byte[]>) droolsStream.readObject();
 
         this.rootClassLoader = createProjectClassLoader(droolsStream.getParentClassLoader(), store);
@@ -555,8 +556,7 @@ public class KnowledgeBaseImpl
             droolsStream = new DroolsObjectOutputStream(bytes);
         }
         try {
-            // must write this option first in order to properly deserialize later
-            droolsStream.writeBoolean(this.config.isClassLoaderCacheEnabled());
+            droolsStream.writeBoolean(this.hasMultipleAgendaGroups);
 
             droolsStream.writeObject((( ProjectClassLoader ) rootClassLoader).getStore());
 
@@ -1002,6 +1002,10 @@ public class KnowledgeBaseImpl
             }
         }
         return false;
+    }
+
+    public boolean hasMultipleAgendaGroups() {
+        return hasMultipleAgendaGroups;
     }
 
     private void disableMultithreadEvaluation(String warningMessage) {
@@ -1522,6 +1526,7 @@ public class KnowledgeBaseImpl
     }
 
     private void internalAddRule( RuleImpl rule ) {
+        this.hasMultipleAgendaGroups |= !rule.isMainAgendaGroup();
         this.eventSupport.fireBeforeRuleAdded( rule );
         this.reteooBuilder.addRule(rule);
         this.eventSupport.fireAfterRuleAdded( rule );

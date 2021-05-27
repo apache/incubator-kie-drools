@@ -323,9 +323,8 @@ public class ProtobufOutputMarshaller {
         }
 
         ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
-        Collection<AgendaGroup> focusStack = agenda.getStackList();
-        for ( AgendaGroup group : focusStack ) {
-            _fsb.addGroupName( group.getName() );
+        for ( String groupName : agenda.getGroupsName() ) {
+            _fsb.addGroupName( groupName );
         }
         _ab.setFocusStack( _fsb.build() );
 

@@ -16,7 +16,7 @@
 
 package org.drools.core.common;
 
-import java.util.Deque;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -81,8 +81,6 @@ public interface InternalAgenda
 
     AgendaGroup[] getAgendaGroups();
 
-    AgendaGroup[] getStack();
-
     /**
      * Iterates all the <code>AgendGroup<code>s in the focus stack returning the total number of <code>Activation</code>s
      * @return
@@ -109,12 +107,6 @@ public interface InternalAgenda
      * the Xor Group.
      */
     void clearAndCancelAgendaGroup(String name);
-
-    /**
-     * Clears all Activations from an Agenda Group. Any Activations that are also in an Xor Group are removed the
-     * the Xor Group.
-     */
-    void clearAndCancelAgendaGroup(InternalAgendaGroup agendaGroup);
 
     /**
      * Clears all Activations from an Activation-Group. Any Activations that are also in an Agenda Group are removed
@@ -154,8 +146,6 @@ public interface InternalAgenda
      * @return true if the activation was really added, and not ignored in cases of lock-on-active or no-loop
      */
     void modifyActivation(final AgendaItem activation, boolean previouslyActive);
-
-    void addAgendaGroup(final AgendaGroup agendaGroup);
 
     boolean isDeclarativeAgenda();
 
@@ -212,6 +202,7 @@ public interface InternalAgenda
     void reset();
 
     AgendaGroup getAgendaGroup(String name);
+    void removeAgendaGroup(String name);
 
     AgendaGroup getAgendaGroup(final String name,
                                       InternalKnowledgeBase kBase);
@@ -258,6 +249,7 @@ public interface InternalAgenda
     void stageLeftTuple(RuleAgendaItem ruleAgendaItem, AgendaItem justified);
 
     Map<String, InternalAgendaGroup> getAgendaGroupsMap();
+    void putOnAgendaGroupsMap(String name, InternalAgendaGroup group);
 
     void addAgendaGroupOnStack(AgendaGroup agendaGroup);
 
@@ -267,9 +259,7 @@ public interface InternalAgenda
 
     InternalAgendaGroup getNextFocus();
 
-    Deque<AgendaGroup> getStackList();
-
-    AgendaGroup getFocus();
+    Collection<String> getGroupsName();
 
     int sizeOfRuleFlowGroup(String s);
 
