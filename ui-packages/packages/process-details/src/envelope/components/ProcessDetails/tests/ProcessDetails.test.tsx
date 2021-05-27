@@ -29,7 +29,9 @@ import {
 jest.mock('../../JobsPanel/JobsPanel');
 jest.mock('../../ProcessDiagram/ProcessDiagram');
 jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');
+jest.mock('../../ProcessVariables/ProcessVariables');
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
+
 describe('ProcessDetails tests', () => {
   describe('ProcessDetails tests with success results', () => {
     const props = {
@@ -152,6 +154,13 @@ describe('ProcessDetails tests', () => {
       props.driver.jobsQuery.mockImplementationOnce(() => Jobs);
       //@ts-ignore
       props.driver.getProcessDiagram.mockImplementationOnce(() => svgResults);
+      //@ts-ignore
+      props.driver.handleProcessVariableUpdate.mockImplementationOnce(
+        () =>
+          new Promise((resolve, reject) => {
+            resolve(data.variables);
+          })
+      );
     });
     it('Snapshot tests with default prop', async () => {
       const wrapper = await getWrapperAsync(
@@ -169,6 +178,7 @@ describe('ProcessDetails tests', () => {
       wrapper = wrapper.update();
       expect(wrapper.find('MockedJobsPanel')).toBeTruthy();
       expect(wrapper.find('MockedProcessDiagram')).toBeTruthy();
+      expect(wrapper.find('MockedProcessVariables')).toBeTruthy();
     });
 
     it('handle save option', async () => {
@@ -177,10 +187,12 @@ describe('ProcessDetails tests', () => {
         'ProcessDetails'
       );
       wrapper = wrapper.update();
-      wrapper
-        .find('#save-button')
-        .at(1)
-        .simulate('click');
+      await act(async () => {
+        wrapper
+          .find('#save-button')
+          .at(1)
+          .simulate('click');
+      });
     });
 
     it('handle refresh option', async () => {
@@ -319,6 +331,13 @@ describe('ProcessDetails tests', () => {
       props.driver.jobsQuery.mockImplementationOnce(() => Jobs);
       //@ts-ignore
       props.driver.getProcessDiagram.mockImplementationOnce(() => svgResults);
+      //@ts-ignore
+      props.driver.handleProcessVariableUpdate.mockImplementationOnce(
+        () =>
+          new Promise((resolve, reject) => {
+            resolve(data.variables);
+          })
+      );
     });
     it('Test svg error modal', async () => {
       let wrapper = await getWrapperAsync(

@@ -196,6 +196,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
               "cancelJob": [Function],
               "getProcessDiagram": [Function],
               "handleProcessAbort": [Function],
+              "handleProcessVariableUpdate": [Function],
               "listeners": Array [
                 Object {
                   "onOpen": [Function],

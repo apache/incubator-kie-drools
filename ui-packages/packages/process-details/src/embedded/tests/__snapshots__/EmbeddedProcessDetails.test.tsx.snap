@@ -9,6 +9,7 @@ exports[`EmbeddedProcessDetails tests Snapshot 1`] = `
       "getTriggerableNodes": [MockFunction],
       "handleNodeTrigger": [MockFunction],
       "handleProcessAbort": [MockFunction],
+      "handleProcessVariableUpdate": [MockFunction],
       "jobsQuery": [MockFunction],
       "openProcessInstanceDetails": [MockFunction],
       "processDetailsQuery": [MockFunction],

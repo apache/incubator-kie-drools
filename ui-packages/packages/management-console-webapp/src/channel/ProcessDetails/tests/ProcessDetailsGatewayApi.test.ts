@@ -35,7 +35,8 @@ import {
   getSvg,
   handleProcessAbort,
   getTriggerableNodes,
-  handleNodeTrigger
+  handleNodeTrigger,
+  handleProcessVariableUpdate
 } from '../../../apis/apis';
 
 jest.mock('../../../apis/apis', () => ({
@@ -44,7 +45,8 @@ jest.mock('../../../apis/apis', () => ({
   getSvg: jest.fn(),
   handleProcessAbort: jest.fn(),
   getTriggerableNodes: jest.fn(),
-  handleNodeTrigger: jest.fn()
+  handleNodeTrigger: jest.fn(),
+  handleProcessVariableUpdate: jest.fn()
 }));
 
 export const JobData: Job = {
@@ -207,6 +209,7 @@ describe('ProcessDetailsGatewayApi tests', () => {
     await gatewayApi.handleProcessAbort(data);
     expect(handleProcessAbort).toHaveBeenCalledWith(data);
   });
+
   it('get triggerable node', () => {
     gatewayApi.getTriggerableNodes(data);
     expect(getTriggerableNodes).toHaveBeenCalledWith(data);
@@ -222,6 +225,11 @@ describe('ProcessDetailsGatewayApi tests', () => {
     };
     gatewayApi.handleNodeTrigger(data, node);
     expect(handleNodeTrigger).toHaveBeenCalledWith(data, node);
+  });
+
+  it('handleProcessVariableUpdate', async () => {
+    await gatewayApi.handleProcessVariableUpdate(data, {});
+    expect(handleProcessVariableUpdate).toHaveBeenCalledWith(data, {});
   });
 
   it('processDetailsQuery- success response', () => {

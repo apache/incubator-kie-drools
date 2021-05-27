@@ -45,6 +45,10 @@ export interface ProcessDetailsChannelApi {
     processInstance: ProcessInstance,
     node: TriggerableNode
   ): Promise<void>;
+  processDetails__handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  );
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance>;
   processDetails__jobsQuery(id: string): Promise<Job[]>;
   processDetails__openProcessDetails(id: string): void;

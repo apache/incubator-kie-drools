@@ -23,6 +23,7 @@ import {
   SvgSuccessResponse,
   TriggerableNode
 } from '@kogito-apps/management-console-shared';
+import { ProcessDetails } from './Mocks';
 
 export default class TestProcessDetailsDriver implements ProcessDetailsDriver {
   constructor(id: string) {
@@ -59,6 +60,13 @@ export default class TestProcessDetailsDriver implements ProcessDetailsDriver {
     data: ProcessInstance
   ): Promise<SvgSuccessResponse | SvgErrorResponse> {
     return Promise.resolve(undefined);
+  }
+
+  handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  ) {
+    return Promise.resolve(ProcessDetails.variables);
   }
 
   rescheduleJob(
@@ -99,6 +107,7 @@ export default class TestProcessDetailsDriver implements ProcessDetailsDriver {
       ]);
     });
   }
+
   handleNodeTrigger(
     processInstance: ProcessInstance,
     node: TriggerableNode

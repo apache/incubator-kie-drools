@@ -57,6 +57,7 @@ import SVG from 'react-inlinesvg';
 import '../styles.css';
 import ProcessDetailsPanel from '../ProcessDetailsPanel/ProcessDetailsPanel';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger';
+import ProcessVariables from '../ProcessVariables/ProcessVariables';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -73,15 +74,12 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
 }) => {
   const [data, setData] = useState<any>({});
   const [jobs, setJobs] = useState<Job[]>([]);
-  //@ts-ignore
   const [updateJson, setUpdateJson] = useState<any>({});
-  //@ts-ignore
   const [displayLabel, setDisplayLabel] = useState<boolean>(false);
-  //@ts-ignore
   const [displaySuccess, setDisplaySuccess] = useState<boolean>(false);
   const [errorModalOpen, setErrorModalOpen] = useState<boolean>(false);
   const [confirmationModal, setConfirmationModal] = useState<boolean>(false);
-  const [variableError, setVariableError] = useState();
+  const [variableError, setVariableError] = useState('');
   const [svg, setSvg] = useState<JSX.Element>(null);
   const [svgError, setSvgError] = useState<string>('');
   const [error, setError] = useState<string>('');
@@ -132,9 +130,15 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         }
       }
     };
+    const getVariableJSON = (): void => {
+      if (data && data.id === id) {
+        setUpdateJson(JSON.parse(data.variables));
+      }
+    };
     /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
       handleSvgApi();
+      getVariableJSON();
     }
   }, [data]);
 
@@ -145,14 +149,32 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   }, [svgError]);
 
   useEffect(() => {
+    if (variableError && variableError.length > 0) {
+      setErrorModalOpen(true);
+    }
+  }, [variableError]);
+
+  useEffect(() => {
     /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
       initLoad();
     }
   }, [isEnvelopeConnectedToChannel]);
 
-  const handleSave = async (): Promise<void> => {
-    setDisplaySuccess(false);
+  const handleSave = (): void => {
+    driver
+      .handleProcessVariableUpdate(data, updateJson)
+      .then((updatedJson: Record<string, unknown>) => {
+        setUpdateJson(updatedJson);
+        setDisplayLabel(false);
+        setDisplaySuccess(true);
+        setTimeout(() => {
+          setDisplaySuccess(false);
+        }, 2000);
+      })
+      .catch((errorMessage: string) => {
+        setVariableError(errorMessage);
+      });
   };
 
   const updateVariablesButton = (): JSX.Element => {
@@ -276,7 +298,16 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     return (
       <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
         {Object.keys(updateJson).length > 0 && (
-          <FlexItem>Process Variables</FlexItem>
+          <FlexItem>
+            <ProcessVariables
+              displayLabel={displayLabel}
+              displaySuccess={displaySuccess}
+              setUpdateJson={setUpdateJson}
+              setDisplayLabel={setDisplayLabel}
+              updateJson={updateJson}
+              processInstance={data}
+            />
+          </FlexItem>
         )}
       </Flex>
     );

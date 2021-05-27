@@ -8,6 +8,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
     Object {
       "notifications": Object {
         "jobList__sortBy": [MockFunction],
+        "processDetails__handleProcessVariableUpdate": [MockFunction],
         "processDetails__openProcessDetails": [MockFunction],
       },
       "requests": Object {
@@ -16,6 +17,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
         "processDetails__getTriggerableNodes": [MockFunction],
         "processDetails__handleNodeTrigger": [MockFunction],
         "processDetails__handleProcessAbort": [MockFunction],
+        "processDetails__handleProcessVariableUpdate": [MockFunction],
         "processDetails__initialLoad": [MockFunction],
         "processDetails__jobsQuery": [MockFunction],
         "processDetails__processDetailsQuery": [MockFunction],
@@ -32,6 +34,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
         "channelApi": Object {
           "notifications": Object {
             "jobList__sortBy": [MockFunction],
+            "processDetails__handleProcessVariableUpdate": [MockFunction],
             "processDetails__openProcessDetails": [MockFunction],
           },
           "requests": Object {
@@ -40,6 +43,7 @@ exports[`ProcessDetailsEnvelopeView tests Snapshot 2`] = `
             "processDetails__getTriggerableNodes": [MockFunction],
             "processDetails__handleNodeTrigger": [MockFunction],
             "processDetails__handleProcessAbort": [MockFunction],
+            "processDetails__handleProcessVariableUpdate": [MockFunction],
             "processDetails__initialLoad": [MockFunction],
             "processDetails__jobsQuery": [MockFunction],
             "processDetails__processDetailsQuery": [MockFunction],

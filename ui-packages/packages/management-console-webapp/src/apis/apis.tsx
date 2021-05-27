@@ -236,3 +236,20 @@ export const handleNodeTrigger = async (
       });
   });
 };
+
+// function containing Api call to update process variables
+export const handleProcessVariableUpdate = (
+  processInstance: ProcessInstance,
+  updatedJson: Record<string, unknown>
+): Promise<Record<string, unknown>> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .put(`${processInstance.endpoint}/${processInstance.id}`, updatedJson)
+      .then(response => {
+        resolve(response.data);
+      })
+      .catch(error => {
+        reject(error.message);
+      });
+  });
+};

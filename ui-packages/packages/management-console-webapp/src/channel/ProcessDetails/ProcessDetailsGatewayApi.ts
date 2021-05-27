@@ -29,7 +29,8 @@ import {
   handleProcessAbort,
   jobCancel,
   getTriggerableNodes,
-  handleNodeTrigger
+  handleNodeTrigger,
+  handleProcessVariableUpdate
 } from '../../apis';
 
 export interface OnOpenProcessInstanceDetailsListener {
@@ -61,6 +62,10 @@ export interface ProcessDetailsGatewayApi {
     processInstance: ProcessInstance
   ): Promise<TriggerableNode[]>;
   handleNodeTrigger(processInstance: ProcessInstance, node: any): Promise<void>;
+  handleProcessVariableUpdate: (
+    processInstance: ProcessInstance,
+    updateJson: Record<string, unknown>
+  ) => Promise<Record<string, unknown>>;
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
   openProcessInstanceDetails(id: string): Promise<void>;
@@ -119,6 +124,13 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
   ): Promise<void> {
     return handleNodeTrigger(processInstance, node);
   }
+
+  handleProcessVariableUpdate = (
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  ) => {
+    return handleProcessVariableUpdate(processInstance, updatedJson);
+  };
 
   processDetailsQuery(id: string): Promise<ProcessInstance> {
     return new Promise<any>((resolve, reject) => {

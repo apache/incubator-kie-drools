@@ -79,6 +79,16 @@ export default class ProcessDetailsEnvelopeViewDriver
     );
   }
 
+  handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  ) {
+    return this.channelApi.requests.processDetails__handleProcessVariableUpdate(
+      processInstance,
+      updatedJson
+    );
+  }
+
   processDetailsQuery(id: string): Promise<ProcessInstance> {
     return this.channelApi.requests.processDetails__processDetailsQuery(id);
   }

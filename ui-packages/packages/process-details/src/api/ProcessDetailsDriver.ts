@@ -41,6 +41,10 @@ export interface ProcessDetailsDriver {
     processInstance: ProcessInstance,
     node: TriggerableNode
   ): Promise<void>;
+  handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  );
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
   openProcessInstanceDetails(id: string): void;

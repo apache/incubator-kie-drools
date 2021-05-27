@@ -58,17 +58,30 @@ export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
       scheduleDate
     );
   }
+
   processDetails__getTriggerableNodes(
     processInstance: ProcessInstance
   ): Promise<TriggerableNode[]> {
     return this.driver.getTriggerableNodes(processInstance);
   }
+
   processDetails__handleNodeTrigger(
     processInstance: ProcessInstance,
     node: TriggerableNode
   ): Promise<void> {
     return this.driver.handleNodeTrigger(processInstance, node);
   }
+
+  processDetails__handleProcessVariableUpdate(
+    processInstance: ProcessInstance,
+    updatedJson: Record<string, unknown>
+  ) {
+    return this.driver.handleProcessVariableUpdate(
+      processInstance,
+      updatedJson
+    );
+  }
+
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance> {
     return this.driver.processDetailsQuery(id);
   }
