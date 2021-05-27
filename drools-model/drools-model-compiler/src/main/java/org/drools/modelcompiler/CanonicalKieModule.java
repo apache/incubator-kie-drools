@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.appformer.maven.support.DependencyFilter;
@@ -98,7 +100,6 @@ import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.checkStreamMode;
 import static org.drools.model.impl.ModelComponent.areEqualInModel;
 import static org.drools.modelcompiler.builder.ModelSourceClass.getProjectModelClassNameNameWithReleaseId;
@@ -111,6 +112,7 @@ public class CanonicalKieModule implements InternalKieModule {
     public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
     public static final String MODEL_FILE_NAME = "drools-model";
     public static final String ANC_FILE_NAME = "alpha-network-compiler";
+    public static final String GENERATED_CLASS_NAMES = "generated-class-names";
     public static final String MODEL_VERSION = "Drools-Model-Version:";
 
     private static final Predicate<String> NON_MODEL_RESOURCES = res -> {
@@ -123,6 +125,7 @@ public class CanonicalKieModule implements InternalKieModule {
     private final Map<String, Model> models = new HashMap<>();
     private Collection<String> ruleClassesNames;
     private boolean incrementalUpdate = false;
+    private Set<String> generatedClassNames;
 
     private ProjectClassLoader moduleClassLoader;
 
@@ -195,9 +198,22 @@ public class CanonicalKieModule implements InternalKieModule {
         return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
     }
 
+    public static String getGeneratedClassNamesFile(ReleaseId releaseId) {
+        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + GENERATED_CLASS_NAMES;
+    }
+
     @Override
     public Map<String, byte[]> getClassesMap() {
         return internalKieModule.getClassesMap();
+    }
+
+    @Override
+    public void addGeneratedClassNames(Set<String> classNames) {
+        generatedClassNames.addAll(classNames);
+    }
+
+    public Set<String> getGeneratedClassNames() {
+        return generatedClassNames;
     }
 
     @Override
@@ -209,6 +225,10 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
         this.moduleClassLoader = ((ProjectClassLoader) kieProject.getClassLoader());
+        if (generatedClassNames == null) {
+            generatedClassNames = findGeneratedClassNamesWithDependencies();
+        }
+        moduleClassLoader.setGeneratedClassNames(generatedClassNames);
         KieBaseConfiguration kBaseConf = getKieBaseConfiguration(kBaseModel, moduleClassLoader, conf);
 
         CanonicalKiePackages kpkgs = pkgsInKbase.computeIfAbsent(kBaseModel.getName(), k -> createKiePackages(kieProject, kBaseModel, buildContext, kBaseConf));
@@ -470,10 +490,38 @@ public class CanonicalKieModule implements InternalKieModule {
         return Stream.of(lines).skip(1).collect(toList());
     }
 
+    private Set<String> findGeneratedClassNamesWithDependencies() {
+        Set<String> generatedClassNames = new HashSet<>();
+        generatedClassNames.addAll(findGeneratedClassNames(internalKieModule));
+
+        Map<ReleaseId, InternalKieModule> kieDependencies = internalKieModule.getKieDependencies();
+        kieDependencies.values().forEach(depKieModule -> {
+            generatedClassNames.addAll(findGeneratedClassNames(depKieModule));
+        });
+        return generatedClassNames;
+    }
+
+    private Set<String> findGeneratedClassNames(InternalKieModule kieModule) {
+        String generatedClassNamesFile = getGeneratedClassNamesFile(kieModule.getReleaseId());
+        if (!kieModule.hasResource(generatedClassNamesFile)) {
+            return new HashSet<>();
+        }
+        String content = readExistingResourceWithName(kieModule, generatedClassNamesFile);
+        if (content.trim().isEmpty()) {
+            return new HashSet<>();
+        }
+        String[] lines = content.split("\n");
+        return Stream.of(lines).collect(Collectors.toSet());
+    }
+
     private String readExistingResourceWithName(String fileName) {
+        return readExistingResourceWithName(internalKieModule, fileName);
+    }
+
+    private String readExistingResourceWithName(InternalKieModule kieModule, String fileName) {
         String modelFiles;
         try {
-            Resource modelFile = internalKieModule.getResource(fileName);
+            Resource modelFile = kieModule.getResource(fileName);
             modelFiles = new String(IoUtils.readBytesFromInputStream(modelFile.getInputStream()));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
