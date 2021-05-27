@@ -25,6 +25,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class CounterfactualDomainCategorical extends CounterfactualDomain {
 
+    public static final String TYPE = "CATEGORICAL";
     public static final String CATEGORIES = "categories";
 
     @JsonProperty(CATEGORIES)
@@ -36,11 +37,6 @@ public class CounterfactualDomainCategorical extends CounterfactualDomain {
 
     public CounterfactualDomainCategorical(@NotNull Collection<JsonNode> categories) {
         this.categories = Objects.requireNonNull(categories);
-    }
-
-    @Override
-    public Type getType() {
-        return Type.CATEGORICAL;
     }
 
     public Collection<JsonNode> getCategories() {

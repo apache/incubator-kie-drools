@@ -17,7 +17,6 @@
 package org.kie.kogito.trusty.service.common.messaging;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -96,7 +95,7 @@ class MessagingUtilsTest {
         CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
                 "name",
                 "string",
-                emptyList(),
+                null,
                 Boolean.TRUE,
                 new CounterfactualDomainCategorical(asList(new TextNode("A"), new TextNode("B"))));
 
@@ -125,7 +124,7 @@ class MessagingUtilsTest {
         CounterfactualSearchDomain searchDomain = new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
                 "age",
                 "integer",
-                emptyList(),
+                null,
                 Boolean.TRUE,
                 new CounterfactualDomainRange(new IntNode(18), new IntNode(65)));
 
@@ -156,7 +155,7 @@ class MessagingUtilsTest {
                 List.of(new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
                         "weight",
                         "integer",
-                        Collections.emptyList(),
+                        null,
                         Boolean.TRUE,
                         new CounterfactualDomainRange(new IntNode(10), new IntNode(20)))),
                 Boolean.TRUE,
@@ -195,7 +194,7 @@ class MessagingUtilsTest {
                 List.of(new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
                         "salary",
                         "integer",
-                        Collections.emptyList(),
+                        null,
                         Boolean.TRUE,
                         new CounterfactualDomainRange(new IntNode(1000), new IntNode(2000)))),
                 Boolean.TRUE,

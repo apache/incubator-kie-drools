@@ -24,41 +24,43 @@ import org.infinispan.protostream.MessageMarshaller;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
 import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.EnumTestField;
 import org.kie.kogito.trusty.storage.infinispan.testfield.ObjectTestField;
+import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualDomain.CATEGORICAL;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualDomain.TYPE;
+import static org.kie.kogito.trusty.storage.infinispan.CounterfactualDomainMarshaller.toProtobufName;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class CounterfactualDomainMarshallerWithDomainCategoricalTest extends MarshallerTestTemplate<CounterfactualDomain> {
 
     private static final CounterfactualDomainCategorical domain = new CounterfactualDomainCategorical();
 
-    private static final Function<CounterfactualDomain, CounterfactualDomainCategorical> getter = mock(Function.class);
+    private static final Function<CounterfactualDomain, String> typeGetter = mock(Function.class);
+    private static final BiConsumer<CounterfactualDomain, String> typeSetter = mock(BiConsumer.class);
 
-    private static final BiConsumer<CounterfactualDomain, CounterfactualDomainCategorical> setter = mock(BiConsumer.class);
+    private static final Function<CounterfactualDomain, CounterfactualDomainCategorical> domainGetter = mock(Function.class);
+    private static final BiConsumer<CounterfactualDomain, CounterfactualDomainCategorical> domainSetter = mock(BiConsumer.class);
 
     private static final List<AbstractTestField<CounterfactualDomain, ?>> TEST_FIELD_LIST = List.of(
-            new EnumTestField<>(TYPE,
-                    CounterfactualDomain.Type.CATEGORICAL,
-                    CounterfactualDomain::getType,
-                    CounterfactualDomain::setType,
-                    CounterfactualDomain.Type.class),
-            new ObjectTestField<>(CATEGORICAL,
+            new StringTestField(CounterfactualDomain.TYPE_FIELD,
+                    CounterfactualDomainCategorical.TYPE,
+                    typeGetter,
+                    typeSetter),
+            new ObjectTestField<>(toProtobufName(CounterfactualDomainCategorical.TYPE),
                     domain,
-                    getter,
-                    setter,
+                    domainGetter,
+                    domainSetter,
                     CounterfactualDomainCategorical.class));
 
     public CounterfactualDomainMarshallerWithDomainCategoricalTest() {
         super(CounterfactualDomain.class);
-        when(getter.apply(any())).thenReturn(domain);
+        when(typeGetter.apply(any())).thenReturn(CounterfactualDomainCategorical.TYPE);
+        when(domainGetter.apply(any())).thenReturn(domain);
     }
 
     @Override
@@ -71,7 +73,8 @@ public class CounterfactualDomainMarshallerWithDomainCategoricalTest extends Mar
         return new CounterfactualDomainMarshaller(new ObjectMapper()) {
             @Override
             public CounterfactualDomain readFrom(ProtoStreamReader reader) throws IOException {
-                when(reader.readObject(eq(CATEGORICAL), any())).thenReturn(domain);
+                when(reader.readString(CounterfactualDomain.TYPE_FIELD)).thenReturn(CounterfactualDomainCategorical.TYPE);
+                when(reader.readObject(eq(toProtobufName(CounterfactualDomainCategorical.TYPE)), any())).thenReturn(domain);
                 return super.readFrom(reader);
             }
         };

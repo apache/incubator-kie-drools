@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.explainability.api;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
@@ -23,23 +22,11 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         use = JsonTypeInfo.Id.NAME,
         property = CounterfactualDomainDto.TYPE_FIELD)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = CounterfactualDomainRangeDto.class, name = CounterfactualDomainDto.RANGE_FIELD),
-        @JsonSubTypes.Type(value = CounterfactualDomainCategoricalDto.class, name = CounterfactualDomainDto.CATEGORICAL_FIELD)
+        @JsonSubTypes.Type(value = CounterfactualDomainRangeDto.class, name = CounterfactualDomainRangeDto.TYPE),
+        @JsonSubTypes.Type(value = CounterfactualDomainCategoricalDto.class, name = CounterfactualDomainCategoricalDto.TYPE)
 })
 public abstract class CounterfactualDomainDto {
 
     public static final String TYPE_FIELD = "type";
-    public static final String CATEGORICAL_FIELD = "categorical";
-    public static final String RANGE_FIELD = "range";
 
-    @JsonProperty(TYPE_FIELD)
-    @SuppressWarnings("unused")
-    protected Type type = getType();
-
-    public abstract Type getType();
-
-    public enum Type {
-        CATEGORICAL,
-        NUMERICAL
-    }
 }

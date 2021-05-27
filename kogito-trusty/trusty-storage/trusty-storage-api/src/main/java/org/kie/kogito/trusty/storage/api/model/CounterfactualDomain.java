@@ -15,42 +15,18 @@
  */
 package org.kie.kogito.trusty.storage.api.model;
 
-import javax.validation.constraints.NotNull;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 @JsonTypeInfo(
         use = JsonTypeInfo.Id.NAME,
-        property = CounterfactualDomain.TYPE)
+        property = CounterfactualDomain.TYPE_FIELD)
 @JsonSubTypes({
-        @JsonSubTypes.Type(value = CounterfactualDomainRange.class, name = CounterfactualDomain.RANGE),
-        @JsonSubTypes.Type(value = CounterfactualDomainCategorical.class, name = CounterfactualDomain.CATEGORICAL)
+        @JsonSubTypes.Type(value = CounterfactualDomainRange.class, name = CounterfactualDomainRange.TYPE),
+        @JsonSubTypes.Type(value = CounterfactualDomainCategorical.class, name = CounterfactualDomainCategorical.TYPE)
 })
 public abstract class CounterfactualDomain {
 
-    public static final String TYPE = "type";
-    public static final String CATEGORICAL = "categorical";
-    public static final String RANGE = "range";
+    public static final String TYPE_FIELD = "type";
 
-    @JsonProperty(TYPE)
-    @NotNull(message = "type object must be provided.")
-    @SuppressWarnings("unused")
-    protected Type type = getType();
-
-    public abstract Type getType();
-
-    public enum Type {
-        CATEGORICAL,
-        RANGE
-    }
-
-    //-------------
-    // Test methods
-    //-------------
-
-    public void setType(Type type) {
-        this.type = type;
-    }
 }

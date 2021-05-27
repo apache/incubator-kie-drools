@@ -95,15 +95,14 @@ public class MessagingUtils {
     }
 
     private static org.kie.kogito.explainability.api.CounterfactualDomainDto modelToCounterfactualDomain(CounterfactualDomain domain) {
-        switch (domain.getType()) {
-            case CATEGORICAL:
-                CounterfactualDomainCategorical categorical = (CounterfactualDomainCategorical) domain;
-                return new org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto(categorical.getCategories());
-            case RANGE:
-                CounterfactualDomainRange range = (CounterfactualDomainRange) domain;
-                return new org.kie.kogito.explainability.api.CounterfactualDomainRangeDto(range.getLowerBound(), range.getUpperBound());
+        if (domain instanceof CounterfactualDomainCategorical) {
+            CounterfactualDomainCategorical categorical = (CounterfactualDomainCategorical) domain;
+            return new org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto(categorical.getCategories());
+        } else if (domain instanceof CounterfactualDomainRange) {
+            CounterfactualDomainRange range = (CounterfactualDomainRange) domain;
+            return new org.kie.kogito.explainability.api.CounterfactualDomainRangeDto(range.getLowerBound(), range.getUpperBound());
         }
-        throw new IllegalStateException("Can't convert CounterfactualDomain of type " + domain.getType() + " to org.kie.kogito.explainability.api.CounterfactualDomain");
+        throw new IllegalStateException("Can't convert CounterfactualDomain of type '" + domain.getClass().getName() + "' to org.kie.kogito.explainability.api.CounterfactualDomain");
     }
 
     private static Collection<CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoCollection(Collection<CounterfactualSearchDomain> searchDomains) {

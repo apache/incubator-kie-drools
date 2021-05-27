@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 public class CounterfactualDomainRangeDto extends CounterfactualDomainDto {
 
+    public static final String TYPE = "RANGE";
     public static final String LOWER_BOUND_FIELD = "lowerBound";
     public static final String UPPER_BOUND_FIELD = "upperBound";
 
@@ -42,11 +43,6 @@ public class CounterfactualDomainRangeDto extends CounterfactualDomainDto {
             @NotNull JsonNode upperBound) {
         this.lowerBound = Objects.requireNonNull(lowerBound);
         this.upperBound = Objects.requireNonNull(upperBound);
-    }
-
-    @Override
-    public Type getType() {
-        return Type.NUMERICAL;
     }
 
     public JsonNode getLowerBound() {

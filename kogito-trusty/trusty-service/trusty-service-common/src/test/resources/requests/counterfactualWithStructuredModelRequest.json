@@ -37,7 +37,7 @@
           "isFixed": false,
           "components": null,
           "domain": {
-            "type": "categorical",
+            "type": "CATEGORICAL",
             "categories": [
               "speed",
               "driving under the influence"
@@ -51,7 +51,7 @@
           "isFixed": false,
           "components": null,
           "domain": {
-            "type": "range",
+            "type": "RANGE",
             "lowerBound": 0,
             "upperBound": 100
           }
@@ -63,7 +63,7 @@
           "isFixed": false,
           "components": null,
           "domain": {
-            "type": "range",
+            "type": "RANGE",
             "lowerBound": 0,
             "upperBound": 100
           }

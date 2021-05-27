@@ -16,6 +16,7 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
+import java.util.Locale;
 
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomain;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainCategorical;
@@ -31,25 +32,36 @@ public class CounterfactualDomainMarshaller extends AbstractModelMarshaller<Coun
 
     @Override
     public CounterfactualDomain readFrom(ProtoStreamReader reader) throws IOException {
-        CounterfactualDomain.Type type = enumFromString(reader.readString(CounterfactualDomain.TYPE), CounterfactualDomain.Type.class);
+        String type = reader.readString(CounterfactualDomain.TYPE_FIELD);
 
-        switch (type) {
-            case CATEGORICAL:
-                return reader.readObject(CounterfactualDomain.CATEGORICAL, CounterfactualDomainCategorical.class);
-            case RANGE:
-                return reader.readObject(CounterfactualDomain.RANGE, CounterfactualDomainRange.class);
+        if (CounterfactualDomainCategorical.TYPE.equals(type)) {
+            return reader.readObject(toProtobufName(CounterfactualDomainCategorical.TYPE),
+                    CounterfactualDomainCategorical.class);
+        } else if (CounterfactualDomainRange.TYPE.equals(type)) {
+            return reader.readObject(toProtobufName(CounterfactualDomainRange.TYPE),
+                    CounterfactualDomainRange.class);
         }
         throw new IllegalArgumentException(String.format("An unexpected CounterfactualDomain.Type '%s' was detected.", type));
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, CounterfactualDomain input) throws IOException {
-        writer.writeString(CounterfactualDomain.TYPE, stringFromEnum(input.getType()));
-
         if (input instanceof CounterfactualDomainCategorical) {
-            writer.writeObject(CounterfactualDomain.CATEGORICAL, (CounterfactualDomainCategorical) input, CounterfactualDomainCategorical.class);
+            writer.writeString(CounterfactualDomain.TYPE_FIELD,
+                    CounterfactualDomainCategorical.TYPE);
+            writer.writeObject(toProtobufName(CounterfactualDomainCategorical.TYPE),
+                    (CounterfactualDomainCategorical) input,
+                    CounterfactualDomainCategorical.class);
         } else if (input instanceof CounterfactualDomainRange) {
-            writer.writeObject(CounterfactualDomain.RANGE, (CounterfactualDomainRange) input, CounterfactualDomainRange.class);
+            writer.writeString(CounterfactualDomain.TYPE_FIELD,
+                    CounterfactualDomainRange.TYPE);
+            writer.writeObject(toProtobufName(CounterfactualDomainRange.TYPE),
+                    (CounterfactualDomainRange) input,
+                    CounterfactualDomainRange.class);
         }
+    }
+
+    public static String toProtobufName(String type) {
+        return type.toLowerCase(Locale.ROOT);
     }
 }
