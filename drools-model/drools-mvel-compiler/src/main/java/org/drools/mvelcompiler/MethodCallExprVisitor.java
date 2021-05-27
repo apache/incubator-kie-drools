@@ -62,10 +62,10 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
             arguments.add(a);
         }
 
-        Class<?>[] argumentsType = parametersType(arguments);
+        Class<?>[] argumentsTypes = parametersType(arguments);
 
         return parseMethodFromDeclaredFunction(n, arguments)
-                .orElseGet(() -> parseMethod(n, scope, name, arguments, argumentsType));
+                .orElseGet(() -> parseMethod(n, scope, name, arguments, argumentsTypes));
     }
 
     private Optional<TypedExpression> parseMethodFromDeclaredFunction(MethodCallExpr n, List<TypedExpression> arguments) {
@@ -77,10 +77,10 @@ public class MethodCallExprVisitor implements DrlGenericVisitor<TypedExpression,
         DeclaredFunction declaredFunction = optDeclaredFunction.get();
 
         Optional<Class<?>> methodReturnType = declaredFunction.findReturnType();
-        List<Class<?>> actualArgumentType = declaredFunction.findArgumentsType();
+        List<Class<?>> actualArgumentTypes = declaredFunction.findArgumentsType();
 
         return methodReturnType.map(t -> new MethodCallExprT(n.getName().asString(), Optional.empty(), arguments,
-                                                             actualArgumentType, Optional.of(t)));
+                                                             actualArgumentTypes, Optional.of(t)));
     }
 
     private MethodCallExprT parseMethod(MethodCallExpr n,

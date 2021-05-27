@@ -58,13 +58,13 @@ public class MethodUtils {
                                                  final Class[] argsType,
                                                  final Method[] methods,
                                                  final Method oldBestCandidate) {
-        Class<?>[] parmTypes;
+        Class<?>[] parameterTypes;
         int bestScore = -1;
         Method bestCandidate = oldBestCandidate;
         for (final Method method : methods) {
             if (methodName.equals(method.getName())) {
-                parmTypes = method.getParameterTypes();
-                if (parmTypes.length == 0 && argsType.length == 0) {
+                parameterTypes = method.getParameterTypes();
+                if (parameterTypes.length == 0 && argsType.length == 0) {
                     if (bestCandidate == null || isMoreSpecialized(method, bestCandidate) ) {
                         bestCandidate = method;
                     }
@@ -72,11 +72,11 @@ public class MethodUtils {
                 }
 
                 final boolean isVarArgs = method.isVarArgs();
-                if ( isArgsNumberNotCompatible( argsType, parmTypes, isVarArgs ) ) {
+                if ( isArgsNumberNotCompatible( argsType, parameterTypes, isVarArgs ) ) {
                     continue;
                 }
 
-                final int score = getMethodScore(argsType, parmTypes, isVarArgs);
+                final int score = getMethodScore(argsType, parameterTypes, isVarArgs);
                 if (score != 0) {
                     if (score > bestScore) {
                         bestCandidate = method;
@@ -90,8 +90,8 @@ public class MethodUtils {
         return bestCandidate;
     }
 
-    private static boolean isArgsNumberNotCompatible(Class[] arguments, Class<?>[] parmTypes, boolean isVarArgs ) {
-        return ( isVarArgs && parmTypes.length-1 > arguments.length ) || ( !isVarArgs && parmTypes.length != arguments.length );
+    private static boolean isArgsNumberNotCompatible(Class[] arguments, Class<?>[] parameterTypes, boolean isVarArgs ) {
+        return ( isVarArgs && parameterTypes.length-1 > arguments.length ) || ( !isVarArgs && parameterTypes.length != arguments.length );
     }
 
     private static boolean isMoreSpecialized(Method newCandidate, Method oldCandidate ) {
