@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.optaplanner</groupId>
-    <artifactId>optaplanner-quarkus-parent</artifactId>
+    <artifactId>optaplanner-quarkus-benchmark-parent</artifactId>
     <version>8.8.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>optaplanner-quarkus-deployment</artifactId>
-  <name>OptaPlanner Quarkus - Deployment</name>
-  <description>Quarkus deployment module for optaplanner-quarkus.</description>
+  <artifactId>optaplanner-quarkus-benchmark-deployment</artifactId>
+  <name>OptaPlanner Quarkus Benchmark - Deployment</name>
+  <description>Quarkus deployment module for optaplanner-quarkus-benchmark.</description>
 
   <properties>
-    <java.module.name>org.optaplanner.quarkus.deployment</java.module.name>
+    <java.module.name>org.optaplanner.quarkus.benchmark.deployment</java.module.name>
   </properties>
 
   <dependencies>
@@ -28,7 +27,11 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-quarkus</artifactId>
+      <artifactId>optaplanner-quarkus-deployment</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-quarkus-benchmark</artifactId>
     </dependency>
 
     <dependency>
@@ -53,12 +56,6 @@
     </dependency>
     <dependency>
       <groupId>org.optaplanner</groupId>
-      <artifactId>optaplanner-core</artifactId>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-test</artifactId>
       <scope>test</scope>
     </dependency>
@@ -67,12 +64,7 @@
       <artifactId>mockito-core</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Required to test Quarkus with constraints DRL.
-         kogito-quarkus-rules/kogito-quarkus-rules-deployment does
-         not pick Drools files in extension tests, but does in normal tests
-         so we mock it functionality via drools-core-dynamic for tests
-         in this module (and test drools with kogito-quarkus-rules
-         in a separate module) -->
+    <!-- Required to test Quarkus with constraints DRL. -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>

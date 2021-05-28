@@ -30,6 +30,7 @@
 
   <modules>
     <module>optaplanner-quarkus</module>
+    <module>optaplanner-quarkus-benchmark</module>
     <module>optaplanner-quarkus-jackson</module>
     <module>optaplanner-quarkus-jsonb</module>
   </modules>

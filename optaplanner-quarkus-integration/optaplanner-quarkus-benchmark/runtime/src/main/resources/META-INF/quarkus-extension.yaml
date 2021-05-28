@@ -1,0 +1,13 @@
+---
+name: "OptaPlanner AI constraint solver benchmark"
+metadata:
+  keywords:
+    - "optaplanner"
+    - "benchmark"
+    - "performance"
+    - "scaling"
+    - "tweaking"
+  guide: "https://quarkus.io/guides/optaplanner"
+  categories:
+    - "business-automation"
+  status: "stable"
