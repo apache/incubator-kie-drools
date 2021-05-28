@@ -20,6 +20,8 @@ import java.net.URI;
 import java.util.Collections;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
@@ -64,9 +66,20 @@ public class ExplainabilityResultConsumerIT {
         return CloudEventUtils.encode(buildExplainabilityCloudEvent(resultDto)).orElseThrow(IllegalStateException::new);
     }
 
+    @BeforeEach
+    public void setup() {
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+    }
+
     @Test
     public void explainabilityResultIsProcessedAndStored() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
         String executionId = "executionId";
 
         doNothing().when(trustyService).storeExplainabilityResult(eq(executionId), any(BaseExplainabilityResult.class));

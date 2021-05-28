@@ -17,6 +17,8 @@
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -45,10 +47,20 @@ public class ModelEventConsumerIT {
 
     KafkaClient kafkaClient;
 
+    @BeforeEach
+    public void setup() {
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+    }
+
     @Test
     public void eventLoopIsNotStoppedWithException() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
-
         doThrow(new RuntimeException("Something really bad"))
                 .when(trustyService)
                 .storeModel(any(ModelIdentifier.class), any(DMNModelWithMetadata.class));

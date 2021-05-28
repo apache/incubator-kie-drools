@@ -19,6 +19,7 @@ package org.kie.kogito.trusty.service.common.messaging.incoming;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
@@ -50,12 +51,18 @@ public abstract class AbstractModelEventConsumerIT {
     @BeforeEach
     public void setup() {
         trustyStorageService.getModelStorage().clear();
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
     }
 
     @Test
     void testCorrectCloudEvent() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
-
         kafkaClient.produce(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectModelEvent()),
                 KafkaConstants.KOGITO_TRACING_MODEL_TOPIC);
         await()

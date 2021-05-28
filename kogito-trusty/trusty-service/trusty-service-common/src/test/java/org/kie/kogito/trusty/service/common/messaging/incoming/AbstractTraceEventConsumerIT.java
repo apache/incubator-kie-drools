@@ -20,6 +20,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.json.JSONException;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -57,6 +58,13 @@ public abstract class AbstractTraceEventConsumerIT {
     public void setup() {
         trustyStorageService.getDecisionsStorage().clear();
         kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
     }
 
     @Test

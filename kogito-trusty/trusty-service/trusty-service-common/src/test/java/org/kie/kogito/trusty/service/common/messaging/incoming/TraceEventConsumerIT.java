@@ -17,6 +17,8 @@
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -47,10 +49,20 @@ public class TraceEventConsumerIT {
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     private String kafkaBootstrapServers;
 
+    @BeforeEach
+    public void setup() {
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+    }
+
     @Test
     public void eventLoopIsNotStoppedWithException() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
-
         String executionIdException = "idException";
         String executionIdNoException = "idNoException";
         doThrow(new RuntimeException("Something really bad")).when(trustyService).processDecision(eq(executionIdException), any(Decision.class));

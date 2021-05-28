@@ -25,6 +25,8 @@ import java.util.function.Consumer;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.ExplanationService;
@@ -70,10 +72,22 @@ abstract class BaseExplainabilityMessagingHandlerIT {
     @Inject
     protected ObjectMapper objectMapper;
 
+    KafkaClient kafkaClient;
+
+    @BeforeEach
+    public void setup() {
+        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+    }
+
     @Test
     void explainabilityRequestIsProcessedAndAResultMessageIsSent() throws Exception {
-        KafkaClient kafkaClient = new KafkaClient(kafkaBootstrapServers);
-
         BaseExplainabilityRequestDto request = buildRequest();
         BaseExplainabilityResultDto result = buildResult();
 
@@ -109,8 +123,6 @@ abstract class BaseExplainabilityMessagingHandlerIT {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     void explainabilityRequestIsProcessedAndAnIntermediateMessageIsSent() throws Exception {
-        KafkaClient kafkaClient = new KafkaClient(kafkaBootstrapServers);
-
         BaseExplainabilityRequestDto request = buildRequest();
         BaseExplainabilityResultDto result = buildResult();
 
