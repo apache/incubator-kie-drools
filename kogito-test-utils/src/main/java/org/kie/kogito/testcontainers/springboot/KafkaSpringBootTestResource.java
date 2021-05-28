@@ -19,6 +19,7 @@ import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.context.event.ContextClosedEvent;
 
 /**
  * Kafka spring boot resource that works within the test lifecycle.
@@ -27,6 +28,8 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 public class KafkaSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoKafkaContainer> {
 
     public static final String KOGITO_KAFKA_PROPERTY = "spring.kafka.bootstrap-servers";
+
+    private KafkaClient kafkaClient = null;
 
     public KafkaSpringBootTestResource() {
         super(new KogitoKafkaContainer());
@@ -42,8 +45,17 @@ public class KafkaSpringBootTestResource extends ConditionalSpringBootTestResour
         super.updateBeanFactory(beanFactory);
 
         if (!beanFactory.containsBean(KafkaClient.class.getName())) {
-            beanFactory.registerSingleton(KafkaClient.class.getName(), new KafkaClient("localhost:" + getTestResource().getMappedPort()));
+            kafkaClient = new KafkaClient("localhost:" + getTestResource().getMappedPort());
+            beanFactory.registerSingleton(KafkaClient.class.getName(), kafkaClient);
         }
+    }
+
+    @Override
+    public void onApplicationEvent(ContextClosedEvent event) {
+        if (kafkaClient != null) {
+            kafkaClient.shutdown();
+        }
+        super.onApplicationEvent(event);
     }
 
     public static class Conditional extends KafkaSpringBootTestResource {

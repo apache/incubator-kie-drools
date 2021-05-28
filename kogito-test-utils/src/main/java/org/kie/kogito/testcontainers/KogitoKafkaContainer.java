@@ -37,8 +37,13 @@ public class KogitoKafkaContainer extends KafkaContainer implements TestResource
         super(DockerImageName.parse(kafkaImage()));
         withLogConsumer(f -> System.out.print(f.getUtf8String()));
         withLogConsumer(new Slf4jLogConsumer(LOGGER));
-        waitingFor(Wait.forLogMessage(".*Startup complete.*", 2));
+        waitingFor(Wait.forListeningPort());
         withStartupTimeout(Constants.CONTAINER_START_TIMEOUT);
+        withEnv("KAFKA_GROUP_MAX_SESSION_TIMEOUT_MS", "180000");
+        withEnv("KAFKA_TRANSACTION_MAX_TIMEOUT_MS", "180000");
+        withEnv("KAFKA_CONNECTIONS_MAX_IDLE_MS", "180000");
+        withEnv("KAFKA_OFFSETS_RETENTION_MINUTES", "1");
+        withEnv("KAFKA_AUTO_LEADER_REBALANCE_ENABLE", "false");
     }
 
     @Override
