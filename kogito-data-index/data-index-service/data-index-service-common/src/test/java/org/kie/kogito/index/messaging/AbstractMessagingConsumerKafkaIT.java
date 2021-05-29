@@ -50,6 +50,9 @@ public abstract class AbstractMessagingConsumerKafkaIT {
     @BeforeEach
     void setup() {
         kafkaClient = new KafkaClient(kafkaBootstrapServers);
+        cacheService.getJobsCache().clear();
+        cacheService.getProcessInstancesCache().clear();
+        cacheService.getUserTaskInstancesCache().clear();
     }
 
     @AfterEach
