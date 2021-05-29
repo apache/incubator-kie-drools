@@ -71,12 +71,14 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 public class PersistenceGenerator extends AbstractGenerator {
 
+    private static final String AUTO_DDL = "autoDDL";
     public static final String FILESYSTEM_PERSISTENCE_TYPE = "filesystem";
     public static final String INFINISPAN_PERSISTENCE_TYPE = "infinispan";
     public static final String DEFAULT_PERSISTENCE_TYPE = INFINISPAN_PERSISTENCE_TYPE;
     public static final String MONGODB_PERSISTENCE_TYPE = "mongodb";
     public static final String POSTGRESQL_PERSISTENCE_TYPE = "postgresql";
     public static final String KAFKA_PERSISTENCE_TYPE = "kafka";
+    public static final String JDBC_PERSISTENCE_TYPE = "jdbc";
     public static final String GENERATOR_NAME = "persistence";
     public static final String QUARKUS_KAFKA_STREAMS_TOPICS_PROP = "quarkus.kafka-streams.topics";
     public static final String KOGITO_PERSISTENCE_AUTO_DDL = "kogito.persistence.auto.ddl";
@@ -129,6 +131,9 @@ public class PersistenceGenerator extends AbstractGenerator {
                 break;
             case POSTGRESQL_PERSISTENCE_TYPE:
                 generatedFiles.addAll(postgresqlBasedPersistence());
+                break;
+            case JDBC_PERSISTENCE_TYPE:
+                generatedFiles.addAll(jdbcBasedPersistence());
                 break;
             default:
                 throw new IllegalArgumentException("Unknown persistenceType " + persistenceType());
@@ -466,15 +471,15 @@ public class PersistenceGenerator extends AbstractGenerator {
             ConstructorDeclaration constructor = persistenceProviderClazz
                     .addConstructor(Keyword.PUBLIC)
                     .addParameter(pgPoolClass, "client")
-                    .addParameter(StaticJavaParser.parseClassOrInterfaceType(Boolean.class.getName()), "autoDDL")
+                    .addParameter(StaticJavaParser.parseClassOrInterfaceType(Boolean.class.getName()), AUTO_DDL)
                     .addParameter(StaticJavaParser.parseClassOrInterfaceType(Long.class.getName()), "queryTimeout")
                     .setBody(new BlockStmt().addStatement(new ExplicitConstructorInvocationStmt()
                             .setThis(false)
                             .addArgument(new NameExpr("client"))
-                            .addArgument("autoDDL")
+                            .addArgument(AUTO_DDL)
                             .addArgument("queryTimeout")));
             context().getDependencyInjectionAnnotator().withConfigInjection(
-                    constructor.getParameterByName("autoDDL").get(), KOGITO_PERSISTENCE_AUTO_DDL, Boolean.TRUE.toString());
+                    constructor.getParameterByName(AUTO_DDL).get(), KOGITO_PERSISTENCE_AUTO_DDL, Boolean.TRUE.toString());
             context().getDependencyInjectionAnnotator().withConfigInjection(
                     constructor.getParameterByName("queryTimeout").get(), KOGITO_PERSISTENCE_QUERY_TIMEOUT,
                     String.valueOf(10000));
@@ -515,6 +520,42 @@ public class PersistenceGenerator extends AbstractGenerator {
             Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(pgClientProducerClazz,
                     new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(pgClientProducerClazz));
             generatedPgClientFile.ifPresent(generatedFiles::add);
+        }
+
+        Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
+                new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
+        generatedPgClientFile.ifPresent(generatedFiles::add);
+
+        return generatedFiles;
+    }
+
+    private Collection<GeneratedFile> jdbcBasedPersistence() {
+        ClassOrInterfaceDeclaration persistenceProviderClazz = new ClassOrInterfaceDeclaration()
+                .setName(KOGITO_PROCESS_INSTANCE_FACTORY_IMPL)
+                .setModifiers(Modifier.Keyword.PUBLIC)
+                .addExtendedType(KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE);
+
+        Collection<GeneratedFile> generatedFiles = protobufBasedPersistence(persistenceProviderClazz);
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
+
+            final String datasourceClass = "javax.sql.DataSource";
+            ConstructorDeclaration constructor = persistenceProviderClazz
+                    .addConstructor(Keyword.PUBLIC)
+                    .addParameter(datasourceClass, "dataSource")
+                    .addParameter(StaticJavaParser.parseClassOrInterfaceType(Boolean.class.getName()), AUTO_DDL)
+                    .setBody(new BlockStmt().addStatement(new ExplicitConstructorInvocationStmt()
+                            .setThis(false)
+                            .addArgument(new NameExpr("dataSource"))
+                            .addArgument(AUTO_DDL)));
+            Optional<Parameter> autoDDL = constructor.getParameterByName(AUTO_DDL);
+            if (autoDDL.isPresent()) {
+                context().getDependencyInjectionAnnotator().withConfigInjection(
+                        autoDDL.get(), KOGITO_PERSISTENCE_AUTO_DDL, Boolean.TRUE.toString());
+            }
+            context().getDependencyInjectionAnnotator().withInjection(constructor);
+            //empty constructor for DI
+            persistenceProviderClazz.addConstructor(Keyword.PROTECTED);
         }
 
         Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,

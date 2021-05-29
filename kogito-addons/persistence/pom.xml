@@ -18,6 +18,7 @@
     <module>mongodb-persistence-addon</module>
     <module>kafka-persistence-addon</module>
     <module>postgresql-persistence-addon</module>
+    <module>jdbc-persistence-addon</module>
   </modules>
 
 </project>

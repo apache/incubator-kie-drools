@@ -15,11 +15,11 @@
  */
 package org.kie.kogito.persistence;
 
-import org.kie.kogito.persistence.postgresql.PostgreProcessInstances;
+import javax.sql.DataSource;
+
+import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstancesFactory;
-
-import io.vertx.pgclient.PgPool;
 
 /**
  * This class must always have exact FQCN as <code>org.kie.kogito.persistence.KogitoProcessInstancesFactory</code>
@@ -27,27 +27,20 @@ import io.vertx.pgclient.PgPool;
  */
 public abstract class KogitoProcessInstancesFactory implements ProcessInstancesFactory {
 
-    private final Long queryTimeout;
-    private final PgPool client;
     private final boolean autoDDL;
+    private final DataSource dataSource;
 
-    // Constructor for DI 
     protected KogitoProcessInstancesFactory() {
-        this(null, true, 10000L);
+        this(null, true);
     }
 
-    public KogitoProcessInstancesFactory(PgPool client, Boolean autoDDL, Long queryTimeout) {
-        this.client = client;
+    public KogitoProcessInstancesFactory(DataSource dataSource, Boolean autoDDL) {
+        this.dataSource = dataSource;
         this.autoDDL = autoDDL;
-        this.queryTimeout = queryTimeout;
-    }
-
-    public PgPool client() {
-        return this.client;
     }
 
     @Override
-    public PostgreProcessInstances createProcessInstances(Process<?> process) {
-        return new PostgreProcessInstances(process, client(), autoDDL, queryTimeout);
+    public JDBCProcessInstances createProcessInstances(Process<?> process) {
+        return new JDBCProcessInstances(process, dataSource, autoDDL);
     }
 }
