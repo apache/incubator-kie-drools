@@ -250,7 +250,7 @@ public class PackageModel {
         dateFields.put( fieldName, expression );
     }
 
-    private Map<String, Method> getStaticMethods() {
+    public Map<String, Method> getStaticMethods() {
         if (staticMethods == null) {
             staticMethods = new HashMap<>();
             for (String i : staticImports) {

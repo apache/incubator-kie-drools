@@ -20,11 +20,10 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import org.drools.Person;
+import org.drools.core.util.MethodUtils;
 import org.junit.Test;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.is;
@@ -94,6 +93,41 @@ public class MvelCompilerTest implements CompilerTest {
                      "  results.add($p.name);\n" +
                      "} else {\n " +
                      "  results.add($p.age);" +
+                     "} }",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testPromoteBigDecimalToIntValueInsideIf() {
+        String expectedJavaCode =  "{\n" +
+                "    if ($p.isEven($p.getSalary().intValue()) && $p.isEven($m.intValue())) {\n" +
+                "    }\n" +
+                " }";
+
+        test(ctx -> {
+                 ctx.addDeclaration("$p", Person.class);
+                 ctx.addDeclaration("$m", BigDecimal.class);
+             },
+             "{ if($p.isEven($p.salary) && $p.isEven($m)){\n" +
+                     "} }",
+             expectedJavaCode);
+    }
+
+    @Test
+    public void testPromoteBigDecimalToIntValueInsideIfWithStaticMethod() {
+        String expectedJavaCode = "{\n" +
+                "    if (isEven($p.getSalary().intValue()) && isEven($m.intValue())) {\n" +
+                "    }\n" +
+                " }";
+
+        test(ctx -> {
+                 ctx.addDeclaration("$m", BigDecimal.class);
+
+                 Class<Person> personClass = Person.class;
+                 ctx.addDeclaration("$p", personClass);
+                 ctx.addStaticMethod("isEven", MethodUtils.findMethod(personClass, "isEven", new Class[]{int.class}));
+             },
+             "{ if(isEven($p.salary) && isEven($m)){\n" +
                      "} }",
              expectedJavaCode);
     }
