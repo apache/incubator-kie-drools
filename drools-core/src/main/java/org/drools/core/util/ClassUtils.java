@@ -57,6 +57,7 @@ import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
 
 import static org.drools.core.util.MethodUtils.findMethod;
+import static org.drools.core.util.MethodUtils.getMethod;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 public final class ClassUtils {
@@ -485,10 +486,6 @@ public final class ClassUtils {
                 .findFirst()
                 .flatMap( Function.identity() )
                 .orElse( parameterType.isPrimitive() ? getSetter(clazz, field, convertFromPrimitiveType(parameterType)) : null );
-    }
-
-    private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
-        return Optional.ofNullable( findMethod(clazz, name, parameterTypes) );
     }
 
     public static Member getFieldOrAccessor( Class clazz, String property ) {
