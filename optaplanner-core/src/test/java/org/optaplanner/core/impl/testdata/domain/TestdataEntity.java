@@ -19,22 +19,17 @@ package org.optaplanner.core.impl.testdata.domain;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
-import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.GenuineVariableDescriptor;
 
 @PlanningEntity
 public class TestdataEntity extends TestdataObject {
 
     public static EntityDescriptor<TestdataSolution> buildEntityDescriptor() {
-        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        return solutionDescriptor.findEntityDescriptorOrFail(TestdataEntity.class);
+        return TestdataSolution.buildSolutionDescriptor().findEntityDescriptorOrFail(TestdataEntity.class);
     }
 
     public static GenuineVariableDescriptor<TestdataSolution> buildVariableDescriptorForValue() {
-        SolutionDescriptor<TestdataSolution> solutionDescriptor = TestdataSolution.buildSolutionDescriptor();
-        EntityDescriptor<TestdataSolution> entityDescriptor = solutionDescriptor
-                .findEntityDescriptorOrFail(TestdataEntity.class);
-        return entityDescriptor.getGenuineVariableDescriptor("value");
+        return buildEntityDescriptor().getGenuineVariableDescriptor("value");
     }
 
     private TestdataValue value;
