@@ -21,6 +21,7 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -37,6 +38,7 @@ import javax.inject.Inject;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.kie.kogito.taskassigning.ClientServices;
+import org.kie.kogito.taskassigning.config.OidcClientLookup;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
@@ -59,11 +61,13 @@ import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.oidc.client.OidcClient;
 import io.quarkus.runtime.ShutdownEvent;
 import io.quarkus.runtime.Startup;
 import io.vertx.core.Vertx;
 
 import static org.kie.kogito.taskassigning.core.model.solver.TaskHelper.filterNonDummyAssignments;
+import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.OIDC_CLIENT;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestSolutionUpdatedOnBackgroundEvent;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEvents;
 import static org.kie.kogito.taskassigning.service.util.EventUtil.filterNewestTaskEventsInContext;
@@ -121,6 +125,9 @@ public class TaskAssigningService {
 
     @Inject
     Event<TimerBasedEvent> timerBasedEvent;
+
+    @Inject
+    OidcClientLookup oidcClientLookup;
 
     private SolverExecutor solverExecutor;
 
@@ -571,6 +578,7 @@ public class TaskAssigningService {
 
     private void startUpValidation() {
         validateConfig();
+        validateOidcClient();
         validateUserService();
         validateSolver();
     }
@@ -585,6 +593,17 @@ public class TaskAssigningService {
 
     private void validateSolver() {
         solverFactory.buildSolver();
+    }
+
+    private void validateOidcClient() {
+        Optional<String> oidcClientId = config.getOidcClient();
+        if (oidcClientId.isPresent()) {
+            OidcClient oidcClient = oidcClientLookup.lookup(oidcClientId.get());
+            if (oidcClient == null) {
+                throw new IllegalArgumentException("No OidcClient was found for the configured property value " +
+                        OIDC_CLIENT + " = " + oidcClientId.get());
+            }
+        }
     }
 
     private void pauseEvents() {

@@ -72,7 +72,7 @@ class TaskServiceConnectorTest {
     void findAllTasks() throws MalformedURLException {
         doReturn(dataIndexServiceClientFactory).when(clientServices).dataIndexClientFactory();
         doReturn(dataIndexServiceClient).when(dataIndexServiceClientFactory).newClient(any(), any());
-        doReturn(false).when(config).isKeycloakSet();
+        doReturn(false).when(config).isOidcClientSet();
         doReturn(false).when(config).isBasicAuthSet();
         doReturn(new URL("http://localhost:8180/graphql")).when(config).getDataIndexServerUrl();
 

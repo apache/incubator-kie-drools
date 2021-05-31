@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.auth.mp;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.keycloak.admin.client.Keycloak;
-import org.keycloak.admin.client.token.TokenManager;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import io.quarkus.oidc.client.OidcClient;
+import io.quarkus.oidc.client.Tokens;
+import io.smallrye.mutiny.Uni;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
 
 @ExtendWith(MockitoExtension.class)
-class KeycloakTokenManagerTest {
-
-    private static final String ACCESS_TOKEN = "ACCESS_TOKEN";
+class OidcClientTokenManagerTest {
 
     @Mock
-    private Keycloak keycloak;
+    private OidcClient oidcClient;
 
     @Mock
-    private TokenManager tokenManager;
+    private Tokens tokens;
 
     @Test
     void getAccessTokenString() {
-        doReturn(tokenManager).when(keycloak).tokenManager();
-        doReturn(ACCESS_TOKEN).when(tokenManager).getAccessTokenString();
-        KeycloakTokenManager keycloakTokenManager = new KeycloakTokenManager(keycloak);
-        assertThat(keycloakTokenManager.getAccessTokenString()).isEqualTo(ACCESS_TOKEN);
+        String accessToken = "ACCESS_TOKEN";
+        doReturn(accessToken).when(tokens).getAccessToken();
+        Uni<Tokens> tokensUni = Uni.createFrom().item(tokens);
+        doReturn(tokensUni).when(oidcClient).getTokens();
+        OidcClientTokenManager tokenManager = new OidcClientTokenManager(oidcClient);
+        assertThat(tokenManager.getAccessTokenString()).isEqualTo(accessToken);
     }
 }

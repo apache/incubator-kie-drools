@@ -27,8 +27,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.taskassigning.ClientServices;
 import org.kie.kogito.taskassigning.auth.AuthenticationCredentials;
 import org.kie.kogito.taskassigning.auth.BasicAuthenticationCredentials;
-import org.kie.kogito.taskassigning.auth.KeycloakAuthenticationCredentials;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.OidcClientAuthenticationCredentials;
 import org.kie.kogito.taskassigning.index.service.client.DataIndexServiceClient;
 import org.kie.kogito.taskassigning.index.service.client.DataIndexServiceClientConfig;
 import org.kie.kogito.taskassigning.index.service.client.DataIndexServiceClientFactory;
@@ -49,17 +49,15 @@ import static org.mockito.Mockito.verify;
 class TaskAssigningConfigUtilTest {
 
     private static final String DATA_INDEX_SERVER_URL = "http://localhost:8180/graphql";
-    private static final String AUTH_SERVER_URL = "http://localhost:8280/auth/realms/kogito";
-    private static final String CANONIC_AUTH_SERVER_URL = "http://localhost:8280/auth";
     private static final String PROCESS_SERVICE_URL = "http://service1.cloud.com:8280";
-    private static final String REALM = "kogito";
-    private static final String CLIENT_ID = "CLIENT_ID";
-    private static final String CREDENTIALS_SECRET = "CREDENTIALS_SECRET";
+    private static final String OIDC_CLIENT = "OIDC_CLIENT";
     private static final String CLIENT_USER = "CLIENT_USER";
     private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
     private static final Duration SYNC_INTERVAL = Duration.ofMillis(1);
     private static final Duration WAIT_FOR_IMPROVED_SOLUTION_DURATION = Duration.ofMillis(2);
     private static final Duration IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = Duration.ofMillis(3);
+    private static final Duration CONNECT_TIMEOUT_DURATION = Duration.ofMillis(4);
+    private static final Duration READ_TIMEOUT_DURATION = Duration.ofMillis(5);
 
     @Mock
     ClientServices clientServices;
@@ -94,9 +92,9 @@ class TaskAssigningConfigUtilTest {
     }
 
     @Test
-    void createDataIndexServiceClientKeycloakAuth() throws MalformedURLException {
-        createDataIndexServiceClient(buildKeycloakConfig());
-        assertKeycloakAuth();
+    void createDataIndexServiceClientOidcClientAuth() throws MalformedURLException {
+        createDataIndexServiceClient(buildOidcClientConfig());
+        assertOidcClientAuth();
     }
 
     @Test
@@ -112,9 +110,9 @@ class TaskAssigningConfigUtilTest {
     }
 
     @Test
-    void createProcessServiceClientKeycloakAuth() throws MalformedURLException {
-        createProcessServiceClient(buildKeycloakConfig());
-        assertKeycloakAuth();
+    void createProcessServiceClientOidcClientAuth() throws MalformedURLException {
+        createProcessServiceClient(buildOidcClientConfig());
+        assertOidcClientAuth();
     }
 
     @Test
@@ -134,6 +132,8 @@ class TaskAssigningConfigUtilTest {
         assertThat(result).isSameAs(dataIndexServiceClient);
         verify(dataIndexServiceClientFactory).newClient(dataIndexServiceConfigCaptor.capture(), credentialsCaptor.capture());
         assertThat(dataIndexServiceConfigCaptor.getValue().getServiceUrl()).isEqualTo(new URL(DATA_INDEX_SERVER_URL));
+        assertThat(dataIndexServiceConfigCaptor.getValue().getConnectTimeoutMillis()).isEqualTo(CONNECT_TIMEOUT_DURATION.toMillis());
+        assertThat(dataIndexServiceConfigCaptor.getValue().getReadTimeoutMillis()).isEqualTo(READ_TIMEOUT_DURATION.toMillis());
     }
 
     private void createProcessServiceClient(TaskAssigningConfig config) throws MalformedURLException {
@@ -142,17 +142,14 @@ class TaskAssigningConfigUtilTest {
         assertThat(result).isSameAs(processServiceClient);
         verify(processServiceClientFactory).newClient(processServiceConfigCaptor.capture(), credentialsCaptor.capture());
         assertThat(processServiceConfigCaptor.getValue().getServiceUrl()).isEqualTo(processServiceUrl);
+        assertThat(processServiceConfigCaptor.getValue().getConnectTimeoutMillis()).isEqualTo(CONNECT_TIMEOUT_DURATION.toMillis());
+        assertThat(processServiceConfigCaptor.getValue().getReadTimeoutMillis()).isEqualTo(READ_TIMEOUT_DURATION.toMillis());
     }
 
-    private void assertKeycloakAuth() {
-        assertThat(credentialsCaptor.getValue()).isExactlyInstanceOf(KeycloakAuthenticationCredentials.class);
-        KeycloakAuthenticationCredentials keycloakCredentials = (KeycloakAuthenticationCredentials) credentialsCaptor.getValue();
-        assertThat(keycloakCredentials.getServerUrl()).isEqualTo(CANONIC_AUTH_SERVER_URL);
-        assertThat(keycloakCredentials.getClientId()).isEqualTo(CLIENT_ID);
-        assertThat(keycloakCredentials.getClientSecret()).isEqualTo(CREDENTIALS_SECRET);
-        assertThat(keycloakCredentials.getRealm()).isEqualTo(REALM);
-        assertThat(keycloakCredentials.getUsername()).isEqualTo(CLIENT_USER);
-        assertThat(keycloakCredentials.getPassword()).isEqualTo(CLIENT_PASSWORD);
+    private void assertOidcClientAuth() {
+        assertThat(credentialsCaptor.getValue()).isExactlyInstanceOf(OidcClientAuthenticationCredentials.class);
+        OidcClientAuthenticationCredentials oidcClientCredentials = (OidcClientAuthenticationCredentials) credentialsCaptor.getValue();
+        assertThat(oidcClientCredentials.getOidcClient()).isEqualTo(OIDC_CLIENT);
     }
 
     private void assertBasicAuth() {
@@ -169,27 +166,27 @@ class TaskAssigningConfigUtilTest {
 
     private TaskAssigningConfig buildConfig() throws MalformedURLException {
         TaskAssigningConfig config = new TaskAssigningConfig();
+        config.oidcClient = Optional.empty();
         config.dataIndexServerUrl = new URL(DATA_INDEX_SERVER_URL);
+        config.dataIndexConnectTimeoutDuration = CONNECT_TIMEOUT_DURATION;
+        config.dataIndexReadTimeoutDuration = READ_TIMEOUT_DURATION;
+        config.processRuntimeConnectTimeoutDuration = CONNECT_TIMEOUT_DURATION;
+        config.processRuntimeReadTimeoutDuration = READ_TIMEOUT_DURATION;
         config.userServiceSyncInterval = SYNC_INTERVAL;
         config.waitForImprovedSolutionDuration = WAIT_FOR_IMPROVED_SOLUTION_DURATION;
         config.improveSolutionOnBackgroundDuration = IMPROVE_SOLUTION_ON_BACKGROUND_DURATION;
         return config;
     }
 
-    private TaskAssigningConfig buildKeycloakConfig() throws MalformedURLException {
+    private TaskAssigningConfig buildOidcClientConfig() throws MalformedURLException {
         TaskAssigningConfig config = buildConfig();
-        config.oidcTenantEnabled = true;
-        config.oidcAuthServerUrl = Optional.of(new URL(AUTH_SERVER_URL));
-        config.oidcClientId = Optional.of(CLIENT_ID);
-        config.oidcCredentialsSecret = Optional.of(CREDENTIALS_SECRET);
-        config.clientAuthUser = Optional.of(CLIENT_USER);
-        config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
+        config.oidcClient = Optional.of(OIDC_CLIENT);
         return config;
     }
 
     private TaskAssigningConfig buildBasicAuthConfig() throws MalformedURLException {
         TaskAssigningConfig config = buildConfig();
-        config.oidcTenantEnabled = false;
+        config.oidcClient = Optional.empty();
         config.clientAuthUser = Optional.of(CLIENT_USER);
         config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
         return config;
@@ -197,7 +194,7 @@ class TaskAssigningConfigUtilTest {
 
     private TaskAssigningConfig buildNoAuthConfig() throws MalformedURLException {
         TaskAssigningConfig config = buildConfig();
-        config.oidcTenantEnabled = false;
+        config.oidcClient = Optional.empty();
         config.clientAuthUser = Optional.empty();
         config.clientAuthPassword = Optional.empty();
         return config;

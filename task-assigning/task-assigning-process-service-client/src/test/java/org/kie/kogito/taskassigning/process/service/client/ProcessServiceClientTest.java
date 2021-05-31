@@ -23,19 +23,13 @@ import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.ClientServices;
 import org.kie.kogito.taskassigning.auth.BasicAuthenticationCredentials;
-import org.kie.kogito.taskassigning.auth.KeycloakAuthenticationCredentials;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.OidcClientAuthenticationCredentials;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.CLIENT_ID;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.KEYCLOAK_PASSWORD;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.KEYCLOAK_USER;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.KEY_CLOAK_SERVICE_URL;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.REALM;
-import static org.kie.kogito.taskassigning.process.service.client.WireMockKeycloakResource.SECRET;
 import static org.kie.kogito.taskassigning.process.service.client.WireMockProcessResource.AUTH_PASSWORD;
 import static org.kie.kogito.taskassigning.process.service.client.WireMockProcessResource.AUTH_USER;
 import static org.kie.kogito.taskassigning.process.service.client.WireMockProcessResource.BASIC_AUTH_PROCESS_ID;
@@ -92,16 +86,10 @@ class ProcessServiceClientTest {
     }
 
     @Test
-    void getAvailablePhasesWithKeyCloakAuthentication() {
+    void getAvailablePhasesOidcClientAuthentication() {
         ProcessServiceClientConfig config = createServiceConfig();
-        String keyCloakServerUrl = System.getProperty(KEY_CLOAK_SERVICE_URL);
-        KeycloakAuthenticationCredentials credentials = KeycloakAuthenticationCredentials.newBuilder()
-                .serverUrl(keyCloakServerUrl)
-                .realm(REALM)
-                .username(KEYCLOAK_USER)
-                .password(KEYCLOAK_PASSWORD)
-                .clientId(CLIENT_ID)
-                .clientSecret(SECRET)
+        OidcClientAuthenticationCredentials credentials = OidcClientAuthenticationCredentials.newBuilder()
+                .oidcClient("Default")
                 .build();
         ProcessServiceClient client = clientServices.processServiceClientFactory().newClient(config, credentials);
         Set<String> phases = client.getAvailablePhases(KEYCLOAK_AUTH_PROCESS_ID,

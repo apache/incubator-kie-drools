@@ -19,16 +19,14 @@ package org.kie.kogito.taskassigning.service.config;
 import java.time.Duration;
 import java.util.Optional;
 
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_PASSWORD;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_USER;
 import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.DATA_INDEX_SERVER_URL;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_AUTH_SERVER_URL;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CLIENT_ID;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_CREDENTIALS_SECRET;
 
 public class TaskAssigningConfigValidator {
 
     private static final String PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR = "The config property: %s must be set with a non negative value, but is: %s";
+
+    private static final String PROPERTY_MUST_HAVE_VALUE_ERROR = "The config property: %s must be set with a value";
 
     private static final String PROPERTY_MUST_HAVE_NON_NEGATIVE_ZERO_OR_GREATER_THAN_ONE_MILLISECOND_VALUE_ERROR =
             "The config property: %s must be set with a zero or a greater or equal than one milliseconds duration, but is: %s";
@@ -44,12 +42,8 @@ public class TaskAssigningConfigValidator {
     }
 
     public void validate() {
-        if (config.getDataIndexServerUrl() == null) {
-            throw new IllegalArgumentException("A config value must be set for the property: " + DATA_INDEX_SERVER_URL);
-        }
-        if (config.isKeycloakSet()) {
-            validateKeycloakConfig(config);
-        }
+        validateDataIndexConfig(config);
+        validateProcessRuntimeConfig(config);
         if (config.isBasicAuthSet()) {
             validateBasicAuth(config);
         }
@@ -58,21 +52,13 @@ public class TaskAssigningConfigValidator {
         validateImproveSolutionOnBackgroundDuration(config);
     }
 
-    private static void validateKeycloakConfig(TaskAssigningConfig config) {
-        validateOptionalIsSet(QUARKUS_OIDC_AUTH_SERVER_URL, config.getOidcAuthServerUrl());
-        validateOptionalIsSet(QUARKUS_OIDC_CLIENT_ID, config.getOidcClientId());
-        validateOptionalIsSet(QUARKUS_OIDC_CREDENTIALS_SECRET, config.getOidcCredentialsSecret());
-        validateOptionalIsSet(CLIENT_AUTH_USER, config.getClientAuthUser());
-        validateOptionalIsSet(CLIENT_AUTH_PASSWORD, config.getClientAuthPassword());
-    }
-
     private static void validateBasicAuth(TaskAssigningConfig config) {
         validateOptionalIsSet(CLIENT_AUTH_USER, config.getClientAuthUser());
     }
 
     private static void validateOptionalIsSet(String propertyName, Optional<?> value) {
         if (value.isEmpty()) {
-            throw new IllegalArgumentException("A config value must be set for the property: " + propertyName);
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_VALUE_ERROR, propertyName));
         }
     }
 
@@ -97,6 +83,35 @@ public class TaskAssigningConfigValidator {
     private static void validatePropertyIsZeroOrGreaterThanZeroMillisecondsDuration(String propertyName, Duration duration) {
         if (duration.isNegative() || (!duration.isZero() && duration.toMillis() < 1)) {
             throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_ZERO_OR_GREATER_THAN_ONE_MILLISECOND_VALUE_ERROR, propertyName, duration));
+        }
+    }
+
+    private static void validateDataIndexConfig(TaskAssigningConfig config) {
+        if (config.getDataIndexServerUrl() == null) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_VALUE_ERROR, DATA_INDEX_SERVER_URL));
+        }
+        if (config.getDataIndexConnectTimeoutDuration().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.DATA_INDEX_CONNECT_TIMEOUT_DURATION,
+                    config.getDataIndexConnectTimeoutDuration()));
+        }
+        if (config.getDataIndexReadTimeoutDuration().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.DATA_INDEX_READ_TIMEOUT_DURATION,
+                    config.getDataIndexReadTimeoutDuration()));
+        }
+    }
+
+    private static void validateProcessRuntimeConfig(TaskAssigningConfig config) {
+        if (config.getProcessRuntimeConnectTimeoutDuration().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.PROCESS_RUNTIME_CONNECT_TIMEOUT_DURATION,
+                    config.getProcessRuntimeConnectTimeoutDuration()));
+        }
+        if (config.getProcessRuntimeReadTimeoutDuration().isNegative()) {
+            throw new IllegalArgumentException(String.format(PROPERTY_MUST_HAVE_NON_NEGATIVE_VALUE_ERROR,
+                    TaskAssigningConfigProperties.PROCESS_RUNTIME_READ_TIMEOUT_DURATION,
+                    config.getProcessRuntimeReadTimeoutDuration()));
         }
     }
 }

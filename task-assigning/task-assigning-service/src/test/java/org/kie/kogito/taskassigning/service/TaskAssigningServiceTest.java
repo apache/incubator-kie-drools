@@ -16,6 +16,7 @@
 
 package org.kie.kogito.taskassigning.service;
 
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -24,6 +25,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -36,6 +38,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.taskassigning.ClientServices;
+import org.kie.kogito.taskassigning.config.OidcClientLookup;
 import org.kie.kogito.taskassigning.core.model.Task;
 import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.core.model.TaskAssignment;
@@ -171,6 +174,9 @@ class TaskAssigningServiceTest {
     @Mock
     private Event<TaskAssigningService.TimerBasedEvent> timerBasedEvent;
 
+    @Mock
+    private OidcClientLookup oidcClientLookup;
+
     private TaskAssigningServiceContext context;
 
     @Captor
@@ -222,6 +228,7 @@ class TaskAssigningServiceTest {
         taskAssigningService.processorRegistry = processorRegistry;
         taskAssigningService.vertx = vertx;
         taskAssigningService.timerBasedEvent = timerBasedEvent;
+        taskAssigningService.oidcClientLookup = oidcClientLookup;
     }
 
     @Test
@@ -241,7 +248,17 @@ class TaskAssigningServiceTest {
     void startWithConfigValidationFailure() {
         doReturn(null).when(config).getDataIndexServerUrl();
         assertThatThrownBy(() -> taskAssigningService.start())
-                .hasMessage("A config value must be set for the property: kogito.task-assigning.data-index.server-url");
+                .hasMessage("The config property: kogito.task-assigning.data-index.server-url must be set with a value");
+    }
+
+    @Test
+    void startWithOidcClientValidationFailure() throws MalformedURLException {
+        String oidcClient = "oidcClient";
+        doReturn(new URL(DATA_INDEX_SERVER_URL)).when(config).getDataIndexServerUrl();
+        doReturn(Optional.of(oidcClient)).when(config).getOidcClient();
+        doReturn(null).when(oidcClientLookup).lookup(oidcClient);
+        assertThatThrownBy(() -> taskAssigningService.start())
+                .hasMessage("No OidcClient was found for the configured property value kogito.task-assigning.oidc-client = %s", oidcClient);
     }
 
     @Test

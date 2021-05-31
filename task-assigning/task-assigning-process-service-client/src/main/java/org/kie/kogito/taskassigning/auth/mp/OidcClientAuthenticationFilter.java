@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.auth.mp;
 
 import java.io.IOException;
@@ -21,11 +22,11 @@ import javax.ws.rs.client.ClientRequestContext;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MultivaluedMap;
 
-public class KeycloakAuthenticationFilter implements AuthenticationFilter {
+public class OidcClientAuthenticationFilter implements AuthenticationFilter {
 
-    private TokenManager tokenManager;
+    private final TokenManager tokenManager;
 
-    public KeycloakAuthenticationFilter(TokenManager tokenManager) {
+    public OidcClientAuthenticationFilter(TokenManager tokenManager) {
         this.tokenManager = tokenManager;
     }
 

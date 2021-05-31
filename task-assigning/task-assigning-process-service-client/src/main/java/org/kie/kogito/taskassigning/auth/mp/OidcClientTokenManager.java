@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,20 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.auth.mp;
 
-import org.keycloak.admin.client.Keycloak;
+import io.quarkus.oidc.client.OidcClient;
+import io.quarkus.oidc.client.runtime.TokensHelper;
 
-public class KeycloakTokenManager implements TokenManager {
+public class OidcClientTokenManager implements TokenManager {
 
-    private Keycloak keycloak;
+    private final OidcClient oidcClient;
 
-    public KeycloakTokenManager(Keycloak keycloak) {
-        this.keycloak = keycloak;
+    private final TokensHelper tokensHelper;
+
+    public OidcClientTokenManager(OidcClient oidcClient) {
+        this.oidcClient = oidcClient;
+        this.tokensHelper = new TokensHelper();
     }
 
     @Override
     public String getAccessTokenString() {
-        return keycloak.tokenManager().getAccessTokenString();
+        return tokensHelper.getTokens(oidcClient).await().indefinitely().getAccessToken();
     }
 }

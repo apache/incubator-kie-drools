@@ -24,25 +24,20 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.CLIENT_AUTH_USER;
-import static org.kie.kogito.taskassigning.service.config.TaskAssigningConfigProperties.QUARKUS_OIDC_AUTH_SERVER_URL;
 
 class TaskAssigningConfigTest {
 
     private static final String DATA_INDEX_SERVER_URL = "http://localhost:8180/graphql";
-    private static final String AUTH_SERVER_URL = "http://localhost:8280/auth/realms/kogito";
-    private static final String REALM = "kogito";
-    private static final String CLIENT_ID = "CLIENT_ID";
-    private static final String CREDENTIALS_SECRET = "CREDENTIALS_SECRET";
-    private static final String CLIENT_USER = "CLIENT_USER";
-    private static final String CLIENT_PASSWORD = "CLIENT_PASSWORD";
+    private static final String OIDC_CLIENT = "OIDC_CLIENT";
+    private static final String CLIENT_AUTH_USER = "CLIENT_AUTH_USER";
+    private static final String CLIENT_AUTH_PASSWORD = "CLIENT_AUTH_PASSWORD";
     private static final int DATA_LOADER_PAGE_SIZE = 10;
     private static final int PUBLISH_WINDOW_SIZE = 3;
     private static final String USER_SERVICE_CONNECTOR = "USER_SERVICE_CONNECTOR";
     private static final Duration USER_SERVICE_SYNC_INTERVAL = Duration.ofMillis(2000);
     private static final Duration WAIT_FOR_IMPROVED_SOLUTION_DURATION = Duration.ofMillis(3000);
     private static final Duration IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = Duration.ofMillis(4000);
+    private static final Duration TIMEOUT_DURATION = Duration.ofMillis(5000);
 
     private TaskAssigningConfig config;
 
@@ -52,114 +47,54 @@ class TaskAssigningConfigTest {
     }
 
     @Test
-    void isOidcTenantEnabled() {
-        config.oidcTenantEnabled = true;
-        assertThat(config.isOidcTenantEnabled()).isTrue();
+    void isOidcClientSetTrue() {
+        config.oidcClient = Optional.of(OIDC_CLIENT);
+        assertThat(config.isOidcClientSet()).isTrue();
     }
 
     @Test
-    void isKeycloakSetTrue() {
-        config.oidcTenantEnabled = true;
-        assertThat(config.isKeycloakSet()).isTrue();
+    void isOidcClientSetFalse() {
+        config.oidcClient = Optional.empty();
+        assertThat(config.isOidcClientSet()).isFalse();
     }
 
     @Test
-    void isKeycloakSetFalse() {
-        config.oidcTenantEnabled = false;
-        assertThat(config.isKeycloakSet()).isFalse();
+    void getOidcClient() {
+        config.oidcClient = Optional.of(OIDC_CLIENT);
+        assertThat(config.getOidcClient()).hasValue(OIDC_CLIENT);
     }
 
     @Test
     void isBasicAuthSetTrue() {
-        config.oidcTenantEnabled = false;
+        config.oidcClient = Optional.empty();
         config.clientAuthUser = Optional.of(CLIENT_AUTH_USER);
         assertThat(config.isBasicAuthSet()).isTrue();
     }
 
     @Test
-    void isBasicAuthSetFalseWhenKeycloakSet() {
-        config.oidcTenantEnabled = true;
+    void isBasicAuthSetFalseOidcClientSet() {
+        config.oidcClient = Optional.of(OIDC_CLIENT);
         config.clientAuthUser = Optional.of(CLIENT_AUTH_USER);
         assertThat(config.isBasicAuthSet()).isFalse();
     }
 
     @Test
     void isBasicAuthSetFalse() {
-        config.oidcTenantEnabled = false;
+        config.oidcClient = Optional.empty();
         config.clientAuthUser = Optional.empty();
         assertThat(config.isBasicAuthSet()).isFalse();
     }
 
     @Test
-    void getOidcAuthServerUrl() throws Exception {
-        URL url = new URL(AUTH_SERVER_URL);
-        config.oidcAuthServerUrl = Optional.of(url);
-        assertThat(config.getOidcAuthServerUrl()).contains(url);
+    void getClientAuthUser() {
+        config.clientAuthUser = Optional.of(CLIENT_AUTH_USER);
+        assertThat(config.getClientAuthUser()).contains(CLIENT_AUTH_USER);
     }
 
     @Test
-    void getOidcAuthServerCanonicUrl() throws Exception {
-        URL canonicUrl = new URL("http://localhost:8280/auth");
-        config.oidcAuthServerUrl = Optional.of(new URL(AUTH_SERVER_URL));
-        assertThat(config.getOidcAuthServerCanonicUrl()).isEqualTo(canonicUrl);
-    }
-
-    @Test
-    void getOidcAuthServerCanonicUrlFailureValueNotSet() {
-        config.oidcAuthServerUrl = Optional.empty();
-        assertThatThrownBy(() -> config.getOidcAuthServerCanonicUrl()).hasMessage("A configuration value must be set for the property: " + QUARKUS_OIDC_AUTH_SERVER_URL);
-    }
-
-    @Test
-    void getOidcAuthServerCanonicUrlFailureMalformedKeycloakAuth() throws Exception {
-        String malfFormedKeycloakAuthUrl = "http://localhost:8280/auth/notExpected/kogito";
-        config.oidcAuthServerUrl = Optional.of(new URL(malfFormedKeycloakAuthUrl));
-        assertThatThrownBy(() -> config.getOidcAuthServerCanonicUrl())
-                .hasMessageContaining("%s doesn't look to be a valid Keycloak authentication domain", malfFormedKeycloakAuthUrl);
-    }
-
-    @Test
-    void getOidcAuthServerRealm() throws Exception {
-        config.oidcAuthServerUrl = Optional.of(new URL(AUTH_SERVER_URL));
-        assertThat(config.getOidcAuthServerRealm()).isEqualTo(REALM);
-    }
-
-    @Test
-    void getOidcAuthServerRealFailureValueNotSet() {
-        config.oidcAuthServerUrl = Optional.empty();
-        assertThatThrownBy(() -> config.getOidcAuthServerRealm()).hasMessage("A configuration value must be set for the property: " + QUARKUS_OIDC_AUTH_SERVER_URL);
-    }
-
-    @Test
-    void getOidcAuthServerRealmMalformedKeycloakAuth() throws Exception {
-        String malfFormedKeycloakAuthUrl = "http://localhost:8280/auth/notExpected/kogito";
-        config.oidcAuthServerUrl = Optional.of(new URL(malfFormedKeycloakAuthUrl));
-        assertThatThrownBy(() -> config.getOidcAuthServerRealm())
-                .hasMessageContaining("%s doesn't look to be a valid Keycloak authentication domain", malfFormedKeycloakAuthUrl);
-    }
-
-    @Test
-    void getOidcClientId() {
-        config.oidcClientId = Optional.of(CLIENT_ID);
-        assertThat(config.getOidcClientId()).contains(CLIENT_ID);
-    }
-
-    @Test
-    void getOidcCredentialsSecret() {
-        config.oidcCredentialsSecret = Optional.of(CREDENTIALS_SECRET);
-        assertThat(config.getOidcCredentialsSecret()).contains(CREDENTIALS_SECRET);
-    }
-
-    @Test
-    void getOidcClientAuthUser() {
-        config.clientAuthUser = Optional.of(CLIENT_USER);
-        assertThat(config.getClientAuthUser()).contains(CLIENT_USER);
-    }
-
-    @Test
-    void getOidcClientAuthPassword() {
-        config.clientAuthPassword = Optional.of(CLIENT_PASSWORD);
-        assertThat(config.getClientAuthPassword()).contains(CLIENT_PASSWORD);
+    void getClientAuthPassword() {
+        config.clientAuthPassword = Optional.of(CLIENT_AUTH_PASSWORD);
+        assertThat(config.getClientAuthPassword()).contains(CLIENT_AUTH_PASSWORD);
     }
 
     @Test
@@ -203,5 +138,29 @@ class TaskAssigningConfigTest {
     void getImproveSolutionOnBackgroundDuration() {
         config.improveSolutionOnBackgroundDuration = IMPROVE_SOLUTION_ON_BACKGROUND_DURATION;
         assertThat(config.getImproveSolutionOnBackgroundDuration()).isEqualTo(IMPROVE_SOLUTION_ON_BACKGROUND_DURATION);
+    }
+
+    @Test
+    void getDataIndexConnectTimeoutDuration() {
+        config.dataIndexConnectTimeoutDuration = TIMEOUT_DURATION;
+        assertThat(config.getDataIndexConnectTimeoutDuration()).isEqualTo(TIMEOUT_DURATION);
+    }
+
+    @Test
+    void getDataIndexReadTimeoutDuration() {
+        config.dataIndexReadTimeoutDuration = TIMEOUT_DURATION;
+        assertThat(config.getDataIndexReadTimeoutDuration()).isEqualTo(TIMEOUT_DURATION);
+    }
+
+    @Test
+    void getProcessRuntimeConnectTimeoutDuration() {
+        config.processRuntimeConnectTimeoutDuration = TIMEOUT_DURATION;
+        assertThat(config.getProcessRuntimeConnectTimeoutDuration()).isEqualTo(TIMEOUT_DURATION);
+    }
+
+    @Test
+    void getProcessRuntimeReadTimeoutDuration() {
+        config.processRuntimeReadTimeoutDuration = TIMEOUT_DURATION;
+        assertThat(config.getProcessRuntimeReadTimeoutDuration()).isEqualTo(TIMEOUT_DURATION);
     }
 }

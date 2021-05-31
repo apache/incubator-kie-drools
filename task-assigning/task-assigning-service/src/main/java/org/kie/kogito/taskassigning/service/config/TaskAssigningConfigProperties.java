@@ -23,19 +23,17 @@ public class TaskAssigningConfigProperties {
 
     public static final String TASK_ASSIGNING_PROPERTY_PREFIX = "kogito.task-assigning";
 
-    public static final String QUARKUS_OIDC_TENANT_ENABLED = "quarkus.oidc.tenant-enabled";
-
-    public static final String QUARKUS_OIDC_AUTH_SERVER_URL = "quarkus.oidc.auth-server-url";
-
-    public static final String QUARKUS_OIDC_CLIENT_ID = "quarkus.oidc.client-id";
-
-    public static final String QUARKUS_OIDC_CREDENTIALS_SECRET = "quarkus.oidc.credentials.secret";
+    public static final String OIDC_CLIENT = TASK_ASSIGNING_PROPERTY_PREFIX + ".oidc-client";
 
     public static final String CLIENT_AUTH_USER = TASK_ASSIGNING_PROPERTY_PREFIX + ".user";
 
     public static final String CLIENT_AUTH_PASSWORD = TASK_ASSIGNING_PROPERTY_PREFIX + ".password";
 
     public static final String DATA_INDEX_SERVER_URL = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-index.server-url";
+
+    public static final String DATA_INDEX_CONNECT_TIMEOUT_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-index-connect-timeout-duration";
+
+    public static final String DATA_INDEX_READ_TIMEOUT_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-index-read-timeout-duration";
 
     public static final String DATA_LOADER_PAGE_SIZE = TASK_ASSIGNING_PROPERTY_PREFIX + ".data-loader.page-size";
 
@@ -49,4 +47,7 @@ public class TaskAssigningConfigProperties {
 
     public static final String IMPROVE_SOLUTION_ON_BACKGROUND_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".improve-solution-on-background-duration";
 
+    public static final String PROCESS_RUNTIME_CONNECT_TIMEOUT_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".process-runtime-connect-timeout-duration";
+
+    public static final String PROCESS_RUNTIME_READ_TIMEOUT_DURATION = TASK_ASSIGNING_PROPERTY_PREFIX + ".process-runtime-read-timeout-duration";
 }

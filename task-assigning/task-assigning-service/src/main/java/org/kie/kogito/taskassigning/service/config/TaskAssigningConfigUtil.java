@@ -21,8 +21,8 @@ import java.net.URL;
 import org.kie.kogito.taskassigning.ClientServices;
 import org.kie.kogito.taskassigning.auth.AuthenticationCredentials;
 import org.kie.kogito.taskassigning.auth.BasicAuthenticationCredentials;
-import org.kie.kogito.taskassigning.auth.KeycloakAuthenticationCredentials;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.OidcClientAuthenticationCredentials;
 import org.kie.kogito.taskassigning.index.service.client.DataIndexServiceClient;
 import org.kie.kogito.taskassigning.index.service.client.DataIndexServiceClientConfig;
 import org.kie.kogito.taskassigning.process.service.client.ProcessServiceClient;
@@ -37,6 +37,8 @@ public class TaskAssigningConfigUtil {
         TaskAssigningConfigValidator.of(config).validate();
         DataIndexServiceClientConfig clientServiceConfig = DataIndexServiceClientConfig.newBuilder()
                 .serviceUrl(config.getDataIndexServerUrl().toString())
+                .connectTimeoutMillis(config.getDataIndexConnectTimeoutDuration().toMillis())
+                .readTimeoutMillis(config.getDataIndexReadTimeoutDuration().toMillis())
                 .build();
         AuthenticationCredentials credentials = buildAuthenticationCredentials(config);
         return clientServices.dataIndexClientFactory().newClient(clientServiceConfig, credentials);
@@ -46,6 +48,8 @@ public class TaskAssigningConfigUtil {
         TaskAssigningConfigValidator.of(config).validate();
         ProcessServiceClientConfig clientServiceConfig = ProcessServiceClientConfig.newBuilder()
                 .serviceUrl(serviceUrl.toString())
+                .connectTimeoutMillis(config.getProcessRuntimeConnectTimeoutDuration().toMillis())
+                .readTimeoutMillis(config.getProcessRuntimeReadTimeoutDuration().toMillis())
                 .build();
         AuthenticationCredentials credentials = buildAuthenticationCredentials(config);
         return clientServices.processServiceClientFactory().newClient(clientServiceConfig, credentials);
@@ -53,14 +57,9 @@ public class TaskAssigningConfigUtil {
 
     private static AuthenticationCredentials buildAuthenticationCredentials(TaskAssigningConfig config) {
         AuthenticationCredentials credentials;
-        if (config.isKeycloakSet()) {
-            KeycloakAuthenticationCredentials.Builder builder = KeycloakAuthenticationCredentials.newBuilder()
-                    .serverUrl(config.getOidcAuthServerCanonicUrl().toString())
-                    .realm(config.getOidcAuthServerRealm());
-            config.getOidcClientId().ifPresent(builder::clientId);
-            config.getOidcCredentialsSecret().ifPresent(builder::clientSecret);
-            config.getClientAuthUser().ifPresent(builder::username);
-            config.getClientAuthPassword().ifPresent(builder::password);
+        if (config.isOidcClientSet()) {
+            OidcClientAuthenticationCredentials.Builder builder = OidcClientAuthenticationCredentials.newBuilder();
+            config.getOidcClient().ifPresent(builder::oidcClient);
             credentials = builder.build();
         } else if (config.isBasicAuthSet()) {
             BasicAuthenticationCredentials.Builder builder = BasicAuthenticationCredentials.newBuilder();

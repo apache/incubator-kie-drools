@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,34 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.kogito.taskassigning.auth.mp;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
-import org.kie.kogito.taskassigning.auth.KeycloakAuthenticationCredentials;
+import org.kie.kogito.taskassigning.auth.OidcClientAuthenticationCredentials;
 
 @ApplicationScoped
-public class KeycloakAuthenticationFilterProvider implements AuthenticationFilterProvider<KeycloakAuthenticationCredentials> {
+public class OidcClientAuthenticationFilterProvider implements AuthenticationFilterProvider<OidcClientAuthenticationCredentials> {
 
-    private KeycloakTokenManagerProvider tokenManagerProvider;
-
-    public KeycloakAuthenticationFilterProvider() {
-        //CDI proxying
-    }
+    private final OidcClientTokenManagerProvider tokenManagerProvider;
 
     @Inject
-    public KeycloakAuthenticationFilterProvider(KeycloakTokenManagerProvider tokenManagerProvider) {
+    public OidcClientAuthenticationFilterProvider(OidcClientTokenManagerProvider tokenManagerProvider) {
         this.tokenManagerProvider = tokenManagerProvider;
     }
 
     @Override
-    public Class<KeycloakAuthenticationCredentials> getCredentialsType() {
-        return KeycloakAuthenticationCredentials.class;
+    public Class<OidcClientAuthenticationCredentials> getCredentialsType() {
+        return OidcClientAuthenticationCredentials.class;
     }
 
     @Override
-    public AuthenticationFilter createInstance(KeycloakAuthenticationCredentials credentials) {
-        return new KeycloakAuthenticationFilter(tokenManagerProvider.newTokenManager(credentials));
+    public AuthenticationFilter createInstance(OidcClientAuthenticationCredentials credentials) {
+        return new OidcClientAuthenticationFilter(tokenManagerProvider.newTokenManager(credentials));
     }
 }
