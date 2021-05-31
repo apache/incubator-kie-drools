@@ -86,7 +86,6 @@
   </dependencies>
 
   <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/kie-pmml-dependencies/pom.xml -->
     <dependencies>
       <dependency>
         <groupId>org.kie</groupId>
