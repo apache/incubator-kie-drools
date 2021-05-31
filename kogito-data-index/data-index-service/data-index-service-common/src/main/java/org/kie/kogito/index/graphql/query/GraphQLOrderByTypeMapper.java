@@ -62,6 +62,7 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
                     String name = ((GraphQLNamedType) field.getType()).getName();
                     switch (name) {
                         case "Int":
+                        case "Long":
                         case "String":
                         case "Boolean":
                         case "DateTime":
@@ -70,7 +71,12 @@ public class GraphQLOrderByTypeMapper extends AbstractInputObjectTypeMapper {
                         default:
                             typeName = name + ORDER_BY;
                             if (getSchema().getType(typeName) == null && !getAdditionalTypes().containsKey(typeName)) {
-                                GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply((GraphQLObjectType) getAdditionalTypes().get(name));
+                                GraphQLObjectType objectType = (GraphQLObjectType) getAdditionalTypes().get(name);
+                                if (objectType == null) {
+                                    LOGGER.warn("Can not map order by type for field name: {}, type: {}", field.getName(), ((GraphQLNamedType) field.getType()).getName());
+                                    return;
+                                }
+                                GraphQLInputObjectType type = new GraphQLOrderByTypeMapper(getSchema(), getAdditionalTypes()).apply(objectType);
                                 getAdditionalTypes().put(typeName, type);
                             }
                     }

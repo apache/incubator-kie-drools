@@ -72,7 +72,12 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
                 } else if ("id".equals(field.getName())) {
                     builder.field(newInputObjectField().name("id").type(new GraphQLTypeReference("IdArgument"))).build();
                 } else {
-                    newField(builder, field, getInputTypeByField(field));
+                    GraphQLInputType inputTypeByField = getInputTypeByField(field);
+                    if (inputTypeByField == null) {
+                        LOGGER.warn("Can not map input type for field name: {}, type: {}", field.getName(), ((GraphQLNamedType) field.getType()).getName());
+                    } else {
+                        newField(builder, field, inputTypeByField);
+                    }
                 }
             });
         };
@@ -82,6 +87,7 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
         String name = ((GraphQLNamedType) field.getType()).getName();
         switch (name) {
             case "Int":
+            case "Long":
                 return getInputObjectType("NumericArgument");
             case "String":
                 return getInputObjectType("StringArgument");
@@ -93,7 +99,11 @@ public class GraphQLInputObjectTypeMapper extends AbstractInputObjectTypeMapper 
                 String typeName = name + ARGUMENT;
                 GraphQLType schemaType = getExistingType(typeName);
                 if (schemaType == null) {
-                    GraphQLInputObjectType type = new GraphQLInputObjectTypeMapper(getSchema(), getAdditionalTypes(), false).apply((GraphQLObjectType) getAdditionalTypes().get(name));
+                    GraphQLObjectType domain = (GraphQLObjectType) getAdditionalTypes().get(name);
+                    if (domain == null) {
+                        return null;
+                    }
+                    GraphQLInputObjectType type = new GraphQLInputObjectTypeMapper(getSchema(), getAdditionalTypes(), false).apply(domain);
                     getAdditionalTypes().put(typeName, type);
                     return type;
                 } else {

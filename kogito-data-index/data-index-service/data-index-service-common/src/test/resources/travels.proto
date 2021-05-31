@@ -109,5 +109,7 @@ message VisaApplication {
 	/* @Field(store = Store.YES) @SortableField */ 
 	optional string nationality = 7; 
 	/* @Field(store = Store.YES) @SortableField */ 
-	optional string passportNumber = 8; 
+	optional string passportNumber = 8;
+	/* @Field(store = Store.YES) @SortableField */
+	optional int64 id = 9;
 }

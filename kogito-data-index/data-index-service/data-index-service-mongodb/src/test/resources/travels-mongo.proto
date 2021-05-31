@@ -75,4 +75,5 @@ message VisaApplication {
     optional string lastName = 6;
     optional string nationality = 7;
     optional string passportNumber = 8;
+    optional int64 id = 9;
 }
