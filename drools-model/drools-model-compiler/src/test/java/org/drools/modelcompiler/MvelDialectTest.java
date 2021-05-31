@@ -605,6 +605,74 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalAccumulate() {
+        // DROOLS-6366
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    accumulate( Person($m : money); $maxMoney:max($m))\n" +
+                "    $john : Person(money == $maxMoney)\n" +
+                "then\n" +
+                "    results.add($john);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(john);
+    }
+
+    @Test
+    public void testBigDecimalAccumulateWithFrom() {
+        // DROOLS-6366
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $maxMoney : BigDecimal() from accumulate( Person($m : money); max($m))\n" +
+                "    $john : Person(money == $maxMoney)\n" +
+                "then\n" +
+                "    results.add($john);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(john);
+    }
+
+    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =
