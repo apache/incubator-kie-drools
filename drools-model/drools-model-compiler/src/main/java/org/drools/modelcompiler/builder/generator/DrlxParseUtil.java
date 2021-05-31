@@ -43,6 +43,7 @@ import java.util.stream.Stream;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AnnotationExpr;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
@@ -877,21 +878,37 @@ public class DrlxParseUtil {
         }
     }
 
-    public static MvelCompiler createMvelCompiler(RuleContext context, Collection<DeclarationSpec> declarations) {
+    public static MvelCompiler createMvelCompiler(RuleContext context) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
-        for (DeclarationSpec ds : declarations) {
+        for (DeclarationSpec ds : context.getAllDeclarations()) {
             mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
+        }
+
+        for(Map.Entry<String, Method> m : context.getPackageModel().getStaticMethods().entrySet()) {
+            mvelCompilerContext.addStaticMethod(m.getKey(), m.getValue());
+        }
+
+        for(MethodDeclaration m : context.getPackageModel().getFunctions()) {
+            List<String> parametersType = m.getParameters().stream().map(Parameter::getType).map(Type::asString).collect(toList());
+            mvelCompilerContext.addDeclaredFunction(m.getNameAsString(), m.getTypeAsString(), parametersType);
         }
 
         return new MvelCompiler(mvelCompilerContext);
     }
 
 
-    public static ConstraintCompiler createConstraintCompiler(RuleContext context, Collection<DeclarationSpec> declarations) {
+    public static ConstraintCompiler createConstraintCompiler(RuleContext context, Optional<Class<?>> originalPatternType) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
-        for (DeclarationSpec ds : declarations) {
+        List<DeclarationSpec> allDeclarations = new ArrayList<>();
+        allDeclarations.addAll(context.getAllDeclarations());
+        originalPatternType.ifPresent(pt -> {
+            allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt));
+            mvelCompilerContext.setRootPatternPrefix(pt, THIS_PLACEHOLDER);
+        });
+
+        for (DeclarationSpec ds : allDeclarations) {
             mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());
         }
 

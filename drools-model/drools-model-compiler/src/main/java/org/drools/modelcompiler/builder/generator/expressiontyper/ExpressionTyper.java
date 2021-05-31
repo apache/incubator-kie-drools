@@ -25,7 +25,6 @@ import java.lang.reflect.TypeVariable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -91,13 +90,13 @@ import org.drools.mvel.parser.ast.expr.OOPathChunk;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvel.parser.printer.PrintUtil;
+import org.drools.mvelcompiler.util.BigDecimalArgumentCoercion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
@@ -244,6 +243,7 @@ public class ExpressionTyper {
 
         if (drlxExpr instanceof FieldAccessExpr || drlxExpr instanceof MethodCallExpr || drlxExpr instanceof ObjectCreationExpr
                 || drlxExpr instanceof NullSafeFieldAccessExpr || drlxExpr instanceof  NullSafeMethodCallExpr || drlxExpr instanceof MapCreationLiteralExpression || drlxExpr instanceof ListCreationLiteralExpression) {
+
             return toTypedExpressionFromMethodCallOrField(drlxExpr).getTypedExpression();
         }
 
@@ -822,15 +822,23 @@ public class ExpressionTyper {
 
         Method m = rawClassCursor != null ? MethodUtils.findMethod(rawClassCursor, methodName, argsType) : null;
         if (m == null) {
-            Optional<Class<?>> functionType = ruleContext.getFunctionType(methodName);
+            Optional<RuleContext.FunctionType> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {
+                RuleContext.FunctionType typedDeclaredFunction = functionType.get();
                 methodCallExpr.setScope(null);
-                return new TypedExpressionCursor(methodCallExpr, functionType.get());
+
+                promoteBigDecimalParameters(methodCallExpr, argsType, typedDeclaredFunction.getArgumentsType().toArray(new Class[0]));
+
+                return new TypedExpressionCursor(methodCallExpr, typedDeclaredFunction.getReturnType());
             }
+
             ruleContext.addCompilationError(new InvalidExpressionErrorResult(
                     String.format("Method %s on %s with arguments %s is missing", methodName, originalTypeCursor, Arrays.toString(argsType))));
             return new TypedExpressionCursor(methodCallExpr, Object.class);
         }
+
+        Class<?>[] actualArgumentTypes = m.getParameterTypes();
+        promoteBigDecimalParameters(methodCallExpr, argsType, actualArgumentTypes);
 
         if (methodName.equals("get") && List.class.isAssignableFrom(rawClassCursor) && originalTypeCursor instanceof ParameterizedType) {
             return new TypedExpressionCursor(methodCallExpr, ((ParameterizedType) originalTypeCursor).getActualTypeArguments()[0]);
@@ -845,6 +853,22 @@ public class ExpressionTyper {
             }
         } else {
             return new TypedExpressionCursor(methodCallExpr, genericReturnType);
+        }
+    }
+
+    private void promoteBigDecimalParameters(MethodCallExpr methodCallExpr, Class[] argsType, Class<?>[] actualArgumentTypes) {
+        if (actualArgumentTypes.length == argsType.length && actualArgumentTypes.length == methodCallExpr.getArguments().size()) {
+            for (int i = 0; i < argsType.length; i++) {
+                Class<?> argumentType = argsType[i];
+                Class<?> actualArgumentType = actualArgumentTypes[i];
+
+                Expression argumentExpression = methodCallExpr.getArgument(i);
+
+                if (argumentType != actualArgumentType) {
+                    Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);
+                    methodCallExpr.setArgument(i, coercedExpression);
+                }
+            }
         }
     }
 

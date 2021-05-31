@@ -16,28 +16,35 @@
 
 package org.drools.mvelcompiler.context;
 
-import java.lang.reflect.Type;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
 import org.drools.core.addon.TypeResolver;
 import org.drools.mvelcompiler.MvelCompilerException;
+import org.drools.mvelcompiler.ast.RootTypeThisExpr;
+import org.drools.mvelcompiler.ast.TypedExpression;
 
 import static org.drools.core.util.StringUtils.isEmpty;
+import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 
 public class MvelCompilerContext {
 
     private final Map<String, Declaration> declarations = new HashMap<>();
+    private final Map<String, StaticMethod> staticMethods = new HashMap<>();
+    private final Map<String, DeclaredFunction> declaredFunctions = new HashMap<>();
+
     private final TypeResolver typeResolver;
     private final String scopeSuffix;
     private final Set<String> usedBindings = new HashSet<>();
 
     // Used in ConstraintParser
-    private Optional<Type> rootPattern = Optional.empty();
-    private String rootTypePrefix;
+    private Optional<Class<?>> rootPattern = Optional.empty();
+    private Optional<String> rootPrefix = Optional.empty();
 
     public MvelCompilerContext(TypeResolver typeResolver) {
         this(typeResolver, null);
@@ -77,20 +84,35 @@ public class MvelCompilerContext {
         }
     }
 
-    public void setRootPattern(Type rootPattern) {
-        this.rootPattern = Optional.of(rootPattern);
+    public MvelCompilerContext addStaticMethod(String name, Method method) {
+        staticMethods.put(name, new StaticMethod(name, method));
+        return this;
     }
 
-    public Optional<Type> getRootPattern() {
+    public Optional<Method> findStaticMethod(String name) {
+        return Optional.ofNullable(staticMethods.get(name)).map(StaticMethod::getMethod);
+    }
+
+    public MvelCompilerContext addDeclaredFunction(String name, String returnType, List<String> arguments) {
+        declaredFunctions.put(name, new DeclaredFunction(this.typeResolver, name, returnType, arguments));
+        return this;
+    }
+
+    public Optional<DeclaredFunction> findDeclaredFunction(String name) {
+        return Optional.ofNullable(declaredFunctions.get(name));
+    }
+
+    public void setRootPatternPrefix(Class<?> rootPattern, String rootPrefix) {
+        this.rootPattern = Optional.of(rootPattern);
+        this.rootPrefix = Optional.of(rootPrefix);
+    }
+
+    public Optional<Class<?>> getRootPattern() {
         return rootPattern;
     }
 
-    public String getRootTypePrefix() {
-        return rootTypePrefix;
-    }
-
-    public void setRootTypePrefix(String rootTypePrefix) {
-        this.rootTypePrefix = rootTypePrefix;
+    public Optional<TypedExpression> createRootTypePrefix() {
+        return map2(rootPattern, rootPrefix, RootTypeThisExpr::new);
     }
 
     public void addUsedBinding(String s) {

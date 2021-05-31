@@ -116,4 +116,8 @@ public class Person {
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
     }
+
+    public boolean isEven(int value) {
+        return true;
+    }
 }

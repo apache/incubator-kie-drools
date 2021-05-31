@@ -31,29 +31,32 @@ public class ConstraintCompilerTest implements CompilerTest {
 
     @Test
     public void testBigDecimalPromotion() {
-        testExpression(c -> {
-                           c.setRootPattern(Person.class);
-                           c.setRootTypePrefix("_this");
-                       }, "salary + salary",
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary + salary",
                        "_this.getSalary().add(_this.getSalary())");
     }
 
     @Test
     public void testBigDecimalStringEquality() {
-        testExpression(c -> {
-                           c.setRootPattern(Person.class);
-                           c.setRootTypePrefix("_this");
-                       }, "salary == \"90\"",
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary == \"90\"",
                        "_this.getSalary().equals(new java.math.BigDecimal(\"90\"))");
     }
 
     @Test
     public void testBigDecimalStringNonEquality() {
-        testExpression(c -> {
-                           c.setRootPattern(Person.class);
-                           c.setRootTypePrefix("_this");
-                       }, "salary != \"90\"",
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "salary != \"90\"",
                        "!(_this.getSalary().equals(new java.math.BigDecimal(\"90\")))");
+    }
+
+    @Test
+    public void testBigDecimalPromotionToIntMethod() {
+        testExpression(c -> c.setRootPatternPrefix(Person.class, "_this"), "isEven(salary)",
+                       "_this.isEven(_this.getSalary().intValue())");
+    }
+
+    @Test
+    public void testConversionConstructorArgument() {
+        testExpression(c -> c.addDeclaration("$p", Person.class), "new Person($p.name, $p)",
+                       "new Person($p.getName(), $p)");
     }
 
     public void testExpression(Consumer<MvelCompilerContext> testFunction,

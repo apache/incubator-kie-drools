@@ -634,11 +634,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         }
 
         public InternalFactHandle get(InternalFactHandle fh) {
-            InternalFactHandle retrieved = facts.get(fh.getObject());
-            if (retrieved == null && fh.isDisconnected()) {
-                retrieved = factsIndexedById().get(fh.getId());
-            }
-            return retrieved;
+            return fh.isDisconnected() ? factsIndexedById().get(fh.getId()) : facts.get(fh.getObject());
         }
 
         public InternalFactHandle remove(InternalFactHandle fh) {
