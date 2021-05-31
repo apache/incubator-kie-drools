@@ -143,7 +143,11 @@ public class NamedConsequenceVisitor {
             if (b.equals(desc)) {
                 break;
             }
-            patternRelated = b;
+            if (b instanceof ConditionalBranchDescr) {
+                // multiple ConditionalBranchDescr can be in a row. So keep the previous PatternDescr
+            } else {
+                patternRelated = b;
+            }
         }
         return patternRelated instanceof PatternDescr ? (PatternDescr) patternRelated : null;
     }

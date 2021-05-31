@@ -364,4 +364,129 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertEquals(1, results.size());
         assertTrue(results.contains("cheddar"));
     }
+
+    @Test
+    public void testMultipleIfElseInARow() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p1 : Person()\n" +
+                     "  if (name == \"Mark\") do[Mark]\n" +
+                     "  else if (name == \"Edson\") do[Edson]\n" +
+                     "  if (age == 35) do[Age35]\n" +
+                     "  else if (age == 37) do[Age37]\n" +
+                     "  if (age == 90) do[Age90]\n" +
+                     "  else if (age == 100) do[Age100]\n" +
+                     "then\n" +
+                     "  result.add(\"Default\");\n" +
+                     "then[Mark]\n" +
+                     "  result.add(\"Mark\");\n" +
+                     "then[Edson]\n" +
+                     "  result.add(\"Edson\");\n" +
+                     "then[Age35]\n" +
+                     "  result.add(\"Age35\");\n" +
+                     "then[Age37]\n" +
+                     "  result.add(\"Age37\");\n" +
+                     "then[Age90]\n" +
+                     "  result.add(\"Age90\");\n" +
+                     "then[Age100]\n" +
+                     "  result.add(\"Age100\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        assertEquals(7, result.size());
+
+        assertTrue(result.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37")));
+    }
+
+    @Test
+    public void testMultipleIfElseInARowWithJoin() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "  $r : Result()\n" +
+                     "  $p1 : Person()\n" +
+                     "  if (name == \"Mark\") do[Mark]\n" +
+                     "  else if (name == \"Edson\") do[Edson]\n" +
+                     "  if (age == 35) do[Age35]\n" +
+                     "  else if (age == 37) do[Age37]\n" +
+                     "then\n" +
+                     "  $r.addValue(\"Default\");\n" +
+                     "then[Mark]\n" +
+                     "  $r.addValue(\"Mark\");\n" +
+                     "then[Edson]\n" +
+                     "  $r.addValue(\"Edson\");\n" +
+                     "then[Age35]\n" +
+                     "  $r.addValue(\"Age35\");\n" +
+                     "then[Age37]\n" +
+                     "  $r.addValue(\"Age37\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        ksession.fireAllRules();
+
+        Collection results = (Collection) result.getValue();
+        assertEquals(7, results.size());
+
+        assertTrue(results.containsAll(asList("Default", "Mark", "Edson", "Age35", "Age37")));
+    }
+
+    @Test
+    public void testMultipleIfElseInARowWithJoin2() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "rule R when\n" +
+                     "  $r : Result()\n" +
+                     "  $p1 : Person()\n" +
+                     "  if (name == \"Mark\") do[Mark]\n" +
+                     "  else if (name == \"Edson\") do[Edson]\n" +
+                     "  if (age == 35) do[Age35]\n" +
+                     "  else if (age == 37) do[Age37]\n" +
+                     "  $i : Integer(this == $p1.age)" +
+                     "then\n" +
+                     "  $r.addValue(\"Default\" + $p1.getName());\n" +
+                     "then[Mark]\n" +
+                     "  $r.addValue(\"Mark\");\n" +
+                     "then[Edson]\n" +
+                     "  $r.addValue(\"Edson\");\n" +
+                     "then[Age35]\n" +
+                     "  $r.addValue(\"Age35\");\n" +
+                     "then[Age37]\n" +
+                     "  $r.addValue(\"Age37\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Result result = new Result();
+        ksession.insert(result);
+
+        ksession.insert(new Person("Mark", 37));
+        ksession.insert(new Person("Edson", 35));
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(Integer.valueOf(40));
+        ksession.fireAllRules();
+
+        Collection results = (Collection) result.getValue();
+        assertEquals(5, results.size());
+
+        assertTrue(results.containsAll(asList("DefaultMario", "Mark", "Edson", "Age35", "Age37")));
+    }
 }
