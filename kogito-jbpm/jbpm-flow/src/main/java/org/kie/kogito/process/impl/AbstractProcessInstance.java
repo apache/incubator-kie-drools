@@ -601,7 +601,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
         @Override
         public String[] getEventTypes() {
-            return new String[] { "processInstanceCompleted:" + processInstance.getId() };
+            return new String[] { "processInstanceCompleted:" + processInstance.getStringId() };
         }
     }
 

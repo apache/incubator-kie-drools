@@ -35,12 +35,18 @@ public interface KogitoProcessInstance extends ProcessInstance, KogitoEventListe
     int SLA_VIOLATED = 3;
     int SLA_ABORTED = 4;
 
+    /**
+     * @Deprecated use getStringId instead. Some implementations will throw {@link UnsupportedOperationException}
+     */
     @Deprecated
     @Override
     long getId();
 
     String getStringId();
 
+    /**
+     * @Deprecated use getParentProcessInstanceStringId instead. Some implementations will throw {@link UnsupportedOperationException}
+     */
     @Deprecated
     @Override
     long getParentProcessInstanceId();
