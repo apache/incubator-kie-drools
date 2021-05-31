@@ -1,5 +1,5 @@
 <infinispan>
-  <cache-container statistics="true" shutdown-hook="DEFAULT">
+  <cache-container shutdown-hook="DEFAULT">
     {#let template=config:property('kogito.cache.domain.template')}
       {#if template is null}
     <local-cache name="{cache_name}">

@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 
 import org.infinispan.query.dsl.Query;
 import org.infinispan.query.dsl.QueryFactory;
+import org.infinispan.query.dsl.QueryResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -65,6 +66,9 @@ class InfinispanQueryTest {
 
     @Mock
     Query mockQuery;
+
+    @Mock
+    QueryResult queryResult;
 
     private static Stream<Arguments> provideFilters() {
         return Stream.of(
@@ -128,6 +132,7 @@ class InfinispanQueryTest {
     @BeforeEach
     public void setup() {
         when(factory.create(any())).thenReturn(mockQuery);
+        when(mockQuery.execute()).thenReturn(queryResult);
     }
 
     @Test
@@ -137,7 +142,7 @@ class InfinispanQueryTest {
         query.execute();
 
         verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o");
-        verify(mockQuery).list();
+        verify(queryResult).list();
     }
 
     @Test
@@ -149,7 +154,7 @@ class InfinispanQueryTest {
         query.execute();
 
         verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o");
-        verify(mockQuery).list();
+        verify(queryResult).list();
     }
 
     @Test
@@ -163,7 +168,7 @@ class InfinispanQueryTest {
         verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o");
         verify(mockQuery).startOffset(0);
         verify(mockQuery).maxResults(10);
-        verify(mockQuery).list();
+        verify(queryResult).list();
     }
 
     @Test
@@ -174,7 +179,7 @@ class InfinispanQueryTest {
         query.execute();
 
         verify(factory).create("from org.kie.kogito.index.model.ProcessInstance o order by o.name DESC, o.date ASC");
-        verify(mockQuery).list();
+        verify(queryResult).list();
     }
 
     @ParameterizedTest
@@ -186,6 +191,6 @@ class InfinispanQueryTest {
         query.execute();
 
         verify(factory).create(queryString);
-        verify(mockQuery).list();
+        verify(queryResult).list();
     }
 }

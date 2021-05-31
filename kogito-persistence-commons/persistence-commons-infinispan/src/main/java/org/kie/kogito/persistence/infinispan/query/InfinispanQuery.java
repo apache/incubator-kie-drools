@@ -93,14 +93,14 @@ public class InfinispanQuery<T> implements Query<T> {
             queryString.append(sortBy.stream().map(f -> "o." + f.getAttribute() + " " + f.getSort().name()).collect(joining(", ")));
         }
         LOGGER.debug("Executing Infinispan query: {}", queryString);
-        org.infinispan.query.dsl.Query query = qf.create(queryString.toString());
+        org.infinispan.query.dsl.Query<T> query = qf.create(queryString.toString());
         if (limit != null) {
             query.maxResults(limit);
         }
         if (offset != null) {
             query.startOffset(offset);
         }
-        return query.list();
+        return query.execute().list();
     }
 
     private Function<AttributeFilter<?>, String> filterStringFunction() {
