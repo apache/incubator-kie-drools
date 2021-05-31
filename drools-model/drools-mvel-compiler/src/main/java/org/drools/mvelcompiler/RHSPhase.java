@@ -21,8 +21,10 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -61,12 +63,12 @@ import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
 import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
-import org.drools.mvelcompiler.ast.RootTypeThisExpr;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
+import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
@@ -74,6 +76,7 @@ import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
 
 import static org.drools.core.util.ClassUtils.getAccessor;
+import static org.drools.core.util.StreamUtils.optionalToStream;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
@@ -94,6 +97,8 @@ import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
  */
 public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Context> {
 
+    private final MethodCallExprVisitor methodCallExprVisitor;
+
     static class Context {
         final Optional<TypedExpression> scope;
 
@@ -110,6 +115,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     RHSPhase(MvelCompilerContext mvelCompilerContext) {
         this.mvelCompilerContext = mvelCompilerContext;
+        methodCallExprVisitor = new MethodCallExprVisitor(this, this.mvelCompilerContext);
     }
 
     public TypedExpression invoke(Node statement) {
@@ -184,10 +190,10 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
 
     private Optional<TypedExpression> asPropertyAccessorOfRootPattern(SimpleName n) {
-        Optional<Type> scopeType = mvelCompilerContext.getRootPattern();
+        Optional<Class<?>> scopeType = mvelCompilerContext.getRootPattern();
         Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
-        return map2(scopeType.map(t -> new RootTypeThisExpr(t, mvelCompilerContext.getRootTypePrefix())), optAccessor, FieldToAccessorTExpr::new);
+        return map2(mvelCompilerContext.createRootTypePrefix(), optAccessor, FieldToAccessorTExpr::new);
     }
 
     @Override
@@ -198,38 +204,7 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(MethodCallExpr n, Context arg) {
-        Optional<TypedExpression> scope = n.getScope().map(s -> s.accept(this, arg));
-        TypedExpression name = n.getName().accept(this, new Context(scope.orElse(null)));
-        final List<TypedExpression> arguments = new ArrayList<>(n.getArguments().size());
-        for(Expression child : n.getArguments()) {
-            TypedExpression a = child.accept(this, arg);
-            arguments.add(a);
-        }
-
-        Class<?>[] parametersType = parametersType(arguments);
-
-        Optional<Type> methodCallType =
-                name.getType()
-                .map(Optional::of)
-                .orElseGet(() -> findMethodCallReturnType(n, scope, parametersType));
-
-        return new MethodCallExprT(n.getName().asString(), scope, arguments, methodCallType);
-    }
-
-    private Optional<Type> findMethodCallReturnType(MethodCallExpr n, Optional<TypedExpression> scope, Class<?>[] parametersType) {
-        return scope.flatMap(TypedExpression::getType)
-                .map(TypeUtils::classFromType)
-                .map(scopeClazz -> MethodUtils.findMethod(scopeClazz, n.getNameAsString(), parametersType))
-                .map(Method::getReturnType);
-    }
-
-    private Class<?>[] parametersType(List<TypedExpression> arguments) {
-        return arguments.stream()
-                .map(TypedExpression::getType)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .map(TypeUtils::classFromType)
-                .toArray(Class[]::new);
+        return n.accept(methodCallExprVisitor, arg);
     }
 
     @Override
@@ -329,7 +304,12 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     @Override
     public TypedExpression visit(ObjectCreationExpr n, Context arg) {
-        return new ObjectCreationExpressionT(n, resolveType(n.getType()));
+        List<TypedExpression> constructorArguments = new ArrayList<>();
+        for(Expression e : n.getArguments()) {
+            TypedExpression compiledArgument = e.accept(this, arg);
+            constructorArguments.add(compiledArgument);
+        }
+        return new ObjectCreationExpressionT(constructorArguments, resolveType(n.getType()));
     }
 
     @Override

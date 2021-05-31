@@ -16,7 +16,9 @@
 
 package org.drools.mvelcompiler;
 
+import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 import com.github.javaparser.ast.NodeList;
@@ -29,15 +31,20 @@ import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 public class CompiledExpressionResult implements CompiledResult {
 
     private Expression expression;
+    private Optional<Type> type;
     private Set<String> usedBindings = new HashSet<>();
 
-
-    public CompiledExpressionResult(Expression expression) {
+    public CompiledExpressionResult(Expression expression, Optional<Type> type) {
         this.expression = expression;
+        this.type = type;
     }
 
     public Expression getExpression() {
         return expression;
+    }
+
+    public Optional<Type> getType() {
+        return type;
     }
 
     public String resultAsString() {
