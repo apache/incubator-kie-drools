@@ -8,23 +8,21 @@ pre: |
 
 default:
   build-command:
-    current: mvn -e clean install -DskipTests ${{ env.BUILD_MVN_OPTS }}
+    current: mvn clean install -DskipTests -Dquickly ${{ env.BUILD_MVN_OPTS }}
 
 build:
   - project: kiegroup/drools
     build-command:
       current: |
         export DROOLS_VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout`
-        mvn clean install -DskipTests ${{ env.BUILD_MVN_OPTS }}
+        mvn clean install -DskipTests -Dquickly ${{ env.BUILD_MVN_OPTS }}
 
   - project: kiegroup/kogito-runtimes
     build-command:
       current: |
         mvn -f kogito-runtimes/pom.xml clean install -Dversion.org.kie7=${{ env.DROOLS_VERSION }} ${{ env.BUILD_MVN_OPTS }}
-        mvn -f kogito-runtimes-integration-tests/pom.xml clean install -Pintegration-tests ${{ env.BUILD_MVN_OPTS }}
     clone:
       - kogito-runtimes
-      - kogito-runtimes-integration-tests
 
   - project: kiegroup/kogito-apps
     build-command:
@@ -44,9 +42,5 @@ build:
     build-command:
       current: |
         mvn -f kogito-examples/pom.xml clean install ${{ env.BUILD_MVN_OPTS }}
-        mvn -f kogito-examples-persistence/pom.xml clean install -Ppersistence ${{ env.BUILD_MVN_OPTS }}
-        mvn -f kogito-examples-events/pom.xml clean install -Pevents ${{ env.BUILD_MVN_OPTS }}
     clone:
       - kogito-examples
-      - kogito-examples-persistence
-      - kogito-examples-events

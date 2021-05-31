@@ -1011,9 +1011,9 @@ public class TimerAndCalendarTest {
         final KieSession ksession = kbase.newKieSession();
         try {
             ksession.fireAllRules();
-            Thread.sleep(200);
+            Thread.sleep(400);
             ksession.fireAllRules();
-            Thread.sleep(200);
+            Thread.sleep(400);
             ksession.fireAllRules();
             // now check that rule "wrap A" fired once, creating one B
             assertEquals(2, ksession.getFactCount());
@@ -1549,13 +1549,13 @@ public class TimerAndCalendarTest {
 
         new Thread(ksession::fireUntilHalt).start();
         try {
-            Thread.sleep(350);
+            Thread.sleep(500);
             assertEquals(2, list.size()); // delay 0, repeat after 100
             assertEquals(asList(0, 0), list);
 
             ksession.insert("halt");
 
-            Thread.sleep(200);
+            Thread.sleep(400);
             ksession.delete(handle);
             assertEquals(2, list.size()); // halted, no more rule firing
 
