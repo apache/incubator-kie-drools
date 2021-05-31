@@ -72,14 +72,14 @@ public class AbstractGraphTest {
     protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType type) {
         Node source = graph.getNodeMap().get(sourceFqdn);
         Node target = graph.getNodeMap().get(targetFqdn);
-        Optional<Link> optOutgoing = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).findFirst();
+        Optional<Link> optOutgoing = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).filter(l -> l.getReactivityType().equals(type)).findFirst();
         if (!optOutgoing.isPresent()) {
-            fail("outgoingLink doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
+            fail("outgoingLink of the type [" + type + "] doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
         }
         Link outgoingLink = optOutgoing.get();
-        Optional<Link> optIncoming = target.getIncomingLinks().stream().filter(l -> l.getSource().equals(source)).findFirst();
+        Optional<Link> optIncoming = target.getIncomingLinks().stream().filter(l -> l.getSource().equals(source)).filter(l -> l.getReactivityType().equals(type)).findFirst();
         if (!optIncoming.isPresent()) {
-            fail("incomingLink doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
+            fail("incomingLink of the type [" + type + "] doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
         }
         Link incomingLink = optIncoming.get();
         if (outgoingLink != incomingLink) {
