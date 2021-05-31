@@ -30,7 +30,7 @@ public final class DMNEventUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(DMNEventUtils.class);
 
-    public static Map<String, Object> extractParameters(BeforeInvokeBKMEvent event) {
+    public static Map<String, Object> extractBKMParameters(BeforeInvokeBKMEvent event) {
         Map<String, Object> results = new LinkedHashMap<String, Object>();
         BusinessKnowledgeModelNodeImpl bkmi = (BusinessKnowledgeModelNodeImpl) event.getBusinessKnowledgeModel();
         List<String> names = ((DMNFunctionDefinitionEvaluator) bkmi.getEvaluator()).getParameterNames().get(0);

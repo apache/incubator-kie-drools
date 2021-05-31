@@ -51,7 +51,7 @@ public class DMNRuntimeListenerBKMTest {
         private List<Object> invResults = new ArrayList<>();
         @Override
         public void beforeInvokeBKM(BeforeInvokeBKMEvent event) {
-            Map<String, Object> pMap = DMNEventUtils.extractParameters(event);
+            Map<String, Object> pMap = DMNEventUtils.extractBKMParameters(event);
             invParams.add(pMap);
         }
 
