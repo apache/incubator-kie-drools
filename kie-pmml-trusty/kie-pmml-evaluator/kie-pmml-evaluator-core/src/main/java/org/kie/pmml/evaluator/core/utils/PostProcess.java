@@ -136,8 +136,7 @@ public class PostProcess {
             final Map<String, Double> sortedByValue
                     = model.getOutputFieldsMap().entrySet()
                     .stream()
-                    .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0) // TODO: //
-                    // check removal of negative values
+                    .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
                     .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
                     .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
