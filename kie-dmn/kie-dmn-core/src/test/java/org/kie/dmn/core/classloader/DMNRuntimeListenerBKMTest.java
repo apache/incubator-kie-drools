@@ -18,8 +18,9 @@ package org.kie.dmn.core.classloader;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
@@ -30,6 +31,7 @@ import org.kie.dmn.api.core.event.AfterInvokeBKMEvent;
 import org.kie.dmn.api.core.event.BeforeInvokeBKMEvent;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.api.event.DefaultDMNRuntimeEventListener;
+import org.kie.dmn.core.impl.DMNEventUtils;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,11 +47,12 @@ public class DMNRuntimeListenerBKMTest {
 
     public static class BKMListener extends DefaultDMNRuntimeEventListener {
 
-        private List<List<Object>> invParams = new ArrayList<>();
+        private List<Map<String, Object>> invParams = new ArrayList<>();
         private List<Object> invResults = new ArrayList<>();
         @Override
         public void beforeInvokeBKM(BeforeInvokeBKMEvent event) {
-            invParams.add(event.getInvocationParameters());
+            Map<String, Object> pMap = DMNEventUtils.extractParameters(event);
+            invParams.add(pMap);
         }
 
         @Override
@@ -57,7 +60,7 @@ public class DMNRuntimeListenerBKMTest {
             invResults.add(event.getInvocationResult());
         }
 
-        public List<List<Object>> getInvParams() {
+        public List<Map<String, Object>> getInvParams() {
             return invParams;
         }
 
@@ -86,7 +89,10 @@ public class DMNRuntimeListenerBKMTest {
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("Decision-1").getResult()).isEqualTo(new BigDecimal(3));
 
-        assertThat(listenerUT.getInvParams()).hasSize(1).contains(Arrays.asList(new BigDecimal(1), new BigDecimal(2)));
+        Map<String, Object> expectedParameters = new LinkedHashMap<String, Object>();
+        expectedParameters.put("p1", new BigDecimal(1));
+        expectedParameters.put("p2", new BigDecimal(2));
+        assertThat(listenerUT.getInvParams()).hasSize(1).contains(expectedParameters);
         assertThat(listenerUT.getInvResults()).hasSize(1).contains(new BigDecimal(3));
     }
 }
