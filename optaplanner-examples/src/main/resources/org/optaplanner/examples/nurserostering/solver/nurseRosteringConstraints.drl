@@ -91,9 +91,6 @@ rule "Minimum and maximum number of assignments"
         } else if ($contractLine.isMaximumEnabled() && totalInt > $contractLine.getMaximumValue()) {
             scoreHolder.addSoftConstraintMatch(kcontext,
                     ($contractLine.getMaximumValue() - totalInt) * $contractLine.getMaximumWeight());
-        } else {
-            // Workaround for https://issues.redhat.com/browse/PLANNER-761
-            scoreHolder.addSoftConstraintMatch(kcontext, 0);
         }
 end
 

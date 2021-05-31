@@ -2111,5 +2111,4 @@ public final class ConstraintCollectors {
 
     private ConstraintCollectors() {
     }
-
 }

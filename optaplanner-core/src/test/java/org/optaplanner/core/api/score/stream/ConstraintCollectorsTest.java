@@ -2553,16 +2553,16 @@ public class ConstraintCollectorsTest {
         assertResult(collector, container, emptySortedMap());
     }
 
-    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
-            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
-            C valueC, D valueD) {
-        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
-    }
-
     private static <A, B, C, Container_, Result_> Runnable accumulate(
             TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
             C valueC) {
         return collector.accumulator().apply((Container_) container, valueA, valueB, valueC);
+    }
+
+    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
+            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
+            C valueC, D valueD) {
+        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
     }
 
     private static <A, B, Container_, Result_> Runnable accumulate(
