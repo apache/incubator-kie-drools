@@ -71,7 +71,7 @@ class CacheProcessInstancesIT {
                 .password("admin")
                 .realm("default")
                 .serverName("infinispan")
-                .saslMechanism("DIGEST-MD5")
+                .saslMechanism("PLAIN")
                 .clientIntelligence(ClientIntelligence.BASIC);
 
         cacheManager = new RemoteCacheManager(builder.build());

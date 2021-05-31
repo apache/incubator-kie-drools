@@ -18,22 +18,24 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>@version.org.springframework.boot@</version>
-    </parent>
-    
     <groupId>org.kie.kogito</groupId>
     <artifactId>integration-tests-springboot-kakfa-it</artifactId>
     <version>@project.version@</version>
 
     <properties>
         <java.version>@maven.compiler.release@</java.version>
+        <version.org.infinispan>@version.org.infinispan@</version.org.infinispan>
     </properties>
     
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.infinispan</groupId>
+                <artifactId>infinispan-bom</artifactId>
+                <version>${version.org.infinispan}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
@@ -70,6 +72,18 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.infinispan</groupId>
+            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.infinispan</groupId>
+                    <artifactId>infinispan-server-testdriver-junit5</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <dependency>
@@ -113,6 +127,13 @@
     <build>
         <finalName>${project.artifactId}</finalName>
         <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>@version.compiler.plugin@</version>
+                <configuration>
+                    <release>@maven.compiler.release@</release>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-maven-plugin</artifactId>
