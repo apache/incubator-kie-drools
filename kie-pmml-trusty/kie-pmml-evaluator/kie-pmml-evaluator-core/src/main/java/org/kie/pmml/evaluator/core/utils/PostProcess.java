@@ -15,10 +15,14 @@
  */
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,12 +50,12 @@ public class PostProcess {
 
     private static final Logger logger = LoggerFactory.getLogger(PostProcess.class);
 
-      
     private PostProcess() {
         // Avoid instantiation
     }
 
-    public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model, final List<KiePMMLNameValue> kiePMMLNameValues ) {
+    public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model,
+                                   final List<KiePMMLNameValue> kiePMMLNameValues) {
         executeTargets(toReturn, model);
         updateTargetValueType(model, toReturn);
         populateOutputFields(model, toReturn, kiePMMLNameValues);
@@ -101,8 +105,6 @@ public class PostProcess {
         }
     }
 
-
-
     /**
      * Populated the <code>PMML4Result</code> with <code>OutputField</code> results
      * @param model
@@ -110,7 +112,7 @@ public class PostProcess {
      * @param kiePMMLNameValues
      */
     static void populateOutputFields(final KiePMMLModel model, final PMML4Result toUpdate,
-                              final List<KiePMMLNameValue> kiePMMLNameValues) {
+                                     final List<KiePMMLNameValue> kiePMMLNameValues) {
         logger.debug("populateOutputFields {} {} {}", model, toUpdate, kiePMMLNameValues);
         final Map<RESULT_FEATURE, List<KiePMMLOutputField>> outputFieldsByFeature = model.getKiePMMLOutputFields()
                 .stream()
@@ -129,12 +131,26 @@ public class PostProcess {
                                                                            model,
                                                                            kiePMMLNameValues));
         }
+        List<KiePMMLOutputField> reasonCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.REASON_CODE);
+        if (reasonCodeOutputFields != null) {
+            final Map<String, Double> sortedByValue
+                    = model.getOutputFieldsMap().entrySet()
+                    .stream()
+                    .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
+                    .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
+                    .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                                              LinkedHashMap::new));
+            final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
+            reasonCodeOutputFields
+                    .forEach(outputField -> populateReasonCodeOutputField(outputField, toUpdate, orderedReasonCodes));
+        }
     }
 
     static void populatePredictedOutputField(final KiePMMLOutputField outputField,
-                                      final PMML4Result toUpdate,
-                                      final KiePMMLModel model,
-                                      final List<KiePMMLNameValue> kiePMMLNameValues) {
+                                             final PMML4Result toUpdate,
+                                             final KiePMMLModel model,
+                                             final List<KiePMMLNameValue> kiePMMLNameValues) {
         logger.debug("populatePredictedOutputField {} {} {} {}", outputField, toUpdate, model, kiePMMLNameValues);
         if (!RESULT_FEATURE.PREDICTED_VALUE.equals(outputField.getResultFeature())) {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
@@ -152,9 +168,9 @@ public class PostProcess {
     }
 
     static void populateTransformedOutputField(final KiePMMLOutputField outputField,
-                                        final PMML4Result toUpdate,
-                                        final KiePMMLModel model,
-                                        final List<KiePMMLNameValue> kiePMMLNameValues) {
+                                               final PMML4Result toUpdate,
+                                               final KiePMMLModel model,
+                                               final List<KiePMMLNameValue> kiePMMLNameValues) {
         logger.debug("populateTransformedOutputField {} {} {} {}", outputField, toUpdate, model, kiePMMLNameValues);
         if (!RESULT_FEATURE.TRANSFORMED_VALUE.equals(outputField.getResultFeature())) {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
@@ -168,9 +184,27 @@ public class PostProcess {
         variableValue.ifPresent(objValue -> toUpdate.addResultVariable(variableName, objValue));
     }
 
-     static Optional<Object> getValueFromKiePMMLExpression(final KiePMMLExpression kiePMMLExpression,
-                                                   final KiePMMLModel model,
-                                                   final List<KiePMMLNameValue> kiePMMLNameValues) {
+    static void populateReasonCodeOutputField(final KiePMMLOutputField outputField,
+                                              final PMML4Result toUpdate,
+                                              final List<String> orderedReasonCodes) {
+        logger.debug("populateReasonCodeOutputField {} {} {}", outputField, toUpdate, orderedReasonCodes);
+        if (!RESULT_FEATURE.REASON_CODE.equals(outputField.getResultFeature())) {
+            throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
+        }
+        if (outputField.getRank() != null) {
+            int index = outputField.getRank() - 1;
+            String resultCode = null;
+            String resultVariableName = outputField.getName();
+            if (index < orderedReasonCodes.size()) {
+                resultCode = orderedReasonCodes.get(index);
+            }
+            toUpdate.updateResultVariable(resultVariableName, resultCode);
+        }
+    }
+
+    static Optional<Object> getValueFromKiePMMLExpression(final KiePMMLExpression kiePMMLExpression,
+                                                          final KiePMMLModel model,
+                                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
         String expressionType = kiePMMLExpression.getClass().getSimpleName();
         Optional<Object> toReturn = Optional.empty();
         switch (expressionType) {
@@ -204,8 +238,8 @@ public class PostProcess {
     }
 
     static Optional<Object> getValueFromKiePMMLApplyFunction(final KiePMMLApply kiePMMLApply,
-                                                              final KiePMMLModel model,
-                                                              final List<KiePMMLNameValue> kiePMMLNameValues) {
+                                                             final KiePMMLModel model,
+                                                             final List<KiePMMLNameValue> kiePMMLNameValues) {
         Optional<Object> optionalObjectParameter = Optional.empty();
         if (kiePMMLApply.getKiePMMLExpressions() != null && !kiePMMLApply.getKiePMMLExpressions().isEmpty()) {
             optionalObjectParameter = getValueFromKiePMMLExpression(kiePMMLApply.getKiePMMLExpressions().get(0),
@@ -218,7 +252,8 @@ public class PostProcess {
                                                       optionalObjectParameter.orElse(null));
     }
 
-    static Optional<Object> getValueFromFunctionsMapByFunctionName(final Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap,
+    static Optional<Object> getValueFromFunctionsMapByFunctionName(final Map<String,
+            BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap,
                                                                    final String functionName,
                                                                    final List<KiePMMLNameValue> kiePMMLNameValues,
                                                                    final Object objectParameter) {
@@ -258,7 +293,7 @@ public class PostProcess {
                 .findFirst();
         Optional<Object> variableValue = Optional.empty();
         if (found.isPresent()) {
-            KiePMMLOutputField  outputField = found.get();
+            KiePMMLOutputField outputField = found.get();
             if (outputField.getKiePMMLExpression() != null) {
                 final KiePMMLExpression kiePMMLExpression = outputField.getKiePMMLExpression();
                 variableValue = getValueFromKiePMMLExpression(kiePMMLExpression, model, kiePMMLNameValues);
@@ -268,12 +303,11 @@ public class PostProcess {
     }
 
     static Optional<Object> getValueFromPMMLResultByVariableName(final String variableName,
-                                                                  final PMML4Result pmml4Result) {
+                                                                 final PMML4Result pmml4Result) {
         return Optional.ofNullable(pmml4Result.getResultVariables().get(variableName));
     }
 
     static Optional<Object> getMissingValueFromKiePMMLFieldRefMapMissingTo(final KiePMMLFieldRef kiePMMLFieldRef) {
         return Optional.ofNullable(kiePMMLFieldRef.getMapMissingTo());
     }
-
 }

@@ -243,4 +243,68 @@ public class BasicGraphTest extends AbstractGraphTest {
 
         generatePng(graph);
     }
+
+    @Test
+    public void testInsertRelation() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  String(this == \"Start\")\n" +
+                     "then\n" +
+                     "  Person p = new Person();\n" +
+                     "  p.setName(\"John\");\n" +
+                     "  insert(p);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(name == \"John\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $p : Person(name == \"Paul\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertNoNodeLink(graph, "mypkg.R1", "mypkg.R3");
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testInsertRelationNot() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  String(this == \"Start\")\n" +
+                     "then\n" +
+                     "  Person p = new Person();\n" +
+                     "  p.setName(\"John\");\n" +
+                     "  insert(p);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  not( Person(name == \"John\") )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  not( Person(name == \"Paul\") )\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertNoNodeLink(graph, "mypkg.R1", "mypkg.R3");
+
+        generatePng(graph);
+    }
 }

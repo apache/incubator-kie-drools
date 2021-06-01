@@ -1,0 +1,60 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="categorical" dataType="string"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <Scorecard modelName="CompoundNestedPredicateScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="-15" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+    </Output>
+    <Characteristics>
+      <Characteristic name="characteristic1Score" baselineScore="21.8" reasonCode="characteristic1ReasonCode">
+        <Attribute partialScore="-10.5">
+          <CompoundPredicate booleanOperator="and">
+            <CompoundPredicate booleanOperator="and">
+              <True/>
+              <SimplePredicate field="input1" operator="greaterThan" value="-15"/>
+              <SimplePredicate field="input1" operator="lessOrEqual" value="25.4"/>
+            </CompoundPredicate>
+            <SimplePredicate field="input2" operator="notEqual" value="classA"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="25">
+          <True/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="characteristic2Score" baselineScore="11" reasonCode="characteristic2ReasonCode">
+        <Attribute partialScore="-18">
+          <CompoundPredicate booleanOperator="or">
+            <SimplePredicate field="input1" operator="lessOrEqual" value="-20"/>
+            <SimplePredicate field="input2" operator="equal" value="classA"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="10">
+          <CompoundPredicate booleanOperator="or">
+            <CompoundPredicate booleanOperator="and">
+              <CompoundPredicate booleanOperator="and">
+                <SimplePredicate field="input1" operator="greaterOrEqual" value="5"/>
+                <SimplePredicate field="input1" operator="lessThan" value="12"/>
+              </CompoundPredicate>
+              <SimplePredicate field="input2" operator="equal" value="classB"/>
+            </CompoundPredicate>
+            <SimplePredicate field="input2" operator="equal" value="classC"/>
+          </CompoundPredicate>
+        </Attribute>
+        <Attribute partialScore="100.5">
+          <True/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>

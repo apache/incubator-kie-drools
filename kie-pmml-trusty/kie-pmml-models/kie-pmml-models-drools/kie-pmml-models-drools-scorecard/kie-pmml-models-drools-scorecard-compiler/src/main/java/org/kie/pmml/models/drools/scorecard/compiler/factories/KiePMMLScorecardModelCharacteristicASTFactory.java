@@ -32,7 +32,7 @@ import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLPredicateASTFactory;
 import org.kie.pmml.models.drools.ast.factories.PredicateASTFactoryData;
-import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
 import org.slf4j.Logger;

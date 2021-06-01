@@ -27,6 +27,8 @@ import org.drools.impact.analysis.model.left.Constraint;
 import org.drools.impact.analysis.model.left.LeftHandSide;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
+import org.drools.impact.analysis.model.right.InsertAction;
+import org.drools.impact.analysis.model.right.InsertedProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
 import org.drools.impact.analysis.model.right.RightHandSide;
@@ -91,7 +93,7 @@ public class ModelToGraphConverter {
                 for (ConsequenceAction action : actions) {
                     switch (action.getType()) {
                         case INSERT:
-                            processInsert(graphAnalysis, pkgName, ruleName, action);
+                            processInsert(graphAnalysis, pkgName, ruleName, (InsertAction) action);
                             break;
                         case DELETE:
                             processDelete(graphAnalysis, pkgName, ruleName, action);
@@ -105,11 +107,69 @@ public class ModelToGraphConverter {
         }
     }
 
-    private void processInsert(GraphAnalysis graphAnalysis, String pkgName, String ruleName, ConsequenceAction action) {
-        Class<?> insertedClass = action.getActionClass();
-        // all rules which react to the fact
+    private void processInsert(GraphAnalysis graphAnalysis, String pkgName, String ruleName, InsertAction action) {
+
         Node source = graphAnalysis.getNode(fqdn(pkgName, ruleName));
-        for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(insertedClass)) {
+
+        Class<?> insertedClass = action.getActionClass();
+        if (!graphAnalysis.isRegisteredClass(insertedClass)) {
+            // Not likely happen but not invalid
+            logger.warn("Not found " + insertedClass + " in reactiveMap");
+            return;
+        }
+
+        // property based link
+        List<InsertedProperty> insertedProperties = action.getInsertedProperties();
+        for (InsertedProperty insertedProperty : insertedProperties) {
+            String property = insertedProperty.getProperty();
+            for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveTo(insertedClass, property)) {
+                List<Pattern> patterns = reactedRule.getRule().getLhs().getPatterns().stream()
+                                                    .filter(pattern -> pattern.getPatternClass() == insertedClass)
+                                                    .collect(Collectors.toList());
+                for (Pattern pattern : patterns) {
+                    List<Constraint> constraints = pattern.getConstraints().stream()
+                                                          .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
+                                                          .collect(Collectors.toList());
+                    ReactivityType combinedLinkType = ReactivityType.UNKNOWN;
+                    if (constraints.size() == 0) {
+                        // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
+                        combinedLinkType = ReactivityType.UNKNOWN;
+                    } else {
+                        // If constraints contain at least one POSITIVE, we consider it's POSITIVE.
+                        for (Constraint constraint : constraints) {
+                            ReactivityType linkType = linkType(constraint, insertedProperty);
+                            if (linkType == ReactivityType.POSITIVE) {
+                                combinedLinkType = ReactivityType.POSITIVE;
+                                break;
+                            } else if (linkType == ReactivityType.NEGATIVE) {
+                                combinedLinkType = ReactivityType.NEGATIVE; // NEGATIVE is stronger than UNKNOWN (but may be configurable)
+                            } else if (combinedLinkType == ReactivityType.NEGATIVE && linkType == ReactivityType.UNKNOWN) {
+                                // Don't overwrite with UNKNOWN
+                            } else {
+                                combinedLinkType = linkType; // UNKNOWN
+                            }
+                        }
+                    }
+
+                    if (combinedLinkType == ReactivityType.NEGATIVE) {
+                        // NEGATIVE insert means nothing. Just no link.
+                        // TODO: handle "exists" case
+                        continue;
+                    }
+
+                    if (combinedLinkType == ReactivityType.POSITIVE && !pattern.isPositive()) {
+                        // POSITIVE insert in not() means NEGATIVE
+                        combinedLinkType = combinedLinkType.negate();
+                    }
+
+                    Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
+                    linkNodesIfExpected(source, target, combinedLinkType);
+                }
+            }
+        }
+
+        // class based link
+        for (AnalyzedRule reactedRule : graphAnalysis.getRulesReactiveToWithoutProperty(insertedClass)) {
             Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
             linkNodesIfExpected(source, target, reactedRule.getReactivityType());
         }

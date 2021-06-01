@@ -28,8 +28,11 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.util.ClassUtils;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
+import org.drools.impact.analysis.model.right.InsertAction;
+import org.drools.impact.analysis.model.right.InsertedProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
 import org.drools.modelcompiler.builder.generator.Consequence;
@@ -37,6 +40,7 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.impact.analysis.parser.impl.ParserUtil.isLiteral;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalType;
 
@@ -64,6 +68,9 @@ public class RhsParser {
         if (type == null) {
             return null;
         }
+        if (type == ConsequenceAction.Type.INSERT) {
+            return processInsert(context, consequenceExpr, statement, ruleVariablesBlock);
+        }
         if (type == ConsequenceAction.Type.MODIFY) {
             return processModify(context, consequenceExpr, statement, ruleVariablesBlock);
         }
@@ -71,21 +78,26 @@ public class RhsParser {
     }
 
     private ConsequenceAction processAction( RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement, ConsequenceAction.Type type ) {
-        Expression actionArg = statement.getArgument( 0 );
+        Class<?> actionClass = getActionClass(context, consequenceExpr, statement);
+        return new ConsequenceAction(type, actionClass);
+    }
+
+    private Class<?> getActionClass(RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement) {
+        Expression actionArg = statement.getArgument(0);
         Class<?> actionClass = null;
         if (actionArg.isNameExpr()) {
-            actionClass = context.getDeclarationById( actionArg.toString() ).map( DeclarationSpec::getDeclarationClass )
-                    .orElseGet( () -> getClassFromAssignment( consequenceExpr, actionArg ) );
+            actionClass = context.getDeclarationById(actionArg.toString()).map(DeclarationSpec::getDeclarationClass)
+                    .orElseGet(() -> getClassFromAssignment(consequenceExpr, actionArg));
         } else if (actionArg.isLiteralExpr()) {
             actionClass = literalType(actionArg.asLiteralExpr());
         } else if (actionArg.isObjectCreationExpr()) {
             try {
-                actionClass = pkgRegistry.getTypeResolver().resolveType( actionArg.asObjectCreationExpr().getType().asString() );
+                actionClass = pkgRegistry.getTypeResolver().resolveType(actionArg.asObjectCreationExpr().getType().asString());
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException( e );
+                throw new RuntimeException(e);
             }
         }
-        return new ConsequenceAction(type, actionClass);
+        return actionClass;
     }
 
     private Class<?> getClassFromAssignment( MethodCallExpr consequenceExpr, Expression actionArg ) {
@@ -114,6 +126,36 @@ public class RhsParser {
                 .map( objCreat -> objCreat.getType().getNameAsString() )
                 .findFirst()
                 .orElseThrow( () -> new RuntimeException("Unknown variable: " + actionArg) );
+    }
+
+    private InsertAction processInsert( RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement, BlockStmt ruleVariablesBlock ) {
+        Class<?> actionClass = getActionClass(context, consequenceExpr, statement);
+        InsertAction action = new InsertAction(actionClass);
+        Expression insertedArgument = statement.getArgument(0);
+        String insertedId = insertedArgument.toString();
+
+        // Process setters
+        List<MethodCallExpr> insertedExprs = consequenceExpr.findAll(MethodCallExpr.class).stream()
+                .filter(m -> m.getScope().map(s -> s.toString().equals(insertedId) || s.toString().equals("(" + insertedId + ")")).orElse(false))
+                .collect(Collectors.toList());
+        for (MethodCallExpr expr : insertedExprs) {
+            String methodName = expr.getNameAsString();
+            String property = ClassUtils.setter2property(methodName);
+            if (property != null) {
+                Object value = null;
+                Expression argument = expr.getArgument(0);
+                if (argument.isLiteralExpr()) {
+                    value = literalToValue(argument.asLiteralExpr());
+                }
+                action.addInsertedProperty(new InsertedProperty(property, value));
+            }
+        }
+
+        // Process literal insert
+        if (isLiteral(actionClass) && insertedArgument.isLiteralExpr()) {
+            action.addInsertedProperty(new InsertedProperty("this", literalToValue(insertedArgument.asLiteralExpr())));
+        }
+        return action;
     }
 
     private ModifyAction processModify( RuleContext context, MethodCallExpr consequenceExpr, MethodCallExpr statement, BlockStmt ruleVariablesBlock ) {

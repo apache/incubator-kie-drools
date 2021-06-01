@@ -199,8 +199,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     public static MethodDeclaration getExpressionMethodDeclarationWithStringObjectMap(final Expression expression,
-                                                                                      final DataType dataType,
-                                                                                      final String methodName) {
+                                                                                        final DataType dataType,
+                                                                                        final String methodName) {
         final ClassOrInterfaceType returnedType = parseClassOrInterfaceType(getBoxedClassName(dataType));
         if (expression instanceof Aggregate) {
             return getAggregatedExpressionMethodDeclaration(methodName, (Aggregate) expression, returnedType,
@@ -314,7 +314,7 @@ public class ExpressionFunctionUtils {
                                                                                   final Apply apply,
                                                                                   final ClassOrInterfaceType returnedType,
                                                                                   final LinkedHashMap<String,
-                                                                                          ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                                ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = APPLY_VARIABLE;
         BlockStmt body = getApplyExpressionBlockStmtWithKiePMMLValues(variableName, apply, returnedType,
                                                                       parameterNameTypeMap);
@@ -340,8 +340,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getApplyExpressionMethodDeclarationStringObjectMap(final String methodName,
-                                                                                final Apply apply,
-                                                                                final ClassOrInterfaceType returnedType) {
+                                                                                  final Apply apply,
+                                                                                  final ClassOrInterfaceType returnedType) {
         String variableName = APPLY_VARIABLE;
         BlockStmt body = getApplyExpressionBlockStmtWithStringObjectMap(variableName, apply, returnedType);
         return getExpressionMethodDeclarationWithStringObjectMap(methodName, variableName, body, returnedType);
@@ -368,10 +368,10 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getConstantExpressionMethodDeclaration(final String methodName,
-                                                                    final Constant constant,
-                                                                    final ClassOrInterfaceType returnedType,
-                                                                    final LinkedHashMap<String,
-                                                                            ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                           final Constant constant,
+                                                                           final ClassOrInterfaceType returnedType,
+                                                                           final LinkedHashMap<String,
+                                                                                   ClassOrInterfaceType> parameterNameTypeMap) {
 
         final BlockStmt body = getConstantExpressionBlockStmt(CONSTANT_VALUE, constant, returnedType);
         return getExpressionMethodDeclarationWithKiePMMLValues(methodName, CONSTANT_VALUE, body, returnedType, parameterNameTypeMap);
@@ -396,7 +396,7 @@ public class ExpressionFunctionUtils {
                                                                                      final FieldRef fieldRef,
                                                                                      final ClassOrInterfaceType returnedType,
                                                                                      final LinkedHashMap<String,
-                                                                                             ClassOrInterfaceType> parameterNameTypeMap) {
+                                                                                   ClassOrInterfaceType> parameterNameTypeMap) {
         String variableName = FIELDREFVARIABLE;
         final BlockStmt body;
         if (parameterNameTypeMap.size() == 1) {
@@ -423,8 +423,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getFieldRefExpressionMethodDeclarationWithStringObjectMap(final String methodName,
-                                                                                       final FieldRef fieldRef,
-                                                                                       final ClassOrInterfaceType returnedType) {
+                                                                                     final FieldRef fieldRef,
+                                                                                     final ClassOrInterfaceType returnedType) {
         String variableName = FIELDREFVARIABLE;
         final BlockStmt body = getFieldRefExpressionBlockStmtWithStringObjectMap(variableName, fieldRef, returnedType);
         return getExpressionMethodDeclarationWithStringObjectMap(methodName, variableName, body, returnedType);
@@ -589,8 +589,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static BlockStmt getExpressionBlockStmtWithStringObjectMap(final String variableName,
-                                                               final Expression expression,
-                                                               final ClassOrInterfaceType returnedType) {
+                                                             final Expression expression,
+                                                             final ClassOrInterfaceType returnedType) {
         if (expression instanceof Aggregate) {
             return getAggregatedExpressionBlockStmt(variableName, (Aggregate) expression, returnedType,
                                                     null);
@@ -712,8 +712,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static BlockStmt getApplyExpressionBlockStmtWithStringObjectMap(final String variableName,
-                                                                    final Apply apply,
-                                                                    final ClassOrInterfaceType returnedType) {
+                                                                  final Apply apply,
+                                                                  final ClassOrInterfaceType returnedType) {
         final BlockStmt toReturn = new BlockStmt();
         List<String> innerVariables = new ArrayList<>();
         final ClassOrInterfaceType objectReturnedType = parseClassOrInterfaceType(Object.class.getName());
@@ -912,8 +912,8 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static BlockStmt getFieldRefExpressionBlockStmtWithStringObjectMap(final String variableName,
-                                                                       final FieldRef fieldRef,
-                                                                       final ClassOrInterfaceType returnedType) {
+                                                                     final FieldRef fieldRef,
+                                                                     final ClassOrInterfaceType returnedType) {
         final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
                 .getMethodsByName(FIELDREFEXPRESSIONFROMSTRINGOBJECTMAPTEMPLATE)
                 .get(0)
@@ -1145,9 +1145,9 @@ public class ExpressionFunctionUtils {
      * @return
      */
     static MethodDeclaration getExpressionMethodDeclarationWithStringObjectMap(final String methodName,
-                                                                               final String variableName,
-                                                                               final BlockStmt body,
-                                                                               final ClassOrInterfaceType returnedType) {
+                                                                             final String variableName,
+                                                                             final BlockStmt body,
+                                                                             final ClassOrInterfaceType returnedType) {
         final MethodDeclaration toReturn =
                 EXPRESSION_TEMPLATE.getMethodsByName(METHODDECLARATIONSTRINGOBJECTMAPTEMPLATE).get(0).clone();
         final ReturnStmt returnStmt = toReturn.getBody()
