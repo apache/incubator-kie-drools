@@ -26,6 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.BodyDeclaration;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -61,6 +62,7 @@ import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
@@ -162,6 +164,50 @@ public class CommonCodegenUtilsTest {
                 return entry.getValue().getName().asString().equals(methodReferenceExpr.getIdentifier());
             }).count();
             assertEquals(1, matchingDeclarations);
+        }
+    }
+
+    @Test
+    public void addMapPopulationExpression() {
+        Map<String, Expression> inputMap = new HashMap<>();
+        inputMap.put("one", new StringLiteralExpr("ONE"));
+        inputMap.put("two", new IntegerLiteralExpr("2"));
+        inputMap.put("three", new DoubleLiteralExpr("3.0"));
+
+        BlockStmt inputBody = new BlockStmt();
+
+        String inputMapName = "testMap";
+
+        CommonCodegenUtils.addMapPopulationExpressions(inputMap, inputBody, inputMapName);
+
+        NodeList<Statement> statements = inputBody.getStatements();
+        assertEquals(inputMap.size(), statements.size());
+
+        for (Statement statement : statements) {
+            assertTrue(statement instanceof ExpressionStmt);
+            Expression expression = ((ExpressionStmt) statement).getExpression();
+            assertTrue(expression instanceof  MethodCallExpr);
+            MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
+            assertEquals(inputMapName, methodCallExpr.getScope().map(Node::toString).orElse(null));
+            assertEquals("put", methodCallExpr.getName().asString());
+            assertSame(2, methodCallExpr.getArguments().size());
+            assertTrue(methodCallExpr.getArgument(0) instanceof StringLiteralExpr);
+        }
+
+        List<MethodCallExpr> methodCallExprs = statements.stream()
+                .map(ExpressionStmt.class::cast)
+                .map(ExpressionStmt::getExpression)
+                .map(MethodCallExpr.class::cast)
+                .collect(Collectors.toList());
+
+        for (Map.Entry<String, Expression> inputEntry : inputMap.entrySet()) {
+            assertEquals("Expected one and only one statement for key \"" + inputEntry.getKey() + "\"", 1,
+                    methodCallExprs.stream().filter(methodCallExpr -> {
+                        StringLiteralExpr arg0 = (StringLiteralExpr) methodCallExpr.getArgument(0);
+                        return arg0.asString().equals(inputEntry.getKey())
+                                && methodCallExpr.getArgument(1).equals(inputEntry.getValue());
+                    }).count()
+            );
         }
     }
 
