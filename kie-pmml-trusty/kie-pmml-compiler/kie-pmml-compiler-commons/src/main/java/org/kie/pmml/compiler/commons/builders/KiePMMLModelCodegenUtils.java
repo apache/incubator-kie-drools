@@ -100,7 +100,7 @@ public class KiePMMLModelCodegenUtils {
         addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
     }
 
-    private static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(DataDictionary dataDictionary, Model pmmlModel) {
+    static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(DataDictionary dataDictionary, Model pmmlModel) {
         Map<String, DATA_TYPE> dataTypeMap = dataDictionary.getDataFields().stream()
                 .collect(Collectors.toMap(i -> i.getName().getValue(), i -> DATA_TYPE.byName(i.getDataType().value())));
         return pmmlModel.getMiningSchema().getMiningFields().stream()
