@@ -731,6 +731,9 @@ public class CommonCodegenUtils {
      * @return the new {@link Expression}
      */
     public static Expression literalExprFrom(DATA_TYPE type, String value) {
+        if (type == null) {
+            throw new IllegalArgumentException("Invalid \"null\" data type");
+        }
         if (value == null) {
             return new NullLiteralExpr();
         }

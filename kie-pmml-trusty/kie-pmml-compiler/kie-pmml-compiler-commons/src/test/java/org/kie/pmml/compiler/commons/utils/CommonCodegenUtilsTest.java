@@ -38,6 +38,7 @@ import com.github.javaparser.ast.expr.BooleanLiteralExpr;
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -54,6 +55,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.junit.Test;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -63,10 +65,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.LAMBDA_PARAMETER_NAME;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.OPTIONAL_FILTERED_KIEPMMLNAMEVALUE_NAME;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 
 public class CommonCodegenUtilsTest {
 
@@ -505,6 +509,67 @@ public class CommonCodegenUtilsTest {
         retrieved = CommonCodegenUtils.getNameExprsFromBlock(toRead, "value");
         assertNotNull(retrieved);
         assertEquals(2, retrieved.size());
+    }
+
+    @Test
+    public void literalExprFromDataType() {
+        Map<DATA_TYPE, String> inputMap = new HashMap<>();
+        inputMap.put(DATA_TYPE.STRING, "TEST");
+        inputMap.put(DATA_TYPE.INTEGER, "1");
+        inputMap.put(DATA_TYPE.FLOAT, "2.0");
+        inputMap.put(DATA_TYPE.DOUBLE, "3.0");
+        inputMap.put(DATA_TYPE.BOOLEAN, "true");
+        inputMap.put(DATA_TYPE.DATE, "2021-06-01");
+        inputMap.put(DATA_TYPE.TIME, "11:21:31");
+        inputMap.put(DATA_TYPE.DATE_TIME, "2021-06-01T11:21:31");
+        inputMap.put(DATA_TYPE.DATE_DAYS_SINCE_0, "10");
+        inputMap.put(DATA_TYPE.DATE_DAYS_SINCE_1960, "20");
+        inputMap.put(DATA_TYPE.DATE_DAYS_SINCE_1970, "30");
+        inputMap.put(DATA_TYPE.DATE_DAYS_SINCE_1980, "40");
+        inputMap.put(DATA_TYPE.TIME_SECONDS, "50");
+        inputMap.put(DATA_TYPE.DATE_TIME_SECONDS_SINCE_0, "60");
+        inputMap.put(DATA_TYPE.DATE_TIME_SECONDS_SINCE_1960, "70");
+        inputMap.put(DATA_TYPE.DATE_TIME_SECONDS_SINCE_1970, "80");
+        inputMap.put(DATA_TYPE.DATE_TIME_SECONDS_SINCE_1980, "90");
+
+        for (Map.Entry<DATA_TYPE, String> input : inputMap.entrySet()) {
+            assertTrue(literalExprFrom(input.getKey(), null) instanceof NullLiteralExpr);
+
+            Expression output = literalExprFrom(input.getKey(), input.getValue());
+            switch (input.getKey()) {
+                case STRING:
+                    assertTrue(output instanceof StringLiteralExpr);
+                    break;
+                case INTEGER:
+                    assertTrue(output instanceof IntegerLiteralExpr);
+                    break;
+                case DOUBLE:
+                case FLOAT:
+                    assertTrue(output instanceof DoubleLiteralExpr);
+                    break;
+                case BOOLEAN:
+                    assertTrue(output instanceof BooleanLiteralExpr);
+                    break;
+                case DATE:
+                case TIME:
+                case DATE_TIME:
+                    assertTrue(output instanceof MethodCallExpr);
+                    break;
+                case DATE_DAYS_SINCE_0:
+                case DATE_DAYS_SINCE_1960:
+                case DATE_DAYS_SINCE_1970:
+                case DATE_DAYS_SINCE_1980:
+                case TIME_SECONDS:
+                case DATE_TIME_SECONDS_SINCE_0:
+                case DATE_TIME_SECONDS_SINCE_1960:
+                case DATE_TIME_SECONDS_SINCE_1970:
+                case DATE_TIME_SECONDS_SINCE_1980:
+                    assertTrue(output instanceof LongLiteralExpr);
+            }
+        }
+
+        assertThrows(IllegalArgumentException.class, () -> literalExprFrom(null, null));
+        assertThrows(IllegalArgumentException.class, () -> literalExprFrom(null, "test"));
     }
 
     @Test
