@@ -47,7 +47,7 @@ import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsRule;
 import org.kie.pmml.models.drools.ast.KiePMMLFieldOperatorValue;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
-import org.kie.pmml.models.drools.scorecard.model.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
 import org.kie.pmml.models.drools.tuples.KiePMMLOperatorValue;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import org.kie.pmml.models.drools.tuples.KiePMMLReasonCodeAndValue;
