@@ -242,25 +242,6 @@ public class Person extends AbstractReactiveObject {
         this.birthDay = birthDay;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
-        Person person = (Person) o;
-        return age == person.age && name.equals(person.name);
-
-    }
-
-    @Override
-    public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
-        result = 31 * result + age;
-        return result;
-    }
-
     public static int sumAges(Person p1, Person p2) {
         return p1.getAge() + p2.getAge();
     }

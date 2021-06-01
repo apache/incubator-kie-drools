@@ -39,12 +39,17 @@ public class ModelToGraphConverter {
 
     private static Logger logger = LoggerFactory.getLogger(ModelToGraphConverter.class);
 
-    private boolean positiveOnly = false;
+    private LinkFilter linkFilter = LinkFilter.ALL;
 
     public ModelToGraphConverter() {}
 
+    // will be deprecated
     public ModelToGraphConverter(boolean positiveOnly) {
-        this.positiveOnly = positiveOnly;
+        this.linkFilter = LinkFilter.POSITIVE;
+    }
+
+    public ModelToGraphConverter(LinkFilter linkFilter) {
+        this.linkFilter = linkFilter;
     }
 
     public Graph toGraph(AnalysisModel model) {
@@ -233,9 +238,7 @@ public class ModelToGraphConverter {
     }
 
     private void linkNodesIfExpected(Node source, Node target, ReactivityType type) {
-        if (positiveOnly && type != ReactivityType.POSITIVE) {
-            // don't link
-        } else {
+        if (linkFilter.accept(type)) {
             Node.linkNodes(source, target, type);
         }
     }

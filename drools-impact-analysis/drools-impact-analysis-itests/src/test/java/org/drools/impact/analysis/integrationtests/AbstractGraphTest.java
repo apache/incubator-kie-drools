@@ -18,8 +18,9 @@ package org.drools.impact.analysis.integrationtests;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
@@ -37,8 +38,7 @@ import org.kie.api.runtime.KieSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AbstractGraphTest {
 
@@ -69,37 +69,19 @@ public class AbstractGraphTest {
         generator.generateSvg(graph);
     }
 
-    protected void assertNodeLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType type) {
+    /**
+     * Assert that there are exact links with the types between source node and target node.
+     */
+    protected void assertLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType... expectedTypes) {
         Node source = graph.getNodeMap().get(sourceFqdn);
         Node target = graph.getNodeMap().get(targetFqdn);
-        Optional<Link> optOutgoing = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).filter(l -> l.getReactivityType().equals(type)).findFirst();
-        if (!optOutgoing.isPresent()) {
-            fail("outgoingLink of the type [" + type + "] doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
-        }
-        Link outgoingLink = optOutgoing.get();
-        Optional<Link> optIncoming = target.getIncomingLinks().stream().filter(l -> l.getSource().equals(source)).filter(l -> l.getReactivityType().equals(type)).findFirst();
-        if (!optIncoming.isPresent()) {
-            fail("incomingLink of the type [" + type + "] doesn't exist : source = " + sourceFqdn + ", target = " + targetFqdn);
-        }
-        Link incomingLink = optIncoming.get();
-        if (outgoingLink != incomingLink) {
-            fail("links are not the same : outgoingLink = " + outgoingLink + ", incomingLink = " + incomingLink);
-        }
+        List<Link> outgoingLinks = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).collect(Collectors.toList());
+        List<Link> incomingLinks = target.getIncomingLinks().stream().filter(l -> l.getSource().equals(source)).collect(Collectors.toList());
+        assertThat(outgoingLinks).hasSameElementsAs(incomingLinks);
 
-        assertEquals(type, outgoingLink.getReactivityType());
-    }
-
-    protected void assertNoNodeLink(Graph graph, String sourceFqdn, String targetFqdn) {
-        Node source = graph.getNodeMap().get(sourceFqdn);
-        Node target = graph.getNodeMap().get(targetFqdn);
-        Optional<Link> optOutgoing = source.getOutgoingLinks().stream().filter(l -> l.getTarget().equals(target)).findFirst();
-        if (optOutgoing.isPresent()) {
-            fail("outgoingLink exists : source = " + sourceFqdn + ", target = " + targetFqdn);
-        }
-        Optional<Link> optIncoming = target.getIncomingLinks().stream().filter(l -> l.getSource().equals(source)).findFirst();
-        if (optIncoming.isPresent()) {
-            fail("incomingLink exists : source = " + sourceFqdn + ", target = " + targetFqdn);
-        }
+        List<ReactivityType> outgoingLinkTypelist = outgoingLinks.stream().map(l -> l.getReactivityType()).collect(Collectors.toList());
+        List<ReactivityType> expectedTypeList = Arrays.asList(expectedTypes);
+        assertThat(outgoingLinkTypelist).hasSameElementsAs(expectedTypeList);
     }
 
     /*

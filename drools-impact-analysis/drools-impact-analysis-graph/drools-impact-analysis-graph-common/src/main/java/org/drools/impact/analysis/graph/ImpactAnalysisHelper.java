@@ -25,12 +25,17 @@ import org.drools.impact.analysis.graph.Node.Status;
 
 public class ImpactAnalysisHelper {
 
-    private boolean positiveOnly = false;
+    private LinkFilter linkFilter = LinkFilter.ALL;
 
     public ImpactAnalysisHelper() {}
 
+    // will be deprecated
     public ImpactAnalysisHelper(boolean positiveOnly) {
-        this.positiveOnly = positiveOnly;
+        this.linkFilter = LinkFilter.POSITIVE;
+    }
+
+    public ImpactAnalysisHelper(LinkFilter linkFilter) {
+        this.linkFilter = linkFilter;
     }
 
     /**
@@ -69,7 +74,7 @@ public class ImpactAnalysisHelper {
         changedNode.setStatus(Status.IMPACTED);
         impactedNodes.add(changedNode);
         changedNode.getOutgoingLinks().stream()
-                   .filter(link -> (!positiveOnly || positiveOnly && link.getReactivityType() == ReactivityType.POSITIVE))
+                   .filter(link -> linkFilter.accept(link.getReactivityType()))
                    .map(Link::getTarget)
                    .filter(node -> !impactedNodes.contains(node))
                    .forEach(node -> collectImpactedNodes(node, impactedNodes));

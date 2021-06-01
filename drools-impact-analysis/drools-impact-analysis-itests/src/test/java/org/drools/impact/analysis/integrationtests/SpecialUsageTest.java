@@ -59,7 +59,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -90,7 +90,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
@@ -122,7 +122,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE, ReactivityType.UNKNOWN); // we may not need to have UNKNOWN
 
         generatePng(graph);
     }
@@ -154,7 +154,7 @@ public class SpecialUsageTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
