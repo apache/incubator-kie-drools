@@ -1010,11 +1010,14 @@ public class TimerAndCalendarTest {
                                                                            "org/drools/compiler/integrationtests/test_Timer_With_Not.drl");
         final KieSession ksession = kbase.newKieSession();
         try {
+            System.out.println("+++ First fire ");
             ksession.fireAllRules();
             Thread.sleep(200);
-            ksession.fireAllRules();
-            Thread.sleep(200);
-            ksession.fireAllRules();
+            System.out.println("+++ Waited 200ms, second fire ");
+            ksession.fireAllRules(); // fires insert A
+            Thread.sleep(1000);
+            System.out.println("+++ Waited 400ms, Third fire fire ");
+            ksession.fireAllRules(); // fires Wrap A
             // now check that rule "wrap A" fired once, creating one B
             assertEquals(2, ksession.getFactCount());
         } finally {
