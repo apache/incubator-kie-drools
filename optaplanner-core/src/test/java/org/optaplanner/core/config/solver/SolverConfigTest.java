@@ -54,6 +54,7 @@ import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
+import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution;
 
 public class SolverConfigTest {
 
@@ -174,7 +175,7 @@ public class SolverConfigTest {
         SolverConfig solverConfig = readSolverConfig(TEST_SOLVER_CONFIG_WITHOUT_NAMESPACE);
         Consumer<Class<?>> classVisitor = Mockito.mock(Consumer.class);
         solverConfig.visitReferencedClasses(classVisitor);
-        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataSolution.class);
+        Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataAnnotatedExtendedSolution.class);
         Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataEntity.class);
         Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(TestdataAnnotatedExtendedEntity.class);
         Mockito.verify(classVisitor, Mockito.atLeastOnce()).accept(DummyEasyScoreCalculator.class);

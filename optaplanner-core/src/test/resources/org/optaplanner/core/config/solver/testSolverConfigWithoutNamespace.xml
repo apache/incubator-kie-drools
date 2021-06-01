@@ -2,7 +2,7 @@
 <solver>
   <environmentMode>FULL_ASSERT</environmentMode>
   <moveThreadCount>AUTO</moveThreadCount>
-  <solutionClass>org.optaplanner.core.impl.testdata.domain.TestdataSolution</solutionClass>
+  <solutionClass>org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedSolution</solutionClass>
   <entityClass>org.optaplanner.core.impl.testdata.domain.TestdataEntity</entityClass>
   <entityClass>org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity</entityClass>
   <scoreDirectorFactory>

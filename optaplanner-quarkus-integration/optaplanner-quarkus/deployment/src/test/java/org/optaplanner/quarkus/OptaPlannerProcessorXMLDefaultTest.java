@@ -54,7 +54,7 @@ public class OptaPlannerProcessorXMLDefaultTest {
     public void solverConfigXml_default() {
         assertNotNull(solverConfig);
         assertEquals(TestdataQuarkusSolution.class, solverConfig.getSolutionClass());
-        assertEquals(DomainAccessType.REFLECTION, solverConfig.getDomainAccessType());
+        assertEquals(DomainAccessType.GIZMO, solverConfig.getDomainAccessType());
         assertEquals(Collections.singletonList(TestdataQuarkusEntity.class), solverConfig.getEntityClassList());
         assertEquals(TestdataQuarkusConstraintProvider.class,
                 solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass());

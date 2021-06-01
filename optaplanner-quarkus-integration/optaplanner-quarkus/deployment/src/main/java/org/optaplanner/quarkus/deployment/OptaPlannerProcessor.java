@@ -298,7 +298,7 @@ class OptaPlannerProcessor {
         optaPlannerBuildTimeConfig.solver.daemon.ifPresent(solverConfig::setDaemon);
         optaPlannerBuildTimeConfig.solver.domainAccessType.ifPresent(solverConfig::setDomainAccessType);
         if (solverConfig.getDomainAccessType() == null) {
-            solverConfig.setDomainAccessType(DomainAccessType.REFLECTION);
+            solverConfig.setDomainAccessType(DomainAccessType.GIZMO);
         }
         // Termination properties are set at runtime
     }
