@@ -58,6 +58,7 @@ import '../styles.css';
 import ProcessDetailsPanel from '../ProcessDetailsPanel/ProcessDetailsPanel';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger';
 import ProcessVariables from '../ProcessVariables/ProcessVariables';
+import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -289,7 +290,11 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
         <FlexItem>
           <ProcessDetailsPanel processInstance={data} driver={driver} />
         </FlexItem>
-        {data.milestones.length > 0 && <FlexItem>Milestones</FlexItem>}
+        {data.milestones.length > 0 && (
+          <FlexItem>
+            <ProcessDetailsMilestonesPanel milestones={data.milestones} />
+          </FlexItem>
+        )}
       </Flex>
     );
   };
