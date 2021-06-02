@@ -21,11 +21,13 @@ import {
   BreadcrumbItem
 } from '@patternfly/react-core';
 import PageTitle from '../PageTitle/PageTitle';
+import * as H from 'history';
 
+type pathType = Pick<H.Location, 'pathname' | 'state'>;
 interface PageSectionHeaderProps {
   titleText: string;
   breadcrumbText: string[];
-  breadcrumbPath: string[];
+  breadcrumbPath: Array<pathType | string>;
 }
 const PageSectionHeader: React.FC<PageSectionHeaderProps> = ({
   titleText,

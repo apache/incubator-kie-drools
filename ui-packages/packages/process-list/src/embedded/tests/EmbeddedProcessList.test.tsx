@@ -18,13 +18,24 @@ import React from 'react';
 import { EmbeddedProcessList } from '../EmbeddedProcessList';
 import { MockedProcessListDriver } from './utils/Mocks';
 import { mount } from 'enzyme';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
+import { OrderBy } from '../../api';
 
 describe('EmbeddedProcessList tests', () => {
   it('Snapshot', () => {
     const props = {
       targetOrigin: 'origin',
       envelopePath: 'path',
-      driver: new MockedProcessListDriver()
+      driver: new MockedProcessListDriver(),
+      initialState: {
+        filters: {
+          status: [ProcessInstanceState.Active],
+          businessKey: []
+        },
+        sortBy: {
+          lastUpdate: OrderBy.DESC
+        }
+      }
     };
 
     const wrapper = mount(<EmbeddedProcessList {...props} />);

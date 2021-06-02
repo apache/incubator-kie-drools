@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 export interface ProcessListEnvelopeApi {
-  processList__init(association: Association);
+  processList__init(association: Association, initArgs: ProcessListInitArgs);
 }
 
 export interface ProcessInstanceFilter {
-  status: string[];
+  status: ProcessInstanceState[];
   businessKey?: string[];
 }
 
@@ -40,4 +42,13 @@ export interface SortBy {
 export interface QueryPage {
   offset: number;
   limit: number;
+}
+
+export interface ProcessListState {
+  filters: ProcessInstanceFilter;
+  sortBy: SortBy;
+}
+
+export interface ProcessListInitArgs {
+  initialState: ProcessListState;
 }

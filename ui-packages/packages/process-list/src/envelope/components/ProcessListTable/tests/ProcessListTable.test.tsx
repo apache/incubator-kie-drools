@@ -83,7 +83,9 @@ describe('ProcessListTable test', () => {
   });
   it('loading state', () => {
     const wrapper = getWrapper(
-      <ProcessListTable {...{ ...props, isLoading: true }} />,
+      <ProcessListTable
+        {...{ ...props, isLoading: true, processInstances: [] }}
+      />,
       'ProcessListTable'
     );
     const kogitoSpinner = wrapper.find('KogitoSpinner');

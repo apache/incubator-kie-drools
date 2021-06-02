@@ -2,7 +2,7 @@
 
 exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default values 1`] = `
 <ProcessDetailsContainer
-  processId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+  processInstance={Object {}}
 >
   <ForwardRef
     data-ouia-component-type="process-details-container"
@@ -28,7 +28,7 @@ exports[`WebApp - ProcessDetailsContainer tests Snapshot test with default value
         "rescheduleJob": [Function],
       }
     }
-    processId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
+    processInstance={Object {}}
     targetOrigin="http://localhost"
   >
     <ForwardRef>

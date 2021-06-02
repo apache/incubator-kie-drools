@@ -17,13 +17,13 @@
 import * as React from 'react';
 import { useImperativeHandle, useState } from 'react';
 import { MessageBusClientApi } from '@kogito-tooling/envelope-bus/dist/api';
-import { ProcessListChannelApi } from '../api';
+import { ProcessListChannelApi, ProcessListState } from '../api';
 import ProcessListPage from './components/ProcessListPage/ProcessListPage';
 import ProcessListEnvelopeViewDriver from './ProcessListEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
 
 export interface ProcessListEnvelopeViewApi {
-  initialize: () => void;
+  initialize: (initalState?: ProcessListState) => void;
 }
 interface Props {
   channelApi: MessageBusClientApi<ProcessListChannelApi>;
@@ -37,10 +37,15 @@ export const ProcessListEnvelopeView = React.forwardRef<
     isEnvelopeConnectedToChannel,
     setEnvelopeConnectedToChannel
   ] = useState<boolean>(false);
+  const [processInitialState, setProcessInitialState] = useState<
+    ProcessListState
+  >({} as ProcessListState);
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: () => {
+      initialize: initialState => {
+        setEnvelopeConnectedToChannel(false);
+        setProcessInitialState(initialState);
         setEnvelopeConnectedToChannel(true);
       }
     }),
@@ -52,6 +57,7 @@ export const ProcessListEnvelopeView = React.forwardRef<
       <ProcessListPage
         isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
         driver={new ProcessListEnvelopeViewDriver(props.channelApi)}
+        initialState={processInitialState}
       />
     </React.Fragment>
   );

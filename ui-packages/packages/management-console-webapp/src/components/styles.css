@@ -15,5 +15,6 @@
  */
 
 .kogito-management-console__card-size {
-    height: 100%
+    height: 100%;
+    position: relative;
 }

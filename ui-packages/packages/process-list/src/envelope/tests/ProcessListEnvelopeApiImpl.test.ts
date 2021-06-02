@@ -19,10 +19,15 @@ import {
   MockedProcessListEnvelopeViewApi
 } from './mocks/Mocks';
 import { EnvelopeApiFactoryArgs } from '@kogito-tooling/envelope';
-import { ProcessListChannelApi, ProcessListEnvelopeApi } from '../../api';
+import {
+  OrderBy,
+  ProcessListChannelApi,
+  ProcessListEnvelopeApi
+} from '../../api';
 import { ProcessListEnvelopeApiImpl } from '../ProcessListEnvelopeApiImpl';
 import { ProcessListEnvelopeViewApi } from '../ProcessListEnvelopeView';
 import { ProcessListEnvelopeContext } from '../ProcessListEnvelopeContext';
+import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 
 describe('ProcessListEnvelopeApiImpl tests', () => {
   it('initialize', () => {
@@ -41,10 +46,23 @@ describe('ProcessListEnvelopeApiImpl tests', () => {
 
     const envelopeApi = new ProcessListEnvelopeApiImpl(args);
 
-    envelopeApi.processList__init({
-      envelopeServerId: 'envelopeServerId',
-      origin: 'origin'
-    });
+    envelopeApi.processList__init(
+      {
+        envelopeServerId: 'envelopeServerId',
+        origin: 'origin'
+      },
+      {
+        initialState: {
+          filters: {
+            status: [ProcessInstanceState.Active],
+            businessKey: []
+          },
+          sortBy: {
+            lastUpdate: OrderBy.DESC
+          }
+        }
+      }
+    );
 
     expect(envelopeBusController.associate).toHaveBeenCalledWith(
       'origin',

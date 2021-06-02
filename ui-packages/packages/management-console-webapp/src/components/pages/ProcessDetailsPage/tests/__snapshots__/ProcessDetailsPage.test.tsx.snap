@@ -45,12 +45,17 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
     breadcrumbPath={
       Array [
         "/",
+        Object {
+          "pathname": "/ProcessInstances",
+          "state": Object {},
+        },
       ]
     }
     breadcrumbText={
       Array [
         "Home",
-        "Process Instances",
+        "Processes",
+        undefined,
       ]
     }
     titleText="Process Details"
@@ -97,7 +102,6 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
                 </li>
               </BreadcrumbItem>
               <BreadcrumbItem
-                isActive={true}
                 key=".$1"
                 showDivider={true}
               >
@@ -132,7 +136,64 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
                       </svg>
                     </AngleRightIcon>
                   </span>
-                  Process Instances
+                  <Link
+                    to={
+                      Object {
+                        "pathname": "/ProcessInstances",
+                        "state": Object {},
+                      }
+                    }
+                  >
+                    <LinkAnchor
+                      href="/ProcessInstances"
+                      navigate={[Function]}
+                    >
+                      <a
+                        href="/ProcessInstances"
+                        onClick={[Function]}
+                      >
+                        Processes
+                      </a>
+                    </LinkAnchor>
+                  </Link>
+                </li>
+              </BreadcrumbItem>
+              <BreadcrumbItem
+                isActive={true}
+                key=".$2"
+                showDivider={true}
+              >
+                <li
+                  className="pf-c-breadcrumb__item"
+                >
+                  <span
+                    className="pf-c-breadcrumb__item-divider"
+                  >
+                    <AngleRightIcon
+                      color="currentColor"
+                      noVerticalAlign={false}
+                      size="sm"
+                    >
+                      <svg
+                        aria-hidden={true}
+                        aria-labelledby={null}
+                        fill="currentColor"
+                        height="1em"
+                        role="img"
+                        style={
+                          Object {
+                            "verticalAlign": "-0.125em",
+                          }
+                        }
+                        viewBox="0 0 256 512"
+                        width="1em"
+                      >
+                        <path
+                          d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"
+                        />
+                      </svg>
+                    </AngleRightIcon>
+                  </span>
                 </li>
               </BreadcrumbItem>
             </ol>
@@ -181,43 +242,7 @@ exports[`WebApp - ProcessDetailsPage tests Snapshot test with default values 1`]
   <PageSection>
     <section
       className="pf-c-page__main-section"
-    >
-      <ProcessDetailsContainer
-        processId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
-      >
-        <ForwardRef
-          data-ouia-component-type="process-details-container"
-          data-ouia-safe={true}
-          driver={
-            ProcessDetailsGatewayApiImpl {
-              "_ProcessDetailsState": Object {
-                "id": "",
-              },
-              "cancelJob": [Function],
-              "getProcessDiagram": [Function],
-              "handleProcessAbort": [Function],
-              "handleProcessVariableUpdate": [Function],
-              "listeners": Array [
-                Object {
-                  "onOpen": [Function],
-                },
-              ],
-              "queries": Object {
-                "getJobs": [MockFunction],
-                "getProcessDetails": [MockFunction],
-              },
-              "rescheduleJob": [Function],
-            }
-          }
-          processId="8035b580-6ae4-4aa8-9ec0-e18e19809e0b"
-          targetOrigin="http://localhost"
-        >
-          <ForwardRef>
-            <div />
-          </ForwardRef>
-        </ForwardRef>
-      </ProcessDetailsContainer>
-    </section>
+    />
   </PageSection>
 </ProcessDetailsPage>
 `;

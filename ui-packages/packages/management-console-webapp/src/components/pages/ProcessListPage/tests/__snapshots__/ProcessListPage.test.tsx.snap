@@ -1,7 +1,46 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessListPage tests Snapshot 1`] = `
-<ProcessListPage>
+<ProcessListPage
+  history={
+    Object {
+      "action": "POP",
+      "block": [Function],
+      "createHref": [Function],
+      "go": [Function],
+      "goBack": [Function],
+      "goForward": [Function],
+      "length": 1,
+      "listen": [Function],
+      "location": Object {
+        "hash": "",
+        "pathname": "/",
+        "search": "",
+        "state": undefined,
+      },
+      "push": [Function],
+      "replace": [Function],
+    }
+  }
+  location={
+    Object {
+      "hash": "",
+      "pathname": "/",
+      "search": "",
+      "state": undefined,
+    }
+  }
+  match={
+    Object {
+      "isExact": false,
+      "params": Object {
+        "instanceID": "8035b580-6ae4-4aa8-9ec0-e18e19809e0b",
+      },
+      "path": "",
+      "url": "",
+    }
+  }
+>
   <PageSectionHeader
     breadcrumbPath={
       Array [

@@ -14,20 +14,10 @@
  * limitations under the License.
  */
 
-import { ProcessInstance } from '@kogito-apps/management-console-shared';
+import React from 'react';
 
-export interface ProcessDetailsEnvelopeApi {
-  processDetails__init(
-    association: Association,
-    initArgs: ProcessDetailsInitArgs
-  );
-}
+const MockedPageSectionHeader = () => {
+  return <></>;
+};
 
-export interface Association {
-  origin: string;
-  envelopeServerId: string;
-}
-
-export interface ProcessDetailsInitArgs {
-  processInstance: ProcessInstance;
-}
+export default MockedPageSectionHeader;

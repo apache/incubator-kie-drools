@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-import { getWrapper } from '@kogito-apps/components-common';
 import React from 'react';
+import { getWrapper } from '@kogito-apps/components-common';
+import { ProcessInstance } from '@kogito-apps/management-console-shared';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
 import { ProcessDetailsGatewayApiImpl } from '../../../../channel/ProcessDetails/ProcessDetailsGatewayApi';
@@ -32,12 +33,12 @@ jest
     () => new ProcessDetailsGatewayApiImpl(new MockQueries())
   );
 
+const processInstance: ProcessInstance = {} as ProcessInstance;
+
 describe('WebApp - ProcessDetailsContainer tests', () => {
   it('Snapshot test with default values', () => {
     const wrapper = getWrapper(
-      <ProcessDetailsContainer
-        processId={'8035b580-6ae4-4aa8-9ec0-e18e19809e0b'}
-      />,
+      <ProcessDetailsContainer processInstance={processInstance} />,
       'ProcessDetailsContainer'
     );
     expect(wrapper).toMatchSnapshot();

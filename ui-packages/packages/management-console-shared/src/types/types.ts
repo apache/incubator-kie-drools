@@ -134,6 +134,26 @@ export interface ProcessInstance {
   isOpen?: boolean;
 }
 
+export interface ProcessInstanceFilter {
+  status: ProcessInstanceState[];
+  businessKey?: string[];
+}
+
+export enum OrderBy {
+  ASC = 'ASC',
+  DESC = 'DESC'
+}
+export interface SortBy {
+  processName?: OrderBy;
+  state?: OrderBy;
+  start?: OrderBy;
+  lastUpdate?: OrderBy;
+}
+export interface ProcessListState {
+  filters: ProcessInstanceFilter;
+  sortBy: SortBy;
+}
+
 export interface SvgSuccessResponse {
   svg: string;
   error?: never;

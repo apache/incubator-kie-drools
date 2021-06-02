@@ -39,7 +39,12 @@ export class GraphQLProcessDetailsQueries implements ProcessDetailsQueries {
         },
         fetchPolicy: 'network-only'
       });
-      return Promise.resolve(response.data.ProcessInstances[0]);
+      const emptyResponse = {} as ProcessInstance;
+      if (response && response.data.ProcessInstances.length > 0) {
+        return Promise.resolve(response.data.ProcessInstances[0]);
+      } else {
+        return Promise.resolve(emptyResponse);
+      }
     } catch (error) {
       return Promise.reject(error);
     }

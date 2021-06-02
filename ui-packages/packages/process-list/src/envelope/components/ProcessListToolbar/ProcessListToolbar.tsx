@@ -354,6 +354,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
   };
 
   const onEnterClicked = (event: React.KeyboardEvent<EventTarget>): void => {
+    /* istanbul ignore else */
     if (event.key === 'Enter') {
       businessKeyInput.length > 0 && onApplyFilter();
     }
@@ -373,6 +374,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     const clonedProcessInstances = _.cloneDeep(processInstances);
     clonedProcessInstances.forEach((processInstance: ProcessInstance) => {
       processInstance.isSelected = false;
+      /* istanbul ignore else */
       if (!_.isEmpty(processInstance.childProcessInstances)) {
         processInstance.childProcessInstances.forEach(
           (childInstance: ProcessInstance) => {
@@ -406,6 +408,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
     if (selection === BulkSelectionType.PARENT) {
       const tempSelectedInstances = [];
       clonedProcessInstances.forEach((instance: ProcessInstance) => {
+        /* istanbul ignore else */
         if (
           instance.serviceUrl &&
           instance.addons.includes('process-management')
@@ -449,6 +452,7 @@ const ProcessListToolbar: React.FC<ProcessListToolbarProps & OUIAProps> = ({
         });
       } else {
         clonedProcessInstances.forEach((instance: ProcessInstance) => {
+          /* istanbul ignore else */
           if (
             instance.serviceUrl &&
             instance.addons.includes('process-management')

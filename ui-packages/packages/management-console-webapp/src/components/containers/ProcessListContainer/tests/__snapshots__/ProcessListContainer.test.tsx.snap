@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`ProcessListContainer tests Snapshot 1`] = `
-<ProcessListContainer>
+<ProcessListContainer
+  initialState={Object {}}
+>
   <ForwardRef
     driver={
       ProcessListGatewayApiImpl {
@@ -31,6 +33,7 @@ exports[`ProcessListContainer tests Snapshot 1`] = `
         },
       }
     }
+    initialState={Object {}}
     targetOrigin="http://localhost"
   >
     <ForwardRef>

@@ -42,7 +42,7 @@ export class ProcessDetailsEnvelopeApiImpl
       association.origin,
       association.envelopeServerId
     );
-    this.args.view().initialize(initArgs.processId);
+    this.args.view().initialize(initArgs.processInstance);
     return Promise.resolve();
   };
 }

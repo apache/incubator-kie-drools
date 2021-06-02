@@ -19,7 +19,8 @@ import { ProcessListEnvelopeViewApi } from './ProcessListEnvelopeView';
 import {
   Association,
   ProcessListChannelApi,
-  ProcessListEnvelopeApi
+  ProcessListEnvelopeApi,
+  ProcessListInitArgs
 } from '../api';
 import { ProcessListEnvelopeContext } from './ProcessListEnvelopeContext';
 export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
@@ -32,12 +33,15 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
     >
   ) {}
 
-  processList__init = (association: Association): Promise<void> => {
+  processList__init = (
+    association: Association,
+    initArgs: ProcessListInitArgs
+  ): Promise<void> => {
     this.args.envelopeBusController.associate(
       association.origin,
       association.envelopeServerId
     );
-    this.args.view().initialize();
+    this.args.view().initialize(initArgs.initialState);
     return Promise.resolve();
   };
 }

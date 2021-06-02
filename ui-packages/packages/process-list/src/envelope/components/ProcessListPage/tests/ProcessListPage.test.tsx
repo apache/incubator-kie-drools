@@ -19,7 +19,6 @@ import TestProcessListDriver from './mocks/TestProcessListDriver';
 import ProcessListPage from '../ProcessListPage';
 import { processInstances } from './mocks/Mocks';
 import wait from 'waait';
-import { SortByDirection } from '@patternfly/react-table';
 import { act } from 'react-dom/test-utils';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 
@@ -118,8 +117,8 @@ describe('ProcessListPage test', () => {
     expect(table.exists()).toBeTruthy();
     expect(table.props().isLoading).toBeFalsy();
     expect(table.props().processInstances).toHaveLength(3);
-    expect(table.props().sortBy.index).toBe(3);
-    expect(table.props().sortBy.direction).toBe(SortByDirection.desc);
+    expect(Object.keys(table.props().sortBy)[0]).toBe('lastUpdate');
+    expect(Object.values(table.props().sortBy)[0]).toBe('DESC');
 
     const loadMore = wrapper.find('LoadMore');
     expect(loadMore.exists()).toBeFalsy();

@@ -63,7 +63,7 @@ import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel/Proc
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
   driver: ProcessDetailsDriver;
-  id: string;
+  processDetails: ProcessInstance;
 }
 
 type svgResponse = SvgSuccessResponse | SvgErrorResponse;
@@ -71,9 +71,9 @@ type svgResponse = SvgSuccessResponse | SvgErrorResponse;
 const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   isEnvelopeConnectedToChannel,
   driver,
-  id
+  processDetails
 }) => {
-  const [data, setData] = useState<any>({});
+  const [data, setData] = useState<ProcessInstance>({} as ProcessInstance);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [updateJson, setUpdateJson] = useState<any>({});
   const [displayLabel, setDisplayLabel] = useState<boolean>(false);
@@ -91,18 +91,24 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   const [titleType, setTitleType] = useState<string>('');
   const [infoModalContent, setInfoModalContent] = useState<string>('');
 
-  const initLoad = async (): Promise<void> => {
+  const handleReload = async (): Promise<void> => {
     setIsLoading(true);
     try {
-      const response: ProcessInstance = await driver.processDetailsQuery(id);
-      const jobsResponse: Job[] = await driver.jobsQuery(id);
-      response && setData(response);
-      jobsResponse && setJobs(jobsResponse);
+      const processResponse: ProcessInstance = await driver.processDetailsQuery(
+        processDetails.id
+      );
+      processResponse && setData(processResponse);
+      getAllJobs();
       setIsLoading(false);
     } catch (errorString) {
       setError(errorString);
       setIsLoading(false);
     }
+  };
+
+  const getAllJobs = async (): Promise<void> => {
+    const jobsResponse: Job[] = await driver.jobsQuery(processDetails.id);
+    jobsResponse && setJobs(jobsResponse);
   };
 
   const handleSvgErrorModal = (): void => {
@@ -121,7 +127,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
 
   useEffect(() => {
     const handleSvgApi = async (): Promise<void> => {
-      if (data && data.id === id) {
+      if (data && data.id === processDetails.id) {
         const response: svgResponse = await driver.getProcessDiagram(data);
         if (response && response.svg) {
           const temp = <SVG src={response.svg} />;
@@ -132,7 +138,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       }
     };
     const getVariableJSON = (): void => {
-      if (data && data.id === id) {
+      if (data && data.id === processDetails.id) {
         setUpdateJson(JSON.parse(data.variables));
       }
     };
@@ -158,7 +164,8 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
   useEffect(() => {
     /* istanbul ignore else*/
     if (isEnvelopeConnectedToChannel) {
-      initLoad();
+      setData(processDetails);
+      getAllJobs();
     }
   }, [isEnvelopeConnectedToChannel]);
 
@@ -199,7 +206,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     if (displayLabel === true) {
       setConfirmationModal(true);
     } else {
-      initLoad();
+      handleReload();
     }
   };
 
@@ -549,9 +556,11 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
       ) : (
         <>
           {isEnvelopeConnectedToChannel && (
-            <Bullseye>
-              <ServerErrors error={error} variant="large" />
-            </Bullseye>
+            <Card className="kogito-process-details__card-size">
+              <Bullseye>
+                <ServerErrors error={error} variant="large" />
+              </Bullseye>
+            </Card>
           )}
         </>
       )}

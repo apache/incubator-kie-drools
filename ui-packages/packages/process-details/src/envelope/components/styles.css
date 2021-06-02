@@ -64,3 +64,6 @@
         word-break: break-all;
     }
 }
+.kogito-process-details__card-size {
+    height: 100%
+}

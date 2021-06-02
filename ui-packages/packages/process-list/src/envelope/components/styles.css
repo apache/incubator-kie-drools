@@ -41,3 +41,10 @@
   border-left: solid;
   border-left-color:var(--pf-global--active-color--100);
 }
+
+.kogito-process-list__emptyState-card {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}

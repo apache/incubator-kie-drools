@@ -94,7 +94,7 @@ exports[`ProcessListPage test Envelope not connected 1`] = `
 >
   <div
     data-ouia-component-type="process-list-page"
-    data-ouia-safe={true}
+    data-ouia-safe={false}
   >
     <MockedProcessListToolbar
       applyFilter={[Function]}
@@ -299,7 +299,7 @@ exports[`ProcessListPage test Envelope not connected 1`] = `
         }
       }
       expanded={Object {}}
-      isLoading={false}
+      isLoading={true}
       onSort={[Function]}
       processInstances={Array []}
       selectableInstances={0}
@@ -311,20 +311,10 @@ exports[`ProcessListPage test Envelope not connected 1`] = `
       setSelectedInstances={[Function]}
       sortBy={
         Object {
-          "direction": "desc",
-          "index": 3,
+          "lastUpdate": "DESC",
         }
       }
     />
-    <LoadMore
-      getMoreItems={[Function]}
-      isLoadingMore={false}
-      offset={0}
-      pageSize={10}
-      setOffset={[Function]}
-    >
-      <MockedComponent />
-    </LoadMore>
   </div>
 </ProcessListPage>
 `;

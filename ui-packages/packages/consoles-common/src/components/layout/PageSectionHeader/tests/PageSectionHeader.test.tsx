@@ -16,34 +16,22 @@
 
 import React from 'react';
 import { getWrapper } from '@kogito-apps/components-common';
-import ProcessListPage from '../ProcessListPage';
+import PageSectionHeader from '../PageSectionHeader';
 import { BrowserRouter } from 'react-router-dom';
-import * as H from 'history';
 
-jest.mock('../../../containers/ProcessListContainer/ProcessListContainer');
-
-describe('ProcessListPage tests', () => {
+describe('PageSectionHeader tests', () => {
   const props = {
-    match: {
-      params: {
-        instanceID: '8035b580-6ae4-4aa8-9ec0-e18e19809e0b'
-      },
-      url: '',
-      isExact: false,
-      path: ''
-    },
-    location: H.createLocation(''),
-    history: H.createBrowserHistory()
+    titleText: 'Process Details',
+    breadcrumbText: ['Home', 'Processes'],
+    breadcrumbPath: ['/', { pathname: '/ProcessInstances', state: {} }]
   };
-  it('Snapshot', () => {
+  it('Snapshot test with default props', () => {
     const wrapper = getWrapper(
       <BrowserRouter>
-        <ProcessListPage {...props} />
+        <PageSectionHeader {...props} />
       </BrowserRouter>,
-      'ProcessListPage'
+      'PageSectionHeader'
     );
-
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('MockedProcessListContainer').exists()).toBeTruthy();
   });
 });

@@ -17,6 +17,19 @@ exports[`EmbeddedProcessList tests Snapshot 1`] = `
     }
   }
   envelopePath="path"
+  initialState={
+    Object {
+      "filters": Object {
+        "businessKey": Array [],
+        "status": Array [
+          "ACTIVE",
+        ],
+      },
+      "sortBy": Object {
+        "lastUpdate": "DESC",
+      },
+    }
+  }
   targetOrigin="origin"
 >
   <ForwardRef>

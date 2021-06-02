@@ -26,12 +26,13 @@ import {
   ProcessDetailsEnvelopeApi,
   ProcessDetailsDriver
 } from '../api';
+import { ProcessInstance } from '@kogito-apps/management-console-shared';
 import { ProcessDetailsChannelApiImpl } from './ProcessDetailsChannelApiImpl';
 
 export interface Props {
   targetOrigin: string;
   driver: ProcessDetailsDriver;
-  processId: string;
+  processInstance: ProcessInstance;
 }
 
 export const EmbeddedProcessDetails = React.forwardRef<
@@ -69,7 +70,7 @@ export const EmbeddedProcessDetails = React.forwardRef<
           envelopeServerId: envelopeServer.id
         },
         {
-          processId: props.processId
+          processInstance: props.processInstance
         }
       );
     },

@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
-import { constructObject, formatForBulkListJob, setTitle } from '../Utils';
+import { ProcessInstance, ProcessInstanceState } from '../../types';
+import {
+  constructObject,
+  formatForBulkListJob,
+  getProcessInstanceDescription,
+  ProcessInstanceIconCreator,
+  setTitle
+} from '../Utils';
 const children = 'children';
 
 export enum JobStatus {
@@ -34,6 +41,73 @@ describe('Management-console-shared utils tests', () => {
     expect(failureResult.props[children][1].props.children).toEqual(
       'Skip operation'
     );
+  });
+
+  it('state icon creator tests', () => {
+    const activeTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Active
+    );
+    const completedTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Completed
+    );
+    const errorTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Error
+    );
+    const suspendedTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Suspended
+    );
+    const abortedTestResult = ProcessInstanceIconCreator(
+      ProcessInstanceState.Aborted
+    );
+
+    expect(activeTestResult.props['children'][1]).toEqual('Active');
+    expect(completedTestResult.props['children'][1]).toEqual('Completed');
+    expect(errorTestResult.props['children'][1]).toEqual('Error');
+    expect(suspendedTestResult.props['children'][1]).toEqual('Suspended');
+    expect(abortedTestResult.props['children'][1]).toEqual('Aborted');
+  });
+
+  it('test getProcessInstanceDescription', () => {
+    const processInstance: ProcessInstance = {
+      id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+      processId: 'Travels',
+      businessKey: 'GRT32',
+      parentProcessInstanceId: null,
+      processName: 'Travels',
+      rootProcessInstanceId: null,
+      roles: [],
+      state: ProcessInstanceState.Active,
+      start: new Date('2020-02-19T11:11:56.282Z'),
+      end: new Date('2020-02-19T11:11:56.282Z'),
+      lastUpdate: new Date('2020-02-19T11:11:56.282Z'),
+      serviceUrl: null,
+      endpoint: 'http://localhost:4000',
+      error: {
+        nodeDefinitionId: 'a1e139d5-4e77-48c9-84ae-34578e904e6b',
+        message: 'some thing went wrong'
+      },
+      addons: [],
+      variables:
+        '{"trip":{"begin":"2019-10-22T22:00:00Z[UTC]","city":"Bangalore","country":"India","end":"2019-10-30T22:00:00Z[UTC]","visaRequired":false},"hotel":{"address":{"city":"Bangalore","country":"India","street":"street","zipCode":"12345"},"bookingNumber":"XX-012345","name":"Perfect hotel","phone":"09876543"},"traveller":{"address":{"city":"Bangalore","country":"US","street":"Bangalore","zipCode":"560093"},"email":"ajaganat@redhat.com","firstName":"Ajay","lastName":"Jaganathan","nationality":"US"}}',
+      nodes: [
+        {
+          nodeId: '1',
+          name: 'End Event 1',
+          definitionId: 'EndEvent_1',
+          id: '27107f38-d888-4edf-9a4f-11b9e6d751b6',
+          enter: new Date('2020-02-19T11:11:56.282Z'),
+          exit: new Date('2020-02-19T11:11:56.282Z'),
+          type: 'EndNode'
+        }
+      ],
+      childProcessInstances: []
+    };
+    const result = getProcessInstanceDescription(processInstance);
+    expect(result).toStrictEqual({
+      id: 'a1e139d5-4e77-48c9-84ae-34578e904e5a',
+      name: 'Travels',
+      description: 'GRT32'
+    });
   });
 
   it('Test constructObject function', () => {

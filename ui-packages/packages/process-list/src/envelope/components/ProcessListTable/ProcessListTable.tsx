@@ -21,8 +21,7 @@ import {
   Tr,
   Th,
   Td,
-  ExpandableRowContent,
-  ISortBy
+  ExpandableRowContent
 } from '@patternfly/react-table';
 import _ from 'lodash';
 import {
@@ -71,7 +70,7 @@ interface ProcessListTableProps {
     index: number,
     direction: 'desc' | 'asc'
   ) => void;
-  sortBy: ISortBy;
+  sortBy: any;
   setProcessInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
   selectedInstances: ProcessInstance[];
   setSelectedInstances: React.Dispatch<React.SetStateAction<ProcessInstance[]>>;
@@ -501,7 +500,7 @@ const ProcessListTable: React.FC<ProcessListTableProps & OUIAProps> = ({
             <Tr>
               <Td colSpan={7}>
                 <>
-                  {isLoading && (
+                  {isLoading && rowPairs.length === 0 && (
                     <KogitoSpinner
                       spinnerText={'Loading process instances...'}
                     />
