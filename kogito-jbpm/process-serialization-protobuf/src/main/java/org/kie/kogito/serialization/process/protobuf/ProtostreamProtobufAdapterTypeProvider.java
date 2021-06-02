@@ -79,7 +79,7 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
     private SerializationContextImpl buildSerializationContext() throws IOException, DescriptorValidationException {
         SerializationContextImpl context = new SerializationContextImpl(Configuration.builder().build());
         for (String protoFile : protostreamDescriptors()) {
-            try (InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoFile)) {
+            try (InputStream is = getInputStream(protoFile)) {
                 if (is == null) {
                     continue;
                 }
@@ -90,6 +90,14 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
             }
         }
         return context;
+    }
+
+    private InputStream getInputStream(String protoFile) {
+        InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoFile);
+        if(is == null && Thread.currentThread().getContextClassLoader() != null) {
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(protoFile);
+        }
+        return is;
     }
 
     private FileDescriptorProto buildEnumTypes(FileDescriptor descriptor) {
