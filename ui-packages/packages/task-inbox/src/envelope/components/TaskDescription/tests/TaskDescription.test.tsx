@@ -67,12 +67,12 @@ describe('TaskDescription test', () => {
     );
     expect(wrapper).toMatchSnapshot();
 
-    const button = wrapper.find('Button');
+    const anchor = wrapper.find('a');
 
-    expect(button.exists()).toBeTruthy();
+    expect(anchor.exists()).toBeTruthy();
 
     act(() => {
-      button.simulate('click');
+      anchor.simulate('click');
     });
 
     expect(onClick).toHaveBeenCalled();

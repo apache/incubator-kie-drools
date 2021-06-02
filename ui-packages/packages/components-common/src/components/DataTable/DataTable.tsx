@@ -26,8 +26,12 @@ import {
   sortable,
   ISortBy
 } from '@patternfly/react-table';
-import '@patternfly/patternfly/patternfly-addons.css';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import filter from 'lodash/filter';
+import sample from 'lodash/sample';
+import keys from 'lodash/keys';
+import reduce from 'lodash/reduce';
+import isFunction from 'lodash/isFunction';
 import uuidv4 from 'uuid';
 import jp from 'jsonpath';
 import { OUIAProps, componentOuiaProps } from '../../utils/OuiaUtils';
@@ -57,19 +61,16 @@ interface IOwnProps {
 
 const getCellData = (dataObj: Record<string, unknown>, path: string) => {
   if (dataObj && path) {
-    return !_.isEmpty(jp.value(dataObj, path))
-      ? jp.value(dataObj, path)
-      : 'N/A';
+    return !isEmpty(jp.value(dataObj, path)) ? jp.value(dataObj, path) : 'N/A';
   } else {
     return 'N/A';
   }
 };
 
 const getColumns = (data: any[], columns: DataTableColumn[]) => {
-  let columnList: ICell[] = [];
   if (data) {
-    columnList = columns
-      ? _.filter(columns, column => !_.isEmpty(column.path)).map(column => {
+    return columns
+      ? filter(columns, column => !isEmpty(column.path)).map(column => {
           return {
             title: column.label,
             data: column.path,
@@ -89,11 +90,18 @@ const getColumns = (data: any[], columns: DataTableColumn[]) => {
             transforms: column.isSortable ? [sortable] : undefined
           } as ICell;
         })
-      : _.filter(_.keys(_.sample(data)), key => key !== '__typename').map(
+      : filter(keys(sample(data)), key => key !== '__typename').map(
           key => ({ title: key, data: `$.${key}` } as ICell)
         );
+  } else if (columns) {
+    return filter(columns, column => !isEmpty(column.path)).map(column => {
+      return {
+        title: column.label,
+        data: column.path
+      } as ICell;
+    });
   }
-  return columnList;
+  return [];
 };
 
 const getRows = (data: any[], columns: ICell[]) => {
@@ -101,7 +109,7 @@ const getRows = (data: any[], columns: ICell[]) => {
   if (data) {
     rowList = data.map(rowData => {
       return {
-        cells: _.reduce(
+        cells: reduce(
           columns,
           (result, column: ICell) => {
             if (column.data) {
@@ -131,33 +139,63 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const [rows, setRows] = useState<IRow[]>([]);
-  const [columnList, setColumnList] = useState<ICell[]>([]);
+  const [columnList, setColumnList] = useState<(ICell | string)[]>([]);
 
   useEffect(() => {
-    if (data) {
+    if (isLoading) {
+      const cols = getColumns(null, columns);
+      const row = [
+        {
+          cells: [
+            {
+              props: { colSpan: cols.length },
+              title: LoadingComponent ? (
+                <>{LoadingComponent}</>
+              ) : (
+                <Bullseye>
+                  <KogitoSpinner spinnerText="Loading ..." />
+                </Bullseye>
+              )
+            }
+          ],
+          rowKey: '0'
+        }
+      ];
+      setColumnList(cols);
+      setRows(row);
+    } else if (isEmpty(data)) {
+      const cols = getColumns(null, columns);
+      const row = [
+        {
+          cells: [
+            {
+              props: { colSpan: cols.length },
+              title: (
+                <KogitoEmptyState
+                  type={KogitoEmptyStateType.Search}
+                  title="No results found"
+                  body="Try using different filters"
+                />
+              )
+            }
+          ],
+          rowKey: '0'
+        }
+      ];
+      setColumnList(cols);
+      setRows(row);
+    } else {
       const cols = getColumns(data, columns);
-      if (!_.isEmpty(cols)) {
-        setColumnList(cols);
-        setRows(getRows(data, cols));
-      }
+      setColumnList(cols);
+      setRows(getRows(data, cols));
     }
-  }, [data]);
+  }, [data, isLoading]);
 
   const onSort = (event, index, direction) => {
-    if (_.isFunction(onSorting)) {
+    if (isFunction(onSorting)) {
       onSorting(index, direction);
     }
   };
-
-  if (isLoading) {
-    return LoadingComponent ? (
-      <React.Fragment>{LoadingComponent}</React.Fragment>
-    ) : (
-      <Bullseye>
-        <KogitoSpinner spinnerText="Loading..." />
-      </Bullseye>
-    );
-  }
 
   if (error) {
     return ErrorComponent ? (
@@ -170,16 +208,6 @@ const DataTable: React.FC<IOwnProps & OUIAProps> = ({
           body="Try using the refresh action to reload"
         />
       </div>
-    );
-  }
-
-  if (_.isEmpty(data)) {
-    return (
-      <KogitoEmptyState
-        type={KogitoEmptyStateType.Search}
-        title="No results found"
-        body="Try using different filters"
-      />
     );
   }
 

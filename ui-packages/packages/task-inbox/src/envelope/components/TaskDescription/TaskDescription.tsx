@@ -15,7 +15,6 @@
  */
 
 import React from 'react';
-import { Button } from '@patternfly/react-core';
 import {
   componentOuiaProps,
   OUIAProps,
@@ -35,8 +34,7 @@ const TaskDescription: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   return (
-    <Button
-      variant={'link'}
+    <a
       onClick={onClick}
       {...componentOuiaProps(ouiaId, 'task-description', ouiaSafe)}
     >
@@ -48,7 +46,7 @@ const TaskDescription: React.FC<IOwnProps & OUIAProps> = ({
           }}
         />
       </strong>
-    </Button>
+    </a>
   );
 };
 
