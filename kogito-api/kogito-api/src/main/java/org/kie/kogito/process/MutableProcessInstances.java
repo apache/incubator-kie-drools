@@ -29,4 +29,7 @@ public interface MutableProcessInstances<T> extends ProcessInstances<T> {
         return instance.status() == ProcessInstance.STATE_ACTIVE || instance.status() == ProcessInstance.STATE_ERROR;
     }
 
+    default boolean lock() {
+        return false;
+    }
 }

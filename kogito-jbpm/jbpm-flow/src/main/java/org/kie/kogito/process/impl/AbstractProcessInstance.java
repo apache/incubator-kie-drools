@@ -85,6 +85,8 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     protected CompletionEventListener completionEventListener;
 
+    protected Long version;
+
     public AbstractProcessInstance(AbstractProcess<T> process, T variables, ProcessRuntime rt) {
         this(process, variables, null, rt);
     }
@@ -128,6 +130,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
         if (processInstance.getKnowledgeRuntime() == null) {
             processInstance.setKnowledgeRuntime(getProcessRuntime().getInternalKieRuntime());
         }
+        getProcessRuntime().getProcessInstanceManager().setLock(((MutableProcessInstances<T>) process.instances()).lock());
         processInstance.reconnect();
         processInstance.setMetaData(KOGITO_PROCESS_INSTANCE, this);
         addCompletionEventListener();
@@ -215,6 +218,7 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
             processInstance.setReferenceId(referenceId);
         }
 
+        getProcessRuntime().getProcessInstanceManager().setLock(((MutableProcessInstances<T>) process.instances()).lock());
         getProcessRuntime().getProcessInstanceManager().addProcessInstance(this.processInstance);
         this.id = processInstance.getStringId();
         addCompletionEventListener();
@@ -290,6 +294,15 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
     @Override
     public Date startDate() {
         return this.processInstance != null ? this.processInstance.getStartDate() : null;
+    }
+
+    @Override
+    public Long version() {
+        return this.version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
     @Override

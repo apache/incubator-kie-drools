@@ -28,6 +28,8 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     private Map<String, KogitoProcessInstance> processInstances = new ConcurrentHashMap<>();
 
+    private boolean lock = false;
+
     public void addProcessInstance(KogitoProcessInstance processInstance) {
         String id = UUID.randomUUID().toString();
         ((org.jbpm.process.instance.ProcessInstance) processInstance).setId(id);
@@ -35,7 +37,11 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public void internalAddProcessInstance(KogitoProcessInstance processInstance) {
-        processInstances.put(processInstance.getStringId(), processInstance);
+        if (lock) {
+            processInstances.put(processInstance.getStringId() + "_" + Thread.currentThread().getId(), processInstance);
+        } else {
+            processInstances.put(processInstance.getStringId(), processInstance);
+        }
     }
 
     public Collection<KogitoProcessInstance> getProcessInstances() {
@@ -43,11 +49,19 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public KogitoProcessInstance getProcessInstance(String id) {
-        return processInstances.get(id);
+        if (lock) {
+            return processInstances.get(id + "_" + Thread.currentThread().getId());
+        } else {
+            return processInstances.get(id);
+        }
     }
 
     public KogitoProcessInstance getProcessInstance(String id, boolean readOnly) {
-        return processInstances.get(id);
+        if (lock) {
+            return processInstances.get(id + "_" + Thread.currentThread().getId());
+        } else {
+            return processInstances.get(id);
+        }
     }
 
     public void removeProcessInstance(KogitoProcessInstance processInstance) {
@@ -55,7 +69,11 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
     }
 
     public void internalRemoveProcessInstance(KogitoProcessInstance processInstance) {
-        processInstances.remove(processInstance.getStringId());
+        if (lock) {
+            processInstances.remove(processInstance.getStringId() + "_" + Thread.currentThread().getId());
+        } else {
+            processInstances.remove(processInstance.getStringId());
+        }
     }
 
     public void clearProcessInstances() {
@@ -64,5 +82,9 @@ public class DefaultProcessInstanceManager implements ProcessInstanceManager {
 
     public void clearProcessInstancesState() {
 
+    }
+
+    public void setLock(boolean lock) {
+        this.lock = lock;
     }
 }

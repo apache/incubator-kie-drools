@@ -91,6 +91,11 @@ class PostgreProcessInstancesIT {
         PostgreProcessInstances processInstances = (PostgreProcessInstances) process.instances();
         assertThat(processInstances.size()).isOne();
         assertThat(processInstances.exists(processInstance.id())).isTrue();
+
+        ProcessInstance<?> readOnlyPI = process.instances().findById(processInstance.id(), ProcessInstanceReadMode.READ_ONLY).get();
+        assertThat(readOnlyPI.status()).isEqualTo(STATE_ACTIVE);
+        assertThat(process.instances().values(ProcessInstanceReadMode.READ_ONLY).size()).isOne();
+
         verify(processInstances).create(any(), any());
 
         String testVar = (String) processInstance.variables().get("test");
@@ -108,6 +113,7 @@ class PostgreProcessInstancesIT {
 
         processInstances = (PostgreProcessInstances) process.instances();
         verify(processInstances, times(2)).remove(processInstance.id());
+
         assertThat(processInstances.size()).isZero();
 
         assertThat(process.instances().values()).isEmpty();
@@ -123,6 +129,11 @@ class PostgreProcessInstancesIT {
         public PostgreProcessInstances createProcessInstances(Process<?> process) {
             PostgreProcessInstances instances = spy(super.createProcessInstances(process));
             return instances;
+        }
+
+        @Override
+        public boolean lock() {
+            return false;
         }
 
     }

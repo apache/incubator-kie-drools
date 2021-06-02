@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
@@ -49,8 +48,14 @@ import io.vertx.sqlclient.RowIterator;
 import io.vertx.sqlclient.RowSet;
 import io.vertx.sqlclient.Tuple;
 
+import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
+
 @SuppressWarnings({ "rawtypes" })
 public class PostgreProcessInstances implements MutableProcessInstances {
+
+    private static final String VERSION = "version";
+
+    private static final String PAYLOAD = "payload";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PostgreProcessInstances.class);
 
@@ -59,13 +64,16 @@ public class PostgreProcessInstances implements MutableProcessInstances {
     private final ProcessInstanceMarshallerService marshaller;
     private final boolean autoDDL;
     private final Long queryTimeoutMillis;
+    private final boolean lock;
 
-    public PostgreProcessInstances(Process<?> process, PgPool client, boolean autoDDL, Long queryTimeoutMillis) {
+    public PostgreProcessInstances(Process<?> process, PgPool client, boolean autoDDL, Long queryTimeoutMillis,
+            boolean lock) {
         this.process = process;
         this.client = client;
         this.autoDDL = autoDDL;
         this.queryTimeoutMillis = queryTimeoutMillis;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
+        this.lock = lock;
         init();
     }
 
@@ -74,31 +82,64 @@ public class PostgreProcessInstances implements MutableProcessInstances {
         return findById(id).isPresent();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void create(String id, ProcessInstance instance) {
+        if (!isActive(instance)) {
+            disconnect(instance);
+            return;
+        }
         insertInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
         disconnect(instance);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void update(String id, ProcessInstance instance) {
-        updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+        if (!isActive(instance)) {
+            disconnect(instance);
+            return;
+        }
+        if (lock) {
+            updateWithLock(UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+        } else {
+            updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+        }
         disconnect(instance);
     }
 
     @Override
     public void remove(String id) {
-        deleteInternal(UUID.fromString(id));
+        boolean isDeleted = deleteInternal(UUID.fromString(id));
+        if (lock && !isDeleted) {
+            throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+        }
     }
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        return findByIdInternal(UUID.fromString(id)).map(b -> marshaller.unmarshallProcessInstance(b, process));
+        Optional<Row> row = findByIdInternal(UUID.fromString(id));
+
+        if (row.isPresent()) {
+            Optional<byte[]> payload = row
+                    .map(r -> r.getBuffer(PAYLOAD))
+                    .map(Buffer::getBytes);
+            if (payload.isPresent()) {
+                ProcessInstance<?> instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(payload.get(),
+                        process)
+                        : marshaller.unmarshallReadOnlyProcessInstance(payload.get(), process);
+                ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
+                return Optional.of(instance);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
     public Collection<ProcessInstance> values(ProcessInstanceReadMode mode) {
-        return findAllInternal().stream().map(i -> marshaller.unmarshallProcessInstance(i, process)).collect(Collectors.toList());
+        return findAllInternal().stream().map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process)
+                : marshaller.unmarshallReadOnlyProcessInstance(b, process))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -106,16 +147,27 @@ public class PostgreProcessInstances implements MutableProcessInstances {
         return countInternal().intValue();
     }
 
+    @Override
+    public boolean lock() {
+        return this.lock;
+    }
+
     private void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> findByIdInternal(UUID.fromString(instance.id())).get();
-        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+        Optional<Row> row = findByIdInternal(UUID.fromString(instance.id()));
+        if (row.isPresent()) {
+            Supplier<byte[]> supplier = () -> row
+                    .map(r -> r.getBuffer(PAYLOAD))
+                    .map(Buffer::getBytes).get();
+            ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+            ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
+        }
     }
 
     private boolean insertInternal(UUID id, byte[] payload) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("INSERT INTO process_instances (id, payload, process_id) VALUES ($1, $2, $3)")
-                    .execute(Tuple.of(id, Buffer.buffer(payload), process.id()), getAsyncResultHandler(future));
+            client.preparedQuery("INSERT INTO process_instances (id, payload, process_id, version) VALUES ($1, $2, $3, $4)")
+                    .execute(Tuple.of(id, Buffer.buffer(payload), process.id(), 1L), getAsyncResultHandler(future));
             return getExecutedResult(future);
         } catch (Exception e) {
             throw uncheckedException(e, "Error inserting process instance %s", id);
@@ -139,7 +191,7 @@ public class PostgreProcessInstances implements MutableProcessInstances {
     private boolean updateInternal(UUID id, byte[] payload) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("UPDATE process_instances SET payload = $1 WHERE id = $2)")
+            client.preparedQuery("UPDATE process_instances SET payload = $1 WHERE id = $2")
                     .execute(Tuple.of(Buffer.buffer(payload), id), getAsyncResultHandler(future));
             return getExecutedResult(future);
         } catch (Exception e) {
@@ -158,16 +210,19 @@ public class PostgreProcessInstances implements MutableProcessInstances {
         }
     }
 
-    private Boolean getExecutedResult(CompletableFuture<RowSet<Row>> future) throws ExecutionException,
-            TimeoutException, InterruptedException {
-        return getResultFromFuture(future)
-                .map(RowSet::rowCount)
-                .map(count -> Objects.equals(count, 1))
-                .orElse(false);
+    private Boolean getExecutedResult(CompletableFuture<RowSet<Row>> future) throws ExecutionException, TimeoutException, InterruptedException {
+        try {
+            return getResultFromFuture(future)
+                    .map(RowSet::rowCount)
+                    .map(count -> count == 1)
+                    .orElse(false);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw e;
+        }
     }
 
-    private Optional<RowSet<Row>> getResultFromFuture(CompletableFuture<RowSet<Row>> future) throws ExecutionException,
-            TimeoutException, InterruptedException {
+    private Optional<RowSet<Row>> getResultFromFuture(CompletableFuture<RowSet<Row>> future) throws ExecutionException, TimeoutException, InterruptedException {
         try {
             return Optional.ofNullable(future.get(queryTimeoutMillis, TimeUnit.MILLISECONDS));
         } catch (InterruptedException e) {
@@ -176,17 +231,15 @@ public class PostgreProcessInstances implements MutableProcessInstances {
         }
     }
 
-    private Optional<byte[]> findByIdInternal(UUID id) {
+    private Optional<Row> findByIdInternal(UUID id) {
         try {
             final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
-            client.preparedQuery("SELECT payload FROM process_instances WHERE id = $1")
+            client.preparedQuery("SELECT payload, version FROM process_instances WHERE id = $1")
                     .execute(Tuple.of(id), getAsyncResultHandler(future));
             return getResultFromFuture(future)
                     .map(RowSet::iterator)
                     .filter(Iterator::hasNext)
-                    .map(Iterator::next)
-                    .map(row -> row.getBuffer("payload"))
-                    .map(Buffer::getBytes);
+                    .map(Iterator::next);
         } catch (Exception e) {
             throw uncheckedException(e, "Error finding process instance %s", id);
         }
@@ -199,7 +252,7 @@ public class PostgreProcessInstances implements MutableProcessInstances {
                     .execute(Tuple.of(process.id()), getAsyncResultHandler(future));
             return getResultFromFuture(future)
                     .map(r -> StreamSupport.stream(r.spliterator(), false)
-                            .map(row -> row.getBuffer("payload"))
+                            .map(row -> row.getBuffer(PAYLOAD))
                             .map(Buffer::getBytes)
                             .collect(Collectors.toList()))
                     .orElseGet(Collections::emptyList);
@@ -278,12 +331,32 @@ public class PostgreProcessInstances implements MutableProcessInstances {
     }
 
     private String getQueryFromFile(String scriptName) {
-        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(String.format("sql/%s.sql", scriptName))) {
+        try (InputStream stream = Thread.currentThread().getContextClassLoader().getResourceAsStream(String.format(
+                "sql/%s.sql",
+                scriptName))) {
             byte[] buffer = new byte[stream.available()];
             stream.read(buffer);
             return new String(buffer);
         } catch (Exception e) {
             throw uncheckedException(e, "Error reading query script file %s", scriptName);
         }
+    }
+
+    private boolean updateWithLock(UUID id, byte[] payload, long version) {
+        try {
+            final CompletableFuture<RowSet<Row>> future = new CompletableFuture<>();
+            client.preparedQuery("UPDATE process_instances SET payload = $1, version = $2 WHERE id = $3 and version = $4")
+                    .execute(Tuple.of(Buffer.buffer(payload), version + 1, id, version), getAsyncResultHandler(future));
+            boolean result = getExecutedResult(future);
+            if (!result) {
+                throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+            }
+            return result;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error updating process instance %s", id);
+        }
+        return false;
     }
 }
