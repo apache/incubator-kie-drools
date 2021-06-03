@@ -90,7 +90,7 @@ public class ConditionalBranchEvaluator implements Externalizable {
     public ConditionalExecution evaluate(Tuple tuple,
                                          WorkingMemory workingMemory,
                                          Object context) {
-
+        tuple = tuple.skipEmptyHandles();
         if ( condition.isAllowed( tuple, workingMemory, context ) ) {
             return conditionalExecution;
         }
