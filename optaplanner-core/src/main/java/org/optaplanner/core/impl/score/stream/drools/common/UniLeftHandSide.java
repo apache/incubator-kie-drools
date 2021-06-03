@@ -100,8 +100,7 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
     private final UniRuleContext<A> ruleContext;
 
     public UniLeftHandSide(Class<A> aClass, DroolsVariableFactory variableFactory) {
-        this(new DirectPatternVariable<>((Variable<A>) variableFactory.createVariable(aClass, "var")),
-                variableFactory);
+        this(new DirectPatternVariable<>(variableFactory.createVariable(aClass, "var")), variableFactory);
     }
 
     protected UniLeftHandSide(Variable<A> variable, List<ViewItem<?>> viewItems, DroolsVariableFactory variableFactory) {
@@ -319,9 +318,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 a -> new BiTuple<>(keyMappingA.apply(a), keyMappingB.apply(a)));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
+        IndirectPatternVariable<NewB, BiTuple<NewA, NewB>> bPatternVar =
+                decompose(groupKey, groupByPattern, newA, newB);
         return new BiLeftHandSide<>(newA, bPatternVar, variableFactory);
     }
 
@@ -334,9 +332,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorC, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        return new TriLeftHandSide<>(newA, newB, new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build()),
-                variableFactory);
+        DirectPatternVariable<NewC> cPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, accumulateOutput);
+        return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -351,9 +349,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorD, accumulateOutputD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        return new QuadLeftHandSide<>(newA, newB, accumulateOutputC,
-                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
+        DirectPatternVariable<NewD> dPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, accumulateOutputD);
+        return new QuadLeftHandSide<>(newA, newB, accumulateOutputC, dPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC> TriLeftHandSide<NewA, NewB, NewC> andGroupBy(Function<A, NewA> keyMappingA,
@@ -364,10 +362,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
+        IndirectPatternVariable<NewC, TriTuple<NewA, NewB, NewC>> cPatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC);
-        PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
         return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
@@ -382,10 +378,9 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
-                decompose(groupKey, groupByPattern, newA, newB, newC);
-        return new QuadLeftHandSide<>(newA, newB, newC,
-                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
+        DirectPatternVariable<NewD> dPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, newC, accumulateOutputD);
+        return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(Function<A, NewA> keyMappingA,
@@ -398,10 +393,8 @@ public final class UniLeftHandSide<A> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
         Variable<NewD> newD = variableFactory.createVariable("newD");
-        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> tuplePatternVar =
+        IndirectPatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>> dPatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC, newD);
-        PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
         return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 

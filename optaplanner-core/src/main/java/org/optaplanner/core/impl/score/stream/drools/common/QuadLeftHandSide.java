@@ -295,9 +295,8 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         ViewItem<?> groupByPattern = buildGroupBy(groupKey, createCompositeBiGroupKey(keyMappingA, keyMappingB));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        PatternVariable<NewB, BiTuple<NewA, NewB>, ?> bPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newB, tuple -> tuple.b);
+        IndirectPatternVariable<NewB, BiTuple<NewA, NewB>> bPatternVar =
+                decompose(groupKey, groupByPattern, newA, newB);
         return new BiLeftHandSide<>(newA, bPatternVar, variableFactory);
     }
 
@@ -326,9 +325,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorC, accumulateOutput));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        return new TriLeftHandSide<>(newA, newB, new DirectPatternVariable<>(accumulateOutput, tuplePatternVar.build()),
-                variableFactory);
+        DirectPatternVariable<NewC> cPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, accumulateOutput);
+        return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
     public <NewA, NewB, NewC, NewD> QuadLeftHandSide<NewA, NewB, NewC, NewD> andGroupBy(
@@ -344,9 +343,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
                 createAccumulateFunction(collectorD, accumulateOutputD));
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
-        DirectPatternVariable<BiTuple<NewA, NewB>> tuplePatternVar = decompose(groupKey, groupByPattern, newA, newB);
-        return new QuadLeftHandSide<>(newA, newB, accumulateOutputC,
-                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
+        DirectPatternVariable<NewD> dPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, accumulateOutputD);
+        return new QuadLeftHandSide<>(newA, newB, accumulateOutputC, dPatternVar, variableFactory);
     }
 
     /**
@@ -377,10 +376,8 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
+        IndirectPatternVariable<NewC, TriTuple<NewA, NewB, NewC>> cPatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC);
-        PatternVariable<NewC, TriTuple<NewA, NewB, NewC>, ?> cPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newC, tuple -> tuple.c);
         return new TriLeftHandSide<>(newA, newB, cPatternVar, variableFactory);
     }
 
@@ -395,10 +392,9 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewA> newA = variableFactory.createVariable("newA");
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
-        DirectPatternVariable<TriTuple<NewA, NewB, NewC>> tuplePatternVar =
-                decompose(groupKey, groupByPattern, newA, newB, newC);
-        return new QuadLeftHandSide<>(newA, newB, newC,
-                new DirectPatternVariable<>(accumulateOutputD, tuplePatternVar.build()), variableFactory);
+        DirectPatternVariable<NewD> dPatternVar =
+                decomposeWithAccumulate(groupKey, groupByPattern, newA, newB, newC, accumulateOutputD);
+        return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 
     /**
@@ -431,10 +427,8 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
         Variable<NewB> newB = variableFactory.createVariable("newB");
         Variable<NewC> newC = variableFactory.createVariable("newC");
         Variable<NewD> newD = variableFactory.createVariable("newD");
-        DirectPatternVariable<QuadTuple<NewA, NewB, NewC, NewD>> tuplePatternVar =
+        IndirectPatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>> dPatternVar =
                 decompose(groupKey, groupByPattern, newA, newB, newC, newD);
-        PatternVariable<NewD, QuadTuple<NewA, NewB, NewC, NewD>, ?> dPatternVar =
-                new IndirectPatternVariable<>(tuplePatternVar, newD, tuple -> tuple.d);
         return new QuadLeftHandSide<>(newA, newB, newC, dPatternVar, variableFactory);
     }
 
