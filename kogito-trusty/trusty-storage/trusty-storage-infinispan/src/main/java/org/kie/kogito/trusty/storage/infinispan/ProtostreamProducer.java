@@ -45,43 +45,8 @@ public class ProtostreamProducer {
     }
 
     @Produces
-    org.infinispan.protostream.MessageMarshaller decisionInputMarshaller() {
-        return new DecisionInputMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller decisionOutcomeMarshaller() {
-        return new DecisionOutcomeMarshaller(mapper);
-    }
-
-    @Produces
     org.infinispan.protostream.MessageMarshaller explainabilityResultMarshaller() {
         return new LIMEExplainabilityResultMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller featureImportanceMarshaller() {
-        return new FeatureImportanceModelMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller messageExceptionFieldMarshaller() {
-        return new MessageExceptionFieldMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller messageMarshaller() {
-        return new MessageMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller saliencyMarshaller() {
-        return new SaliencyModelMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller typedValueMarshaller() {
-        return new TypedVariableWithValueMarshaller(mapper);
     }
 
     @Produces
@@ -92,26 +57,6 @@ public class ProtostreamProducer {
     @Produces
     org.infinispan.protostream.MessageMarshaller counterfactualMarshaller() {
         return new CounterfactualExplainabilityRequestMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller counterfactualDomainMarshaller() {
-        return new CounterfactualDomainMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller counterfactualDomainCategoricalMarshaller() {
-        return new CounterfactualDomainCategoricalMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller counterfactualDomainRangeMarshaller() {
-        return new CounterfactualDomainRangeMarshaller(mapper);
-    }
-
-    @Produces
-    org.infinispan.protostream.MessageMarshaller counterfactualSearchDomainMarshaller() {
-        return new CounterfactualSearchDomainMarshaller(mapper);
     }
 
     @Produces

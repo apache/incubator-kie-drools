@@ -16,11 +16,8 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
-import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
-import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -32,18 +29,13 @@ public class CounterfactualExplainabilityRequestMarshaller extends AbstractModel
 
     @Override
     public CounterfactualExplainabilityRequest readFrom(ProtoStreamReader reader) throws IOException {
-        return new CounterfactualExplainabilityRequest(
-                reader.readString(CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD),
-                reader.readString(CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD),
-                reader.readCollection(CounterfactualExplainabilityRequest.COUNTERFACTUAL_GOALS, new ArrayList<>(), TypedVariableWithValue.class),
-                reader.readCollection(CounterfactualExplainabilityRequest.COUNTERFACTUAL_SEARCH_DOMAINS, new ArrayList<>(), CounterfactualSearchDomain.class));
+        return mapper.readValue(reader.readString(Constants.RAW_OBJECT_FIELD), CounterfactualExplainabilityRequest.class);
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, CounterfactualExplainabilityRequest input) throws IOException {
         writer.writeString(CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD, input.getExecutionId());
         writer.writeString(CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD, input.getCounterfactualId());
-        writer.writeCollection(CounterfactualExplainabilityRequest.COUNTERFACTUAL_GOALS, input.getGoals(), TypedVariableWithValue.class);
-        writer.writeCollection(CounterfactualExplainabilityRequest.COUNTERFACTUAL_SEARCH_DOMAINS, input.getSearchDomains(), CounterfactualSearchDomain.class);
+        writer.writeString(Constants.RAW_OBJECT_FIELD, mapper.writeValueAsString(input));
     }
 }

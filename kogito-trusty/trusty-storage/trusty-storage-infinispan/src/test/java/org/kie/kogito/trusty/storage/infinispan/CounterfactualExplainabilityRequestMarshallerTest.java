@@ -15,51 +15,43 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.infinispan.protostream.MessageMarshaller;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.trusty.storage.api.model.CounterfactualDomainRange;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest;
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
-import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.CollectionTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.COUNTERFACTUAL_GOALS;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.COUNTERFACTUAL_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.COUNTERFACTUAL_SEARCH_DOMAINS;
-import static org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityRequest.EXECUTION_ID_FIELD;
+public class CounterfactualExplainabilityRequestMarshallerTest extends MarshallerTestTemplate {
 
-public class CounterfactualExplainabilityRequestMarshallerTest extends MarshallerTestTemplate<CounterfactualExplainabilityRequest> {
+    @Test
+    public void testWriteAndRead() throws IOException {
+        List<TypedVariableWithValue> goals = Collections.singletonList(TypedVariableWithValue.buildUnit("unitIn", "number", JsonNodeFactory.instance.numberNode(10)));
+        List<CounterfactualSearchDomain> searchDomains = Collections.singletonList(
+                new CounterfactualSearchDomain(TypedValue.Kind.UNIT,
+                        "unitIn",
+                        "number",
+                        null,
+                        false,
+                        new CounterfactualDomainRange(JsonNodeFactory.instance.numberNode(0), JsonNodeFactory.instance.numberNode(10))));
+        CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId", "counterfactualId", goals, searchDomains);
+        CounterfactualExplainabilityRequestMarshaller marshaller = new CounterfactualExplainabilityRequestMarshaller(new ObjectMapper());
 
-    private static final List<AbstractTestField<CounterfactualExplainabilityRequest, ?>> TEST_FIELD_LIST = List.of(
-            new StringTestField<>(EXECUTION_ID_FIELD, "executionId", CounterfactualExplainabilityRequest::getExecutionId, CounterfactualExplainabilityRequest::setExecutionId),
-            new StringTestField<>(COUNTERFACTUAL_ID_FIELD, "test", CounterfactualExplainabilityRequest::getCounterfactualId, CounterfactualExplainabilityRequest::setCounterfactualId),
-            new CollectionTestField<>(COUNTERFACTUAL_GOALS, Collections.emptyList(), CounterfactualExplainabilityRequest::getGoals, CounterfactualExplainabilityRequest::setGoals,
-                    TypedVariableWithValue.class),
-            new CollectionTestField<>(COUNTERFACTUAL_SEARCH_DOMAINS, Collections.emptyList(), CounterfactualExplainabilityRequest::getSearchDomains,
-                    CounterfactualExplainabilityRequest::setSearchDomains,
-                    CounterfactualSearchDomain.class));
+        marshaller.writeTo(writer, request);
+        CounterfactualExplainabilityRequest retrieved = marshaller.readFrom(reader);
 
-    public CounterfactualExplainabilityRequestMarshallerTest() {
-        super(CounterfactualExplainabilityRequest.class);
-    }
-
-    @Override
-    protected CounterfactualExplainabilityRequest buildEmptyObject() {
-        return new CounterfactualExplainabilityRequest();
-    }
-
-    @Override
-    protected MessageMarshaller<CounterfactualExplainabilityRequest> buildMarshaller() {
-        return new CounterfactualExplainabilityRequestMarshaller(new ObjectMapper());
-    }
-
-    @Override
-    protected List<AbstractTestField<CounterfactualExplainabilityRequest, ?>> getTestFieldList() {
-        return TEST_FIELD_LIST;
+        Assertions.assertEquals(request.getExecutionId(), retrieved.getExecutionId());
+        Assertions.assertEquals(request.getCounterfactualId(), retrieved.getCounterfactualId());
+        Assertions.assertEquals(goals.get(0).getName(), retrieved.getGoals().stream().findFirst().get().getName());
+        Assertions.assertEquals(searchDomains.get(0).getName(), retrieved.getSearchDomains().stream().findFirst().get().getName());
+        Assertions.assertEquals(0, ((CounterfactualDomainRange) retrieved.getSearchDomains().stream().findFirst().get().getDomain()).getLowerBound().asInt());
     }
 }

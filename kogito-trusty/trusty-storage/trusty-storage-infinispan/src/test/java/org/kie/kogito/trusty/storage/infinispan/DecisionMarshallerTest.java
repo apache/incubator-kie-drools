@@ -15,66 +15,45 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.infinispan.protostream.MessageMarshaller;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
 import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
-import org.kie.kogito.trusty.storage.api.model.ExecutionType;
-import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.BooleanTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.CollectionTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.EnumTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.LongTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
+import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
-import static org.kie.kogito.trusty.storage.api.model.Decision.INPUTS_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Decision.OUTCOMES_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTED_MODEL_NAMESPACE_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTED_MODEL_NAME_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_TIMESTAMP_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTION_TYPE_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.EXECUTOR_NAME_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.HAS_SUCCEEDED_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.SERVICE_URL_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.Execution.SOURCE_URL_FIELD;
+public class DecisionMarshallerTest extends MarshallerTestTemplate {
 
-public class DecisionMarshallerTest extends MarshallerTestTemplate<Decision> {
+    @Test
+    public void testWriteAndRead() throws IOException {
+        List<DecisionInput> inputs = Collections.singletonList(new DecisionInput("id", "in", TypedVariableWithValue.buildUnit("nameIn", "number", JsonNodeFactory.instance.numberNode(10))));
+        List<DecisionOutcome> outcomes = Collections.singletonList(new DecisionOutcome("id", "out",
+                DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED.toString(),
+                TypedVariableWithValue.buildUnit("nameOut", "number", JsonNodeFactory.instance.numberNode(10)),
+                Collections.singletonList(TypedVariableWithValue.buildUnit("nameOut", "number", JsonNodeFactory.instance.numberNode(10))),
+                new ArrayList<>()));
+        Decision decision = new Decision("executionId", "source", "serviceUrl", 0L, true, "executor", "model", "namespace", inputs, outcomes);
+        DecisionMarshaller marshaller = new DecisionMarshaller(new ObjectMapper());
 
-    private static final List<AbstractTestField<Decision, ?>> TEST_FIELD_LIST = List.of(
-            new StringTestField<>(EXECUTION_ID_FIELD, "test", Decision::getExecutionId, Decision::setExecutionId),
-            new StringTestField<>(SOURCE_URL_FIELD, "http://localhost:8080/model/service", Decision::getSourceUrl, Decision::setSourceUrl),
-            new StringTestField<>(SERVICE_URL_FIELD, "http://localhost:8080/modelName", Decision::getServiceUrl, Decision::setServiceUrl),
-            new LongTestField<>(EXECUTION_TIMESTAMP_FIELD, 0L, Decision::getExecutionTimestamp, Decision::setExecutionTimestamp),
-            new StringTestField<>(EXECUTOR_NAME_FIELD, "jack", Decision::getExecutorName, Decision::setExecutorName),
-            new StringTestField<>(EXECUTED_MODEL_NAME_FIELD, "modelName", Decision::getExecutedModelName, Decision::setExecutedModelName),
-            new StringTestField<>(EXECUTED_MODEL_NAMESPACE_FIELD, "modelNamespace", Decision::getExecutedModelNamespace, Decision::setExecutedModelNamespace),
-            new BooleanTestField<>(HAS_SUCCEEDED_FIELD, Boolean.TRUE, Decision::hasSucceeded, Decision::setSuccess),
-            new EnumTestField<>(EXECUTION_TYPE_FIELD, ExecutionType.DECISION, Decision::getExecutionType, Decision::setExecutionType, ExecutionType.class),
-            new CollectionTestField<>(INPUTS_FIELD, Collections.emptyList(), Decision::getInputs, Decision::setInputs, DecisionInput.class),
-            new CollectionTestField<>(OUTCOMES_FIELD, Collections.emptyList(), Decision::getOutcomes, Decision::setOutcomes, DecisionOutcome.class));
+        marshaller.writeTo(writer, decision);
+        Decision retrieved = marshaller.readFrom(reader);
 
-    public DecisionMarshallerTest() {
-        super(Decision.class);
-    }
-
-    @Override
-    protected Decision buildEmptyObject() {
-        return new Decision();
-    }
-
-    @Override
-    protected MessageMarshaller<Decision> buildMarshaller() {
-        return new DecisionMarshaller(new ObjectMapper());
-    }
-
-    @Override
-    protected List<AbstractTestField<Decision, ?>> getTestFieldList() {
-        return TEST_FIELD_LIST;
+        Assertions.assertEquals(decision.getExecutionId(), retrieved.getExecutionId());
+        Assertions.assertEquals(decision.getSourceUrl(), retrieved.getSourceUrl());
+        Assertions.assertEquals(decision.getServiceUrl(), retrieved.getServiceUrl());
+        Assertions.assertEquals(decision.getExecutedModelName(), retrieved.getExecutedModelName());
+        Assertions.assertEquals(inputs.get(0).getName(), retrieved.getInputs().stream().findFirst().get().getName());
+        Assertions.assertEquals(inputs.get(0).getValue().getTypeRef(), retrieved.getInputs().stream().findFirst().get().getValue().getTypeRef());
+        Assertions.assertEquals(outcomes.get(0).getOutcomeId(), retrieved.getOutcomes().stream().findFirst().get().getOutcomeId());
+        Assertions.assertTrue(retrieved.getOutcomes().stream().findFirst().get().getMessages().isEmpty());
     }
 }

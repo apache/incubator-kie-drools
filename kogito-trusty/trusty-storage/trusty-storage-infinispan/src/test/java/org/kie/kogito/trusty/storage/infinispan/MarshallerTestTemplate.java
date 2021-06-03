@@ -16,99 +16,41 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.infinispan.protostream.MessageMarshaller;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
+import org.junit.jupiter.api.BeforeEach;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.mockingDetails;
 
-abstract class MarshallerTestTemplate<T> {
+public abstract class MarshallerTestTemplate {
 
-    protected final Class<T> modelClass;
+    protected MessageMarshaller.ProtoStreamWriter writer;
+    protected MessageMarshaller.ProtoStreamReader reader;
+    protected Map<String, String> stringStorage;
+    protected Map<String, Long> longStorage;
 
-    protected MarshallerTestTemplate(Class<T> modelClass) {
-        this.modelClass = modelClass;
-    }
+    @BeforeEach
+    protected void setup() throws IOException {
+        this.stringStorage = new HashMap<>();
+        this.longStorage = new HashMap<>();
+        this.writer = mock(MessageMarshaller.ProtoStreamWriter.class);
+        this.reader = mock(MessageMarshaller.ProtoStreamReader.class);
+        doAnswer(invocationOnMock -> stringStorage.put(invocationOnMock.getArgument(0), invocationOnMock.getArgument(1)))
+                .when(writer)
+                .writeString(any(String.class), any(String.class));
+        doAnswer(invocationOnMock -> stringStorage.get(invocationOnMock.getArgument(0)))
+                .when(reader)
+                .readString(any(String.class));
 
-    protected static Stream<Field> streamNonStaticFields(Class<?> type) {
-        if (type == null || Object.class.equals(type)) {
-            return Stream.empty();
-        }
-        return Arrays.stream(type.getDeclaredFields()).filter(f -> (f.getModifiers() & Modifier.STATIC) == 0);
-    }
-
-    protected static Stream<Field> streamAllNonStaticFields(Class<?> type) {
-        if (type == null || Object.class.equals(type)) {
-            return Stream.empty();
-        }
-        return Stream.concat(
-                Arrays.stream(type.getDeclaredFields()).filter(f -> (f.getModifiers() & Modifier.STATIC) == 0),
-                streamAllNonStaticFields(type.getSuperclass()));
-    }
-
-    protected abstract T buildEmptyObject();
-
-    protected abstract MessageMarshaller<T> buildMarshaller();
-
-    protected abstract List<AbstractTestField<T, ?>> getTestFieldList();
-
-    @Test
-    void allPropertiesAreCoveredByTheMarshaller() throws IOException {
-        List<AbstractTestField<T, ?>> list = getTestFieldList();
-
-        T object = buildEmptyObject();
-        list.forEach(td -> td.setValue(object));
-
-        MessageMarshaller.ProtoStreamWriter protoStreamWriter = mock(MessageMarshaller.ProtoStreamWriter.class);
-        MessageMarshaller<T> marshaller = buildMarshaller();
-        marshaller.writeTo(protoStreamWriter, object);
-
-        assertEquals(list.size(), mockingDetails(protoStreamWriter).getInvocations().size());
-        for (AbstractTestField<T, ?> td : list) {
-            td.verifyWriter(protoStreamWriter);
-        }
-    }
-
-    @Test
-    void allPropertiesAreCoveredByTheUnmarshaller() throws IOException {
-        List<AbstractTestField<T, ?>> list = getTestFieldList();
-
-        MessageMarshaller.ProtoStreamReader protoStreamReader = mock(MessageMarshaller.ProtoStreamReader.class);
-        for (AbstractTestField<T, ?> td : list) {
-            td.mockReader(protoStreamReader);
-        }
-
-        MessageMarshaller<T> marshaller = buildMarshaller();
-        T output = marshaller.readFrom(protoStreamReader);
-
-        assertEquals(list.size(), mockingDetails(protoStreamReader).getInvocations().size());
-        list.forEach(td -> td.assertValue(output));
-    }
-
-    @Test
-    void noUncoveredProperties() throws IOException {
-        List<String> testFieldNameList = getTestFieldList().stream()
-                .map(AbstractTestField::getFieldName)
-                .collect(Collectors.toList());
-
-        streamAllNonStaticFields(modelClass).forEach(field -> {
-            String serializedFieldName = field.isAnnotationPresent(JsonProperty.class)
-                    ? field.getAnnotation(JsonProperty.class).value()
-                    : field.getName();
-
-            long matches = testFieldNameList.stream().filter(n -> n.equals(serializedFieldName)).count();
-            assertEquals(1, matches, () -> String.format("Field \"%s\" of %s model is not handled properly in the corresponding test", serializedFieldName, modelClass.getSimpleName()));
-        });
+        doAnswer(invocationOnMock -> longStorage.put(invocationOnMock.getArgument(0), invocationOnMock.getArgument(1)))
+                .when(writer)
+                .writeLong(any(String.class), any(Long.class));
+        doAnswer(invocationOnMock -> longStorage.get(invocationOnMock.getArgument(0)))
+                .when(reader)
+                .readLong(any(String.class));
     }
 }

@@ -16,12 +16,9 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
-import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -33,18 +30,12 @@ public class LIMEExplainabilityResultMarshaller extends AbstractModelMarshaller<
 
     @Override
     public LIMEExplainabilityResult readFrom(ProtoStreamReader reader) throws IOException {
-        return new LIMEExplainabilityResult(
-                reader.readString(BaseExplainabilityResult.EXECUTION_ID_FIELD),
-                enumFromString(reader.readString(BaseExplainabilityResult.STATUS_FIELD), ExplainabilityStatus.class),
-                reader.readString(BaseExplainabilityResult.STATUS_DETAILS_FIELD),
-                reader.readCollection(LIMEExplainabilityResult.SALIENCIES_FIELD, new ArrayList<>(), SaliencyModel.class));
+        return mapper.readValue(reader.readString(Constants.RAW_OBJECT_FIELD), LIMEExplainabilityResult.class);
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, LIMEExplainabilityResult input) throws IOException {
         writer.writeString(BaseExplainabilityResult.EXECUTION_ID_FIELD, input.getExecutionId());
-        writer.writeString(BaseExplainabilityResult.STATUS_FIELD, stringFromEnum(input.getStatus()));
-        writer.writeString(BaseExplainabilityResult.STATUS_DETAILS_FIELD, input.getStatusDetails());
-        writer.writeCollection(LIMEExplainabilityResult.SALIENCIES_FIELD, input.getSaliencies(), SaliencyModel.class);
+        writer.writeString(Constants.RAW_OBJECT_FIELD, mapper.writeValueAsString(input));
     }
 }

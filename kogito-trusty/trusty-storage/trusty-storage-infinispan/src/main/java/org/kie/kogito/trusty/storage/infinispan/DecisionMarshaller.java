@@ -17,13 +17,9 @@
 package org.kie.kogito.trusty.storage.infinispan;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.kie.kogito.trusty.storage.api.model.Decision;
-import org.kie.kogito.trusty.storage.api.model.DecisionInput;
-import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
-import org.kie.kogito.trusty.storage.api.model.ExecutionType;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -35,35 +31,13 @@ public class DecisionMarshaller extends AbstractModelMarshaller<Decision> {
 
     @Override
     public Decision readFrom(ProtoStreamReader reader) throws IOException {
-        ExecutionType executionType = enumFromString(reader.readString(Execution.EXECUTION_TYPE_FIELD), ExecutionType.class);
-        if (executionType != ExecutionType.DECISION) {
-            throw new IllegalStateException("Unsupported execution type: " + executionType);
-        }
-        return new Decision(
-                reader.readString(Execution.EXECUTION_ID_FIELD),
-                reader.readString(Execution.SOURCE_URL_FIELD),
-                reader.readString(Execution.SERVICE_URL_FIELD),
-                reader.readLong(Execution.EXECUTION_TIMESTAMP_FIELD),
-                reader.readBoolean(Execution.HAS_SUCCEEDED_FIELD),
-                reader.readString(Execution.EXECUTOR_NAME_FIELD),
-                reader.readString(Execution.EXECUTED_MODEL_NAME_FIELD),
-                reader.readString(Execution.EXECUTED_MODEL_NAMESPACE_FIELD),
-                reader.readCollection(Decision.INPUTS_FIELD, new ArrayList<>(), DecisionInput.class),
-                reader.readCollection(Decision.OUTCOMES_FIELD, new ArrayList<>(), DecisionOutcome.class));
+        return mapper.readValue(reader.readString(Constants.RAW_OBJECT_FIELD), Decision.class);
     }
 
     @Override
     public void writeTo(ProtoStreamWriter writer, Decision input) throws IOException {
-        writer.writeString(Execution.EXECUTION_TYPE_FIELD, stringFromEnum(input.getExecutionType()));
         writer.writeString(Execution.EXECUTION_ID_FIELD, input.getExecutionId());
-        writer.writeString(Execution.SOURCE_URL_FIELD, input.getSourceUrl());
-        writer.writeString(Execution.SERVICE_URL_FIELD, input.getServiceUrl());
         writer.writeLong(Execution.EXECUTION_TIMESTAMP_FIELD, input.getExecutionTimestamp());
-        writer.writeBoolean(Execution.HAS_SUCCEEDED_FIELD, input.hasSucceeded());
-        writer.writeString(Execution.EXECUTOR_NAME_FIELD, input.getExecutorName());
-        writer.writeString(Execution.EXECUTED_MODEL_NAME_FIELD, input.getExecutedModelName());
-        writer.writeString(Execution.EXECUTED_MODEL_NAMESPACE_FIELD, input.getExecutedModelNamespace());
-        writer.writeCollection(Decision.INPUTS_FIELD, input.getInputs(), DecisionInput.class);
-        writer.writeCollection(Decision.OUTCOMES_FIELD, input.getOutcomes(), DecisionOutcome.class);
+        writer.writeString(Constants.RAW_OBJECT_FIELD, mapper.writeValueAsString(input));
     }
 }

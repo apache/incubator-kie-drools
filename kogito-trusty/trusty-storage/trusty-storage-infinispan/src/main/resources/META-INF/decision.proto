@@ -4,98 +4,14 @@ package org.kie.kogito.trusty.storage.api.model;
 message Decision {
 
     /* @Field(store = Store.YES) */
-    optional string executionType = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string executionId = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string sourceUrl = 3;
-
-    /* @Field(store = Store.YES) */
-    optional string serviceUrl = 4;
+    optional string executionId = 1;
 
     /* @Field(store = Store.YES)
      * @SortableField
      */
-    optional int64 executionTimestamp = 5;
+    optional int64 executionTimestamp = 2;
 
-    /* @Field(store = Store.YES) */
-    optional bool hasSucceeded = 6;
-
-    /* @Field(store = Store.YES) */
-    optional string executorName = 7;
-
-    /* @Field(store = Store.YES) */
-    optional string executedModelName = 8;
-
-    /* @Field(store = Store.YES) */
-    optional string executedModelNamespace = 9;
-
-    /* @Field(store = Store.YES) */
-    repeated DecisionInput inputs = 10;
-
-    /* @Field(store = Store.YES) */
-    repeated DecisionOutcome outcomes = 11;
-}
-
-/* @Indexed */
-message DecisionInput {
-    /* @Field(store = Store.YES) */
-    optional string id = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string name = 2;
-
-    /* @Field(store = Store.YES) */
-    optional TypedVariableWithValue value = 3;
-}
-
-/* @Indexed */
-message DecisionOutcome {
-    /* @Field(store = Store.YES) */
-    optional string outcomeId = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string outcomeName = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string evaluationStatus = 3;
-
-    /* @Field(store = Store.YES) */
-    optional TypedVariableWithValue outcomeResult = 4;
-
-    /* @Field(store = Store.YES) */
-    repeated TypedVariableWithValue outcomeInputs = 5;
-
-    /* @Field(store = Store.YES) */
-    repeated ExecutionMessage messages = 6;
-}
-
-/*
-  This definition corresponds to org.kie.kogito.trusty.storage.api.model.Message model,
-  but it's not named Message as a workaround for an error in infinispan protostream library:
-  using the Message name throws an exception during serialization.
- */
-/* @Indexed */
-message ExecutionMessage {
-    /* @Field(store = Store.YES) */
-    optional string level = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string category = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string type = 3;
-
-    /* @Field(store = Store.YES) */
-    optional string sourceId = 4;
-
-    /* @Field(store = Store.YES) */
-    optional string text = 5;
-
-    /* @Field(store = Store.YES) */
-    optional MessageExceptionField exception = 6;
+    optional string rawObject = 3;
 }
 
 /* @Indexed */
@@ -103,89 +19,12 @@ message LIMEExplainabilityResult {
     /* @Field(store = Store.YES) */
     optional string executionId = 1;
 
-    /* @Field(store = Store.YES) */
-    optional string status = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string statusDetails = 3;
-
-    /* @Field(store = Store.YES) */
-    repeated SaliencyModel saliencies = 4;
-}
-
-/* @Indexed */
-message FeatureImportanceModel {
-    /* @Field(store = Store.YES) */
-    optional string featureName = 1;
-
-    /* @Field(store = Store.YES) */
-    optional double featureScore = 2;
-}
-
-/* @Indexed */
-message MessageExceptionField {
-    /* @Field(store = Store.YES) */
-    optional string className = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string message = 2;
-
-    /* @Field(store = Store.YES) */
-    optional MessageExceptionField cause = 3;
-}
-
-/* @Indexed */
-message SaliencyModel {
-    /* @Field(store = Store.YES) */
-    optional string outcomeId = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string outcomeName = 2;
-
-    /* @Field(store = Store.YES) */
-    repeated FeatureImportanceModel featureImportance = 3;
-}
-
-/* @Indexed */
-message TypedVariableWithValue {
-    /* @Field(store = Store.YES) */
-    optional string kind = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string name = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string typeRef = 3;
-
-    /* @Field(store = Store.YES) */
-    optional string value = 4;
-
-    /* @Field(store = Store.YES) */
-    repeated TypedVariableWithValue components = 5;
+    optional string rawObject = 2;
 }
 
 /* @Indexed */
 message DMNModelWithMetadata {
-    /* @Field(store = Store.YES) */
-    optional string groupId = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string artifactId = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string modelVersion = 3;
-
-    /* @Field(store = Store.YES) */
-    optional string dmnVersion = 4;
-
-    /* @Field(store = Store.YES) */
-    optional string name = 5;
-
-    /* @Field(store = Store.YES) */
-    optional string namespace = 6;
-
-    /* @Field(store = Store.YES) */
-    optional string model = 7;
+    optional string rawObject = 1;
 }
 
 /* @Indexed */
@@ -197,65 +36,7 @@ message CounterfactualExplainabilityRequest {
     /* @Field(store = Store.YES) */
     optional string counterfactualId = 2;
 
-    /* @Field(store = Store.YES) */
-    repeated TypedVariableWithValue goals = 3;
-
-    /* @Field(store = Store.YES) */
-    repeated CounterfactualSearchDomain searchDomains = 4;
-
-}
-
-/* @Indexed */
-message CounterfactualDomain {
-
-    /* @Field(store = Store.YES) */
-    optional string type = 1;
-
-    /* @Field(store = Store.YES) */
-    optional CounterfactualDomainCategorical categorical = 2;
-
-    /* @Field(store = Store.YES) */
-    optional CounterfactualDomainRange range = 3;
-
-}
-
-/* @Indexed */
-message CounterfactualDomainCategorical {
-
-    /* @Field(store = Store.YES) */
-    repeated string categories = 1;
-}
-
-/* @Indexed */
-message CounterfactualDomainRange {
-
-    /* @Field(store = Store.YES) */
-    optional string lowerBound = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string upperBound = 2;
-}
-
-/* @Indexed */
-message CounterfactualSearchDomain {
-
-    /* @Field(store = Store.YES) */
-    optional string kind = 1;
-
-    /* @Field(store = Store.YES) */
-    optional string name = 2;
-
-    /* @Field(store = Store.YES) */
-    optional string typeRef = 3;
-
-    /* @Field(store = Store.YES) */
-    repeated CounterfactualSearchDomain components = 4;
-
-    /* @Field(store = Store.YES) */
-    optional bool isFixed = 5;
-
-    /* @Field(store = Store.YES) */
-    optional CounterfactualDomain domain  = 6;
+    optional string rawObject = 3;
 }
 
 /* @Indexed */
@@ -267,27 +48,5 @@ message CounterfactualExplainabilityResult {
     /* @Field(store = Store.YES) */
     optional string counterfactualId = 2;
 
-    /* @Field(store = Store.YES) */
-    optional string solutionId = 3;
-
-    /* @Field(store = Store.YES) */
-    optional string status = 4;
-
-    /* @Field(store = Store.YES) */
-    optional string statusDetails = 5;
-
-    /* @Field(store = Store.YES) */
-    optional bool isValid = 6;
-
-    /* @Field(store = Store.YES) */
-    optional string stage = 7;
-
-    /* @Field(store = Store.YES) */
-    repeated TypedVariableWithValue inputs = 8;
-
-    /* @Field(store = Store.YES) */
-    repeated TypedVariableWithValue outputs = 9;
-
+    optional string rawObject = 3;
 }
-
-

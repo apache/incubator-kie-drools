@@ -15,50 +15,38 @@
  */
 package org.kie.kogito.trusty.storage.infinispan;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import org.infinispan.protostream.MessageMarshaller;
-import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.storage.api.model.ExplainabilityStatus;
+import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
 import org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.SaliencyModel;
-import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.EnumTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.ListTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult.EXECUTION_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult.STATUS_DETAILS_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult.STATUS_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.LIMEExplainabilityResult.SALIENCIES_FIELD;
+public class LIMEExplainabilityResultMarshallerTest extends MarshallerTestTemplate {
 
-public class LIMEExplainabilityResultMarshallerTest extends MarshallerTestTemplate<LIMEExplainabilityResult> {
+    @Test
+    public void testWriteAndRead() throws IOException {
 
-    private static final List<AbstractTestField<LIMEExplainabilityResult, ?>> TEST_FIELD_LIST = List.of(
-            new StringTestField<>(EXECUTION_ID_FIELD, "ID", BaseExplainabilityResult::getExecutionId, BaseExplainabilityResult::setExecutionId),
-            new EnumTestField<>(STATUS_FIELD, ExplainabilityStatus.SUCCEEDED, BaseExplainabilityResult::getStatus, BaseExplainabilityResult::setStatus, ExplainabilityStatus.class),
-            new StringTestField<>(STATUS_DETAILS_FIELD, "status", BaseExplainabilityResult::getStatusDetails, BaseExplainabilityResult::setStatusDetails),
-            new ListTestField<>(SALIENCIES_FIELD, Collections.emptyList(), LIMEExplainabilityResult::getSaliencies, LIMEExplainabilityResult::setSaliencies, SaliencyModel.class));
+        List<FeatureImportanceModel> featureImportanceModels = Collections.singletonList(new FeatureImportanceModel("aFeature", 0d));
+        List<SaliencyModel> saliencyModels = Collections.singletonList(new SaliencyModel("outcomeId", "outcomeName", featureImportanceModels));
+        LIMEExplainabilityResult limeExplainabilityResult = new LIMEExplainabilityResult("executionId", ExplainabilityStatus.SUCCEEDED, "statusDetail", saliencyModels);
+        LIMEExplainabilityResultMarshaller marshaller = new LIMEExplainabilityResultMarshaller(new ObjectMapper());
 
-    public LIMEExplainabilityResultMarshallerTest() {
-        super(LIMEExplainabilityResult.class);
-    }
+        marshaller.writeTo(writer, limeExplainabilityResult);
+        LIMEExplainabilityResult retrieved = marshaller.readFrom(reader);
 
-    @Override
-    protected LIMEExplainabilityResult buildEmptyObject() {
-        return new LIMEExplainabilityResult();
-    }
-
-    @Override
-    protected MessageMarshaller<LIMEExplainabilityResult> buildMarshaller() {
-        return new LIMEExplainabilityResultMarshaller(new ObjectMapper());
-    }
-
-    @Override
-    protected List<AbstractTestField<LIMEExplainabilityResult, ?>> getTestFieldList() {
-        return TEST_FIELD_LIST;
+        Assertions.assertEquals(limeExplainabilityResult.getExecutionId(), retrieved.getExecutionId());
+        Assertions.assertEquals(limeExplainabilityResult.getStatus(), retrieved.getStatus());
+        Assertions.assertEquals(limeExplainabilityResult.getStatusDetails(), retrieved.getStatusDetails());
+        Assertions.assertEquals(saliencyModels.get(0).getOutcomeId(), retrieved.getSaliencies().get(0).getOutcomeId());
+        Assertions.assertEquals(saliencyModels.get(0).getOutcomeName(), retrieved.getSaliencies().get(0).getOutcomeName());
+        Assertions.assertEquals(featureImportanceModels.get(0).getFeatureName(), retrieved.getSaliencies().get(0).getFeatureImportance().get(0).getFeatureName());
+        Assertions.assertEquals(featureImportanceModels.get(0).getFeatureScore(), retrieved.getSaliencies().get(0).getFeatureImportance().get(0).getFeatureScore());
     }
 }

@@ -16,50 +16,31 @@
 
 package org.kie.kogito.trusty.storage.infinispan;
 
-import java.util.List;
+import java.io.IOException;
 
-import org.infinispan.protostream.MessageMarshaller;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
-import org.kie.kogito.trusty.storage.infinispan.testfield.AbstractTestField;
-import org.kie.kogito.trusty.storage.infinispan.testfield.StringTestField;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.ARTIFACT_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.DMN_VERSION_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.GROUP_ID_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.MODEL_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.MODEL_VERSION_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.NAMESPACE_FIELD;
-import static org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata.NAME_FIELD;
+public class DMNModelWithMetadataMarshallerTest extends MarshallerTestTemplate {
 
-public class DMNModelWithMetadataMarshallerTest extends MarshallerTestTemplate<DMNModelWithMetadata> {
+    @Test
+    public void testWriteAndRead() throws IOException {
 
-    private static final List<AbstractTestField<DMNModelWithMetadata, ?>> TEST_FIELD_LIST = List.of(
-            new StringTestField<>(GROUP_ID_FIELD, "groupId", DMNModelWithMetadata::getGroupId, DMNModelWithMetadata::setGroupId),
-            new StringTestField<>(ARTIFACT_ID_FIELD, "artifactId", DMNModelWithMetadata::getArtifactId, DMNModelWithMetadata::setArtifactId),
-            new StringTestField<>(MODEL_VERSION_FIELD, "modelVersion", DMNModelWithMetadata::getModelVersion, DMNModelWithMetadata::setModelVersion),
-            new StringTestField<>(DMN_VERSION_FIELD, "dmnVersion", DMNModelWithMetadata::getDmnVersion, DMNModelWithMetadata::setDmnVersion),
-            new StringTestField<>(NAME_FIELD, "name", DMNModelWithMetadata::getName, DMNModelWithMetadata::setName),
-            new StringTestField<>(NAMESPACE_FIELD, "namespace", DMNModelWithMetadata::getNamespace, DMNModelWithMetadata::setNamespace),
-            new StringTestField<>(MODEL_FIELD, "model", DMNModelWithMetadata::getModel, DMNModelWithMetadata::setModel));
+        DMNModelWithMetadata dmnModelWithMetadata = new DMNModelWithMetadata("groupId", "artifactId", "version", "dmnVersion", "name", "namespace", "XML_MODEL");
+        DMNModelWithMetadataMarshaller marshaller = new DMNModelWithMetadataMarshaller(new ObjectMapper());
 
-    public DMNModelWithMetadataMarshallerTest() {
-        super(DMNModelWithMetadata.class);
-    }
+        marshaller.writeTo(writer, dmnModelWithMetadata);
+        DMNModelWithMetadata retrieved = marshaller.readFrom(reader);
 
-    @Override
-    protected DMNModelWithMetadata buildEmptyObject() {
-        return new DMNModelWithMetadata();
-    }
-
-    @Override
-    protected MessageMarshaller<DMNModelWithMetadata> buildMarshaller() {
-        return new DMNModelWithMetadataMarshaller(new ObjectMapper());
-    }
-
-    @Override
-    protected List<AbstractTestField<DMNModelWithMetadata, ?>> getTestFieldList() {
-        return TEST_FIELD_LIST;
+        Assertions.assertEquals(dmnModelWithMetadata.getGroupId(), retrieved.getGroupId());
+        Assertions.assertEquals(dmnModelWithMetadata.getArtifactId(), retrieved.getArtifactId());
+        Assertions.assertEquals(dmnModelWithMetadata.getModelVersion(), retrieved.getModelVersion());
+        Assertions.assertEquals(dmnModelWithMetadata.getDmnVersion(), retrieved.getDmnVersion());
+        Assertions.assertEquals(dmnModelWithMetadata.getName(), retrieved.getName());
+        Assertions.assertEquals(dmnModelWithMetadata.getNamespace(), retrieved.getNamespace());
+        Assertions.assertEquals(dmnModelWithMetadata.getModel(), retrieved.getModel());
     }
 }
