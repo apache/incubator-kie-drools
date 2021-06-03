@@ -30,9 +30,7 @@ describe('ExecutionHeader', () => {
     const wrapper = shallow(<ExecutionHeader execution={execution} />);
 
     expect(wrapper).toMatchSnapshot();
-    expect(wrapper.find('.execution-header__uuid').text()).toMatch(
-      'ID# b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000'
-    );
+    expect(wrapper.find('ExecutionId')).toHaveLength(1);
     expect(wrapper.find('Tooltip')).toHaveLength(1);
     expect(wrapper.find('ExecutionStatus')).toHaveLength(1);
     expect(wrapper.find('ExecutionStatus').props().result).toMatch('success');

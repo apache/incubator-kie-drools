@@ -103,15 +103,18 @@ exports[`Breadcrumbs renders outcome details breadcrumbs links 1`] = `
                   }
                 }
               >
-                <span
-                  style={
-                    Object {
-                      "textTransform": "uppercase",
-                    }
-                  }
-                >
-                  ID #
-                  b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000
+                <span>
+                  Execution 
+                  <ExecutionId
+                    id="b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+                  >
+                    <span
+                      className="execution-id"
+                    >
+                      #
+                      b2b0ed8d
+                    </span>
+                  </ExecutionId>
                 </span>
               </AuditDetailBreadcrumb>
             </a>

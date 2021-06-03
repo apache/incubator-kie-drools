@@ -45,7 +45,7 @@ describe('Breadcrumbs', () => {
         .find('li.breadcrumb-item')
         .at(1)
         .text()
-    ).toMatch(`ID #${executionId}`);
+    ).toMatch(`Execution #${executionId.substring(0, 8)}`);
     expect(
       breadcrumbs
         .find('li.breadcrumb-item')

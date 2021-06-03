@@ -33,7 +33,9 @@ exports[`Execution table renders a list of executions 1`] = `
             "title": <Link
               to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae"
             >
-              #B2B0ED8D-C1E2-46B5-AD4F-3AC54FF4BEAE
+              <ExecutionId
+                id="b2b0ed8d-c1e2-46b5-ad4f-3ac54ff4beae"
+              />
             </Link>,
           },
           "LoanEligibility",
@@ -57,7 +59,9 @@ exports[`Execution table renders a list of executions 1`] = `
             "title": <Link
               to="/audit/decision/b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74"
             >
-              #B2B0ED8D-C1E2-46B5-AD4F-3HD83KIDI4U74
+              <ExecutionId
+                id="b2b0ed8d-c1e2-46b5-ad4f-3hd83kidi4u74"
+              />
             </Link>,
           },
           "LoanEligibility",

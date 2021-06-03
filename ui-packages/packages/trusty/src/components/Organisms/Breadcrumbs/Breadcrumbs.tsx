@@ -2,6 +2,7 @@ import React from 'react';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { Breadcrumb, BreadcrumbItem } from '@patternfly/react-core';
 import { RouteComponentProps } from 'react-router-dom';
+import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
 
 const Breadcrumbs = () => {
   const breadcrumbs = useBreadcrumbs(routes, { excludePaths });
@@ -38,7 +39,9 @@ interface AuditDetailBreadcrumbProps
 const AuditDetailBreadcrumb = (props: AuditDetailBreadcrumbProps) => {
   const { match } = props;
   return (
-    <span style={{ textTransform: 'uppercase' }}>ID #{match.params.id}</span>
+    <span>
+      Execution <ExecutionId id={match.params.id} />
+    </span>
   );
 };
 

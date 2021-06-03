@@ -38,8 +38,10 @@ exports[`ExecutionHeader renders the execution info 1`] = `
         <span
           className="execution-header__uuid"
         >
-          ID# 
-          b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000
+          Execution 
+          <ExecutionId
+            id="b2b0ed8d-c1e2-46b5-3ac54ff4beae-1000"
+          />
         </span>
       </Title>
     </FlexItem>
@@ -57,11 +59,13 @@ exports[`ExecutionHeader renders the execution info 1`] = `
                 fullDateAndTime={true}
               />
             </span>
-            <br />
-            <span>
-              Executed by 
-              Technical User
-            </span>
+            <React.Fragment>
+              <br />
+              <span>
+                Executed by 
+                Technical User
+              </span>
+            </React.Fragment>
           </div>
         }
         distance={5}

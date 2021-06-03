@@ -281,13 +281,13 @@ const outcomeDetail = [
         name: 'Credit Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Down Payment',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       },
       {
         name: 'Property',
@@ -298,25 +298,25 @@ const outcomeDetail = [
             name: 'Purchase Price',
             typeRef: 'number',
             value: 34000,
-            components: []
+            components: null
           },
           {
             name: 'Monthly Tax Payment',
             typeRef: 'number',
             value: 0.2,
-            components: []
+            components: null
           },
           {
             name: 'Monthly Insurance Payment',
             typeRef: 'number',
             value: 0.15,
-            components: []
+            components: null
           },
           {
             name: 'Monthly HOA Payment',
             typeRef: 'number',
             value: 0.12,
-            components: []
+            components: null
           },
           {
             name: 'Address',
@@ -327,31 +327,31 @@ const outcomeDetail = [
                 name: 'Street',
                 typeRef: 'string',
                 value: '272 10th St.',
-                components: []
+                components: null
               },
               {
                 name: 'Unit',
                 typeRef: 'string',
                 value: 'A',
-                components: []
+                components: null
               },
               {
                 name: 'City',
                 typeRef: 'string',
                 value: 'Malibu',
-                components: []
+                components: null
               },
               {
                 name: 'State',
                 typeRef: 'string',
                 value: 'CA',
-                components: []
+                components: null
               },
               {
                 name: 'ZIP',
                 typeRef: 'string',
                 value: '90903',
-                components: []
+                components: null
               }
             ]
           }
@@ -367,13 +367,13 @@ const outcomeDetail = [
               name: 'Lender Name',
               value: 'Gordon Cole',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Customer Rating',
               value: 4.2,
               typeRef: 'number',
-              components: []
+              components: null
             }
           ],
           [
@@ -381,13 +381,13 @@ const outcomeDetail = [
               name: 'Lender Name',
               value: 'Dale Cooper',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Customer Rating',
               value: 3.6,
               typeRef: 'number',
-              components: []
+              components: null
             }
           ],
           [
@@ -395,13 +395,13 @@ const outcomeDetail = [
               name: 'Lender Name',
               value: 'Chester Desmond',
               typeRef: 'string',
-              components: []
+              components: null
             },
             {
               name: 'Customer Rating',
               value: 4.6,
               typeRef: 'number',
-              components: []
+              components: null
             }
           ]
         ]
@@ -489,13 +489,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -516,13 +516,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -543,13 +543,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -590,13 +590,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -626,13 +626,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -653,13 +653,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -680,13 +680,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   },
@@ -702,13 +702,13 @@ const outcomeDetail = [
         name: 'Asset Score',
         typeRef: 'number',
         value: 738,
-        components: []
+        components: null
       },
       {
         name: 'Asset Amount',
         typeRef: 'number',
         value: 70000,
-        components: []
+        components: null
       }
     ]
   }

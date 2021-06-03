@@ -1,4 +1,4 @@
-const executionIdBase = require('./executionIdBase');
+const executionIds = require('./executionIds');
 
 const twoSimpleOutcomes = [
   {
@@ -33,7 +33,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1000',
+      executionId: executionIds[0],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -399,7 +399,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1001',
+      executionId: executionIds[1],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -496,7 +496,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1002',
+      executionId: executionIds[2],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -506,7 +506,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1003',
+      executionId: executionIds[3],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -551,7 +551,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1004',
+      executionId: executionIds[4],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -575,7 +575,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1005',
+      executionId: executionIds[5],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -585,7 +585,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1006',
+      executionId: executionIds[6],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -595,7 +595,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1007',
+      executionId: executionIds[7],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -605,7 +605,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1008',
+      executionId: executionIds[8],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'
@@ -615,17 +615,7 @@ const outcome = [
   {
     header: {
       executionDate: '2020-04-16',
-      executionId: executionIdBase + '1009',
-      executionSucceeded: true,
-      executionType: 'DECISION',
-      executorName: 'Technical User'
-    },
-    outcomes: twoSimpleOutcomes
-  },
-  {
-    header: {
-      executionDate: '2020-04-16',
-      executionId: executionIdBase + '1010',
+      executionId: executionIds[9],
       executionSucceeded: true,
       executionType: 'DECISION',
       executorName: 'Technical User'

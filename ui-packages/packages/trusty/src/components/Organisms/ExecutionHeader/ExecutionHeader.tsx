@@ -3,6 +3,7 @@ import { Flex, FlexItem, Title, Tooltip } from '@patternfly/react-core';
 import SkeletonStripe from '../../Atoms/SkeletonStripe/SkeletonStripe';
 import ExecutionStatus from '../../Atoms/ExecutionStatus/ExecutionStatus';
 import FormattedDate from '../../Atoms/FormattedDate/FormattedDate';
+import ExecutionId from '../../Atoms/ExecutionId/ExecutionId';
 import { RemoteData, Execution, RemoteDataStatus } from '../../../types';
 import './ExecutionHeader.scss';
 
@@ -31,7 +32,7 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
           {execution.status === RemoteDataStatus.SUCCESS && (
             <Title size="3xl" headingLevel="h2">
               <span className="execution-header__uuid">
-                ID# {execution.data.executionId}
+                Execution <ExecutionId id={execution.data.executionId} />
               </span>
             </Title>
           )}
@@ -52,8 +53,12 @@ const ExecutionHeader = (props: ExecutionHeaderProps) => {
                       fullDateAndTime={true}
                     />
                   </span>
-                  <br />
-                  <span>Executed by {execution.data.executorName}</span>
+                  {execution.data.executorName && (
+                    <>
+                      <br />
+                      <span>Executed by {execution.data.executorName}</span>
+                    </>
+                  )}
                 </div>
               }
             >
