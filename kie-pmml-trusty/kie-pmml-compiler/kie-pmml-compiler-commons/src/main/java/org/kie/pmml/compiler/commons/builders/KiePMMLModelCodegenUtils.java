@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.builders;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -103,12 +104,14 @@ public class KiePMMLModelCodegenUtils {
     static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(DataDictionary dataDictionary, Model pmmlModel) {
         Map<String, DATA_TYPE> dataTypeMap = dataDictionary.getDataFields().stream()
                 .collect(Collectors.toMap(i -> i.getName().getValue(), i -> DATA_TYPE.byName(i.getDataType().value())));
-        return pmmlModel.getMiningSchema().getMiningFields().stream()
-                .filter(mf -> mf.getMissingValueReplacement() instanceof String)
-                .collect(Collectors.toMap(
-                        mf -> mf.getName().getValue(),
-                        mf -> new Pair<>(dataTypeMap.get(mf.getName().getValue()), (String) mf.getMissingValueReplacement())
-                ));
+        return pmmlModel.getMiningSchema() == null
+                ? Collections.emptyMap()
+                : pmmlModel.getMiningSchema().getMiningFields().stream()
+                        .filter(mf -> mf.getMissingValueReplacement() instanceof String)
+                        .collect(Collectors.toMap(
+                                mf -> mf.getName().getValue(),
+                                mf -> new Pair<>(dataTypeMap.get(mf.getName().getValue()), (String) mf.getMissingValueReplacement())
+                        ));
     }
 
 }

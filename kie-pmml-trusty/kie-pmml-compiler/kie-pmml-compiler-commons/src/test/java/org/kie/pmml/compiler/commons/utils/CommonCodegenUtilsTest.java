@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -187,6 +188,8 @@ public class CommonCodegenUtilsTest {
         NodeList<Statement> statements = inputBody.getStatements();
         assertEquals(inputMap.size(), statements.size());
 
+        List<MethodCallExpr> methodCallExprs = new ArrayList<>(statements.size());
+
         for (Statement statement : statements) {
             assertTrue(statement instanceof ExpressionStmt);
             Expression expression = ((ExpressionStmt) statement).getExpression();
@@ -196,13 +199,8 @@ public class CommonCodegenUtilsTest {
             assertEquals("put", methodCallExpr.getName().asString());
             assertSame(2, methodCallExpr.getArguments().size());
             assertTrue(methodCallExpr.getArgument(0) instanceof StringLiteralExpr);
+            methodCallExprs.add(methodCallExpr);
         }
-
-        List<MethodCallExpr> methodCallExprs = statements.stream()
-                .map(ExpressionStmt.class::cast)
-                .map(ExpressionStmt::getExpression)
-                .map(MethodCallExpr.class::cast)
-                .collect(Collectors.toList());
 
         for (Map.Entry<String, Expression> inputEntry : inputMap.entrySet()) {
             assertEquals("Expected one and only one statement for key \"" + inputEntry.getKey() + "\"", 1,
