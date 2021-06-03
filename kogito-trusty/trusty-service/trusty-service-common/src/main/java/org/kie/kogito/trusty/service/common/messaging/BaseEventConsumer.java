@@ -19,9 +19,11 @@ package org.kie.kogito.trusty.service.common.messaging;
 import java.io.IOException;
 import java.util.concurrent.CompletionStage;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.trusty.service.common.TrustyService;
+import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,20 +38,29 @@ public abstract class BaseEventConsumer<E> {
 
     protected final TrustyService service;
     private final ObjectMapper mapper;
+    private final StorageExceptionsProvider storageExceptionsProvider;
+
+    @ConfigProperty(name = "trusty.messaging.nack_on_any_exception", defaultValue = "false")
+    private boolean failOnAllExceptions;
 
     protected BaseEventConsumer() {
-        this(null, null);
+        this(null, null, null);
     }
 
-    public BaseEventConsumer(final TrustyService service, ObjectMapper mapper) {
+    public BaseEventConsumer(final TrustyService service, ObjectMapper mapper, StorageExceptionsProvider storageExceptionsProvider) {
         this.service = service;
         this.mapper = mapper;
+        this.storageExceptionsProvider = storageExceptionsProvider;
     }
 
     protected CompletionStage<Void> handleMessage(final Message<String> message) {
         try {
             CloudEventUtils.decode(message.getPayload()).ifPresent(this::handleCloudEvent);
         } catch (Exception e) {
+            if (storageExceptionsProvider.isConnectionException(e) || failOnAllExceptions) {
+                LOG.error("A critical exception occurred. A nack is sent and the application will react according to the specified failure strategy.", e);
+                return message.nack(e);
+            }
             LOG.error("Something unexpected happened during the processing of an Event. The event is discarded.", e);
         }
         return message.ack();

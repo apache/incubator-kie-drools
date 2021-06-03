@@ -16,12 +16,15 @@
 
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
+import java.lang.reflect.Field;
+
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
+import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -34,12 +37,14 @@ import static org.mockito.Mockito.when;
 class TraceEventConsumerTest {
 
     private TrustyService trustyService;
+    private StorageExceptionsProvider storageExceptionsProvider;
     private TraceEventConsumer consumer;
 
     @BeforeEach
     void setup() {
         trustyService = mock(TrustyService.class);
-        consumer = new TraceEventConsumer(trustyService, TrustyServiceTestUtils.MAPPER);
+        storageExceptionsProvider = mock(StorageExceptionsProvider.class);
+        consumer = new TraceEventConsumer(trustyService, TrustyServiceTestUtils.MAPPER, storageExceptionsProvider);
     }
 
     @Test
@@ -66,6 +71,30 @@ class TraceEventConsumerTest {
 
         doThrow(new RuntimeException("Something really bad")).when(trustyService).storeDecision(any(String.class), any(Decision.class));
         Assertions.assertDoesNotThrow(() -> consumer.handleMessage(message));
+    }
+
+    @Test
+    void testMessageIsNacked() {
+        when(storageExceptionsProvider.isConnectionException(any(RuntimeException.class))).thenReturn(false);
+        Message<String> message = mockMessage(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID)));
+
+        doThrow(new RuntimeException("Something really bad")).when(trustyService).processDecision(any(String.class), any(Decision.class));
+        consumer.handleMessage(message);
+        verify(message, times(1)).ack();
+    }
+
+    @Test
+    void testMessageIsNackedIfFailOnAnyExceptionPropertyIsTrue() throws NoSuchFieldException, IllegalAccessException {
+        Field member_name = consumer.getClass().getSuperclass().getDeclaredField("failOnAllExceptions");
+        member_name.setAccessible(true);
+        member_name.set(consumer, true);
+
+        when(storageExceptionsProvider.isConnectionException(any(RuntimeException.class))).thenReturn(false);
+        Message<String> message = mockMessage(TrustyServiceTestUtils.buildCloudEventJsonString(TrustyServiceTestUtils.buildCorrectTraceEvent(TrustyServiceTestUtils.CORRECT_CLOUDEVENT_ID)));
+
+        doThrow(new RuntimeException("Something really bad")).when(trustyService).processDecision(any(String.class), any(Decision.class));
+        consumer.handleMessage(message);
+        verify(message, times(1)).nack(any());
     }
 
     @Test

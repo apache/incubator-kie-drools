@@ -41,6 +41,7 @@ import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServ
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
+import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.kie.kogito.trusty.storage.api.model.DecisionInput;
@@ -95,6 +96,7 @@ class ExplainabilityResultConsumerTest {
     private static final LIMEExplainabilityResultDto TEST_RESULT_DTO = LIMEExplainabilityResultDto.buildSucceeded(TEST_EXECUTION_ID, singletonMap(TEST_OUTCOME_1_NAME, TEST_SALIENCY_DTO));
 
     private TrustyService trustyService;
+    private StorageExceptionsProvider storageExceptionsProvider;
     private ExplainabilityResultConsumer consumer;
     private LIMEExplainerServiceHandler limeExplainerServiceHandler;
     private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
@@ -148,13 +150,14 @@ class ExplainabilityResultConsumerTest {
     @SuppressWarnings("unchecked")
     void setup() {
         trustyService = mock(TrustyService.class);
+        storageExceptionsProvider = mock(StorageExceptionsProvider.class);
         trustyStorage = mock(TrustyStorageService.class);
         limeExplainerServiceHandler = new LIMEExplainerServiceHandler(trustyStorage);
         counterfactualExplainerServiceHandler = new CounterfactualExplainerServiceHandler(trustyStorage);
         explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
         explainerServiceHandlerRegistry = new ExplainerServiceHandlerRegistry(explanationHandlers);
-        consumer = new ExplainabilityResultConsumer(trustyService, explainerServiceHandlerRegistry, TrustyServiceTestUtils.MAPPER);
+        consumer = new ExplainabilityResultConsumer(trustyService, explainerServiceHandlerRegistry, TrustyServiceTestUtils.MAPPER, storageExceptionsProvider);
     }
 
     @Test

@@ -27,6 +27,7 @@ import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.messaging.BaseEventConsumer;
+import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
 import org.kie.kogito.trusty.storage.api.model.Decision;
 import org.slf4j.Logger;
@@ -51,10 +52,9 @@ public class ExplainabilityResultConsumer extends BaseEventConsumer<BaseExplaina
     }
 
     @Inject
-    public ExplainabilityResultConsumer(TrustyService service,
-            ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry,
-            ObjectMapper mapper) {
-        super(service, mapper);
+    public ExplainabilityResultConsumer(TrustyService service, ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry, ObjectMapper mapper,
+            StorageExceptionsProvider storageExceptionsProvider) {
+        super(service, mapper, storageExceptionsProvider);
         this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
     }
 

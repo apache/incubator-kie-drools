@@ -27,6 +27,7 @@ import org.kie.kogito.decision.DecisionModelMetadata;
 import org.kie.kogito.tracing.decision.event.model.ModelEvent;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.messaging.BaseEventConsumer;
+import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +49,8 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     }
 
     @Inject
-    public ModelEventConsumer(final TrustyService service, ObjectMapper mapper) {
-        super(service, mapper);
+    public ModelEventConsumer(TrustyService service, ObjectMapper mapper, StorageExceptionsProvider storageExceptionsProvider) {
+        super(service, mapper, storageExceptionsProvider);
     }
 
     @Override
