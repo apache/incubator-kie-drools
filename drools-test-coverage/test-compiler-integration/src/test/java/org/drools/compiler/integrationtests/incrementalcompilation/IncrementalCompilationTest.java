@@ -3006,7 +3006,7 @@ public class IncrementalCompilationTest {
 
                 logger.warn("##### Start!!");
                 
-                for (int i = 1; i < 3; i++) {
+                for (int i = 1; i < 10; i++) {
                     done = new CountDownLatch(1);
                     list.done = done;
 
