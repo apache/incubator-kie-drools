@@ -23,6 +23,7 @@ import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
+import org.kie.dmn.core.impl.BaseDMNTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.Expression;
@@ -63,41 +64,20 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         DMNExpressionEvaluator elseEvaluator = compileExpression(ctx, model, node, exprName + " [else]", expression.getElse());
 
         if (ifEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION,
-                                  "if",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "if",
+                    node.getIdentifierString());
             return null;
         }
 
         if (thenEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION,
-                                  "then",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "then",
+                    node.getIdentifierString());
             return null;
         }
 
         if (elseEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_CONDITION,
-                                  "else",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_CONDITION, "else",
+                    node.getIdentifierString());
             return null;
         }
 
@@ -107,63 +87,40 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     private DMNExpressionEvaluator compileIterator(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Iterator expression) {
 
         if (expression.getVariable() == null || expression.getVariable().length() == 0) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_ITERATOR,
-                                  expression.getTypeRef().toString().toLowerCase(),
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR,
+                    expression.getTypeRef().toString().toLowerCase(), node.getIdentifierString());
             return null;
         }
 
         DMNExpressionEvaluator inEvaluator = null;
         DMNExpressionEvaluator returnEvaluator = null;
 
-        inEvaluator = compileExpression(ctx, model, node, exprName +" [in]", expression.getIn());
+        inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn());
 
         try {
             ctx.enterFrame();
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
-            DMNType elementType = outputType;
-            // TODO why was this needed?
-            //            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
-            //                elementType = elementType.clone();
-            //                ((BaseDMNTypeImpl)elementType).setCollection(false);
-            //            }
+            DMNType elementType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getIn().getTypeRef());
+            if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
+                elementType = ((BaseDMNTypeImpl) elementType).getBaseType();
+            }
 
             ctx.setVariable(expression.getVariable(), elementType != null ? elementType : model.getTypeRegistry().unknown());
             ctx.setVariable("partial", outputType != null ? outputType : model.getTypeRegistry().unknown());
-            returnEvaluator = compileExpression(ctx, model, node, exprName  +" [return]", expression.getReturn());
+            returnEvaluator = compileExpression(ctx, model, node, exprName + " [return]", expression.getReturn());
         } finally {
             ctx.exitFrame();
         }
 
         if (inEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_ITERATOR,
-                                  "in",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR, "in",
+                    node.getIdentifierString());
             return null;
         }
 
         if (returnEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_ITERATOR,
-                                  expression.getIteratorType() == IteratorType.FOR ? "return" : "satisfies",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_ITERATOR,
+                    expression.getIteratorType() == IteratorType.FOR ? "return" : "satisfies", node.getIdentifierString());
             return null;
         }
 
@@ -171,7 +128,7 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     private DMNExpressionEvaluator compileFilter(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Filter expression) {
-        DMNExpressionEvaluator inEvaluator = compileExpression(ctx, model, node, exprName  +" [in]", expression.getIn());
+        DMNExpressionEvaluator inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn());
         DMNExpressionEvaluator filterEvaluator;
 
         try {
@@ -179,44 +136,28 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
             DMNType elementType = outputType;
-            // TODO why was this needed?
-            //            if (outputType != null && outputType.isCollection() && outputType instanceof BaseDMNTypeImpl) {
-            //                elementType = elementType.clone();
-            //                ((BaseDMNTypeImpl)elementType).setCollection(false);
-            //            }
+            if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
+                elementType = ((BaseDMNTypeImpl) elementType).getBaseType();
+            }
 
             ctx.setVariable("item", elementType != null ? elementType : model.getTypeRegistry().unknown());
             if (elementType != null && elementType.isComposite()) {
                 elementType.getFields().forEach((k, v) -> ctx.setVariable(k, v != null ? v : model.getTypeRegistry().unknown()));
             }
-            filterEvaluator = compileExpression(ctx, model, node, exprName  +" [filter]", expression.getMatch());
+            filterEvaluator = compileExpression(ctx, model, node, exprName + " [filter]", expression.getMatch());
         } finally {
             ctx.exitFrame();
         }
 
         if (inEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_FILTER,
-                                  "in",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_FILTER, "in",
+                    node.getIdentifierString());
             return null;
         }
 
         if (filterEvaluator == null) {
-            MsgUtil.reportMessage(logger,
-                                  DMNMessage.Severity.ERROR,
-                                  node.getSource(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.MISSING_EXPRESSION_FOR_FILTER,
-                                  "filter",
-                                  node.getIdentifierString());
+            MsgUtil.reportMessage(logger, DMNMessage.Severity.ERROR, node.getSource(), model, null, null, Msg.MISSING_EXPRESSION_FOR_FILTER, "filter",
+                    node.getIdentifierString());
             return null;
         }
 

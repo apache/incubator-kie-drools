@@ -42,7 +42,11 @@ public class IteratorConverter extends ExpressionConverter implements ConverterD
         Iterator filter = (Iterator) parent;
 
         if (IN.equals(nodeName)) {
-            filter.setIn(((NamedExpression) child).getExpression());
+            Expression expression = ((NamedExpression) child).getExpression();
+            if (((NamedExpression) child).getTypeRef() != null) {
+                expression.setTypeRef(((NamedExpression) child).getTypeRef());
+            }
+            filter.setIn(expression);
         } else if (RETURN.equals(nodeName)) {
             filter.setReturn(((NamedExpression) child).getExpression());
         } else {
@@ -78,7 +82,7 @@ public class IteratorConverter extends ExpressionConverter implements ConverterD
     protected void writeChildren(HierarchicalStreamWriter writer, MarshallingContext context, Object parent) {
         super.writeChildren(writer, context, parent);
         Iterator it = (Iterator) parent;
-        writeChildrenNode(writer, context, new TNamedExpression(IN, it.getIn()), IN);
+        writeChildrenNode(writer, context, new TNamedExpression(IN, it.getIn(), it.getTypeRef()), IN);
         writeChildrenNode(writer, context, new TNamedExpression(RETURN, it.getReturn()), RETURN);
     }
 
