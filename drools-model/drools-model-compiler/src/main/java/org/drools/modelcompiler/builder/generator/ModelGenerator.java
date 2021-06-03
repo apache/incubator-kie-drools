@@ -202,7 +202,7 @@ public class ModelGenerator {
         }
 
         RuleUnitDescription ruleUnitDescr = context.getRuleUnitDescr();
-        BlockStmt ruleVariablesBlock = new BlockStmt();
+        BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
 
         if (isLegacyRuleUnit()) {
             createUnitData( context, ruleUnitDescr, ruleVariablesBlock );
@@ -524,6 +524,8 @@ public class ModelGenerator {
         }
 
         AssignExpr var_assign = new AssignExpr(var_, declarationOfCall, AssignExpr.Operator.ASSIGN);
-        ruleBlock.addStatement(var_assign);
+        if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, var_assign)) {
+            ruleBlock.addStatement(var_assign);
+        }
     }
 }

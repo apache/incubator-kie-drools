@@ -920,6 +920,10 @@ public class DrlxParseUtil {
         return exprType == Boolean.class || exprType == boolean.class;
     }
 
+    public static boolean hasDuplicateExpr(BlockStmt ruleBlock, Expression expr) {
+        return ruleBlock.findFirst(expr.getClass(), expr::equals).isPresent();
+    }
+
     private DrlxParseUtil() {
         // It is not allowed to create instances of util classes.
     }
