@@ -18,11 +18,9 @@ package org.drools.impact.analysis.integrationtests;
 
 import java.io.IOException;
 
-import org.assertj.core.api.Assertions;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.GraphCollapsionHelper;
 import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
-import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.Node.Status;
@@ -108,24 +106,13 @@ public class GraphCollapsionTest extends AbstractGraphTest {
 
         Graph collapsedGraph = new GraphCollapsionHelper().collapseWithRuleNamePrefix(graph);
 
-
         generatePng(collapsedGraph);
 
         assertEquals(3, collapsedGraph.getNodeMap().size());
-        Node node1 = collapsedGraph.getNodeMap().get("mypkg.CustomerCheck");
-        Node node2 = collapsedGraph.getNodeMap().get("mypkg.PriceCheck");
-        Node node3 = collapsedGraph.getNodeMap().get("mypkg.StatusCheck");
 
-        assertEquals("CustomerCheck", node1.getRuleName());
-        Assertions.assertThat(node1.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node1, node2, ReactivityType.POSITIVE),
-                                                                                  new Link(node1, node2, ReactivityType.NEGATIVE));
-
-        assertEquals("PriceCheck", node2.getRuleName());
-        Assertions.assertThat(node2.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node2, node3, ReactivityType.POSITIVE),
-                                                                                  new Link(node2, node3, ReactivityType.NEGATIVE));
-
-        assertEquals("StatusCheck", node3.getRuleName());
-        Assertions.assertThat(node3.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node3, node2, ReactivityType.NEGATIVE));
+        assertLink(collapsedGraph, "mypkg.CustomerCheck", "mypkg.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
+        assertLink(collapsedGraph, "mypkg.PriceCheck", "mypkg.StatusCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
+        assertLink(collapsedGraph, "mypkg.StatusCheck", "mypkg.PriceCheck", ReactivityType.NEGATIVE);
 
         //--- impact analysis
         // Assuming that "modify" action in PriceCheck_X is changed
@@ -162,20 +149,10 @@ public class GraphCollapsionTest extends AbstractGraphTest {
         generatePng(collapsedGraph, "_collapsed");
 
         assertEquals(3, collapsedGraph.getNodeMap().size());
-        Node node1 = collapsedGraph.getNodeMap().get("mypkg2.CustomerCheck");
-        Node node2 = collapsedGraph.getNodeMap().get("mypkg2.PriceCheck");
-        Node node3 = collapsedGraph.getNodeMap().get("mypkg2.StatusCheck");
 
-        assertEquals("CustomerCheck", node1.getRuleName());
-        Assertions.assertThat(node1.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node1, node2, ReactivityType.POSITIVE),
-                                                                                  new Link(node1, node2, ReactivityType.NEGATIVE));
-
-        assertEquals("PriceCheck", node2.getRuleName());
-        Assertions.assertThat(node2.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node2, node3, ReactivityType.POSITIVE),
-                                                                                  new Link(node2, node3, ReactivityType.NEGATIVE));
-
-        assertEquals("StatusCheck", node3.getRuleName());
-        Assertions.assertThat(node3.getOutgoingLinks()).containsExactlyInAnyOrder(new Link(node3, node2, ReactivityType.NEGATIVE));
+        assertLink(collapsedGraph, "mypkg2.CustomerCheck", "mypkg2.PriceCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
+        assertLink(collapsedGraph, "mypkg2.PriceCheck", "mypkg2.StatusCheck", ReactivityType.POSITIVE, ReactivityType.NEGATIVE);
+        assertLink(collapsedGraph, "mypkg2.StatusCheck", "mypkg2.PriceCheck", ReactivityType.NEGATIVE);
 
         //--- impact analysis
         // Assuming that "modify" action in PriceCheck_X is changed

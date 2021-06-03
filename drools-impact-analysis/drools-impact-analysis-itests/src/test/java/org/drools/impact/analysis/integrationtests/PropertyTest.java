@@ -58,7 +58,7 @@ public class PropertyTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -85,7 +85,7 @@ public class PropertyTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }

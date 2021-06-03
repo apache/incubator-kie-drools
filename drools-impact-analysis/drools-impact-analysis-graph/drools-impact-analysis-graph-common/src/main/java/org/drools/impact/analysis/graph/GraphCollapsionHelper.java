@@ -27,12 +27,17 @@ public class GraphCollapsionHelper {
 
     private static final Pattern PREFIX_PATTERN = Pattern.compile("(.*)_\\d*");
 
-    private boolean positiveOnly = false;
+    private LinkFilter linkFilter = LinkFilter.ALL;
 
     public GraphCollapsionHelper() {}
 
+    // will be deprecated
     public GraphCollapsionHelper(boolean positiveOnly) {
-        this.positiveOnly = positiveOnly;
+        this.linkFilter = LinkFilter.POSITIVE;
+    }
+
+    public GraphCollapsionHelper(LinkFilter linkFilter) {
+        this.linkFilter = linkFilter;
     }
 
     /**
@@ -68,9 +73,7 @@ public class GraphCollapsionHelper {
                 Node sourceCollapsedNode = collapsedNodeMap.get(prefixedKey);
                 Node target = link.getTarget();
                 Node targetCollapsedNode = collapsedNodeMap.get(getPrefix(target.getFqdn()));
-                if (positiveOnly && type != ReactivityType.POSITIVE) {
-                    // don't link
-                } else {
+                if (linkFilter.accept(type)) {
                     Node.linkNodes(sourceCollapsedNode, targetCollapsedNode, type);
                 }
             });
