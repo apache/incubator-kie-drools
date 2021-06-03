@@ -37,6 +37,7 @@ import org.drools.compiler.kproject.models.KieSessionModelImpl;
 import org.drools.compiler.management.KieContainerMonitor;
 import org.drools.core.SessionConfiguration;
 import org.drools.core.SessionConfigurationImpl;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
@@ -295,6 +296,7 @@ public class KieContainerImpl
                                                                           )))
                         .forEach(compositeUpdater::add);
 
+                if (DefaultAgenda.DEBUG) { log.warn("before kBase.enqueueModification()"); }
                 kBase.enqueueModification(compositeUpdater);
 
             }

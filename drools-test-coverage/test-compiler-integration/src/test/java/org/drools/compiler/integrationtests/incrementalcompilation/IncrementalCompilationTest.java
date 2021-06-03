@@ -35,6 +35,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.ClassObjectFilter;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -71,6 +72,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.BatchExecutionCommand;
 import org.kie.api.command.Command;
 import org.kie.api.command.KieCommands;
+import org.kie.api.concurrent.KieExecutors;
 import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
@@ -89,6 +91,8 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.command.CommandFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
 
@@ -103,6 +107,8 @@ import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class IncrementalCompilationTest {
+
+    Logger logger = LoggerFactory.getLogger(IncrementalCompilationTest.class);
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
@@ -2961,55 +2967,68 @@ public class IncrementalCompilationTest {
         assertEquals(2, fired);
     }
 
-    @Test(timeout = 20000L)
+//    @Test(timeout = 20000L)
+    @Test(timeout = 60000L)
     public void testMultipleIncrementalCompilationsWithFireUntilHalt() throws Exception {
-        if (ClassUtils.isWindows()) {
-            // To be fixed : See DROOLS-6364
-            return;
-        }
+//        if (ClassUtils.isWindows()) {
+//            // To be fixed : See DROOLS-6364
+//            return;
+//        }
 
-        // DROOLS-1406
-        final KieServices ks = KieServices.Factory.get();
-
-        // Create an in-memory jar for version 1.0.0
-        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1.0");
-        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(0));
-
-        // Create a session and fire rules
-        final KieContainer kc = ks.newKieContainer(releaseId1);
-        final KieSession kieSession = kc.newKieSession();
-
-        final DebugList<String> list = new DebugList<>();
-        kieSession.setGlobal("list", list);
-        kieSession.insert(new Message("X"));
-
-        CountDownLatch done = new CountDownLatch(1);
-        list.done = done;
-
+        DefaultAgenda.DEBUG = true;
         try {
-            new Thread(kieSession::fireUntilHalt).start();
 
-            done.await();
-            assertEquals(1, list.size());
-            assertEquals("0 - X", list.get(0));
-            list.clear();
+            // DROOLS-1406
+            final KieServices ks = KieServices.Factory.get();
 
-            for (int i = 1; i < 10; i++) {
-                done = new CountDownLatch(1);
-                list.done = done;
+            // Create an in-memory jar for version 1.0.0
+            final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1.0");
+            KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(0));
 
-                final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
-                KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(i));
+            // Create a session and fire rules
+            final KieContainer kc = ks.newKieContainer(releaseId1);
+            final KieSession kieSession = kc.newKieSession();
 
-                kc.updateToVersion(releaseIdI);
+            final DebugList<String> list = new DebugList<>();
+            kieSession.setGlobal("list", list);
+            kieSession.insert(new Message("X"));
+
+            CountDownLatch done = new CountDownLatch(1);
+            list.done = done;
+
+            try {
+                new Thread(kieSession::fireUntilHalt).start();
 
                 done.await();
                 assertEquals(1, list.size());
-                assertEquals(i + " - X", list.get(0));
+                assertEquals("0 - X", list.get(0));
                 list.clear();
+
+                logger.warn("##### Start!!");
+                
+                for (int i = 1; i < 3; i++) {
+                    done = new CountDownLatch(1);
+                    list.done = done;
+
+                    final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
+                    KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHalt(i));
+
+                    logger.warn("++++ before kc.updateToVersion()");
+                    kc.updateToVersion(releaseIdI);
+                    logger.warn("++++ after kc.updateToVersion()");
+
+                    done.await();
+                    logger.warn("---- after done.await()");
+                    assertEquals(1, list.size());
+                    assertEquals(i + " - X", list.get(0));
+                    list.clear();
+                }
+            } finally {
+                kieSession.halt();
             }
+
         } finally {
-            kieSession.halt();
+            DefaultAgenda.DEBUG = false;
         }
     }
 

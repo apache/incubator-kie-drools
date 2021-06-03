@@ -21,6 +21,7 @@ import java.util.List;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
 import org.drools.core.base.ClassObjectType;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -51,6 +52,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
 
     @Override
     public void run() {
+        if (DefaultAgenda.DEBUG) { log.warn("start KieBaseUpdaterImpl.run()"); }
         InternalKnowledgeBuilder kbuilder = ctx.kbuilder;
 
         CompositeKnowledgeBuilder ckbuilder = kbuilder.batch();
@@ -84,6 +86,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         ctx.kBase.setResolvedReleaseId(ctx.newReleaseId);
 
         for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
+            if (DefaultAgenda.DEBUG) { log.warn("before notifyWaitOnRest()"); }
             wm.notifyWaitOnRest();
         }
     }

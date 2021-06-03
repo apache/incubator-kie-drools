@@ -46,6 +46,7 @@ import org.drools.core.SessionConfigurationImpl;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.BaseNode;
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.DroolsObjectInput;
 import org.drools.core.common.DroolsObjectInputStream;
 import org.drools.core.common.DroolsObjectOutputStream;
@@ -747,6 +748,7 @@ public class KnowledgeBaseImpl
             try {
                 modification.run();
             } finally {
+                if (DefaultAgenda.DEBUG) { logger.warn("before unlockAndActivate()"); }
                 unlockAndActivate();
             }
         } else {

@@ -17,6 +17,7 @@ package org.drools.core.phreak;
 
 import java.util.Iterator;
 
+import org.drools.core.common.DefaultAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,6 +72,7 @@ public class SynchronizedPropagationList implements PropagationList {
         if ( head == null ) {
             head = entry;
             if (firingUntilHalt) {
+                if (DefaultAgenda.DEBUG) { log.warn("internalAddEntry() : entry = " + entry); }
                 notifyWaitOnRest();
             }
         } else {
@@ -138,6 +140,7 @@ public class SynchronizedPropagationList implements PropagationList {
 
     @Override
     public synchronized void notifyWaitOnRest() {
+        if (DefaultAgenda.DEBUG) { log.warn("notifyWaitOnRest()"); }
         notifyAll();
         workingMemory.onResume();
     }

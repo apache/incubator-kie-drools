@@ -445,7 +445,9 @@ public class RuleExecutor {
 
             RuleEventListenerSupport ruleEventSupport = wm.getRuleEventSupport();
             ruleEventSupport.onBeforeMatchFire( activation );
+            if (DefaultAgenda.DEBUG) { log.warn("before consequence.evaluate()"); }
             consequence.evaluate(knowledgeHelper, wm);
+            if (DefaultAgenda.DEBUG) { log.warn("after consequence.evaluate()"); }
             ruleEventSupport.onAfterMatchFire( activation );
 
             activation.setActive(false);

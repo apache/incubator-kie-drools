@@ -88,6 +88,8 @@ public class DefaultAgenda
         Externalizable,
         InternalAgenda {
 
+    public static boolean DEBUG = false;
+    
     public static final String ON_BEFORE_ALL_FIRES_CONSEQUENCE_NAME = "$onBeforeAllFire$";
     public static final String ON_AFTER_ALL_FIRES_CONSEQUENCE_NAME = "$onAfterAllFire$";
     public static final String ON_DELETE_MATCH_CONSEQUENCE_NAME = "$onDeleteMatch$";
@@ -780,6 +782,7 @@ public class DefaultAgenda
         if ( log.isTraceEnabled() ) {
             log.trace("Starting Fire Until Halt");
         }
+        if (DEBUG) { log.warn("executionStateMachine.getCurrentState()" + executionStateMachine.getCurrentState()); }
         if (executionStateMachine.toFireUntilHalt()) {
             internalFireUntilHalt( agendaFilter, true );
         }
@@ -791,6 +794,7 @@ public class DefaultAgenda
     void internalFireUntilHalt( AgendaFilter agendaFilter, boolean isInternalFire ) {
         propagationList.setFiringUntilHalt( true );
         try {
+            if (DEBUG) { log.warn("before fireLoop()"); }
             fireLoop( agendaFilter, -1, RestHandler.FIRE_UNTIL_HALT, isInternalFire );
         } finally {
             propagationList.setFiringUntilHalt( false );
@@ -934,8 +938,11 @@ public class DefaultAgenda
                     if (head == null && (
                             agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.FIRING_UNTIL_HALT ||
                             agenda.executionStateMachine.getCurrentState() == ExecutionStateMachine.ExecutionState.INACTIVE_ON_FIRING_UNTIL_HALT )) {
+                        if (DEBUG) { log.warn("before waitOnRest()"); }
                         agenda.propagationList.waitOnRest();
+                        if (DEBUG) { log.warn("after waitOnRest()"); }
                         head = agenda.propagationList.takeAll();
+                        if (DEBUG) { log.warn("  head = " + head); }
                     }
                 }
 
@@ -981,6 +988,7 @@ public class DefaultAgenda
 
     @Override
     public void activate() {
+        if (DEBUG) { log.warn("before executionStateMachine.activate() : propagationList.isEmpty() = " + propagationList.isEmpty()); }
         executionStateMachine.activate(this, propagationList);
     }
 
@@ -1329,8 +1337,10 @@ public class DefaultAgenda
         }
 
         public void activate(DefaultAgenda agenda, PropagationList propagationList) {
+            if (DEBUG) { log.warn("  currentState = " + currentState); }
             if ( currentState.isAlive() ) {
                 immediateHalt( propagationList );
+                if (DEBUG) { log.warn("  wasFiringUntilHalt = " + wasFiringUntilHalt); }
                 if ( wasFiringUntilHalt ) {
                     wasFiringUntilHalt = false;
                     agenda.fireUntilHalt();
@@ -1363,6 +1373,7 @@ public class DefaultAgenda
 
         private void pauseFiringUntilHalt() {
             if ( currentState == ExecutionState.FIRING_UNTIL_HALT) {
+                if (DEBUG) { log.warn("pauseFiringUntilHalt() : wasFiringUntilHalt -> true", new Exception("DEBUG")); }
                 wasFiringUntilHalt = true;
                 setCurrentState( ExecutionState.HALTING );
                 waitInactive();
