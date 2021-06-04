@@ -1012,7 +1012,7 @@ public class TimerAndCalendarTest {
         try {
             System.out.println("+++ First fire ");
             ksession.fireAllRules();
-            Thread.sleep(200);
+            Thread.sleep(1000);
             System.out.println("+++ Waited 200ms, second fire ");
             ksession.fireAllRules(); // fires insert A
             Thread.sleep(2000);
