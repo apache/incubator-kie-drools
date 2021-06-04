@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -40,6 +39,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.MiningSchema;
@@ -124,7 +124,7 @@ public class KiePMMLRegressionModelFactoryTest {
         dataFields = new ArrayList<>();
         miningFields = new ArrayList<>();
         fieldNames.forEach(fieldName -> {
-            dataFields.add(getDataField(fieldName, OpType.CATEGORICAL));
+            dataFields.add(getDataField(fieldName, OpType.CATEGORICAL, DataType.STRING));
             miningFields.add(getMiningField(fieldName, MiningField.UsageType.ACTIVE));
         });
         targetMiningField = miningFields.get(0);

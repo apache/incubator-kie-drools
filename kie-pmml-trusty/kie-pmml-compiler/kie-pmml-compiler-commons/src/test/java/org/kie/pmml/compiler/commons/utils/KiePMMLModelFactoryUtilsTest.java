@@ -58,11 +58,11 @@ import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.api.enums.RESULT_FEATURE;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -139,7 +139,8 @@ public class KiePMMLModelFactoryUtilsTest {
                                                             constructorDeclaration,
                                                             name,
                                                             miningFields,
-                                                            outputFields);
+                                                            outputFields,
+                                                            Collections.emptyMap());
         commonVerifySuperInvocation(generatedClassName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(), "miningFields",
                                                                "add");
