@@ -139,7 +139,8 @@ public class KiePMMLModelFactoryUtilsTest {
                                                             constructorDeclaration,
                                                             name,
                                                             miningFields,
-                                                            outputFields, Collections.emptyMap());
+                                                            outputFields,
+                                                            Collections.emptyMap());
         commonVerifySuperInvocation(generatedClassName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(), "miningFields",
                                                                "add");

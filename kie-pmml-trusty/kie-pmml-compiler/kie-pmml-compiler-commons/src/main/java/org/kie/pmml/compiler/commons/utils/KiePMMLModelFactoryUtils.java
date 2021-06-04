@@ -155,7 +155,8 @@ public class KiePMMLModelFactoryUtils {
      * @param localTransformations
      */
     public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate,
-                                                                       final TransformationDictionary transformationDictionary, final LocalTransformations localTransformations) {
+                                                                       final TransformationDictionary transformationDictionary,
+                                                                       final LocalTransformations localTransformations) {
         final AtomicInteger arityCounter = new AtomicInteger(0);
         final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap =
                 (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
