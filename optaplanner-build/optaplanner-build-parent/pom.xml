@@ -29,7 +29,7 @@
     <version.commons-io>2.8.0</version.commons-io>
     <version.com.fasterxml.jackson.core>2.12.3</version.com.fasterxml.jackson.core>
     <version.com.h2database>1.4.197</version.com.h2database>
-    <version.com.thoughtworks.xstream>1.4.16</version.com.thoughtworks.xstream>
+    <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.io.quarkus>1.13.4.Final</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.7.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.1</version.org.ow2.asm>
