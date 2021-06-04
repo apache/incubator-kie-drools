@@ -53,7 +53,10 @@ const TrustyApp = () => {
   const PageNav = (
     <Nav aria-label="Nav" theme="dark">
       <NavList>
-        <NavItem isActive={location.pathname.startsWith('/audit')}>
+        <NavItem
+          isActive={location.pathname.startsWith('/audit')}
+          ouiaId="audit-item"
+        >
           <NavLink to="/audit">Audit Investigation</NavLink>
         </NavItem>
       </NavList>

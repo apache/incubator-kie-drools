@@ -29,6 +29,7 @@ exports[`Audit top toolbar renders correctly 1`] = `
         <InputGroup>
           <TextInput
             aria-label="search executions"
+            data-ouia-component-id="search-input"
             id="audit-search-input"
             name="audit-search-input"
             onKeyDown={[Function]}
@@ -39,6 +40,7 @@ exports[`Audit top toolbar renders correctly 1`] = `
             aria-label="search button for search input"
             id="audit-search"
             onClick={[Function]}
+            ouiaId="search-button"
             variant="control"
           >
             <SearchIcon
@@ -95,6 +97,7 @@ exports[`Audit top toolbar renders correctly 1`] = `
             aria-label="Refresh"
             id="executions-refresh"
             onClick={[Function]}
+            ouiaId="refresh-button"
             title="Refresh"
             variant="plain"
           >
@@ -115,6 +118,7 @@ exports[`Audit top toolbar renders correctly 1`] = `
       showClearFiltersButton={false}
     >
       <ToolbarItem
+        data-ouia-component-id="top-pagination"
         variant="pagination"
       >
         <PaginationContainer

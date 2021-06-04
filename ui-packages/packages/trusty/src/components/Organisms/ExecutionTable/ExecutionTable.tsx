@@ -34,7 +34,12 @@ const ExecutionTable = (props: ExecutionTableProps) => {
   }, [data, columns.length]);
 
   return (
-    <Table cells={columns} rows={rows} aria-label="Executions list">
+    <Table
+      cells={columns}
+      rows={rows}
+      aria-label="Executions list"
+      ouiaId="exec-table"
+    >
       <TableHeader />
       <TableBody rowKey="executionKey" />
     </Table>
