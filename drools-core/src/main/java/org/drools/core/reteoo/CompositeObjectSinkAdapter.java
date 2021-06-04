@@ -556,15 +556,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         // Range indexing
-        if (this.rangeIndexedFieldIndexes != null) {
+        if (this.rangeIndexMap != null) {
             // Iterate the FieldIndexes to see if any are range indexed
-            for (FieldIndex fieldIndex : this.rangeIndexedFieldIndexes) {
-                if (!fieldIndex.isRangeIndexed()) {
+            for (Map.Entry<FieldIndex, AlphaRangeIndex> entry : this.rangeIndexMap.entrySet()) {
+                if (!entry.getKey().isRangeIndexed()) {
                     continue;
                 }
-                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateAssertObject(factHandle, context, workingMemory);
                 }
@@ -627,15 +625,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         // Range indexing
-        if (this.rangeIndexedFieldIndexes != null) {
+        if (this.rangeIndexMap != null) {
             // Iterate the FieldIndexes to see if any are range indexed
-            for (FieldIndex fieldIndex : this.rangeIndexedFieldIndexes) {
-                if (!fieldIndex.isRangeIndexed()) {
+            for (Map.Entry<FieldIndex, AlphaRangeIndex> entry : this.rangeIndexMap.entrySet()) {
+                if (!entry.getKey().isRangeIndexed()) {
                     continue;
                 }
-                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
                     // go straight to the AlphaNode's propagator, as we know it's true and no need to retest
                     sink.getObjectSinkPropagator().propagateModifyObject(factHandle, modifyPreviousTuples, context, workingMemory);
                 }
@@ -699,15 +695,13 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
         }
 
         // Range indexing
-        if (this.rangeIndexedFieldIndexes != null) {
+        if (this.rangeIndexMap != null) {
             // Iterate the FieldIndexes to see if any are range indexed
-            for (FieldIndex fieldIndex : this.rangeIndexedFieldIndexes) {
-                if (!fieldIndex.isRangeIndexed()) {
+            for (Map.Entry<FieldIndex, AlphaRangeIndex> entry : this.rangeIndexMap.entrySet()) {
+                if (!entry.getKey().isRangeIndexed()) {
                     continue;
                 }
-                AlphaRangeIndex alphaRangeIndex = this.rangeIndexMap.get(fieldIndex);
-                Collection<AlphaNode> alphaNodes = alphaRangeIndex.getMatchingAlphaNodes(object);
-                for (AlphaNode sink : alphaNodes) {
+                for (AlphaNode sink : entry.getValue().getMatchingAlphaNodes(object)) {
                     sink.getObjectSinkPropagator().byPassModifyToBetaNode(factHandle, modifyPreviousTuples, context, workingMemory);
                 }
             }
