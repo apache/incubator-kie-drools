@@ -32,6 +32,7 @@ import java.util.stream.IntStream;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
 import org.optaplanner.core.api.domain.common.DomainAccessType;
 import org.optaplanner.core.api.score.ScoreManager;
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
@@ -68,6 +69,7 @@ import org.springframework.test.context.TestExecutionListeners;
 public class OptaPlannerAutoConfigurationTest {
 
     private final ApplicationContextRunner contextRunner;
+    private final ApplicationContextRunner benchmarkContextRunner;
     private final ApplicationContextRunner noConstraintsContextRunner;
     private final ApplicationContextRunner chainedContextRunner;
     private final ApplicationContextRunner gizmoContextRunner;
@@ -79,6 +81,10 @@ public class OptaPlannerAutoConfigurationTest {
     public OptaPlannerAutoConfigurationTest() {
         contextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
+                .withUserConfiguration(NormalSpringTestConfiguration.class);
+        benchmarkContextRunner = new ApplicationContextRunner()
+                .withConfiguration(
+                        AutoConfigurations.of(OptaPlannerAutoConfiguration.class, OptaPlannerBenchmarkAutoConfiguration.class))
                 .withUserConfiguration(NormalSpringTestConfiguration.class);
         noConstraintsContextRunner = new ApplicationContextRunner()
                 .withConfiguration(AutoConfigurations.of(OptaPlannerAutoConfiguration.class))
@@ -269,6 +275,24 @@ public class OptaPlannerAutoConfigurationTest {
                     TestdataSpringSolution solution = solverJob.getFinalBestSolution();
                     assertThat(solution).isNotNull();
                     assertThat(solution.getScore().getScore()).isGreaterThanOrEqualTo(0);
+                });
+    }
+
+    @Test
+    public void benchmark() {
+        benchmarkContextRunner
+                .withClassLoader(allDefaultsFilteredClassLoader)
+                .withPropertyValues("optaplanner.solver.termination.best-score-limit=0")
+                .run(context -> {
+                    PlannerBenchmarkFactory benchmarkFactory = context.getBean(PlannerBenchmarkFactory.class);
+                    TestdataSpringSolution problem = new TestdataSpringSolution();
+                    problem.setValueList(IntStream.range(1, 3)
+                            .mapToObj(i -> "v" + i)
+                            .collect(Collectors.toList()));
+                    problem.setEntityList(IntStream.range(1, 3)
+                            .mapToObj(i -> new TestdataSpringEntity())
+                            .collect(Collectors.toList()));
+                    benchmarkFactory.buildPlannerBenchmark(problem).benchmark();
                 });
     }
 

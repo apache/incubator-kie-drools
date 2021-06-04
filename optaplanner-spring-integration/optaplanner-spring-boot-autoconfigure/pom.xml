@@ -40,6 +40,13 @@
       <optional>true</optional>
     </dependency>
 
+    <!-- Need this so we can @Autowire Benchmark -->
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-benchmark</artifactId>
+      <optional>true</optional>
+    </dependency>
+
     <dependency>
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-persistence-jackson</artifactId>

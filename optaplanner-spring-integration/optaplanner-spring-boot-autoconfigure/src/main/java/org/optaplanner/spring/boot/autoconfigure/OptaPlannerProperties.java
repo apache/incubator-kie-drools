@@ -28,6 +28,8 @@ public class OptaPlannerProperties {
     public static final String DEFAULT_SOLVER_CONFIG_URL = "solverConfig.xml";
     public static final String DEFAULT_CONSTRAINTS_DRL_URL = "constraints.drl";
     public static final String SCORE_DRL_PROPERTY = "optaplanner.score-drl";
+    public static final String DEFAULT_BENCHMARK_RESULT_DIRECTORY = "target/benchmarks";
+    public static final String DEFAULT_SOLVER_BENCHMARK_CONFIG_URL = "solverBenchmarkConfig.xml";
 
     @NestedConfigurationProperty
     private SolverManagerProperties solverManager;
@@ -49,6 +51,9 @@ public class OptaPlannerProperties {
 
     @NestedConfigurationProperty
     private SolverProperties solver;
+
+    @NestedConfigurationProperty
+    private BenchmarkProperties benchmark;
 
     // ************************************************************************
     // Getters/setters
@@ -86,4 +91,11 @@ public class OptaPlannerProperties {
         this.solver = solver;
     }
 
+    public BenchmarkProperties getBenchmark() {
+        return benchmark;
+    }
+
+    public void setBenchmark(BenchmarkProperties benchmark) {
+        this.benchmark = benchmark;
+    }
 }

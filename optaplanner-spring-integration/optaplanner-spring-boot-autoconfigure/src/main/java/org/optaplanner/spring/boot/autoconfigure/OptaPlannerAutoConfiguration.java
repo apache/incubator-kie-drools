@@ -211,7 +211,7 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
             if (solverProperties.getMoveThreadCount() != null) {
                 solverConfig.setMoveThreadCount(solverProperties.getMoveThreadCount());
             }
-            applyTerminationProperties(solverConfig, solverProperties);
+            applyTerminationProperties(solverConfig, solverProperties.getTermination());
         }
     }
 
@@ -357,13 +357,12 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
         return classList.get(0);
     }
 
-    private void applyTerminationProperties(SolverConfig solverConfig, SolverProperties solverProperties) {
+    static void applyTerminationProperties(SolverConfig solverConfig, TerminationProperties terminationProperties) {
         TerminationConfig terminationConfig = solverConfig.getTerminationConfig();
         if (terminationConfig == null) {
             terminationConfig = new TerminationConfig();
             solverConfig.setTerminationConfig(terminationConfig);
         }
-        TerminationProperties terminationProperties = solverProperties.getTermination();
         if (terminationProperties != null) {
             if (terminationProperties.getSpentLimit() != null) {
                 terminationConfig.overwriteSpentLimit(terminationProperties.getSpentLimit());
