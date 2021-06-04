@@ -16,15 +16,8 @@
 
 package org.drools.core.reteoo;
 
-import java.util.function.Consumer;
-import java.util.function.Predicate;
-
-import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.factmodel.traits.TraitTypeEnum;
-import org.drools.core.rule.EntryPointId;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.TupleList;
@@ -39,7 +32,6 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     private LeftTuple            blocked;
 
     private RightTuple           tempNextRightTuple;
-    private TupleMemory          tempRightTupleMemory;
     private LeftTuple            tempBlocked;
 
     private boolean              retracted;
@@ -178,14 +170,6 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
         this.tempNextRightTuple = tempNextRightTuple;
     }
 
-    public TupleMemory getTempRightTupleMemory() {
-        return tempRightTupleMemory;
-    }
-
-    public void setTempRightTupleMemory(TupleMemory tempRightTupleMemory) {
-        this.tempRightTupleMemory = tempRightTupleMemory;
-    }
-
     public int hashCode() {
         return getFactHandle().hashCode();
     }
@@ -205,7 +189,7 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
 
         RightTupleImpl other = (RightTupleImpl) object;
         // A ReteTuple is  only the same if it has the same hashCode, factId and parent
-        if ( (other == null) || (hashCode() != other.hashCode()) ) {
+        if (hashCode() != other.hashCode()) {
             return false;
         }
 
@@ -220,7 +204,6 @@ public class RightTupleImpl extends BaseTuple implements RightTuple {
     public void clearStaged() {
         super.clearStaged();
         this.tempNextRightTuple = null;
-        this.tempRightTupleMemory = null;
         this.tempBlocked = null;
     }
 
