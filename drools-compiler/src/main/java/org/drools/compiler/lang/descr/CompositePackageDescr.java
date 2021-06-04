@@ -15,13 +15,12 @@
 
 package org.drools.compiler.lang.descr;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.ResourceChange;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 public class CompositePackageDescr extends PackageDescr {
     
@@ -44,52 +43,34 @@ public class CompositePackageDescr extends PackageDescr {
     }
 
     private void internalAdd(Resource resource, PackageDescr packageDescr) {
-        List<ImportDescr> currentImports = getImports();
         for (ImportDescr descr : packageDescr.getImports()) {
-            if (!currentImports.contains(descr)) {
-                addImport(descr);
-                descr.setResource(resource);
-            }
+            addImport(descr);
+            descr.setResource(resource);
         }
 
-        List<FunctionImportDescr> currentFunctionImports = getFunctionImports();
         for (FunctionImportDescr descr : packageDescr.getFunctionImports()) {
-            if (!currentFunctionImports.contains(descr)) {
-                addFunctionImport(descr);
-                descr.setResource(resource);
-            }
+            addFunctionImport(descr);
+            descr.setResource(resource);
         }
-        
-        List<AccumulateImportDescr> accumulateImports = getAccumulateImports();
+
         for (AccumulateImportDescr descr : packageDescr.getAccumulateImports()) {
-            if (!accumulateImports.contains(descr)) {
-                addAccumulateImport(descr);
-                descr.setResource(resource);
-            }
+            addAccumulateImport(descr);
+            descr.setResource(resource);
         }
 
-        List<AttributeDescr> currentAttributeDescrs = getAttributes();
         for (AttributeDescr descr : packageDescr.getAttributes()) {
-            if (!currentAttributeDescrs.contains(descr)) {
-                addAttribute(descr);
-                descr.setResource(resource);
-            }
+            addAttribute(descr);
+            descr.setResource(resource);
         }
 
-        List<GlobalDescr> currentGlobalDescrs = getGlobals();
         for (GlobalDescr descr : packageDescr.getGlobals()) {
-            if (!currentGlobalDescrs.contains(descr)) {
-                addGlobal(descr);
-                descr.setResource(resource);
-            }
+            addGlobal(descr);
+            descr.setResource(resource);
         }
 
-        List<FunctionDescr> currentFunctionDescrs = getFunctions();
         for (FunctionDescr descr : packageDescr.getFunctions()) {
-            if (!currentFunctionDescrs.contains(descr)) {
-                addFunction(descr);
-                descr.setResource(resource);
-            }
+            addFunction(descr);
+            descr.setResource(resource);
         }
 
         for (RuleDescr descr : packageDescr.getRules()) {
@@ -97,37 +78,24 @@ public class CompositePackageDescr extends PackageDescr {
             descr.setResource(resource);
         }
 
-        List<TypeDeclarationDescr> typeDeclarationDescrs = getTypeDeclarations();
         for (TypeDeclarationDescr descr : packageDescr.getTypeDeclarations()) {
-            if (!typeDeclarationDescrs.contains(descr)) {
-                addTypeDeclaration(descr);
-                descr.setResource(resource);
-            }
-
+            addTypeDeclaration(descr);
+            descr.setResource(resource);
         }
 
-        List<EnumDeclarationDescr> enumDeclarationDescrs = getEnumDeclarations();
         for (EnumDeclarationDescr enumDescr : packageDescr.getEnumDeclarations()) {
-            if (!enumDeclarationDescrs.contains(enumDescr)) {
-                addEnumDeclaration(enumDescr);
-                enumDescr.setResource(resource);
-            }
+            addEnumDeclaration(enumDescr);
+            enumDescr.setResource(resource);
         }
 
-        Set<EntryPointDeclarationDescr> entryPointDeclarationDescrs = getEntryPointDeclarations();
         for (EntryPointDeclarationDescr descr : packageDescr.getEntryPointDeclarations()) {
-            if (!entryPointDeclarationDescrs.contains(descr)) {
-                addEntryPointDeclaration(descr);
-                descr.setResource(resource);
-            }
+            addEntryPointDeclaration(descr);
+            descr.setResource(resource);
         }
 
-        Set<WindowDeclarationDescr> windowDeclarationDescrs = getWindowDeclarations();
         for (WindowDeclarationDescr descr : packageDescr.getWindowDeclarations()) {
-            if (!windowDeclarationDescrs.contains(descr)) {
-                addWindowDeclaration(descr);
-                descr.setResource(resource);
-            }
+            addWindowDeclaration(descr);
+            descr.setResource(resource);
         }
         packageDescr.getPreferredPkgUUID().ifPresent(pkgUUID -> {
             if (getPreferredPkgUUID().isPresent() && !pkgUUID.equals(getPreferredPkgUUID().get())) {
