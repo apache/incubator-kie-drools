@@ -55,14 +55,14 @@ public class QuarkusMailSender {
         if (mailInfo.body() != null) {
             message.setText(mailInfo.body());
         }
-        mailer.send(message).onItemOrFailure().invoke(this::handleTermination);
+        mailer.send(message).subscribe().with(this::handleCompleted, this::handleFailure);
     }
 
-    private void handleTermination(Void v, Throwable e) {
-        if (e != null) {
-            logger.error("Exception sending mail ", e);
-        } else {
-            logger.info("Mail sent");
-        }
+    private void handleCompleted(Void v) {
+        logger.info("Mail sent");
+    }
+
+    private void handleFailure(Throwable e) {
+        logger.error("Exception sending mail ", e);
     }
 }
