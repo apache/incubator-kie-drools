@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -118,7 +118,7 @@ public class FlightCrewSchedulingGenerator extends LoggingMain {
 
         int employeeListSize = solution.getEmployeeList().size();
         int flightAssignmentListSize = solution.getFlightAssignmentList().size();
-        BigInteger possibleSolutionSize = BigInteger.valueOf((long) employeeListSize).pow(flightAssignmentListSize);
+        BigInteger possibleSolutionSize = BigInteger.valueOf(employeeListSize).pow(flightAssignmentListSize);
         logger.info(
                 "FlightCrew {} has {} skills, {} airports, {} employees, {} flights and {} flight assignments with a search space of {}.",
                 fileName,

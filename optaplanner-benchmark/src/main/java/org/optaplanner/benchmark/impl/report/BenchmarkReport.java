@@ -409,7 +409,7 @@ public class BenchmarkReport {
                         while (solverBenchmarkIndex >= seriesList.size()) {
                             seriesList.add(new XYSeries(solverLabel));
                         }
-                        seriesList.get(solverBenchmarkIndex).add((double) problemScale, levelValues[i]);
+                        seriesList.get(solverBenchmarkIndex).add(problemScale, levelValues[i]);
                     }
                 }
             }

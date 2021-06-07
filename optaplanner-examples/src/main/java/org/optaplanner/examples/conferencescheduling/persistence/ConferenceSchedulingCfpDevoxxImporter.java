@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -130,7 +130,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                 continue;
             }
 
-            TalkType talkType = new TalkType((long) i, talkTypeId);
+            TalkType talkType = new TalkType(i, talkTypeId);
             talkType.setCompatibleRoomSet(new HashSet<>());
             talkType.setCompatibleTimeslotSet(new HashSet<>());
 
@@ -168,7 +168,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
             int capacity = roomObject.getInt("capacity");
 
             if (!Arrays.asList(IGNORED_ROOM_IDS).contains(id)) {
-                Room room = new Room((long) i);
+                Room room = new Room(i);
                 room.setName(id);
                 room.setCapacity(capacity);
                 room.setTalkTypeSet(getTalkTypeSetForCapacity(capacity));
@@ -209,7 +209,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
             if (Arrays.asList(IGNORED_SPEAKER_NAMES).contains(speakerName)) {
                 continue;
             }
-            Speaker speaker = new Speaker((long) i);
+            Speaker speaker = new Speaker(i);
             speaker.setName(speakerName);
             speaker.withPreferredRoomTagSet(new HashSet<>())
                     .withPreferredTimeslotTagSet(new HashSet<>())
@@ -299,7 +299,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
         if (speaker == null) {
             LOGGER.warn("The talk ({}: {}) has a speaker ({}) that doesn't exist in speaker list.", code, title, speakerName);
 
-            speaker = new Speaker((long) solution.getSpeakerList().size());
+            speaker = new Speaker(solution.getSpeakerList().size());
             speaker.setName(speakerName);
             speaker.withPreferredRoomTagSet(new HashSet<>())
                     .withPreferredTimeslotTagSet(new HashSet<>())
@@ -332,7 +332,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
 
     private void createTalk(String code, String title, String talkTypeId, Set<String> themeTrackSet,
             String languageg, List<Speaker> speakerList, int audienceLevel, Set<String> contentTagSet) {
-        Talk talk = new Talk((long) solution.getTalkList().size());
+        Talk talk = new Talk(solution.getTalkList().size());
         talk.setCode(code);
         talk.setTitle(title);
         if (talkTypeIdToTalkTypeMap.get(talkTypeId) == null) {
@@ -468,7 +468,7 @@ public class ConferenceSchedulingCfpDevoxxImporter {
                     .collect(Collectors.toSet()));
         }
 
-        timeslotList.sort(Comparator.comparing(timeslot -> timeslot.getStartDateTime()));
+        timeslotList.sort(Comparator.comparing(Timeslot::getStartDateTime));
         solution.setTimeslotList(timeslotList);
     }
 

@@ -313,9 +313,9 @@ public class MachineReassignmentIncrementalScoreCalculator
             // Move costs
             if (processAssignment.isMoved()) {
                 // Process move cost
-                softScore -= processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight();
+                softScore -= (long) processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight();
                 // Machine move cost
-                softScore -= processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight();
+                softScore -= (long) processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight();
             }
         }
 
@@ -343,9 +343,9 @@ public class MachineReassignmentIncrementalScoreCalculator
             // Move costs
             if (processAssignment.isMoved()) {
                 // Process move cost
-                softScore += processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight();
+                softScore += (long) processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight();
                 // Machine move cost
-                softScore += processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight();
+                softScore += (long) processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight();
             }
         }
 
@@ -544,11 +544,13 @@ public class MachineReassignmentIncrementalScoreCalculator
                 processMoveCostMatchTotal.addConstraintMatch(
                         Arrays.asList(processAssignment),
                         HardSoftLongScore.of(0,
-                                -(processAssignment.getProcessMoveCost() * globalPenaltyInfo.getProcessMoveCostWeight())));
+                                -((long) processAssignment.getProcessMoveCost()
+                                        * globalPenaltyInfo.getProcessMoveCostWeight())));
                 machineMoveCostMatchTotal.addConstraintMatch(
                         Arrays.asList(processAssignment),
                         HardSoftLongScore.of(0,
-                                -(processAssignment.getMachineMoveCost() * globalPenaltyInfo.getMachineMoveCostWeight())));
+                                -((long) processAssignment.getMachineMoveCost()
+                                        * globalPenaltyInfo.getMachineMoveCostWeight())));
             }
         }
         for (int i = 0; i < serviceMoveCost; i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -86,7 +86,7 @@ public class UnimprovedTimeMillisSpentTermination<Solution_> extends AbstractTer
     protected double calculateTimeGradient(long bestSolutionTimeMillis) {
         long now = clock.millis();
         long unimprovedTimeMillisSpent = now - bestSolutionTimeMillis;
-        double timeGradient = ((double) unimprovedTimeMillisSpent) / ((double) unimprovedTimeMillisSpentLimit);
+        double timeGradient = unimprovedTimeMillisSpent / ((double) unimprovedTimeMillisSpentLimit);
         return Math.min(timeGradient, 1.0);
     }
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -218,7 +218,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                 show.setLocation(new RockLocation(cityName, latitude, longitude));
                 double duration = nextNumericCell().getNumericCellValue();
                 int durationInHalfDay = (int) (duration * 2.0);
-                if (((double) durationInHalfDay) != duration * 2.0) {
+                if (durationInHalfDay != duration * 2.0) {
                     throw new IllegalStateException(currentPosition() + ": The duration (" + duration
                             + ") should be a multiple of 0.5.");
                 }
@@ -228,7 +228,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                 }
                 show.setDurationInHalfDay(durationInHalfDay);
                 double revenueOpportunityDouble = nextNumericCell().getNumericCellValue();
-                if (revenueOpportunityDouble != (double) (int) revenueOpportunityDouble) {
+                if (revenueOpportunityDouble != (int) revenueOpportunityDouble) {
                     throw new IllegalStateException(currentPosition() + ": The show (" + show.getVenueName()
                             + ")'s revenue opportunity (" + revenueOpportunityDouble + ") must be an integer number.");
                 }
@@ -308,7 +308,7 @@ public class RockTourXlsxFileIO extends AbstractXlsxSolutionFileIO<RockTourSolut
                 latLongToLocationMap.forEach((toLatLong, toLocationList) -> {
                     double drivingTimeDouble = nextNumericCell().getNumericCellValue();
                     long drivingTime = (long) drivingTimeDouble;
-                    if (drivingTimeDouble != (double) drivingTime) {
+                    if (drivingTimeDouble != drivingTime) {
                         throw new IllegalStateException(currentPosition() + ": The driving time (" + drivingTimeDouble
                                 + ") should be an integer number.");
                     }

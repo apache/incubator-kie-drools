@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -349,7 +349,7 @@ public class PlannerBenchmarkResult {
             }
             failureCount += problemBenchmarkResult.getFailureCount();
         }
-        averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / (long) problemScaleCount;
+        averageProblemScale = problemScaleCount == 0 ? null : totalProblemScale / problemScaleCount;
         Score totalScore = null;
         int solverBenchmarkCount = 0;
         boolean firstSolverBenchmarkResult = true;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -125,12 +125,12 @@ public class SimpleLongScoreTest extends AbstractScoreTest {
                 SimpleLongScore.ofUninitialized(-7, -1L),
                 SimpleLongScore.ofUninitialized(-7, 0L),
                 SimpleLongScore.ofUninitialized(-7, 1L),
-                SimpleLongScore.of(((long) Integer.MIN_VALUE) - 4000L),
+                SimpleLongScore.of(Integer.MIN_VALUE - 4000L),
                 SimpleLongScore.of(-300L),
                 SimpleLongScore.of(-20L),
                 SimpleLongScore.of(-1L),
                 SimpleLongScore.of(0L),
                 SimpleLongScore.of(1L),
-                SimpleLongScore.of(((long) Integer.MAX_VALUE) + 4000L));
+                SimpleLongScore.of(Integer.MAX_VALUE + 4000L));
     }
 }

@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 import org.drools.model.BetaIndex4;
@@ -88,7 +89,7 @@ public final class QuadLeftHandSide<A, B, C, D> extends AbstractLeftHandSide {
     private QuadRuleContext<A, B, C, D> buildRuleContext() {
         ViewItem<?>[] viewItems = Stream.of(patternVariableA, patternVariableB, patternVariableC, patternVariableD)
                 .flatMap(variable -> variable.build().stream())
-                .toArray(size -> new ViewItem<?>[size]);
+                .toArray((IntFunction<ViewItem<?>[]>) ViewItem[]::new);
         return new QuadRuleContext<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 patternVariableC.getPrimaryVariable(), patternVariableD.getPrimaryVariable(), viewItems);
     }

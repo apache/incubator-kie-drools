@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -109,7 +109,7 @@ public class ConfigUtilsTest {
         assertThat(bean.objectInteger).isEqualTo(Integer.valueOf(2));
         assertThat(bean.primitiveLong).isEqualTo(3L);
         assertThat(bean.objectLong).isEqualTo(Long.valueOf(4L));
-        assertThat((double) bean.primitiveFloat).isEqualTo((double) 5.5F, offset((double) 0.0F));
+        assertThat((double) bean.primitiveFloat).isEqualTo(5.5D, offset(0.0D));
         assertThat(bean.objectFloat).isEqualTo(Float.valueOf(6.6F));
         assertThat(bean.primitiveDouble).isEqualTo(7.7, offset(0.0));
         assertThat(bean.objectDouble).isEqualTo(Double.valueOf(8.8));

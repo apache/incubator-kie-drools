@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ class TestGenListValueProvider extends TestGenAbstractValueProvider<List<?>> {
         imports.add(ArrayList.class);
         imports.add((Class<?>) genericType);
         requiredFacts = value.stream()
-                .map(i -> existingInstances.get(i))
+                .map(existingInstances::get)
                 .filter(Objects::nonNull)
                 .collect(Collectors.toList());
     }

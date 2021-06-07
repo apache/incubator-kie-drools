@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -384,7 +384,7 @@ public final class BendableLongScore extends AbstractBendableScore<BendableLongS
 
     @Override
     public String toShortString() {
-        return buildBendableShortString((n) -> ((Long) n).longValue() != 0L);
+        return buildBendableShortString((n) -> n.longValue() != 0L);
     }
 
     @Override

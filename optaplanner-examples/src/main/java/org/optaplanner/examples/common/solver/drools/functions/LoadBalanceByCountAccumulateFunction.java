@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class LoadBalanceByCountAccumulateFunction
          * @return {@code >= 0}, {@code latexmath:[f(n) = \sqrt{\sum_{i=1}^{n} (x_i - 0)^2}]} multiplied by scaleMultiplier
          */
         public long getZeroDeviationSquaredSumRoot(double scaleMultiplier) {
-            return (long) (Math.sqrt((double) squaredSum) * scaleMultiplier);
+            return (long) (Math.sqrt(squaredSum) * scaleMultiplier);
         }
 
     }

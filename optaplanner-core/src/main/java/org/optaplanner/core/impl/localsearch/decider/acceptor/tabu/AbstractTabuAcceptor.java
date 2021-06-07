@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -210,7 +210,7 @@ public abstract class AbstractTabuAcceptor<Solution_> extends AbstractAcceptor<S
     protected double calculateFadingTabuAcceptChance(int fadingTabuStepCount) {
         // The + 1's are because acceptChance should not be 0.0 or 1.0
         // when (fadingTabuStepCount == 0) or (fadingTabuStepCount + 1 == workingFadingTabuSize)
-        return ((double) (workingFadingTabuSize - fadingTabuStepCount)) / ((double) (workingFadingTabuSize + 1));
+        return (workingFadingTabuSize - fadingTabuStepCount) / ((double) (workingFadingTabuSize + 1));
     }
 
     protected abstract Collection<? extends Object> findTabu(LocalSearchMoveScope<Solution_> moveScope);

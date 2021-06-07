@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -135,7 +135,7 @@ public class DefaultPillarSelector<Solution_> extends AbstractSelector<Solution_
     @Override
     public void constructCache(SolverScope<Solution_> solverScope) {
         long entitySize = entitySelector.getSize();
-        if (entitySize > (long) Integer.MAX_VALUE) {
+        if (entitySize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this + ") has an entitySelector ("
                     + entitySelector + ") with entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,7 +54,7 @@ public class BooleanValueRange extends AbstractCountableValueRange<Boolean> {
         return new OriginalBooleanValueRangeIterator();
     }
 
-    private class OriginalBooleanValueRangeIterator extends ValueRangeIterator<Boolean> {
+    private static final class OriginalBooleanValueRangeIterator extends ValueRangeIterator<Boolean> {
 
         private boolean hasNext = true;
         private Boolean upcoming = Boolean.FALSE;
@@ -85,7 +85,7 @@ public class BooleanValueRange extends AbstractCountableValueRange<Boolean> {
         return new RandomBooleanValueRangeIterator(workingRandom);
     }
 
-    private class RandomBooleanValueRangeIterator extends ValueRangeIterator<Boolean> {
+    private static final class RandomBooleanValueRangeIterator extends ValueRangeIterator<Boolean> {
 
         private final Random workingRandom;
 

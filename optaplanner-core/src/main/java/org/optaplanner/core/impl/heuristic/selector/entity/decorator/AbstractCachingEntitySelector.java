@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public abstract class AbstractCachingEntitySelector<Solution_> extends AbstractE
     @Override
     public void constructCache(SolverScope<Solution_> solverScope) {
         long childSize = childEntitySelector.getSize();
-        if (childSize > (long) Integer.MAX_VALUE) {
+        if (childSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a childEntitySelector (" + childEntitySelector
                     + ") with childSize (" + childSize

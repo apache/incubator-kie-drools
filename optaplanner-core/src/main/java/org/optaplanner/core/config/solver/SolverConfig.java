@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -209,14 +209,7 @@ public class SolverConfig extends AbstractConfig<SolverConfig> {
      */
     public static SolverConfig createFromXmlReader(Reader reader, ClassLoader classLoader) {
         SolverConfigIO solverConfigIO = new SolverConfigIO();
-        Object solverConfigObject = solverConfigIO.read(reader);
-
-        if (!(solverConfigObject instanceof SolverConfig)) {
-            throw new IllegalArgumentException("The " + SolverConfig.class.getSimpleName()
-                    + "'s XML root element resolves to a different type ("
-                    + (solverConfigObject == null ? null : solverConfigObject.getClass().getSimpleName()));
-        }
-        SolverConfig solverConfig = (SolverConfig) solverConfigObject;
+        SolverConfig solverConfig = solverConfigIO.read(reader);
         solverConfig.setClassLoader(classLoader);
         return solverConfig;
     }

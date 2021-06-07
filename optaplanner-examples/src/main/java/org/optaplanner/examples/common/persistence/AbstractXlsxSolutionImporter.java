@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -105,7 +105,7 @@ public abstract class AbstractXlsxSolutionImporter<Solution_> extends AbstractSo
         protected long readLongCell(Cell cell) {
             double d = cell.getNumericCellValue();
             long l = (long) d;
-            if (d - (double) l != 0.0) {
+            if (d - l != 0.0) {
                 throw new IllegalArgumentException("The keyCell (" + cell.getRow().getRowNum() + ","
                         + cell.getColumnIndex() + ") with value (" + d + ") is expected to be a long.");
             }

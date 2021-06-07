@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -193,7 +193,7 @@ public class CurriculumCourseImporter extends AbstractTxtSolutionImporter<Course
                 Day day = dayList.get(i);
                 for (int j = 0; j < timeslotListSize; j++) {
                     Period period = new Period();
-                    period.setId((long) (i * timeslotListSize + j));
+                    period.setId((long) i * timeslotListSize + j);
                     period.setDay(day);
                     period.setTimeslot(timeslotList.get(j));
                     periodList.add(period);

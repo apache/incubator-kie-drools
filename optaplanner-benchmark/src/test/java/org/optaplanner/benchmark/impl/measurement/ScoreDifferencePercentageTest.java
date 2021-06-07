@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -94,8 +94,8 @@ public class ScoreDifferencePercentageTest {
         hardSoftScore2 = HardSoftScore.of(-100, 200);
         scoreDifferencePercentage = ScoreDifferencePercentage.calculateScoreDifferencePercentage(hardSoftScore1,
                 hardSoftScore2);
-        assertThat(scoreDifferencePercentage.getPercentageLevels()[0]).isEqualTo((double) -2, offset(tolerance));
-        assertThat(scoreDifferencePercentage.getPercentageLevels()[1]).isEqualTo((double) 3, offset(tolerance));
+        assertThat(scoreDifferencePercentage.getPercentageLevels()[0]).isEqualTo(-2, offset(tolerance));
+        assertThat(scoreDifferencePercentage.getPercentageLevels()[1]).isEqualTo(3, offset(tolerance));
     }
 
     @Test
@@ -147,7 +147,7 @@ public class ScoreDifferencePercentageTest {
         assertThat(levels[1]).isEqualTo(-28.26, offset(tolerance));
 
         levels = scoreDifferencePercentage.multiply(-1).getPercentageLevels();
-        assertThat(levels[0]).isEqualTo((double) 1, offset(tolerance));
+        assertThat(levels[0]).isEqualTo(1, offset(tolerance));
         assertThat(levels[1]).isEqualTo(9.0, offset(tolerance));
     }
 
@@ -164,7 +164,7 @@ public class ScoreDifferencePercentageTest {
         assertThat(levels[1]).isEqualTo(-4.5, offset(tolerance));
 
         levels = scoreDifferencePercentage.multiply(-1).getPercentageLevels();
-        assertThat(levels[0]).isEqualTo((double) 1, offset(tolerance));
+        assertThat(levels[0]).isEqualTo(1, offset(tolerance));
         assertThat(levels[1]).isEqualTo(9.0, offset(tolerance));
     }
 

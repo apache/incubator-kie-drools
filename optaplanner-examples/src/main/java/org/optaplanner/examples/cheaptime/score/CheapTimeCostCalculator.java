@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,15 +40,15 @@ public class CheapTimeCostCalculator {
 
     public static long multiplyTwoMicros(long aMicros, long bMicros) {
         // Long arithmetic overflows because maxPowerConsumption (675.4800000000) * maxPowerCost (0.0228608333)
-        double aDouble = ((double) (aMicros)) / MICROS_PER_ONE_AS_DOUBLE;
-        double bDouble = ((double) (bMicros)) / MICROS_PER_ONE_AS_DOUBLE;
+        double aDouble = (aMicros) / MICROS_PER_ONE_AS_DOUBLE;
+        double bDouble = (bMicros) / MICROS_PER_ONE_AS_DOUBLE;
         double result = aDouble * bDouble;
         return Math.round(result * MICROS_PER_ONE_AS_DOUBLE);
     }
 
     public static long divideTwoMicros(long aMicros, long bMicros) {
-        double aDouble = ((double) (aMicros)) / MICROS_PER_ONE_AS_DOUBLE;
-        double bDouble = ((double) (bMicros)) / MICROS_PER_ONE_AS_DOUBLE;
+        double aDouble = (aMicros) / MICROS_PER_ONE_AS_DOUBLE;
+        double bDouble = (bMicros) / MICROS_PER_ONE_AS_DOUBLE;
         double result = aDouble / bDouble;
         return Math.round(result * MICROS_PER_ONE_AS_DOUBLE);
     }

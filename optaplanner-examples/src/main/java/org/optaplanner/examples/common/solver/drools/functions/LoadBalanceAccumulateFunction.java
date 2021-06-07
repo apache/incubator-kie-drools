@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class LoadBalanceAccumulateFunction implements AccumulateFunction<LoadBal
          */
         public long getMeanDeviationSquaredSumRoot(double scaleMultiplier) {
             // quicklatex.com: f(n) = \sqrt{\sum_{i=1}^{n} (x_i - \overline{x})^2} = \sqrt{\sum_{i=1}^{n} x_i^2 - \frac{(\sum_{i=1}^{n} x_i)^2}{n}}
-            double meanDeviationSquaredSum = (double) squaredSum - ((double) (sum * sum) / n);
+            double meanDeviationSquaredSum = squaredSum - ((double) (sum * sum) / n);
             return (long) (Math.sqrt(meanDeviationSquaredSum) * scaleMultiplier);
         }
     }

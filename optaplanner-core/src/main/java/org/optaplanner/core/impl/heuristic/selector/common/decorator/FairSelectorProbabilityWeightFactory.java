@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ public class FairSelectorProbabilityWeightFactory<Solution_>
 
     @Override
     public double createProbabilityWeight(ScoreDirector<Solution_> scoreDirector, IterableSelector selector) {
-        return (double) selector.getSize();
+        return selector.getSize();
     }
 
 }

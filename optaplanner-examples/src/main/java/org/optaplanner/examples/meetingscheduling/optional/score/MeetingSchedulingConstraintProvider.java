@@ -216,7 +216,7 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
                                 rightAttendance) -> leftAttendance.getMeeting() != rightAttendance.getMeeting()))
                 .join(MeetingAssignment.class,
                         equal((leftAttendance, rightAttendance) -> leftAttendance.getMeeting(),
-                                (leftAssignment) -> leftAssignment.getMeeting()),
+                                MeetingAssignment::getMeeting),
                         filtering((leftAttendance, rightAttendance,
                                 leftAssignment) -> leftAssignment.getStartingTimeGrain() != null))
                 .join(MeetingAssignment.class,

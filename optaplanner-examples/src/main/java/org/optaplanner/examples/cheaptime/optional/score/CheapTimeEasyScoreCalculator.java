@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -116,7 +116,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         ACTIVE;
     }
 
-    private class MachinePeriodPart {
+    private static final class MachinePeriodPart {
 
         private final Machine machine;
         private final int period;
@@ -152,7 +152,7 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             long hardScore = 0L;
             for (int resourceAvailable : resourceAvailableList) {
                 if (resourceAvailable < 0) {
-                    hardScore += (long) resourceAvailable;
+                    hardScore += resourceAvailable;
                 }
             }
             return hardScore;

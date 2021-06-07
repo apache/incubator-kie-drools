@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +46,7 @@ public abstract class RealTimePlanningTurtleTest<Solution_> {
         solver = solverFactory.buildSolver();
         ExecutorService executorService = Executors.newFixedThreadPool(2);
         Future<?> solveFuture = executorService.submit(() -> runSolve(solver, problem));
-        Future<?> changesFuture = executorService.submit(() -> runChanges());
+        Future<?> changesFuture = executorService.submit(this::runChanges);
         solveFuture.get();
         changesFuture.get();
     }
@@ -72,7 +72,7 @@ public abstract class RealTimePlanningTurtleTest<Solution_> {
         while (System.currentTimeMillis() - startSystemTimeMillis < 600_000L) {
             ProblemFactChange<Solution_> factChange = nextProblemFactChange(random);
             solver.addProblemFactChange(factChange);
-            long sleepMillis = (long) random.nextInt(FREQUENCY);
+            long sleepMillis = random.nextInt(FREQUENCY);
             if (sleepMillis <= (FREQUENCY / 100)) {
                 sleepMillis = SPENT_LIMIT + 500L;
             } else if (sleepMillis <= (FREQUENCY / 10)) {

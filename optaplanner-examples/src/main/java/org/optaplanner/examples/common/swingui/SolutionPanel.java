@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -123,7 +123,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     @Override
     public boolean getScrollableTracksViewportWidth() {
         if (getParent() instanceof JViewport) {
-            return (((JViewport) getParent()).getWidth() > getPreferredSize().width);
+            return (getParent().getWidth() > getPreferredSize().width);
         }
         return false;
     }
@@ -131,7 +131,7 @@ public abstract class SolutionPanel<Solution_> extends JPanel implements Scrolla
     @Override
     public boolean getScrollableTracksViewportHeight() {
         if (getParent() instanceof JViewport) {
-            return (((JViewport) getParent()).getHeight() > getPreferredSize().height);
+            return (getParent().getHeight() > getPreferredSize().height);
         }
         return false;
     }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class ConferenceCFPImportAction implements CommonApp.ExtraAction<Conferen
         };
     }
 
-    private class ConferenceCFPImportWorker extends SwingWorker<ConferenceSolution, Void> {
+    private static final class ConferenceCFPImportWorker extends SwingWorker<ConferenceSolution, Void> {
 
         private final SolutionBusiness<ConferenceSolution, ?> solutionBusiness;
         private final SolutionPanel<ConferenceSolution> solutionPanel;

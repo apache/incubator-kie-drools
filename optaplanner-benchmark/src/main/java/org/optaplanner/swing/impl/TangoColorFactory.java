@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -128,7 +128,7 @@ public class TangoColorFactory {
                 divisor *= 2;
             }
             base = (base * 2) - divisor + 1;
-            double shadePercentage = ((double) base) / (double) divisor;
+            double shadePercentage = base / (double) divisor;
             color = buildPercentageColor(floorColor, ceilColor, shadePercentage);
         }
         nextColorCount++;

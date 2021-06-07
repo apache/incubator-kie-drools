@@ -97,7 +97,7 @@ class TestGenTestWriter {
                             return ((TestGenKieSessionUpdate) up).getValue().getImports().stream();
                         }))
                 .filter(cls -> !cls.getPackage().getName().equals("java.lang"))
-                .map(cls -> cls.getCanonicalName());
+                .map(Class::getCanonicalName);
 
         Stream.concat(imports.stream(), classes)
                 .distinct()

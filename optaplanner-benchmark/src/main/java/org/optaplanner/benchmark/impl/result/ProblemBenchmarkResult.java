@@ -381,8 +381,7 @@ public class ProblemBenchmarkResult<Solution_> {
             }
         }
         if (usedMemoryAfterInputSolutionCount > 0) {
-            averageUsedMemoryAfterInputSolution = totalUsedMemoryAfterInputSolution
-                    / (long) usedMemoryAfterInputSolutionCount;
+            averageUsedMemoryAfterInputSolution = totalUsedMemoryAfterInputSolution / usedMemoryAfterInputSolutionCount;
         }
         determineRanking(successResultList);
     }

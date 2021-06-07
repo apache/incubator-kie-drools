@@ -32,7 +32,7 @@ public class ConstraintMatchTest {
         ConstraintMatch<SimpleScore> constraintMatch2 =
                 new ConstraintMatch<>("a.b", "c", Arrays.asList("e1"), SimpleScore.ZERO);
         // Cast do avoid Comparable checks.
-        PlannerAssert.assertObjectsAreNotEqual((Object) constraintMatch, (Object) constraintMatch2);
+        PlannerAssert.assertObjectsAreNotEqual(constraintMatch, (Object) constraintMatch2);
     }
 
     @Test

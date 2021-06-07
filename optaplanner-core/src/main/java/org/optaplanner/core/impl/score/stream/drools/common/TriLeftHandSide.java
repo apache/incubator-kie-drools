@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.Stream;
 
 import org.drools.model.BetaIndex3;
@@ -84,7 +85,7 @@ public final class TriLeftHandSide<A, B, C> extends AbstractLeftHandSide {
     private TriRuleContext<A, B, C> buildRuleContext() {
         ViewItem<?>[] viewItems = Stream.of(patternVariableA, patternVariableB, patternVariableC)
                 .flatMap(variable -> variable.build().stream())
-                .toArray(size -> new ViewItem<?>[size]);
+                .toArray((IntFunction<ViewItem<?>[]>) ViewItem[]::new);
         return new TriRuleContext<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 patternVariableC.getPrimaryVariable(), viewItems);
     }

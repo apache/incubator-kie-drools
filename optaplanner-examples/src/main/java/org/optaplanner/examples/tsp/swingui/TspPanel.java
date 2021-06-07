@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -129,7 +129,7 @@ public class TspPanel extends SolutionPanel<TspSolution> {
         }
         if (targetStandstill instanceof Visit
                 && (sourceStandstill instanceof Domicile || ((Visit) sourceStandstill).getPreviousStandstill() != null)) {
-            solutionBusiness.doChangeMove((Visit) targetStandstill, "previousStandstill", sourceStandstill);
+            solutionBusiness.doChangeMove(targetStandstill, "previousStandstill", sourceStandstill);
         }
         solverAndPersistenceFrame.resetScreen();
     }

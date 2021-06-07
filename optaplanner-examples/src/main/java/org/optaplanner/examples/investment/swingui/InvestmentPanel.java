@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -113,7 +113,7 @@ public class InvestmentPanel extends SolutionPanel<InvestmentSolution> {
         regionPanel.reset();
         sectorPanel.reset();
         InvestmentParametrization parametrization = solution.getParametrization();
-        standardDeviationMaximumField.setValue((double) parametrization.getStandardDeviationMillisMaximum() / 1000.0);
+        standardDeviationMaximumField.setValue(parametrization.getStandardDeviationMillisMaximum() / 1000.0);
         defineGrid(solution);
         fillCells(solution);
         ignoreChangeEvents = false;

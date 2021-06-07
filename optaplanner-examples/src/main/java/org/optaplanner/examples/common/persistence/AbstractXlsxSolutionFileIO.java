@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 
 package org.optaplanner.examples.common.persistence;
+
+import static org.optaplanner.examples.common.persistence.XSSFColorUtil.getXSSFColor;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -68,15 +70,15 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             .compile("(?U)^[\\w&\\-\\.\\/\\(\\)\\'][\\w&\\-\\.\\/\\(\\)\\' ]*[\\w&\\-\\.\\/\\(\\)\\']?$");
     protected static final Pattern VALID_NAME_PATTERN = AbstractXlsxSolutionFileIO.VALID_TAG_PATTERN;
     protected static final Pattern VALID_CODE_PATTERN = Pattern.compile("(?U)^[\\w\\-\\.\\/\\(\\)]+$");
-    protected static final XSSFColor VIEW_TAB_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
-    protected static final XSSFColor DISABLED_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_3);
-    protected static final XSSFColor UNAVAILABLE_COLOR = new XSSFColor(TangoColorFactory.ALUMINIUM_5);
-    protected static final XSSFColor PINNED_COLOR = new XSSFColor(TangoColorFactory.PLUM_1);
-    protected static final XSSFColor HARD_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_1);
-    protected static final XSSFColor MEDIUM_PENALTY_COLOR = new XSSFColor(TangoColorFactory.SCARLET_3);
-    protected static final XSSFColor SOFT_PENALTY_COLOR = new XSSFColor(TangoColorFactory.ORANGE_1);
-    protected static final XSSFColor PLANNING_VARIABLE_COLOR = new XSSFColor(TangoColorFactory.BUTTER_1);
-    protected static final XSSFColor REPUBLISHED_COLOR = new XSSFColor(TangoColorFactory.MAGENTA);
+    protected static final XSSFColor VIEW_TAB_COLOR = getXSSFColor(TangoColorFactory.BUTTER_1);
+    protected static final XSSFColor DISABLED_COLOR = getXSSFColor(TangoColorFactory.ALUMINIUM_3);
+    protected static final XSSFColor UNAVAILABLE_COLOR = getXSSFColor(TangoColorFactory.ALUMINIUM_5);
+    protected static final XSSFColor PINNED_COLOR = getXSSFColor(TangoColorFactory.PLUM_1);
+    protected static final XSSFColor HARD_PENALTY_COLOR = getXSSFColor(TangoColorFactory.SCARLET_1);
+    protected static final XSSFColor MEDIUM_PENALTY_COLOR = getXSSFColor(TangoColorFactory.SCARLET_3);
+    protected static final XSSFColor SOFT_PENALTY_COLOR = getXSSFColor(TangoColorFactory.ORANGE_1);
+    protected static final XSSFColor PLANNING_VARIABLE_COLOR = getXSSFColor(TangoColorFactory.BUTTER_1);
+    protected static final XSSFColor REPUBLISHED_COLOR = getXSSFColor(TangoColorFactory.MAGENTA);
 
     @Override
     public String getInputFileExtension() {
@@ -111,19 +113,19 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
             if (consumer != null) {
-                if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
+                if (weightCell.getCellType() != CellType.NUMERIC) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
                             + weightCell.getStringCellValue()
                             + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
-                if (((double) ((int) value)) != value) {
+                if (((int) value) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
                             + ") for constraint (" + name + ") must be an integer.");
                 }
                 consumer.accept((int) value);
             } else {
-                if (weightCell.getCellTypeEnum() == CellType.NUMERIC
+                if (weightCell.getCellType() == CellType.NUMERIC
                         || !weightCell.getStringCellValue().equals("n/a")) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
                             + weightCell.getStringCellValue()
@@ -138,19 +140,19 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
             readHeaderCell(name);
             XSSFCell weightCell = nextCell();
             if (consumer != null) {
-                if (weightCell.getCellTypeEnum() != CellType.NUMERIC) {
+                if (weightCell.getCellType() != CellType.NUMERIC) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
                             + weightCell.getStringCellValue()
                             + ") for constraint (" + name + ") must be a number and the cell type must be numeric.");
                 }
                 double value = weightCell.getNumericCellValue();
-                if (((double) ((long) value)) != value) {
+                if (((long) value) != value) {
                     throw new IllegalArgumentException(currentPosition() + ": The value (" + value
                             + ") for constraint (" + name + ") must be a (long) integer.");
                 }
                 consumer.accept((long) value);
             } else {
-                if (weightCell.getCellTypeEnum() == CellType.NUMERIC
+                if (weightCell.getCellType() == CellType.NUMERIC
                         || !weightCell.getStringCellValue().equals("n/a")) {
                     throw new IllegalArgumentException(currentPosition() + ": The value ("
                             + weightCell.getStringCellValue()
@@ -233,11 +235,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
                 return true;
             }
             for (Cell cell : currentRow) {
-                if (cell.getCellTypeEnum() == CellType.STRING) {
+                if (cell.getCellType() == CellType.STRING) {
                     if (!cell.getStringCellValue().isEmpty()) {
                         return false;
                     }
-                } else if (cell.getCellTypeEnum() != CellType.BLANK) {
+                } else if (cell.getCellType() != CellType.BLANK) {
                     return false;
                 }
             }
@@ -263,7 +265,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCell nextStringCell() {
             XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+            if (cell.getCellType() == CellType.NUMERIC) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getNumericCellValue() + ") has a numeric type but should be a string.");
             }
@@ -272,7 +274,7 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCell nextNumericCell() {
             XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.STRING) {
+            if (cell.getCellType() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getStringCellValue() + ") has a string type but should be numeric.");
             }
@@ -281,11 +283,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCell nextNumericCellOrBlank() {
             XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.BLANK
-                    || (cell.getCellTypeEnum() == CellType.STRING && cell.getStringCellValue().isEmpty())) {
+            if (cell.getCellType() == CellType.BLANK
+                    || (cell.getCellType() == CellType.STRING && cell.getStringCellValue().isEmpty())) {
                 return null;
             }
-            if (cell.getCellTypeEnum() == CellType.STRING) {
+            if (cell.getCellType() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getStringCellValue() + ") has a string type but should be numeric.");
             }
@@ -294,11 +296,11 @@ public abstract class AbstractXlsxSolutionFileIO<Solution_> implements SolutionF
 
         protected XSSFCell nextBooleanCell() {
             XSSFCell cell = nextCell();
-            if (cell.getCellTypeEnum() == CellType.STRING) {
+            if (cell.getCellType() == CellType.STRING) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getStringCellValue() + ") has a string type but should be boolean.");
             }
-            if (cell.getCellTypeEnum() == CellType.NUMERIC) {
+            if (cell.getCellType() == CellType.NUMERIC) {
                 throw new IllegalStateException(currentPosition() + ": The cell with value ("
                         + cell.getNumericCellValue() + ") has a numeric type but should be a boolean.");
             }

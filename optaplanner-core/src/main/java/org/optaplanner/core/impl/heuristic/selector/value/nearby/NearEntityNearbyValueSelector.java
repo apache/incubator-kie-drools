@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -73,7 +73,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
         // Cannot be done during solverStarted because
         super.phaseStarted(phaseScope);
         long originSize = replayingOriginEntitySelector.getSize();
-        if (originSize > (long) Integer.MAX_VALUE) {
+        if (originSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The originEntitySelector (" + replayingOriginEntitySelector
                     + ") has an entitySize (" + originSize
                     + ") which is higher than Integer.MAX_VALUE.");
@@ -86,7 +86,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
 
     private int computeDestinationSize(Object origin) {
         long childSize = childValueSelector.getSize(origin);
-        if (childSize > (long) Integer.MAX_VALUE) {
+        if (childSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The childEntitySelector (" + childValueSelector
                     + ") has an entitySize (" + childSize
                     + ") which is higher than Integer.MAX_VALUE.");
@@ -203,7 +203,7 @@ public final class NearEntityNearbyValueSelector<Solution_> extends AbstractValu
 
         public RandomEntityNearbyValueIterator(Iterator<Object> replayingOriginEntityIterator, long childSize) {
             this.replayingOriginEntityIterator = replayingOriginEntityIterator;
-            if (childSize > (long) Integer.MAX_VALUE) {
+            if (childSize > Integer.MAX_VALUE) {
                 throw new IllegalStateException("The valueSelector (" + this
                         + ") has an entitySize (" + childSize
                         + ") which is higher than Integer.MAX_VALUE.");

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -119,7 +119,7 @@ public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solutio
         GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         long valueSize = valueSelector.getSize();
         // Fail-fast when anchorTrailingChainList.size() could ever be too big
-        if (valueSize > (long) Integer.MAX_VALUE) {
+        if (valueSize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The selector (" + this
                     + ") has a valueSelector (" + valueSelector
                     + ") with valueSize (" + valueSize
@@ -176,11 +176,11 @@ public class DefaultSubChainSelector<Solution_> extends AbstractSelector<Solutio
     }
 
     protected long calculateSubChainSelectionSize(SubChain anchorTrailingChain) {
-        long anchorTrailingChainSize = (long) anchorTrailingChain.getSize();
-        long n = anchorTrailingChainSize - (long) minimumSubChainSize + 1L;
+        long anchorTrailingChainSize = anchorTrailingChain.getSize();
+        long n = anchorTrailingChainSize - minimumSubChainSize + 1L;
         long m = (maximumSubChainSize >= anchorTrailingChainSize)
                 ? 0L
-                : anchorTrailingChainSize - (long) maximumSubChainSize;
+                : anchorTrailingChainSize - maximumSubChainSize;
         return (n * (n + 1L) / 2L) - (m * (m + 1L) / 2L);
     }
 

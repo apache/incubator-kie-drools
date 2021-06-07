@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -581,7 +581,7 @@ public class DefaultSubChainSelectorTest {
         assertThat(iterator.hasNext()).isTrue();
         assertThat(subChainSelector.isCountable()).isTrue();
         assertThat(subChainSelector.isNeverEnding()).isTrue();
-        assertThat(subChainSelector.getSize()).isEqualTo((long) selectionSize);
+        assertThat(subChainSelector.getSize()).isEqualTo(selectionSize);
     }
 
     private void collectNextSubChain(Iterator<SubChain> iterator, Map<SubChain, Integer> subChainCountMap) {

@@ -735,7 +735,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
         }
     }
 
-    private class ExporterFileFilter extends FileFilter {
+    private static final class ExporterFileFilter extends FileFilter {
         private AbstractSolutionExporter exporter;
 
         public ExporterFileFilter(AbstractSolutionExporter exporter) {
@@ -758,7 +758,7 @@ public class SolverAndPersistenceFrame<Solution_> extends JFrame {
     }
 
     // Does the creation of the file name + setting it in the file chooser
-    private class FileNameSetter implements PropertyChangeListener {
+    private static final class FileNameSetter implements PropertyChangeListener {
 
         private JFileChooser fileChooser;
         private File exportDataDir;

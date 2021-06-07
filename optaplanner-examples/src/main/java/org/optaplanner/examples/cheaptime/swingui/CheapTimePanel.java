@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -156,7 +156,7 @@ public class CheapTimePanel extends SolutionPanel<CheapTimeSolution> {
     private XYPlot createPeriodCostPlot(TangoColorFactory tangoColorFactory, CheapTimeSolution solution) {
         XYSeries series = new XYSeries("Power price");
         for (PeriodPowerPrice periodPowerPrice : solution.getPeriodPowerPriceList()) {
-            series.add((double) periodPowerPrice.getPowerPriceMicros() / 1000000.0, periodPowerPrice.getPeriod());
+            series.add(periodPowerPrice.getPowerPriceMicros() / 1000000.0, periodPowerPrice.getPeriod());
         }
         XYSeriesCollection seriesCollection = new XYSeriesCollection();
         seriesCollection.addSeries(series);

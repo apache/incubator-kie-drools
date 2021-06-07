@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -40,8 +40,8 @@ public class FlatteningHardSoftScoreComparator implements Comparator<Score> {
     public int compare(Score s1, Score s2) {
         HardSoftScore score1 = (HardSoftScore) s1;
         HardSoftScore score2 = (HardSoftScore) s2;
-        long score1Side = (long) score1.getHardScore() * (long) hardWeight + (long) score1.getSoftScore();
-        long score2Side = (long) score2.getHardScore() * (long) hardWeight + (long) score2.getSoftScore();
+        long score1Side = score1.getHardScore() * (long) hardWeight + score1.getSoftScore();
+        long score2Side = score2.getHardScore() * (long) hardWeight + score2.getSoftScore();
         return score1Side < score2Side ? -1 : (score1Side == score2Side ? 0 : 1);
     }
 

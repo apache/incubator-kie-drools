@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -249,8 +249,8 @@ public class CloudComputerPanel extends JPanel {
                 g.drawString("?", 2, 2);
                 return;
             }
-            double pixelsPerValue = (double) maximumComputerWidth / (double) maximumComputerValue;
-            int computerWidth = (int) (pixelsPerValue * (double) computerValue);
+            double pixelsPerValue = maximumComputerWidth / (double) maximumComputerValue;
+            int computerWidth = (int) (pixelsPerValue * computerValue);
             if (this.computerValue > 0) {
                 g.setColor(isEnabled() ? Color.WHITE : getBackground());
                 g.fillRect(0, 0, computerWidth, size.height);
@@ -258,8 +258,8 @@ public class CloudComputerPanel extends JPanel {
             int offsetValue = 0;
             int colorIndex = 0;
             for (int processValue : processValues) {
-                int offset = (int) ((double) offsetValue * pixelsPerValue);
-                int processWidth = (int) ((double) processValue * pixelsPerValue) + 1;
+                int offset = (int) (offsetValue * pixelsPerValue);
+                int processWidth = (int) (processValue * pixelsPerValue) + 1;
                 processWidth = Math.max(processWidth, 1);
                 g.setColor(TangoColorFactory.SEQUENCE_1.get(colorIndex));
                 g.fillRect(offset, 0, processWidth, size.height);

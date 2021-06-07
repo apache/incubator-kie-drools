@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ public class ScoreCalculationCountTermination<Solution_> extends AbstractTermina
 
     protected double calculateTimeGradient(InnerScoreDirector<Solution_, ?> scoreDirector) {
         long scoreCalculationCount = scoreDirector.getCalculationCount();
-        double timeGradient = ((double) scoreCalculationCount) / ((double) scoreCalculationCountLimit);
+        double timeGradient = scoreCalculationCount / ((double) scoreCalculationCountLimit);
         return Math.min(timeGradient, 1.0);
     }
 

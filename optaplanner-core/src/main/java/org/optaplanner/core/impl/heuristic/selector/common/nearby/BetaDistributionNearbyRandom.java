@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,7 +39,7 @@ public class BetaDistributionNearbyRandom implements NearbyRandom {
     @Override
     public int nextInt(Random random, int nearbySize) {
         double d = betaDistribution.inverseCumulativeProbability(random.nextDouble());
-        int next = (int) (d * (double) nearbySize);
+        int next = (int) (d * nearbySize);
         // The method inverseCumulativeProbability() might return 1.0
         if (next >= nearbySize) {
             next = nearbySize - 1;

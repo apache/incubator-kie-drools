@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -140,7 +140,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         ExhaustiveSearchStepScope<Solution_> stepScope = new ExhaustiveSearchStepScope<>(phaseScope);
         entitySelector.stepStarted(stepScope);
         long entitySize = entitySelector.getSize();
-        if (entitySize > (long) Integer.MAX_VALUE) {
+        if (entitySize > Integer.MAX_VALUE) {
             throw new IllegalStateException("The entitySelector (" + entitySelector
                     + ") has an entitySize (" + entitySize
                     + ") which is higher than Integer.MAX_VALUE.");

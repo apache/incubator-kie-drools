@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -55,7 +55,7 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + " must have strictly positive incrementUnit (" + incrementUnit + ").");
         }
-        if (((long) to - (long) from) % incrementUnit != 0L) {
+        if ((to - (long) from) % incrementUnit != 0L) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
                     + "'s incrementUnit (" + incrementUnit
                     + ") must fit an integer number of times between from (" + from + ") and to (" + to + ").");
@@ -64,7 +64,7 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
 
     @Override
     public long getSize() {
-        return ((long) to - (long) from) / incrementUnit;
+        return (to - (long) from) / incrementUnit;
     }
 
     @Override
@@ -75,7 +75,7 @@ public class IntValueRange extends AbstractCountableValueRange<Integer> {
         if (incrementUnit == 1) {
             return true;
         }
-        return ((long) value - (long) from) % incrementUnit == 0;
+        return ((long) value - from) % incrementUnit == 0;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -498,7 +498,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
     }
 
-    private class MeetingSchedulingXlsxWriter extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
+    private static final class MeetingSchedulingXlsxWriter
+            extends AbstractXlsxWriter<MeetingSchedule, HardMediumSoftScore> {
 
         MeetingSchedulingXlsxWriter(MeetingSchedule solution) {
             super(solution, MeetingSchedulingApp.SOLVER_CONFIG);
@@ -518,7 +519,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
             writePersonsView();
             writePrintedFormView();
             writeScoreView(justificationList -> justificationList.stream()
-                    .filter(o -> o instanceof MeetingAssignment).map(o -> ((MeetingAssignment) o).toString())
+                    .filter(MeetingAssignment.class::isInstance)
+                    .map(Object::toString)
                     .collect(joining(", ")));
             return workbook;
         }
@@ -645,8 +647,8 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 : endMinuteOfDay;
                     }
                 }
-                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60);
-                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60);
+                LocalTime startTime = LocalTime.ofSecondOfDay(startMinuteOfDay * 60L);
+                LocalTime endTime = LocalTime.ofSecondOfDay(endMinuteOfDay * 60L);
                 LocalTime lunchHourStartTime = LocalTime.ofSecondOfDay(12 * 60 * 60); // 12pm
 
                 nextCell().setCellValue(DAY_FORMATTER.format(date));
@@ -809,7 +811,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
         }
 
         private String getTimeString(int minuteOfDay) {
-            return TIME_FORMATTER.format(LocalTime.ofSecondOfDay(minuteOfDay * 60));
+            return TIME_FORMATTER.format(LocalTime.ofSecondOfDay(minuteOfDay * 60L));
         }
 
         private void writeMeetingAssignmentList(List<MeetingAssignment> meetingAssignmentList) {
@@ -893,7 +895,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
 
         private void writeTimeGrainHoursHeaders() {
             for (TimeGrain timeGrain : solution.getTimeGrainList()) {
-                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60);
+                LocalTime startTime = LocalTime.ofSecondOfDay(timeGrain.getStartingMinuteOfDay() * 60L);
                 nextHeaderCell(TIME_FORMATTER.format(startTime));
             }
         }
@@ -928,7 +930,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                     // Filter out filtered constraints
                     .filter(constraintMatch -> filteredConstraintNames == null
                             || filteredConstraintNames.contains(constraintMatch.getConstraintName()))
-                    .map(constraintMatch -> constraintMatch.getScore())
+                    .map(ConstraintMatch::getScore)
                     // Filter out positive constraints
                     .filter(indictmentScore -> !(indictmentScore.getHardScore() >= 0 && indictmentScore.getSoftScore() >= 0))
                     .reduce(HardMediumSoftScore::add).orElse(HardMediumSoftScore.ZERO);
@@ -973,7 +975,7 @@ public class MeetingSchedulingXlsxFileIO extends AbstractXlsxSolutionFileIO<Meet
                                 .filter(constraintMatch -> constraintMatch.getConstraintName().equals(constraintName))
                                 .collect(toList());
                         HardMediumSoftScore sum = filteredConstraintMatchList.stream()
-                                .map(constraintMatch -> constraintMatch.getScore())
+                                .map(ConstraintMatch::getScore)
                                 .reduce(HardMediumSoftScore::add)
                                 .orElse(HardMediumSoftScore.ZERO);
                         String justificationTalkCodes = filteredConstraintMatchList.stream()

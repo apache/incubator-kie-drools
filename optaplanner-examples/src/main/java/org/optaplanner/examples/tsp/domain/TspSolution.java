@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -126,7 +126,7 @@ public class TspSolution extends AbstractPersistable {
         }
         long distance = -score.getScore();
         if (distanceUnitOfMeasurement == null) {
-            return numberFormat.format(((double) distance) / 1000.0);
+            return numberFormat.format(distance / 1000.0);
         }
         switch (distanceUnitOfMeasurement) {
             case "sec": // TODO why are the values 1000 larger?
@@ -146,7 +146,7 @@ public class TspSolution extends AbstractPersistable {
                 return km + "km " + meter + "m";
             }
             default:
-                return numberFormat.format(((double) distance) / 1000.0) + " " + distanceUnitOfMeasurement;
+                return numberFormat.format(distance / 1000.0) + " " + distanceUnitOfMeasurement;
         }
     }
 

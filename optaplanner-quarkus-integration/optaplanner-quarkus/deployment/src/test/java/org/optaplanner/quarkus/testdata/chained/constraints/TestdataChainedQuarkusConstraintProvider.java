@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,7 +23,6 @@ import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.Joiners;
 import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusAnchor;
 import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusEntity;
-import org.optaplanner.quarkus.testdata.chained.domain.TestdataChainedQuarkusObject;
 
 public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvider {
 
@@ -32,8 +31,7 @@ public class TestdataChainedQuarkusConstraintProvider implements ConstraintProvi
         return new Constraint[] {
                 factory.from(TestdataChainedQuarkusAnchor.class)
                         .ifNotExists(TestdataChainedQuarkusEntity.class,
-                                Joiners.equal((anchor) -> (TestdataChainedQuarkusObject) anchor,
-                                        TestdataChainedQuarkusEntity::getPrevious))
+                                Joiners.equal((anchor) -> anchor, TestdataChainedQuarkusEntity::getPrevious))
                         .penalize("Assign at least one entity to each anchor.", SimpleScore.ONE)
         };
     }

@@ -29,6 +29,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToLongBiFunction;
 import java.util.stream.Stream;
@@ -106,7 +107,7 @@ public final class BiLeftHandSide<A, B> extends AbstractLeftHandSide {
     private BiRuleContext<A, B> buildRuleContext() {
         ViewItem<?>[] viewItems = Stream.of(patternVariableA, patternVariableB)
                 .flatMap(variable -> variable.build().stream())
-                .toArray(size -> new ViewItem<?>[size]);
+                .toArray((IntFunction<ViewItem<?>[]>) ViewItem[]::new);
         return new BiRuleContext<>(patternVariableA.getPrimaryVariable(), patternVariableB.getPrimaryVariable(),
                 viewItems);
     }

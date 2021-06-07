@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -150,9 +150,9 @@ public class TestGenValueFactTest {
         HashMap<Object, TestGenFact> instances = new HashMap<>();
         fact.setUp(instances);
         instance.setDescription("");
-        assertThat(instance.getDescription()).isEqualTo((CharSequence) "");
+        assertThat(instance.getDescription()).isEqualTo("");
         fact.reset();
-        assertThat(instance.getDescription()).isEqualTo((CharSequence) "desc");
+        assertThat(instance.getDescription()).isEqualTo("desc");
     }
 
     @Test

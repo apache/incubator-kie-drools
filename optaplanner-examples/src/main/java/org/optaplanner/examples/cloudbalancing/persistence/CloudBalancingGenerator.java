@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -253,7 +253,7 @@ public class CloudBalancingGenerator extends LoggingMain {
         if (parabolaRandomDouble < 0.0 || parabolaRandomDouble >= 1.0) {
             throw new IllegalArgumentException("Invalid generated parabolaRandomDouble (" + parabolaRandomDouble + ")");
         }
-        int value = ((int) Math.floor(parabolaRandomDouble * ((double) maximumValue))) + 1;
+        int value = ((int) Math.floor(parabolaRandomDouble * maximumValue)) + 1;
         if (value < 1 || value > maximumValue) {
             throw new IllegalArgumentException("Invalid generated value (" + value + ")");
         }
