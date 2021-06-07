@@ -158,7 +158,7 @@ public class NamedConsequenceVisitor {
             context.addCompilationError(new InvalidExpressionErrorResult("Unknown consequence name: " + namedConsequence.getName()));
             return null;
         }
-        BlockStmt ruleVariablesBlock = new BlockStmt();
+        BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
         createVariables(ruleVariablesBlock, packageModel, context);
         return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }

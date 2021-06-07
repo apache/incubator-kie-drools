@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Cheese;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -326,7 +327,6 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         ksession.fireAllRules();
 
-        System.out.println(results);
         assertEquals(1, results.size());
         assertTrue(results.contains("STILTON"));
     }
@@ -488,5 +488,69 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertEquals(5, results.size());
 
         assertTrue(results.containsAll(asList("DefaultMario", "Mark", "Edson", "Age35", "Age37")));
+    }
+
+    public void testModifyInNamedConsequence() {
+        String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 when\n" +
+                     "    $a: Cheese ( type == \"stilton\" )\n" +
+                     "    if ( price < 10 ) break[t1]\n" +
+                     "    $b: Cheese ( type == \"cheddar\" )\n" +
+                     "then\n" +
+                     "    results.add( $a.getType() );\n" +
+                     "then[t1]\n" +
+                     "    modify( $a ) { setPrice(15) };\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<String> results = new ArrayList<String>();
+        ksession.setGlobal("results", results);
+
+        Cheese stilton = new Cheese("stilton", 5);
+        Cheese cheddar = new Cheese("cheddar", 7);
+        Cheese brie = new Cheese("brie", 5);
+
+        ksession.insert(stilton);
+        ksession.insert(cheddar);
+        ksession.insert(brie);
+
+        ksession.fireAllRules();
+
+        assertEquals(1, results.size());
+        assertTrue(results.contains("stilton"));
+    }
+
+    @Test
+    public void test2ModifyBlocksInNamedConsequences() {
+        String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 when\n" +
+                     "    $a: Cheese (price < 10)\n" +
+                     "    if ( type == \"stilton\" ) break[t1]\n" +
+                     "then\n" +
+                     "    modify( $a ) { setPrice(10) };\n" +
+                     "    results.add( $a.getPrice() );\n" +
+                     "then[t1]\n" +
+                     "    modify( $a ) { setPrice(15) };\n" +
+                     "    results.add( $a.getPrice() );\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Cheese stilton = new Cheese("stilton", 5);
+        Cheese cheddar = new Cheese("cheddar", 7);
+
+        ksession.insert(stilton);
+        ksession.insert(cheddar);
+
+        int fired = ksession.fireAllRules();
+        assertEquals(2, fired);
+
+        Assertions.assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
 }
