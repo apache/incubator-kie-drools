@@ -15,13 +15,19 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
+import javax.inject.Inject;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
 import javax.ws.rs.core.FeatureContext;
 import javax.ws.rs.ext.Provider;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.monitoring.core.common.Constants;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
+import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 
 @Provider
 public class QuarkusMetricsFilterRegister implements DynamicFeature {
@@ -29,10 +35,23 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
     @ConfigProperty(name = Constants.HTTP_INTERCEPTOR_USE_DEFAULT, defaultValue = "true")
     boolean httpInterceptorUseDefault;
 
+    ConfigBean configBean;
+
+    public QuarkusMetricsFilterRegister() {
+        // See https://github.com/quarkusio/quarkus/issues/12780
+    }
+
+    @Inject
+    public QuarkusMetricsFilterRegister(final ConfigBean configBean) {
+        this.configBean = configBean;
+    }
+
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
         if (httpInterceptorUseDefault) {
-            context.register(new QuarkusMetricsInterceptor());
+            SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+            MetricsInterceptor metricsInterceptor = new MetricsInterceptor(systemMetricsCollector);
+            context.register(new QuarkusMetricsInterceptor(metricsInterceptor));
         }
     }
 

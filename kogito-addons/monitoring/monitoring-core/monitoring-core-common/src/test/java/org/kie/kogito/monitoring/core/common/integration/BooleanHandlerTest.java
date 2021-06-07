@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BooleanHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 
@@ -39,7 +40,7 @@ public class BooleanHandlerTest {
     public void setUp() {
         dmnType = "boolean";
         registry = new SimpleMeterRegistry();
-        handler = new BooleanHandler(dmnType, registry);
+        handler = new BooleanHandler(dmnType, KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

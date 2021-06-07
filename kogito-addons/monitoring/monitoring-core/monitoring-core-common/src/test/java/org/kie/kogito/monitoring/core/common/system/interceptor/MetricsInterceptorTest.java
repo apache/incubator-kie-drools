@@ -20,11 +20,11 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 class MetricsInterceptorTest {
 
@@ -37,24 +37,23 @@ class MetricsInterceptorTest {
     }
 
     private void commonMetricInterceptorFilter(String endpoint, int statusCode, String expectedEndpoint) {
-        try (MockedStatic<SystemMetricsCollector> systemMetricsCollector = Mockito.mockStatic(SystemMetricsCollector.class)) {
-            MetricsInterceptor.filter(endpoint, statusCode);
+        SystemMetricsCollector systemMetricsCollector = Mockito.mock(SystemMetricsCollector.class);
+        MetricsInterceptor metricsInterceptor = new MetricsInterceptor(systemMetricsCollector);
+        metricsInterceptor.filter(endpoint, statusCode);
 
-            final ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
-            final ArgumentCaptor<String> statusCodeCaptor = ArgumentCaptor.forClass(String.class);
-            systemMetricsCollector.verify(times(1), () -> SystemMetricsCollector.registerStatusCodeRequest(endpointCaptor.capture(), statusCodeCaptor.capture()));
+        final ArgumentCaptor<String> endpointCaptor = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<String> statusCodeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(systemMetricsCollector, times(1)).registerStatusCodeRequest(endpointCaptor.capture(), statusCodeCaptor.capture());
 
-            List<String> endpoints = endpointCaptor.getAllValues();
-            assertThat(endpoints.isEmpty()).isFalse();
-            assertThat(endpoints.size()).isEqualTo(1);
-            assertThat(endpoints.get(0)).isEqualTo(expectedEndpoint);
+        List<String> endpoints = endpointCaptor.getAllValues();
+        assertThat(endpoints.isEmpty()).isFalse();
+        assertThat(endpoints.size()).isEqualTo(1);
+        assertThat(endpoints.get(0)).isEqualTo(expectedEndpoint);
 
-            List<String> statusCodes = statusCodeCaptor.getAllValues();
-            assertThat(statusCodes.isEmpty()).isFalse();
-            assertThat(statusCodes.size()).isEqualTo(1);
-            String statusCodeString = String.valueOf(statusCode);
-            assertThat(statusCodes.get(0)).isEqualTo(statusCodeString);
-        }
+        List<String> statusCodes = statusCodeCaptor.getAllValues();
+        assertThat(statusCodes.isEmpty()).isFalse();
+        assertThat(statusCodes.size()).isEqualTo(1);
+        String statusCodeString = String.valueOf(statusCode);
+        assertThat(statusCodes.get(0)).isEqualTo(statusCodeString);
     }
-
 }

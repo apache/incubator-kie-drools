@@ -15,11 +15,14 @@
  */
 package org.kie.kogito.monitoring.core.common.process;
 
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 public class MonitoringProcessEventListenerConfig extends DefaultProcessEventListenerConfig {
 
-    public MonitoringProcessEventListenerConfig() {
-        super(new MetricsProcessEventListener("default-process-monitoring-listener"));
+    public MonitoringProcessEventListenerConfig(KogitoGAV gav, MeterRegistry meterRegistry) {
+        super(new MetricsProcessEventListener("default-process-monitoring-listener", gav, meterRegistry));
     }
 }

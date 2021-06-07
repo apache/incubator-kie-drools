@@ -18,7 +18,7 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -26,13 +26,10 @@ public class LocalDateTimeHandler extends TypeHandlerWithSummary<LocalDateTime> 
 
     private final String dmnType;
 
-    public LocalDateTimeHandler(String dmnType) {
-        this(dmnType, MonitoringRegistry.getDefaultMeterRegistry());
-    }
-
-    public LocalDateTimeHandler(String dmnType, MeterRegistry meterRegistry) {
+    public LocalDateTimeHandler(String dmnType, KogitoGAV gav, MeterRegistry meterRegistry) {
         this.dmnType = dmnType;
-        this.registry = meterRegistry;
+        setKogitoGAV(gav);
+        setRegistry(meterRegistry);
     }
 
     @Override

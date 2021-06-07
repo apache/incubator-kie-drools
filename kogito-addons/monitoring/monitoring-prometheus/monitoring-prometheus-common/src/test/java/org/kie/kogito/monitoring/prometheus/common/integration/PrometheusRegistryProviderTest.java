@@ -17,6 +17,8 @@ package org.kie.kogito.monitoring.prometheus.common.integration;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
 import org.kie.kogito.monitoring.prometheus.common.PrometheusRegistryProvider;
 
@@ -24,7 +26,8 @@ public class PrometheusRegistryProviderTest {
 
     @Test
     public void prometheusMetricsAreExported() {
-        SystemMetricsCollector.registerElapsedTimeSampleMetrics("endpoint", 1);
+        SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(KogitoGAV.EMPTY_GAV, MonitoringRegistry.getDefaultMeterRegistry());
+        systemMetricsCollector.registerElapsedTimeSampleMetrics("endpoint", 1);
         Assertions.assertTrue(PrometheusRegistryProvider.getPrometheusMeterRegistry().scrape().contains("api_execution_elapsed_seconds"));
     }
 }

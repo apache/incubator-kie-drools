@@ -25,11 +25,17 @@ import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsIntercept
 
 public class QuarkusMetricsInterceptor implements ContainerResponseFilter {
 
+    private final MetricsInterceptor metricsInterceptor;
+
+    public QuarkusMetricsInterceptor(MetricsInterceptor metricsInterceptor) {
+        this.metricsInterceptor = metricsInterceptor;
+    }
+
     @Override
     public void filter(ContainerRequestContext requestContext,
             ContainerResponseContext responseContext) {
         List<String> matchedUris = requestContext.getUriInfo().getMatchedURIs();
         String matchedUrl = matchedUris.isEmpty() ? null : matchedUris.get(0);
-        MetricsInterceptor.filter(matchedUrl, responseContext.getStatusInfo().getStatusCode());
+        metricsInterceptor.filter(matchedUrl, responseContext.getStatusInfo().getStatusCode());
     }
 }

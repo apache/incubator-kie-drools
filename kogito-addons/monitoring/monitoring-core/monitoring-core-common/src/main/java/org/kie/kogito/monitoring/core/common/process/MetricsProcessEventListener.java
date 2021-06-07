@@ -27,78 +27,85 @@ import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.SLAViolatedEvent;
 import org.kie.api.runtime.process.NodeInstance;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Tag;
 
 public class MetricsProcessEventListener extends DefaultKogitoProcessEventListener {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MetricsProcessEventListener.class);
     private static Map<String, AtomicInteger> gaugeMap = new HashMap<String, AtomicInteger>();
-    private String identifier;
+    private final String identifier;
+    private final KogitoGAV gav;
+    private final MeterRegistry meterRegistry;
 
-    public MetricsProcessEventListener(String identifier) {
+    public MetricsProcessEventListener(String identifier, KogitoGAV gav, MeterRegistry meterRegistry) {
         this.identifier = identifier;
+        this.gav = gav;
+        this.meterRegistry = meterRegistry;
     }
 
-    private static Counter getNumberOfProcessInstancesStartedCounter(String appId, String processId) {
+    private Counter getNumberOfProcessInstancesStartedCounter(String appId, String processId) {
         return Counter
                 .builder("kie_process_instance_started_total")
                 .description("Started Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), (Tag.of("process_id", processId))))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
     }
 
-    private static Counter getNumberOfSLAsViolatedCounter(String appId, String processId, String nodeName) {
+    private Counter getNumberOfSLAsViolatedCounter(String appId, String processId, String nodeName) {
         return Counter
                 .builder("kie_process_instance_sla_violated_total")
                 .description("Process Instances SLA Violated")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName)))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
+                        Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
     }
 
-    private static Counter getNumberOfProcessInstancesCompletedCounter(String appId, String processId, String nodeName) {
+    private Counter getNumberOfProcessInstancesCompletedCounter(String appId, String processId, String nodeName) {
         return Counter
                 .builder("kie_process_instance_completed_total")
                 .description("Completed Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName)))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
+                        Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
     }
 
-    private static AtomicInteger getRunningProcessInstancesGauge(String appId, String processId) {
+    private AtomicInteger getRunningProcessInstancesGauge(String appId, String processId) {
         if (gaugeMap.containsKey(appId + processId)) {
             return gaugeMap.get(appId + processId);
         }
         AtomicInteger atomicInteger = new AtomicInteger(0);
         Gauge.builder("kie_process_instance_running_total", atomicInteger, AtomicInteger::doubleValue)
                 .description("Running Process Instances")
-                .tags(Arrays.asList(Tag.of("app_id", appId), (Tag.of("process_id", processId))))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
         gaugeMap.put(appId + processId, atomicInteger);
         return atomicInteger;
     }
 
-    private static DistributionSummary getProcessInstancesDurationSummary(String appId, String processId) {
+    private DistributionSummary getProcessInstancesDurationSummary(String appId, String processId) {
         return DistributionSummary.builder("kie_process_instance_duration_seconds")
                 .description("Process Instances Duration")
-                .tags(Arrays.asList(Tag.of("app_id", appId), (Tag.of("process_id", processId))))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
     }
 
-    private static DistributionSummary getWorkItemsDurationSummary(String name) {
+    private DistributionSummary getWorkItemsDurationSummary(String name) {
         return DistributionSummary.builder("kie_work_item_duration_seconds")
                 .description("Work Items Duration")
-                .tags(Arrays.asList(Tag.of("name", name)))
-                .register(MonitoringRegistry.getDefaultMeterRegistry());
+                .tags(Arrays.asList(Tag.of("name", name), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
+                .register(meterRegistry);
     }
 
-    protected static void recordRunningProcessInstance(String containerId, String processId) {
+    protected void recordRunningProcessInstance(String containerId, String processId) {
         getRunningProcessInstancesGauge(containerId, processId).incrementAndGet();
     }
 

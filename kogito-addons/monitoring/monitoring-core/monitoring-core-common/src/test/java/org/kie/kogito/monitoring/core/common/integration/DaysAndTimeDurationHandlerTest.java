@@ -20,6 +20,7 @@ import java.time.Duration;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DaysAndTimeDurationHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 
@@ -33,7 +34,7 @@ public class DaysAndTimeDurationHandlerTest extends AbstractQuantilesTest<DaysAn
     public void setUp() {
         dmnType = "daysandtimeduration";
         registry = new SimpleMeterRegistry();
-        handler = new DaysAndTimeDurationHandler(dmnType, registry);
+        handler = new DaysAndTimeDurationHandler(dmnType, KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

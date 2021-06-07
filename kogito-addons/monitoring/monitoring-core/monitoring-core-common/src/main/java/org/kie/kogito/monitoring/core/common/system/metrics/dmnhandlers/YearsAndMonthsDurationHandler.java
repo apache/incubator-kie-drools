@@ -17,7 +17,7 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 
 import java.time.Period;
 
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -25,13 +25,10 @@ public class YearsAndMonthsDurationHandler extends TypeHandlerWithSummary<Period
 
     private final String dmnType;
 
-    public YearsAndMonthsDurationHandler(String dmnType) {
-        this(dmnType, MonitoringRegistry.getDefaultMeterRegistry());
-    }
-
-    public YearsAndMonthsDurationHandler(String dmnType, MeterRegistry meterRegistry) {
+    public YearsAndMonthsDurationHandler(String dmnType, KogitoGAV gav, MeterRegistry meterRegistry) {
         this.dmnType = dmnType;
-        this.registry = meterRegistry;
+        setRegistry(meterRegistry);
+        setKogitoGAV(gav);
     }
 
     @Override

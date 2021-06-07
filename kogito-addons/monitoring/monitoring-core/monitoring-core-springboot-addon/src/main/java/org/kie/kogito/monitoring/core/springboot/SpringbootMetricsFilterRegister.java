@@ -15,7 +15,13 @@
  */
 package org.kie.kogito.monitoring.core.springboot;
 
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.monitoring.core.common.Constants;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
+import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -27,10 +33,19 @@ public class SpringbootMetricsFilterRegister implements WebMvcConfigurer {
     @Value(value = "${" + Constants.HTTP_INTERCEPTOR_USE_DEFAULT + ":true}")
     boolean httpInterceptorUseDefault;
 
+    ConfigBean configBean;
+
+    @Autowired
+    public SpringbootMetricsFilterRegister(ConfigBean configBean) {
+        this.configBean = configBean;
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         if (httpInterceptorUseDefault) {
-            registry.addInterceptor(new SpringbootMetricsInterceptor());
+            SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+            MetricsInterceptor metricsInterceptor = new MetricsInterceptor(systemMetricsCollector);
+            registry.addInterceptor(new SpringbootMetricsInterceptor(metricsInterceptor));
         }
     }
 

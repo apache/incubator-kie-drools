@@ -16,10 +16,13 @@
 package org.kie.kogito.monitoring.core.common.rule;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.kie.kogito.KogitoGAV;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 public class RuleMetricsListenerConfig extends DefaultRuleEventListenerConfig {
 
-    public RuleMetricsListenerConfig() {
-        super(new RuleMetricsListener("default-rule-monitoring-listener"));
+    public RuleMetricsListenerConfig(KogitoGAV gav, MeterRegistry meterRegistry) {
+        super(new RuleMetricsListener("default-rule-monitoring-listener", gav, meterRegistry));
     }
 }

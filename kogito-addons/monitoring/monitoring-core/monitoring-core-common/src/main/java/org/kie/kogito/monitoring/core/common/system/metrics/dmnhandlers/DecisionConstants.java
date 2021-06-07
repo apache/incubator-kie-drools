@@ -27,7 +27,7 @@ public class DecisionConstants {
     /**
      * Array of label names for a prometheus object that needs an handler and an identifier.
      */
-    public static final String[] DECISION_ENDPOINT_IDENTIFIER_LABELS = new String[] { "decision", "endpoint", "identifier" };
+    public static final String[] DECISION_ENDPOINT_IDENTIFIER_LABELS = new String[] { "decision", "endpoint", "identifier", "artifactId", "version" };
     /**
      * Array of label names for a prometheus object that needs only the handler.
      */

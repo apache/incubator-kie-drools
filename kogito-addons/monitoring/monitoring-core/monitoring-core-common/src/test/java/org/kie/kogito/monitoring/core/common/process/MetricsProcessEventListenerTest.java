@@ -16,12 +16,11 @@
 package org.kie.kogito.monitoring.core.common.process;
 
 import org.jbpm.workflow.instance.impl.WorkflowProcessInstanceImpl;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.runtime.process.ProcessInstance;
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -37,18 +36,12 @@ public class MetricsProcessEventListenerTest {
     @BeforeEach
     public void setUp() {
         registry = new SimpleMeterRegistry();
-        MonitoringRegistry.addRegistry(registry);
-    }
-
-    @AfterEach
-    public void cleanUp() {
-        MonitoringRegistry.getDefaultMeterRegistry().remove(registry);
     }
 
     @Test
     public void testGaugeRunningProcesses() {
         // Arrange
-        MetricsProcessEventListener eventListener = new MetricsProcessEventListener("myId");
+        MetricsProcessEventListener eventListener = new MetricsProcessEventListener("myId", KogitoGAV.EMPTY_GAV, registry);
         ProcessInstance processInstanceMock = mock(WorkflowProcessInstanceImpl.class);
         when(processInstanceMock.getProcessId()).thenReturn("myProcessId");
 

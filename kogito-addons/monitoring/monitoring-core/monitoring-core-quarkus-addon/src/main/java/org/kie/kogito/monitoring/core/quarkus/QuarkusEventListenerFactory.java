@@ -17,9 +17,13 @@ package org.kie.kogito.monitoring.core.quarkus;
 
 import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 import org.drools.core.config.DefaultRuleEventListenerConfig;
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.monitoring.core.common.Constants;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.process.MonitoringProcessEventListenerConfig;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
@@ -33,17 +37,24 @@ public class QuarkusEventListenerFactory {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuarkusEventListenerFactory.class);
 
+    ConfigBean configBean;
+
+    @Inject
+    public QuarkusEventListenerFactory(ConfigBean configBean) {
+        this.configBean = configBean;
+    }
+
     @Produces
     @IfBuildProperty(name = Constants.MONITORING_RULE_USE_DEFAULT, stringValue = "true", enableIfMissing = true)
     public DefaultRuleEventListenerConfig produceRuleListener() {
         LOGGER.debug("Producing default listener for rule monitoring.");
-        return new RuleMetricsListenerConfig();
+        return new RuleMetricsListenerConfig(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
     }
 
     @Produces
     @IfBuildProperty(name = Constants.MONITORING_PROCESS_USE_DEFAULT, stringValue = "true", enableIfMissing = true)
     public DefaultProcessEventListenerConfig produceProcessListener() {
         LOGGER.debug("Producing default listener for process monitoring.");
-        return new MonitoringProcessEventListenerConfig();
+        return new MonitoringProcessEventListenerConfig(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
     }
 }

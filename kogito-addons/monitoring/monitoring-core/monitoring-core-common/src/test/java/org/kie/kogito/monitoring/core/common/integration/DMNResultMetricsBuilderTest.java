@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.dmn.rest.KogitoDMNResult;
 import org.kie.kogito.grafana.dmn.SupportedDecisionTypes;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
@@ -46,11 +47,12 @@ public class DMNResultMetricsBuilderTest {
 
     private static final String ENDPOINT_NAME = "hello";
     MeterRegistry registry;
+    DMNResultMetricsBuilder dmnResultMetricsBuilder;
 
     @BeforeEach
     public void setUp() {
         registry = new SimpleMeterRegistry();
-        MonitoringRegistry.addRegistry(registry);
+        dmnResultMetricsBuilder = new DMNResultMetricsBuilder(KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach
@@ -91,7 +93,7 @@ public class DMNResultMetricsBuilderTest {
         int expectedTrueBooleanDecision = 1;
 
         // Act
-        DMNResultMetricsBuilder.generateMetrics(dmnResult, ENDPOINT_NAME);
+        dmnResultMetricsBuilder.generateMetrics(dmnResult, ENDPOINT_NAME);
 
         // Assert
         // String type
@@ -142,7 +144,7 @@ public class DMNResultMetricsBuilderTest {
     // Keep aligned the mapping of types between kogito-codegen and prometheus-addon.
     @Test
     public void alighmentWithKogitoCodegenIsOk() {
-        List addonSupportedTypes = DMNResultMetricsBuilder.getHandlers().values().stream().map(x -> x.getDmnType()).collect(Collectors.toList());
+        List addonSupportedTypes = dmnResultMetricsBuilder.getHandlers().values().stream().map(x -> x.getDmnType()).collect(Collectors.toList());
         assertTrue(addonSupportedTypes.containsAll(SupportedDecisionTypes.getSupportedDMNTypes()));
         assertTrue(SupportedDecisionTypes.getSupportedDMNTypes().containsAll(addonSupportedTypes));
     }
@@ -150,6 +152,6 @@ public class DMNResultMetricsBuilderTest {
     @Test
     public void givenANullDMNResultWhenMetricsAreRegisteredThenTheSampleIsDiscarded() {
         // Assert
-        assertDoesNotThrow(() -> DMNResultMetricsBuilder.generateMetrics(null, ENDPOINT_NAME));
+        assertDoesNotThrow(() -> dmnResultMetricsBuilder.generateMetrics(null, ENDPOINT_NAME));
     }
 }

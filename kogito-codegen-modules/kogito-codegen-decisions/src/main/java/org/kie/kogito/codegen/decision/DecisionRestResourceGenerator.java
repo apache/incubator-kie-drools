@@ -180,6 +180,7 @@ public class DecisionRestResourceGenerator {
 
         if (context.getAddonsConfig().useMonitoring()) {
             addMonitoringImports(clazz);
+            addMonitoringFields(template);
             addExceptionMetricsLogging(clazz, nameURL);
             addMonitoringToMethod(dmnMethod, nameURL);
         }
@@ -333,7 +334,7 @@ public class DecisionRestResourceGenerator {
         String methodArgumentName = method.getParameters().get(0).getNameAsString();
         statements.addBefore(
                 parseStatement(String.format(
-                        "SystemMetricsCollector.registerException(\"%s\", %s.getMessages().stream().filter(x -> org.kie.dmn.api.core.DMNMessage.Severity.ERROR.equals(x.getSeverity())).map(x -> x.getMessage()).collect(Collectors.joining(\",\")));",
+                        "systemMetricsCollectorProvider.get().registerException(\"%s\", %s.getMessages().stream().filter(x -> org.kie.dmn.api.core.DMNMessage.Severity.ERROR.equals(x.getSeverity())).map(x -> x.getMessage()).collect(Collectors.joining(\",\")));",
                         nameURL,
                         methodArgumentName)),
                 returnStmt);
@@ -342,7 +343,15 @@ public class DecisionRestResourceGenerator {
     private void addMonitoringImports(CompilationUnit cu) {
         cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector"), false, false));
         cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder"), false, false));
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector"), false, false));
+        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
+    }
+
+    private void addMonitoringFields(ClassOrInterfaceDeclaration template) {
+        FieldDeclaration field =
+                template.addField("SystemMetricsCollectorProvider", "systemMetricsCollectorProvider");
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withInjection(field);
+        }
     }
 
     private void addMonitoringToMethod(MethodDeclaration method, String nameURL) {
@@ -351,7 +360,7 @@ public class DecisionRestResourceGenerator {
         ReturnStmt returnStmt = body.findFirst(ReturnStmt.class).orElseThrow(() -> new NoSuchElementException("Return statement not found: can't add monitoring to endpoint. Template was modified."));
         statements.addFirst(parseStatement("long startTime = System.nanoTime();"));
         statements.addBefore(parseStatement("long endTime = System.nanoTime();"), returnStmt);
-        statements.addBefore(parseStatement("SystemMetricsCollector.registerElapsedTimeSampleMetrics(\"" + nameURL + "\", endTime - startTime);"), returnStmt);
+        statements.addBefore(parseStatement("systemMetricsCollectorProvider.get().registerElapsedTimeSampleMetrics(\"" + nameURL + "\", endTime - startTime);"), returnStmt);
     }
 
     private void initializeApplicationField(FieldDeclaration fd) {

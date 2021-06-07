@@ -21,6 +21,7 @@ import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.BigDecimalHandler;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 
@@ -35,7 +36,7 @@ public class BigDecimalHandlerTest extends AbstractQuantilesTest<BigDecimalHandl
     public void setUp() {
         dmnType = "bigdecimal";
         registry = new SimpleMeterRegistry();
-        handler = new BigDecimalHandler(dmnType, registry);
+        handler = new BigDecimalHandler(dmnType, KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

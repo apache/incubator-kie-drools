@@ -17,7 +17,7 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 
 import java.math.BigDecimal;
 
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -25,13 +25,10 @@ public class BigDecimalHandler extends TypeHandlerWithSummary<BigDecimal> {
 
     private final String dmnType;
 
-    public BigDecimalHandler(String dmnType) {
-        this(dmnType, MonitoringRegistry.getDefaultMeterRegistry());
-    }
-
-    public BigDecimalHandler(String dmnType, MeterRegistry registry) {
+    public BigDecimalHandler(String dmnType, KogitoGAV gav, MeterRegistry registry) {
         this.dmnType = dmnType;
-        this.registry = registry;
+        setRegistry(registry);
+        setKogitoGAV(gav);
     }
 
     @Override

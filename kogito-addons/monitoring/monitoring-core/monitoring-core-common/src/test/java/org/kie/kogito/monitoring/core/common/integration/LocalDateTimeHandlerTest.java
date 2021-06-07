@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.LocalDateTimeHandler;
 
@@ -32,7 +33,7 @@ public class LocalDateTimeHandlerTest extends AbstractQuantilesTest<LocalDateTim
     @BeforeEach
     public void setUp() {
         registry = new SimpleMeterRegistry();
-        handler = new LocalDateTimeHandler("hello", registry);
+        handler = new LocalDateTimeHandler("hello", KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

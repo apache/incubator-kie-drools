@@ -17,7 +17,7 @@ package org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers;
 
 import java.time.Duration;
 
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.MeterRegistry;
 
@@ -25,13 +25,10 @@ public class DaysAndTimeDurationHandler extends TypeHandlerWithSummary<Duration>
 
     private final String dmnType;
 
-    public DaysAndTimeDurationHandler(String dmnType) {
-        this(dmnType, MonitoringRegistry.getDefaultMeterRegistry());
-    }
-
-    public DaysAndTimeDurationHandler(String dmnType, MeterRegistry meterRegistry) {
+    public DaysAndTimeDurationHandler(String dmnType, KogitoGAV gav, MeterRegistry meterRegistry) {
         this.dmnType = dmnType;
-        this.registry = meterRegistry;
+        setRegistry(meterRegistry);
+        setKogitoGAV(gav);
     }
 
     @Override

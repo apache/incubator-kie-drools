@@ -20,6 +20,7 @@ import java.time.Period;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.YearsAndMonthsDurationHandler;
 
@@ -32,7 +33,7 @@ public class YearsAndMonthsDurationHandlerTest extends AbstractQuantilesTest<Yea
     @BeforeEach
     public void setUp() {
         registry = new SimpleMeterRegistry();
-        handler = new YearsAndMonthsDurationHandler("hello", registry);
+        handler = new YearsAndMonthsDurationHandler("hello", KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

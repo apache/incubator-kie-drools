@@ -22,17 +22,32 @@ import org.kie.dmn.api.core.DMNMetadata;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.FEELPropertyAccessible;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.decision.DecisionModel;
+import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
 import org.kie.kogito.monitoring.core.common.system.metrics.DMNResultMetricsBuilder;
+
+import io.micrometer.core.instrument.MeterRegistry;
 
 import static org.kie.kogito.monitoring.core.common.Constants.SKIP_MONITORING;
 
 public class MonitoredDecisionModel implements DecisionModel {
 
     private final DecisionModel originalModel;
+    private final DMNResultMetricsBuilder dmnResultMetricsBuilder;
 
-    public MonitoredDecisionModel(DecisionModel originalModel) {
+    public MonitoredDecisionModel(DecisionModel originalModel, KogitoGAV gav, MeterRegistry meterRegistry) {
         this.originalModel = originalModel;
+        this.dmnResultMetricsBuilder = new DMNResultMetricsBuilder(gav, meterRegistry);
+    }
+
+    public MonitoredDecisionModel(DecisionModel originalModel, KogitoGAV gav) {
+        this(originalModel, gav, MonitoringRegistry.getDefaultMeterRegistry());
+    }
+
+    protected MonitoredDecisionModel(DecisionModel originalModel, DMNResultMetricsBuilder dmnResultMetricsBuilder) {
+        this.originalModel = originalModel;
+        this.dmnResultMetricsBuilder = dmnResultMetricsBuilder;
     }
 
     @Override
@@ -49,7 +64,7 @@ public class MonitoredDecisionModel implements DecisionModel {
     public DMNResult evaluateAll(DMNContext context) {
         DMNResult result = originalModel.evaluateAll(context);
         if (!shouldSkipMonitoring(context.getMetadata())) {
-            DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+            dmnResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
         }
         return result;
     }
@@ -58,7 +73,7 @@ public class MonitoredDecisionModel implements DecisionModel {
     public DMNResult evaluateDecisionService(DMNContext context, String decisionServiceName) {
         DMNResult result = originalModel.evaluateDecisionService(context, decisionServiceName);
         if (!shouldSkipMonitoring(context.getMetadata())) {
-            DMNResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
+            dmnResultMetricsBuilder.generateMetrics(result, originalModel.getDMNModel().getName());
         }
         return result;
     }

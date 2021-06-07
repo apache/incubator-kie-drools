@@ -209,12 +209,16 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
         returnMethodSingle.findAll(VariableDeclarator.class).forEach(decl -> decl.setType(toNonPrimitiveType(returnType)));
 
         if (context.getAddonsConfig().useMonitoring()) {
-            addMonitoringToResource(cu, new MethodDeclaration[] { queryMethod, queryMethodSingle }, endpointName);
+            addMonitoringToResource(cu, clazz, new MethodDeclaration[] { queryMethod, queryMethodSingle }, endpointName);
         }
     }
 
-    private void addMonitoringToResource(CompilationUnit cu, MethodDeclaration[] methods, String nameURL) {
-        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollector"), false, false));
+    private void addMonitoringToResource(CompilationUnit cu, ClassOrInterfaceDeclaration clazz, MethodDeclaration[] methods, String nameURL) {
+        cu.addImport(new ImportDeclaration(new Name("org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollectorProvider"), false, false));
+        FieldDeclaration field = clazz.addField("SystemMetricsCollectorProvider", "systemMetricsCollectorProvider");
+        if (context.hasDI()) {
+            context.getDependencyInjectionAnnotator().withInjection(field);
+        }
 
         for (MethodDeclaration md : methods) {
             BlockStmt body = md.getBody().orElseThrow(() -> new NoSuchElementException("A method declaration doesn't contain a body!"));
@@ -229,7 +233,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
                     endpoint += path.get();
                 }
             }
-            statements.addBefore(parseStatement("SystemMetricsCollector.registerElapsedTimeSampleMetrics(\"" + endpoint + "\", endTime - startTime);"), returnStmt);
+            statements.addBefore(parseStatement("systemMetricsCollectorProvider.get().registerElapsedTimeSampleMetrics(\"" + endpoint + "\", endTime - startTime);"), returnStmt);
             md.setBody(wrapBodyAddingExceptionLogging(body, nameURL));
         }
     }
@@ -243,7 +247,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
         BlockStmt cb = new BlockStmt();
         cb.addStatement(parseStatement(
                 String.format(
-                        "SystemMetricsCollector.registerException(\"%s\", %s.getStackTrace()[0].toString());",
+                        "systemMetricsCollectorProvider.get().registerException(\"%s\", %s.getStackTrace()[0].toString());",
                         nameURL,
                         exceptionName)));
         cb.addStatement(new ThrowStmt(new NameExpr(exceptionName)));

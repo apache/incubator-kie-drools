@@ -25,8 +25,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 public class SpringbootMetricsInterceptor implements HandlerInterceptor {
 
+    private final MetricsInterceptor metricsInterceptor;
+
+    public SpringbootMetricsInterceptor(MetricsInterceptor metricsInterceptor) {
+        this.metricsInterceptor = metricsInterceptor;
+    }
+
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, @Nullable Object handler, ModelAndView modelAndView) throws Exception {
-        MetricsInterceptor.filter(request.getRequestURI(), response.getStatus());
+        metricsInterceptor.filter(request.getRequestURI(), response.getStatus());
     }
 }

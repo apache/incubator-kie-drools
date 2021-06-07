@@ -23,12 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.system.interceptor.MetricsInterceptor;
 import org.mockito.ArgumentCaptor;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 class SpringMetricsInterceptorTest {
@@ -49,26 +48,25 @@ class SpringMetricsInterceptorTest {
         when(requestMock.getRequestURI()).thenReturn(requestUri);
         when(responseMock.getStatus()).thenReturn(statusCode);
 
-        try (MockedStatic<MetricsInterceptor> metricsInterceptor = Mockito.mockStatic(MetricsInterceptor.class)) {
+        MetricsInterceptor metricsInterceptor = mock(MetricsInterceptor.class);
 
-            final ArgumentCaptor<String> matchedUrl = ArgumentCaptor.forClass(String.class);
-            final ArgumentCaptor<Integer> statusCodeCaptor = ArgumentCaptor.forClass(int.class);
+        final ArgumentCaptor<String> matchedUrl = ArgumentCaptor.forClass(String.class);
+        final ArgumentCaptor<Integer> statusCodeCaptor = ArgumentCaptor.forClass(int.class);
 
-            SpringbootMetricsInterceptor interceptor = new SpringbootMetricsInterceptor();
+        SpringbootMetricsInterceptor interceptor = new SpringbootMetricsInterceptor(metricsInterceptor);
 
-            interceptor.postHandle(requestMock, responseMock, null, null);
+        interceptor.postHandle(requestMock, responseMock, null, null);
 
-            metricsInterceptor.verify(times(1), () -> MetricsInterceptor.filter(matchedUrl.capture(), statusCodeCaptor.capture()));
+        verify(metricsInterceptor, times(1)).filter(matchedUrl.capture(), statusCodeCaptor.capture());
 
-            List<String> endpoints = matchedUrl.getAllValues();
-            assertThat(endpoints.isEmpty()).isFalse();
-            assertThat(endpoints.size()).isEqualTo(1);
-            assertThat(endpoints.get(0)).isEqualTo(expectedMatchedUrl);
+        List<String> endpoints = matchedUrl.getAllValues();
+        assertThat(endpoints.isEmpty()).isFalse();
+        assertThat(endpoints.size()).isEqualTo(1);
+        assertThat(endpoints.get(0)).isEqualTo(expectedMatchedUrl);
 
-            List<Integer> statusCodes = statusCodeCaptor.getAllValues();
-            assertThat(statusCodes.isEmpty()).isFalse();
-            assertThat(statusCodes.size()).isEqualTo(1);
-            assertThat(statusCodes.get(0)).isEqualTo(statusCode);
-        }
+        List<Integer> statusCodes = statusCodeCaptor.getAllValues();
+        assertThat(statusCodes.isEmpty()).isFalse();
+        assertThat(statusCodes.size()).isEqualTo(1);
+        assertThat(statusCodes.get(0)).isEqualTo(statusCode);
     }
 }

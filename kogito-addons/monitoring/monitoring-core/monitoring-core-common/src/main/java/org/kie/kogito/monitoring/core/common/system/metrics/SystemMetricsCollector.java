@@ -19,7 +19,7 @@ import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
+import org.kie.kogito.KogitoGAV;
 
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -42,47 +42,47 @@ public class SystemMetricsCollector {
 
     private static final String EXCEPTIONS_HELP = "System exceptions details.";
 
-    private static MeterRegistry registry = MonitoringRegistry.getDefaultMeterRegistry();
+    private final MeterRegistry registry;
 
-    private SystemMetricsCollector() {
+    private final KogitoGAV gav;
+
+    public SystemMetricsCollector(KogitoGAV gav, MeterRegistry meterRegistry) {
+        this.gav = gav;
+        this.registry = meterRegistry;
     }
 
-    private static Counter getRequestStatusCodeCounter(String endpoint, String identifier) {
+    private Counter getRequestStatusCodeCounter(String endpoint, String identifier) {
         return Counter.builder(STATUS_CODE_NAME)
                 .description(STATUS_CODE_HELP)
-                .tags(Arrays.asList(Tag.of("endpoint", endpoint), Tag.of("identifier", identifier)))
+                .tags(Arrays.asList(Tag.of("endpoint", endpoint), Tag.of("identifier", identifier), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(registry);
     }
 
-    private static Counter getExceptionsCounter(String endpoint, String identifier) {
+    private Counter getExceptionsCounter(String endpoint, String identifier) {
         return Counter.builder(EXCEPTIONS_NAME)
                 .description(EXCEPTIONS_HELP)
-                .tags(Arrays.asList(Tag.of("endpoint", endpoint), Tag.of("identifier", identifier)))
+                .tags(Arrays.asList(Tag.of("endpoint", endpoint), Tag.of("identifier", identifier), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(registry);
     }
 
-    private static Timer getElapsedTimeSummary(String endpoint) {
+    private Timer getElapsedTimeSummary(String endpoint) {
         return Timer.builder(ELAPSED_TIME_NAME)
                 .description(ELAPSED_TIME_HELP)
                 .publishPercentiles(ELAPSED_TIME_PERCENTILES)
                 .distributionStatisticExpiry(Duration.ofMinutes(3))
-                .tags(Arrays.asList(Tag.of("endpoint", endpoint)))
+                .tags(Arrays.asList(Tag.of("endpoint", endpoint), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(registry);
     }
 
-    public static void registerStatusCodeRequest(String endpoint, String statusCode) {
+    public void registerStatusCodeRequest(String endpoint, String statusCode) {
         getRequestStatusCodeCounter(endpoint, statusCode).increment();
     }
 
-    public static void registerElapsedTimeSampleMetrics(String endpoint, long elapsedTime) {
+    public void registerElapsedTimeSampleMetrics(String endpoint, long elapsedTime) {
         getElapsedTimeSummary(endpoint).record(elapsedTime, TimeUnit.NANOSECONDS);
     }
 
-    public static void registerException(String endpoint, String stackTrace) {
+    public void registerException(String endpoint, String stackTrace) {
         getExceptionsCounter(endpoint, stackTrace).increment();
-    }
-
-    public static void setRegistry(MeterRegistry meterRegistry) {
-        registry = meterRegistry;
     }
 }

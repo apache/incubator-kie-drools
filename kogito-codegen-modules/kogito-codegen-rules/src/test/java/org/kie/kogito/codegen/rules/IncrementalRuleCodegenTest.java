@@ -238,6 +238,9 @@ public class IncrementalRuleCodegenTest {
                 .findFirst(ReturnStmt.class)
                 .orElseThrow(() -> new RuntimeException("No return statement for executeQueryFirst method. Template has changed."));
 
+        // SystemMetricsCollectorProvider field has been created
+        Assertions.assertTrue(clazz.getFieldByName("systemMetricsCollectorProvider").isPresent());
+
         // Return expression should not be a call, otherwise the elapsed time would not be calculated properly
         Assertions.assertFalse(executeQueryReturnStmt.getExpression().get().isMethodCallExpr());
         Assertions.assertFalse(executeQueryFirstReturnStmt.getExpression().get().isMethodCallExpr());

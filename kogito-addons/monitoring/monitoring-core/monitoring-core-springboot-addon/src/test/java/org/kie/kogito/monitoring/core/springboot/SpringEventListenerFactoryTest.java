@@ -17,6 +17,7 @@ package org.kie.kogito.monitoring.core.springboot;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.monitoring.core.common.mock.MockedConfigBean;
 import org.kie.kogito.monitoring.core.common.process.MonitoringProcessEventListenerConfig;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
 
@@ -28,7 +29,7 @@ class SpringEventListenerFactoryTest {
 
     @BeforeEach
     public void init() {
-        factory = new SpringbootEventListenerFactory();
+        factory = new SpringbootEventListenerFactory(new MockedConfigBean());
     }
 
     @Test

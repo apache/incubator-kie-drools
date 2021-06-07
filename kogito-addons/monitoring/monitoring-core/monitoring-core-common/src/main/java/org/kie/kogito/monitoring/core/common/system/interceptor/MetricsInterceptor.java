@@ -19,22 +19,24 @@ import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollect
 
 public class MetricsInterceptor {
 
-    private MetricsInterceptor() {
-        // utility class
+    private final SystemMetricsCollector systemMetricsCollector;
+
+    public MetricsInterceptor(SystemMetricsCollector systemMetricsCollector) {
+        this.systemMetricsCollector = systemMetricsCollector;
     }
 
-    public static void filter(String matchedUrl, int statusCode) {
+    public void filter(String matchedUrl, int statusCode) {
         String stringStatusCode = String.valueOf(statusCode);
         if (statusCode != 404) {
             String cleanUrl = cleanUrl(matchedUrl);
-            SystemMetricsCollector.registerStatusCodeRequest(cleanUrl, stringStatusCode);
+            systemMetricsCollector.registerStatusCodeRequest(cleanUrl, stringStatusCode);
         } else // Log the number of requests that did not match any Uri -> 404 not found.
         {
-            SystemMetricsCollector.registerStatusCodeRequest("NOT FOUND", stringStatusCode);
+            systemMetricsCollector.registerStatusCodeRequest("NOT FOUND", stringStatusCode);
         }
     }
 
-    private static String cleanUrl(String matchedUrl) {
+    private String cleanUrl(String matchedUrl) {
         if (matchedUrl != null && matchedUrl.startsWith("/")) {
             return matchedUrl.substring(1);
         }

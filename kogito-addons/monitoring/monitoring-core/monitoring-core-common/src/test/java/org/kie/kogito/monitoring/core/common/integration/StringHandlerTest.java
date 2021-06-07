@@ -20,6 +20,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.DecisionConstants;
 import org.kie.kogito.monitoring.core.common.system.metrics.dmnhandlers.StringHandler;
 
@@ -39,7 +40,7 @@ public class StringHandlerTest {
     public void setUp() {
         dmnType = "string";
         registry = new SimpleMeterRegistry();
-        handler = new StringHandler(dmnType, registry);
+        handler = new StringHandler(dmnType, KogitoGAV.EMPTY_GAV, registry);
     }
 
     @AfterEach

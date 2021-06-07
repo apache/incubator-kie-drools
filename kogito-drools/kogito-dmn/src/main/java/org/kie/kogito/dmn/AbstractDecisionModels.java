@@ -16,12 +16,15 @@
 package org.kie.kogito.dmn;
 
 import java.io.Reader;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.kogito.Application;
 import org.kie.kogito.ExecutionIdSupplier;
+import org.kie.kogito.KogitoGAV;
+import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.decision.DecisionConfig;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.decision.DecisionModels;
@@ -31,11 +34,12 @@ public abstract class AbstractDecisionModels implements DecisionModels {
     private static final boolean CAN_PLATFORM_CLASSLOAD = org.kie.dmn.feel.util.ClassLoaderUtil.CAN_PLATFORM_CLASSLOAD;
     private static DMNRuntime dmnRuntime = null;
     private static ExecutionIdSupplier execIdSupplier = null;
-    private static Function<DecisionModel, DecisionModel> decisionModelTransformer = null;
+    private static BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformer = null;
+    private KogitoGAV gav = KogitoGAV.EMPTY_GAV;
 
     protected static void init(Function<String, KieRuntimeFactory> sKieRuntimeFactoryFunction,
             ExecutionIdSupplier executionIdSupplier,
-            Function<DecisionModel, DecisionModel> decisionModelTransformerInit,
+            BiFunction<DecisionModel, KogitoGAV, DecisionModel> decisionModelTransformerInit,
             Reader... readers) {
         DMNKogitoCallbacks.beforeAbstractDecisionModelsInit(sKieRuntimeFactoryFunction, executionIdSupplier, decisionModelTransformerInit, readers);
         dmnRuntime = DMNKogito.createGenericDMNRuntime(sKieRuntimeFactoryFunction, readers);
@@ -48,7 +52,7 @@ public abstract class AbstractDecisionModels implements DecisionModels {
         DecisionModel model = new DmnDecisionModel(dmnRuntime, namespace, name, execIdSupplier);
         return decisionModelTransformer == null
                 ? model
-                : decisionModelTransformer.apply(model);
+                : decisionModelTransformer.apply(model, gav);
     }
 
     public AbstractDecisionModels() {
@@ -61,6 +65,7 @@ public abstract class AbstractDecisionModels implements DecisionModels {
 
     protected void initApplication(Application app) {
         app.config().get(DecisionConfig.class).decisionEventListeners().listeners().forEach(dmnRuntime::addListener);
+        gav = app.config().get(ConfigBean.class).getGav().orElse(KogitoGAV.EMPTY_GAV);
     }
 
     protected static java.io.InputStreamReader readResource(java.io.InputStream stream) {
