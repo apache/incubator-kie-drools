@@ -16,15 +16,22 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Stream;
 
+import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 4576394527423997787L;
-    private final String mapMissingTo;
+    private String mapMissingTo;
 
     public KiePMMLFieldRef(String name, List<KiePMMLExtension> extensions, String mapMissingTo) {
         super(name, extensions);
@@ -33,6 +40,19 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
 
     public String getMapMissingTo() {
         return mapMissingTo;
+    }
+
+    @Override
+    public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                           final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLNameValue> kiePMMLNameValues) {
+
+       return Stream.of(getFromKiePMMLNameValues(kiePMMLNameValues),
+                        getFromDerivedFields(defineFunctions, derivedFields, kiePMMLNameValues))
+                .filter(Optional::isPresent)
+               .findFirst()
+               .map(Optional::get)
+               .orElse(mapMissingTo);
     }
 
     @Override
@@ -62,5 +82,25 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), mapMissingTo);
+    }
+
+    private Optional<Object> getFromKiePMMLNameValues(final List<KiePMMLNameValue> kiePMMLNameValues) {
+        return kiePMMLNameValues
+                .parallelStream()
+                .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(name))
+                .findFirst()
+                .map(KiePMMLNameValue::getValue);
+    }
+
+    private Optional<Object> getFromDerivedFields(final List<KiePMMLDefineFunction> defineFunctions,
+                                                  final List<KiePMMLDerivedField> derivedFields,
+                                                  final List<KiePMMLNameValue> kiePMMLNameValues) {
+        return derivedFields
+                .parallelStream()
+                .filter(derivedField -> derivedField.getName().equals(name))
+                .findFirst()
+                .map(derivedField -> derivedField.evaluate(defineFunctions, derivedFields, kiePMMLNameValues));
+
+
     }
 }
