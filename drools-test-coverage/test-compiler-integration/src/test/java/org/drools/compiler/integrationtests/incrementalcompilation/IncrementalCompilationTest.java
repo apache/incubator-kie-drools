@@ -4860,4 +4860,65 @@ public class IncrementalCompilationTest {
         ksession.insert(true);
         assertEquals(2, ksession.fireAllRules());
     }
+
+    @Test(timeout = 20000L)
+    public void testUpdateToVersionWithFireUntilHaltWithSlowRHS() throws Exception {
+        // DROOLS-6392
+        final KieServices ks = KieServices.Factory.get();
+
+        // Create an in-memory jar for version 1.0.0
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1.0");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, getTestRuleForFireUntilHaltSlow(0));
+
+        // Create a session and fire rules
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession kieSession = kc.newKieSession();
+
+        final DebugList<String> list = new DebugList<>();
+        kieSession.setGlobal("list", list);
+
+        kieSession.insert(new Message("X"));
+
+        CountDownLatch done = new CountDownLatch(1);
+        list.done = done;
+
+        try {
+            new Thread(kieSession::fireUntilHalt).start();
+
+            done.await();
+            assertEquals(1, list.size());
+            assertEquals("0 - X", list.get(0));
+            list.clear();
+
+            for (int i = 1; i < 3; i++) {
+                done = new CountDownLatch(1);
+                list.done = done;
+
+                final ReleaseId releaseIdI = ks.newReleaseId("org.kie", "test-fireUntilHalt", "1." + i);
+                KieUtil.getKieModuleFromDrls(releaseIdI, kieBaseTestConfiguration, getTestRuleForFireUntilHaltSlow(i));
+
+                kc.updateToVersion(releaseIdI);
+
+                done.await();
+                assertEquals(1, list.size());
+                assertEquals(i + " - X", list.get(0));
+                list.clear();
+            }
+        } finally {
+            kieSession.halt();
+        }
+    }
+
+    private String getTestRuleForFireUntilHaltSlow(final int i) {
+        return "package org.drools.compiler\n" +
+                "import " + Message.class.getCanonicalName() + ";\n" +
+                "global java.util.List list;\n" +
+                "rule Rx when\n" +
+                "   Message( $m : message )\n" +
+                "then\n" +
+                "   list.add(\"" + i + " - \" + $m);\n" +
+                "   System.out.println(\"[\" + Thread.currentThread().getName() + \"] executed! i = " + i + "\");\n" +
+                "   Thread.sleep(200);\n" +
+                "end\n";
+    }
 }
