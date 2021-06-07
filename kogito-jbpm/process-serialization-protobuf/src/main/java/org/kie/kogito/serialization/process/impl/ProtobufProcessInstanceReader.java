@@ -101,7 +101,7 @@ public class ProtobufProcessInstanceReader {
     public RuleFlowProcessInstance read(InputStream input) throws IOException {
         KogitoProcessInstanceProtobuf.ProcessInstance processInstanceProtobuf;
 
-        String format = (String) this.context.get(MarshallerContextName.MARSHALLER_FORMAT);
+        String format = this.context.get(MarshallerContextName.MARSHALLER_FORMAT);
         if (format != null && "json".equals(format)) {
             KogitoProcessInstanceProtobuf.ProcessInstance.Builder builder = KogitoProcessInstanceProtobuf.ProcessInstance.newBuilder();
             JsonFormat.parser().usingTypeRegistry(protobufTypeRegistryFactoryInstance().create()).ignoringUnknownFields().merge(new InputStreamReader(input), builder);
@@ -161,7 +161,7 @@ public class ProtobufProcessInstanceReader {
             nodeInstanceImpl.setProcessInstance(processInstance);
             nodeInstanceImpl.setId(nodeInstanceProtobuf.getId());
             nodeInstanceImpl.setNodeId(nodeInstanceProtobuf.getNodeId());
-            nodeInstanceImpl.setNodeInstanceContainer((KogitoNodeInstanceContainer) processInstance);
+            nodeInstanceImpl.setNodeInstanceContainer(processInstance);
             nodeInstanceImpl.setLevel(nodeInstanceProtobuf.getLevel() == 0 ? 1 : nodeInstanceProtobuf.getLevel());
 
             SLAContext slaNodeInstanceContext = nodeInstanceProtobuf.getSla();
@@ -170,7 +170,9 @@ public class ProtobufProcessInstanceReader {
                 nodeInstanceImpl.internalSetSlaDueDate(new Date(slaNodeInstanceContext.getSlaDueDate()));
             }
             nodeInstanceImpl.internalSetSlaTimerId(slaNodeInstanceContext.getSlaTimerId());
-
+            if (nodeInstanceProtobuf.hasTriggerDate()) {
+                nodeInstanceImpl.internalSetTriggerTime(new Date(nodeInstanceProtobuf.getTriggerDate()));
+            }
         }
 
         for (KogitoTypesProtobuf.NodeInstanceGroup group : workflowContext.getExclusiveGroupList()) {

@@ -266,6 +266,55 @@ public class PublishEventIT extends AbstractCodegenIT {
     }
 
     @Test
+    public void testBasicUserTaskProcessAbort() throws Exception {
+        Application app = generateCodeProcessesOnly("usertask/UserTasksProcess.bpmn2");
+        assertThat(app).isNotNull();
+
+        Process<? extends Model> p = app.get(Processes.class).processById("UserTasksProcess");
+
+        Model m = p.createModel();
+        Map<String, Object> parameters = new HashMap<>();
+        m.fromMap(parameters);
+
+        TestEventPublisher publisher = new TestEventPublisher();
+        app.unitOfWorkManager().eventManager().setService("http://myhost");
+        app.unitOfWorkManager().eventManager().addPublisher(publisher);
+
+        UnitOfWork uow = app.unitOfWorkManager().newUnitOfWork();
+        uow.start();
+
+        ProcessInstance<?> processInstance = p.createInstance(m);
+        processInstance.start();
+        uow.end();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ACTIVE);
+        List<DataEvent<?>> events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(2);
+        ProcessInstanceEventBody body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", 1);
+        assertThat(body.getNodeInstances()).hasSize(2).extractingResultOf("getNodeType").contains("StartNode", "HumanTaskNode");
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").containsNull();// human task is active thus null for leave time
+
+        assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Ready", "UserTasksProcess", "First Task");
+
+        List<WorkItem> workItems = processInstance.workItems(SecurityPolicy.of(new StaticIdentityProvider("john")));
+        assertEquals(1, workItems.size());
+        assertEquals("FirstTask", workItems.get(0).getName());
+
+        uow = app.unitOfWorkManager().newUnitOfWork();
+        uow.start();
+        processInstance.abort();
+        uow.end();
+        assertThat(processInstance.status()).isEqualTo(ProcessInstance.STATE_ABORTED);
+        events = publisher.extract();
+        assertThat(events).isNotNull().hasSize(2);
+        body = assertProcessInstanceEvent(events.get(0), "UserTasksProcess", "UserTasksProcess", ProcessInstance.STATE_ABORTED);
+        assertThat(body.getNodeInstances()).hasSize(1).extractingResultOf("getNodeType").contains("HumanTaskNode");
+        assertThat(body.getNodeInstances()).extractingResultOf("getTriggerTime").allMatch(v -> v != null);
+        assertThat(body.getNodeInstances()).extractingResultOf("getLeaveTime").allMatch(v -> v != null);
+        assertUserTaskInstanceEvent(events.get(1), "FirstTask", null, "1", "Aborted", "UserTasksProcess", "First Task");
+    }
+
+    @Test
     public void testBasicUserTaskProcessWithSecurityRoles() throws Exception {
 
         Application app = generateCodeProcessesOnly("usertask/UserTasksProcessWithSecurityRoles.bpmn2");
@@ -660,7 +709,7 @@ public class PublishEventIT extends AbstractCodegenIT {
         assertThat(body.getTaskPriority()).isEqualTo(taskPriority);
         assertThat(body.getStartDate()).isNotNull();
         assertThat(body.getState()).isEqualTo(taskState);
-        if (taskState.equals("Completed")) {
+        if (taskState.equals("Completed") || taskState.equals("Aborted")) {
             assertThat(body.getCompleteDate()).isNotNull();
         } else {
             assertThat(body.getCompleteDate()).isNull();
