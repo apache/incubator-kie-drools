@@ -124,7 +124,7 @@ public class $Type$Resource {
                                                   @RequestParam(value = "user", required = false) final String user,
                                                   @RequestParam(value = "group",
                                                           required = false) final List<String> groups) {
-        return processService.getSchemaAndPhases(process, id, taskId, user, groups);
+        return processService.getSchemaAndPhases(process, id, taskId, "$taskName$", user, groups);
     }
 
     @PostMapping(value = "/{id}/$taskName$/{taskId}/comments", produces = MediaType.APPLICATION_JSON_VALUE,

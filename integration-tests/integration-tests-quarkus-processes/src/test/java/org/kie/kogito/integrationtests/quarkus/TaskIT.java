@@ -58,20 +58,60 @@ class TaskIT {
     }
 
     @Test
-    void testJsonSchema() {
+    void testJsonSchema() throws IOException {
         // Quarkus returns URI with "quarkus://" scheme when running via CLI and this is not compatible with
         // matchesJsonSchemaInClasspath, while matchesJsonSchema directly accepts InputStream
-        InputStream jsonSchema = Thread.currentThread().getContextClassLoader().getResourceAsStream(
-                "testJsonSchema/test_approvals_firstLineApproval.json");
-        assertThat(jsonSchema).isNotNull();
+        try (InputStream jsonSchema = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "testJsonSchema/test_approvals_firstLineApproval.json")) {
+            assertThat(jsonSchema).isNotNull();
 
-        given()
+            given()
+                    .contentType(ContentType.JSON)
+                    .when()
+                    .get("/approvals/firstLineApproval/schema")
+                    .then()
+                    .statusCode(200)
+                    .body(matchesJsonSchema(jsonSchema));
+        }
+
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
+
+        String processId = given()
                 .contentType(ContentType.JSON)
                 .when()
-                .get("/approvals/firstLineApproval/schema")
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
                 .then()
                 .statusCode(200)
-                .body(matchesJsonSchema(jsonSchema));
+                .extract()
+                .path("[0].id");
+
+        try (InputStream jsonSchema = Thread.currentThread().getContextClassLoader().getResourceAsStream(
+                "testJsonSchema/test_approvals_firstLineApproval_instance.json")) {
+            assertThat(jsonSchema).isNotNull();
+
+            given()
+                    .contentType(ContentType.JSON)
+                    .queryParam("user", "admin")
+                    .queryParam("group", "managers")
+                    .when()
+                    .get("/approvals/{processId}/firstLineApproval/{taskId}/schema", processId, taskId)
+                    .then()
+                    .statusCode(200)
+                    .body(matchesJsonSchema(jsonSchema));
+        }
     }
 
     @Test
@@ -361,23 +401,6 @@ class TaskIT {
                 .path("excludedUsers"));
     }
 
-    private static class ClientTaskInfo {
-
-        public String description;
-        public String priority;
-        public Set<String> potentialUsers;
-        public Set<String> potentialGroups;
-        public Set<String> excludedUsers;
-        public Set<String> adminUsers;
-        public Set<String> adminGroups;
-        public TravellerInputModel inputParams;
-    }
-
-    private static class TravellerInputModel {
-
-        public Traveller traveller;
-    }
-
     @Test
     void testUpdateTaskInfo() {
         Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish");
@@ -440,4 +463,20 @@ class TaskIT {
         assertEquals(traveller, downTaskInfo.inputParams.traveller);
     }
 
+    private static class ClientTaskInfo {
+
+        public String description;
+        public String priority;
+        public Set<String> potentialUsers;
+        public Set<String> potentialGroups;
+        public Set<String> excludedUsers;
+        public Set<String> adminUsers;
+        public Set<String> adminGroups;
+        public TravellerInputModel inputParams;
+    }
+
+    private static class TravellerInputModel {
+
+        public Traveller traveller;
+    }
 }

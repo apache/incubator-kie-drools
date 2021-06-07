@@ -395,6 +395,7 @@ public class ProcessServiceImpl implements ProcessService {
     public <T extends Model> Map<String, Object> getSchemaAndPhases(Process<T> process,
             String id,
             String taskId,
+            String taskName,
             String user,
             List<String> groups) {
         return JsonSchemaUtil.addPhases(
@@ -403,6 +404,6 @@ public class ProcessServiceImpl implements ProcessService {
                 id,
                 taskId,
                 Policies.of(user, groups),
-                JsonSchemaUtil.load(this.getClass().getClassLoader(), process.id(), "$taskName$"));
+                JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
     }
 }

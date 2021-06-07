@@ -163,6 +163,7 @@ public interface ProcessService {
     <T extends Model> Map<String, Object> getSchemaAndPhases(Process<T> process,
             String id,
             String taskId,
+            String taskName,
             String user,
             List<String> groups);
 }

@@ -122,7 +122,7 @@ public class $Type$Resource {
                                                   @PathParam("taskId") final String taskId,
                                                   @QueryParam("user") final String user,
                                                   @QueryParam("group") final List<String> groups) {
-        return processService.getSchemaAndPhases(process, id, taskId, user, groups);
+        return processService.getSchemaAndPhases(process, id, taskId, "$taskName$", user, groups);
     }
 
     @POST

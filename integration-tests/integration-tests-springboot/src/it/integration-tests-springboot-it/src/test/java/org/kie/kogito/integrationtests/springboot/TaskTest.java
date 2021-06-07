@@ -68,6 +68,40 @@ public class TaskTest extends BaseRestTest {
             .then()
                 .statusCode(200)
                 .body(matchesJsonSchemaInClasspath("testJsonSchema/test_approvals_firstLineApproval.json"));
+
+        Traveller traveller = new Traveller("pepe", "rubiales", "pepe.rubiales@gmail.com", "Spanish", null);
+
+        String processId = given()
+                .contentType(ContentType.JSON)
+                .when()
+                .body(Collections.singletonMap("traveller", traveller))
+                .post("/approvals")
+                .then()
+                .statusCode(201)
+                .extract()
+                .path("id");
+
+        String taskId = given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .pathParam("processId", processId)
+                .when()
+                .get("/approvals/{processId}/tasks")
+                .then()
+                .statusCode(200)
+                .extract()
+                .path("[0].id");
+
+        given()
+                .contentType(ContentType.JSON)
+                .queryParam("user", "admin")
+                .queryParam("group", "managers")
+                .when()
+                .get("/approvals/{processId}/firstLineApproval/{taskId}/schema", processId, taskId)
+                .then()
+                .statusCode(200)
+                .body(matchesJsonSchemaInClasspath("testJsonSchema/test_approvals_firstLineApproval_instance.json"));
     }
 
     @Test
