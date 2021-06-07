@@ -34,9 +34,6 @@ public interface RightTuple extends Tuple {
     RightTuple getTempNextRightTuple();
     void setTempNextRightTuple( RightTuple tempNextRightTuple );
 
-    TupleMemory getTempRightTupleMemory();
-    void setTempRightTupleMemory( TupleMemory tempRightTupleMemory );
-
     InternalFactHandle getFactHandleForEvaluation();
 
     void retractTuple( PropagationContext context, InternalWorkingMemory workingMemory );

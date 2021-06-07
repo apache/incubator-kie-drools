@@ -35,6 +35,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -52,6 +53,8 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
 import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
 import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
@@ -94,13 +97,20 @@ public class KiePMMLModelFactoryUtils {
                                                   final ConstructorDeclaration constructorDeclaration,
                                                   final String name,
                                                   final List<MiningField> miningFields,
-                                                  final List<OutputField> outputFields) {
+                                                  final List<OutputField> outputFields,
+                                                  final Map<String, Pair<DATA_TYPE, String>> missingValueReplacements) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
         addListPopulation(miningFieldsObjectCreations, body, "miningFields");
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
+
+        Map<String, Expression> missingValueReplacementsExpr = missingValueReplacements.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> literalExprFrom(entry.getValue().a, entry.getValue().b)
+        ));
+        addMapPopulationExpressions(missingValueReplacementsExpr, body, "missingValueReplacementMap");
     }
 
     /**
