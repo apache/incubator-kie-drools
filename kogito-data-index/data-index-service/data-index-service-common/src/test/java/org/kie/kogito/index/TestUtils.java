@@ -125,7 +125,7 @@ public final class TestUtils {
         pi.setRootProcessId(rootProcessId);
         pi.setRoles(singleton("admin"));
         pi.setVariables(getProcessInstanceVariables());
-        pi.setNodes(getNodeInstances());
+        pi.setNodes(getNodeInstances(status));
         pi.setState(status);
         pi.setStart(ZonedDateTime.now());
         pi.setEnd(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);
@@ -137,7 +137,7 @@ public final class TestUtils {
         return pi;
     }
 
-    private static List<NodeInstance> getNodeInstances() {
+    private static List<NodeInstance> getNodeInstances(Integer status) {
         final NodeInstance ni = new NodeInstance();
         ni.setId(UUID.randomUUID().toString());
         ni.setEnter(ZonedDateTime.now());
@@ -145,6 +145,7 @@ public final class TestUtils {
         ni.setType("StartNode");
         ni.setNodeId("1");
         ni.setDefinitionId("StartEvent_1");
+        ni.setExit(status == ProcessInstanceState.COMPLETED.ordinal() ? ZonedDateTime.now().plus(1, ChronoUnit.HOURS) : null);
         return newArrayList(ni);
     }
 

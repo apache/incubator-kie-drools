@@ -48,7 +48,6 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.nullValue;
-import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.hasSize;
@@ -159,8 +158,16 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
                 .body("data.ProcessInstances[0].lastUpdate",
                         is(formatZonedDateTime(
                                 event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].nodes",
-                        event.getData().getNodes() == null ? empty() : hasSize(event.getData().getNodes().size()))
+                .body("data.ProcessInstances[0].nodes", hasSize(event.getData().getNodes().size()))
+                .body("data.ProcessInstances[0].nodes[0].id", is(event.getData().getNodes().get(0).getId()))
+                .body("data.ProcessInstances[0].nodes[0].name", is(event.getData().getNodes().get(0).getName()))
+                .body("data.ProcessInstances[0].nodes[0].nodeId", is(event.getData().getNodes().get(0).getNodeId()))
+                .body("data.ProcessInstances[0].nodes[0].type", is(event.getData().getNodes().get(0).getType()))
+                .body("data.ProcessInstances[0].nodes[0].definitionId", is(event.getData().getNodes().get(0).getDefinitionId()))
+                .body("data.ProcessInstances[0].nodes[0].enter", is(formatZonedDateTime(event.getData().getNodes().get(0).getEnter().withZoneSameInstant(ZoneOffset.UTC))))
+                .body("data.ProcessInstances[0].nodes[0].exit",
+                        event.getData().getNodes().get(0).getExit() == null ? is(nullValue())
+                                : is(formatZonedDateTime(event.getData().getNodes().get(0).getExit().withZoneSameInstant(ZoneOffset.UTC))))
                 .body("data.ProcessInstances[0].milestones", hasSize(event.getData().getMilestones().size()))
                 .body("data.ProcessInstances[0].milestones[0].id",
                         is(event.getData().getMilestones().get(0).getId()))
