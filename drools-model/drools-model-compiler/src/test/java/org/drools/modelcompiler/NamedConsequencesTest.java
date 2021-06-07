@@ -523,20 +523,20 @@ public class NamedConsequencesTest extends BaseModelTest {
     }
 
     @Test
-    public void testModifyInNamedConsequence2() {
+    public void test2ModifyBlocksInNamedConsequences() {
         String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
-                "global java.util.List results;\n" +
-                "\n" +
-                "rule R1 when\n" +
-                "    $a: Cheese (price < 10)\n" +
-                "    if ( type == \"stilton\" ) break[t1]\n" +
-                "then\n" +
-                "    modify( $a ) { setPrice(10) };\n" +
-                "    results.add( $a.getPrice() );\n" +
-                "then[t1]\n" +
-                "    modify( $a ) { setPrice(15) };\n" +
-                "    results.add( $a.getPrice() );\n" +
-                "end\n";
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 when\n" +
+                     "    $a: Cheese (price < 10)\n" +
+                     "    if ( type == \"stilton\" ) break[t1]\n" +
+                     "then\n" +
+                     "    modify( $a ) { setPrice(10) };\n" +
+                     "    results.add( $a.getPrice() );\n" +
+                     "then[t1]\n" +
+                     "    modify( $a ) { setPrice(15) };\n" +
+                     "    results.add( $a.getPrice() );\n" +
+                     "end\n";
 
         KieSession ksession = getKieSession(str);
         List<Integer> results = new ArrayList<>();
@@ -548,7 +548,8 @@ public class NamedConsequencesTest extends BaseModelTest {
         ksession.insert(stilton);
         ksession.insert(cheddar);
 
-        ksession.fireAllRules(10);
+        int fired = ksession.fireAllRules();
+        assertEquals(2, fired);
 
         Assertions.assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
