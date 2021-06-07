@@ -22,30 +22,32 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.Constant;
+import org.dmg.pmml.FieldName;
+import org.dmg.pmml.FieldRef;
 import org.junit.Test;
-import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
-public class KiePMMLConstantFactoryTest {
+public class KiePMMLFieldRefFactoryTest {
 
     @Test
-    public void getConstantVariableDeclaration() {
+    public void getFieldRefVariableDeclaration() {
         String variableName = "variableName";
-        Object value = 2342.21;
-        Constant constant = new Constant();
-        constant.setValue(value);
-        BlockStmt retrieved = KiePMMLConstantFactory.getConstantVariableDeclaration(variableName, constant);
+        String fieldName = "fieldName";
+        String mapMissingTo = "mapMissingTo";
+        FieldRef fieldRef = new FieldRef();
+        fieldRef.setField(FieldName.create(fieldName));
+        fieldRef.setMapMissingTo(mapMissingTo);
+        BlockStmt retrieved = KiePMMLFieldRefFactory.getFieldRefVariableDeclaration(variableName, fieldRef);
         Statement expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                                                  "KiePMMLConstant %1$s = new " +
-                                                                                  "KiePMMLConstant(\"%1$s\", " +
-                                                                                  "Collections" +
-                                                                                  ".emptyList(), %2$s);" +
-                                                                                  "}", variableName, value));
+                                                                              "KiePMMLFieldRef %1$s = new " +
+                                                                              "KiePMMLFieldRef(\"%2$s\", Collections" +
+                                                                              ".emptyList(),\"%3$s\");" +
+                                                                              "}", variableName, fieldName, mapMissingTo));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, Collections.class);
+        List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 }

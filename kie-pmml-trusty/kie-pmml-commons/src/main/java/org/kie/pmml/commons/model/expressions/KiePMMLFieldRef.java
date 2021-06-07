@@ -16,12 +16,10 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -100,7 +98,5 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
                 .filter(derivedField -> derivedField.getName().equals(name))
                 .findFirst()
                 .map(derivedField -> derivedField.evaluate(defineFunctions, derivedFields, kiePMMLNameValues));
-
-
     }
 }

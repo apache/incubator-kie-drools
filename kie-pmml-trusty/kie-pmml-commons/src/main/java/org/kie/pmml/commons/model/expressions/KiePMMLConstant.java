@@ -16,11 +16,9 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;

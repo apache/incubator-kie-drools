@@ -18,11 +18,9 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
 
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.BUILTIN_FUNCTIONS;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KieEnumException;
@@ -41,7 +39,7 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     private INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod;
     private List<KiePMMLExpression> kiePMMLExpressions;
 
-    private KiePMMLApply(String name, List<KiePMMLExtension> extensions, String function) {
+    public KiePMMLApply(String name, List<KiePMMLExtension> extensions, String function) {
         super(name, extensions);
         this.function = function;
     }

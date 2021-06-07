@@ -22,10 +22,9 @@ import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
-import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
-import org.dmg.pmml.Constant;
+import org.dmg.pmml.FieldRef;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
@@ -37,42 +36,42 @@ import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariable
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 
 /**
- * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLConstant</code> code-generators
- * out of <code>Constant</code>s
+ * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLFieldRef</code> code-generators
+ * out of <code>FieldRef</code>s
  */
-public class KiePMMLConstantFactory {
+public class KiePMMLFieldRefFactory {
 
-    private KiePMMLConstantFactory() {
+    private KiePMMLFieldRefFactory() {
         // Avoid instantiation
     }
 
-    static final String KIE_PMML_CONSTANT_TEMPLATE_JAVA = "KiePMMLConstantTemplate.tmpl";
-    static final String KIE_PMML_CONSTANT_TEMPLATE = "KiePMMLConstantTemplate";
-    static final String GETKIEPMMLCONSTANT = "getKiePMMLConstant";
-    static final String CONSTANT = "constant";
-    static final ClassOrInterfaceDeclaration CONSTANT_TEMPLATE;
+    static final String KIE_PMML_FIELDREF_TEMPLATE_JAVA = "KiePMMLFieldRefTemplate.tmpl";
+    static final String KIE_PMML_FIELDREF_TEMPLATE = "KiePMMLFieldRefTemplate";
+    static final String GETKIEPMMLFIELDREF = "getKiePMMLFieldRef";
+    static final String FIELD_REF = "fieldRef";
+    static final ClassOrInterfaceDeclaration FIELDREF_TEMPLATE;
 
 
     static {
-        CompilationUnit cloneCU = JavaParserUtils.getFromFileName(KIE_PMML_CONSTANT_TEMPLATE_JAVA);
-        CONSTANT_TEMPLATE = cloneCU.getClassByName(KIE_PMML_CONSTANT_TEMPLATE)
-                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + KIE_PMML_CONSTANT_TEMPLATE));
-        CONSTANT_TEMPLATE.getMethodsByName(GETKIEPMMLCONSTANT).get(0).clone();
+        CompilationUnit cloneCU = JavaParserUtils.getFromFileName(KIE_PMML_FIELDREF_TEMPLATE_JAVA);
+        FIELDREF_TEMPLATE = cloneCU.getClassByName(KIE_PMML_FIELDREF_TEMPLATE)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + KIE_PMML_FIELDREF_TEMPLATE));
+        FIELDREF_TEMPLATE.getMethodsByName(GETKIEPMMLFIELDREF).get(0).clone();
     }
 
-    static BlockStmt getConstantVariableDeclaration(final String variableName, final Constant constant) {
-        final MethodDeclaration methodDeclaration = CONSTANT_TEMPLATE.getMethodsByName(GETKIEPMMLCONSTANT).get(0).clone();
+    static BlockStmt getFieldRefVariableDeclaration(final String variableName, final FieldRef fieldRef) {
+        final MethodDeclaration methodDeclaration = FIELDREF_TEMPLATE.getMethodsByName(GETKIEPMMLFIELDREF).get(0).clone();
         final BlockStmt toReturn = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
-        final VariableDeclarator variableDeclarator = getVariableDeclarator(toReturn, CONSTANT) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, CONSTANT, toReturn)));
+        final VariableDeclarator variableDeclarator = getVariableDeclarator(toReturn, FIELD_REF) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, FIELD_REF, toReturn)));
         variableDeclarator.setName(variableName);
         final ObjectCreationExpr objectCreationExpr = variableDeclarator.getInitializer()
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, CONSTANT, toReturn)))
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_INITIALIZER_TEMPLATE, FIELD_REF, toReturn)))
         .asObjectCreationExpr();
 
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(variableName);
-        final Expression valueExpr = getExpressionForObject(constant.getValue());
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(fieldRef.getField().getValue());
+        final Expression mapMissingToExpr = getExpressionForObject(fieldRef.getMapMissingTo());
         objectCreationExpr.getArguments().set(0, nameExpr);
-        objectCreationExpr.getArguments().set(2, valueExpr);
+        objectCreationExpr.getArguments().set(2, mapMissingToExpr);
         return toReturn;
     }
 }

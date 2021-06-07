@@ -47,10 +47,18 @@ public class KiePMMLApplyTest {
         //      <Constant>33.0</Constant>
         //      <Constant>27.0</Constant>
         // </Apply>
+        String name = "name";
+        String function = "UNKNOWN";
+        String defaultValue = null;
+        String mapMissingTo = null;
+        String invalidTreatmentValue = null;
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1);
         final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "UNKNOWN")
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder(name, Collections.emptyList(), function)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
+                .withDefaultValue(defaultValue)
+                .withMapMissingTo(mapMissingTo)
+                .withInvalidValueTreatmentMethod(invalidTreatmentValue)
                 .build();
         kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }

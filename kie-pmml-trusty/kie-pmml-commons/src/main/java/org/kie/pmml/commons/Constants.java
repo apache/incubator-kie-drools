@@ -35,6 +35,8 @@ public class Constants {
     public static final String MISSING_STATIC_INITIALIZER = "Missing expected static initializer in class %s";
     public static final String MISSING_METHOD_TEMPLATE = "Missing method '%s' in %s";
     public static final String MISSING_VARIABLE_INITIALIZER_TEMPLATE = "Missing '%s' initializer in %s";
+    public static final String MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE = "Missing '%s' MethodDeclaration in %s";
+    public static final String MISSING_PARENT_NODE_TEMPLATE = "Missing parent node in %s";
     public static final String MISSING_METHOD_REFERENCE_TEMPLATE = "Missing method reference '%s' in %s";
     public static final String PACKAGE_CLASS_TEMPLATE = "%s.%s";
     public static final String WRONG_EXPRESSION_TEMPLATE = "Retrieved %s (%s) while a %s was expected from \n%s";
