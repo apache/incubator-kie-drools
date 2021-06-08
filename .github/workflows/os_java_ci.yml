@@ -56,12 +56,19 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-${{ matrix.java-version }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Set FLOW_TYPE to pull-request
+        if: github.event_name == 'pull_request'
+        run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
+      - name: Set FLOW_TYPE to branch
+        if: github.event_name == 'push'
+        run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.5.7
+        uses: kiegroup/github-action-build-chain@v2.6.2
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
+          flow-type: ${{ env.FLOW_TYPE }}
       - name: Check Surefire Report
         if: ${{ always() }}
         uses: ScaCap/action-surefire-report@v1.0.10
@@ -106,12 +113,19 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-16-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
+      - name: Set FLOW_TYPE to pull-request
+        if: github.event_name == 'pull_request'
+        run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
+      - name: Set FLOW_TYPE to branch
+        if: github.event_name == 'push'
+        run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain 16
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.5.7
+        uses: kiegroup/github-action-build-chain@v2.6.2
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
+          flow-type: ${{ env.FLOW_TYPE }}
       - name: Check Surefire Report
         if: ${{ always() }}
         uses: ScaCap/action-surefire-report@v1.0.10
