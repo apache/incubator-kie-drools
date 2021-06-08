@@ -31,12 +31,30 @@ public class KiePMMLLocalTransformations extends AbstractKiePMMLComponent implem
 
     private List<KiePMMLDerivedField> derivedFields;
 
-    protected KiePMMLLocalTransformations(String name, List<KiePMMLExtension> extensions) {
+    private KiePMMLLocalTransformations(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
+    }
+
+    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
+        return new Builder(name, extensions);
     }
 
     public List<KiePMMLDerivedField> getDerivedFields() {
         return derivedFields != null ? Collections.unmodifiableList(derivedFields) : Collections.emptyList();
+    }
+
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLLocalTransformations> {
+
+        private Builder(String name, List<KiePMMLExtension> extensions) {
+            super("LocalTransformations-", () -> new KiePMMLLocalTransformations(name, extensions));
+        }
+
+        public Builder withDerivedFields(List<KiePMMLDerivedField> derivedFields) {
+            if (derivedFields != null) {
+                toBuild.derivedFields = derivedFields;
+            }
+            return this;
+        }
     }
 
 

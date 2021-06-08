@@ -17,17 +17,15 @@ package org.kie.pmml.compiler.commons;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 
-public class KiePMMLDefineFunctionTemplate {
+public class KiePMMLLocalTransformationsTemplate {
 
 
-    private KiePMMLDefineFunctionTemplate getKiePMMLDefineFunction() {
-        KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(name,
-                                                                        Collections.emptyList(),
-                                                                        opType,
-                                                                        Arrays.asList(parameterField1, parameterField2),
-                                                                        kiePMMLExpression);
+    private KiePMMLLocalTransformations getKiePMMLLocalTransformations() {
+        KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations", Collections.emptyList())
+                                                    .withDerivedFields(null)
+                                                    .build();
     }
 
 }

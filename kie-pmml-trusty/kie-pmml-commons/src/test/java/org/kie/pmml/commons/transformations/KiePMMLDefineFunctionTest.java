@@ -37,10 +37,10 @@ public class KiePMMLDefineFunctionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void evaluateNoParamValues() {
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                         OP_TYPE.CONTINUOUS,
+                                                                         OP_TYPE.CONTINUOUS.getName(),
                                                                          Arrays.asList(parameterField1,
                                                                                        parameterField2),
                                                                                null);
@@ -49,10 +49,10 @@ public class KiePMMLDefineFunctionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void evaluateEmptyParamValues() {
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               OP_TYPE.CONTINUOUS,
+                                                                               OP_TYPE.CONTINUOUS.getName(),
                                                                                Arrays.asList(parameterField1,
                                                                                              parameterField2),
                                                                                null);
@@ -66,7 +66,7 @@ public class KiePMMLDefineFunctionTest {
         // </DefineFunction>
         final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               OP_TYPE.CONTINUOUS,
+                                                                               OP_TYPE.CONTINUOUS.getName(),
                                                                                Collections.emptyList(),
                                                                                kiePMMLConstant1);
         Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
@@ -81,8 +81,8 @@ public class KiePMMLDefineFunctionTest {
         // </DefineFunction>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               OP_TYPE.CONTINUOUS,
-                                                                               Collections.singletonList(new KiePMMLParameterField(PARAM_1, Collections.emptyList())),
+                                                                               OP_TYPE.CONTINUOUS.getName(),
+                                                                               Collections.singletonList(KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build()),
                                                                                kiePMMLFieldRef);
         Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.singletonList(value1));
         assertEquals(value1, retrieved);
@@ -103,10 +103,10 @@ public class KiePMMLDefineFunctionTest {
         final KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               OP_TYPE.CONTINUOUS,
+                                                                               OP_TYPE.CONTINUOUS.getName(),
                                                                                Arrays.asList(parameterField1, parameterField2),
                                                                                kiePMMLApply);
         Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Arrays.asList(value1, value2));

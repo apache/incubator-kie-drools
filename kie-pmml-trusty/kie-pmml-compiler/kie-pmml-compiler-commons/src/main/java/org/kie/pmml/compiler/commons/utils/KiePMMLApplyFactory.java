@@ -15,9 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -27,16 +24,12 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.dmg.pmml.Apply;
-import org.dmg.pmml.FieldRef;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
-import static org.kie.pmml.commons.Constants.MISSING_PARENT_NODE_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
@@ -76,10 +69,10 @@ public class KiePMMLApplyFactory {
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
         int counter = 0;
-        final List<String> nestedVariables = new ArrayList<>();
+        final NodeList<Expression> arguments = new NodeList<>();
         for (org.dmg.pmml.Expression expression : apply.getExpressions()) {
             String nestedVariableName = String.format("%s_%s", variableName, counter);
-            nestedVariables.add(nestedVariableName);
+            arguments.add(new NameExpr(nestedVariableName));
             BlockStmt toAdd = getKiePMMLExpression(nestedVariableName, expression);
             toAdd.getStatements().forEach(toReturn::addStatement);
             counter ++;
@@ -96,10 +89,7 @@ public class KiePMMLApplyFactory {
         getChainedMethodCallExprFrom("withMapMissingTo", initializer).setArgument(0, getExpressionForObject(apply.getMapMissingTo()));
         final Expression invalidTreatmentExpr = apply.getInvalidValueTreatment() != null ? new StringLiteralExpr(apply.getInvalidValueTreatment().value()) : new NullLiteralExpr();
         getChainedMethodCallExprFrom("withInvalidValueTreatmentMethod", initializer).setArgument(0, invalidTreatmentExpr);
-        final MethodCallExpr kiePMMLExpressionsAsList = getChainedMethodCallExprFrom("asList", initializer);
-        final NodeList<Expression> arguments = kiePMMLExpressionsAsList.getArguments();
-        arguments.clear();
-        nestedVariables.forEach(nestedVariable -> arguments.add(new NameExpr(nestedVariable)));
+        getChainedMethodCallExprFrom("asList", initializer).setArguments(arguments);
         applyBody.getStatements().forEach(toReturn::addStatement);
         return toReturn;
     }

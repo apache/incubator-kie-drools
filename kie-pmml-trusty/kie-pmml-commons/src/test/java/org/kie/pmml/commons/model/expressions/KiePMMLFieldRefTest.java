@@ -32,15 +32,17 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import static org.junit.Assert.*;
 
 public class KiePMMLFieldRefTest {
-    private static final String FIELD_NAME = "FIELD_NAME";
 
+    private static final String FIELD_NAME = "FIELD_NAME";
 
     @Test
     public void evaluateFromKiePMMLNameValues() {
         final Object value = 234.45;
-        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, value));
+        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
+                                                                                                        value));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
-        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues);
+        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), Collections.emptyList(),
+                                                          kiePMMLNameValues);
         assertEquals(value, retrieved);
     }
 
@@ -48,13 +50,15 @@ public class KiePMMLFieldRefTest {
     public void evaluateFromDerivedFields() {
         final Object value = 234.45;
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value);
-        final KiePMMLDerivedField kiePMMLDerivedField = new KiePMMLDerivedField(FIELD_NAME,
-                                                                                Collections.emptyList(),
-                                                                                DATA_TYPE.DOUBLE,
-                                                                                OP_TYPE.CONTINUOUS,
-                                                                                kiePMMLConstant);
+        final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder(FIELD_NAME,
+                                                                                    Collections.emptyList(),
+                                                                                    DATA_TYPE.DOUBLE.getName(),
+                                                                                    OP_TYPE.CONTINUOUS.getName(),
+                                                                                    kiePMMLConstant)
+                .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
-        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
+        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
+                                                                                                        "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
         final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
         assertEquals(value, retrieved);
@@ -64,13 +68,15 @@ public class KiePMMLFieldRefTest {
     public void evaluateFromMapMissingTo() {
         final String value = "234.45";
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "WRONG-CONSTANT");
-        final KiePMMLDerivedField kiePMMLDerivedField = new KiePMMLDerivedField("ANOTHER_FIELD",
-                                                                                Collections.emptyList(),
-                                                                                DATA_TYPE.DOUBLE,
-                                                                                OP_TYPE.CONTINUOUS,
-                                                                                kiePMMLConstant);
+        final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder("ANOTHER_FIELD",
+                                                                                    Collections.emptyList(),
+                                                                                    DATA_TYPE.DOUBLE.getName(),
+                                                                                    OP_TYPE.CONTINUOUS.getName(),
+                                                                                    kiePMMLConstant)
+                .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
-        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
+        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
+                                                                                                        "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), value);
         final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
         assertEquals(value, retrieved);
@@ -79,13 +85,15 @@ public class KiePMMLFieldRefTest {
     @Test
     public void evaluateNull() {
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), "WRONG-CONSTANT");
-        final KiePMMLDerivedField kiePMMLDerivedField = new KiePMMLDerivedField("ANOTHER_FIELD",
-                                                                                Collections.emptyList(),
-                                                                                DATA_TYPE.DOUBLE,
-                                                                                OP_TYPE.CONTINUOUS,
-                                                                                kiePMMLConstant);
+        final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder("ANOTHER_FIELD",
+                                                                                    Collections.emptyList(),
+                                                                                    DATA_TYPE.DOUBLE.getName(),
+                                                                                    OP_TYPE.CONTINUOUS.getName(),
+                                                                                    kiePMMLConstant)
+                .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
-        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
+        final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
+                                                                                                        "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
         final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
         assertNull(retrieved);

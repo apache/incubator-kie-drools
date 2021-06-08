@@ -40,11 +40,11 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
 
     public KiePMMLDefineFunction(String name,
                                  List<KiePMMLExtension> extensions,
-                                 OP_TYPE opType,
+                                 String opType,
                                  List<KiePMMLParameterField> parameterFields,
                                  KiePMMLExpression kiePMMLExpression) {
         super(name, extensions);
-        this.opType = opType;
+        this.opType = OP_TYPE.byName(opType);
         this.parameterFields = parameterFields;
         this.kiePMMLExpression = kiePMMLExpression;
     }

@@ -39,7 +39,7 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     private INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod;
     private List<KiePMMLExpression> kiePMMLExpressions;
 
-    public KiePMMLApply(String name, List<KiePMMLExtension> extensions, String function) {
+    private KiePMMLApply(String name, List<KiePMMLExtension> extensions, String function) {
         super(name, extensions);
         this.function = function;
     }

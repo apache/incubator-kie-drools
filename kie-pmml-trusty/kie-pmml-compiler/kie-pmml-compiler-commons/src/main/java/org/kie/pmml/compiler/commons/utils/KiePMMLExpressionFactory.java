@@ -51,16 +51,16 @@ public class KiePMMLExpressionFactory {
 //            return null;
         } else if (expression instanceof FieldRef) {
             return getFieldRefVariableDeclaration(variableName, (FieldRef) expression);
-        } else if (expression instanceof Lag) {
-            return null;
-        } else if (expression instanceof MapValues) {
-            return null;
-        } else if (expression instanceof NormContinuous) {
-            return null;
-        } else if (expression instanceof NormDiscrete) {
-            return null;
-        } else if (expression instanceof TextIndex) {
-            return null;
+//        } else if (expression instanceof Lag) {
+//            return null;
+//        } else if (expression instanceof MapValues) {
+//            return null;
+//        } else if (expression instanceof NormContinuous) {
+//            return null;
+//        } else if (expression instanceof NormDiscrete) {
+//            return null;
+//        } else if (expression instanceof TextIndex) {
+//            return null;
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }

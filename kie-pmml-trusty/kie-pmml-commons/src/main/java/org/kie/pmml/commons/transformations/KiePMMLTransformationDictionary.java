@@ -32,8 +32,12 @@ public class KiePMMLTransformationDictionary extends AbstractKiePMMLComponent im
     private List<KiePMMLDefineFunction> defineFunctions;
     private List<KiePMMLDerivedField> derivedFields;
 
-    protected KiePMMLTransformationDictionary(String name, List<KiePMMLExtension> extensions) {
+    private KiePMMLTransformationDictionary(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
+    }
+
+    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
+        return new Builder(name, extensions);
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
@@ -42,5 +46,26 @@ public class KiePMMLTransformationDictionary extends AbstractKiePMMLComponent im
 
     public List<KiePMMLDerivedField> getDerivedFields() {
         return derivedFields != null ? Collections.unmodifiableList(derivedFields) : Collections.emptyList();
+    }
+
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLTransformationDictionary> {
+
+        private Builder(String name, List<KiePMMLExtension> extensions) {
+            super("TransformationDictionary-", () -> new KiePMMLTransformationDictionary(name, extensions));
+        }
+
+        public Builder withDefineFunctions(List<KiePMMLDefineFunction> defineFunctions) {
+            if (defineFunctions != null) {
+                toBuild.defineFunctions = defineFunctions;
+            }
+            return this;
+        }
+
+        public Builder withDerivedFields(List<KiePMMLDerivedField> derivedFields) {
+            if (derivedFields != null) {
+                toBuild.derivedFields = derivedFields;
+            }
+            return this;
+        }
     }
 }

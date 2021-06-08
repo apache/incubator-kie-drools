@@ -19,9 +19,11 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
@@ -37,15 +39,23 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
     private final KiePMMLExpression kiePMMLExpression;
     private String displayName;
 
-    public KiePMMLDerivedField(String name,
+    private KiePMMLDerivedField(String name,
                                List<KiePMMLExtension> extensions,
-                               DATA_TYPE dataType,
-                               OP_TYPE opType,
+                               String dataType,
+                               String opType,
                                KiePMMLExpression kiePMMLExpression) {
         super(name, extensions);
-        this.dataType = dataType;
-        this.opType = opType;
+        this.dataType = DATA_TYPE.byName(dataType);
+        this.opType = OP_TYPE.byName(opType);
         this.kiePMMLExpression = kiePMMLExpression;
+    }
+
+    public static Builder builder(String name,
+                                  List<KiePMMLExtension> extensions,
+                                  String dataType,
+                                  String opType,
+                                  KiePMMLExpression kiePMMLExpression) {
+        return new Builder(name, extensions, dataType, opType, kiePMMLExpression);
     }
 
     public DATA_TYPE getDataType() {
@@ -64,6 +74,25 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
                            final List<KiePMMLDerivedField> derivedFields,
                            final List<KiePMMLNameValue> kiePMMLNameValues) {
         return kiePMMLExpression.evaluate(defineFunctions, derivedFields, kiePMMLNameValues);
+    }
+
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLDerivedField> {
+
+        private Builder(String name,
+                        List<KiePMMLExtension> extensions,
+                        String dataType,
+                        String opType,
+                        KiePMMLExpression kiePMMLExpression) {
+            super("DerivedField-", () -> new KiePMMLDerivedField(name, extensions, dataType, opType, kiePMMLExpression));
+        }
+
+        public Builder withDisplayName(String displayName) {
+            if (displayName != null) {
+                toBuild.displayName = displayName;
+            }
+            return this;
+        }
+
     }
 
 }

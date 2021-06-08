@@ -22,7 +22,6 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_ParameterField>ParameterField</a>
@@ -35,11 +34,51 @@ public class KiePMMLParameterField extends AbstractKiePMMLComponent implements S
     private OP_TYPE opType;
     private String displayName;
 
-    public KiePMMLParameterField(String name, List<KiePMMLExtension> extensions) {
+    private KiePMMLParameterField(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
 
+    public static Builder builder(String name, List<KiePMMLExtension> extensions) {
+        return new Builder(name, extensions);
+    }
 
+    public DATA_TYPE getDataType() {
+        return dataType;
+    }
 
+    public OP_TYPE getOpType() {
+        return opType;
+    }
 
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLParameterField> {
+
+        private Builder(String name, List<KiePMMLExtension> extensions) {
+            super("ParameterField-", () -> new KiePMMLParameterField(name, extensions));
+        }
+
+        public Builder withDataType(String dataType) {
+            if (dataType != null) {
+                toBuild.dataType = DATA_TYPE.byName(dataType);
+            }
+            return this;
+        }
+
+        public Builder withOpType(String opType) {
+            if (opType != null) {
+                toBuild.opType = OP_TYPE.byName(opType);
+            }
+            return this;
+        }
+
+        public Builder withDisplayName(String displayName) {
+            if (displayName != null) {
+                toBuild.displayName = displayName;
+            }
+            return this;
+        }
+    }
 }

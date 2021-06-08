@@ -93,11 +93,12 @@ public class KiePMMLApplyTest {
         assertEquals(expected, retrieved);
         // Apply with a Constant and a FieldRef: returns kiePMMLConstant1 divided evaluation of FieldRef from
         // derivedFields
-        final KiePMMLDerivedField kiePMMLDerivedField = new KiePMMLDerivedField(FIELD_NAME,
-                                                                                Collections.emptyList(),
-                                                                                DATA_TYPE.DOUBLE,
-                                                                                OP_TYPE.CONTINUOUS,
-                                                                                kiePMMLConstant2);
+        final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder(FIELD_NAME,
+                                                                                    Collections.emptyList(),
+                                                                                    DATA_TYPE.DOUBLE.getName(),
+                                                                                    OP_TYPE.CONTINUOUS.getName(),
+                                                                                    kiePMMLConstant2)
+                .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
         kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
         retrieved = kiePMMLApply.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
@@ -192,10 +193,12 @@ public class KiePMMLApplyTest {
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 =
+                KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 =
+                KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS,
+                                         OP_TYPE.CONTINUOUS.getName(),
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
@@ -215,10 +218,12 @@ public class KiePMMLApplyTest {
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLFieldRef))
                 .build();
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 =
+                KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 =
+                KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS,
+                                         OP_TYPE.CONTINUOUS.getName(),
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
@@ -238,10 +243,12 @@ public class KiePMMLApplyTest {
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
-        final KiePMMLParameterField parameterField1 = new KiePMMLParameterField(PARAM_1, Collections.emptyList());
-        final KiePMMLParameterField parameterField2 = new KiePMMLParameterField(PARAM_2, Collections.emptyList());
+        final KiePMMLParameterField parameterField1 =
+                KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
+        final KiePMMLParameterField parameterField2 =
+                KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(OUTER_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS,
+                                         OP_TYPE.CONTINUOUS.getName(),
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
