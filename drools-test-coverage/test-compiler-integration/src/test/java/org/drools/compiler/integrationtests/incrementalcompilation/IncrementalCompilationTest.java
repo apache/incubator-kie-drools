@@ -2963,11 +2963,6 @@ public class IncrementalCompilationTest {
 
     @Test(timeout = 20000L)
     public void testMultipleIncrementalCompilationsWithFireUntilHalt() throws Exception {
-        if (ClassUtils.isWindows()) {
-            // To be fixed : See DROOLS-6364
-            return;
-        }
-
         // DROOLS-1406
         final KieServices ks = KieServices.Factory.get();
 
