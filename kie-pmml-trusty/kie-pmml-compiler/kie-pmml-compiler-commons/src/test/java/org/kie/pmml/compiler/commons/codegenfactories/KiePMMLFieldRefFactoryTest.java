@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +26,8 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.FieldRef;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;

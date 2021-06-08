@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.FieldRef;
-import org.dmg.pmml.Lag;
-import org.dmg.pmml.MapValues;
-import org.dmg.pmml.NormContinuous;
-import org.dmg.pmml.NormDiscrete;
-import org.dmg.pmml.TextIndex;
 
-import static org.kie.pmml.compiler.commons.utils.KiePMMLApplyFactory.getApplyVariableDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLConstantFactory.getConstantVariableDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLFieldRefFactory.getFieldRefVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory.getFieldRefVariableDeclaration;
 
 /**
  * Facade for actual implementations

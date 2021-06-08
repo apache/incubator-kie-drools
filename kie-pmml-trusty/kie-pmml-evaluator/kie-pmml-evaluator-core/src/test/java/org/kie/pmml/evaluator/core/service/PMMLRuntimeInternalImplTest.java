@@ -17,7 +17,6 @@ package org.kie.pmml.evaluator.core.service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
 
 import org.junit.Before;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -25,7 +24,8 @@ import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLTarget;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 public class PMMLRuntimeInternalImplTest {
 
@@ -65,8 +65,13 @@ public class PMMLRuntimeInternalImplTest {
                 return this;
             }
 
-            public Builder withFunctionsMap(final Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap) {
-                toBuild.functionsMap = functionsMap;
+            public Builder withTransformationDictionary(final KiePMMLTransformationDictionary transformationDictionary) {
+                toBuild.transformationDictionary = transformationDictionary;
+                return this;
+            }
+
+            public Builder withLocalTransformations(final KiePMMLLocalTransformations localTransformations) {
+                toBuild.localTransformations = localTransformations;
                 return this;
             }
         }

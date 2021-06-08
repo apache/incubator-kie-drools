@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +31,7 @@ import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
@@ -38,8 +39,8 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLDefineFunctionFactory.getDefineFunctionVariableDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDefineFunctionFactory.getDefineFunctionVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>KiePMMLTransformationDictionary</code> code-generators
@@ -47,10 +48,10 @@ import static org.kie.pmml.compiler.commons.utils.KiePMMLDerivedFieldFactory.get
  */
 public class KiePMMLTransformationDictionaryFactory {
 
+    public static final String TRANSFORMATION_DICTIONARY = "transformationDictionary";
     static final String KIE_PMML_TRANSFORMATION_DICTIONARY_TEMPLATE_JAVA = "KiePMMLTransformationDictionaryTemplate.tmpl";
     static final String KIE_PMML_TRANSFORMATION_DICTIONARY_TEMPLATE = "KiePMMLTransformationDictionaryTemplate";
     static final String GETKIEPMMLTRANSFORMATIONDICTIONARY = "getKiePMMLTransformationDictionary";
-    static final String TRANSFORMATION_DICTIONARY = "transformationDictionary";
     static final ClassOrInterfaceDeclaration TRANSFORMATION_DICTIONARY_TEMPLATE;
 
     static {

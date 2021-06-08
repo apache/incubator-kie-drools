@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,11 +27,10 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DefineFunction;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.LocalTransformations;
-import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
@@ -39,8 +38,7 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLDefineFunctionFactory.getDefineFunctionVariableDeclaration;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>KiePMMLLocalTransformations</code> code-generators
@@ -48,10 +46,10 @@ import static org.kie.pmml.compiler.commons.utils.KiePMMLDerivedFieldFactory.get
  */
 public class KiePMMLLocalTransformationsFactory {
 
+    public static final String LOCAL_TRANSFORMATIONS = "localTransformations";
     static final String KIE_PMML_LOCAL_TRANSFORMATIONS_TEMPLATE_JAVA = "KiePMMLLocalTransformationsTemplate.tmpl";
     static final String KIE_PMML_LOCAL_TRANSFORMATIONS_TEMPLATE = "KiePMMLLocalTransformationsTemplate";
     static final String GETKIEPMMLLOCALTRANSFORMATIONS = "getKiePMMLLocalTransformations";
-    static final String LOCAL_TRANSFORMATIONS = "localTransformations";
     static final ClassOrInterfaceDeclaration LOCAL_TRANSFORMATIONS_TEMPLATE;
 
     static {
@@ -86,16 +84,6 @@ public class KiePMMLLocalTransformationsFactory {
         }
         transformationDictionaryBody.getStatements().forEach(toReturn::addStatement);
         return toReturn;
-    }
-
-    static NodeList<Expression> addDefineFunctions(final BlockStmt body, final List<DefineFunction> defineFunctions) {
-        NodeList<Expression> arguments = new NodeList<>();
-        for (DefineFunction defineFunction : defineFunctions) {
-            arguments.add(new NameExpr(defineFunction.getName()));
-            BlockStmt toAdd = getDefineFunctionVariableDeclaration(defineFunction);
-            toAdd.getStatements().forEach(body::addStatement);
-        }
-        return getArraysAsListInvocation(arguments);
     }
 
     static NodeList<Expression> addDerivedField(final BlockStmt body, final List<DerivedField> derivedFields) {

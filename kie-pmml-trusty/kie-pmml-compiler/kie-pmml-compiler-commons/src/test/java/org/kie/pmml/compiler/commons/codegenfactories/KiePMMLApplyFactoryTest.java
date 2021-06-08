@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -31,6 +31,8 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -80,7 +82,7 @@ public class KiePMMLApplyFactoryTest {
                                                                               ".withKiePMMLExpressions(Arrays.asList" +
                                                                               "(variableName_0, variableName_1))" +
                                                                               ".build();\n" +
-                                                                              "}",  value1, value2, variableName, function,
+                                                                              "}", value1, value2, variableName, function,
                                                                       defaultValue, mapMissingTo, invalidValueTreatmentMethod.value()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, KiePMMLApply.class, Collections.class, Arrays.class);
