@@ -25,6 +25,8 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
+import org.jbpm.workflow.instance.impl.WorkItemHandlerParamResolver;
+import org.jbpm.workflow.instance.impl.WorkItemHandlerResult;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
@@ -59,8 +61,8 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
         @Override
         public Object apply(Object value) {
-            return value instanceof RestWorkItemHandlerParamResolver
-                    ? ((RestWorkItemHandlerParamResolver) value).apply(inputModel)
+            return value instanceof WorkItemHandlerParamResolver
+                    ? ((WorkItemHandlerParamResolver) value).apply(inputModel)
                     : value;
         }
     }
@@ -82,7 +84,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         String password = (String) parameters.remove(PASSWORD);
         String hostProp = (String) parameters.remove(HOST);
         String portProp = (String) parameters.remove(PORT);
-        RestWorkItemHandlerResult resultHandler = getParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class);
+        WorkItemHandlerResult resultHandler = getParam(parameters, RESULT_HANDLER, WorkItemHandlerResult.class);
         // create request
         UnaryOperator<Object> resolver = new RestUnaryOperator(inputModel);
         endPoint = resolvePathParams(endPoint, parameters, resolver);

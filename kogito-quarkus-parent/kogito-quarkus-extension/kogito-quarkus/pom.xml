@@ -44,7 +44,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jbpm-serverless-workflow</artifactId>
+      <artifactId>kogito-serverless-workflow-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

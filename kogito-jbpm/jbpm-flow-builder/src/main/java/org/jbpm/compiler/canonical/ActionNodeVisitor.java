@@ -16,10 +16,12 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.instance.impl.Action;
 import org.jbpm.process.instance.impl.actions.ProcessInstanceCompensationAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
@@ -29,6 +31,7 @@ import org.jbpm.workflow.core.node.ActionNode;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.body.Parameter;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -70,7 +73,7 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
         } else if (node.getMetaData(REF) != null && EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, TriggerMetaData.buildAction((String) node.getMetaData(REF),
                     (String) node.getMetaData(VARIABLE), (String) node.getMetaData(CUSTOM_SCOPE))));
-        } else {
+        } else if (node.getAction() instanceof DroolsConsequenceAction) {
             String consequence = getActionConsequence(node.getAction());
             if (consequence == null || consequence.trim().isEmpty()) {
                 throw new IllegalStateException("Action node " + node.getId() + " name " + node.getName() + " has no action defined");
@@ -89,6 +92,11 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
                     new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
                     actionBody);
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, lambda));
+        } else if (node.getAction() instanceof DroolsAction) {
+            Action action = (Action) node.getAction().getMetaData("Action");
+            if (action instanceof Supplier) {
+                body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ACTION, ((Supplier<Expression>) action).get()));
+            }
         }
         visitMetaData(node.getMetaData(), body, getNodeId(node));
         body.addStatement(getDoneMethod(getNodeId(node)));
@@ -99,9 +107,6 @@ public class ActionNodeVisitor extends AbstractNodeVisitor<ActionNode> {
     }
 
     private String getActionConsequence(DroolsAction action) {
-        if (!(action instanceof DroolsConsequenceAction)) {
-            return null;
-        }
         return ((DroolsConsequenceAction) action).getConsequence();
     }
 }

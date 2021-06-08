@@ -39,7 +39,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>jbpm-serverless-workflow</artifactId>
+            <artifactId>kogito-serverless-workflow-builder</artifactId>
         </dependency>
         <!-- Json schema generator -->
         <dependency>
