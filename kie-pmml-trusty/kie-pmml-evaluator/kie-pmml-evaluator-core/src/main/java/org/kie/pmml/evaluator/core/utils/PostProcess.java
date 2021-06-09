@@ -210,24 +210,6 @@ public class PostProcess {
     }
 
 
-//    static Optional<Object> getValueFromKiePMMLExpression(final KiePMMLExpression kiePMMLExpression,
-//                                                          final KiePMMLModel model,
-//                                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
-//        List<KiePMMLDerivedField> derivedFields = new ArrayList<>();
-//        List<KiePMMLDefineFunction> defineFunctions = new ArrayList<>();
-//        if (model.getTransformationDictionary() != null) {
-//            if (model.getTransformationDictionary().getDerivedFields() != null) {
-//                derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
-//            }
-//            if (model.getTransformationDictionary().getDefineFunctions() != null) {
-//                defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
-//            }
-//        }
-//        if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
-//            derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
-//        }
-//        return Optional.ofNullable(kiePMMLExpression.evaluate(defineFunctions, derivedFields, kiePMMLNameValues));
-//    }
 
     static Optional<Object> getValueFromKiePMMLNameValuesByVariableName(final String variableName,
                                                                         final List<KiePMMLNameValue> kiePMMLNameValues) {

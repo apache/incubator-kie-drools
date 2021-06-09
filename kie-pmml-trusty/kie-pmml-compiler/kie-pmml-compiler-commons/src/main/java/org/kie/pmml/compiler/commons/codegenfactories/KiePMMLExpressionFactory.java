@@ -35,7 +35,7 @@ public class KiePMMLExpressionFactory {
         // Avoid instantiation
     }
 
-    static BlockStmt getKiePMMLExpression(final String variableName, final org.dmg.pmml.Expression expression) {
+    public static BlockStmt getKiePMMLExpression(final String variableName, final org.dmg.pmml.Expression expression) {
         /*if (expression instanceof Aggregate) {
             return null;
         } else*/ if (expression instanceof Apply) {
