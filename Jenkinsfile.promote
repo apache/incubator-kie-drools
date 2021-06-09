@@ -188,11 +188,11 @@ pipeline {
 
                         // Update the XSDs. OptaPlanner must be cloned and build with the full profile before.
                         String optaplannerRoot = "$WORKSPACE/optaplanner"
-                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd xsd/solver/solver-8.xsd"
-                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd xsd/benchmark/benchmark-8.xsd"
+                        sh "cp $optaplannerRoot/optaplanner-core/target/classes/solver.xsd content/xsd/solver/solver-8.xsd"
+                        sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd content/xsd/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add xsd/\\*.xsd _config/pom.yml' }, prBranchName, 'master')
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add content/xsd/\\*.xsd data/pom.yml' }, prBranchName, 'master')
                     }
                     dir(websiteRepository) {
                         checkoutRepo(websiteRepository, 'master')
