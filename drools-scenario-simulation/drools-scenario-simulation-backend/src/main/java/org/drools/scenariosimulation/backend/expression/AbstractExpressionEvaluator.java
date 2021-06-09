@@ -118,8 +118,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
             if (isSimpleTypeNode(jsonNode)) {
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
-                Object value = internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey());
-                setField(toReturn, key, value);
+                setField(toReturn, key, internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey()));
             } else if (jsonNode.isArray()) {
                 List<Object> nestedList = new ArrayList<>();
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
