@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.monitoring.core.quarkus;
 
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.ResourceInfo;
@@ -32,8 +33,11 @@ import org.kie.kogito.monitoring.core.common.system.metrics.SystemMetricsCollect
 @Provider
 public class QuarkusMetricsFilterRegister implements DynamicFeature {
 
+    // Indirect Instance<Boolean> to solve warning message during compilation:
+    // WARNING Directly injecting a @ConfigProperty into a JAX-RS provider may lead to unexpected results.
+    // To ensure proper results, please change the type of the field to javax.enterprise.inject.Instance<Boolean>.
     @ConfigProperty(name = Constants.HTTP_INTERCEPTOR_USE_DEFAULT, defaultValue = "true")
-    boolean httpInterceptorUseDefault;
+    Instance<Boolean> httpInterceptorUseDefault;
 
     ConfigBean configBean;
 
@@ -48,7 +52,7 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
 
     @Override
     public void configure(ResourceInfo resourceInfo, FeatureContext context) {
-        if (httpInterceptorUseDefault) {
+        if (httpInterceptorUseDefault.isResolvable() && httpInterceptorUseDefault.get()) {
             SystemMetricsCollector systemMetricsCollector = new SystemMetricsCollector(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
             MetricsInterceptor metricsInterceptor = new MetricsInterceptor(systemMetricsCollector);
             context.register(new QuarkusMetricsInterceptor(metricsInterceptor));
@@ -56,7 +60,7 @@ public class QuarkusMetricsFilterRegister implements DynamicFeature {
     }
 
     // for testing purpose
-    void setHttpInterceptorUseDefault(boolean httpInterceptorUseDefault) {
+    void setHttpInterceptorUseDefault(Instance<Boolean> httpInterceptorUseDefault) {
         this.httpInterceptorUseDefault = httpInterceptorUseDefault;
     }
 }
