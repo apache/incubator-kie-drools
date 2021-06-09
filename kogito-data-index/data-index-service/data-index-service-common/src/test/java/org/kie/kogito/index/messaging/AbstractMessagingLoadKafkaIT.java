@@ -59,6 +59,9 @@ abstract class AbstractMessagingLoadKafkaIT {
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     String kafkaBootstrapServers;
 
+    @ConfigProperty(name = "kogito.data-index.domain-indexing", defaultValue = "true")
+    Boolean indexDomain;
+
     List<KafkaClient> kafkaClients;
 
     Duration timeout = Duration.ofMinutes(1);
@@ -73,7 +76,9 @@ abstract class AbstractMessagingLoadKafkaIT {
 
     @BeforeEach
     void setup() throws Exception {
-        protobufService.registerProtoBufferType(getTestProtobufFileContent());
+        if (indexDomain) {
+            protobufService.registerProtoBufferType(getTestProtobufFileContent());
+        }
         kafkaClients = Stream.generate(() -> new KafkaClient(kafkaBootstrapServers)).parallel().limit(producers).collect(Collectors.toList());
     }
 
@@ -86,11 +91,13 @@ abstract class AbstractMessagingLoadKafkaIT {
     }
 
     @Test
-    void testMessagingEvents() throws Exception {
-        given().contentType(ContentType.JSON).body("{ \"query\" : \"{ Travels { id } }\" }")
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.Travels", isA(Collection.class));
+    void testMessagingEvents() {
+        if (indexDomain) {
+            given().contentType(ContentType.JSON).body("{ \"query\" : \"{ Travels { id } }\" }")
+                    .when().post("/graphql")
+                    .then().log().ifValidationFails().statusCode(200)
+                    .body("data.Travels", isA(Collection.class));
+        }
 
         final String processId = "travels";
 
@@ -135,18 +142,20 @@ abstract class AbstractMessagingLoadKafkaIT {
                             .body("data.ProcessInstances[0].state", is(state.toString()));
                 });
 
-        await()
-                .atMost(timeout)
-                .untilAsserted(() -> {
-                    given().contentType(ContentType.JSON).body(getTravelsByProcessInstanceId(processInstanceId))
-                            .when().post("/graphql")
-                            .then().statusCode(200)
-                            .body("data.Travels.size()", is(1))
-                            .body("data.Travels[0].id", is(processInstanceId))
-                            .body("data.Travels[0].metadata.processInstances.size()", is(1))
-                            .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
-                            .body("data.Travels[0].metadata.processInstances[0].state", is(state.toString()));
-                });
+        if (indexDomain) {
+            await()
+                    .atMost(timeout)
+                    .untilAsserted(() -> {
+                        given().contentType(ContentType.JSON).body(getTravelsByProcessInstanceId(processInstanceId))
+                                .when().post("/graphql")
+                                .then().statusCode(200)
+                                .body("data.Travels.size()", is(1))
+                                .body("data.Travels[0].id", is(processInstanceId))
+                                .body("data.Travels[0].metadata.processInstances.size()", is(1))
+                                .body("data.Travels[0].metadata.processInstances[0].id", is(processInstanceId))
+                                .body("data.Travels[0].metadata.processInstances[0].state", is(state.toString()));
+                    });
+        }
     }
 
     private void validateUserTaskInstance(String processInstanceId, String state) {
@@ -161,14 +170,16 @@ abstract class AbstractMessagingLoadKafkaIT {
                             .body("data.UserTaskInstances[0].state", is(state))
                             .extract().body().path("data.UserTaskInstances[0].id");
 
-                    given().contentType(ContentType.JSON).body(getTravelsByUserTaskId(taskId))
-                            .when().post("/graphql")
-                            .then().statusCode(200)
-                            .body("data.Travels.size()", is(1))
-                            .body("data.Travels[0].id", is(processInstanceId))
-                            .body("data.Travels[0].metadata.userTasks.size()", is(1))
-                            .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
-                            .body("data.Travels[0].metadata.userTasks[0].state", is(state));
+                    if (indexDomain) {
+                        given().contentType(ContentType.JSON).body(getTravelsByUserTaskId(taskId))
+                                .when().post("/graphql")
+                                .then().statusCode(200)
+                                .body("data.Travels.size()", is(1))
+                                .body("data.Travels[0].id", is(processInstanceId))
+                                .body("data.Travels[0].metadata.userTasks.size()", is(1))
+                                .body("data.Travels[0].metadata.userTasks[0].id", is(taskId))
+                                .body("data.Travels[0].metadata.userTasks[0].state", is(state));
+                    }
                 });
 
     }
@@ -181,5 +192,7 @@ abstract class AbstractMessagingLoadKafkaIT {
         client.produce(mapper.writeValueAsString(event), "kogito-usertaskinstances-events");
     }
 
-    protected abstract String getTestProtobufFileContent() throws Exception;
+    protected String getTestProtobufFileContent() throws Exception {
+        return null;
+    }
 }

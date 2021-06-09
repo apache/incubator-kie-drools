@@ -18,6 +18,7 @@
     <module>data-index-storage-protobuf</module>
     <module>data-index-storage-infinispan</module>
     <module>data-index-storage-mongodb</module>
+    <module>data-index-storage-postgresql</module>
   </modules>
 
 </project>

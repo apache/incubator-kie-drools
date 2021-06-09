@@ -17,13 +17,13 @@
 package org.kie.kogito.index.graphql.query;
 
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+import org.kie.kogito.index.test.InMemoryMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(MongoDBQuarkusTestResource.class)
+@TestProfile(InMemoryMessageTestProfile.class)
 class MongoGraphQLQueryOrderByIT extends AbstractGraphQLQueryOrderByIT {
 
     @Override

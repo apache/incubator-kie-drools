@@ -38,7 +38,7 @@ public class DataIndexInfinispanQuarkusTestResource extends ConditionalQuarkusTe
         }
 
         properties = new HashMap<>(properties);
-        properties.putAll(((DataIndexInfinispanResource) getTestResource()).getProperties());
+        properties.putAll(getTestResource().getProperties());
         return properties;
     }
 

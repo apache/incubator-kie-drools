@@ -16,15 +16,13 @@
 
 package org.kie.kogito.index.messaging;
 
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
+import org.kie.kogito.index.test.KafkaMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@TestProfile(KafkaMessageTestProfile.class)
 class InfinispanMessagingConsumerKafkaIT extends AbstractMessagingConsumerKafkaIT {
 
 }

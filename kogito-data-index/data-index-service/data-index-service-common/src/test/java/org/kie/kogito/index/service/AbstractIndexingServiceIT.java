@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.index.service;
 
+import java.time.Duration;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -44,6 +45,7 @@ import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.config.EncoderConfig.encoderConfig;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.not;
@@ -87,6 +89,8 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIndexingServiceIT.class);
 
+    Duration timeout = Duration.ofSeconds(5);
+
     @Inject
     DataIndexStorageService cacheService;
 
@@ -126,55 +130,57 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 
     protected void validateProcessInstance(String query, KogitoProcessCloudEvent event, String childProcessInstanceId) {
         LOGGER.debug("GraphQL query: {}", query);
-        given().contentType(ContentType.JSON).body(query)
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.ProcessInstances[0].id", is(event.getProcessInstanceId()))
-                .body("data.ProcessInstances[0].processId", is(event.getProcessId()))
-                .body("data.ProcessInstances[0].processName", is(event.getData().getProcessName()))
-                .body("data.ProcessInstances[0].rootProcessId", is(event.getRootProcessId()))
-                .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
-                .body("data.ProcessInstances[0].parentProcessInstanceId",
-                        is(event.getParentProcessInstanceId()))
-                .body("data.ProcessInstances[0].parentProcessInstance.id",
-                        event.getParentProcessInstanceId() == null ? is(nullValue()) : is(event.getParentProcessInstanceId()))
-                .body("data.ProcessInstances[0].parentProcessInstance.processName",
-                        event.getParentProcessInstanceId() == null ? is(nullValue()) : is(not(emptyOrNullString())))
-                .body("data.ProcessInstances[0].start",
-                        is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].end",
-                        event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].childProcessInstances[0].id",
-                        childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
-                .body("data.ProcessInstances[0].childProcessInstances[0].processName",
-                        childProcessInstanceId == null ? is(nullValue()) : is(not(emptyOrNullString())))
-                .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
-                .body("data.ProcessInstances[0].serviceUrl",
-                        event.getSource().toString().equals("/" + event.getProcessId()) ? is(nullValue()) : is("http://localhost:8080"))
-                .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
-                .body("data.ProcessInstances[0].error.message",
-                        event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
-                .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()))
-                .body("data.ProcessInstances[0].lastUpdate",
-                        is(formatZonedDateTime(
-                                event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].nodes", hasSize(event.getData().getNodes().size()))
-                .body("data.ProcessInstances[0].nodes[0].id", is(event.getData().getNodes().get(0).getId()))
-                .body("data.ProcessInstances[0].nodes[0].name", is(event.getData().getNodes().get(0).getName()))
-                .body("data.ProcessInstances[0].nodes[0].nodeId", is(event.getData().getNodes().get(0).getNodeId()))
-                .body("data.ProcessInstances[0].nodes[0].type", is(event.getData().getNodes().get(0).getType()))
-                .body("data.ProcessInstances[0].nodes[0].definitionId", is(event.getData().getNodes().get(0).getDefinitionId()))
-                .body("data.ProcessInstances[0].nodes[0].enter", is(formatZonedDateTime(event.getData().getNodes().get(0).getEnter().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].nodes[0].exit",
-                        event.getData().getNodes().get(0).getExit() == null ? is(nullValue())
-                                : is(formatZonedDateTime(event.getData().getNodes().get(0).getExit().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.ProcessInstances[0].milestones", hasSize(event.getData().getMilestones().size()))
-                .body("data.ProcessInstances[0].milestones[0].id",
-                        is(event.getData().getMilestones().get(0).getId()))
-                .body("data.ProcessInstances[0].milestones[0].name",
-                        is(event.getData().getMilestones().get(0).getName()))
-                .body("data.ProcessInstances[0].milestones[0].status",
-                        is(event.getData().getMilestones().get(0).getStatus()));
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.ProcessInstances[0].id", is(event.getProcessInstanceId()))
+                        .body("data.ProcessInstances[0].processId", is(event.getProcessId()))
+                        .body("data.ProcessInstances[0].processName", is(event.getData().getProcessName()))
+                        .body("data.ProcessInstances[0].rootProcessId", is(event.getRootProcessId()))
+                        .body("data.ProcessInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstanceId",
+                                is(event.getParentProcessInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstance.id",
+                                event.getParentProcessInstanceId() == null ? is(nullValue()) : is(event.getParentProcessInstanceId()))
+                        .body("data.ProcessInstances[0].parentProcessInstance.processName",
+                                event.getParentProcessInstanceId() == null ? is(nullValue()) : is(not(emptyOrNullString())))
+                        .body("data.ProcessInstances[0].start",
+                                is(formatZonedDateTime(event.getData().getStart().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].end",
+                                event.getData().getEnd() == null ? is(nullValue()) : is(formatZonedDateTime(event.getData().getEnd().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].childProcessInstances[0].id",
+                                childProcessInstanceId == null ? is(nullValue()) : is(childProcessInstanceId))
+                        .body("data.ProcessInstances[0].childProcessInstances[0].processName",
+                                childProcessInstanceId == null ? is(nullValue()) : is(not(emptyOrNullString())))
+                        .body("data.ProcessInstances[0].endpoint", is(event.getSource().toString()))
+                        .body("data.ProcessInstances[0].serviceUrl",
+                                event.getSource().toString().equals("/" + event.getProcessId()) ? is(nullValue()) : is("http://localhost:8080"))
+                        .body("data.ProcessInstances[0].addons", hasItems(event.getData().getAddons().toArray()))
+                        .body("data.ProcessInstances[0].error.message",
+                                event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getMessage()))
+                        .body("data.ProcessInstances[0].error.nodeDefinitionId", event.getData().getError() == null ? is(nullValue()) : is(event.getData().getError().getNodeDefinitionId()))
+                        .body("data.ProcessInstances[0].lastUpdate",
+                                is(formatZonedDateTime(
+                                        event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].nodes", hasSize(event.getData().getNodes().size()))
+                        .body("data.ProcessInstances[0].nodes[0].id", is(event.getData().getNodes().get(0).getId()))
+                        .body("data.ProcessInstances[0].nodes[0].name", is(event.getData().getNodes().get(0).getName()))
+                        .body("data.ProcessInstances[0].nodes[0].nodeId", is(event.getData().getNodes().get(0).getNodeId()))
+                        .body("data.ProcessInstances[0].nodes[0].type", is(event.getData().getNodes().get(0).getType()))
+                        .body("data.ProcessInstances[0].nodes[0].definitionId", is(event.getData().getNodes().get(0).getDefinitionId()))
+                        .body("data.ProcessInstances[0].nodes[0].enter", is(formatZonedDateTime(event.getData().getNodes().get(0).getEnter().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].nodes[0].exit",
+                                event.getData().getNodes().get(0).getExit() == null ? is(nullValue())
+                                        : is(formatZonedDateTime(event.getData().getNodes().get(0).getExit().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.ProcessInstances[0].milestones", hasSize(event.getData().getMilestones().size()))
+                        .body("data.ProcessInstances[0].milestones[0].id",
+                                is(event.getData().getMilestones().get(0).getId()))
+                        .body("data.ProcessInstances[0].milestones[0].name",
+                                is(event.getData().getMilestones().get(0).getName()))
+                        .body("data.ProcessInstances[0].milestones[0].status",
+                                is(event.getData().getMilestones().get(0).getStatus())));
     }
 
     protected void validateProcessInstance(String query, KogitoProcessCloudEvent event) {
@@ -289,58 +295,63 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 
     protected void validateJob(String query, KogitoJobCloudEvent event) {
         LOGGER.debug("GraphQL query: {}", query);
-        given().contentType(ContentType.JSON).body(query)
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.Jobs[0].id", is(event.getData().getId()))
-                .body("data.Jobs[0].processId", is(event.getData().getProcessId()))
-                .body("data.Jobs[0].processInstanceId", is(event.getData().getProcessInstanceId()))
-                .body("data.Jobs[0].nodeInstanceId", is(event.getData().getNodeInstanceId()))
-                .body("data.Jobs[0].rootProcessId", is(event.getData().getRootProcessId()))
-                .body("data.Jobs[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
-                .body("data.Jobs[0].status", is(event.getData().getStatus()))
-                .body("data.Jobs[0].expirationTime",
-                        is(formatZonedDateTime(
-                                event.getData().getExpirationTime().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Jobs[0].priority", is(event.getData().getPriority()))
-                .body("data.Jobs[0].callbackEndpoint", is(event.getData().getCallbackEndpoint()))
-                .body("data.Jobs[0].repeatInterval", is(event.getData().getRepeatInterval().intValue()))
-                .body("data.Jobs[0].repeatLimit", is(event.getData().getRepeatLimit()))
-                .body("data.Jobs[0].scheduledId", is(event.getData().getScheduledId()))
-                .body("data.Jobs[0].retries", is(event.getData().getRetries()))
-                .body("data.Jobs[0].lastUpdate",
-                        is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()))
-                .body("data.Jobs[0].endpoint", is(event.getData().getEndpoint()));
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.Jobs[0].id", is(event.getData().getId()))
+                        .body("data.Jobs[0].processId", is(event.getData().getProcessId()))
+                        .body("data.Jobs[0].processInstanceId", is(event.getData().getProcessInstanceId()))
+                        .body("data.Jobs[0].nodeInstanceId", is(event.getData().getNodeInstanceId()))
+                        .body("data.Jobs[0].rootProcessId", is(event.getData().getRootProcessId()))
+                        .body("data.Jobs[0].rootProcessInstanceId", is(event.getData().getRootProcessInstanceId()))
+                        .body("data.Jobs[0].status", is(event.getData().getStatus()))
+                        .body("data.Jobs[0].expirationTime",
+                                is(formatZonedDateTime(
+                                        event.getData().getExpirationTime().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.Jobs[0].priority", is(event.getData().getPriority()))
+                        .body("data.Jobs[0].callbackEndpoint", is(event.getData().getCallbackEndpoint()))
+                        .body("data.Jobs[0].repeatInterval", is(event.getData().getRepeatInterval().intValue()))
+                        .body("data.Jobs[0].repeatLimit", is(event.getData().getRepeatLimit()))
+                        .body("data.Jobs[0].scheduledId", is(event.getData().getScheduledId()))
+                        .body("data.Jobs[0].retries", is(event.getData().getRetries()))
+                        .body("data.Jobs[0].lastUpdate",
+                                is(formatZonedDateTime(event.getData().getLastUpdate().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.Jobs[0].executionCounter", is(event.getData().getExecutionCounter()))
+                        .body("data.Jobs[0].endpoint", is(event.getData().getEndpoint())));
     }
 
     protected void validateUserTaskInstance(String query, KogitoUserTaskCloudEvent event) {
         LOGGER.debug("GraphQL query: {}", query);
-        given().contentType(ContentType.JSON).body(query)
-                .when().post("/graphql")
-                .then().log().ifValidationFails().statusCode(200)
-                .body("data.UserTaskInstances[0].id", is(event.getUserTaskInstanceId()))
-                .body("data.UserTaskInstances[0].processId", is(event.getProcessId()))
-                .body("data.UserTaskInstances[0].rootProcessId", is(event.getRootProcessId()))
-                .body("data.UserTaskInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
-                .body("data.UserTaskInstances[0].description", is(event.getData().getDescription()))
-                .body("data.UserTaskInstances[0].name", is(event.getData().getName()))
-                .body("data.UserTaskInstances[0].priority", is(event.getData().getPriority()))
-                .body("data.UserTaskInstances[0].actualOwner", is(event.getData().getActualOwner()))
-                .body("data.UserTaskInstances[0].excludedUsers",
-                        hasItems(event.getData().getExcludedUsers().toArray()))
-                .body("data.UserTaskInstances[0].potentialUsers",
-                        hasItems(event.getData().getPotentialUsers().toArray()))
-                .body("data.UserTaskInstances[0].potentialGroups",
-                        hasItems(event.getData().getPotentialGroups().toArray()))
-                .body("data.UserTaskInstances[0].started",
-                        is(formatZonedDateTime(
-                                event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.UserTaskInstances[0].completed",
-                        is(formatZonedDateTime(
-                                event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.UserTaskInstances[0].lastUpdate",
-                        is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
-                .body("data.UserTaskInstances[0].endpoint", is(event.getData().getEndpoint()));
+        await()
+                .atMost(timeout)
+                .untilAsserted(() -> given().contentType(ContentType.JSON).body(query)
+                        .when().post("/graphql")
+                        .then().log().ifValidationFails().statusCode(200)
+                        .body("data.UserTaskInstances[0].id", is(event.getUserTaskInstanceId()))
+                        .body("data.UserTaskInstances[0].processId", is(event.getProcessId()))
+                        .body("data.UserTaskInstances[0].rootProcessId", is(event.getRootProcessId()))
+                        .body("data.UserTaskInstances[0].rootProcessInstanceId", is(event.getRootProcessInstanceId()))
+                        .body("data.UserTaskInstances[0].description", is(event.getData().getDescription()))
+                        .body("data.UserTaskInstances[0].name", is(event.getData().getName()))
+                        .body("data.UserTaskInstances[0].priority", is(event.getData().getPriority()))
+                        .body("data.UserTaskInstances[0].actualOwner", is(event.getData().getActualOwner()))
+                        .body("data.UserTaskInstances[0].excludedUsers",
+                                hasItems(event.getData().getExcludedUsers().toArray()))
+                        .body("data.UserTaskInstances[0].potentialUsers",
+                                hasItems(event.getData().getPotentialUsers().toArray()))
+                        .body("data.UserTaskInstances[0].potentialGroups",
+                                hasItems(event.getData().getPotentialGroups().toArray()))
+                        .body("data.UserTaskInstances[0].started",
+                                is(formatZonedDateTime(
+                                        event.getData().getStarted().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.UserTaskInstances[0].completed",
+                                is(formatZonedDateTime(
+                                        event.getData().getCompleted().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.UserTaskInstances[0].lastUpdate",
+                                is(formatZonedDateTime(event.getTime().withZoneSameInstant(ZoneOffset.UTC))))
+                        .body("data.UserTaskInstances[0].endpoint", is(event.getData().getEndpoint())));
     }
+
 }

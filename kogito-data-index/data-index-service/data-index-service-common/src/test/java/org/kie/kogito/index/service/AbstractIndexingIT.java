@@ -15,29 +15,34 @@
  */
 package org.kie.kogito.index.service;
 
+import javax.enterprise.inject.Any;
 import javax.inject.Inject;
 
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
-import org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer;
 
-import io.smallrye.mutiny.helpers.test.UniAssertSubscriber;
+import io.smallrye.reactive.messaging.connectors.InMemoryConnector;
+
+import static org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer.KOGITO_JOBS_EVENTS;
+import static org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer.KOGITO_PROCESSINSTANCES_EVENTS;
+import static org.kie.kogito.index.messaging.ReactiveMessagingEventConsumer.KOGITO_USERTASKINSTANCES_EVENTS;
 
 public abstract class AbstractIndexingIT {
 
     @Inject
-    ReactiveMessagingEventConsumer consumer;
+    @Any
+    InMemoryConnector connector;
 
     protected void indexProcessCloudEvent(KogitoProcessCloudEvent event) {
-        consumer.onProcessInstanceEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create()).assertCompleted();
+        connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(event);
     }
 
     protected void indexUserTaskCloudEvent(KogitoUserTaskCloudEvent event) {
-        consumer.onUserTaskInstanceEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create()).assertCompleted();
+        connector.source(KOGITO_USERTASKINSTANCES_EVENTS).send(event);
     }
 
     protected void indexJobCloudEvent(KogitoJobCloudEvent event) {
-        consumer.onJobEvent(event).subscribe().withSubscriber(UniAssertSubscriber.create()).assertCompleted();
+        connector.source(KOGITO_JOBS_EVENTS).send(event);
     }
 }

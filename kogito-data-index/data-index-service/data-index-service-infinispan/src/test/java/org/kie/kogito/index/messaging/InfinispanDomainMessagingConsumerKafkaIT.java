@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,15 +17,13 @@
 package org.kie.kogito.index.messaging;
 
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
+import org.kie.kogito.index.test.KafkaMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@TestProfile(KafkaMessageTestProfile.class)
 class InfinispanDomainMessagingConsumerKafkaIT extends AbstractDomainMessagingConsumerKafkaIT {
 
     @Override

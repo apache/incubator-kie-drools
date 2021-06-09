@@ -21,6 +21,7 @@ import java.io.InputStreamReader;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -197,6 +198,8 @@ public class GraphQLSchemaManager {
     }
 
     private <T> List<T> executeAdvancedQueryForCache(Storage<String, T> cache, DataFetchingEnvironment env) {
+        Objects.requireNonNull(cache, "Cache not found");
+
         String inputTypeName = ((GraphQLNamedType) env.getFieldDefinition().getArgument("where").getType()).getName();
 
         Query<T> query = cache.query();

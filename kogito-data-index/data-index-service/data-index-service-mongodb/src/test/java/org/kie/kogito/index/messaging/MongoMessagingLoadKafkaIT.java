@@ -18,15 +18,13 @@ package org.kie.kogito.index.messaging;
 
 import org.junit.jupiter.api.Disabled;
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+import org.kie.kogito.index.test.KafkaMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(MongoDBQuarkusTestResource.class)
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@TestProfile(KafkaMessageTestProfile.class)
 @Disabled
 class MongoMessagingLoadKafkaIT extends AbstractMessagingLoadKafkaIT {
 

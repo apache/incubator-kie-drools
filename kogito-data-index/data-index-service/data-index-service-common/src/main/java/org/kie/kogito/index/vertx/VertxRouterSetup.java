@@ -32,13 +32,8 @@ import io.vertx.ext.web.RoutingContext;
 import io.vertx.ext.web.handler.FaviconHandler;
 import io.vertx.ext.web.handler.LoggerHandler;
 import io.vertx.ext.web.handler.StaticHandler;
-import io.vertx.ext.web.handler.graphql.ApolloWSHandler;
-import io.vertx.ext.web.handler.graphql.GraphQLHandler;
-import io.vertx.ext.web.handler.graphql.GraphQLHandlerOptions;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandler;
 import io.vertx.ext.web.handler.graphql.GraphiQLHandlerOptions;
-
-import graphql.GraphQL;
 
 @ApplicationScoped
 public class VertxRouterSetup {
@@ -51,9 +46,6 @@ public class VertxRouterSetup {
     @ConfigProperty(name = "kogito.data-index.vertx-graphql.ui.path", defaultValue = "/graphiql")
     String graphUIPath;
 
-    @Inject
-    GraphQL graphQL;
-
     void setupRouter(@Observes Router router) {
         GraphiQLHandler graphiQLHandler = GraphiQLHandler.create(new GraphiQLHandlerOptions().setEnabled(true));
         if (Boolean.TRUE.equals(authEnabled)) {
@@ -64,8 +56,6 @@ public class VertxRouterSetup {
         router.route().handler(StaticHandler.create());
         router.route().handler(FaviconHandler.create());
         router.route("/").handler(ctx -> ctx.response().putHeader("location", graphUIPath + "/").setStatusCode(302).end());
-        router.route("/graphql").handler(ApolloWSHandler.create(graphQL));
-        router.route("/graphql").handler(GraphQLHandler.create(graphQL, new GraphQLHandlerOptions()));
     }
 
     protected void addGraphiqlRequestHeader(GraphiQLHandler graphiQLHandler) {

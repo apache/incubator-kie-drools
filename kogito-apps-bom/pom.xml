@@ -108,6 +108,17 @@
             </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-storage-postgresql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>data-index-storage-postgresql</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>data-index-service-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -234,6 +245,24 @@
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>persistence-commons-redis</artifactId>
+                <version>${project.version}</version>
+                <classifier>sources</classifier>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>persistence-commons-postgresql</artifactId>
+                <version>${project.version}</version>
+                <classifier>javadoc</classifier>
+            </dependency>
+
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>persistence-commons-postgresql</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>persistence-commons-postgresql</artifactId>
                 <version>${project.version}</version>
                 <classifier>sources</classifier>
             </dependency>

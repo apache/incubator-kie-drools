@@ -42,6 +42,10 @@ public abstract class AbstractProcessDataIndexIT {
 
     public abstract String getDataIndexURL();
 
+    public boolean validateDomainData() {
+        return true;
+    }
+
     public RequestSpecification dataIndexSpec() {
         if (spec == null) {
             spec = new RequestSpecBuilder().setBaseUri(getDataIndexURL()).build();
@@ -77,25 +81,27 @@ public abstract class AbstractProcessDataIndexIT {
                 .extract()
                 .path("[0].id");
 
-        await()
-                .atMost(TIMEOUT)
-                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                        .body("{ \"query\" : \"{Approvals{ id, traveller { firstName, lastName }, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
-                        .when().post("/graphql")
-                        .then().statusCode(200)
-                        .body("data.Approvals.size()", is(1))
-                        .body("data.Approvals[0].id", is(pId))
-                        .body("data.Approvals[0].traveller.firstName", is("Darth"))
-                        .body("data.Approvals[0].traveller.lastName", is("Vader"))
-                        .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
-                        .body("data.Approvals[0].metadata.processInstances.size()", is(1))
-                        .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
-                        .body("data.Approvals[0].metadata.processInstances[0].state", is("ACTIVE"))
-                        .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
-                        .body("data.Approvals[0].metadata.userTasks.size()", is(1))
-                        .body("data.Approvals[0].metadata.userTasks[0].id", is(flTaskId))
-                        .body("data.Approvals[0].metadata.userTasks[0].name", is("firstLineApproval"))
-                        .body("data.Approvals[0].metadata.userTasks[0].state", is("Ready")));
+        if (validateDomainData()) {
+            await()
+                    .atMost(TIMEOUT)
+                    .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                            .body("{ \"query\" : \"{Approvals{ id, traveller { firstName, lastName }, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
+                            .when().post("/graphql")
+                            .then().statusCode(200)
+                            .body("data.Approvals.size()", is(1))
+                            .body("data.Approvals[0].id", is(pId))
+                            .body("data.Approvals[0].traveller.firstName", is("Darth"))
+                            .body("data.Approvals[0].traveller.lastName", is("Vader"))
+                            .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
+                            .body("data.Approvals[0].metadata.processInstances.size()", is(1))
+                            .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
+                            .body("data.Approvals[0].metadata.processInstances[0].state", is("ACTIVE"))
+                            .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
+                            .body("data.Approvals[0].metadata.userTasks.size()", is(1))
+                            .body("data.Approvals[0].metadata.userTasks[0].id", is(flTaskId))
+                            .body("data.Approvals[0].metadata.userTasks[0].name", is("firstLineApproval"))
+                            .body("data.Approvals[0].metadata.userTasks[0].state", is("Ready")));
+        }
 
         await()
                 .atMost(TIMEOUT)
@@ -185,22 +191,24 @@ public abstract class AbstractProcessDataIndexIT {
                         .then().statusCode(200)
                         .body("data.UserTaskInstances.size()", is(2)));
 
-        await()
-                .atMost(TIMEOUT)
-                .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
-                        .body("{ \"query\" : \"{Approvals{ id, firstLineApproval, secondLineApproval, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
-                        .when().post("/graphql")
-                        .then().statusCode(200)
-                        .body("data.Approvals.size()", is(1))
-                        .body("data.Approvals[0].id", is(pId))
-                        .body("data.Approvals[0].firstLineApproval", is(true))
-                        .body("data.Approvals[0].secondLineApproval", is(true))
-                        .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
-                        .body("data.Approvals[0].metadata.processInstances.size()", is(1))
-                        .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
-                        .body("data.Approvals[0].metadata.processInstances[0].state", is("COMPLETED"))
-                        .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
-                        .body("data.Approvals[0].metadata.userTasks.size()", is(2)));
+        if (validateDomainData()) {
+            await()
+                    .atMost(TIMEOUT)
+                    .untilAsserted(() -> given().spec(dataIndexSpec()).contentType(ContentType.JSON)
+                            .body("{ \"query\" : \"{Approvals{ id, firstLineApproval, secondLineApproval, metadata { processInstances { id, state }, userTasks { id, name, state } } } }\" }")
+                            .when().post("/graphql")
+                            .then().statusCode(200)
+                            .body("data.Approvals.size()", is(1))
+                            .body("data.Approvals[0].id", is(pId))
+                            .body("data.Approvals[0].firstLineApproval", is(true))
+                            .body("data.Approvals[0].secondLineApproval", is(true))
+                            .body("data.Approvals[0].metadata.processInstances", is(notNullValue()))
+                            .body("data.Approvals[0].metadata.processInstances.size()", is(1))
+                            .body("data.Approvals[0].metadata.processInstances[0].id", is(pId))
+                            .body("data.Approvals[0].metadata.processInstances[0].state", is("COMPLETED"))
+                            .body("data.Approvals[0].metadata.userTasks", is(notNullValue()))
+                            .body("data.Approvals[0].metadata.userTasks.size()", is(2)));
+        }
     }
 
 }

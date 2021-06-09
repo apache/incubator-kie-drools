@@ -38,7 +38,7 @@ public class DataIndexMongoDBQuarkusTestResource extends ConditionalQuarkusTestR
         }
 
         properties = new HashMap<>(properties);
-        properties.putAll(((DataIndexMongoDBResource) getTestResource()).getProperties());
+        properties.putAll(getTestResource().getProperties());
         return properties;
     }
 

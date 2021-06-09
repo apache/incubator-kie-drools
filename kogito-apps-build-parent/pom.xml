@@ -33,6 +33,7 @@
         <!-- internal containers used for testing (built by maven using quarkus-container-image-jib) -->
         <container.image.explainability-service-messaging>org.kie.kogito/explainability-service-messaging:${project.version}</container.image.explainability-service-messaging>
         <container.image.jobs-service>org.kie.kogito/jobs-service-common:${project.version}</container.image.jobs-service>
+        <container.image.data-index-service-postgresql>org.kie.kogito/data-index-service-postgresql:${project.version}</container.image.data-index-service-postgresql>
         <container.image.data-index-service-infinispan>org.kie.kogito/data-index-service-infinispan:${project.version}</container.image.data-index-service-infinispan>
         <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
@@ -44,6 +45,7 @@
         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
         <version.org.jredisearch>2.0.0</version.org.jredisearch>
+        <version.org.mapstruct>1.4.2.Final</version.org.mapstruct>
         <version.org.redis>2.0.4</version.org.redis>
         <version.org.skyscreamer>1.5.0</version.org.skyscreamer>
 
@@ -95,6 +97,7 @@
                             <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
                             <container.image.kafka>${container.image.kafka}</container.image.kafka>
                             <container.image.redis>${container.image.redis}</container.image.redis>
+                            <container.image.data-index-service-postgresql>${container.image.data-index-service-postgresql}</container.image.data-index-service-postgresql>
                             <container.image.data-index-service-infinispan>${container.image.data-index-service-infinispan}</container.image.data-index-service-infinispan>
                             <container.image.data-index-service-mongodb>${container.image.data-index-service-mongodb}</container.image.data-index-service-mongodb>
                             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
@@ -157,13 +160,16 @@
                 <artifactId>commons-csv</artifactId>
                 <version>${version.org.apache.commons.csv}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.apache.opennlp</groupId>
                 <artifactId>opennlp-tools</artifactId>
                 <version>${version.org.apache.opennlp}</version>
             </dependency>
-
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${version.org.mapstruct}</version>
+            </dependency>
             <dependency>
                 <groupId>org.skyscreamer</groupId>
                 <artifactId>jsonassert</artifactId>

@@ -16,13 +16,13 @@
 
 package org.kie.kogito.index.cache;
 
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+import org.kie.kogito.index.test.InMemoryMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
+@TestProfile(InMemoryMessageTestProfile.class)
 class InfinispanStorageIT extends AbstractStorageIT {
 
 }

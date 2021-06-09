@@ -28,9 +28,11 @@ import org.kie.kogito.index.service.IndexingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.arc.properties.UnlessBuildProperty;
 import io.smallrye.mutiny.Uni;
 
 @ApplicationScoped
+@UnlessBuildProperty(name = "kogito.data-index.blocking", stringValue = "true", enableIfMissing = true)
 public class ReactiveMessagingEventConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ReactiveMessagingEventConsumer.class);

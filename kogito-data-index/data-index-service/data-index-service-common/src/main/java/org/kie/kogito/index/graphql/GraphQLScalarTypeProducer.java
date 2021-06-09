@@ -15,39 +15,20 @@
  */
 package org.kie.kogito.index.graphql;
 
-import java.time.DateTimeException;
-import java.time.Instant;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.time.temporal.ChronoUnit;
-
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
-import graphql.language.StringValue;
-import graphql.schema.Coercing;
-import graphql.schema.CoercingSerializeException;
 import graphql.schema.GraphQLScalarType;
 
 @ApplicationScoped
 public class GraphQLScalarTypeProducer {
 
-    public static ZonedDateTime parseDateTime(String s) {
-        try {
-            return ZonedDateTime.parse(s, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-        } catch (DateTimeParseException e) {
-            throw new CoercingSerializeException("Invalid ISO-8601 value : '" + s + "'. because of : '" + e.getMessage() + "'");
-        }
-    }
+    private DateTimeCoercing dateTimeCoercing;
 
-    public String formatDateTime(ZonedDateTime dateTime) {
-        try {
-            return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(dateTime);
-        } catch (DateTimeException e) {
-            throw new CoercingSerializeException("Unable to turn TemporalAccessor into OffsetDateTime because of : '" + e.getMessage() + "'.");
-        }
+    @Inject
+    public GraphQLScalarTypeProducer(DateTimeCoercing dateTimeCoercing) {
+        this.dateTimeCoercing = dateTimeCoercing;
     }
 
     @Produces
@@ -55,45 +36,7 @@ public class GraphQLScalarTypeProducer {
         return GraphQLScalarType.newScalar()
                 .name("DateTime")
                 .description("An ISO-8601 compliant DateTime Scalar")
-                .coercing(new Coercing() {
-                    @Override
-                    public Object serialize(Object input) {
-                        ZonedDateTime dateTime;
-                        if (input instanceof ZonedDateTime) {
-                            dateTime = (ZonedDateTime) input;
-                        } else if (input instanceof String) {
-                            try {
-                                dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli(Long.parseLong(input.toString())), ZoneOffset.UTC);
-                            } catch (NumberFormatException ex) {
-                                dateTime = parseDateTime(input.toString());
-                            }
-                        } else if (input instanceof Long) {
-                            dateTime = ZonedDateTime.ofInstant(Instant.ofEpochMilli((Long) input), ZoneOffset.UTC);
-                        } else {
-                            throw new CoercingSerializeException(
-                                    "Expected something we can convert to 'java.time.OffsetDateTime' but was '" + (input == null ? "null" : input.getClass().getName()) + "'.");
-                        }
-                        return formatDateTime(dateTime);
-                    }
-
-                    @Override
-                    public Object parseValue(Object input) {
-                        return input == null ? null : getDateTimeAsLong((String) input);
-                    }
-
-                    private long getDateTimeAsLong(String input) {
-                        return parseDateTime(input).truncatedTo(ChronoUnit.MILLIS).toInstant().toEpochMilli();
-                    }
-
-                    @Override
-                    public Object parseLiteral(Object input) {
-                        if (input instanceof StringValue) {
-                            return getDateTimeAsLong(((StringValue) input).getValue());
-                        } else {
-                            return null;
-                        }
-                    }
-                })
+                .coercing(dateTimeCoercing)
                 .build();
     }
 }

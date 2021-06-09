@@ -42,7 +42,7 @@ public class DomainEventConsumer {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DomainEventConsumer.class);
 
-    @ConfigProperty(name = "kogito.domain.indexing", defaultValue = "true")
+    @ConfigProperty(name = "kogito.data-index.domain-indexing", defaultValue = "true")
     Boolean indexDomain;
 
     @Inject

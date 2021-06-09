@@ -17,13 +17,13 @@
 package org.kie.kogito.index.graphql;
 
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
+import org.kie.kogito.index.test.InMemoryMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.class)
+@TestProfile(InMemoryMessageTestProfile.class)
 class InfinispanWebSocketSubscriptionIT extends AbstractWebSocketSubscriptionIT {
 
     @Override

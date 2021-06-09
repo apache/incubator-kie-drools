@@ -35,7 +35,7 @@ public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTes
 
     @Override
     protected void updateContextProperty(ConfigurableApplicationContext ctx, String key, String value) {
-        List<String> props = ((DataIndexMongoDBResource) getTestResource()).getProperties().entrySet().stream()
+        List<String> props = getTestResource().getProperties().entrySet().stream()
                 .map(e -> e.getKey() + "=" + e.getValue()).collect(toList());
         props.add(key + "=" + value);
         TestPropertySourceUtils.addInlinedPropertiesToEnvironment(ctx, props.toArray(new String[0]));

@@ -17,15 +17,13 @@
 package org.kie.kogito.index.messaging;
 
 import org.kie.kogito.index.TestUtils;
-import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.kie.kogito.testcontainers.quarkus.MongoDBQuarkusTestResource;
+import org.kie.kogito.index.test.KafkaMessageTestProfile;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
 @QuarkusTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
-@QuarkusTestResource(MongoDBQuarkusTestResource.class)
+@TestProfile(KafkaMessageTestProfile.class)
 class MongoDomainMessagingConsumerKafkaIT extends AbstractDomainMessagingConsumerKafkaIT {
 
     @Override
