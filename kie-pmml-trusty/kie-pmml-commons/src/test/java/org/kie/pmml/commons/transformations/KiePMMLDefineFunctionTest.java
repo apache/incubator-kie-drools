@@ -44,7 +44,7 @@ public class KiePMMLDefineFunctionTest {
                                                                          Arrays.asList(parameterField1,
                                                                                        parameterField2),
                                                                                null);
-        defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), null);
+        defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -56,7 +56,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                Arrays.asList(parameterField1,
                                                                                              parameterField2),
                                                                                null);
-        defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                OP_TYPE.CONTINUOUS.getName(),
                                                                                Collections.emptyList(),
                                                                                kiePMMLConstant1);
-        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         assertEquals(value1, retrieved);
     }
 
@@ -84,7 +84,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                OP_TYPE.CONTINUOUS.getName(),
                                                                                Collections.singletonList(KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build()),
                                                                                kiePMMLFieldRef);
-        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.singletonList(value1));
+        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(value1));
         assertEquals(value1, retrieved);
     }
 
@@ -109,7 +109,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                OP_TYPE.CONTINUOUS.getName(),
                                                                                Arrays.asList(parameterField1, parameterField2),
                                                                                kiePMMLApply);
-        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Arrays.asList(value1, value2));
+        Object retrieved = defineFunction.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(value1, value2));
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
     }

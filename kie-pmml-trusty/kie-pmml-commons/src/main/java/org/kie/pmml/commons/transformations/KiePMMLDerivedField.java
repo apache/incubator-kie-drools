@@ -22,6 +22,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
@@ -72,8 +73,9 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
 
     public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
                            final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
                            final List<KiePMMLNameValue> kiePMMLNameValues) {
-        return kiePMMLExpression.evaluate(defineFunctions, derivedFields, kiePMMLNameValues);
+        return kiePMMLExpression.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues);
     }
 
     public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLDerivedField> {

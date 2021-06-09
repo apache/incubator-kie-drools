@@ -89,7 +89,7 @@ public class KiePMMLDefineFunctionFactory {
                 .asObjectCreationExpr();
         final StringLiteralExpr nameExpr = new StringLiteralExpr(defineFunction.getName());
         objectCreationExpr.getArguments().set(0, nameExpr);
-        objectCreationExpr.getArguments().set(2, new StringLiteralExpr(defineFunction.getOpType().name()));
+        objectCreationExpr.getArguments().set(2, new StringLiteralExpr(defineFunction.getOpType().value()));
         objectCreationExpr.getArguments().get(3).asMethodCallExpr().setArguments(parameterFieldArguments);
         objectCreationExpr.getArguments().set(4, new NameExpr(kiePMMLExpression));
         defineFunctionBody.getStatements().forEach(toReturn::addStatement);

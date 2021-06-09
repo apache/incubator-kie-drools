@@ -20,6 +20,7 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
@@ -42,6 +43,7 @@ public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMML
     @Override
     public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
                            final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
                            final List<KiePMMLNameValue> kiePMMLNameValues) {
         return getValue();
     }

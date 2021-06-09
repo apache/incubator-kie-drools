@@ -60,7 +60,7 @@ public class KiePMMLApplyTest {
                 .withMapMissingTo(mapMissingTo)
                 .withInvalidValueTreatmentMethod(invalidTreatmentValue)
                 .build();
-        kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     @Test
@@ -74,7 +74,7 @@ public class KiePMMLApplyTest {
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
-        Object retrieved = kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(),
+        Object retrieved = kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  Collections.emptyList());
         assertEquals(expected, retrieved);
         //
@@ -89,7 +89,7 @@ public class KiePMMLApplyTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLFieldRef))
                 .build();
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, value2));
-        retrieved = kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues);
+        retrieved = kiePMMLApply.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues);
         assertEquals(expected, retrieved);
         // Apply with a Constant and a FieldRef: returns kiePMMLConstant1 divided evaluation of FieldRef from
         // derivedFields
@@ -101,7 +101,7 @@ public class KiePMMLApplyTest {
                 .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
         kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN", "WRONG"));
-        retrieved = kiePMMLApply.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
+        retrieved = kiePMMLApply.evaluate(Collections.emptyList(), derivedFields, Collections.emptyList(), kiePMMLNameValues);
         assertEquals(expected, retrieved);
     }
 
@@ -127,7 +127,7 @@ public class KiePMMLApplyTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
         List<KiePMMLDefineFunction> defineFunctions = Collections.singletonList(getDefineFunctionApplyFromConstant());
-        Object retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList());
+        Object retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         assertEquals(expected, retrieved);
         //
         // Apply with a Constant and a FieldRef: returns kiePMMLConstant1 divided evaluation of FieldRef from
@@ -145,7 +145,7 @@ public class KiePMMLApplyTest {
         //      </Apply>
         // </DefineFunction>
         defineFunctions = Collections.singletonList(getDefineFunctionApplyFromFieldRef());
-        retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList());
+        retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         Double locallyExpected = value1 / valueB;
         assertEquals(locallyExpected, retrieved);
         //
@@ -175,7 +175,7 @@ public class KiePMMLApplyTest {
                 .build();
         defineFunctions = Arrays.asList(getDefineFunctionApplyFromFieldRef(),
                                         getDefineFunctionApplyFromCustomFunction());
-        retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList());
+        retrieved = kiePMMLApply.evaluate(defineFunctions, Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         assertEquals(locallyExpected, retrieved);
     }
 

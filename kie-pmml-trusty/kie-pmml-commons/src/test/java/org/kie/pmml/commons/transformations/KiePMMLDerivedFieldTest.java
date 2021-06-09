@@ -49,7 +49,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLConstant1)
                 .build();
-        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(),
+        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  Collections.emptyList());
         assertEquals(value1, retrieved);
     }
@@ -65,7 +65,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLFieldRef)
                 .build();
-        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(),
+        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  Collections.singletonList(new KiePMMLNameValue(PARAM_1, value1)));
         assertEquals(value1, retrieved);
     }
@@ -88,7 +88,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLApply)
                 .build();
-        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(),
+        Object retrieved = derivedField.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
                                                  getKiePMMLNameValues());
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
@@ -112,7 +112,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLApply)
                 .build();
-        Object retrieved = derivedField.evaluate(Collections.emptyList(), getDerivedFields(),
+        Object retrieved = derivedField.evaluate(Collections.emptyList(), getDerivedFields(), Collections.emptyList(),
                                                  Collections.emptyList());
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);

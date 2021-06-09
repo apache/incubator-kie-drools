@@ -17,6 +17,7 @@ package org.kie.pmml.evaluator.core.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -106,7 +107,7 @@ public class PreProcess {
             derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
         }
         for (KiePMMLDerivedField derivedField : derivedFields) {
-            Object derivedValue = derivedField.evaluate(defineFunctions, derivedFields, kiePMMLNameValues);
+            Object derivedValue = derivedField.evaluate(defineFunctions, derivedFields, Collections.emptyList(),  kiePMMLNameValues);
             if (derivedValue != null) {
                 requestData.addRequestParam(derivedField.getName(), derivedValue);
                 kiePMMLNameValues.add(new KiePMMLNameValue(derivedField.getName(), derivedValue));

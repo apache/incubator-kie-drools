@@ -25,6 +25,7 @@ import org.kie.pmml.api.enums.BUILTIN_FUNCTIONS;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
@@ -51,13 +52,14 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     @Override
     public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
                            final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
                            final List<KiePMMLNameValue> kiePMMLNameValues) {
         if (kiePMMLExpressions == null) {
             return null;
         }
         List<Object> expressionValues = new ArrayList<>(); // <- Insertion order matter
         for (KiePMMLExpression kiePMMLExpression : kiePMMLExpressions) {
-            expressionValues.add(kiePMMLExpression.evaluate(defineFunctions, derivedFields, kiePMMLNameValues));
+            expressionValues.add(kiePMMLExpression.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues));
         }
         BUILTIN_FUNCTIONS builtinFunction = null;
         try {
@@ -68,12 +70,12 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
         if (builtinFunction != null) {
             return builtinFunction.getValue(expressionValues.toArray(new Object[0]));
         } else {
-            return defineFunctions
+            final KiePMMLDefineFunction definedFunction = defineFunctions
                     .parallelStream()
                     .filter(defineFunction -> defineFunction.getName().equals(function))
-                    .map(defineFunction -> defineFunction.evaluate(defineFunctions, derivedFields, expressionValues))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Unknown function " + function));
+            return definedFunction.evaluate(defineFunctions, derivedFields, outputFields, expressionValues);
         }
 
     }

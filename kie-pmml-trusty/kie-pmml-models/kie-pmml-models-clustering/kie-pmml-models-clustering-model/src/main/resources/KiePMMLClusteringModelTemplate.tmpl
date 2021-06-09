@@ -15,6 +15,18 @@
  */
 package org.kie.pmml.models.clustering;
 
+import java.util.Arrays;
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLParameterField;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.models.clustering.model.KiePMMLClusteringModel;
 
 public class KiePMMLClusteringModelTemplate extends KiePMMLClusteringModel {
@@ -24,5 +36,7 @@ public class KiePMMLClusteringModelTemplate extends KiePMMLClusteringModel {
         targetField = null;
         miningFunction = null;
         pmmlMODEL = null;
+        transformationDictionary = null;
+        localTransformations = null;
     }
 }

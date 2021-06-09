@@ -41,7 +41,7 @@ public class KiePMMLFieldRefTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
                                                                                                         value));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
-        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), Collections.emptyList(),
+        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), Collections.emptyList(),  Collections.emptyList(),
                                                           kiePMMLNameValues);
         assertEquals(value, retrieved);
     }
@@ -60,7 +60,7 @@ public class KiePMMLFieldRefTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
                                                                                                         "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
-        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
+        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, Collections.emptyList(), kiePMMLNameValues);
         assertEquals(value, retrieved);
     }
 
@@ -78,7 +78,7 @@ public class KiePMMLFieldRefTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
                                                                                                         "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), value);
-        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
+        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, Collections.emptyList(), kiePMMLNameValues);
         assertEquals(value, retrieved);
     }
 
@@ -95,7 +95,7 @@ public class KiePMMLFieldRefTest {
         final List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue("UNKNOWN",
                                                                                                         "WRONG"));
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(FIELD_NAME, Collections.emptyList(), null);
-        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, kiePMMLNameValues);
+        final Object retrieved = kiePMMLFieldRef.evaluate(Collections.emptyList(), derivedFields, Collections.emptyList(), kiePMMLNameValues);
         assertNull(retrieved);
     }
 }

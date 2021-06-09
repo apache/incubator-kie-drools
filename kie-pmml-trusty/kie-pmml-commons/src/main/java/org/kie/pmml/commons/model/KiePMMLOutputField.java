@@ -19,10 +19,14 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
+import java.util.stream.Stream;
 
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
@@ -63,6 +67,15 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     public KiePMMLExpression getKiePMMLExpression() {
         return kiePMMLExpression;
     }
+
+    public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                           final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
+                           final List<KiePMMLNameValue> kiePMMLNameValues) {
+        return kiePMMLExpression != null ? kiePMMLExpression.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues) : null;
+    }
+
+
 
     @Override
     public String toString() {
@@ -139,6 +152,5 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
             }
             return this;
         }
-
     }
 }

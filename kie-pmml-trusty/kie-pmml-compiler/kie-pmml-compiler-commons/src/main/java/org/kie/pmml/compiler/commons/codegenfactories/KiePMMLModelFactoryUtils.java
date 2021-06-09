@@ -159,47 +159,27 @@ public class KiePMMLModelFactoryUtils {
     public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate,
                                                                        final TransformationDictionary transformationDictionary,
                                                                        final LocalTransformations localTransformations) {
-        BlockStmt createTransformationDictionaryBody = KiePMMLTransformationDictionaryFactory.getKiePMMLTransformationDictionaryVariableDeclaration(transformationDictionary);
-        createTransformationDictionaryBody.addStatement(getReturnStmt(TRANSFORMATION_DICTIONARY));
-        String createTransformationDictionary = "createTransformationDictionary";
-        MethodDeclaration createTransformationDictionaryMethod =  toPopulate.addMethod(createTransformationDictionary, Modifier.Keyword.PRIVATE);
-        createTransformationDictionaryMethod.setType(KiePMMLTransformationDictionary.class.getName());
-        createTransformationDictionaryMethod.setBody(createTransformationDictionaryBody);
-
-        BlockStmt createLocalTransformationsBody = KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
-        createLocalTransformationsBody.addStatement(getReturnStmt(LOCAL_TRANSFORMATIONS));
-        String createLocalTransformations = "createLocalTransformations";
-        MethodDeclaration createLocalTransformationsMethod =  toPopulate.addMethod(createLocalTransformations, Modifier.Keyword.PRIVATE);
-        createLocalTransformationsMethod.setType(KiePMMLLocalTransformations.class.getName());
-        createLocalTransformationsMethod.setBody(createLocalTransformationsBody);
+        String createTransformationDictionary = null;
+        if (transformationDictionary != null) {
+            BlockStmt createTransformationDictionaryBody = KiePMMLTransformationDictionaryFactory.getKiePMMLTransformationDictionaryVariableDeclaration(transformationDictionary);
+            createTransformationDictionaryBody.addStatement(getReturnStmt(TRANSFORMATION_DICTIONARY));
+            createTransformationDictionary = "createTransformationDictionary";
+            MethodDeclaration createTransformationDictionaryMethod = toPopulate.addMethod(createTransformationDictionary, Modifier.Keyword.PRIVATE);
+            createTransformationDictionaryMethod.setType(KiePMMLTransformationDictionary.class.getName());
+            createTransformationDictionaryMethod.setBody(createTransformationDictionaryBody);
+        }
+        String createLocalTransformations = null;
+        if (localTransformations != null) {
+            BlockStmt createLocalTransformationsBody = KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
+            createLocalTransformationsBody.addStatement(getReturnStmt(LOCAL_TRANSFORMATIONS));
+            createLocalTransformations = "createLocalTransformations";
+            MethodDeclaration createLocalTransformationsMethod = toPopulate.addMethod(createLocalTransformations, Modifier.Keyword.PRIVATE);
+            createLocalTransformationsMethod.setType(KiePMMLLocalTransformations.class.getName());
+            createLocalTransformationsMethod.setBody(createLocalTransformationsBody);
+        }
         final ConstructorDeclaration constructorDeclaration =
                 toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
         populateTransformationsInConstructor(constructorDeclaration, createTransformationDictionary, createLocalTransformations);
-
-//
-//        final AtomicInteger arityCounter = new AtomicInteger(0);
-//        final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap =
-//                (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
-//                        getDerivedFieldsMethodMap(transformationDictionary.getDerivedFields(), arityCounter) :
-//                        Collections.emptyMap();
-//        final Map<String, MethodDeclaration> localDerivedFieldsMethodMap =
-//                (localTransformations != null && localTransformations.getDerivedFields() != null) ?
-//                        getDerivedFieldsMethodMap(localTransformations.getDerivedFields(), arityCounter) :
-//                        Collections.emptyMap();
-//        final Map<String, MethodDeclaration> defineFunctionsMethodMap =
-//                (transformationDictionary != null && transformationDictionary.getDefineFunctions() != null) ?
-//                        getDefineFunctionsMethodMap(transformationDictionary.getDefineFunctions()) :
-//                        Collections.emptyMap();
-//        populateMethodDeclarations(toPopulate, commonDerivedFieldsMethodMap.values());
-//        populateMethodDeclarations(toPopulate, localDerivedFieldsMethodMap.values());
-//        populateMethodDeclarations(toPopulate, defineFunctionsMethodMap.values());
-//        final ConstructorDeclaration constructorDeclaration =
-//                toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
-//        populateTransformationsInConstructor(constructorDeclaration,
-//                                             commonDerivedFieldsMethodMap,
-//                                             localDerivedFieldsMethodMap);
-//        populateFunctionsInConstructor(constructorDeclaration,
-//                                             defineFunctionsMethodMap);
     }
 
     /**
@@ -318,34 +298,12 @@ public class KiePMMLModelFactoryUtils {
      */
     static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration,
                                                      final String createTransformationDictionary, final String createLocalTransformations) {
-        MethodCallExpr createTransformationDictionaryInitializer =  new MethodCallExpr(new NameExpr("this"), createTransformationDictionary, NodeList.nodeList());
+        Expression createTransformationDictionaryInitializer = createTransformationDictionary != null ?
+                new MethodCallExpr(new NameExpr("this"), createTransformationDictionary, NodeList.nodeList()) : new NullLiteralExpr();
         setAssignExpressionValue(constructorDeclaration.getBody(), TRANSFORMATION_DICTIONARY, createTransformationDictionaryInitializer);
-        MethodCallExpr createLocalTransformationsInitializer =  new MethodCallExpr(new NameExpr("this"), createLocalTransformations, NodeList.nodeList());
+        Expression createLocalTransformationsInitializer =  createLocalTransformations != null ?
+                new MethodCallExpr(new NameExpr("this"), createLocalTransformations, NodeList.nodeList()) : new NullLiteralExpr();
         setAssignExpressionValue(constructorDeclaration.getBody(), LOCAL_TRANSFORMATIONS, createLocalTransformationsInitializer);
     }
 
-//    /**
-//     * Populating the <b>commonTransformationsMap</b> and <b>localTransformationsMap</b> <code>Map&lt;String,
-//     * Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
-//     * @param constructorDeclaration
-//     * @param commonDerivedFieldsMethodMap
-//     * @param localDerivedFieldsMethodMap
-//     */
-//    static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration,
-//                                                     final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap, final Map<String, MethodDeclaration> localDerivedFieldsMethodMap) {
-//        addMapPopulation(commonDerivedFieldsMethodMap, constructorDeclaration.getBody(), "commonTransformationsMap");
-//        addMapPopulation(localDerivedFieldsMethodMap, constructorDeclaration.getBody(), "localTransformationsMap");
-//    }
-
-//    /**
-//     * Populating the <b>functionsMap</b> <code>Map&lt;String,
-//     * Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
-//     *
-//     * @param constructorDeclaration
-//     * @param defineFunctionsMethodMap
-//     */
-//    static void populateFunctionsInConstructor(final ConstructorDeclaration constructorDeclaration,
-//                                               final Map<String, MethodDeclaration> defineFunctionsMethodMap) {
-//        addMapPopulation(defineFunctionsMethodMap, constructorDeclaration.getBody(), "functionsMap");
-//    }
 }
