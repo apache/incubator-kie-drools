@@ -81,15 +81,15 @@ class ExplanationServiceImplTest {
         instance = mock(Instance.class);
         limeExplainerMock = mock(LimeExplainer.class);
         cfExplainerMock = mock(CounterfactualExplainer.class);
-        limeExplainerServiceHandlerMock = spy(new LimeExplainerServiceHandler(limeExplainerMock));
-        cfExplainerServiceHandlerMock = spy(new CounterfactualExplainerServiceHandler(cfExplainerMock));
         PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
-        explainerServiceHandlerRegistryMock = new LocalExplainerServiceHandlerRegistry(predictionProviderFactory, instance);
+        explainerServiceHandlerRegistryMock = new LocalExplainerServiceHandlerRegistry(instance);
+        limeExplainerServiceHandlerMock = spy(new LimeExplainerServiceHandler(limeExplainerMock, predictionProviderFactory));
+        cfExplainerServiceHandlerMock = spy(new CounterfactualExplainerServiceHandler(cfExplainerMock, predictionProviderFactory));
 
         predictionProviderMock = mock(PredictionProvider.class);
         callbackMock = mock(Consumer.class);
         explanationService = new ExplanationServiceImpl(explainerServiceHandlerRegistryMock);
-        when(predictionProviderFactory.createPredictionProvider(any())).thenReturn(predictionProviderMock);
+        when(predictionProviderFactory.createPredictionProvider(any(), any(), any())).thenReturn(predictionProviderMock);
     }
 
     @Test

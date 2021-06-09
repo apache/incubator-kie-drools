@@ -24,6 +24,7 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
@@ -85,8 +86,10 @@ public class CounterfactualExplainerServiceHandlerTest {
 
     @BeforeEach
     public void setup() {
+        PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
+
         this.explainer = mock(CounterfactualExplainer.class);
-        this.handler = new CounterfactualExplainerServiceHandler(explainer);
+        this.handler = new CounterfactualExplainerServiceHandler(explainer, predictionProviderFactory);
     }
 
     @Test
@@ -118,8 +121,8 @@ public class CounterfactualExplainerServiceHandlerTest {
         assertEquals(requestDto.getServiceUrl(), request.getServiceUrl());
         assertEquals(requestDto.getModelIdentifier().getResourceId(), request.getModelIdentifier().getResourceId());
         assertEquals(requestDto.getModelIdentifier().getResourceType(), request.getModelIdentifier().getResourceType());
-        assertEquals(requestDto.getInputs(), request.getInputs());
-        assertEquals(requestDto.getOutputs(), request.getOutputs());
+        assertEquals(requestDto.getOriginalInputs(), request.getOriginalInputs());
+        assertEquals(requestDto.getGoals(), request.getGoals());
         assertEquals(requestDto.getSearchDomains(), request.getSearchDomains());
     }
 

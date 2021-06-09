@@ -24,11 +24,9 @@ import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
-import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.local.LocalExplainer;
-import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 
 @ApplicationScoped
@@ -36,7 +34,6 @@ public class LocalExplainerServiceHandlerRegistry {
 
     public static final String SERVICE_HANDLER_NOT_FOUND_ERROR_MESSAGE = "LocalExplainerServiceHandler could not be found for '%s'";
 
-    private PredictionProviderFactory predictionProviderFactory;
     private Instance<LocalExplainerServiceHandler<?, ?, ?>> explanationHandlers;
 
     protected LocalExplainerServiceHandlerRegistry() {
@@ -44,9 +41,7 @@ public class LocalExplainerServiceHandlerRegistry {
     }
 
     @Inject
-    public LocalExplainerServiceHandlerRegistry(PredictionProviderFactory predictionProviderFactory,
-            @Any Instance<LocalExplainerServiceHandler<?, ?, ?>> explanationHandlers) {
-        this.predictionProviderFactory = predictionProviderFactory;
+    public LocalExplainerServiceHandlerRegistry(@Any Instance<LocalExplainerServiceHandler<?, ?, ?>> explanationHandlers) {
         this.explanationHandlers = explanationHandlers;
     }
 
@@ -81,9 +76,7 @@ public class LocalExplainerServiceHandlerRegistry {
                 .orElseThrow(() -> new IllegalArgumentException(String.format(SERVICE_HANDLER_NOT_FOUND_ERROR_MESSAGE, request.getClass().getName())));
 
         try {
-            PredictionProvider predictionProvider = predictionProviderFactory.createPredictionProvider(request);
             return explanationHandler.explainAsyncWithResults(cast(request),
-                    predictionProvider,
                     castConsumer(intermediateResultsConsumer));
         } catch (Exception e) {
             return CompletableFuture.completedFuture(explanationHandler.createFailedResultDto(cast(request), e));

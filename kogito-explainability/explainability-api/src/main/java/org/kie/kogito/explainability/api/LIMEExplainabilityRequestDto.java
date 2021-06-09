@@ -16,15 +16,26 @@
 package org.kie.kogito.explainability.api;
 
 import java.util.Map;
+import java.util.Objects;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 import org.kie.kogito.tracing.typedvalue.TypedValue;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class LIMEExplainabilityRequestDto extends BaseExplainabilityRequestDto {
 
     public static final String EXPLAINABILITY_TYPE_NAME = "LIME";
+
+    @JsonProperty("inputs")
+    @NotNull(message = "inputs object must be provided.")
+    private Map<String, TypedValue> inputs;
+
+    @JsonProperty("outputs")
+    @NotNull(message = "outputs object must be provided.")
+    private Map<String, TypedValue> outputs;
 
     private LIMEExplainabilityRequestDto() {
         super();
@@ -35,6 +46,17 @@ public class LIMEExplainabilityRequestDto extends BaseExplainabilityRequestDto {
             @NotNull ModelIdentifierDto modelIdentifier,
             @NotNull Map<String, TypedValue> inputs,
             @NotNull Map<String, TypedValue> outputs) {
-        super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
+        super(executionId, serviceUrl, modelIdentifier);
+        this.inputs = Objects.requireNonNull(inputs);
+        this.outputs = Objects.requireNonNull(outputs);
     }
+
+    public Map<String, TypedValue> getInputs() {
+        return inputs;
+    }
+
+    public Map<String, TypedValue> getOutputs() {
+        return outputs;
+    }
+
 }

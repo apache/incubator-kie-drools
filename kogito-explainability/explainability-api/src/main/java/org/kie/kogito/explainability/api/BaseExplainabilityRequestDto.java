@@ -15,14 +15,11 @@
  */
 package org.kie.kogito.explainability.api;
 
-import java.util.Map;
 import java.util.Objects;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -54,27 +51,15 @@ public abstract class BaseExplainabilityRequestDto {
     @Valid
     private ModelIdentifierDto modelIdentifier;
 
-    @JsonProperty("inputs")
-    @NotNull(message = "inputs object must be provided.")
-    private Map<String, TypedValue> inputs;
-
-    @JsonProperty("outputs")
-    @NotNull(message = "outputs object must be provided.")
-    private Map<String, TypedValue> outputs;
-
     protected BaseExplainabilityRequestDto() {
     }
 
     public BaseExplainabilityRequestDto(@NotNull String executionId,
             @NotBlank String serviceUrl,
-            @NotNull ModelIdentifierDto modelIdentifier,
-            @NotNull Map<String, TypedValue> inputs,
-            @NotNull Map<String, TypedValue> outputs) {
+            @NotNull ModelIdentifierDto modelIdentifier) {
         this.executionId = Objects.requireNonNull(executionId);
         this.serviceUrl = Objects.requireNonNull(serviceUrl);
         this.modelIdentifier = Objects.requireNonNull(modelIdentifier);
-        this.inputs = Objects.requireNonNull(inputs);
-        this.outputs = Objects.requireNonNull(outputs);
     }
 
     public String getExecutionId() {
@@ -89,11 +74,4 @@ public abstract class BaseExplainabilityRequestDto {
         return modelIdentifier;
     }
 
-    public Map<String, TypedValue> getInputs() {
-        return inputs;
-    }
-
-    public Map<String, TypedValue> getOutputs() {
-        return outputs;
-    }
 }

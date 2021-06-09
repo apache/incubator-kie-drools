@@ -16,13 +16,16 @@
 
 package org.kie.kogito.explainability;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.context.ThreadContext;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.models.ModelIdentifier;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import io.vertx.mutiny.core.Vertx;
 
@@ -45,7 +48,14 @@ public class PredictionProviderFactoryImpl implements PredictionProviderFactory 
     }
 
     @Override
-    public PredictionProvider createPredictionProvider(BaseExplainabilityRequest request) {
-        return new RemotePredictionProvider(request, vertx, threadContext, managedExecutor);
+    public PredictionProvider createPredictionProvider(String serviceUrl,
+            ModelIdentifier modelIdentifier,
+            Map<String, TypedValue> predictionOutputs) {
+        return new RemotePredictionProvider(serviceUrl,
+                modelIdentifier,
+                predictionOutputs,
+                vertx,
+                threadContext,
+                managedExecutor);
     }
 }

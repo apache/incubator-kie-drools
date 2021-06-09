@@ -42,7 +42,12 @@ import static org.kie.kogito.explainability.TestUtils.LIME_REQUEST;
 
 class RemotePredictionProviderTest {
 
-    RemotePredictionProvider predictionProvider = new RemotePredictionProvider(LIME_REQUEST, null, null, null) {
+    RemotePredictionProvider predictionProvider = new RemotePredictionProvider(LIME_REQUEST.getServiceUrl(),
+            LIME_REQUEST.getModelIdentifier(),
+            LIME_REQUEST.getOutputs(),
+            null,
+            null,
+            null) {
         @Override
         protected WebClient getClient(Vertx vertx, URI uri) {
             return null;

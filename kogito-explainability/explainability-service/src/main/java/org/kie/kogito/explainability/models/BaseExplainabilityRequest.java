@@ -16,28 +16,18 @@
 
 package org.kie.kogito.explainability.models;
 
-import java.util.Map;
-
-import org.kie.kogito.tracing.typedvalue.TypedValue;
-
 public abstract class BaseExplainabilityRequest {
 
     private final String executionId;
     private final String serviceUrl;
     private final ModelIdentifier modelIdentifier;
-    private final Map<String, TypedValue> inputs;
-    private final Map<String, TypedValue> outputs;
 
     protected BaseExplainabilityRequest(String executionId,
             String serviceUrl,
-            ModelIdentifier modelIdentifier,
-            Map<String, TypedValue> inputs,
-            Map<String, TypedValue> outputs) {
+            ModelIdentifier modelIdentifier) {
         this.executionId = executionId;
         this.serviceUrl = serviceUrl;
         this.modelIdentifier = modelIdentifier;
-        this.inputs = inputs;
-        this.outputs = outputs;
     }
 
     public String getExecutionId() {
@@ -52,11 +42,4 @@ public abstract class BaseExplainabilityRequest {
         return modelIdentifier;
     }
 
-    public Map<String, TypedValue> getInputs() {
-        return inputs;
-    }
-
-    public Map<String, TypedValue> getOutputs() {
-        return outputs;
-    }
 }

@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.FeatureImportanceDto;
@@ -48,10 +49,13 @@ import static org.kie.kogito.explainability.ConversionUtils.toOutputList;
 public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler<Map<String, Saliency>, LIMEExplainabilityRequest, LIMEExplainabilityRequestDto> {
 
     private final LimeExplainer explainer;
+    private final PredictionProviderFactory predictionProviderFactory;
 
     @Inject
-    public LimeExplainerServiceHandler(LimeExplainer explainer) {
+    public LimeExplainerServiceHandler(LimeExplainer explainer,
+            PredictionProviderFactory predictionProviderFactory) {
         this.explainer = explainer;
+        this.predictionProviderFactory = predictionProviderFactory;
     }
 
     @Override
@@ -72,6 +76,13 @@ public class LimeExplainerServiceHandler implements LocalExplainerServiceHandler
                 ModelIdentifier.from(dto.getModelIdentifier()),
                 dto.getInputs(),
                 dto.getOutputs());
+    }
+
+    @Override
+    public PredictionProvider getPredictionProvider(LIMEExplainabilityRequest request) {
+        return predictionProviderFactory.createPredictionProvider(request.getServiceUrl(),
+                request.getModelIdentifier(),
+                request.getOutputs());
     }
 
     @Override

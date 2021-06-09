@@ -72,6 +72,14 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
     Prediction getPrediction(R request);
 
     /**
+     * Gets a PredictionProvider object from the request for the LocalExplainer.
+     *
+     * @param request The explanation request.
+     * @return A PredictionProvider object.
+     */
+    PredictionProvider getPredictionProvider(R request);
+
+    /**
      * Requests calculation of an explanation decorated with both "success" and "failure" result handlers.
      * See:
      * - {@link LocalExplainer#explainAsync}
@@ -79,14 +87,13 @@ public interface LocalExplainerServiceHandler<T, R extends BaseExplainabilityReq
      * - {@link LocalExplainerServiceHandler#createFailedResultDto(BaseExplainabilityRequest, Throwable)}
      *
      * @param request The explanation request.
-     * @param predictionProvider The prediction model to explain. See {@link PredictionProvider}
      * @param intermediateResultsConsumer A consumer for intermediate results provided by the explainer.
      * @return
      */
     default CompletableFuture<BaseExplainabilityResultDto> explainAsyncWithResults(R request,
-            PredictionProvider predictionProvider,
             Consumer<BaseExplainabilityResultDto> intermediateResultsConsumer) {
         Prediction prediction = getPrediction(request);
+        PredictionProvider predictionProvider = getPredictionProvider(request);
         return explainAsync(prediction,
                 predictionProvider,
                 s -> intermediateResultsConsumer.accept(createIntermediateResultDto(request, s)))

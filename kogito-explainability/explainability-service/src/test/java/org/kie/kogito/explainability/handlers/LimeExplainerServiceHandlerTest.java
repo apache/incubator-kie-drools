@@ -23,6 +23,7 @@ import java.util.function.Consumer;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ExplainabilityStatus;
@@ -74,8 +75,10 @@ public class LimeExplainerServiceHandlerTest {
 
     @BeforeEach
     public void setup() {
+        PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
+
         this.explainer = mock(LimeExplainer.class);
-        this.handler = new LimeExplainerServiceHandler(explainer);
+        this.handler = new LimeExplainerServiceHandler(explainer, predictionProviderFactory);
     }
 
     @Test

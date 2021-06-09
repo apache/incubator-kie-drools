@@ -21,7 +21,21 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 public class LIMEExplainabilityRequest extends BaseExplainabilityRequest {
 
+    private final Map<String, TypedValue> inputs;
+    private final Map<String, TypedValue> outputs;
+
     public LIMEExplainabilityRequest(String executionId, String serviceUrl, ModelIdentifier modelIdentifier, Map<String, TypedValue> inputs, Map<String, TypedValue> outputs) {
-        super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
+        super(executionId, serviceUrl, modelIdentifier);
+        this.inputs = inputs;
+        this.outputs = outputs;
     }
+
+    public Map<String, TypedValue> getInputs() {
+        return inputs;
+    }
+
+    public Map<String, TypedValue> getOutputs() {
+        return outputs;
+    }
+
 }

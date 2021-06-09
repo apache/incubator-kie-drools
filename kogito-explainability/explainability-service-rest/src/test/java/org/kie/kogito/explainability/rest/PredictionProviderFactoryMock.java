@@ -15,11 +15,14 @@
  */
 package org.kie.kogito.explainability.rest;
 
+import java.util.Map;
+
 import javax.enterprise.context.ApplicationScoped;
 
 import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
+import org.kie.kogito.explainability.models.ModelIdentifier;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 import io.quarkus.test.Mock;
 
@@ -28,7 +31,9 @@ import io.quarkus.test.Mock;
 public class PredictionProviderFactoryMock implements PredictionProviderFactory {
 
     @Override
-    public PredictionProvider createPredictionProvider(BaseExplainabilityRequest request) {
+    public PredictionProvider createPredictionProvider(String serviceUrl,
+            ModelIdentifier modelIdentifier,
+            Map<String, TypedValue> predictionOutputs) {
         return new PredictionProviderMock();
     }
 }

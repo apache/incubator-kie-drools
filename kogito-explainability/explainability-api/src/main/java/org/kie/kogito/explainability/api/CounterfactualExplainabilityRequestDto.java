@@ -39,6 +39,14 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
     @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
+    @JsonProperty("originalInputs")
+    @NotNull(message = "originalInputs object must be provided.")
+    private Map<String, TypedValue> originalInputs;
+
+    @JsonProperty("goals")
+    @NotNull(message = "goals object must be provided.")
+    private Map<String, TypedValue> goals;
+
     @JsonProperty(SEARCH_DOMAINS_FIELD)
     @NotNull(message = "searchDomains object must be provided.")
     private Map<String, CounterfactualSearchDomainDto> searchDomains;
@@ -51,16 +59,26 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
             @NotNull String counterfactualId,
             @NotBlank String serviceUrl,
             @NotNull ModelIdentifierDto modelIdentifier,
-            @NotNull Map<String, TypedValue> inputs,
-            @NotNull Map<String, TypedValue> outputs,
+            @NotNull Map<String, TypedValue> originalInputs,
+            @NotNull Map<String, TypedValue> goals,
             @NotNull Map<String, CounterfactualSearchDomainDto> searchDomains) {
-        super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
+        super(executionId, serviceUrl, modelIdentifier);
         this.counterfactualId = Objects.requireNonNull(counterfactualId);
+        this.originalInputs = Objects.requireNonNull(originalInputs);
+        this.goals = Objects.requireNonNull(goals);
         this.searchDomains = Objects.requireNonNull(searchDomains);
     }
 
     public String getCounterfactualId() {
         return counterfactualId;
+    }
+
+    public Map<String, TypedValue> getOriginalInputs() {
+        return originalInputs;
+    }
+
+    public Map<String, TypedValue> getGoals() {
+        return goals;
     }
 
     public Map<String, CounterfactualSearchDomainDto> getSearchDomains() {

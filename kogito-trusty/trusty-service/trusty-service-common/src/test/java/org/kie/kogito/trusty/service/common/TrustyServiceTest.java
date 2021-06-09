@@ -473,16 +473,16 @@ public class TrustyServiceTest {
         assertEquals(TEST_SERVICE_URL, request.getServiceUrl());
 
         //Check original input value has been copied into CF request
-        assertEquals(1, request.getInputs().size());
-        assertTrue(request.getInputs().containsKey("yearsOfService"));
+        assertEquals(1, request.getOriginalInputs().size());
+        assertTrue(request.getOriginalInputs().containsKey("yearsOfService"));
         assertEquals(decision.getInputs().iterator().next().getValue().getValue().asInt(),
-                request.getInputs().get("yearsOfService").toUnit().getValue().asInt());
+                request.getOriginalInputs().get("yearsOfService").toUnit().getValue().asInt());
 
         //Check CF goals have been copied into CF request
-        assertEquals(1, request.getOutputs().size());
-        assertTrue(request.getOutputs().containsKey("salary"));
+        assertEquals(1, request.getGoals().size());
+        assertTrue(request.getGoals().containsKey("salary"));
         assertEquals(2000,
-                request.getOutputs().get("salary").toUnit().getValue().asInt());
+                request.getGoals().get("salary").toUnit().getValue().asInt());
 
         //Check CF search domains have been copied into CF request
         assertEquals(1, request.getSearchDomains().size());

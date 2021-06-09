@@ -33,7 +33,9 @@ class PredictionProviderFactoryImplTest {
                 Vertx.vertx(),
                 ThreadContext.builder().build(),
                 ManagedExecutor.builder().build());
-        PredictionProvider predictionProvider = factory.createPredictionProvider(LIME_REQUEST);
+        PredictionProvider predictionProvider = factory.createPredictionProvider(LIME_REQUEST.getServiceUrl(),
+                LIME_REQUEST.getModelIdentifier(),
+                LIME_REQUEST.getOutputs());
         Assertions.assertNotNull(predictionProvider);
         Assertions.assertTrue(predictionProvider instanceof RemotePredictionProvider);
     }

@@ -28,6 +28,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import org.kie.kogito.explainability.ConversionUtils;
+import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.CounterfactualExplainabilityRequestDto;
@@ -63,10 +64,13 @@ public class CounterfactualExplainerServiceHandler
         implements LocalExplainerServiceHandler<CounterfactualResult, CounterfactualExplainabilityRequest, CounterfactualExplainabilityRequestDto> {
 
     private final CounterfactualExplainer explainer;
+    private final PredictionProviderFactory predictionProviderFactory;
 
     @Inject
-    public CounterfactualExplainerServiceHandler(CounterfactualExplainer explainer) {
+    public CounterfactualExplainerServiceHandler(CounterfactualExplainer explainer,
+            PredictionProviderFactory predictionProviderFactory) {
         this.explainer = explainer;
+        this.predictionProviderFactory = predictionProviderFactory;
     }
 
     @Override
@@ -86,25 +90,32 @@ public class CounterfactualExplainerServiceHandler
                 dto.getCounterfactualId(),
                 dto.getServiceUrl(),
                 ModelIdentifier.from(dto.getModelIdentifier()),
-                dto.getInputs(),
-                dto.getOutputs(),
+                dto.getOriginalInputs(),
+                dto.getGoals(),
                 dto.getSearchDomains());
     }
 
     @Override
+    public PredictionProvider getPredictionProvider(CounterfactualExplainabilityRequest request) {
+        return predictionProviderFactory.createPredictionProvider(request.getServiceUrl(),
+                request.getModelIdentifier(),
+                request.getGoals());
+    }
+
+    @Override
     public Prediction getPrediction(CounterfactualExplainabilityRequest request) {
-        Map<String, TypedValue> originalInputs = request.getInputs();
-        Map<String, TypedValue> requiredOutputs = request.getOutputs();
+        Map<String, TypedValue> originalInputs = request.getOriginalInputs();
+        Map<String, TypedValue> goals = request.getGoals();
         Map<String, CounterfactualSearchDomainDto> searchDomains = request.getSearchDomains();
 
         // If the incoming is not flat we cannot perform CF on it so fail fast
         // See https://issues.redhat.com/browse/FAI-473 and https://issues.redhat.com/browse/FAI-474
-        if (isUnsupportedModel(originalInputs, requiredOutputs, searchDomains)) {
+        if (isUnsupportedModel(originalInputs, goals, searchDomains)) {
             throw new IllegalArgumentException("Counterfactual explanations only support flat models.");
         }
 
         PredictionInput input = new PredictionInput(toFeatureList(originalInputs));
-        PredictionOutput output = new PredictionOutput(toOutputList(requiredOutputs));
+        PredictionOutput output = new PredictionOutput(toOutputList(goals));
         PredictionFeatureDomain featureDomain = new PredictionFeatureDomain(toFeatureDomainList(searchDomains));
         List<Boolean> featureConstraints = toFeatureConstraintList(searchDomains);
 

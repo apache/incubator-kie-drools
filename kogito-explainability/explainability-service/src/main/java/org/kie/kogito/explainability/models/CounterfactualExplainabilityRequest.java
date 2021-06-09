@@ -22,24 +22,35 @@ import org.kie.kogito.tracing.typedvalue.TypedValue;
 
 public class CounterfactualExplainabilityRequest extends BaseExplainabilityRequest {
 
-    private String counterfactualId;
-
-    private Map<String, CounterfactualSearchDomainDto> searchDomains;
+    private final String counterfactualId;
+    private final Map<String, TypedValue> originalInputs;
+    private final Map<String, TypedValue> goals;
+    private final Map<String, CounterfactualSearchDomainDto> searchDomains;
 
     public CounterfactualExplainabilityRequest(String executionId,
             String counterfactualId,
             String serviceUrl,
             ModelIdentifier modelIdentifier,
-            Map<String, TypedValue> inputs,
-            Map<String, TypedValue> outputs,
+            Map<String, TypedValue> originalInputs,
+            Map<String, TypedValue> goals,
             Map<String, CounterfactualSearchDomainDto> searchDomains) {
-        super(executionId, serviceUrl, modelIdentifier, inputs, outputs);
+        super(executionId, serviceUrl, modelIdentifier);
         this.counterfactualId = counterfactualId;
+        this.originalInputs = originalInputs;
+        this.goals = goals;
         this.searchDomains = searchDomains;
     }
 
     public String getCounterfactualId() {
         return counterfactualId;
+    }
+
+    public Map<String, TypedValue> getOriginalInputs() {
+        return originalInputs;
+    }
+
+    public Map<String, TypedValue> getGoals() {
+        return goals;
     }
 
     public Map<String, CounterfactualSearchDomainDto> getSearchDomains() {

@@ -67,16 +67,16 @@ public class LocalExplainerServiceHandlerRegistryTest {
     public void setup() {
         LimeExplainer limeExplainer = mock(LimeExplainer.class);
         CounterfactualExplainer counterfactualExplainer = mock(CounterfactualExplainer.class);
-        limeExplainerServiceHandler = spy(new LimeExplainerServiceHandler(limeExplainer));
-        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(counterfactualExplainer));
         PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
+        limeExplainerServiceHandler = spy(new LimeExplainerServiceHandler(limeExplainer, predictionProviderFactory));
+        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(counterfactualExplainer, predictionProviderFactory));
         predictionProvider = mock(PredictionProvider.class);
         callback = mock(Consumer.class);
 
-        when(predictionProviderFactory.createPredictionProvider(any())).thenReturn(predictionProvider);
+        when(predictionProviderFactory.createPredictionProvider(any(), any(), any())).thenReturn(predictionProvider);
         Instance<LocalExplainerServiceHandler<?, ?, ?>> explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
-        registry = new LocalExplainerServiceHandlerRegistry(predictionProviderFactory, explanationHandlers);
+        registry = new LocalExplainerServiceHandlerRegistry(explanationHandlers);
     }
 
     @Test
@@ -102,7 +102,7 @@ public class LocalExplainerServiceHandlerRegistryTest {
 
         registry.explainAsyncWithResults(request, callback);
 
-        verify(limeExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider), eq(callback));
+        verify(limeExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(callback));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class LocalExplainerServiceHandlerRegistryTest {
 
         registry.explainAsyncWithResults(request, callback);
 
-        verify(counterfactualExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(predictionProvider), eq(callback));
+        verify(counterfactualExplainerServiceHandler).explainAsyncWithResults(eq(request), eq(callback));
     }
 
 }

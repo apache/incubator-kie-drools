@@ -97,8 +97,8 @@ public class TestUtils {
             INPUTS,
             OUTPUTS);
 
-    public static final LIMEExplainabilityRequest LIME_REQUEST = new LimeExplainerServiceHandler(null).explainabilityRequestFrom(LIME_REQUEST_DTO);
-    public static final CounterfactualExplainabilityRequest COUNTERFACTUAL_REQUEST = new CounterfactualExplainerServiceHandler(null).explainabilityRequestFrom(COUNTERFACTUAL_REQUEST_DTO);
+    public static final LIMEExplainabilityRequest LIME_REQUEST = new LimeExplainerServiceHandler(null, null).explainabilityRequestFrom(LIME_REQUEST_DTO);
+    public static final CounterfactualExplainabilityRequest COUNTERFACTUAL_REQUEST = new CounterfactualExplainerServiceHandler(null, null).explainabilityRequestFrom(COUNTERFACTUAL_REQUEST_DTO);
 
     public static final CounterfactualResult COUNTERFACTUAL_RESULT = new CounterfactualResult(Collections.emptyList(),
             List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 2.0)))),

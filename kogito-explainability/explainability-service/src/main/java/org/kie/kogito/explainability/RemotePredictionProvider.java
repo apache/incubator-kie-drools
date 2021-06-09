@@ -32,9 +32,9 @@ import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
-import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
 import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.explainability.models.PredictInput;
+import org.kie.kogito.tracing.typedvalue.TypedValue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,14 +51,21 @@ public class RemotePredictionProvider implements PredictionProvider {
 
     private static final Logger LOG = LoggerFactory.getLogger(RemotePredictionProvider.class);
 
-    private final BaseExplainabilityRequest request;
+    private final ModelIdentifier modelIdentifier;
+    private final Map<String, TypedValue> predictionOutputs;
     private final ThreadContext threadContext;
     private final Executor asyncExecutor;
     private final WebClient client;
 
-    public RemotePredictionProvider(BaseExplainabilityRequest request, Vertx vertx, ThreadContext threadContext, Executor asyncExecutor) {
-        this.request = request;
-        URI uri = URI.create(request.getServiceUrl());
+    public RemotePredictionProvider(String serviceUrl,
+            ModelIdentifier modelIdentifier,
+            Map<String, TypedValue> predictionOutputs,
+            Vertx vertx,
+            ThreadContext threadContext,
+            Executor asyncExecutor) {
+        this.modelIdentifier = modelIdentifier;
+        this.predictionOutputs = predictionOutputs;
+        URI uri = URI.create(serviceUrl);
         this.client = getClient(vertx, uri);
         this.threadContext = threadContext;
         this.asyncExecutor = asyncExecutor;
@@ -66,7 +73,7 @@ public class RemotePredictionProvider implements PredictionProvider {
 
     @Override
     public CompletableFuture<List<PredictionOutput>> predictAsync(List<PredictionInput> inputs) {
-        return sendPredictRequest(inputs, request.getModelIdentifier());
+        return sendPredictRequest(inputs, modelIdentifier);
     }
 
     protected WebClient getClient(Vertx vertx, URI uri) {
@@ -95,8 +102,8 @@ public class RemotePredictionProvider implements PredictionProvider {
         // the explainer happy.
         List<Output> outputs = Stream.concat(
                 resultOutputs.stream()
-                        .filter(output -> request.getOutputs().containsKey(output.getName())),
-                request.getOutputs().keySet().stream()
+                        .filter(output -> predictionOutputs.containsKey(output.getName())),
+                predictionOutputs.keySet().stream()
                         .filter(key -> !resultOutputNames.contains(key))
                         .map(key -> new Output(key, Type.UNDEFINED, new Value(null), 1d)))
                 .collect(toList());
