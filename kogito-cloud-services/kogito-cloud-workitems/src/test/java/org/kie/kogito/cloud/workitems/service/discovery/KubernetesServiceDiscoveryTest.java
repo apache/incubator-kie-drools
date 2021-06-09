@@ -22,6 +22,7 @@ import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloud.kubernetes.client.DefaultKogitoKubeClient;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeConfig;
@@ -35,7 +36,7 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@org.junit.jupiter.api.Disabled
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
 public class KubernetesServiceDiscoveryTest {
 
     public static final String NAMESPACE = "mockns";

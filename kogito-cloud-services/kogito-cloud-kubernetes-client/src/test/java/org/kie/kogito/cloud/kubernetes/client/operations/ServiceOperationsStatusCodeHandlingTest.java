@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Service Operations test cases that integrates with a mock Kubernetes server to validate HTTP Rest API handling.
  */
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
 public class ServiceOperationsStatusCodeHandlingTest extends MockKubernetesServerSupport {
 
     public ServiceOperationsStatusCodeHandlingTest() {

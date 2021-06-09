@@ -22,12 +22,14 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
 public class KubeClientConfigTest {
 
     public static final Path KUBE_CONFIG_PATH = Paths.get(System.getProperty("user.home") + "/.kube/config");
@@ -65,5 +67,4 @@ public class KubeClientConfigTest {
         final KogitoKubeConfig config = new KogitoKubeConfig();
         assertThat(config.getMasterUrl().toString(), containsString("localhost"));
     }
-
 }

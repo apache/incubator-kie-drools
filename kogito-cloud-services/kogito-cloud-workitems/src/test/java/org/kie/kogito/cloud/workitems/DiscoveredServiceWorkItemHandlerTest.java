@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.Map;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.runtime.process.WorkItem;
 import org.kie.kogito.cloud.kubernetes.client.KogitoKubeClient;
@@ -43,6 +44,7 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
 public class DiscoveredServiceWorkItemHandlerTest {
 
     private OkHttpClient httpClient;

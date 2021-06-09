@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloud.kubernetes.client.MockKubernetesServerSupport;
 
@@ -35,6 +36,7 @@ import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
 public class ServiceOperationsTest extends MockKubernetesServerSupport {
 
     private void assertDefaultServiceCreated(final String services) throws JsonParseException, JsonMappingException, IOException {
@@ -110,5 +112,4 @@ public class ServiceOperationsTest extends MockKubernetesServerSupport {
         String services = this.getKubeClient().services().list(null).asJson();
         this.assertDefaultServiceCreated(services);
     }
-
 }

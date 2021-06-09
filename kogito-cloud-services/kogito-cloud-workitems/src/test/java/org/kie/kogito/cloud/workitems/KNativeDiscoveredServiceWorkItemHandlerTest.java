@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.cloud.workitems;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import io.fabric8.kubernetes.api.model.KubernetesList;
@@ -24,8 +25,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
-@org.junit.jupiter.api.Disabled
-public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseKubernetesDiscoveredServiceTest {
+@Disabled("Disabled in favor of the refactoring: https://issues.redhat.com/browse/KOGITO-5284")
+public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseTestKubernetesDiscoveredService {
 
     public KNativeDiscoveredServiceWorkItemHandlerTest() {
         super(true);
@@ -43,5 +44,4 @@ public class KNativeDiscoveredServiceWorkItemHandlerTest extends BaseKubernetesD
         assertThat(serviceInfo.getUrl(), is("http://172.30.101.218:80/employeeValidation"));
         assertThat(serviceInfo.getHeaders().get("HOST"), is("onboarding-hr.test.apps.example.com"));
     }
-
 }

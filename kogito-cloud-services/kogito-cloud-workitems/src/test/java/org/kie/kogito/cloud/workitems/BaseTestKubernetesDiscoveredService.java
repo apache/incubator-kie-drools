@@ -33,7 +33,7 @@ import io.fabric8.kubernetes.client.server.mock.KubernetesServer;
 /**
  * Base class for tests with Kubernetes API. In this scenario, nor Istio or KNative is available.
  */
-public abstract class BaseKubernetesDiscoveredServiceTest {
+public abstract class BaseTestKubernetesDiscoveredService {
 
     public static final int SERVICE_PORT = 65200;
     public KubernetesServer server = new KubernetesServer(false, true, InetAddress.getLoopbackAddress(), SERVICE_PORT, Collections.emptyList());
@@ -43,11 +43,11 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
     private boolean enableIstio;
     private boolean istioEnabled;
 
-    public BaseKubernetesDiscoveredServiceTest() {
+    public BaseTestKubernetesDiscoveredService() {
         this.enableIstio = false;
     }
 
-    public BaseKubernetesDiscoveredServiceTest(final boolean enableIstio) {
+    public BaseTestKubernetesDiscoveredService(final boolean enableIstio) {
         this.enableIstio = enableIstio;
     }
 
@@ -89,7 +89,7 @@ public abstract class BaseKubernetesDiscoveredServiceTest {
 
     protected static class TestDiscoveredServiceWorkItemHandler extends DiscoveredServiceWorkItemHandler {
 
-        public TestDiscoveredServiceWorkItemHandler(BaseKubernetesDiscoveredServiceTest testCase) {
+        public TestDiscoveredServiceWorkItemHandler(BaseTestKubernetesDiscoveredService testCase) {
             super(new DefaultKogitoKubeClient().withConfig(new KogitoKubeConfig(testCase.getClient())));
         }
 
