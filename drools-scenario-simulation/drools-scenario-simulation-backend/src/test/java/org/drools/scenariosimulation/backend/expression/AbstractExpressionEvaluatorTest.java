@@ -117,6 +117,7 @@ public class AbstractExpressionEvaluatorTest {
         // single level
         ObjectNode objectNode = new ObjectNode(factory);
         objectNode.put("age", "1");
+        objectNode.put("name", "Polissena");
 
         Object result = expressionEvaluatorLocal.createAndFillObject(objectNode,
                                                                      new HashMap<>(),
@@ -127,6 +128,8 @@ public class AbstractExpressionEvaluatorTest {
         Map<String, Object> resultMap = (Map<String, Object>) result;
 
         assertEquals("1", resultMap.get("age"));
+        assertEquals("Polissena", resultMap.get("name"));
+        assertEquals(2, resultMap.size());
 
         // nested object
         objectNode.removeAll();
