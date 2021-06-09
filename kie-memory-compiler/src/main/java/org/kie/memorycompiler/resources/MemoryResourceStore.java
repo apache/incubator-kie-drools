@@ -40,4 +40,8 @@ public class MemoryResourceStore implements ResourceStore {
     public void remove( String pResourceName ) {
         resources.remove( pResourceName );
     }
+
+    public Map<String, byte[]> getResources() {
+        return resources;
+    }
 }
