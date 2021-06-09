@@ -16,7 +16,9 @@
 package org.drools.compiler.lang.descr;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
@@ -78,9 +80,16 @@ public class CompositePackageDescr extends PackageDescr {
             descr.setResource(resource);
         }
 
+        // Avoid adding the same type declaration twice, see
+        // TypeDeclarationTest.testDuplicatedTypeDeclarationInDifferentResources
+        // IncrementalCompilationTest.testIncrementalCompilationWithAmbiguousRedeclares
+        // RHDM-1738
+        Set<TypeDeclarationDescr> typeDeclarationDescrs = new HashSet<>(getTypeDeclarations());
         for (TypeDeclarationDescr descr : packageDescr.getTypeDeclarations()) {
-            addTypeDeclaration(descr);
-            descr.setResource(resource);
+            if (!typeDeclarationDescrs.contains(descr)) {
+                addTypeDeclaration(descr);
+                descr.setResource(resource);
+            }
         }
 
         for (EnumDeclarationDescr enumDescr : packageDescr.getEnumDeclarations()) {
