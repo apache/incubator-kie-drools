@@ -18,7 +18,9 @@ def getDefaultJobParams() {
             repository: 'kogito-runtimes',
             credentials: "${GIT_AUTHOR_CREDENTIALS_ID}",
             token_credentials: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}"
-        ]
+        ],
+        env: [:],
+        pr: [:]
     ]
 }
 
@@ -33,18 +35,47 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
+Map getMultijobPRConfig() {
+    return [
+        parallel: true,
+        jobs : [
+            [
+                id: 'Runtimes',
+                primary: true,
+            ], [
+                id: 'Optaplanner',
+                dependsOn: 'Runtimes',
+                repository: 'optaplanner'
+            ], [
+                id: 'Apps',
+                dependsOn: 'Optaplanner',
+                repository: 'kogito-apps'
+            ], [
+                id: 'Examples',
+                dependsOn: 'Optaplanner',
+                repository: 'kogito-examples'
+            ]
+        ]
+    ]
+}
+
 def bddRuntimesPrFolder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${KogitoConstants.KOGITO_DSL_RUNTIMES_BDD_FOLDER}"
 def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BRANCH_FOLDER}"
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
 if (isMainBranch()) {
-    folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    // Old PR checks. To be removed once supported release branches (<= 1.7.x) are no more there.
+    setupPrJob()
+    setupQuarkusLTSPrJob()
+    setupNativePrJob()
 
-    setupPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupQuarkusLTSPrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    setupNativePrJob(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
+    // PR checks
+    setupMultijobPrDefaultChecks()
+    setupMultijobPrNativeChecks()
+    setupMultijobPrLTSChecks()
 
     // For BDD runtimes PR job
+    folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
     folder(bddRuntimesPrFolder)
 
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
@@ -77,25 +108,49 @@ if (!isMainBranch()) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
-void setupPrJob(String jobFolder) {
+void setupPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
+    jobParams.pr.whiteListTargetBranches = ['1.5.x', '1.7.x']
     jobParams.env = [ TIMEOUT_VALUE : 240 ]
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-void setupQuarkusLTSPrJob(String jobFolder) {
+void setupQuarkusLTSPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
+    jobParams.pr.whiteListTargetBranches = ['1.5.x', '1.7.x']
     jobParams.env = [ TIMEOUT_VALUE : 240 ]
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
-void setupNativePrJob(String jobFolder) {
+void setupNativePrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.job.folder = jobFolder
+    jobParams.pr.whiteListTargetBranches = ['1.5.x', '1.7.x']
     jobParams.env = [ TIMEOUT_VALUE : 600 ]
     KogitoJobTemplate.createNativePRJob(this, jobParams)
+}
+
+void setupMultijobPrDefaultChecks() {
+    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['1.5.x', '1.7.x']
+        return jobParams
+    }
+}
+
+void setupMultijobPrNativeChecks() {
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['1.5.x', '1.7.x']
+        return jobParams
+    }
+}
+
+void setupMultijobPrLTSChecks() {
+    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
+        def jobParams = getDefaultJobParams()
+        jobParams.pr.blackListTargetBranches = ['1.5.x', '1.7.x']
+        return jobParams
+    }
 }
 
 void setupDroolsJob(String jobFolder) {

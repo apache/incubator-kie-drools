@@ -16,14 +16,23 @@ Please make sure that your PR meets the following requirements:
 How to retest this PR or trigger a specific build:
 </summary>
 
-* <b>Pull Request</b>  
+* <b>Run all builds</b>  
   Please add comment: <b>Jenkins retest this</b>
+
+* <b>Run (or rerun) specific test(s)</b>  
+  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] tests</b>
  
 * <b>Quarkus LTS checks</b>  
   Please add comment: <b>Jenkins run LTS</b>
 
+* <b>Run (or rerun) LTS specific test(s)</b>  
+  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] LTS</b>
+
 * <b>Native checks</b>  
   Please add comment: <b>Jenkins run native</b>
+
+* <b>Run (or rerun) native specific test(s)</b>  
+  Please add comment: <b>Jenkins (re)run [runtimes|optaplanner|apps|examples] native</b>
 
 * <b>Full Kogito testing</b> (with cloud images and operator BDD testing)  
   Please add comment: <b>Jenkins run BDD</b>  
