@@ -19,8 +19,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.spy;
 
@@ -38,7 +38,7 @@ public class KafkaQuarkusTestResourceTest {
     @Test
     public void shouldGetProperty() {
         givenResource();
-        assertEquals(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, resource.getKogitoProperty());
+        assertThrows(IllegalStateException.class, () -> resource.getProperties().get(KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY));
     }
 
     @Test

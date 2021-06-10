@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * Keycloak spring boot resource that works within the test lifecycle.
@@ -31,13 +35,8 @@ public class KeycloakSpringBootTestResource extends ConditionalSpringBootTestRes
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_KEYCLOAK_PROPERTY;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return String.format("http://localhost:%s/auth", getTestResource().getMappedPort());
+    protected Map<String, String> getProperties() {
+        return singletonMap(KOGITO_KEYCLOAK_PROPERTY, String.format("http://localhost:%s/auth", getTestResource().getMappedPort()));
     }
 
     public static class Conditional extends KeycloakSpringBootTestResource {

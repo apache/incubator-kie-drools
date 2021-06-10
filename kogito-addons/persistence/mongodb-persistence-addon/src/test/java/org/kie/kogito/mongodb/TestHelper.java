@@ -52,6 +52,7 @@ public class TestHelper {
 
     @AfterAll
     public static void close() {
+        mongoClient.close();
         mongoDBContainer.stop();
     }
 

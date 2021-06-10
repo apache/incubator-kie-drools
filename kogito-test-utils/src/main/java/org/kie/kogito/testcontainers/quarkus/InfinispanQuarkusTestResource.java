@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 
@@ -31,8 +34,11 @@ public class InfinispanQuarkusTestResource extends ConditionalQuarkusTestResourc
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_INFINISPAN_PROPERTY;
+    protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(KOGITO_INFINISPAN_PROPERTY, "localhost:" + getTestResource().getMappedPort());
+        properties.put("quarkus.infinispan-client.use-auth", "false");
+        return properties;
     }
 
     public static class Conditional extends InfinispanQuarkusTestResource {

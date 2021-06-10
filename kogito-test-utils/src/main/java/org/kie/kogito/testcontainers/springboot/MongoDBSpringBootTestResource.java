@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * MongoDB spring boot resource that works within the test lifecycle.
@@ -26,20 +30,13 @@ public class MongoDBSpringBootTestResource extends ConditionalSpringBootTestReso
 
     public static final String MONGODB_CONNECTION_PROPERTY = "spring.data.mongodb.uri";
 
-    private static final KogitoMongoDBContainer container = new KogitoMongoDBContainer();
-
     public MongoDBSpringBootTestResource() {
-        super(container);
+        super(new KogitoMongoDBContainer());
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return MONGODB_CONNECTION_PROPERTY;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return container.getReplicaSetUrl();
+    protected Map<String, String> getProperties() {
+        return singletonMap(MONGODB_CONNECTION_PROPERTY, getTestResource().getReplicaSetUrl());
     }
 
     public static class Conditional extends MongoDBSpringBootTestResource {

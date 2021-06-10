@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 
+import static java.util.Collections.singletonMap;
 import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL_CONNECTION_URI;
 
 /**
@@ -31,13 +34,8 @@ public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestR
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return POSTGRESQL_CONNECTION_URI;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return getTestResource().getReactiveUrl();
+    protected Map<String, String> getProperties() {
+        return singletonMap(POSTGRESQL_CONNECTION_URI, getTestResource().getReactiveUrl());
     }
 
     public static class Conditional extends PostgreSqlSpringBootTestResource {

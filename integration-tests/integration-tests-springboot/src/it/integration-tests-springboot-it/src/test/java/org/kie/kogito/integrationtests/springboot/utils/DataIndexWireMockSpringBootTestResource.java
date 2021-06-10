@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.integrationtests.springboot.utils;
 
-import com.github.tomakehurst.wiremock.WireMockServer;
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.resources.TestResource;
+
+import com.github.tomakehurst.wiremock.WireMockServer;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.configureFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
@@ -25,7 +28,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.options;
-
+import static java.util.Collections.singletonMap;
 
 public class DataIndexWireMockSpringBootTestResource extends ConditionalSpringBootTestResource<DataIndexWireMockSpringBootTestResource.KogitoDataIndexWiremockTestResource> {
 
@@ -37,13 +40,8 @@ public class DataIndexWireMockSpringBootTestResource extends ConditionalSpringBo
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_DATA_INDEX_URL_WIREMOCK_PROPERTY;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return String.format("http://localhost:%s", getTestResource().getMappedPort());
+    protected Map<String, String> getProperties() {
+        return singletonMap(KOGITO_DATA_INDEX_URL_WIREMOCK_PROPERTY, String.format("http://localhost:%s", getTestResource().getMappedPort()));
     }
 
     public static class Conditional extends DataIndexWireMockSpringBootTestResource {
@@ -53,12 +51,8 @@ public class DataIndexWireMockSpringBootTestResource extends ConditionalSpringBo
             enableConditional();
         }
     }
+
     public static class KogitoDataIndexWiremockTestResource implements TestResource {
-        private WireMockServer server;
-
-        public KogitoDataIndexWiremockTestResource() {
-        }
-
         private final static String jsonString = "{\n" +
                 "  \"data\": {\n" +
                 "    \"ProcessInstances\": [\n" +
@@ -79,6 +73,10 @@ public class DataIndexWireMockSpringBootTestResource extends ConditionalSpringBo
                 "    ]\n" +
                 "  }\n" +
                 "}";
+        private WireMockServer server;
+
+        public KogitoDataIndexWiremockTestResource() {
+        }
 
         @Override
         public void stop() {
@@ -88,22 +86,22 @@ public class DataIndexWireMockSpringBootTestResource extends ConditionalSpringBo
         }
 
         @Override
-        public String getResourceName(){
+        public String getResourceName() {
             return "KogitoDataIndexWiremockTestResource";
         };
 
         @Override
-        public void start(){
+        public void start() {
             server = new WireMockServer(options().dynamicPort());
             server.start();
             configureFor(server.port());
             stubFor(post(urlEqualTo("/graphql"))
-                            .willReturn(okJson(jsonString)));
+                    .willReturn(okJson(jsonString)));
 
         }
 
         @Override
-        public int getMappedPort(){
+        public int getMappedPort() {
             return server.port();
         };
     }

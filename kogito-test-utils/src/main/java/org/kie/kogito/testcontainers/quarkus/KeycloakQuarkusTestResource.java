@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
@@ -27,7 +26,6 @@ import org.kie.kogito.testcontainers.KogitoKeycloakContainer;
 import static java.lang.String.format;
 import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 /**
  * Keycloak quarkus resource that works within the test lifecycle.
@@ -51,26 +49,12 @@ public class KeycloakQuarkusTestResource extends ConditionalQuarkusTestResource<
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_KEYCLOAK_PROPERTY;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return format("http://localhost:%s/auth/realms/kogito", getTestResource().getMappedPort());
-    }
-
-    @Override
-    public Map<String, String> start() {
-        Map<String, String> start = super.start();
-        if (start.isEmpty() || tenants.isEmpty()) {
-            return start;
-        }
-
-        start = new HashMap<>(start);
-        String url = start.get(getKogitoProperty());
-        start.putAll(tenants.stream().map(tenant -> format("quarkus.oidc.%s.auth-server-url", tenant)).collect(toMap(Function.identity(), s -> url)));
-        return start;
+    protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
+        String url = format("http://localhost:%s/auth/realms/kogito", getTestResource().getMappedPort());
+        properties.put(KOGITO_KEYCLOAK_PROPERTY, url);
+        tenants.forEach(tenant -> properties.put(format("quarkus.oidc.%s.auth-server-url", tenant), url));
+        return properties;
     }
 
     public static class Conditional extends KeycloakQuarkusTestResource {

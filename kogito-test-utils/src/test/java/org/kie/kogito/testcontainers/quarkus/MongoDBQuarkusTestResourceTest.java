@@ -17,7 +17,6 @@ package org.kie.kogito.testcontainers.quarkus;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -30,8 +29,7 @@ class MongoDBQuarkusTestResourceTest {
     @Test
     void shouldGetProperty() {
         givenResource();
-        assertEquals(MongoDBQuarkusTestResource.MONGODB_CONNECTION_PROPERTY, resource.getKogitoProperty());
-        assertThrows(IllegalStateException.class, () -> resource.getKogitoPropertyValue());
+        assertThrows(IllegalStateException.class, () -> resource.getProperties().get(MongoDBQuarkusTestResource.MONGODB_CONNECTION_PROPERTY));
     }
 
     @Test

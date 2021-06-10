@@ -26,6 +26,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.lenient;
@@ -56,8 +57,8 @@ public class ConditionalQuarkusTestResourceTest {
         instance = new ConditionalQuarkusTestResource(resource, conditional) {
 
             @Override
-            protected String getKogitoProperty() {
-                return KOGITO_PROPERTY;
+            protected Map<String, String> getProperties() {
+                return singletonMap(KOGITO_PROPERTY, KOGITO_PROPERTY_VALUE);
             }
 
         };

@@ -21,7 +21,6 @@ import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -38,8 +37,7 @@ class MongoDBSpringBootTestResourceTest {
     @Test
     void shouldGetProperty() {
         givenResource();
-        assertEquals(MongoDBSpringBootTestResource.MONGODB_CONNECTION_PROPERTY, resource.getKogitoProperty());
-        assertThrows(IllegalStateException.class, () -> resource.getKogitoPropertyValue());
+        assertThrows(IllegalStateException.class, () -> resource.getProperties().get(MongoDBSpringBootTestResource.MONGODB_CONNECTION_PROPERTY));
     }
 
     @Test

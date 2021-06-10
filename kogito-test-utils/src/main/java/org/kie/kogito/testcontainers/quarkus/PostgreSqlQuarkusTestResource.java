@@ -33,35 +33,19 @@ public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResourc
     public static final String QUARKUS_DATASOURCE_USERNAME = "quarkus.datasource.username";
     public static final String QUARKUS_DATASOURCE_PASSWORD = "quarkus.datasource.password";
 
-    private static final KogitoPostgreSqlContainer container = new KogitoPostgreSqlContainer();
-
     public PostgreSqlQuarkusTestResource() {
-        super(container);
+        super(new KogitoPostgreSqlContainer());
     }
 
     @Override
-    public Map<String, String> start() {
-        Map<String, String> start = super.start();
-        if (start.isEmpty()) {
-            return start;
-        }
-
-        Map<String, String> properties = new HashMap<>(start);
-        properties.put(QUARKUS_DATASOURCE_REACTIVE_URL, container.getReactiveUrl());
-        properties.put(QUARKUS_DATASOURCE_JDBC_URL, container.getJdbcUrl());
-        properties.put(QUARKUS_DATASOURCE_USERNAME, container.getUsername());
-        properties.put(QUARKUS_DATASOURCE_PASSWORD, container.getPassword());
+    protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(POSTGRESQL_CONNECTION_URI, getTestResource().getReactiveUrl());
+        properties.put(QUARKUS_DATASOURCE_REACTIVE_URL, getTestResource().getReactiveUrl());
+        properties.put(QUARKUS_DATASOURCE_JDBC_URL, getTestResource().getJdbcUrl());
+        properties.put(QUARKUS_DATASOURCE_USERNAME, getTestResource().getUsername());
+        properties.put(QUARKUS_DATASOURCE_PASSWORD, getTestResource().getPassword());
         return properties;
-    }
-
-    @Override
-    protected String getKogitoProperty() {
-        return POSTGRESQL_CONNECTION_URI;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return getTestResource().getReactiveUrl();
     }
 
     public static class Conditional extends PostgreSqlQuarkusTestResource {

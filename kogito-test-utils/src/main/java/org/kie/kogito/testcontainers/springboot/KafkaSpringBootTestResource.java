@@ -15,11 +15,15 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.Map;
+
 import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.event.ContextClosedEvent;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * Kafka spring boot resource that works within the test lifecycle.
@@ -36,8 +40,8 @@ public class KafkaSpringBootTestResource extends ConditionalSpringBootTestResour
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_KAFKA_PROPERTY;
+    protected Map<String, String> getProperties() {
+        return singletonMap(KOGITO_KAFKA_PROPERTY, "localhost:" + getTestResource().getMappedPort());
     }
 
     @Override

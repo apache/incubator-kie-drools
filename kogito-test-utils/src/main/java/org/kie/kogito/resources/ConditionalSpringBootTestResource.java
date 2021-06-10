@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.resources;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ApplicationListener;
@@ -55,7 +57,8 @@ public abstract class ConditionalSpringBootTestResource<T extends TestResource> 
         if (condition.isEnabled()) {
             testResource.start();
             updateBeanFactory(applicationContext.getBeanFactory());
-            updateContextProperty(applicationContext, getKogitoProperty(), getKogitoPropertyValue());
+            String[] props = getProperties().entrySet().stream().map(e -> e.getKey() + "=" + e.getValue()).toArray(String[]::new);
+            updateContextProperty(applicationContext, props);
         }
     }
 
@@ -66,11 +69,7 @@ public abstract class ConditionalSpringBootTestResource<T extends TestResource> 
         }
     }
 
-    protected abstract String getKogitoProperty();
-
-    protected String getKogitoPropertyValue() {
-        return "localhost:" + testResource.getMappedPort();
-    }
+    protected abstract Map<String, String> getProperties();
 
     protected void enableConditional() {
         condition.enableConditional();
@@ -81,7 +80,7 @@ public abstract class ConditionalSpringBootTestResource<T extends TestResource> 
         beanFactory.registerSingleton(testResource.getResourceName() + "ShutDownHook", this);
     }
 
-    protected void updateContextProperty(ConfigurableApplicationContext applicationContext, String key, String value) {
-        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext, key + "=" + value);
+    protected void updateContextProperty(ConfigurableApplicationContext applicationContext, String[] props) {
+        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(applicationContext, props);
     }
 }

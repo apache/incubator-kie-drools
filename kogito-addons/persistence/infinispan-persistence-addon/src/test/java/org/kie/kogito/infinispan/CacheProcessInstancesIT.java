@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCacheManager;
-import org.infinispan.client.hotrod.configuration.ClientIntelligence;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
@@ -64,15 +63,7 @@ class CacheProcessInstancesIT {
         builder
                 .addServer()
                 .host("127.0.0.1")
-                .port(container.getMappedPort())
-                .security()
-                .authentication()
-                .username("admin")
-                .password("admin")
-                .realm("default")
-                .serverName("infinispan")
-                .saslMechanism("PLAIN")
-                .clientIntelligence(ClientIntelligence.BASIC);
+                .port(container.getMappedPort());
 
         cacheManager = new RemoteCacheManager(builder.build());
     }

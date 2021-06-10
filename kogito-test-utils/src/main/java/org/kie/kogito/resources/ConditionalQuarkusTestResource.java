@@ -55,7 +55,7 @@ public abstract class ConditionalQuarkusTestResource<T extends TestResource> imp
     public Map<String, String> start() {
         if (condition.isEnabled()) {
             testResource.start();
-            return Collections.singletonMap(getKogitoProperty(), getKogitoPropertyValue());
+            return getProperties();
         }
 
         return Collections.emptyMap();
@@ -74,8 +74,8 @@ public abstract class ConditionalQuarkusTestResource<T extends TestResource> imp
         while (c != Object.class) {
             for (Field f : c.getDeclaredFields()) {
                 ConfigProperty configProperty = f.getAnnotation(ConfigProperty.class);
-                if (configProperty != null && getKogitoProperty().equals(configProperty.name())) {
-                    setFieldValue(f, testInstance, getKogitoPropertyValue());
+                if (configProperty != null && getProperties().containsKey(configProperty.name())) {
+                    setFieldValue(f, testInstance, getProperties().get(configProperty.name()));
                 } else if (f.isAnnotationPresent(Resource.class) && f.getType().isInstance(this)) {
                     setFieldValue(f, testInstance, this);
                 }
@@ -84,11 +84,7 @@ public abstract class ConditionalQuarkusTestResource<T extends TestResource> imp
         }
     }
 
-    protected abstract String getKogitoProperty();
-
-    protected String getKogitoPropertyValue() {
-        return "localhost:" + testResource.getMappedPort();
-    }
+    protected abstract Map<String, String> getProperties();
 
     protected void enableConditional() {
         condition.enableConditional();

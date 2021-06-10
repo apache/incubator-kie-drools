@@ -15,6 +15,8 @@
  */
 package org.kie.kogito.resources;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -61,13 +63,16 @@ public class ConditionalSpringBootTestResourceTest {
         instance = new ConditionalSpringBootTestResource(resource, conditional) {
 
             @Override
-            protected String getKogitoProperty() {
-                return KOGITO_PROPERTY;
+            protected Map<String, String> getProperties() {
+                return Collections.singletonMap(KOGITO_PROPERTY, KOGITO_PROPERTY_VALUE);
             }
 
             @Override
-            protected void updateContextProperty(ConfigurableApplicationContext applicationContext, String key, String value) {
-                actualOutput.put(key, value);
+            protected void updateContextProperty(ConfigurableApplicationContext applicationContext, String[] props) {
+                Arrays.stream(props).forEach(prop -> {
+                    String[] split = prop.split("=");
+                    actualOutput.put(split[0], split[1]);
+                });
             }
 
         };

@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoRedisSearchContainer;
+
+import static java.util.Collections.singletonMap;
 
 public class RedisSpringBootTestResource extends ConditionalSpringBootTestResource {
 
@@ -27,13 +31,8 @@ public class RedisSpringBootTestResource extends ConditionalSpringBootTestResour
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return KOGITO_REDIS_URL;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return "http://localhost:" + getTestResource().getMappedPort();
+    protected Map<String, String> getProperties() {
+        return singletonMap(KOGITO_REDIS_URL, "http://localhost:" + getTestResource().getMappedPort());
     }
 
     public static class Conditional extends RedisSpringBootTestResource {

@@ -24,15 +24,6 @@ public class MyTest {
 }
 ```
 
-And add the Infinispan properties in the _application.properties_:
-
-```
-#Infinispan
-quarkus.infinispan-client.use-auth=true
-quarkus.infinispan-client.auth-username=admin
-quarkus.infinispan-client.auth-password=admin
-```
-
 The property _quarkus.infinispan-client.server-list_ will be automatically populated with a random port.
 
 In case we want to run the container only if some requirements are met, we need to use it this way:

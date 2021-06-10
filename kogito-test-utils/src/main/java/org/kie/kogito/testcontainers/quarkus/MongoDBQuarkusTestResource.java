@@ -15,8 +15,12 @@
  */
 package org.kie.kogito.testcontainers.quarkus;
 
+import java.util.Map;
+
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * MongoDB quarkus resource that works within the test lifecycle.
@@ -31,13 +35,8 @@ public class MongoDBQuarkusTestResource extends ConditionalQuarkusTestResource<K
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return MONGODB_CONNECTION_PROPERTY;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return getTestResource().getReplicaSetUrl();
+    protected Map<String, String> getProperties() {
+        return singletonMap(MONGODB_CONNECTION_PROPERTY, getTestResource().getReplicaSetUrl());
     }
 
     public static class Conditional extends MongoDBQuarkusTestResource {
