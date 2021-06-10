@@ -122,7 +122,7 @@ public abstract class AbstractTrustyExplainabilityEnd2EndIT {
                 final InfinispanTrustyServiceContainer trustyService = new InfinispanTrustyServiceContainer(INFINISPAN_SERVER_LIST, KAFKA_BOOTSTRAP_SERVERS, true)
                         .withEnv(TRUSTY_SERVICE_OIDC_AUTH_SERVER_URL_VARIABLE, TRUSTY_SERVICE_OIDC_AUTH_SERVER_URL_VALUE)
                         .withEnv(TRUSTY_SERVICE_OIDC_CLIENT_ID_VARIABLE, TRUSTY_SERVICE_OIDC_CLIENT_ID_VALUE)
-                        .withEnv("INFINISPAN_SASL_MECHANISM", "PLAIN")
+                        .withEnv("INFINISPAN_USE_AUTH", "FALSE")
                         .withLogConsumer(new Slf4jLogConsumer(LOGGER))
                         .withNetwork(network)
                         .withNetworkAliases(TRUSTY_SERVICE_ALIAS);

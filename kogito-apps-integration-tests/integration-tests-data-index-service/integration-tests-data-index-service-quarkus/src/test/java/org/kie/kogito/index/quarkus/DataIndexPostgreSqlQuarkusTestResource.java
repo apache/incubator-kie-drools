@@ -31,25 +31,11 @@ public class DataIndexPostgreSqlQuarkusTestResource extends ConditionalQuarkusTe
     }
 
     @Override
-    public Map<String, String> start() {
-        Map<String, String> properties = super.start();
-        if (properties.isEmpty()) {
-            return properties;
-        }
-
-        properties = new HashMap<>(properties);
+    protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(KOGITO_DATA_INDEX_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
         properties.putAll(getTestResource().getProperties());
         return properties;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return "http://localhost:" + getTestResource().getMappedPort();
-    }
-
-    @Override
-    protected String getKogitoProperty() {
-        return KOGITO_DATA_INDEX_SERVICE_URL;
     }
 
 }

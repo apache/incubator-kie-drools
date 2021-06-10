@@ -82,7 +82,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
             fail("Registering broken proto file should fail");
         } catch (Exception ex) {
             assertThat(ex.getMessage())
-                    .isEqualTo("Failed to resolve type of field \"travels.traveller\". Type not found : stringa");
+                    .isEqualTo("Failed to resolve type of field \"org.demo.travels.traveller\". Type not found : stringa");
         }
     }
 
@@ -115,7 +115,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
             fail("Registering broken proto file should fail");
         } catch (Exception ex) {
             assertThat(ex.getMessage()).isEqualTo(
-                    "Could not find message with name: traveller in proto file, e, please review option kogito_model");
+                    "Could not find message with name: org.demo.traveller in proto file, e, please review option kogito_model");
         }
     }
 
@@ -764,9 +764,12 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getProtoBufferFileWithoutModelType() {
-        return "   option kogito_id=\"travels\";\n" +
-                "   option kogito_model=\"traveller\";\n" +
+        return "package org.demo;\n" +
+                "option kogito_id=\"travels\";\n" +
+                "option kogito_model=\"traveller\";\n" +
+                "/* @Indexed */\n" +
                 "message travels {\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -775,8 +778,11 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getProtoBufferFileWithoutId() {
-        return "   option kogito_model=\"travels\";\n" +
+        return "package org.demo;\n" +
+                "option kogito_model=\"travels\";\n" +
+                "/* @Indexed */\n" +
                 "message travels {\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -785,8 +791,11 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getProtoBufferFileWithoutModel() {
-        return "   option kogito_id=\"travels\";\n" +
+        return "package org.demo;\n" +
+                "option kogito_id=\"travels\";\n" +
+                "/* @Indexed */\n" +
                 "message travels {\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -795,7 +804,10 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getBrokenProtoBufferFile() {
-        return "message travels {\n" +
+        return "package org.demo;\n" +
+                "/* @Indexed */\n" +
+                "message travels {\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional stringa traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -804,11 +816,14 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getProtoBufferFileV1() {
-        return "import \"kogito-index.proto\";\n" +
+        return "package org.demo;\n" +
+                "import \"kogito-index.proto\";\n" +
                 "option kogito_model=\"Game\";\n" +
                 "option kogito_id=\"game\";\n" +
+                "/* @Indexed */\n" +
                 "message Game {\n" +
                 "   optional string player = 1;\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional string id = 2;\n" +
                 "   optional string name = 3;\n" +
                 "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
@@ -817,10 +832,13 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     }
 
     private String getProtoBufferFileV2() {
-        return "import \"kogito-index.proto\";\n" +
+        return "package org.demo;\n" +
+                "import \"kogito-index.proto\";\n" +
                 "option kogito_model=\"Game\";\n" +
                 "option kogito_id=\"game\";\n" +
+                "/* @Indexed */\n" +
                 "message Game {\n" +
+                "   /* @Field(store = Store.YES) @SortableField */\n" +
                 "   optional string id = 1;\n" +
                 "   optional string name = 2;\n" +
                 "   optional string company = 3;\n" +

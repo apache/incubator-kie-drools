@@ -16,14 +16,11 @@
 
 package org.kie.kogito.index.spring;
 
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.kie.kogito.index.resources.DataIndexMongoDBResource;
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.test.context.support.TestPropertySourceUtils;
-
-import static java.util.stream.Collectors.toList;
 
 public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBResource> {
 
@@ -34,20 +31,11 @@ public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTes
     }
 
     @Override
-    protected void updateContextProperty(ConfigurableApplicationContext ctx, String key, String value) {
-        List<String> props = getTestResource().getProperties().entrySet().stream()
-                .map(e -> e.getKey() + "=" + e.getValue()).collect(toList());
-        props.add(key + "=" + value);
-        TestPropertySourceUtils.addInlinedPropertiesToEnvironment(ctx, props.toArray(new String[0]));
+    protected Map<String, String> getProperties() {
+        Map<String, String> properties = new HashMap<>();
+        properties.put(KOGITO_DATA_INDEX_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
+        properties.putAll(getTestResource().getProperties());
+        return properties;
     }
 
-    @Override
-    protected String getKogitoPropertyValue() {
-        return "http://localhost:" + getTestResource().getMappedPort();
-    }
-
-    @Override
-    protected String getKogitoProperty() {
-        return KOGITO_DATA_INDEX_SERVICE_URL;
-    }
 }

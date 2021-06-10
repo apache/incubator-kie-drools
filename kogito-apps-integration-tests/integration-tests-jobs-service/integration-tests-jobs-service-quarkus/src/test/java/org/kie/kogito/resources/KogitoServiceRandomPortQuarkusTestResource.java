@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.resources;
 
+import java.util.Map;
+
 import org.kie.kogito.it.KogitoServiceRandomPortTestResource;
+
+import static java.util.Collections.singletonMap;
 
 public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuarkusTestResource {
 
@@ -34,13 +38,8 @@ public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuark
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return QUARKUS_SERVICE_HTTP_PORT;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return String.valueOf(getTestResource().getMappedPort());
+    protected Map<String, String> getProperties() {
+        return singletonMap(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
     }
 
 }

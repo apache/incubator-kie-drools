@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.resources;
 
+import java.util.Map;
+
 import org.kie.kogito.testcontainers.JobServiceContainer;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * Infinispan spring boot resource that works within the test lifecycle.
@@ -30,13 +34,8 @@ public class JobServiceSpringBootTestResource extends ConditionalSpringBootTestR
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return JOBS_SERVICE_URL;
-    }
-
-    @Override
-    protected String getKogitoPropertyValue() {
-        return "http://localhost:" + getTestResource().getMappedPort();
+    protected Map<String, String> getProperties() {
+        return singletonMap(JOBS_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
     }
 
     public static class Conditional extends JobServiceSpringBootTestResource {

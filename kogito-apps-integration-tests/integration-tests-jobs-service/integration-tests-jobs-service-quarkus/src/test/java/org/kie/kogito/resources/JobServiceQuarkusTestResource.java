@@ -15,7 +15,11 @@
  */
 package org.kie.kogito.resources;
 
+import java.util.Map;
+
 import org.kie.kogito.testcontainers.JobServiceContainer;
+
+import static java.util.Collections.singletonMap;
 
 /**
  * Infinispan quarkus resource that works within the test lifecycle.
@@ -30,12 +34,8 @@ public class JobServiceQuarkusTestResource extends ConditionalQuarkusTestResourc
     }
 
     @Override
-    protected String getKogitoProperty() {
-        return JOBS_SERVICE_URL;
+    protected Map<String, String> getProperties() {
+        return singletonMap(JOBS_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
     }
 
-    @Override
-    protected String getKogitoPropertyValue() {
-        return "http://localhost:" + getTestResource().getMappedPort();
-    }
 }

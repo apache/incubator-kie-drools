@@ -16,7 +16,7 @@ message ProcessInstanceMeta {
     optional string id = 1;
     /* @Field(store = Store.YES) */
     optional string processId = 2;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     repeated string roles = 3;
     /* @Field(store = Store.YES) */
     optional string endpoint = 4;
@@ -24,17 +24,17 @@ message ProcessInstanceMeta {
     optional int32 state = 5;
     optional int64 start = 6;
     optional int64 end = 7;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string rootProcessInstanceId = 8;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string rootProcessId = 9;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string parentProcessInstanceId = 10;
     /* @Field(store = Store.YES) */
     optional string processName = 11;
     /* @Field(store = Store.YES) */
     optional int64 lastUpdate = 12;    
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string businessKey = 13;
 }
 
@@ -44,7 +44,7 @@ message ProcessInstance {
     optional string id = 1;
     /* @Field(store = Store.YES) @SortableField */
     optional string processId = 2;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     repeated string roles = 3;
     optional string variables = 4;
     /* @Field(store = Store.YES) */
@@ -56,21 +56,21 @@ message ProcessInstance {
     optional int64 start = 8;
     /* @SortableField */
     optional int64 end = 9;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string rootProcessInstanceId = 10;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
+    /* @Field(store = Store.YES) @SortableField */
     optional string rootProcessId = 11;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string parentProcessInstanceId = 12;
     /* @Field(store = Store.YES) @SortableField */
     optional string processName = 13;
     /* @Field(store = Store.YES) */
     optional ProcessInstanceError error = 14;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     repeated string addons = 15;
     /* @Field(store = Store.YES) @SortableField */
     optional int64 lastUpdate = 16;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
+    /* @Field(store = Store.YES) @SortableField */
     optional string businessKey = 17;
     repeated Milestone milestones = 18;
 }
@@ -129,7 +129,7 @@ message UserTaskInstance {
     optional string rootProcessId = 8;
     /* @Field(store = Store.YES) @SortableField */
     optional string state = 9;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
+    /* @Field(store = Store.YES) @SortableField */
     optional string actualOwner = 10;
     /* @Field(store = Store.YES) */
     repeated string adminGroups = 11;
@@ -169,7 +169,7 @@ message UserTaskInstanceMeta {
     optional string processInstanceId = 5;
     /* @Field(store = Store.YES) */
     optional string state = 6;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string actualOwner = 7;
     /* @Field(store = Store.YES) */
     repeated string adminGroups = 8;
@@ -197,9 +197,9 @@ message Job {
     optional string processId = 2;
     /* @Field(store = Store.YES) */
     optional string processInstanceId = 3;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") @SortableField */
+    /* @Field(store = Store.YES) @SortableField */
     optional string rootProcessId = 4;
-    /* @Field(store = Store.YES, indexNullAs = "__DEFAULT_NULL_TOKEN__") */
+    /* @Field(store = Store.YES) */
     optional string rootProcessInstanceId = 5;
     /* @Field(store = Store.YES) @SortableField */
     optional int64 expirationTime = 6;

@@ -29,9 +29,6 @@ public class DataIndexInfinispanContainer extends AbstractDataIndexContainer {
 
     public void setInfinispanURL(String infinispanURL) {
         addEnv("QUARKUS_INFINISPAN_CLIENT_SERVER_LIST", infinispanURL);
-        addEnv("QUARKUS_INFINISPAN_CLIENT_USE_AUTH", "true");
-        addEnv("QUARKUS_INFINISPAN_CLIENT_AUTH_USERNAME", "admin");
-        addEnv("QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD", "admin");
     }
 
     @Override

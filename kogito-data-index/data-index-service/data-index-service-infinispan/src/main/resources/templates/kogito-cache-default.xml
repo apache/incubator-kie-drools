@@ -7,9 +7,7 @@
     <local-cache name="{cache_name}" configuration="{template}">
       {/if}
     {/let}
-      <indexing>
-        <property name="hibernate.search.index_uninverting_allowed">true</property>
-        <property name="default.directory_provider">local-heap</property>
+      <indexing storage="local-heap">
         <indexed-entities>
           <indexed-entity>org.kie.kogito.index.model.KogitoMetadata</indexed-entity>
           <indexed-entity>org.kie.kogito.index.model.ProcessInstanceMeta</indexed-entity>
