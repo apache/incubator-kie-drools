@@ -27,8 +27,9 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 public class KiePMMLFalsePredicate extends KiePMMLPredicate {
 
     private static final String FALSE = "False";
+    private static final long serialVersionUID = 2517496656027749680L;
 
-    protected KiePMMLFalsePredicate(final String name, final List<KiePMMLExtension> extensions) {
+    public KiePMMLFalsePredicate(final String name, final List<KiePMMLExtension> extensions) {
         super(name, extensions);
     }
 

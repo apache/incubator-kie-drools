@@ -443,7 +443,7 @@ public class KiePMMLPredicateFactory {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
     }
 
-    static List<Object> getObjectsFromArray(Array source) {
+    public static List<Object> getObjectsFromArray(Array source) {
         Array.Type type = source.getType();
         List<Object> toReturn = new ArrayList<>();
         String stringValue = (String) source.getValue();
