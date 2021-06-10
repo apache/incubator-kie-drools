@@ -1531,6 +1531,7 @@ public class TimerAndCalendarTest {
                 "  eval(true)" +
                 "  String( this == \"trigger\" )" +
                 "then \n" +
+                "  System.out.println(\"--- FireAtWill, adding 0 to list\");\n" +
                 "  list.add( 0 );\n" +
                 "end\n" +
                 "\n" +
@@ -1538,6 +1539,7 @@ public class TimerAndCalendarTest {
                 "when\n" +
                 "  String( this == \"halt\" )\n" +
                 "then\n" +
+                "  System.out.println(\"--- ImDone drools halt\");\n" +
                 "  drools.halt();\n" +
                 "end\n" +
                 "\n";
@@ -1550,21 +1552,30 @@ public class TimerAndCalendarTest {
 
         final FactHandle handle = ksession.insert("trigger");
 
+        System.out.println("--- Starting fireUntilHalt");
         new Thread(ksession::fireUntilHalt).start();
         try {
+            System.out.println("--- Sleeping for 350ms");
             Thread.sleep(350);
+            System.out.println("--- Slept for 350ms");
             assertEquals(2, list.size()); // delay 0, repeat after 100
             assertEquals(asList(0, 0), list);
 
             ksession.insert("halt");
 
+            System.out.println("--- Sleeping for 200ms");
             Thread.sleep(200);
+            System.out.println("--- Slept for 200ms");
             ksession.delete(handle);
+            System.out.println("--- Deleted trigger");
             assertEquals(2, list.size()); // halted, no more rule firing
 
+            System.out.println("--- Starting fireUntilHalt new thread");
             new Thread(ksession::fireUntilHalt).start();
             try {
+                System.out.println("--- Sleeping for 200ms");
                 Thread.sleep(200);
+                System.out.println("--- Slept for 200ms");
 
                 assertEquals(2, list.size());
                 assertEquals(asList(0, 0), list);
