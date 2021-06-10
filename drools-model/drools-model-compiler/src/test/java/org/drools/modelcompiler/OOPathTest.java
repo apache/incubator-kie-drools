@@ -16,10 +16,7 @@
 
 package org.drools.modelcompiler;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Child;
 import org.drools.modelcompiler.domain.Employee;
@@ -27,9 +24,8 @@ import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.runtime.KieSession;
+
 
 import static org.drools.modelcompiler.domain.Employee.createEmployee;
 
@@ -41,20 +37,15 @@ public class OOPathTest extends BaseModelTest {
 
     @Test
     public void testOOPath() {
-        final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                " $man: Man( /wife/children[age > 10] )\n" +
-                "then\n" +
-                "  list.add( $man.getName() );\n" +
-                "end\n";
-
-        KieSession ksession = getKieSession( str );
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
+        withRule("import org.drools.modelcompiler.domain.*;",
+                "global java.util.List list", 
+                "rule R", 
+                "when",
+                " $man: Man( /wife/children[age > 10] )",
+                "then",
+                "  list.add( $man.getName() );",
+                "end");
+        withSessionAndGlobals();
 
         final Woman alice = new Woman( "Alice", 38 );
         final Man bob = new Man( "Bob", 40 );
@@ -65,60 +56,49 @@ public class OOPathTest extends BaseModelTest {
         final Child debbie = new Child( "Debbie", 10 );
         alice.addChild( charlie );
         alice.addChild( debbie );
+        
+        withFacts(bob, carl);
+        whenWeFireAllRules();
+        
+        resultContainsInAnyOrder("Bob");
 
-        ksession.insert( bob );
-        ksession.insert( carl );
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
     }
 
     @Test
     public void testOOPathBinding() {
-        final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                " Man( /wife[$age : age] )\n" +
-                "then\n" +
-                "  list.add( $age );\n" +
-                "end\n";
+        withRule("import org.drools.modelcompiler.domain.*;",
+                "global java.util.List list",
+                "rule R",
+                "when",
+                " Man( /wife[$age : age] )",
+                "then",
+                "  list.add( $age );",
+                "end");
 
-        KieSession ksession = getKieSession( str );
-
-        final List<Integer> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
+        withSessionAndGlobals();
 
         final Woman alice = new Woman( "Alice", 38 );
         final Man bob = new Man( "Bob", 40 );
         final Man carl = new Man( "Carl", 40 );
         bob.setWife( alice );
 
-        ksession.insert( bob );
-        ksession.insert( carl );
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder(38);
+        withFacts(bob, carl);
+        whenWeFireAllRules();
+        resultContainsInAnyOrder(38);
     }
 
     @Test
     public void testReactiveOOPath() {
-        final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  Man( $toy: /wife/children[age > 10]/toys )\n" +
-                        "then\n" +
-                        "  list.add( $toy.getName() );\n" +
-                        "end\n";
-
-        KieSession ksession = getKieSession( str );
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
-
+        withRule("import org.drools.modelcompiler.domain.*;",
+        		"global java.util.List list",
+                "rule R",
+                "when",
+                "  Man( $toy: /wife/children[age > 10]/toys )",
+                "then",
+                "  list.add( $toy.getName() );",
+                "end");
+        withSessionAndGlobals();
+        
         final Woman alice = new Woman( "Alice", 38 );
         final Man bob = new Man( "Bob", 40 );
         bob.setWife( alice );
@@ -132,35 +112,30 @@ public class OOPathTest extends BaseModelTest {
         charlie.addToy( new Toy( "ball" ) );
         debbie.addToy( new Toy( "doll" ) );
 
-        ksession.insert( bob );
-        ksession.fireAllRules();
+        withFacts(bob);
+        whenWeFireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("car", "ball");
+        resultContainsInAnyOrder("car", "ball");
 
         list.clear();
         debbie.setAge( 11 );
-        ksession.fireAllRules();
+        whenWeFireAllRules();
 
-        Assertions.assertThat(list).containsExactlyInAnyOrder("doll");
+        resultContainsInAnyOrder("doll");
     }
 
 
     @Test
     public void testBackReferenceConstraint() {
-        final String str =
-                "import org.drools.modelcompiler.domain.*;\n" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                "  Man( $toy: /wife/children/toys[ name.length == ../name.length ] )\n" +
-                "then\n" +
-                "  list.add( $toy.getName() );\n" +
-                "end\n";
-
-        KieSession ksession = getKieSession( str );
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal( "list", list );
+        withRule("import org.drools.modelcompiler.domain.*;",
+                "global java.util.List list",
+                "rule R",
+                "when",
+                "  Man( $toy: /wife/children/toys[ name.length == ../name.length ] )",
+                "then",
+                "  list.add( $toy.getName() );",
+                "end");
+        withSessionAndGlobals();
 
         final Woman alice = new Woman( "Alice", 38 );
         final Man bob = new Man( "Bob", 40 );
@@ -176,295 +151,206 @@ public class OOPathTest extends BaseModelTest {
         debbie.addToy( new Toy( "doll" ) );
         debbie.addToy( new Toy( "guitar" ) );
 
-        ksession.insert( bob );
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("ball", "guitar");
+        withFacts(bob);
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("ball", "guitar");
     }
 
     @Test
     public void testSimpleOOPathCast1() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
-                           "global java.util.List list\n" +
-                           "\n" +
-                           "rule R when\n" +
-                           "  $man : Man( $italy: /address#InternationalAddress[ state == \"Italy\" ] )\n" +
-                           "then\n" +
-                           "  list.add( $man.getName() );\n" +
-                           "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        final Man bob = new Man("Bob", 40);
-        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
-        ksession.insert(bob);
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        withRule("import org.drools.modelcompiler.domain.*;",
+        		"global java.util.List list",
+        		"rule R",
+        		" when",
+                "  $man : Man( $italy: /address#InternationalAddress[ state == \"Italy\" ] )",
+                "then",
+                "  list.add( $man.getName() );",
+                "end");
+        withSessionAndGlobals();
+        withFacts(man("Bob", "Italy"));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Bob");
     }
 
     @Test
     public void testSimpleOOPathCast2() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
-                           "global java.util.List list\n" +
-                           "\n" +
-                           "rule R when\n" +
-                           "  Man( $name : name, $italy: /address#InternationalAddress[ state == \"Italy\" ] )\n" +
-                           "then\n" +
-                           "  list.add( $name );\n" +
-                           "end\n";
+        withRule("import org.drools.modelcompiler.domain.*;",
+        		"global java.util.List list",
+        		"rule R",
+        		"when",
+        		"  Man( $name : name, $italy: /address#InternationalAddress[ state == \"Italy\" ] )",
+        		"then",
+        		"  list.add( $name );",
+        		"end");
 
-        KieSession ksession = getKieSession(str);
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        final Man bob = new Man("Bob", 40);
-        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
-        ksession.insert(bob);
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+        withSessionAndGlobals();
+        withFacts(man("Bob", "Italy"));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Bob");
     }
 
     @Test
     public void testSimpleOOPathCast3() {
-        final String str = "import org.drools.modelcompiler.domain.*;\n" +
-                           "global java.util.List list\n" +
-                           "\n" +
-                           "rule R when\n" +
-                           "  Man( $italy: /address#InternationalAddress[ state == \"Italy\" ], $name : name != null )\n" +
-                           "then\n" +
-                           "  list.add( $name );\n" +
-                           "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        final List<String> list = new ArrayList<>();
-        ksession.setGlobal("list", list);
-
-        final Man bob = new Man("Bob", 40);
-        bob.setAddress(new InternationalAddress("Via Verdi", "Italy"));
-        ksession.insert(bob);
-        ksession.fireAllRules();
-
-        Assertions.assertThat(list).containsExactlyInAnyOrder("Bob");
+    	withRule(
+    			"import org.drools.modelcompiler.domain.*;", 
+    			"global java.util.List list",
+    			"rule R",
+    			"when",
+    			"  Man( $italy: /address#InternationalAddress[ state == \"Italy\" ], $name : name != null )",
+    			"then",
+    			"  list.add( $name );",
+    			"end");
+    	withSessionAndGlobals();
+        withFacts(man("Bob", "Italy"));
+    	whenWeFireAllRules();
+    	resultContainsInAnyOrder("Bob");
     }
 
     @Test
     public void testOOPathMultipleConditions() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                "import " + Address.class.getCanonicalName() + ";" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                "  Employee( $address: /address[ street == 'Elm', city == 'Big City' ] )\n" +
-                "then\n" +
-                "  list.add( $address.getCity() );\n" +
-                "end\n";
+        withRule(
+                "import " + Employee.class.getCanonicalName() + ";",
+                "import " + Address.class.getCanonicalName() + ";",
+                "global java.util.List list",
+                "rule R ",
+                "when",
+                "  Employee( $address: /address[ street == 'Elm', city == 'Big City' ] )",
+                "then",
+                "  list.add( $address.getCity() );",
+                "end");
 
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City");
+        withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")), 
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Big City");
     }
 
     @Test
     public void testOOPathMultipleConditionsWithBinding() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                "import " + Address.class.getCanonicalName() + ";" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                " $employee: (\n" +
-                "  Employee( /address[ street == 'Elm', city == 'Big City' ] )\n" +
-                " )\n" +
-                "then\n" +
-                "  list.add( $employee.getName() );\n" +
-                "end\n";
-
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Alice");
+    	withRule("import " + Employee.class.getCanonicalName() + ";",
+                "import " + Address.class.getCanonicalName() + ";",
+                "global java.util.List list",
+                "rule R", 
+                "when",
+                " $employee: ( Employee( /address[ street == 'Elm', city == 'Big City' ] ) )",
+                "then",
+                "  list.add( $employee.getName() );",
+                "end");
+    	withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")),
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Alice");
     }
 
     @Test
     public void testOrConditionalElementNoBinding() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                "import " + Address.class.getCanonicalName() + ";" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                " $employee: (\n" +
-                "  Employee( /address[ city == 'Big City' ] )\n" +
-                " or " +
-                "  Employee( /address[ city == 'Small City' ] )\n" +
-                " )\n" +
-                "then\n" +
-                "  list.add( $employee.getName() );\n" +
-                "end\n";
-
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
+    	withRule("import " + Employee.class.getCanonicalName() + ";",
+                "import " + Address.class.getCanonicalName() + ";",
+                "global java.util.List list",
+                "rule R",
+                "when",
+                " $employee: (",
+                "  Employee( /address[ city == 'Big City' ] )",
+                " or ",
+                "  Employee( /address[ city == 'Small City' ] )",
+                " )",
+                "then",
+                "  list.add( $employee.getName() );",
+                "end");
+    	withSessionAndGlobals();
+    	withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")),
+    			createEmployee("Alice", new Address("Elm", 10, "Big City")));
+    	whenWeFireAllRules();
+    	resultContainsInAnyOrder("Bruno", "Alice");
     }
 
     @Test
     public void testOrConditionalElement() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                "import " + Address.class.getCanonicalName() + ";" +
-                "global java.util.List list\n" +
-                "\n" +
-                "rule R when\n" +
-                "  Employee( $address: /address[ city == 'Big City' ] )\n" +
-                " or " +
-                "  Employee( $address: /address[ city == 'Small City' ] )\n" +
-                "then\n" +
-                "  list.add( $address.getCity() );\n" +
-                "end\n";
+        withRule("import " + Employee.class.getCanonicalName() + ";",
+                "import " + Address.class.getCanonicalName() + ";",
+                "global java.util.List list",
+                "rule R",
+                "when",
+                "  Employee( $address: /address[ city == 'Big City' ] )",
+                " or ",
+                "  Employee( $address: /address[ city == 'Small City' ] )",
+                "then",
+                "  list.add( $address.getCity() );",
+                "end");
 
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")),
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Big City", "Small City");
     }
 
     @Test
     public void testOrConstraintNoBinding() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                        "import " + Address.class.getCanonicalName() + ";" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( /address[ street == 'Elm' || city == 'Big City' ] )\n" +
-                        "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
-                        "then\n" +
-                        "  list.add( $emp.getName() );\n" +
-                        "end\n";
-
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Bruno", "Alice");
+        withRule("import " + Employee.class.getCanonicalName() + ";",
+        		"import " + Address.class.getCanonicalName() + ";",
+        		"global java.util.List list",
+        		"rule R",
+        		"when",
+        		"  $emp: Employee( /address[ street == 'Elm' || city == 'Big City' ] )",
+                "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )",
+                "then",
+                "  list.add( $emp.getName() );",
+                "end");
+        withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")),
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Bruno", "Alice");
     }
 
     @Test
     public void testOrConstraintWithJoin() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                        "import " + Address.class.getCanonicalName() + ";" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
-                        "        Employee( this != $emp, /address[ street == $address.street || city == 'Big City' ] )\n" +
-                        "then\n" +
-                        "  list.add( $address.getCity() );\n" +
-                        "end\n";
+        withRule("import " + Employee.class.getCanonicalName() + ";",
+        		"import " + Address.class.getCanonicalName() + ";",
+        		"global java.util.List list",
+        		"rule R",
+        		"when",
+        		"  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )",
+        		"        Employee( this != $emp, /address[ street == $address.street || city == 'Big City' ] )",
+        		"then",
+        		"  list.add( $address.getCity() );",
+        		"end");
 
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")), 
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Big City", "Small City");
     }
 
     @Test
     public void testOrConstraint() {
-        final String drl =
-                "import " + Employee.class.getCanonicalName() + ";" +
-                        "import " + Address.class.getCanonicalName() + ";" +
-                        "global java.util.List list\n" +
-                        "\n" +
-                        "rule R when\n" +
-                        "  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )\n" +
-                        "        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )\n" +
-                        "then\n" +
-                        "  list.add( $address.getCity() );\n" +
-                        "end\n";
-
-        KieSession kieSession = getKieSession(drl);
-
-        List<String> results = new ArrayList<>();
-        kieSession.setGlobal("list", results);
-
-        final Employee bruno = createEmployee("Bruno", new Address("Elm", 10, "Small City"));
-        kieSession.insert(bruno);
-
-        final Employee alice = createEmployee("Alice", new Address("Elm", 10, "Big City"));
-        kieSession.insert(alice);
-
-        kieSession.fireAllRules();
-        Assertions.assertThat(results).containsExactlyInAnyOrder("Big City", "Small City");
+        withRule("import " + Employee.class.getCanonicalName() + ";",
+        		"import " + Address.class.getCanonicalName() + ";",
+        		"global java.util.List list",
+        		"rule R",
+        		"when",
+        		"  $emp: Employee( $address: /address[ street == 'Elm' || city == 'Big City' ] )",
+        		"        Employee( this != $emp, /address[ street == 'Elm' || city == 'Big City' ] )",
+        		"then",
+        		"  list.add( $address.getCity() );",
+        		"end");
+        withSessionAndGlobals();
+        withFacts(createEmployee("Bruno", new Address("Elm", 10, "Small City")),
+        		createEmployee("Alice", new Address("Elm", 10, "Big City")));
+        whenWeFireAllRules();
+        resultContainsInAnyOrder("Big City", "Small City");
     }
+    
+	private Man man(String name, String country) {
+		final Man bob = new Man(name, 40);
+        bob.setAddress(new InternationalAddress("Via Verdi", country));
+		return bob;
+	}
+
+
 
 }

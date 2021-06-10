@@ -29,7 +29,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -130,44 +129,38 @@ public class MvelDialectTest extends BaseModelTest {
 
     @Test
     public void testMVELmultiple() {
-        String str = "package mypackage;" +
-                "dialect \"mvel\"\n" + // MVEL dialect defined at package level.
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "rule R1\n" +
-                "when\n" +
-                "  Integer()\n" +
-                "then\n" +
-                "  System.out.println(\"Hello World\")\n" + // no ending ; as per MVEL dialect
-                "  insert(new Person(\"Matteo\", 47))\n" +
-                "  insert(\"Hello World\")\n" +
-                "end\n" +
-                "rule R2\n" +
-                "when\n" +
-                "  $p : Person()\n" +
-                "then\n" +
-                "  modify($p) { setAge(1); }\n" +
-                "  insert(\"Modified person age to 1 for: \"+$p.name)\n" + // Please notice $p.name is MVEL dialect.
-                "end\n" +
-                "rule R3\n" +
-                "when\n" +
-                "  $s : String( this == \"Hello World\")\n" +
-                "  $p : Person()\n" + // this is artificially added to ensure working even with unnecessary declaration passed to on().execute().
-                "then\n" +
-                "  retract($s)" +
-                "end\n";
-
-        KieSession ksession = getKieSession(str);
-
-        FactHandle fh_47 = ksession.insert(47);
-        ksession.fireAllRules();
-
-        Collection<String> results = getObjectsIntoList(ksession, String.class);
-        System.out.println(results);
-        assertFalse(results.contains("Hello World"));
-        assertTrue(results.contains("Modified person age to 1 for: Matteo"));
+        withRule("package mypackage;",
+                "dialect \"mvel\"", // MVEL dialect defined at package level.
+                "import " + Person.class.getCanonicalName() + ";",
+                "rule R1",
+                "when",
+                "  Integer()",
+                "then",
+                "  System.out.println(\"Hello World\")", // no ending ; as per MVEL dialect
+                "  insert(new Person(\"Matteo\", 47))",
+                "  insert(\"Hello World\")",
+                "end",
+                "rule R2",
+                "when",
+                "  $p : Person()",
+                "then",
+                "  modify($p) { setAge(1); }",
+                "  insert(\"Modified person age to 1 for: \"+$p.name)", // Please notice $p.name is MVEL dialect.
+                "end\n",
+                "rule R3",
+                "when",
+                "  $s : String( this == \"Hello World\")",
+                "  $p : Person()", // this is artificially added to ensure working even with unnecessary declaration passed to on().execute().
+                "then",
+                "  retract($s)",
+                "end");
+        withStandardSession();
+        withFacts(47);
+        whenWeFireAllRules();
+        sessionContainsExactly("Modified person age to 1 for: Matteo");
     }
 
-    @Test
+	@Test
     public void testMVELmultipleStatements() {
         String str =
                 "import " + Person.class.getPackage().getName() + ".*;\n" + // keep the package.* in order for Address to be resolvable in the RHS.

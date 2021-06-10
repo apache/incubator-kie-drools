@@ -16,10 +16,13 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.impl.InternalKnowledgeBase;
@@ -44,6 +47,7 @@ import static java.util.Arrays.asList;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.STANDARD_WITH_ALPHA_NETWORK;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
@@ -94,6 +98,14 @@ public abstract class BaseModelTest {
     }
 
     protected final CompilerTest.RUN_TYPE testRunType;
+
+	private String str;
+
+	private KieSession ksession;
+
+	protected List<Object> list;
+
+	protected int firedRules;
 
     public BaseModelTest( CompilerTest.RUN_TYPE testRunType ) {
         this.testRunType = testRunType;
@@ -225,4 +237,45 @@ public abstract class BaseModelTest {
         }
         return null;
     }
+
+	protected void whenWeFireAllRules() {
+	    firedRules = ksession.fireAllRules();
+	}
+
+	protected void withFacts(Object... facts) {
+		for (Object fact: facts) {
+			ksession.insert(fact);
+		}
+	}
+
+	protected void withSessionAndGlobals() {
+	    withStandardSession();
+	
+	    list = new ArrayList<>();
+	    ksession.setGlobal("list", list);	
+	
+	}
+
+	protected void withStandardSession() {
+		ksession = getKieSession(str);
+	}
+
+	protected void withRule(String... rules) {
+		this.str = String.join("\n", rules);
+	}
+	
+    protected void firedRulesAre(int i) {
+    	assertEquals( i, firedRules );
+		
+	}
+
+	protected void resultContainsInAnyOrder(Object... values) {
+	    Assertions.assertThat(list).containsExactlyInAnyOrder(values);
+	}
+
+	protected void sessionContainsExactly(String... values) {
+		Collection<String> results = getObjectsIntoList(ksession, String.class);
+		Assertions.assertThat(results).containsExactlyInAnyOrder(values);
+	}
+
 }
