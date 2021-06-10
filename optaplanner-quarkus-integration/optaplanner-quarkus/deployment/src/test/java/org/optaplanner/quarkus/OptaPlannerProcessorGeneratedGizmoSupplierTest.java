@@ -16,7 +16,11 @@
 
 package org.optaplanner.quarkus;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 import javax.inject.Inject;
 
@@ -24,11 +28,29 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.optaplanner.core.config.solver.SolverConfigTest;
+import org.optaplanner.core.api.domain.entity.PlanningEntity;
+import org.optaplanner.core.api.domain.variable.CustomShadowVariable;
+import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
+import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
+import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.impl.heuristic.move.DummyMove;
+import org.optaplanner.core.impl.heuristic.move.Move;
+import org.optaplanner.core.impl.heuristic.selector.common.decorator.SelectionFilter;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveIteratorFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.factory.MoveListFactory;
+import org.optaplanner.core.impl.heuristic.selector.move.generic.ChangeMove;
+import org.optaplanner.core.impl.partitionedsearch.partitioner.SolutionPartitioner;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.domain.TestdataValue;
 import org.optaplanner.core.impl.testdata.domain.extended.TestdataAnnotatedExtendedEntity;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
+import org.optaplanner.quarkus.testdata.gizmo.DummyVariableListener;
 
 import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.test.QuarkusUnitTest;
@@ -38,21 +60,24 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-                    .addAsResource("org/optaplanner/core/config/solver/testSolverConfigWithoutNamespace.xml",
+                    .addAsResource("org/optaplanner/quarkus/gizmoSupplierTestSolverConfig.xml",
                             "solverConfig.xml")
                     .addClasses(
                             TestdataSolution.class,
                             TestdataEntity.class,
                             TestdataAnnotatedExtendedEntity.class,
-                            SolverConfigTest.DummyChangeMoveFilter.class,
-                            SolverConfigTest.DummyConstraintProvider.class,
-                            SolverConfigTest.DummyEasyScoreCalculator.class,
-                            SolverConfigTest.DummyEntityFilter.class,
-                            SolverConfigTest.DummyIncrementalScoreCalculator.class,
-                            SolverConfigTest.DummyMoveIteratorFactory.class,
-                            SolverConfigTest.DummyMoveListFactory.class,
-                            SolverConfigTest.DummySolutionPartitioner.class,
-                            SolverConfigTest.DummyValueFilter.class))
+                            DummyInterfaceEntity.class,
+                            DummyAbstractEntity.class,
+                            DummyVariableListener.class,
+                            DummyChangeMoveFilter.class,
+                            DummyConstraintProvider.class,
+                            DummyEasyScoreCalculator.class,
+                            DummyEntityFilter.class,
+                            DummyIncrementalScoreCalculator.class,
+                            DummyMoveIteratorFactory.class,
+                            DummyMoveListFactory.class,
+                            DummySolutionPartitioner.class,
+                            DummyValueFilter.class))
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
                 context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules"));
             }).produces(CapabilityBuildItem.class).build());
@@ -61,23 +86,165 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
     OptaPlannerGizmoBeanFactory gizmoBeanFactory;
 
     private void assertFactoryContains(Class<?> clazz) {
-        // All the classes are abstract, so they throw Instantiation Error,
-        // yet you can still call new on them in bytecode
-        assertThatCode(() -> gizmoBeanFactory.newInstance(clazz))
-                .isInstanceOf(InstantiationError.class).hasMessage(clazz.getName());
+        assertThat(gizmoBeanFactory.newInstance(clazz)).isNotNull();
+    }
+
+    private void assertFactoryNotContains(Class<?> clazz) {
+        assertThat(gizmoBeanFactory.newInstance(clazz)).isNull();
     }
 
     @Test
     public void gizmoFactoryContainClassesReferencedInSolverConfig() {
-        assertFactoryContains(SolverConfigTest.DummyChangeMoveFilter.class);
-        assertFactoryContains(SolverConfigTest.DummyConstraintProvider.class);
-        assertFactoryContains(SolverConfigTest.DummyEasyScoreCalculator.class);
-        assertFactoryContains(SolverConfigTest.DummyEntityFilter.class);
-        assertFactoryContains(SolverConfigTest.DummyIncrementalScoreCalculator.class);
-        assertFactoryContains(SolverConfigTest.DummyMoveIteratorFactory.class);
-        assertFactoryContains(SolverConfigTest.DummyMoveListFactory.class);
-        assertFactoryContains(SolverConfigTest.DummySolutionPartitioner.class);
-        assertFactoryContains(SolverConfigTest.DummyValueFilter.class);
+        assertFactoryContains(DummyChangeMoveFilter.class);
+        assertFactoryContains(DummyConstraintProvider.class);
+        assertFactoryContains(DummyEasyScoreCalculator.class);
+        assertFactoryContains(DummyEntityFilter.class);
+        assertFactoryContains(DummyIncrementalScoreCalculator.class);
+        assertFactoryContains(DummyMoveIteratorFactory.class);
+        assertFactoryContains(DummyMoveListFactory.class);
+        assertFactoryContains(DummySolutionPartitioner.class);
+        assertFactoryContains(DummyValueFilter.class);
+        assertFactoryContains(DummyVariableListener.class);
+
+        assertFactoryNotContains(DummyInterfaceEntity.class);
+        assertFactoryNotContains(DummyAbstractEntity.class);
+    }
+
+    /* Dummy classes below are referenced from the testSolverConfig.xml used in this test case. */
+
+    @PlanningEntity
+    public interface DummyInterfaceEntity {
+        @CustomShadowVariable(
+                sources = {
+                        @PlanningVariableReference(entityClass = TestdataEntity.class,
+                                variableName = "value")
+                },
+                variableListenerClass = DummyVariableListener.class)
+        Integer getLength();
+    }
+
+    @PlanningEntity
+    public static abstract class DummyAbstractEntity {
+        @CustomShadowVariable(
+                sources = {
+                        @PlanningVariableReference(entityClass = TestdataEntity.class,
+                                variableName = "value")
+                },
+                variableListenerClass = DummyVariableListener.class)
+        abstract Integer getLength();
+    }
+
+    public static class DummySolutionPartitioner implements SolutionPartitioner<TestdataSolution> {
+        @Override
+        public List<TestdataSolution> splitWorkingSolution(ScoreDirector<TestdataSolution> scoreDirector,
+                Integer runnablePartThreadLimit) {
+            return null;
+        }
+    }
+
+    public static class DummyEasyScoreCalculator
+            implements EasyScoreCalculator<TestdataSolution, SimpleScore> {
+        @Override
+        public SimpleScore calculateScore(TestdataSolution testdataSolution) {
+            return null;
+        }
+    }
+
+    public static class DummyIncrementalScoreCalculator
+            implements IncrementalScoreCalculator<TestdataSolution, SimpleScore> {
+        @Override
+        public void resetWorkingSolution(TestdataSolution workingSolution) {
+
+        }
+
+        @Override
+        public void beforeEntityAdded(Object entity) {
+
+        }
+
+        @Override
+        public void afterEntityAdded(Object entity) {
+
+        }
+
+        @Override
+        public void beforeVariableChanged(Object entity, String variableName) {
+
+        }
+
+        @Override
+        public void afterVariableChanged(Object entity, String variableName) {
+
+        }
+
+        @Override
+        public void beforeEntityRemoved(Object entity) {
+
+        }
+
+        @Override
+        public void afterEntityRemoved(Object entity) {
+
+        }
+
+        @Override
+        public SimpleScore calculateScore() {
+            return null;
+        }
+    }
+
+    public static class DummyConstraintProvider implements ConstraintProvider {
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+            return new Constraint[0];
+        }
+    }
+
+    public static class DummyValueFilter implements SelectionFilter<TestdataSolution, TestdataValue> {
+        @Override
+        public boolean accept(ScoreDirector<TestdataSolution> scoreDirector, TestdataValue selection) {
+            return false;
+        }
+    }
+
+    public static class DummyEntityFilter implements SelectionFilter<TestdataSolution, TestdataEntity> {
+        @Override
+        public boolean accept(ScoreDirector<TestdataSolution> scoreDirector, TestdataEntity selection) {
+            return false;
+        }
+    }
+
+    public static class DummyChangeMoveFilter
+            implements SelectionFilter<TestdataSolution, ChangeMove<TestdataSolution>> {
+        @Override
+        public boolean accept(ScoreDirector<TestdataSolution> scoreDirector, ChangeMove<TestdataSolution> selection) {
+            return false;
+        }
+    }
+
+    public static class DummyMoveIteratorFactory implements MoveIteratorFactory<TestdataSolution, DummyMove> {
+        @Override
+        public long getSize(ScoreDirector<TestdataSolution> scoreDirector) {
+            return 0;
+        }
+
+        @Override
+        public Iterator<DummyMove> createOriginalMoveIterator(ScoreDirector<TestdataSolution> scoreDirector) {
+            return null;
+        }
+
+        @Override
+        public Iterator<DummyMove> createRandomMoveIterator(ScoreDirector<TestdataSolution> scoreDirector,
+                Random workingRandom) {
+            return null;
+        }
+    }
+
+    public static class DummyMoveListFactory implements MoveListFactory<TestdataSolution> {
+        @Override
+        public List<? extends Move<TestdataSolution>> createMoveList(TestdataSolution testdataSolution) {
+            return null;
+        }
     }
 
 }

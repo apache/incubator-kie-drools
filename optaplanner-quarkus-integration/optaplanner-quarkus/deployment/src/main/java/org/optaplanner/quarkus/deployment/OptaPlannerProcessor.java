@@ -18,10 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -526,21 +523,10 @@ class OptaPlannerProcessor {
             BuildProducer<GeneratedClassBuildItem> generatedClasses,
             BuildProducer<UnremovableBeanBuildItem> unremovableBeans,
             BuildProducer<BytecodeTransformerBuildItem> transformers, Set<Class<?>> reflectiveClassSet) {
+        // Use mvn quarkus:dev -Dquarkus.debug.generated-classes-dir=dump-classes
+        // to dump generated classes
         ClassOutput classOutput = new GeneratedClassGizmoAdaptor(generatedClasses, true);
         ClassOutput beanClassOutput = new GeneratedBeanGizmoAdaptor(generatedBeans);
-        ClassOutput debuggableClassOutput = (className, bytes) -> {
-            final String DEBUG_CLASSES_DIR = "target/optaplanner-generated-classes";
-            if (DEBUG_CLASSES_DIR != null) {
-                Path pathToFile = Paths.get(DEBUG_CLASSES_DIR, className.replace('.', '/') + ".class");
-                try {
-                    Files.createDirectories(pathToFile.getParent());
-                    Files.write(pathToFile, bytes);
-                } catch (IOException e) {
-                    throw new IllegalStateException("Failed to write generated class to file (" + pathToFile + ").", e);
-                }
-            }
-            classOutput.write(className, bytes);
-        };
 
         Set<String> generatedMemberAccessorsClassNameSet = new HashSet<>();
         Set<String> gizmoSolutionClonerClassNameSet = new HashSet<>();
@@ -551,6 +537,7 @@ class OptaPlannerProcessor {
             for (DotName dotName : DotNames.GIZMO_MEMBER_ACCESSOR_ANNOTATIONS) {
                 membersToGeneratedAccessorsFor.addAll(indexView.getAnnotations(dotName));
             }
+            membersToGeneratedAccessorsFor.removeIf(this::shouldIgnoreMember);
 
             for (AnnotationInstance annotatedMember : membersToGeneratedAccessorsFor) {
                 switch (annotatedMember.target().kind()) {
@@ -558,17 +545,15 @@ class OptaPlannerProcessor {
                         FieldInfo fieldInfo = annotatedMember.target().asField();
                         ClassInfo classInfo = fieldInfo.declaringClass();
 
-                        if (!shouldIgnoreMember(classInfo)) {
-                            try {
-                                generatedMemberAccessorsClassNameSet
-                                        .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
-                                                debuggableClassOutput,
-                                                classInfo, fieldInfo, transformers));
-                            } catch (ClassNotFoundException | NoSuchFieldException e) {
-                                throw new IllegalStateException("Fail to generate member accessor for field (" +
-                                        fieldInfo.name() + ") of class " +
-                                        classInfo.name().toString() + ".", e);
-                            }
+                        try {
+                            generatedMemberAccessorsClassNameSet
+                                    .add(GizmoMemberAccessorEntityEnhancer.generateFieldAccessor(annotatedMember, indexView,
+                                            classOutput,
+                                            classInfo, fieldInfo, transformers));
+                        } catch (ClassNotFoundException | NoSuchFieldException e) {
+                            throw new IllegalStateException("Fail to generate member accessor for field (" +
+                                    fieldInfo.name() + ") of the class( " +
+                                    classInfo.name().toString() + ").", e);
                         }
                         break;
                     }
@@ -576,17 +561,15 @@ class OptaPlannerProcessor {
                         MethodInfo methodInfo = annotatedMember.target().asMethod();
                         ClassInfo classInfo = methodInfo.declaringClass();
 
-                        if (!shouldIgnoreMember(classInfo)) {
-                            try {
-                                generatedMemberAccessorsClassNameSet.add(
-                                        GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
-                                                debuggableClassOutput,
-                                                classInfo, methodInfo, transformers));
-                            } catch (ClassNotFoundException | NoSuchMethodException e) {
-                                throw new IllegalStateException("Failed to generate member accessor for the method (" +
-                                        methodInfo.name() + ") of the class (" +
-                                        classInfo.name() + ").", e);
-                            }
+                        try {
+                            generatedMemberAccessorsClassNameSet.add(
+                                    GizmoMemberAccessorEntityEnhancer.generateMethodAccessor(annotatedMember, indexView,
+                                            classOutput,
+                                            classInfo, methodInfo, transformers));
+                        } catch (ClassNotFoundException | NoSuchMethodException e) {
+                            throw new IllegalStateException("Failed to generate member accessor for the method (" +
+                                    methodInfo.name() + ") of the class (" +
+                                    classInfo.name() + ").", e);
                         }
                         break;
                     }
@@ -599,20 +582,27 @@ class OptaPlannerProcessor {
             SolutionDescriptor solutionDescriptor = SolutionDescriptor.buildSolutionDescriptor(DomainAccessType.REFLECTION,
                     solverConfig.getSolutionClass(), null, null, solverConfig.getEntityClassList());
             gizmoSolutionClonerClassNameSet.add(GizmoMemberAccessorEntityEnhancer.generateSolutionCloner(solutionDescriptor,
-                    debuggableClassOutput,
+                    classOutput,
                     indexView,
                     transformers));
         }
 
-        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet);
+        GizmoMemberAccessorEntityEnhancer.generateGizmoBeanFactory(beanClassOutput, reflectiveClassSet, transformers);
         GizmoMemberAccessorEntityEnhancer.generateKieRuntimeBuilder(beanClassOutput,
                 solverConfig, unremovableBeans, transformers);
         return new GeneratedGizmoClasses(generatedMemberAccessorsClassNameSet, gizmoSolutionClonerClassNameSet);
     }
 
-    private boolean shouldIgnoreMember(ClassInfo declaringClass) {
-        // SolutionDescriptor PLANNING_SCORE is also picked up as a candidate, which cause problems
-        return declaringClass.name().toString().startsWith(SolutionDescriptor.class.getName());
+    private boolean shouldIgnoreMember(AnnotationInstance annotationInstance) {
+        switch (annotationInstance.target().kind()) {
+            case FIELD:
+                return (annotationInstance.target().asField().flags() & Modifier.STATIC) != 0;
+            case METHOD:
+                return (annotationInstance.target().asMethod().flags() & Modifier.STATIC) != 0;
+            default:
+                throw new IllegalArgumentException(
+                        "Annotation (" + annotationInstance.name() + ") can only be applied to methods and fields.");
+        }
     }
 
     private void registerCustomClassesFromSolverConfig(SolverConfig solverConfig, Set<Class<?>> reflectiveClassSet) {

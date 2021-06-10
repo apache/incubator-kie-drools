@@ -26,6 +26,7 @@ import static org.objectweb.asm.Opcodes.PUTFIELD;
 import static org.objectweb.asm.Opcodes.RETURN;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
@@ -94,11 +95,28 @@ import io.quarkus.gizmo.ResultHandle;
 import io.quarkus.runtime.RuntimeValue;
 
 public class GizmoMemberAccessorEntityEnhancer {
-
+    private static Set<Class<?>> visitedClasses = new HashSet<>();
     private static Set<Field> visitedFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
     private final static String DROOLS_INITIALIZER_CLASS_NAME =
             OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
+
+    public static void makeConstructorAccessible(Class<?> clazz, BuildProducer<BytecodeTransformerBuildItem> transformers) {
+        try {
+            if (clazz.isInterface() || Modifier.isAbstract(clazz.getModifiers())) {
+                return;
+            }
+            Constructor<?> constructor = clazz.getDeclaredConstructor();
+            if (!Modifier.isPublic(constructor.getModifiers()) && !visitedClasses.contains(clazz)) {
+                transformers.produce(new BytecodeTransformerBuildItem(clazz.getName(),
+                        (className, classVisitor) -> new OptaPlannerConstructorEnhancingClassVisitor(classVisitor)));
+                visitedClasses.add(clazz);
+            }
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(
+                    "Class (" + clazz.getName() + ") must have a no-args constructor so it can be constructed by OptaPlanner.");
+        }
+    }
 
     public static void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
             BuildProducer<BytecodeTransformerBuildItem> transformers) throws ClassNotFoundException, NoSuchFieldException {
@@ -332,6 +350,7 @@ public class GizmoMemberAccessorEntityEnhancer {
             Set<Class<?>> deepClonedClassSet = deepCloningUtils.getDeepClonedClasses(solutionAndEntitySubclassSet);
 
             for (Class<?> deepCloningClass : deepClonedClassSet) {
+                makeConstructorAccessible(deepCloningClass, transformers);
                 if (!memoizedGizmoSolutionOrEntityDescriptorForClassMap.containsKey(deepCloningClass)) {
                     getGizmoSolutionOrEntityDescriptorForEntity(solutionDescriptor,
                             deepCloningClass,
@@ -408,7 +427,8 @@ public class GizmoMemberAccessorEntityEnhancer {
         return generatedGizmoSolutionClonerNameToInstanceMap;
     }
 
-    public static String generateGizmoBeanFactory(ClassOutput classOutput, Set<Class<?>> beanClasses) {
+    public static String generateGizmoBeanFactory(ClassOutput classOutput, Set<Class<?>> beanClasses,
+            BuildProducer<BytecodeTransformerBuildItem> transformers) {
         String generatedClassName = OptaPlannerGizmoBeanFactory.class.getName() + "$Implementation";
 
         ClassCreator classCreator = ClassCreator
@@ -425,6 +445,10 @@ public class GizmoMemberAccessorEntityEnhancer {
         BytecodeCreator currentBranch = methodCreator;
 
         for (Class<?> beanClass : beanClasses) {
+            if (beanClass.isInterface() || Modifier.isAbstract(beanClass.getModifiers())) {
+                continue;
+            }
+            makeConstructorAccessible(beanClass, transformers);
             ResultHandle beanClassHandle = currentBranch.loadClass(beanClass);
             ResultHandle isTarget = currentBranch.invokeVirtualMethod(
                     MethodDescriptor.ofMethod(Object.class, "equals", boolean.class, Object.class),
@@ -525,6 +549,31 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
         }
 
+    }
+
+    private static class OptaPlannerConstructorEnhancingClassVisitor extends ClassVisitor {
+        public OptaPlannerConstructorEnhancingClassVisitor(ClassVisitor outputClassVisitor) {
+            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
+        }
+
+        @Override
+        public MethodVisitor visitMethod(
+                int access,
+                String name,
+                String desc,
+                String signature,
+                String[] exceptions) {
+            if (name.equals("<init>")) {
+                return cv.visitMethod(
+                        ACC_PUBLIC,
+                        name,
+                        desc,
+                        signature,
+                        exceptions);
+            }
+            return cv.visitMethod(
+                    access, name, desc, signature, exceptions);
+        }
     }
 
     private static class OptaPlannerFieldEnhancingClassVisitor extends ClassVisitor {
