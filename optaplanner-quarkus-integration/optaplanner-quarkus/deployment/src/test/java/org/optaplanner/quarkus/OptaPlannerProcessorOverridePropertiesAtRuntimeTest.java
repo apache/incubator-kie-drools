@@ -46,12 +46,23 @@ import io.restassured.RestAssured;
 
 public class OptaPlannerProcessorOverridePropertiesAtRuntimeTest {
 
+    private static final String QUARKUS_VERSION = getRequiredProperty("version.io.quarkus");
+    private static final String PROJECT_VERSION = getRequiredProperty("project.version");
+
+    private static String getRequiredProperty(String name) {
+        final String v = System.getProperty(name);
+        if (v == null || v.isEmpty()) {
+            throw new IllegalStateException("The system property (" + name + ") has not been set.");
+        }
+        return v;
+    }
+
     @RegisterExtension
     static final QuarkusProdModeTest config = new QuarkusProdModeTest()
             .setForcedDependencies(Arrays.asList(
                     // TODO: Remove optaplanner-test when https://github.com/kiegroup/optaplanner/pull/1302 is merged?
-                    new AppArtifact("org.optaplanner", "optaplanner-test", "8.1.0.Final"),
-                    new AppArtifact("io.quarkus", "quarkus-resteasy", "1.11.0.Final")))
+                    new AppArtifact("org.optaplanner", "optaplanner-test", PROJECT_VERSION),
+                    new AppArtifact("io.quarkus", "quarkus-resteasy", QUARKUS_VERSION)))
             // We want to check if these are overridden at runtime
             .overrideConfigKey("quarkus.optaplanner.solver.termination.best-score-limit", "0")
             .overrideConfigKey("quarkus.optaplanner.solver.move-thread-count", "4")

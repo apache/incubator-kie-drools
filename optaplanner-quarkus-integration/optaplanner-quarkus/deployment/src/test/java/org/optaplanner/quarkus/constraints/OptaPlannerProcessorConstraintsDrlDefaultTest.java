@@ -45,7 +45,8 @@ public class OptaPlannerProcessorConstraintsDrlDefaultTest {
                             TestdataQuarkusSolution.class, KieRuntimeBuilderMock.class)
                     .addAsResource("org/optaplanner/quarkus/constraints/defaultConstraints.drl", "constraints.drl"))
             .addBuildChainCustomizer(buildChainBuilder -> buildChainBuilder.addBuildStep(context -> {
-                context.produce(CapabilityBuildItem.class, new CapabilityBuildItem("kogito-rules"));
+                context.produce(CapabilityBuildItem.class,
+                        new CapabilityBuildItem("kogito-rules"));
             }).produces(CapabilityBuildItem.class).build());
 
     @Inject

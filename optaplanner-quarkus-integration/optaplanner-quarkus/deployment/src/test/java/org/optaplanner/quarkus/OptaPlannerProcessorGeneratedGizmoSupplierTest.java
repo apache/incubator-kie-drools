@@ -59,6 +59,7 @@ public class OptaPlannerProcessorGeneratedGizmoSupplierTest {
 
     @RegisterExtension
     static final QuarkusUnitTest config = new QuarkusUnitTest()
+            .overrideConfigKey("quarkus.test.flat-class-path", "true")
             .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
                     .addAsResource("org/optaplanner/quarkus/gizmoSupplierTestSolverConfig.xml",
                             "solverConfig.xml")
