@@ -74,7 +74,7 @@ import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClone
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionClonerImplementor;
 import org.optaplanner.core.impl.domain.solution.cloner.gizmo.GizmoSolutionOrEntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
-import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
+import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
 import org.optaplanner.quarkus.gizmo.OptaPlannerDroolsInitializer;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
@@ -95,11 +95,13 @@ import io.quarkus.gizmo.ResultHandle;
 import io.quarkus.runtime.RuntimeValue;
 
 public class GizmoMemberAccessorEntityEnhancer {
+
+    private final static String DROOLS_INITIALIZER_CLASS_NAME =
+            OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
+
     private static Set<Class<?>> visitedClasses = new HashSet<>();
     private static Set<Field> visitedFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
-    private final static String DROOLS_INITIALIZER_CLASS_NAME =
-            OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
 
     public static void makeConstructorAccessible(Class<?> clazz, BuildProducer<BytecodeTransformerBuildItem> transformers) {
         try {
@@ -504,10 +506,12 @@ public class GizmoMemberAccessorEntityEnhancer {
                         methodCreator.invokeInterfaceMethod(MethodDescriptor.ofMethod(Instance.class, "get", Object.class),
                                 kieRuntimeBuilderInstanceResultHandle);
                 ResultHandle kieBaseExtractor = methodCreator.newInstance(
-                        MethodDescriptor.ofConstructor(KieBaseExtractor.class, KieRuntimeBuilder.class), kieRuntimeBuilder);
+                        MethodDescriptor.ofConstructor(KieRuntimeBuilderWrapper.class, KieRuntimeBuilder.class),
+                        kieRuntimeBuilder);
                 methodCreator.invokeVirtualMethod(
-                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setKieBaseExtractor", void.class,
-                                KieBaseExtractor.class),
+                        MethodDescriptor.ofMethod(ScoreDirectorFactoryConfig.class, "setGizmoKieRuntimeBuilderWrapper",
+                                void.class,
+                                KieRuntimeBuilderWrapper.class),
                         methodCreator.getMethodParam(0), kieBaseExtractor);
 
                 // Workaround for https://issues.redhat.com/browse/KOGITO-5101

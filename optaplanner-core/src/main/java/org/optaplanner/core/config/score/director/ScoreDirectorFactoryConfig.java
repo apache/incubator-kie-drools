@@ -36,7 +36,7 @@ import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
 import org.optaplanner.core.config.AbstractConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.io.jaxb.adapter.JaxbCustomPropertiesAdapter;
-import org.optaplanner.core.impl.score.director.drools.KieBaseExtractor;
+import org.optaplanner.core.impl.score.director.drools.KieRuntimeBuilderWrapper;
 
 @XmlType(propOrder = {
         "easyScoreCalculatorClass",
@@ -76,10 +76,9 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
     @XmlElement(name = "scoreDrlFile")
     protected List<File> scoreDrlFileList = null;
     @XmlTransient
-    protected KieBaseExtractor kieBaseExtractor = null;
+    protected KieRuntimeBuilderWrapper gizmoKieRuntimeBuilderWrapper = null;
 
     protected Boolean droolsAlphaNetworkCompilationEnabled = null;
-
     @XmlJavaTypeAdapter(JaxbCustomPropertiesAdapter.class)
     protected Map<String, String> kieBaseConfigurationProperties = null;
 
@@ -170,12 +169,12 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return droolsAlphaNetworkCompilationEnabled;
     }
 
-    public KieBaseExtractor getKieBaseExtractor() {
-        return kieBaseExtractor;
+    public KieRuntimeBuilderWrapper getGizmoKieRuntimeBuilderWrapper() {
+        return gizmoKieRuntimeBuilderWrapper;
     }
 
-    public void setKieBaseExtractor(KieBaseExtractor kieBaseExtractor) {
-        this.kieBaseExtractor = kieBaseExtractor;
+    public void setGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
+        this.gizmoKieRuntimeBuilderWrapper = kieRuntimeBuilderWrapper;
     }
 
     public void setDroolsAlphaNetworkCompilationEnabled(Boolean droolsAlphaNetworkCompilationEnabled) {
@@ -270,8 +269,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
         return this;
     }
 
-    public ScoreDirectorFactoryConfig withKieBaseExtractor(KieBaseExtractor kieBaseExtractor) {
-        this.kieBaseExtractor = kieBaseExtractor;
+    public ScoreDirectorFactoryConfig withGizmoKieRuntimeBuilderWrapper(KieRuntimeBuilderWrapper kieRuntimeBuilderWrapper) {
+        this.gizmoKieRuntimeBuilderWrapper = kieRuntimeBuilderWrapper;
         return this;
     }
 
@@ -312,7 +311,8 @@ public class ScoreDirectorFactoryConfig extends AbstractConfig<ScoreDirectorFact
                 scoreDrlList, inheritedConfig.getScoreDrlList());
         scoreDrlFileList = ConfigUtils.inheritMergeableListProperty(
                 scoreDrlFileList, inheritedConfig.getScoreDrlFileList());
-        kieBaseExtractor = ConfigUtils.inheritOverwritableProperty(kieBaseExtractor, inheritedConfig.getKieBaseExtractor());
+        gizmoKieRuntimeBuilderWrapper = ConfigUtils.inheritOverwritableProperty(gizmoKieRuntimeBuilderWrapper,
+                inheritedConfig.getGizmoKieRuntimeBuilderWrapper());
         droolsAlphaNetworkCompilationEnabled = ConfigUtils.inheritOverwritableProperty(
                 droolsAlphaNetworkCompilationEnabled, inheritedConfig.getDroolsAlphaNetworkCompilationEnabled());
         kieBaseConfigurationProperties = ConfigUtils.inheritMergeableMapProperty(

@@ -19,15 +19,19 @@ package org.optaplanner.core.impl.score.director.drools;
 import org.kie.api.KieBase;
 import org.kie.kogito.rules.KieRuntimeBuilder;
 
-public class KieBaseExtractor {
+/**
+ * Wraps {@link KieRuntimeBuilder} so the dependency on kogito-api is optional.
+ */
+public class KieRuntimeBuilderWrapper {
 
     private final KieRuntimeBuilder kieRuntimeBuilder;
 
-    public KieBaseExtractor(KieRuntimeBuilder kieRuntimeBuilder) {
+    public KieRuntimeBuilderWrapper(KieRuntimeBuilder kieRuntimeBuilder) {
         this.kieRuntimeBuilder = kieRuntimeBuilder;
     }
 
     public KieBase extractKieBase() {
         return kieRuntimeBuilder.getKieBase();
     }
+
 }
