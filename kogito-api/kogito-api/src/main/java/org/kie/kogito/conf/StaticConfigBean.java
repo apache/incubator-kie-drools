@@ -23,6 +23,7 @@ public class StaticConfigBean implements ConfigBean {
 
     private String serviceUrl;
     private boolean useCloudEvents = true;
+    private boolean failOnEmptyBean = false;
     private KogitoGAV gav;
 
     public StaticConfigBean() {
@@ -42,6 +43,10 @@ public class StaticConfigBean implements ConfigBean {
         this.useCloudEvents = useCloudEvents;
     }
 
+    protected void setFailOnEmptyBean(boolean failOnEmptyBean) {
+        this.failOnEmptyBean = failOnEmptyBean;
+    }
+
     public void setGav(KogitoGAV gav) {
         this.gav = gav;
     }
@@ -59,5 +64,10 @@ public class StaticConfigBean implements ConfigBean {
     @Override
     public Optional<KogitoGAV> getGav() {
         return Optional.ofNullable(gav);
+    }
+
+    @Override
+    public boolean failOnEmptyBean() {
+        return failOnEmptyBean;
     }
 }

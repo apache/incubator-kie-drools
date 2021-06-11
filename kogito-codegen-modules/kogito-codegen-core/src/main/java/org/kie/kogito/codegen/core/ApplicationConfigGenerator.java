@@ -74,6 +74,10 @@ public class ApplicationConfigGenerator {
 
         generatedFiles.add(generateApplicationConfigDescriptor(configClassNames));
 
+        if (context.hasDI()) {
+            generatedFiles.add(ObjectMapperGenerator.generate(context));
+        }
+
         return generatedFiles;
     }
 

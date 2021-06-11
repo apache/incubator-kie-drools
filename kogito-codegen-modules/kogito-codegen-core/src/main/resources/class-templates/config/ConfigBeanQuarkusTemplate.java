@@ -24,11 +24,15 @@ public class ConfigBean extends org.kie.kogito.conf.StaticConfigBean {
 
     @org.eclipse.microprofile.config.inject.ConfigProperty(name = "kogito.messaging.as-cloudevents", defaultValue="true")
     boolean useCloudEvents;
+    
+    @org.eclipse.microprofile.config.inject.ConfigProperty(name = "kogito.jackson.fail-on-empty-bean", defaultValue="false")
+    boolean failOnEmptyBean;
 
     @javax.annotation.PostConstruct
     protected void init() {
         setServiceUrl(kogitoService.orElse(""));
         setCloudEvents(useCloudEvents);
+        setFailOnEmptyBean(failOnEmptyBean);
         setGav($gav$);
     }
 }

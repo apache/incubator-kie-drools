@@ -24,6 +24,10 @@ public interface ConfigBean extends KogitoConfig {
 
     boolean useCloudEvents();
 
+    default boolean failOnEmptyBean() {
+        return false;
+    }
+
     String getServiceUrl();
 
     Optional<KogitoGAV> getGav();
