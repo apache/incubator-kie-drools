@@ -1533,6 +1533,7 @@ public class TimerAndCalendarTest {
                 "then \n" +
                 "  System.out.println(\"--- FireAtWill, adding 0 to list\");\n" +
                 "  list.add( 0 );\n" +
+                "  System.out.println(\"--- List is now: \" + list);\n" +
                 "end\n" +
                 "\n" +
                 "rule ImDone\n" +
@@ -1558,6 +1559,7 @@ public class TimerAndCalendarTest {
             System.out.println("--- Sleeping for 350ms");
             Thread.sleep(350);
             System.out.println("--- Slept for 350ms");
+            System.out.println("--- Assert1 List " + list + " size is " + list.size());
             assertEquals(2, list.size()); // delay 0, repeat after 100
             assertEquals(asList(0, 0), list);
 
@@ -1568,7 +1570,9 @@ public class TimerAndCalendarTest {
             System.out.println("--- Slept for 200ms");
             ksession.delete(handle);
             System.out.println("--- Deleted trigger");
+            System.out.println("--- List " + list + " size is " + list.size());
             assertEquals(2, list.size()); // halted, no more rule firing
+            System.out.println("--- Assert1 List " + list + " size is " + list.size());
 
             System.out.println("--- Starting fireUntilHalt new thread");
             new Thread(ksession::fireUntilHalt).start();
