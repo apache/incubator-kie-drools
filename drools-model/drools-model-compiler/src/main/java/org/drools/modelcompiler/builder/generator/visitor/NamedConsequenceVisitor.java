@@ -138,18 +138,16 @@ public class NamedConsequenceVisitor {
     }
 
     private PatternDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
-        BaseDescr patternRelated = null;
+        PatternDescr patternRelated = null;
         for (BaseDescr b : parent.getDescrs()) {
             if (b.equals(desc)) {
                 break;
             }
-            if (b instanceof ConditionalBranchDescr) {
-                // multiple ConditionalBranchDescr can be in a row. So keep the previous PatternDescr
-            } else {
-                patternRelated = b;
+            if (b instanceof PatternDescr) {
+                patternRelated = (PatternDescr) b; // keep the closest PatternDescr
             }
         }
-        return patternRelated instanceof PatternDescr ? (PatternDescr) patternRelated : null;
+        return patternRelated;
     }
 
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
