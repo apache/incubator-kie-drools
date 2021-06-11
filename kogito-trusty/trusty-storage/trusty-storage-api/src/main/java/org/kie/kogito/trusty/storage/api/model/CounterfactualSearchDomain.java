@@ -42,16 +42,16 @@ public class CounterfactualSearchDomain extends TypedVariable<CounterfactualSear
         return new CounterfactualSearchDomain(TypedValue.Kind.COLLECTION, name, typeRef, components, isFixed, domain);
     }
 
-    public static CounterfactualSearchDomain buildStructure(String name, String typeRef, Collection<CounterfactualSearchDomain> components,
-            Boolean isFixed,
-            CounterfactualDomain domain) {
-        return new CounterfactualSearchDomain(TypedValue.Kind.STRUCTURE, name, typeRef, components, isFixed, domain);
+    public static CounterfactualSearchDomain buildStructure(String name, String typeRef, Collection<CounterfactualSearchDomain> components) {
+        return new CounterfactualSearchDomain(TypedValue.Kind.STRUCTURE, name, typeRef, components, true, null);
     }
 
-    public static CounterfactualSearchDomain buildUnit(String name, String typeRef,
-            Boolean isFixed,
-            CounterfactualDomain domain) {
-        return new CounterfactualSearchDomain(TypedValue.Kind.UNIT, name, typeRef, null, isFixed, domain);
+    public static CounterfactualSearchDomain buildFixedUnit(String name, String typeRef) {
+        return new CounterfactualSearchDomain(TypedValue.Kind.UNIT, name, typeRef, null, true, null);
+    }
+
+    public static CounterfactualSearchDomain buildSearchDomainUnit(String name, String typeRef, CounterfactualDomain domain) {
+        return new CounterfactualSearchDomain(TypedValue.Kind.UNIT, name, typeRef, null, false, domain);
     }
 
     public CounterfactualSearchDomain() {

@@ -23,7 +23,9 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
         property = CounterfactualDomainDto.TYPE_FIELD)
 @JsonSubTypes({
         @JsonSubTypes.Type(value = CounterfactualDomainRangeDto.class, name = CounterfactualDomainRangeDto.TYPE),
-        @JsonSubTypes.Type(value = CounterfactualDomainCategoricalDto.class, name = CounterfactualDomainCategoricalDto.TYPE)
+        @JsonSubTypes.Type(value = CounterfactualDomainCategoricalDto.class, name = CounterfactualDomainCategoricalDto.TYPE),
+        @JsonSubTypes.Type(value = CounterfactualDomainFixedDto.class, name = CounterfactualDomainFixedDto.TYPE),
+
 })
 public abstract class CounterfactualDomainDto {
 

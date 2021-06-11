@@ -18,12 +18,14 @@ package org.kie.kogito.trusty.service.common;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -48,15 +50,23 @@ import org.kie.kogito.trusty.storage.api.model.CounterfactualExplainabilityResul
 import org.kie.kogito.trusty.storage.api.model.CounterfactualSearchDomain;
 import org.kie.kogito.trusty.storage.api.model.DMNModelWithMetadata;
 import org.kie.kogito.trusty.storage.api.model.Decision;
+import org.kie.kogito.trusty.storage.api.model.DecisionInput;
+import org.kie.kogito.trusty.storage.api.model.DecisionOutcome;
 import org.kie.kogito.trusty.storage.api.model.Execution;
+import org.kie.kogito.trusty.storage.api.model.TypedVariable;
 import org.kie.kogito.trusty.storage.api.model.TypedVariableWithValue;
 import org.kie.kogito.trusty.storage.common.TrustyStorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+
 import static java.util.Arrays.asList;
 import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 import static org.kie.kogito.persistence.api.query.SortDirection.DESC;
+import static org.kie.kogito.trusty.service.common.TypedValueStructureUtils.isStructureIdentical;
 
 @ApplicationScoped
 public class TrustyServiceImpl implements TrustyService {
@@ -214,6 +224,26 @@ public class TrustyServiceImpl implements TrustyService {
             List<CounterfactualSearchDomain> searchDomains) {
         Decision decision = getDecisionById(executionId);
 
+        //This is returned as null under Redis, so play safe
+        Collection<DecisionInput> decisionInputs = Objects.nonNull(decision.getInputs()) ? decision.getInputs() : Collections.emptyList();
+        if (!isStructureIdentical(decisionInputs.stream().map(DecisionInput::getValue).collect(Collectors.toList()), searchDomains)) {
+            String error = buildCounterfactualErrorMessage(String.format("The structure of the Search Domains do not match the structure of the original Inputs for decision with ID %s.", executionId),
+                    "Decision inputs:-", decisionInputs,
+                    "Search domains:-", searchDomains);
+            LOG.error(error);
+            throw new IllegalArgumentException(error);
+        }
+
+        //This is returned as null under Redis, so play safe
+        Collection<DecisionOutcome> decisionOutcomes = Objects.nonNull(decision.getOutcomes()) ? decision.getOutcomes() : Collections.emptyList();
+        if (!isStructureIdentical(decisionOutcomes.stream().map(DecisionOutcome::getOutcomeResult).collect(Collectors.toList()), goals)) {
+            String error = buildCounterfactualErrorMessage(String.format("The structure of the Goals do not match the structure of the original Outcomes for decision with ID %s.", executionId),
+                    "Decision outcomes:-", decisionOutcomes,
+                    "Goals:-", goals);
+            LOG.error(error);
+            throw new IllegalArgumentException(error);
+        }
+
         Map<String, TypedValue> originalInputs = decision.getInputs() != null
                 ? decision.getInputs().stream()
                         .collect(HashMap::new, (m, v) -> m.put(v.getName(), MessagingUtils.modelToTracingTypedValue(v.getValue())), HashMap::putAll)
@@ -237,6 +267,23 @@ public class TrustyServiceImpl implements TrustyService {
                 originalInputs,
                 requiredOutputs,
                 searchDomainDtos));
+    }
+
+    private <T extends TypedVariable<T>> String buildCounterfactualErrorMessage(String title,
+            String decisionValuesTitle,
+            Object decisionValues,
+            String counterfactualValuesTitle,
+            List<T> counterfactualValues) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
+        StringBuilder sb = new StringBuilder(title).append("\n");
+        try {
+            sb.append(decisionValuesTitle).append("\n").append(writer.writeValueAsString(decisionValues)).append("\n");
+            sb.append(counterfactualValuesTitle).append("\n").append(writer.writeValueAsString(counterfactualValues)).append("\n");
+        } catch (JsonProcessingException jpe) {
+            //Swallow
+        }
+        return sb.toString();
     }
 
     @Override

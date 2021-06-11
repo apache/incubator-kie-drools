@@ -63,6 +63,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.IntNode;
+import com.fasterxml.jackson.databind.node.TextNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -403,7 +404,20 @@ public class TrustyServiceTest {
         when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
         when(decisionStorage.get(eq(TEST_EXECUTION_ID))).thenReturn(TrustyServiceTestUtils.buildCorrectDecision(TEST_EXECUTION_ID));
 
-        trustyService.requestCounterfactuals(TEST_EXECUTION_ID, Collections.emptyList(), Collections.emptyList());
+        // The Goals and Search Domain structures must match those of the original decision
+        // See https://issues.redhat.com/browse/FAI-486
+        trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
+                List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
+                        List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
+                                TypedVariableWithValue.buildUnit("Points", "number", new IntNode(0)))),
+                        TypedVariableWithValue.buildUnit("Should the driver be suspended?", "string", new TextNode("No"))),
+                List.of(CounterfactualSearchDomain.buildStructure("Violation", "tViolation",
+                        List.of(CounterfactualSearchDomain.buildFixedUnit("Type", "string"),
+                                CounterfactualSearchDomain.buildFixedUnit("Actual Speed", "number"),
+                                CounterfactualSearchDomain.buildFixedUnit("Speed Limit", "number"))),
+                        CounterfactualSearchDomain.buildStructure("Driver", "tDriver",
+                                List.of(CounterfactualSearchDomain.buildFixedUnit("Age", "number"),
+                                        CounterfactualSearchDomain.buildFixedUnit("Points", "number")))));
 
         verify(counterfactualStorage).put(anyString(), counterfactualArgumentCaptor.capture());
         CounterfactualExplainabilityRequest counterfactual = counterfactualArgumentCaptor.getValue();
@@ -423,7 +437,20 @@ public class TrustyServiceTest {
         when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
         when(decisionStorage.get(eq(TEST_EXECUTION_ID))).thenReturn(TrustyServiceTestUtils.buildCorrectDecision(TEST_EXECUTION_ID));
 
-        trustyService.requestCounterfactuals(TEST_EXECUTION_ID, Collections.emptyList(), Collections.emptyList());
+        // The Goals and Search Domain structures must match those of the original decision
+        // See https://issues.redhat.com/browse/FAI-486
+        trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
+                List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
+                        List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
+                                TypedVariableWithValue.buildUnit("Points", "number", new IntNode(0)))),
+                        TypedVariableWithValue.buildUnit("Should the driver be suspended?", "string", new TextNode("No"))),
+                List.of(CounterfactualSearchDomain.buildStructure("Violation", "tViolation",
+                        List.of(CounterfactualSearchDomain.buildFixedUnit("Type", "string"),
+                                CounterfactualSearchDomain.buildFixedUnit("Actual Speed", "number"),
+                                CounterfactualSearchDomain.buildFixedUnit("Speed Limit", "number"))),
+                        CounterfactualSearchDomain.buildStructure("Driver", "tDriver",
+                                List.of(CounterfactualSearchDomain.buildFixedUnit("Age", "number"),
+                                        CounterfactualSearchDomain.buildFixedUnit("Points", "number")))));
 
         verify(explainabilityRequestProducerMock).sendEvent(explainabilityEventArgumentCaptor.capture());
         BaseExplainabilityRequestDto event = explainabilityEventArgumentCaptor.getValue();

@@ -23,6 +23,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainFixedDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainCollectionDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainStructureDto;
@@ -49,7 +53,7 @@ public class MessagingUtils {
      */
 
     public static TypedValue modelToTracingTypedValue(TypedVariableWithValue value) {
-        if (value == null) {
+        if (Objects.isNull(value)) {
             return null;
         }
         switch (value.getKind()) {
@@ -64,14 +68,14 @@ public class MessagingUtils {
     }
 
     public static Collection<TypedValue> modelToTracingTypedValueCollection(Collection<TypedVariableWithValue> input) {
-        if (input == null) {
+        if (Objects.isNull(input)) {
             return null;
         }
         return input.stream().map(MessagingUtils::modelToTracingTypedValue).collect(Collectors.toList());
     }
 
     public static Map<String, TypedValue> modelToTracingTypedValueMap(Collection<TypedVariableWithValue> input) {
-        if (input == null) {
+        if (Objects.isNull(input)) {
             return null;
         }
         return input.stream()
@@ -80,7 +84,7 @@ public class MessagingUtils {
     }
 
     public static CounterfactualSearchDomainDto modelToCounterfactualSearchDomainDto(CounterfactualSearchDomain value) {
-        if (value == null) {
+        if (Objects.isNull(value)) {
             return null;
         }
         switch (value.getKind()) {
@@ -94,26 +98,28 @@ public class MessagingUtils {
         throw new IllegalStateException("Can't convert CounterfactualSearchDomain of kind " + value.getKind() + " to CounterfactualSearchDomainDto");
     }
 
-    private static org.kie.kogito.explainability.api.CounterfactualDomainDto modelToCounterfactualDomain(CounterfactualDomain domain) {
-        if (domain instanceof CounterfactualDomainCategorical) {
+    private static CounterfactualDomainDto modelToCounterfactualDomain(CounterfactualDomain domain) {
+        if (Objects.isNull(domain)) {
+            return new CounterfactualDomainFixedDto();
+        } else if (domain instanceof CounterfactualDomainCategorical) {
             CounterfactualDomainCategorical categorical = (CounterfactualDomainCategorical) domain;
-            return new org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto(categorical.getCategories());
+            return new CounterfactualDomainCategoricalDto(categorical.getCategories());
         } else if (domain instanceof CounterfactualDomainRange) {
             CounterfactualDomainRange range = (CounterfactualDomainRange) domain;
-            return new org.kie.kogito.explainability.api.CounterfactualDomainRangeDto(range.getLowerBound(), range.getUpperBound());
+            return new CounterfactualDomainRangeDto(range.getLowerBound(), range.getUpperBound());
         }
         throw new IllegalStateException("Can't convert CounterfactualDomain of type '" + domain.getClass().getName() + "' to org.kie.kogito.explainability.api.CounterfactualDomain");
     }
 
     private static Collection<CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoCollection(Collection<CounterfactualSearchDomain> searchDomains) {
-        if (searchDomains == null) {
+        if (Objects.isNull(searchDomains)) {
             return Collections.emptyList();
         }
         return searchDomains.stream().map(MessagingUtils::modelToCounterfactualSearchDomainDto).collect(Collectors.toList());
     }
 
     private static Map<String, CounterfactualSearchDomainDto> modelToCounterfactualSearchDomainDtoMap(Collection<CounterfactualSearchDomain> searchDomains) {
-        if (searchDomains == null) {
+        if (Objects.isNull(searchDomains)) {
             return Collections.emptyMap();
         }
         return searchDomains.stream()

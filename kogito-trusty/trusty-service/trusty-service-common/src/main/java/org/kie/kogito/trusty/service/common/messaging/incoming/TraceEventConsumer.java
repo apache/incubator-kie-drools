@@ -31,8 +31,10 @@ import org.kie.kogito.trusty.storage.api.StorageExceptionsProvider;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
 
 import io.cloudevents.CloudEvent;
 
@@ -40,6 +42,9 @@ import io.cloudevents.CloudEvent;
 public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
 
     private static final Logger LOG = LoggerFactory.getLogger(TraceEventConsumer.class);
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final ObjectWriter WRITER = MAPPER.writerWithDefaultPrettyPrinter();
+
     private static final TypeReference<TraceEvent> CLOUD_EVENT_TYPE = new TypeReference<>() {
     };
 
@@ -65,6 +70,9 @@ public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
         if (traceEventType == TraceEventType.DMN) {
             String sourceUrl = cloudEvent.getSource().toString();
             String serviceUrl = payload.getHeader().getResourceId().getServiceUrl();
+
+            logEvent(payload);
+
             service.processDecision(cloudEvent.getId(),
                     TraceEventConverter.toDecision(payload, sourceUrl, serviceUrl));
         } else {
@@ -75,5 +83,15 @@ public class TraceEventConsumer extends BaseEventConsumer<TraceEvent> {
     @Override
     protected TypeReference<TraceEvent> getEventType() {
         return CLOUD_EVENT_TYPE;
+    }
+
+    private void logEvent(TraceEvent event) {
+        if (LOG.isTraceEnabled()) {
+            try {
+                LOG.trace(String.format("Incoming event:-\n%s", WRITER.writeValueAsString(event)));
+            } catch (JsonProcessingException jpe) {
+                //Swallow
+            }
+        }
     }
 }

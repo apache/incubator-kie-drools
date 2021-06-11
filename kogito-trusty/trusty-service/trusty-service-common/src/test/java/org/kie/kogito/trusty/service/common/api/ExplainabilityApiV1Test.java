@@ -137,9 +137,8 @@ public class ExplainabilityApiV1Test {
                 "string",
                 new TextNode("hello"));
         CounterfactualSearchDomain searchDomain =
-                CounterfactualSearchDomain.buildUnit("unit",
+                CounterfactualSearchDomain.buildSearchDomainUnit("unit",
                         "string",
-                        true,
                         new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
         when(trustyService.getCounterfactualRequest(anyString(), anyString()))
                 .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
@@ -169,9 +168,8 @@ public class ExplainabilityApiV1Test {
                 "string",
                 new TextNode("hello"));
         CounterfactualSearchDomain searchDomain =
-                CounterfactualSearchDomain.buildUnit("unit",
+                CounterfactualSearchDomain.buildSearchDomainUnit("unit",
                         "string",
-                        true,
                         new CounterfactualDomainCategorical(List.of(new TextNode("hello"), new TextNode("goodbye"))));
 
         CounterfactualExplainabilityResult solution1 = new CounterfactualExplainabilityResult(EXECUTION_ID,
