@@ -29,6 +29,7 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -604,6 +605,74 @@ public class MvelDialectTest extends BaseModelTest {
     }
 
     @Test
+    public void testBigDecimalAccumulate() {
+        // DROOLS-6366
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    accumulate( Person($m : money); $maxMoney:max($m))\n" +
+                "    $john : Person(money == $maxMoney)\n" +
+                "then\n" +
+                "    results.add($john);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(john);
+    }
+
+    @Test
+    public void testBigDecimalAccumulateWithFrom() {
+        // DROOLS-6366
+        String drl =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "import " + BigDecimal.class.getCanonicalName() + "\n" +
+                "global java.util.List results;\n" +
+                "dialect \"mvel\"\n" +
+                "rule R\n" +
+                "when\n" +
+                "    $maxMoney : BigDecimal() from accumulate( Person($m : money); max($m))\n" +
+                "    $john : Person(money == $maxMoney)\n" +
+                "then\n" +
+                "    results.add($john);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(drl);
+
+        List<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 90 ) );
+
+        Person mark = new Person("Mark", 30);
+        mark.setMoney( new BigDecimal( 80 ) );
+
+        ksession.insert(john);
+        ksession.insert(mark);
+
+        assertEquals(1, ksession.fireAllRules());
+        assertThat(results).containsExactly(john);
+    }
+
+    @Test
     public void testCompoundOperatorBigDecimalConstant() throws Exception {
         // DROOLS-5894
         String drl =
@@ -1096,5 +1165,119 @@ public class MvelDialectTest extends BaseModelTest {
         assertEquals( 1, ksession.fireAllRules() );
 
         assertThat(results).containsOnly("Address");
+    }
+
+    @Test
+    public void testBigDecimalPromotionUsedAsArgument() {
+        // DROOLS-6362
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Address.class.getCanonicalName() + ";" +
+                "import static " + Person.class.getCanonicalName() + ".isEven;" +
+                "import static " + Person.class.getCanonicalName() + ".isEvenShort;" +
+                "import static " + Person.class.getCanonicalName() + ".isEvenDouble;" +
+                "import static " + Person.class.getCanonicalName() + ".isEvenFloat;" +
+                "global java.util.List results;" +
+                "dialect \"mvel\"\n" +
+                "rule \"isEven\"\n" +
+                "    when\n" +
+                "        $p : Person(" +
+                                    "isEven($p.money), " +
+                                    "isEvenShort($p.money), " +
+                                    "isEvenDouble($p.money), " +
+                                    "isEvenFloat($p.money), " +
+                                    "$m : money)\n" +
+                "    then\n" +
+                "       if (" +
+                        "   $p.isEven($p.money) " +
+                        "   && $p.isEven($m) " +
+                        "   && isEven($p.money) " +
+                        "   && isEven($m)" +
+                        "   && $p.isEvenShort($p.money) " +
+                        "   && $p.isEvenShort($m) " +
+                        "   && isEvenShort($p.money) " +
+                        "   && isEvenShort($m)" +
+                        "   && $p.isEvenDouble($p.money) " +
+                        "   && $p.isEvenDouble($m) " +
+                        "   && isEvenDouble($p.money) " +
+                        "   && isEvenDouble($m)" +
+                        "   && $p.isEvenFloat($p.money) " +
+                        "   && $p.isEvenFloat($m) " +
+                        "   && isEvenFloat($p.money) " +
+                        "   && isEvenFloat($m)" +
+                        ") {\n" +
+                        "" +
+                        "  results.add($p);\n" +
+                        "}\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ArrayList<Person> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 30);
+        john.setMoney( new BigDecimal( 3 ) );
+
+        Person leonardo = new Person("Leonardo", 4);
+        leonardo.setMoney( new BigDecimal( 4 ) );
+
+        ksession.insert(john);
+        ksession.insert(leonardo);
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        assertThat(results).containsOnly(leonardo);
+    }
+
+    @Test
+    public void testBigDecimalPromotionUsingDefinedFunctionAndDeclaredType() {
+        // DROOLS-6362
+        String str = "package com.sample\n" +
+                "import " + Person.class.getName() + ";\n" +
+                "import " + BigDecimal.class.getName() + ";\n" +
+                "global java.util.List results;" +
+                "declare POJOPerson\n" +
+                "    name : String\n" +
+                "    age : int\n" +
+                "    salary : BigDecimal\n" +
+                "end\n" +
+                "function int myFunction(int value) {\n" +
+                "  if (value == 10) {\n" +
+                "    return 1;\n" +
+                "  }\n" +
+                "  return 0;\n" +
+                "}\n" +
+                "dialect \"mvel\"\n" +
+                "rule create\n" +
+                "    when\n" +
+                "        $p: Person()\n" +
+                "    then\n" +
+                "       insert(new POJOPerson($p.name, $p.age, $p.money))\n" +
+                "end\n" +
+                "rule R1\n" +
+                "    when\n" +
+                "        $p: POJOPerson(myFunction(salary) == 1)\n" +
+                "    then\n" +
+                "       if (myFunction($p.salary) == 1) {" +
+                "           results.add($p.name);\n" +
+                        "}\n" +
+                "end\n";
+
+
+        KieSession ksession = getKieSession( str );
+
+        ArrayList<String> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person john = new Person("John", 10).setMoney(BigDecimal.valueOf(10));
+        ksession.insert(john);
+
+        Person leonardo = new Person("Leonardo", 4).setMoney(BigDecimal.valueOf(4));
+        ksession.insert(leonardo);
+
+        int rulesFired = ksession.fireAllRules();
+        assertEquals( 3, rulesFired);
+        assertThat(results).containsExactly("John");
     }
 }

@@ -62,9 +62,7 @@ import org.drools.modelcompiler.builder.errors.MvelCompilationError;
 import org.drools.modelcompiler.consequence.DroolsImpl;
 import org.drools.mvelcompiler.CompiledBlockResult;
 import org.drools.mvelcompiler.ModifyCompiler;
-import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.MvelCompilerException;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.ast.NodeList.nodeList;
@@ -77,7 +75,6 @@ import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_META
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -194,16 +191,9 @@ public class Consequence {
 
     private MethodCallExpr createExecuteCallMvel(String consequenceString, BlockStmt ruleVariablesBlock, Set<String> usedDeclarationInRHS, MethodCallExpr onCall) {
         String mvelBlock = addCurlyBracesToBlock(consequenceString);
-        MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-
-        for(DeclarationSpec d : context.getAllDeclarations()) {
-            Class<?> clazz = getClassFromType(context.getTypeResolver(), d.getRawType());
-            mvelCompilerContext.addDeclaration(d.getBindingId(), clazz);
-        }
-
         CompiledBlockResult compile;
         try {
-            compile = new MvelCompiler(mvelCompilerContext).compileStatement(mvelBlock);
+            compile = DrlxParseUtil.createMvelCompiler(context).compileStatement(mvelBlock);
         } catch (MvelCompilerException e) {
             context.addCompilationError(new CompilationProblemErrorResult(new MvelCompilationError(e)) );
             return null;
@@ -368,7 +358,10 @@ public class Consequence {
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
-                        ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
+                        AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
+                        if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
+                            ruleBlock.addStatement(bitMaskAssign);
+                        }
                     }
 
                     updateExpr.addArgument( "mask_" + updatedVar );

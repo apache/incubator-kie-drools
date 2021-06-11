@@ -1,0 +1,28 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="3">
+    <DataField name="result" optype="continuous" dataType="double"/>
+    <DataField name="x" optype="continuous" dataType="double"/>
+    <DataField name="y" optype="categorical" dataType="string">
+      <Value value="classA"/>
+      <Value value="classB"/>
+      <Value value="classC"/>
+    </DataField>
+  </DataDictionary>
+  <RegressionModel modelName="MissingDataRegression" functionName="regression" algorithmName="least squares">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="x" usageType="active" missingValueReplacement="5"/>
+      <MiningField name="y" usageType="active" missingValueReplacement="classB"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>
+    </Output>
+    <RegressionTable intercept="22">
+      <NumericPredictor name="x" exponent="1" coefficient="2"/>
+      <CategoricalPredictor name="y" value="classA" coefficient="0"/>
+      <CategoricalPredictor name="y" value="classB" coefficient="20"/>
+      <CategoricalPredictor name="y" value="classC" coefficient="40"/>
+    </RegressionTable>
+  </RegressionModel>
+</PMML>

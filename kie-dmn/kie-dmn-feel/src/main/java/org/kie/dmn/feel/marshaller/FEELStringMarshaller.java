@@ -81,7 +81,7 @@ public class FEELStringMarshaller implements FEELMarshaller<String> {
             return null;
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.NUMBER ) ) {
             return BuiltInFunctions.getFunction( NumberFunction.class ).invoke( value, null, null ).cata( justNull(), Function.identity() );
-        } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.STRING ) ) {
+        } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.STRING ) || feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.UNKNOWN ) ) {
             return value;
         } else if ( feelType.equals( org.kie.dmn.feel.lang.types.BuiltInType.DATE ) ) {
             return BuiltInFunctions.getFunction( DateFunction.class ).invoke( value ).cata( justNull(), Function.identity() );

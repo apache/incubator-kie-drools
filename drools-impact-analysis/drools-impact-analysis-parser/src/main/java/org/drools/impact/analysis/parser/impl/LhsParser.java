@@ -116,6 +116,8 @@ public class LhsParser {
             constraint.setProperty( expr.getFieldName() );
         } else if (expr.getExpression().isLiteralExpr()) {
             constraint.setValue( literalToValue( expr.getExpression().asLiteralExpr() ) );
+        } else if (expr.getExpression().isNameExpr() && expr.getExpression().asNameExpr().getNameAsString().equals("_this")) {
+            constraint.setProperty("this");
         }
     }
 

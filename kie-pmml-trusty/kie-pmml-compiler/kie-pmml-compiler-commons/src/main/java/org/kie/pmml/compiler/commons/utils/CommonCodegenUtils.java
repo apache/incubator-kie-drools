@@ -15,6 +15,9 @@
  */
 package org.kie.pmml.compiler.commons.utils;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +42,7 @@ import com.github.javaparser.ast.expr.DoubleLiteralExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
+import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -56,6 +60,7 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -188,11 +193,27 @@ public class CommonCodegenUtils {
     public static void addMapPopulation(final Map<String, MethodDeclaration> toAdd,
                                         final BlockStmt body,
                                         final String mapName) {
-        toAdd.forEach((s, methodDeclaration) -> {
-            MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
-            methodReferenceExpr.setScope(new ThisExpr());
-            methodReferenceExpr.setIdentifier(methodDeclaration.getNameAsString());
-            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(s), methodReferenceExpr);
+        Map<String, Expression> toAddExpr = toAdd.entrySet().stream().collect(Collectors.toMap(
+                Map.Entry::getKey,
+                entry -> {
+                    MethodReferenceExpr methodReferenceExpr = new MethodReferenceExpr();
+                    methodReferenceExpr.setScope(new ThisExpr());
+                    methodReferenceExpr.setIdentifier(entry.getValue().getNameAsString());
+                    return methodReferenceExpr;
+                }
+        ));
+        addMapPopulationExpressions(toAddExpr, body, mapName);
+    }
+
+    /**
+     * For every entry in the given map, add a "put" statement to the provided {@link BlockStmt} body.
+     * @param toAdd the map containing the input values to process
+     * @param body the destination body
+     * @param mapName the name of the map to populate in the codegenerated statements
+     */
+    public static void addMapPopulationExpressions(Map<String, Expression> toAdd, BlockStmt body, String mapName) {
+        toAdd.forEach((key, value) -> {
+            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(key), value);
             body.addStatement(new MethodCallExpr(new NameExpr(mapName), "put", expressions));
         });
     }
@@ -700,6 +721,51 @@ public class CommonCodegenUtils {
      */
     public static Expression literalExprFrom(String input) {
         return input == null ? new NullLiteralExpr() : new StringLiteralExpr(input);
+    }
+
+    /**
+     * Return a new {@link Expression} containing an object with a specific value of a specific {@link DATA_TYPE}.
+     * This can either be a new object (for date and time) or a literal.
+     * @param type the {@link DATA_TYPE} of the specified value
+     * @param value the value represented as {@link String}
+     * @return the new {@link Expression}
+     */
+    public static Expression literalExprFrom(DATA_TYPE type, String value) {
+        if (type == null) {
+            throw new IllegalArgumentException("Invalid \"null\" data type");
+        }
+        if (value == null) {
+            return new NullLiteralExpr();
+        }
+        switch (type) {
+            case STRING:
+                return new StringLiteralExpr(value);
+            case INTEGER:
+                return new IntegerLiteralExpr(value);
+            case DOUBLE:
+            case FLOAT:
+                return new DoubleLiteralExpr(value);
+            case BOOLEAN:
+                return new BooleanLiteralExpr(Boolean.parseBoolean(value));
+            case DATE:
+                return new MethodCallExpr(new NameExpr(LocalDate.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+            case TIME:
+                return new MethodCallExpr(new NameExpr(LocalTime.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+            case DATE_TIME:
+                return new MethodCallExpr(new NameExpr(LocalDateTime.class.getName()), "parse", NodeList.nodeList(new StringLiteralExpr(value)));
+            case DATE_DAYS_SINCE_0:
+            case DATE_DAYS_SINCE_1960:
+            case DATE_DAYS_SINCE_1970:
+            case DATE_DAYS_SINCE_1980:
+            case TIME_SECONDS:
+            case DATE_TIME_SECONDS_SINCE_0:
+            case DATE_TIME_SECONDS_SINCE_1960:
+            case DATE_TIME_SECONDS_SINCE_1970:
+            case DATE_TIME_SECONDS_SINCE_1980:
+                return new LongLiteralExpr(value);
+            default:
+                throw new IllegalArgumentException("Can't create literal from " + type.getName() + " data type");
+        }
     }
 
     /**

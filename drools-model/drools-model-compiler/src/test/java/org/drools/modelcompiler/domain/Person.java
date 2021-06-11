@@ -277,4 +277,20 @@ public class Person extends AbstractReactiveObject {
     public static Person identityFunction(Person p) {
         return p;
     }
+
+    public static boolean isEven( int i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenShort( short i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenDouble( double i ){
+        return (i % 2) == 0;
+    }
+
+    public static boolean isEvenFloat( float i ){
+        return (i % 2) == 0;
+    }
 }

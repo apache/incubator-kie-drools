@@ -143,7 +143,11 @@ public class NamedConsequenceVisitor {
             if (b.equals(desc)) {
                 break;
             }
-            patternRelated = b;
+            if (b instanceof ConditionalBranchDescr) {
+                // multiple ConditionalBranchDescr can be in a row. So keep the previous PatternDescr
+            } else {
+                patternRelated = b;
+            }
         }
         return patternRelated instanceof PatternDescr ? (PatternDescr) patternRelated : null;
     }
@@ -154,7 +158,7 @@ public class NamedConsequenceVisitor {
             context.addCompilationError(new InvalidExpressionErrorResult("Unknown consequence name: " + namedConsequence.getName()));
             return null;
         }
-        BlockStmt ruleVariablesBlock = new BlockStmt();
+        BlockStmt ruleVariablesBlock = context.getRuleVariablesBlock();
         createVariables(ruleVariablesBlock, packageModel, context);
         return new Consequence(context).createCall(null, namedConsequenceString, ruleVariablesBlock, namedConsequence.isBreaking() );
     }

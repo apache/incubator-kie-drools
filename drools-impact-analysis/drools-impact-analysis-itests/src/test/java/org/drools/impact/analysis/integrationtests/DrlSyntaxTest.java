@@ -51,7 +51,7 @@ public class DrlSyntaxTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
 
         generatePng(graph);
 
@@ -78,8 +78,8 @@ public class DrlSyntaxTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R1", ReactivityType.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R1", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }
@@ -103,7 +103,7 @@ public class DrlSyntaxTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.NEGATIVE);
 
         generatePng(graph);
 
@@ -130,8 +130,8 @@ public class DrlSyntaxTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R1", ReactivityType.NEGATIVE);
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R1", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }

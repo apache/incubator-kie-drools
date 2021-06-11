@@ -1249,6 +1249,8 @@ public class DefaultAgenda
 
         private final Object stateMachineLock = new Object();
 
+        private long fireUntilHaltThreadId = -1;
+
         public boolean isFiring() {
             return currentState.isFiring();
         }
@@ -1330,10 +1332,21 @@ public class DefaultAgenda
 
         public void activate(DefaultAgenda agenda, PropagationList propagationList) {
             if ( currentState.isAlive() ) {
+                boolean restoreFireUntilHalt = wasFiringUntilHalt;
+                wasFiringUntilHalt = false;
+                boolean restoreFiringOnSameThread = restoreFireUntilHalt && fireUntilHaltThreadId == Thread.currentThread().getId();
+                fireUntilHaltThreadId = -1L;
+
                 immediateHalt( propagationList );
-                if ( wasFiringUntilHalt ) {
-                    wasFiringUntilHalt = false;
-                    agenda.fireUntilHalt();
+
+                if ( restoreFireUntilHalt ) {
+                    // restoring a fire until halt after an incremental compilation should either happen on the same thread
+                    // where the fireUntilHalt was running before the compilation or on a brand new thread
+                    if (restoreFiringOnSameThread) {
+                        agenda.fireUntilHalt();
+                    } else {
+                        new Thread(agenda::fireUntilHalt).start();
+                    }
                 }
             }
         }
@@ -1375,6 +1388,10 @@ public class DefaultAgenda
                     setCurrentState( ExecutionState.INACTIVE );
                     stateMachineLock.notifyAll();
                     propagationList.onEngineInactive();
+                    if (wasFiringUntilHalt) {
+                        // if it is halting a thread that was running a fireUntilHalt registers its id
+                        fireUntilHaltThreadId = Thread.currentThread().getId();
+                    }
                 }
             }
         }

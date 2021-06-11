@@ -54,4 +54,7 @@ public class ParserUtil {
         return null;
     }
 
+    public static boolean isLiteral(Class<?> clazz) {
+        return clazz == String.class || clazz == Integer.class || clazz == Long.class || clazz == Double.class;
+    }
 }

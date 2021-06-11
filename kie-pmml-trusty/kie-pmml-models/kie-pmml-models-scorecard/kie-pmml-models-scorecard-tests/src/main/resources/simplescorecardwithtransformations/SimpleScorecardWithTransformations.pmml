@@ -1,0 +1,67 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DefineFunction name="fun_input1_fieldref" optype="continuous" dataType="double">
+      <ParameterField name="input1_fake"/>
+      <FieldRef field="input1_fake"/>
+    </DefineFunction>
+    <DerivedField name="der_fun_input1_fieldref" optype="continuous" dataType="double">
+      <Apply function="fun_input1_fieldref">
+        <FieldRef field="input1"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="der_input1" optype="continuous" dataType="double">
+      <FieldRef field="input1"/>
+    </DerivedField>
+    <DerivedField name="der_input2" optype="continuous" dataType="double">
+      <FieldRef field="input2"/>
+    </DerivedField>
+    <DerivedField name="der_constant" optype="categorical" dataType="string">
+      <Constant>constant</Constant>
+    </DerivedField>
+  </TransformationDictionary>
+  <Scorecard modelName="SimpleScorecardWithTransformations" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="out_der_input1" dataType="double" feature="transformedValue">
+        <FieldRef field="der_input1"/>
+      </OutputField>
+      <OutputField name="out_der_input2" dataType="double" feature="transformedValue">
+        <FieldRef field="der_input2"/>
+      </OutputField>
+      <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
+        <FieldRef field="der_constant"/>
+      </OutputField>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="der_fun_input1_fieldref" operator="lessOrEqual" value="10"/>
+        </Attribute>
+        <Attribute partialScore="50">
+          <SimplePredicate field="der_fun_input1_fieldref" operator="greaterThan" value="10"/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
+        <Attribute partialScore="-8">
+          <SimplePredicate field="der_input2" operator="lessOrEqual" value="-5"/>
+        </Attribute>
+        <Attribute partialScore="32">
+          <SimplePredicate field="der_input2" operator="greaterThan" value="-5"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>

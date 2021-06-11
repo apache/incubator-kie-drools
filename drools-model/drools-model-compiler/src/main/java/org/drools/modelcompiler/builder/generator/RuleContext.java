@@ -20,6 +20,7 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.Method;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -33,9 +34,11 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -67,6 +70,7 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 
+import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
@@ -87,6 +91,7 @@ public class RuleContext {
     private List<Expression> expressions = new ArrayList<>();
     private Map<String, String> namedConsequences = new HashMap<>();
     private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
+    private BlockStmt ruleVariablesBlock = new BlockStmt();
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
@@ -504,16 +509,44 @@ public class RuleContext {
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }
 
-    public Optional<Class<?>> getFunctionType(String name) {
+    public Optional<FunctionType> getFunctionType(String name) {
         Method m = packageModel.getStaticMethod(name);
         if (m != null) {
-            return of(m.getReturnType());
+            return of(new FunctionType(m.getReturnType(), Arrays.asList(m.getParameterTypes())));
         }
 
         return packageModel.getFunctions().stream()
                 .filter( method -> method.getNameAsString().equals( name ) )
                 .findFirst()
-                .flatMap( method -> resolveType( method.getType().asString() ) );
+                .flatMap( method -> {
+                    Optional<Class<?>> returnType = resolveType(method.getType().asString());
+
+                    List<String> parametersType = method.getParameters().stream().map(Parameter::getType).map(Type::asString).collect(toList());
+                    List<Class<?>> resolvedParameterTypes = parametersType.stream()
+                            .map(this::resolveType)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(toList());
+                    return returnType.map(t -> new FunctionType(t, resolvedParameterTypes));
+                });
+    }
+
+    public static class FunctionType {
+        private final Class<?> returnType;
+        private final List<Class<?>> argumentsType;
+
+        public FunctionType(Class<?> returnType, List<Class<?>> argumentsType) {
+            this.returnType = returnType;
+            this.argumentsType = argumentsType;
+        }
+
+        public Class<?> getReturnType() {
+            return returnType;
+        }
+
+        public List<Class<?>> getArgumentsType() {
+            return argumentsType;
+        }
     }
 
     public Optional<Class<?>> resolveType(String name) {
@@ -677,6 +710,10 @@ public class RuleContext {
 
     public AndDescr getParentDescr() {
         return parentDescr;
+    }
+
+    public BlockStmt getRuleVariablesBlock() {
+        return ruleVariablesBlock;
     }
 
     @Override
