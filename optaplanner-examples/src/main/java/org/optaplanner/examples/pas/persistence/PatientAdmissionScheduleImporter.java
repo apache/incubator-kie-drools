@@ -109,8 +109,8 @@ public class PatientAdmissionScheduleImporter extends AbstractTxtSolutionImporte
             readEmptyLine();
             readConstantLine("END\\.");
             createBedDesignationList();
-            // TODO not all nights are planned, only the "planning horizon" nights are planned
-            BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size()).pow(
+            // The + 1 is because it's a nullable=true variable
+            BigInteger possibleSolutionSize = BigInteger.valueOf(patientAdmissionSchedule.getBedList().size() + 1).pow(
                     patientAdmissionSchedule.getAdmissionPartList().size());
             logger.info("PatientAdmissionSchedule {} has {} specialisms, {} equipments, {} departments, {} rooms, "
                     + "{} beds, {} nights, {} patients and {} admissions with a search space of {}.",
