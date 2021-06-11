@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- Created with Inkscape (http://www.inkscape.org/) -->
-
 <svg
     xmlns:dc="http://purl.org/dc/elements/1.1/"
     xmlns:cc="http://creativecommons.org/ns#"
@@ -12,7 +10,7 @@
     height="600"
     id="svg2"
     version="1.1"
-    inkscape:version="0.92.3 (2405546, 2018-03-11)"
+    inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
     sodipodi:docname="vehicleRoutingValueProposition.svg"
     inkscape:export-filename="vehicleRoutingValueProposition.png"
     inkscape:export-xdpi="96"
@@ -172,6 +170,7 @@
      d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
      id="path5767" />
 </marker>
+
 
 
 
@@ -820,7 +819,7 @@
      inkscape:cx="400"
      inkscape:cy="300"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="layer3"
      showgrid="true"
      width="800px"
      borderlayer="true"
@@ -845,7 +844,8 @@
      inkscape:bbox-paths="true"
      inkscape:snap-center="true"
      inkscape:snap-object-midpoints="true"
-     inkscape:snap-global="true">
+     inkscape:snap-global="true"
+     inkscape:document-rotation="0">
     <inkscape:grid
        empspacing="10"
        visible="true"
@@ -1133,7 +1133,8 @@
            y="-53.932568"
            style="font-family:sans-serif" /></flowRegion><flowPara
          id="flowPara4163"
-         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:40px;line-height:1.25;font-family:sans-serif"> </flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot4302"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
@@ -1146,7 +1147,8 @@
            y="220.00005"
            style="font-size:35px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara3847"
-         style="font-size:35px;line-height:1.25">Vehicle routing</flowPara></flowRoot>    <flowRoot
+         style="font-size:35px;line-height:1.25">Vehicle routing</flowPara></flowRoot>
+    <flowRoot
        transform="translate(-19.999997,372.36182)"
        xml:space="preserve"
        id="flowRoot4302-6"
@@ -1159,7 +1161,8 @@
            y="150.00014"
            style="font-size:15px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4308-6"
-         style="font-size:15px;line-height:1.25">Assign the delivery order of vehicles more efficiently.</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">Assign the delivery order of vehicles more efficiently.</flowPara></flowRoot>
+    <flowRoot
        transform="translate(-331.85071,502.3041)"
        xml:space="preserve"
        id="flowRoot12336"
@@ -1172,7 +1175,8 @@
            y="58.167629"
            style="font-size:14px;text-align:end;text-anchor:end;fill:#888a85" /></flowRegion><flowPara
          id="flowPara12342"
-         style="font-size:15px;line-height:1.25">Depot</flowPara></flowRoot>    <g
+         style="font-size:15px;line-height:1.25">Depot</flowPara></flowRoot>
+    <g
        id="g3579"
        transform="matrix(0.95072756,0,0,0.95072756,243.513,653.32893)">
       <path
@@ -1463,7 +1467,8 @@
            width="130"
            id="rect18162" /></flowRegion><flowPara
          id="flowPara18164"
-         style="font-size:15px;line-height:1.25">Delivery locations</flowPara></flowRoot>    <g
+         style="font-size:15px;line-height:1.25">Delivery locations</flowPara></flowRoot>
+    <g
        id="g3053"
        transform="matrix(0.8286144,0,0,0.8286144,155.82051,662.67889)">
       <circle
@@ -3439,7 +3444,8 @@
          id="flowPara12302"
          style="font-size:15px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000">Capacity</flowPara><flowPara
          style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000"
-         id="flowPara10507">≤ 20 ton</flowPara></flowRoot>    <path
+         id="flowPara10507">≤ 20 ton</flowPara></flowRoot>
+    <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 392,227.77343 h 50"
        id="path9756"
@@ -3458,7 +3464,8 @@
            width="240.02811"
            id="rect9762" /></flowRegion><flowPara
          style="font-size:15px;line-height:1.25;text-align:start;text-anchor:start;fill:#a40000"
-         id="flowPara9764">10 ton</flowPara></flowRoot>    <g
+         id="flowPara9764">10 ton</flowPara></flowRoot>
+    <g
        id="g9776"
        transform="translate(20,34.546689)">
       <path
@@ -3480,7 +3487,8 @@
              width="240.02811"
              id="rect9772" /></flowRegion><flowPara
            style="font-size:15px;line-height:1.25;text-align:start;text-anchor:start;fill:#a40000"
-           id="flowPara9774">3 ton</flowPara></flowRoot>    </g>
+           id="flowPara9774">3 ton</flowPara></flowRoot>
+    </g>
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#ce5c00;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 170,208 c 0,-50 -10,-60 -60,-60"
@@ -3502,7 +3510,8 @@
          style="font-size:15px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ce5c00"
          id="flowPara9791">Driver wage</flowPara><flowPara
          style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ce5c00"
-         id="flowPara9795">20$ / hour</flowPara></flowRoot>    <path
+         id="flowPara9795">20$ / hour</flowPara></flowRoot>
+    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path10453"
@@ -3529,7 +3538,8 @@
          style="font-size:15px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ce5c00"
          id="flowPara10473">Optional</flowPara><flowPara
          style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#ce5c00"
-         id="flowPara10497">Can wait till tommorrow</flowPara></flowRoot>    <flowRoot
+         id="flowPara10497">Can wait till tommorrow</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#a40000;fill-opacity:1;stroke:none"
        id="flowRoot10479"
        xml:space="preserve"
@@ -3546,7 +3556,8 @@
          style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000"
          id="flowPara10491">Deliver between</flowPara><flowPara
          id="flowPara10487"
-         style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000">8 AM and 10 AM</flowPara></flowRoot>    <flowRoot
+         style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000">8 AM and 10 AM</flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot10499"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;overflow:visible;visibility:visible;opacity:1;fill:#a40000;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0.2;stroke-opacity:1;marker:none;enable-background:accumulate"><flowRegion
@@ -3557,7 +3568,8 @@
            x="30"
            y="280" /></flowRegion><flowPara
          id="flowPara10505"
-         style="font-size:12.5px;line-height:1.25"> </flowPara></flowRoot>    <path
+         style="font-size:12.5px;line-height:1.25"> </flowPara></flowRoot>
+    <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
        id="path10511"
@@ -3576,7 +3588,8 @@
            y="-117.50765"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#a40000" /></flowRegion><flowPara
          style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#a40000"
-         id="flowPara10523">Armored vehicle</flowPara></flowRoot>    <path
+         id="flowPara10523">Armored vehicle</flowPara></flowRoot>
+    <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#a40000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:1, 2;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="M 335.87529,378.73037 C 335.87529,403.62034 330,414 276,414"
        id="path10532"
@@ -3595,7 +3608,8 @@
            width="150.28716"
            id="rect10538" /></flowRegion><flowPara
          id="flowPara10540"
-         style="font-size:12.5px;line-height:1.25;text-align:end;text-anchor:end;fill:#a40000">Expensive delivery</flowPara></flowRoot>  </g>
+         style="font-size:12.5px;line-height:1.25;text-align:end;text-anchor:end;fill:#a40000">Expensive delivery</flowPara></flowRoot>
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer3"
@@ -3612,7 +3626,8 @@
            x="330"
            y="240" /></flowRegion><flowPara
          id="flowPara4865"
-         style="font-size:12.5px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:12.5px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        xml:space="preserve"
        id="flowRoot5744"
        style="color:#000000;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;overflow:visible;visibility:visible;opacity:0.8;fill:#fcaf3e;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"><flowRegion
@@ -3623,7 +3638,8 @@
            x="150"
            y="370" /></flowRegion><flowPara
          id="flowPara5750"
-         style="font-size:10px;line-height:1.25"> </flowPara></flowRoot>    <flowRoot
+         style="font-size:10px;line-height:1.25"> </flowPara></flowRoot>
+    <flowRoot
        transform="translate(217.79733,5.4512831)"
        xml:space="preserve"
        id="flowRoot3114-4-3"
@@ -3636,7 +3652,8 @@
            y="94.548714"
            style="font-size:20px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara3122-1-7"
-         style="font-weight:bold;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle">Users</flowPara></flowRoot>    <g
+         style="font-weight:bold;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle">Users</flowPara></flowRoot>
+    <g
        id="g13685"
        transform="translate(117.95239,159.99995)" />
     <flowRoot
@@ -3662,7 +3679,7 @@
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
          id="flowPara18721"> </flowPara><flowPara
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara18747">Buses, taxi's</flowPara><flowPara
+         id="flowPara18747">Buses, taxis</flowPara><flowPara
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
          id="flowPara4350">&amp; airlines</flowPara><flowPara
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
@@ -3674,7 +3691,8 @@
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
          id="flowPara18737"> </flowPara><flowPara
          style="font-weight:normal;font-size:20px;line-height:1.25;text-align:center;text-anchor:middle"
-         id="flowPara18739"> </flowPara></flowRoot>  </g>
+         id="flowPara18739"> </flowPara></flowRoot>
+  </g>
   <g
      inkscape:groupmode="layer"
      id="layer4"
@@ -3693,7 +3711,8 @@
            width="350"
            id="rect4276" /></flowRegion><flowPara
          id="flowPara4278"
-         style="font-size:35px;line-height:1.25">Driving time</flowPara></flowRoot>    <flowRoot
+         style="font-size:35px;line-height:1.25">Driving time</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4280"
        xml:space="preserve"
@@ -3706,7 +3725,8 @@
            width="360"
            id="rect4284" /></flowRegion><flowPara
          id="flowPara4286"
-         style="font-size:15px;line-height:1.25">VehicleRouting benchmark (Belgium datasets)</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">VehicleRouting benchmark (Belgium datasets)</flowPara></flowRoot>
+    <flowRoot
        transform="translate(549.98601,578.47812)"
        xml:space="preserve"
        id="flowRoot4288"
@@ -3719,7 +3739,8 @@
            y="-118.47811"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4294"
-         style="font-size:15px;line-height:1.25">Biggest dataset</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">Biggest dataset</flowPara></flowRoot>
+    <flowRoot
        transform="translate(-152.26104,496.72396)"
        xml:space="preserve"
        id="flowRoot4296"
@@ -3732,7 +3753,8 @@
            y="-16.723961"
            style="font-size:35px;text-align:center;text-anchor:middle;fill:#ce5c00" /></flowRegion><flowPara
          id="flowPara4302"
-         style="font-weight:bold;font-size:35px;line-height:1.25;fill:#ce5c00">-15%</flowPara></flowRoot>    <flowRoot
+         style="font-weight:bold;font-size:35px;line-height:1.25;fill:#ce5c00">-15%</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#000000;fill-opacity:1;stroke:none"
        id="flowRoot4304"
        xml:space="preserve"
@@ -3745,7 +3767,8 @@
            width="120.00001"
            id="rect4308" /></flowRegion><flowPara
          id="flowPara4310"
-         style="font-size:15px;line-height:1.25">Average</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">Average</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
        id="flowRoot4314"
        xml:space="preserve"
@@ -3758,7 +3781,8 @@
            width="120"
            id="rect4318" /></flowRegion><flowPara
          id="flowPara4320"
-         style="font-size:15px;line-height:1.25">5</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">5</flowPara></flowRoot>
+    <flowRoot
        transform="translate(450.75864,578.47812)"
        xml:space="preserve"
        id="flowRoot4322"
@@ -3771,7 +3795,8 @@
            y="-118.47811"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4328"
-         style="font-size:15px;line-height:1.25"># datasets</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25"># datasets</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
        id="flowRoot4330"
        xml:space="preserve"
@@ -3784,7 +3809,8 @@
            width="120"
            id="rect4334" /></flowRegion><flowPara
          id="flowPara4336"
-         style="font-size:15px;line-height:1.25">2750 deliveries</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">2750 deliveries</flowPara></flowRoot>
+    <flowRoot
        transform="translate(116.43425,517.01828)"
        xml:space="preserve"
        id="flowRoot4338"
@@ -3797,7 +3823,8 @@
            y="-16.723961"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4344"
-         style="font-size:15px;line-height:1.25">55 vehicles</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">55 vehicles</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
        id="flowRoot4348"
        xml:space="preserve"
@@ -3810,7 +3837,8 @@
            width="120"
            id="rect4352" /></flowRegion><flowPara
          id="flowPara4354"
-         style="font-size:15px;line-height:1.25">-9%</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">-9%</flowPara></flowRoot>
+    <flowRoot
        transform="translate(371.23422,578.47812)"
        xml:space="preserve"
        id="flowRoot4356"
@@ -3823,7 +3851,8 @@
            y="-118.47811"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4362"
-         style="font-size:15px;line-height:1.25">Min/Max</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">Min/Max</flowPara></flowRoot>
+    <flowRoot
        transform="translate(-63.033359,517.01828)"
        xml:space="preserve"
        id="flowRoot4364"
@@ -3836,7 +3865,8 @@
            y="-16.723961"
            style="font-size:15px;text-align:center;text-anchor:middle;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4370"
-         style="font-size:15px;line-height:1.25">-18%</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">-18%</flowPara></flowRoot>
+    <flowRoot
        transform="translate(-32.626219,579.35754)"
        xml:space="preserve"
        id="flowRoot4372"
@@ -3849,7 +3879,8 @@
            y="-54.35762"
            style="font-size:15px;text-align:start;text-anchor:start;fill:#888a85" /></flowRegion><flowPara
          id="flowPara4378"
-         style="font-size:15px;line-height:1.25">OptaPlanner versus traditional algorithm with domain knowledge</flowPara></flowRoot>    <flowRoot
+         style="font-size:15px;line-height:1.25">OptaPlanner versus traditional algorithm with domain knowledge</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#888a85;fill-opacity:1;stroke:none"
        id="flowRoot3773"
        xml:space="preserve"
@@ -3862,7 +3893,8 @@
            width="720"
            id="rect3777" /></flowRegion><flowPara
          id="flowPara3779"
-         style="font-size:10px;line-height:1.25">5 mins Late Acceptance Nearby vs First Fit Decreasing</flowPara></flowRoot>    <flowRoot
+         style="font-size:10px;line-height:1.25">5 mins Late Acceptance Nearby vs First Fit Decreasing</flowPara></flowRoot>
+    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start;display:inline;fill:#555753;fill-opacity:1;stroke:none"
        id="flowRoot3757"
        xml:space="preserve"
@@ -3875,5 +3907,6 @@
            width="740"
            id="rect3761" /></flowRegion><flowPara
          id="flowPara3763"
-         style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#555753">Don't believe us? Run our open benchmarks yourself: https://www.optaplanner.org/code/benchmarks.html</flowPara></flowRoot>  </g>
+         style="font-size:12.5px;line-height:1.25;text-align:center;text-anchor:middle;fill:#555753">Don't believe us? Run our open benchmarks yourself: https://www.optaplanner.org/code/benchmarks.html</flowPara></flowRoot>
+  </g>
 </svg>
