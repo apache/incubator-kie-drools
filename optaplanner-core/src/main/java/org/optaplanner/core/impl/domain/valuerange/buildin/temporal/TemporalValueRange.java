@@ -53,7 +53,7 @@ public class TemporalValueRange<Temporal_ extends Temporal & Comparable<? super 
 
         if (from == null || to == null || incrementUnitType == null) {
             throw new IllegalArgumentException("The " + getClass().getSimpleName()
-                    + " must have a from (" + from + "),  to (" + to + ") and incrementUnitType (" + incrementUnitType
+                    + " must have a from (" + from + "), to (" + to + ") and incrementUnitType (" + incrementUnitType
                     + ") that are not null.");
         }
         if (incrementUnitAmount <= 0) {

@@ -56,7 +56,7 @@ end
 
 rule "Transfer between two flights"
     when
-        // TODO FIXME only allow arrival and departure from the same airport (no taxi's)
+        // TODO FIXME only allow arrival and departure from the same airport (no taxis)
         Employee($count : countInvalidConnections() > 0)
     then
         scoreHolder.addHardConstraintMatch(kcontext, - $count);
