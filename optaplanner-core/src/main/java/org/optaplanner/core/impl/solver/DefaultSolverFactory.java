@@ -194,6 +194,11 @@ public final class DefaultSolverFactory<Solution_> implements SolverFactory<Solu
             } else if (moveThreadCount.equals(SolverConfig.MOVE_THREAD_COUNT_AUTO)) {
                 // Leave one for the Operating System and 1 for the solver thread, take the rest
                 resolvedMoveThreadCount = (availableProcessorCount - 2);
+                // A moveThreadCount beyond 4 is currently typically slower
+                // TODO remove limitation after fixing https://issues.redhat.com/browse/PLANNER-2449
+                if (resolvedMoveThreadCount > 4) {
+                    resolvedMoveThreadCount = 4;
+                }
                 if (resolvedMoveThreadCount <= 1) {
                     // Fall back to single threaded solving with no move threads.
                     // To deliberately enforce 1 moveThread, set the moveThreadCount explicitly to 1.
