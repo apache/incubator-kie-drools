@@ -901,12 +901,15 @@ public class DrlxParseUtil {
     public static ConstraintCompiler createConstraintCompiler(RuleContext context, Optional<Class<?>> originalPatternType) {
         MvelCompilerContext mvelCompilerContext = new MvelCompilerContext( context.getTypeResolver(), context.getCurrentScopeSuffix() );
 
-        List<DeclarationSpec> allDeclarations = new ArrayList<>();
-        allDeclarations.addAll(context.getAllDeclarations());
+        List<DeclarationSpec> allDeclarations = new ArrayList<>(context.getAllDeclarations());
         originalPatternType.ifPresent(pt -> {
             allDeclarations.add(new DeclarationSpec(THIS_PLACEHOLDER, pt));
             mvelCompilerContext.setRootPatternPrefix(pt, THIS_PLACEHOLDER);
         });
+
+        for(Map.Entry<String, Method> m : context.getPackageModel().getStaticMethods().entrySet()) {
+            mvelCompilerContext.addStaticMethod(m.getKey(), m.getValue());
+        }
 
         for (DeclarationSpec ds : allDeclarations) {
             mvelCompilerContext.addDeclaration(ds.getBindingId(), ds.getDeclarationClass());

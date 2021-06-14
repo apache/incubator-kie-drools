@@ -487,16 +487,10 @@ public class ConstraintParser {
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
         } else if(arithmeticExpr && (left.isBigDecimal())) {
-            MvelCompilerContext mvelCompilerContext = new MvelCompilerContext(context.getTypeResolver());
-
-            mvelCompilerContext.setRootPatternPrefix(patternType, THIS_PLACEHOLDER);
-
-            ConstraintCompiler constraintCompiler = new ConstraintCompiler(mvelCompilerContext);
-
+            ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, Optional.of(patternType));
             CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
 
-            Expression expression = compiledExpressionResult.getExpression();
-            combo = expression;
+            combo = compiledExpressionResult.getExpression();
         } else {
             if (left.getExpression() == null || right.getExpression() == null) {
                 return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
