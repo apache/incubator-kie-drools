@@ -15,14 +15,16 @@
  */
 package org.kie.pmml.models.scorecard.model;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Scorecard.html#xsdElement_Characteristics>Characteristics</a>
@@ -30,6 +32,13 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
 
     private static final long serialVersionUID = 2399787298848608820L;
+    protected final List<KiePMMLCharacteristic> characteristics;
+
+    public KiePMMLCharacteristics(String name, List<KiePMMLExtension> extensions,
+                                  List<KiePMMLCharacteristic> characteristics) {
+        super(name, extensions);
+        this.characteristics = characteristics;
+    }
 
     public static Number addNumbers(Number a, Number b) {
         if (a == null && b == null) {
@@ -44,7 +53,8 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
         return a.doubleValue() + b.doubleValue();
     }
 
-    public static Number calculatePartialScore(Number baselineScore, Number partialScore, REASONCODE_ALGORITHM reasoncodeAlgorithm) {
+    public static Number calculatePartialScore(Number baselineScore, Number partialScore,
+                                               REASONCODE_ALGORITHM reasoncodeAlgorithm) {
         if (baselineScore == null && partialScore == null) {
             return null;
         }
@@ -60,35 +70,59 @@ public class KiePMMLCharacteristics extends AbstractKiePMMLComponent {
             case POINTS_ABOVE:
                 return partialScore.doubleValue() - baselineScore.doubleValue();
             default:
-                throw new IllegalArgumentException(String.format("Unknown REASONCODE_ALGORITHM %s", reasoncodeAlgorithm));
+                throw new IllegalArgumentException(String.format("Unknown REASONCODE_ALGORITHM %s",
+                                                                 reasoncodeAlgorithm));
         }
-    }
-
-    protected KiePMMLCharacteristics(String modelName) {
-        super(modelName, Collections.emptyList());
     }
 
     /**
      * Method to return the <b>first</b> matching <code>Characteristic</code> score
-     * @param characteristicFunctions: the first <code>Map</code> is the input data, the second <code>Map</code> is the <b>outputfieldsmap</b>
-     * @param requestData
+     * @param defineFunctions
+     * @param derivedFields
+     * @param outputFields
+     * @param inputData
+     * @param outputFieldsMap
+     * @param initialScore
      * @return
      */
-    protected static Optional<Number> getCharacteristicsScore(final List<BiFunction<Map<String, Object>, Map<String, Object>, Number>> characteristicFunctions,
-                                                              final Map<String, Object> requestData,
-                                                              final Map<String, Object> outputFieldsMap,
-                                                              final Number initialScore) {
+    public Optional<Number> evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                                     final List<KiePMMLDerivedField> derivedFields,
+                                     final List<KiePMMLOutputField> outputFields,
+                                     final Map<String, Object> inputData,
+                                     final Map<String, Object> outputFieldsMap,
+                                     final Number initialScore,
+                                     final REASONCODE_ALGORITHM reasoncodeAlgorithm,
+                                     final boolean useReasonCodes,
+                                     final Number baselineScore) {
         Number accumulator = null;
-        for (BiFunction<Map<String, Object>, Map<String, Object>, Number> function : characteristicFunctions) {
-            final Number evaluation = function.apply(requestData, outputFieldsMap);
+        for (KiePMMLCharacteristic characteristic : characteristics) {
+            final KiePMMLCharacteristic.ReasonCodeValue evaluation = characteristic.evaluate(defineFunctions,
+                                                                                             derivedFields,
+                                                                                             outputFields, inputData);
             if (evaluation != null) {
+                final Number evaluationScore = evaluation.getScore();
                 if (accumulator == null) {
                     accumulator = initialScore != null ? initialScore : 0;
                 }
-                accumulator = addNumbers(accumulator, evaluation);
+                accumulator = addNumbers(accumulator, evaluationScore);
+                if (useReasonCodes && evaluation.getReasonCode() != null) {
+                    populateReasonCodes(evaluation, characteristic, reasoncodeAlgorithm, outputFieldsMap, baselineScore);
+                }
             }
         }
         return Optional.ofNullable(accumulator);
     }
 
+    private void populateReasonCodes(final KiePMMLCharacteristic.ReasonCodeValue evaluation,
+                                     final KiePMMLCharacteristic characteristic,
+                                     final REASONCODE_ALGORITHM reasoncodeAlgorithm,
+                                     final Map<String, Object> outputFieldsMap,
+                                     final Number baselineScore) {
+        Number baselineScoreToUse = characteristic.getBaselineScore() != null ?
+                characteristic.getBaselineScore() : baselineScore;
+        Number rankingScore = calculatePartialScore(baselineScoreToUse, evaluation.getScore(),
+                                                    reasoncodeAlgorithm);
+
+        outputFieldsMap.put(evaluation.getReasonCode(), rankingScore);
+    }
 }

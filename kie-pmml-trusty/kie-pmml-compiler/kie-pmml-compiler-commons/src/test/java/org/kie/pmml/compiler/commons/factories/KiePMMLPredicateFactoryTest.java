@@ -92,12 +92,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_TEMPLATE;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE;
+import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory.getPredicateBody;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilation;
@@ -545,7 +545,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void setSimpleSetPredicateConstructor() {
-        init(KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA, KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE);
+        init(KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE);
         AssignExpr valueAssignExpr =
                 assignExprs.stream().filter(assignExpr -> assignExpr.getTarget().asNameExpr().getNameAsString().equals("values"))
                 .findFirst()
@@ -596,7 +596,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void setCompoundPredicateConstructorOr() {
-        init(KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
+        init(KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         BOOLEAN_OPERATOR booleanOperator = BOOLEAN_OPERATOR.OR;
@@ -643,7 +643,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void setCompoundPredicateConstructorAnd() {
-        init(KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
+        init(KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         Set<String> predicatesClasses = new HashSet<>(Arrays.asList("PREDICATE_A", "PREDICATE_B"));
@@ -670,7 +670,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void setCompoundPredicateConstructorSurrogate() {
-        init(KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
+        init(KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         BOOLEAN_OPERATOR booleanOperator = BOOLEAN_OPERATOR.SURROGATE;
@@ -684,7 +684,7 @@ public class KiePMMLPredicateFactoryTest {
 
     @Test
     public void setTrueFalsePredicateConstructor() {
-        init(KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_TRUE_PREDICATE_TEMPLATE);
+        init(KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE);
         String generatedClassName = "GENERATEDCLASSNAME";
         String predicateName = "PREDICATENAME";
         KiePMMLPredicateFactory.setTrueFalsePredicateConstructor(generatedClassName,

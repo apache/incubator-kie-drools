@@ -17,14 +17,11 @@ package org.kie.pmml.commons.model.predicates;
 
 import java.util.Collections;
 
-import java.util.function.BinaryOperator;
-import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 
-public class KiePMMLCompoundPredicateTemplate extends KiePMMLCompoundPredicate {
+public class KiePMMLTruePredicateConstructorTemplate extends KiePMMLTruePredicate {
 
-    public KiePMMLCompoundPredicateTemplate() {
-        super(name, Collections.emptyList(), booleanOperator);
-        operatorFunction = null;
-        kiePMMLPredicates = null;
+    public KiePMMLTruePredicateConstructorTemplate() {
+        super(name, Collections.emptyList());
     }
 }

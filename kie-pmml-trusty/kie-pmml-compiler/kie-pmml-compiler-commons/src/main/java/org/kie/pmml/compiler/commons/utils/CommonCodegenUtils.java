@@ -912,6 +912,18 @@ public class CommonCodegenUtils {
         replacementTuplas.forEach(replacementTupla -> replaceNodeInStatement(container, replacementTupla));
     }
 
+    public static MethodCallExpr getArraysAsListInvocationMethodCall(NodeList<Expression> arguments) {
+        MethodCallExpr methodCallExpr = new MethodCallExpr();
+        methodCallExpr.setScope(new NameExpr(Arrays.class.getSimpleName()));
+        methodCallExpr.setName("asList");
+        methodCallExpr.setArguments(arguments);
+        return methodCallExpr;
+    }
+
+    public static NodeList<Expression> getArraysAsListInvocation(NodeList<Expression> arguments) {
+        return NodeList.nodeList(getArraysAsListInvocationMethodCall(arguments));
+    }
+
     public static class ReplacementTupla {
 
         final Node toReplace;

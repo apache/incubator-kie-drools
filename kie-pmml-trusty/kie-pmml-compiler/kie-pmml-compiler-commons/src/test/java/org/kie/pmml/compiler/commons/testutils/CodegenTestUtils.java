@@ -110,6 +110,37 @@ public class CodegenTestUtils {
         }
     }
 
+    public static void commonValidateCompilationWithImports(MethodDeclaration methodDeclaration, List<Class<?>> imports) {
+        ClassOrInterfaceDeclaration classOrInterfaceType = new ClassOrInterfaceDeclaration();
+        classOrInterfaceType.setName("CommCodeTest");
+        classOrInterfaceType.addMember(methodDeclaration);
+        CompilationUnit compilationUnit = StaticJavaParser.parse("");
+        imports.forEach(compilationUnit::addImport);
+        compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
+        compilationUnit.addType(classOrInterfaceType);
+        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils.CommCodeTest",
+                                                                  compilationUnit.toString());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public static void commonValidateCompilationWithImports(ClassOrInterfaceDeclaration classOrInterfaceType, List<Class<?>> imports) {
+        CompilationUnit compilationUnit = StaticJavaParser.parse("");
+        imports.forEach(compilationUnit::addImport);
+        compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
+        compilationUnit.addType(classOrInterfaceType);
+        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils."+classOrInterfaceType.getName().asString(),
+                                                                  compilationUnit.toString());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
     public static void commonValidateCompilation(Map<String, String> sourcesMap) {
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());

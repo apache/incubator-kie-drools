@@ -17,13 +17,13 @@ package org.kie.pmml.commons.model.predicates;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 
-public class KiePMMLSimpleSetPredicateTemplate extends KiePMMLSimpleSetPredicate {
+public class KiePMMLSimplePredicateConstructorTemplate extends KiePMMLSimplePredicate {
 
-    public KiePMMLSimpleSetPredicateTemplate() {
-        super(name, Collections.emptyList(),  arrayType, inNotIn);
-        values = null;
+    public KiePMMLSimplePredicateConstructorTemplate() {
+        super(name, Collections.emptyList(), operator);
+        value = null;
     }
 
 }

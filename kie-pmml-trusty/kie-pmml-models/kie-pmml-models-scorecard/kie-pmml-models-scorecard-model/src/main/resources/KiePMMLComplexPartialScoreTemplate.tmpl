@@ -13,15 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.model.predicates;
+package org.kie.pmml.compiler.commons;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
+import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
-public class KiePMMLFalsePredicateTemplate extends KiePMMLFalsePredicate {
+public class KiePMMLComplexPartialScoreTemplate {
 
-    public KiePMMLFalsePredicateTemplate() {
-        super(name, Collections.emptyList());
+
+    private KiePMMLComplexPartialScore getKiePMMLComplexPartialScore() {
+        KiePMMLComplexPartialScore complexPartialScore = new KiePMMLComplexPartialScore(name, Collections.emptyList(), kiePMMLExpression);
     }
+
 }

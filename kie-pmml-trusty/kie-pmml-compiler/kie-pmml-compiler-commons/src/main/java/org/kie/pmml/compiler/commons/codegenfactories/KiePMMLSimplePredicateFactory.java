@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.util.List;
+
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -23,7 +25,11 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.SimplePredicate;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -31,11 +37,11 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDataType;
 
 /**
  * Class meant to provide <i>helper</i> method to retrieve <code>KiePMMLSimplePredicate</code> code-generators
@@ -60,7 +66,10 @@ public class KiePMMLSimplePredicateFactory {
         // Avoid instantiation
     }
 
-    static BlockStmt getSimplePredicateVariableDeclaration(final String variableName, final SimplePredicate simplePredicate) {
+    static BlockStmt getSimplePredicateVariableDeclaration(final String variableName,
+                                                           final SimplePredicate simplePredicate,
+                                                           final List<DerivedField> derivedFields,
+                                                           final DataDictionary dataDictionary) {
         final MethodDeclaration methodDeclaration =
                 SIMPLE_PREDICATE_TEMPLATE.getMethodsByName(GETKIEPMMLSIMPLEPREDICATE).get(0).clone();
         final BlockStmt simplePredicateBody =
@@ -77,7 +86,9 @@ public class KiePMMLSimplePredicateFactory {
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
         builder.setArgument(0, new StringLiteralExpr(simplePredicate.getField().getValue()));
         builder.setArgument(2, operatorExpr);
-        getChainedMethodCallExprFrom("withValue", initializer).setArgument(0, getExpressionForObject(simplePredicate.getValue()));
+        DataType dataType = getDataType(derivedFields, dataDictionary, simplePredicate.getField().getValue());
+        Object actualValue = DATA_TYPE.byName(dataType.value()).getActualValue(simplePredicate.getValue());
+        getChainedMethodCallExprFrom("withValue", initializer).setArgument(0, getExpressionForObject(actualValue));
         simplePredicateBody.getStatements().forEach(toReturn::addStatement);
         return toReturn;
     }

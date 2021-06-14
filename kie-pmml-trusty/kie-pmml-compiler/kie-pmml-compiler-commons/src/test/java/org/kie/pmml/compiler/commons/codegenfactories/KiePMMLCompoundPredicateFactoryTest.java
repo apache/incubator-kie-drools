@@ -25,6 +25,9 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.Test;
@@ -34,7 +37,6 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
@@ -66,6 +68,20 @@ public class KiePMMLCompoundPredicateFactoryTest {
         compoundPredicate.getPredicates().add(1, simplePredicate2);
         compoundPredicate.getPredicates().add(2, simpleSetPredicate);
 
+        DataField dataField1 = new DataField();
+        dataField1.setName(simplePredicate1.getField());
+        dataField1.setDataType(DataType.DOUBLE);
+        DataField dataField2 = new DataField();
+        dataField2.setName(simplePredicate2.getField());
+        dataField2.setDataType(DataType.DOUBLE);
+        DataField dataField3 = new DataField();
+        dataField3.setName(simpleSetPredicate.getField());
+        dataField3.setDataType(DataType.DOUBLE);
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.addDataFields(dataField1, dataField2, dataField3);
+
+
+
         String booleanOperatorString =
                 BOOLEAN_OPERATOR.class.getName() + "." + BOOLEAN_OPERATOR.byName(compoundPredicate.getBooleanOperator().value()).name();
         String valuesString = values.stream()
@@ -73,7 +89,7 @@ public class KiePMMLCompoundPredicateFactoryTest {
                 .collect(Collectors.joining(","));
 
         BlockStmt retrieved = KiePMMLCompoundPredicateFactory.getCompoundPredicateVariableDeclaration(variableName,
-                                                                                                      compoundPredicate);
+                                                                                                      compoundPredicate, Collections.emptyList(), dataDictionary);
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
                                                                               "    KiePMMLSimplePredicate " +
                                                                               "%1$s_0 = " +

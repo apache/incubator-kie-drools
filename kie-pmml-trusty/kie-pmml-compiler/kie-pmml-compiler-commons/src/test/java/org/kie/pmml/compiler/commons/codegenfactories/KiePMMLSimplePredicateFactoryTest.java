@@ -22,6 +22,9 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DataField;
+import org.dmg.pmml.DataType;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.SimplePredicate;
 import org.junit.Test;
@@ -39,11 +42,16 @@ public class KiePMMLSimplePredicateFactoryTest {
         String variableName = "variableName";
         final SimplePredicate simplePredicate = new SimplePredicate();
         simplePredicate.setField(FieldName.create("CUSTOM_FIELD"));
-        simplePredicate.setValue(235.435);
+        simplePredicate.setValue("235.435");
         simplePredicate.setOperator(SimplePredicate.Operator.EQUAL);
         String operatorString = OPERATOR.class.getName() + "." + OPERATOR.byName(simplePredicate.getOperator().value());
+        DataField dataField = new DataField();
+        dataField.setName(simplePredicate.getField());
+        dataField.setDataType(DataType.DOUBLE);
+        DataDictionary dataDictionary = new DataDictionary();
+        dataDictionary.addDataFields(dataField);
 
-        BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate);
+        BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate, Collections.emptyList(), dataDictionary);
         Statement expected = JavaParserUtils.parseBlock(String.format("{" +
                                                                               "KiePMMLSimplePredicate " +
                                                                               "%1$s = KiePMMLSimplePredicate.builder(\"%2$s\", Collections.emptyList(), %3$s)\n" +

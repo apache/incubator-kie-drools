@@ -17,12 +17,14 @@ package org.kie.pmml.compiler.commons;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
 
-public class KiePMMLFalsePredicateTemplate {
+public class KiePMMLCompoundPredicateConstructorTemplate extends KiePMMLCompoundPredicate {
 
-    private KiePMMLFalsePredicate getKiePMMLFalsePredicate() {
-        KiePMMLFalsePredicate falsePredicate = new KiePMMLFalsePredicate(name, Collections.emptyList());
-    }
+      public KiePMMLCompoundPredicateConstructorTemplate() {
+            super(name, Collections.emptyList(), booleanOperator);
+            operatorFunction = null;
+            kiePMMLPredicates = null;
+      }
 
 }

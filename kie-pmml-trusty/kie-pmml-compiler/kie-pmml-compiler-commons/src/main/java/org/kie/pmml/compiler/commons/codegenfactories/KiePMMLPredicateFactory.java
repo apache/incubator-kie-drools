@@ -15,22 +15,20 @@
  */
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.util.List;
+
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.Apply;
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.Constant;
+import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
-import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.True;
 
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLCompoundPredicateFactory.getCompoundPredicateVariableDeclaration;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFalsePredicateFactory.getFalsePredicateVariableDeclaration;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory.getFieldRefVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTruePredicateFactory.getTruePredicateVariableDeclaration;
@@ -46,13 +44,16 @@ public class KiePMMLPredicateFactory {
         // Avoid instantiation
     }
 
-    public static BlockStmt getKiePMMLPredicate(final String variableName, final Predicate predicate) {
+    public static BlockStmt getKiePMMLPredicate(final String variableName,
+                                                final Predicate predicate,
+                                                final List<DerivedField> derivedFields,
+                                                final DataDictionary dataDictionary) {
         if (predicate instanceof SimplePredicate) {
-            return getSimplePredicateVariableDeclaration(variableName, (SimplePredicate) predicate);
+            return getSimplePredicateVariableDeclaration(variableName, (SimplePredicate) predicate, derivedFields, dataDictionary);
         } else if (predicate instanceof SimpleSetPredicate) {
-            return getSimpleSetPredicateVariableDeclaration(variableName, (SimpleSetPredicate) predicate);
+            return getSimpleSetPredicateVariableDeclaration(variableName, (SimpleSetPredicate) predicate, derivedFields, dataDictionary);
         } else if (predicate instanceof CompoundPredicate) {
-            return getCompoundPredicateVariableDeclaration(variableName, (CompoundPredicate) predicate);
+            return getCompoundPredicateVariableDeclaration(variableName, (CompoundPredicate) predicate, derivedFields, dataDictionary);
         } else if (predicate instanceof True) {
             return getTruePredicateVariableDeclaration(variableName, (True) predicate);
         } else if (predicate instanceof False) {

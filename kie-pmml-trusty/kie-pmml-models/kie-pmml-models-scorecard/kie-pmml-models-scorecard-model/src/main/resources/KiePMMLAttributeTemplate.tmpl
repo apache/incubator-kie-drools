@@ -13,17 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.commons.model.predicates;
+package org.kie.pmml.compiler.commons;
 
 import java.util.Collections;
 
-import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.models.scorecard.model.KiePMMLAttribute;
 
-public class KiePMMLSimplePredicateTemplate extends KiePMMLSimplePredicate {
+public class KiePMMLAttributeTemplate {
 
-    public KiePMMLSimplePredicateTemplate() {
-        super(name, Collections.emptyList(), operator);
-        value = null;
+    private KiePMMLAttribute getKiePMMLAttribute() {
+        KiePMMLAttribute attribute = KiePMMLAttribute.builder(name, Collections.emptyList(), predicate)
+                                                     .withPartialScore(partialScore)
+                                                     .withComplexPartialScore(complexPartialScore)
+                                                     .build();
     }
 
 }
