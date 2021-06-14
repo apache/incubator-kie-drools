@@ -16,6 +16,8 @@
 
 package org.kie.dmn.trisotech.core.compiler;
 
+import java.util.UUID;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -24,6 +26,7 @@ import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.impl.BaseDMNTypeImpl;
+import org.kie.dmn.core.impl.CompositeTypeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.Expression;
@@ -102,7 +105,7 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
             DMNType elementType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getIn().getTypeRef());
             if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
-                elementType = ((BaseDMNTypeImpl) elementType).getBaseType();
+                elementType = extractOrSynthesizeGeneric(model, (BaseDMNTypeImpl) elementType);
             }
 
             ctx.setVariable(expression.getVariable(), elementType != null ? elementType : model.getTypeRegistry().unknown());
@@ -127,6 +130,25 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         return new DMNIteratorEvaluator(exprName, node.getSource(), expression.getIteratorType(), expression.getVariable(), inEvaluator, returnEvaluator);
     }
 
+    /**
+     * extract the generic T from the DMN representation of FEEL:list<T>
+     */
+    private DMNType extractOrSynthesizeGeneric(DMNModelImpl model, BaseDMNTypeImpl elementType) {
+        if (elementType.getBaseType() != null) {
+            return elementType.getBaseType();
+        } else if (elementType instanceof CompositeTypeImpl) {
+            CompositeTypeImpl orig = (CompositeTypeImpl) elementType;
+            return new CompositeTypeImpl(orig.getNamespace(),
+                                         UUID.randomUUID().toString() + orig.getName(),
+                                         UUID.randomUUID().toString() + orig.getId(),
+                                         false, // synth T.
+                                         orig.getFields(),
+                                         null,
+                                         null);
+        }
+        return model.getTypeRegistry().unknown();
+    }
+
     private DMNExpressionEvaluator compileFilter(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String exprName, Filter expression) {
         DMNExpressionEvaluator inEvaluator = compileExpression(ctx, model, node, exprName + " [in]", expression.getIn());
         DMNExpressionEvaluator filterEvaluator;
@@ -137,7 +159,7 @@ public class TrisotechDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             DMNType outputType = compiler.resolveTypeRef(model, null, node.getSource(), expression.getTypeRef());
             DMNType elementType = outputType;
             if (elementType != null && elementType.isCollection() && elementType instanceof BaseDMNTypeImpl) {
-                elementType = ((BaseDMNTypeImpl) elementType).getBaseType();
+                elementType = extractOrSynthesizeGeneric(model, (BaseDMNTypeImpl) elementType);
             }
 
             ctx.setVariable("item", elementType != null ? elementType : model.getTypeRegistry().unknown());
