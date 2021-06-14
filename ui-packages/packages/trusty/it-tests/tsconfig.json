@@ -4,5 +4,5 @@
     "sourceMap": false,
     "types": ["cypress", "./support/commands"]
   },
-  "include": ["support", "integration"]
+  "include": ["support", "integration", "e2e"]
 }

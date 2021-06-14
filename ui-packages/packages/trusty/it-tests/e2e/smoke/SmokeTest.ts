@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-describe('Basic Elements', () => {
+describe('E2E - smoke test', () => {
   beforeEach(() => {
     cy.visit('/');
   });
 
-  it('Menu button is visible', () => {
+  it('menu button is visible', () => {
     cy.get('button#nav-toggle').should('be.visible');
   });
 
@@ -51,19 +51,11 @@ describe('Basic Elements', () => {
   });
 
   it('Date inputs are visible', () => {
-    cy.get('div.flatpickr-wrapper>input#audit-from-date+input').should(
-      'be.visible'
-    );
-    cy.get('div.flatpickr-wrapper>input#audit-to-date+input').should(
-      'be.visible'
-    );
+    cy.get('#audit-from-date+input').should('be.visible');
+    cy.get('#audit-to-date+input').should('be.visible');
   });
 
   it('Top paging is visible', () => {
     cy.ouiaId('top-pagination').should('be.visible');
-  });
-
-  it('Decision result is available', () => {
-    cy.ouiaId('exec-table').find("tr>td>a:contains('1003')", { timeout: 5000 });
   });
 });

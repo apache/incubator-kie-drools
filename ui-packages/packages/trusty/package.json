@@ -29,10 +29,12 @@
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts{,x}'",
     "mock-server": "json-server --watch api-mock/db.js --routes api-mock/routes.json --port 1336 --delay 1000 --id executionId --middlewares api-mock/filterSingular.js",
-    "cypress:open": "yarn run cypress open --project cypress",
-    "cypress:run": "yarn run cypress run -b chrome --project cypress",
+    "cypress:open:it": "yarn run cypress open --project it-tests --config-file cypress.it.json",
+    "cypress:run:it": "yarn run cypress run -b chrome --project it-tests --config-file cypress.it.json",
     "start-and-mock": "yarn run start & yarn run mock-server",
-    "test:it": "start-server-and-test start-and-mock http://0.0.0.0:9000 cypress:run"
+    "test:it": "start-server-and-test start-and-mock http://0.0.0.0:9000 cypress:run:it",
+    "cypress:open:e2e": "yarn run cypress open --project it-tests --config-file cypress.e2e.json",
+    "cypress:run:e2e": "yarn run cypress run -b chrome --project it-tests --config-file cypress.e2e.json"
   },
   "devDependencies": {
     "faker": "^4.1.0",
