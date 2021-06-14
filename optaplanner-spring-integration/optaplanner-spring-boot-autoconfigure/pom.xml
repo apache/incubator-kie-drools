@@ -57,10 +57,6 @@
       <artifactId>gizmo</artifactId>
       <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.drools</groupId>
-      <artifactId>drools-core</artifactId>
-    </dependency>
 
     <!-- External dependencies -->
     <dependency>

@@ -221,6 +221,7 @@ class OptaPlannerProcessor {
             final Class<?> constraintProviderClass = solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass();
             final Class<?> planningSolutionClass = solverConfig.getSolutionClass();
             final List<Class<?>> planningEntityClasses = solverConfig.getEntityClassList();
+            // TODO Don't duplicate defaults by using ConstraintVerifier.create(solverConfig) instead
             final ConstraintStreamImplType constraintStreamImplType =
                     ObjectUtils.defaultIfNull(solverConfig.getScoreDirectorFactoryConfig().getConstraintStreamImplType(),
                             ConstraintStreamImplType.DROOLS);

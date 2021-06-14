@@ -20,16 +20,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.Duration;
 import java.util.Collections;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.drools.core.base.CoreComponentsBuilder;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
@@ -307,7 +304,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.DROOLS);
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilationEnabled())
-                            .isEqualTo(!CoreComponentsBuilder.isNativeImage());
+                            .isEqualTo(true);
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
                             .mapToObj(i -> "v" + i)
@@ -336,8 +333,6 @@ public class OptaPlannerAutoConfigurationTest {
                             context.getBean(ConstraintVerifier.class);
                     assertThat(((DefaultConstraintVerifier) constraintVerifier).getConstraintStreamImplType())
                             .isEqualTo(ConstraintStreamImplType.BAVET);
-                    assertThat(((DefaultConstraintVerifier) constraintVerifier).isDroolsAlphaNetworkCompilationEnabled())
-                            .isFalse();
 
                     TestdataSpringSolution problem = new TestdataSpringSolution();
                     problem.setValueList(IntStream.range(1, 3)
@@ -366,7 +361,7 @@ public class OptaPlannerAutoConfigurationTest {
                     assertThatCode(() -> {
                         context.getBean(ConstraintVerifier.class).verifyThat();
                     })
-                            .hasMessage("ConstraintVerifier is only supported for ConstraintProviders");
+                            .hasMessage("Cannot provision a ConstraintVerifier because there is no ConstraintProvider class.");
                 });
     }
 

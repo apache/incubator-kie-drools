@@ -17,9 +17,11 @@
 package org.optaplanner.test.impl.score.stream;
 
 import static java.util.Objects.requireNonNull;
+import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 
 import java.util.function.BiFunction;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.drools.core.base.CoreComponentsBuilder;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
@@ -37,8 +39,8 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     private final ConstraintProvider_ constraintProvider;
     private final SolutionDescriptor<Solution_> solutionDescriptor;
-    private ConstraintStreamImplType constraintStreamImplType = ConstraintStreamImplType.DROOLS;
-    private boolean droolsAlphaNetworkCompilationEnabled = !CoreComponentsBuilder.isNativeImage();
+    private ConstraintStreamImplType constraintStreamImplType;
+    private Boolean droolsAlphaNetworkCompilationEnabled;
 
     public DefaultConstraintVerifier(ConstraintProvider_ constraintProvider, SolutionDescriptor<Solution_> solutionDescriptor) {
         this.constraintProvider = constraintProvider;
@@ -46,27 +48,24 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
     }
 
     public ConstraintStreamImplType getConstraintStreamImplType() {
-        return constraintStreamImplType;
+        return defaultIfNull(constraintStreamImplType, ConstraintStreamImplType.DROOLS);
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withConstraintStreamImplType(
             ConstraintStreamImplType constraintStreamImplType) {
+        requireNonNull(constraintStreamImplType);
         this.constraintStreamImplType = constraintStreamImplType;
         return this;
     }
 
     public boolean isDroolsAlphaNetworkCompilationEnabled() {
-        return droolsAlphaNetworkCompilationEnabled;
+        return defaultIfNull(droolsAlphaNetworkCompilationEnabled, !CoreComponentsBuilder.isNativeImage());
     }
 
     @Override
     public ConstraintVerifier<ConstraintProvider_, Solution_> withDroolsAlphaNetworkCompilationEnabled(
             boolean droolsAlphaNetworkCompilationEnabled) {
-        if (getConstraintStreamImplType() != ConstraintStreamImplType.DROOLS && droolsAlphaNetworkCompilationEnabled) {
-            throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType +
-                    ") does not support Drools alpha network compilation.");
-        }
         this.droolsAlphaNetworkCompilationEnabled = droolsAlphaNetworkCompilationEnabled;
         return this;
     }
@@ -94,15 +93,21 @@ public final class DefaultConstraintVerifier<ConstraintProvider_ extends Constra
 
     private AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> createScoreDirectorFactory(
             ConstraintProvider constraintProvider) {
-        switch (constraintStreamImplType) {
+        ConstraintStreamImplType constraintStreamImplType_ = getConstraintStreamImplType();
+        switch (constraintStreamImplType_) {
             case DROOLS:
                 return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
-                        droolsAlphaNetworkCompilationEnabled);
+                        isDroolsAlphaNetworkCompilationEnabled());
             case BAVET:
+                if (BooleanUtils.isTrue(droolsAlphaNetworkCompilationEnabled)) {
+                    throw new IllegalArgumentException("Constraint stream implementation (" + constraintStreamImplType_ +
+                            ") does not support droolsAlphaNetworkCompilationEnabled ("
+                            + droolsAlphaNetworkCompilationEnabled + ").");
+                }
                 return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
             default:
-                throw new UnsupportedOperationException("Unknown constraint stream implementation: "
-                        + constraintStreamImplType);
+                throw new UnsupportedOperationException("Unsupported constraintStreamImplType ("
+                        + this.constraintStreamImplType + ").");
         }
     }
 

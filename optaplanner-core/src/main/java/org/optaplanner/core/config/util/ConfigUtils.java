@@ -73,7 +73,8 @@ public class ConfigUtils {
      * @return new instance of clazz
      */
     public static <T> T newInstance(Object configBean, String propertyName, Class<T> clazz) {
-        return ConfigUtils.newInstance(() -> configBean.getClass().getSimpleName(), propertyName, clazz);
+        return ConfigUtils.newInstance(() -> (configBean == null ? "?" : configBean.getClass().getSimpleName()),
+                propertyName, clazz);
     }
 
     /**

@@ -39,7 +39,6 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
-import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.persistence.jackson.api.OptaPlannerJacksonModule;
 import org.optaplanner.test.api.score.stream.ConstraintVerifier;
 import org.optaplanner.test.api.score.stream.MultiConstraintVerification;
@@ -148,7 +147,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                 // Return a mock ConstraintVerifier so not having ConstraintProvider doesn't crash tests
                 // (Cannot create custom condition that checks SolverConfig, since that
                 //  requires OptaPlannerAutoConfiguration to have a no-args constructor)
-                final String noConstraintProviderErrorMsg = "ConstraintVerifier is only supported for ConstraintProviders";
+                final String noConstraintProviderErrorMsg =
+                        "Cannot provision a ConstraintVerifier because there is no ConstraintProvider class.";
                 return new ConstraintVerifier<ConstraintProvider_, SolutionClass_>() {
                     @Override
                     public ConstraintVerifier<ConstraintProvider_, SolutionClass_>
@@ -174,17 +174,8 @@ public class OptaPlannerAutoConfiguration implements BeanClassLoaderAware {
                     }
                 };
             }
-            ConstraintProvider_ constraintProvider = ConfigUtils.newInstance(scoreDirectorFactoryConfig, "constraintProvider",
-                    (Class<ConstraintProvider_>) scoreDirectorFactoryConfig.getConstraintProviderClass());
-            Class<?>[] entityClasses = solverConfig.getEntityClassList().toArray(new Class<?>[0]);
-            ConstraintStreamImplType constraintStreamImplType = scoreDirectorFactoryConfig.getConstraintStreamImplType();
-            boolean droolsAlphaNetworkCompilationEnabled = scoreDirectorFactoryConfig.isDroolsAlphaNetworkCompilationEnabled();
 
-            return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier
-                    .build(constraintProvider, solverConfig.getSolutionClass(), entityClasses)
-                    .withConstraintStreamImplType(
-                            (constraintStreamImplType != null) ? constraintStreamImplType : ConstraintStreamImplType.DROOLS)
-                    .withDroolsAlphaNetworkCompilationEnabled(droolsAlphaNetworkCompilationEnabled);
+            return (ConstraintVerifier<ConstraintProvider_, SolutionClass_>) ConstraintVerifier.create(solverConfig);
         }
     }
 
