@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.experimental;
+package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -24,14 +24,14 @@ public class IntervalTree<IntervalValue_, PointValue_ extends Comparable<PointVa
     final TreeSet<IntervalSplitPoint<IntervalValue_, PointValue_>> splitPointSet;
     final Function<IntervalValue_, PointValue_> startMapping;
     final Function<IntervalValue_, PointValue_> endMapping;
-    final ConsecutiveIntervalData<IntervalValue_, PointValue_> consecutiveIntervalData;
+    final ConsecutiveIntervalDataImpl<IntervalValue_, PointValue_> consecutiveIntervalData;
 
     public IntervalTree(Function<IntervalValue_, PointValue_> startMapping,
             Function<IntervalValue_, PointValue_> endMapping) {
         this.startMapping = startMapping;
         this.endMapping = endMapping;
         splitPointSet = new TreeSet<>();
-        consecutiveIntervalData = new ConsecutiveIntervalData<>(splitPointSet);
+        consecutiveIntervalData = new ConsecutiveIntervalDataImpl<>(splitPointSet);
     }
 
     private Interval<IntervalValue_, PointValue_> getInterval(IntervalValue_ intervalValue) {
@@ -118,7 +118,7 @@ public class IntervalTree<IntervalValue_, PointValue_ extends Comparable<PointVa
         return true;
     }
 
-    public ConsecutiveIntervalData<IntervalValue_, PointValue_> getConsecutiveIntervalData() {
+    public ConsecutiveIntervalDataImpl<IntervalValue_, PointValue_> getConsecutiveIntervalData() {
         return consecutiveIntervalData;
     }
 }

@@ -668,12 +668,13 @@ public class NurseRosteringConstraintProviderTest {
         ShiftAssignment shift3 = getShiftAssignment(8, employee);
         ShiftAssignment shift4 = getShiftAssignment(14, employee);
         ShiftAssignment shift5 = getShiftAssignment(15, employee);
+        ShiftAssignment shift6 = getShiftAssignment(21, employee);
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
                 .given(contract.getContractLineList().get(0),
                         employee,
-                        shift1, shift2, shift3, shift4, shift5)
-                .penalizesBy(8);
+                        shift1, shift2, shift3, shift4, shift5, shift6)
+                .penalizesBy(4);
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
                 .given(contract.getContractLineList().get(0),
@@ -690,12 +691,12 @@ public class NurseRosteringConstraintProviderTest {
                 .given(contract.getContractLineList().get(0),
                         employee,
                         shift1, shift2)
-                .penalizesBy(0);
+                .penalizesBy(2);
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveWorkingWeekends)
                 .given(contract.getContractLineList().get(0),
                         employee,
                         shift1, shift2, shift4, shift5)
-                .penalizesBy(0);
+                .penalizesBy(4);
 
     }
 

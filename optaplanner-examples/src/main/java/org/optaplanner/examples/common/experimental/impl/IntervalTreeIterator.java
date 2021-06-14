@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.common.experimental;
+package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.Iterator;
 

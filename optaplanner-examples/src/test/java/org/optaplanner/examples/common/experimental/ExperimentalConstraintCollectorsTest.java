@@ -26,13 +26,17 @@ import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
+import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
+import org.optaplanner.examples.common.experimental.impl.ConsecutiveIntervalDataImpl;
+import org.optaplanner.examples.common.experimental.impl.ConsecutiveSetTree;
+import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
 public class ExperimentalConstraintCollectorsTest {
     @Test
     public void consecutive() {
         // Do a basic test w/o edge cases; edge cases are covered in
         // ConsecutiveSetTreeTest
-        UniConstraintCollector<Integer, ?, ConsecutiveData<Integer, Integer>> collector =
+        UniConstraintCollector<Integer, ?, ConsecutiveInfo<Integer, Integer>> collector =
                 ExperimentalConstraintCollectors.consecutive(Integer::intValue);
         Object container = collector.supplier().get();
         // Add first value, sequence is [2]
@@ -94,7 +98,7 @@ public class ExperimentalConstraintCollectorsTest {
     public void consecutiveInterval() {
         // Do a basic test w/o edge cases; edge cases are covered in
         // ConsecutiveSetTreeTest
-        UniConstraintCollector<Interval, ?, ConsecutiveIntervalData<Interval, Integer>> collector =
+        UniConstraintCollector<Interval, ?, ConsecutiveIntervalDataImpl<Interval, Integer>> collector =
                 ExperimentalConstraintCollectors.consecutiveIntervals(Interval::getStart, Interval::getEnd);
         Object container = collector.supplier().get();
         // Add first value, sequence is [(1,3)]
@@ -119,14 +123,14 @@ public class ExperimentalConstraintCollectorsTest {
         assertResult(collector, container, consecutiveIntervalData());
     }
 
-    private ConsecutiveData<Integer, Integer> consecutiveData(Integer... data) {
+    private ConsecutiveInfo<Integer, Integer> consecutiveData(Integer... data) {
         ConsecutiveSetTree<Integer, Integer, Integer> tree =
-                new ConsecutiveSetTree<>(Integer::intValue, (a, b) -> b - a, 1, 0);
+                new ConsecutiveSetTree<>(Integer::intValue, (a, b) -> b - a, Integer::sum, 1, 0);
         asList(data).forEach(tree::add);
         return tree.getConsecutiveData();
     }
 
-    private ConsecutiveIntervalData<Interval, Integer> consecutiveIntervalData(Interval... data) {
+    private ConsecutiveIntervalDataImpl<Interval, Integer> consecutiveIntervalData(Interval... data) {
         IntervalTree<Interval, Integer> tree =
                 new IntervalTree<>(Interval::getStart, Interval::getEnd);
         asList(data).forEach(tree::add);
