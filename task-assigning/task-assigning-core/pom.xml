@@ -18,20 +18,6 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-core</artifactId>
     </dependency>
-    <dependency>
-      <!-- at the moment this dependency was added only for being able to use the @RegisterForReflection
-           in the StartAndEndTimeUpdatingVariableListener.
-           TODO: remove it after https://issues.redhat.com/browse/PLANNER-2308 is sorted out.
-      -->
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-core</artifactId>
-      <exclusions>
-        <exclusion>
-          <groupId>*</groupId>
-          <artifactId>*</artifactId>
-        </exclusion>
-      </exclusions>
-    </dependency>
 
     <!-- test dependencies -->
 
