@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.assertj.core.data.Offset.offset;
 
+import java.lang.reflect.Member;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
 
 public class ConfigUtilsTest {
 
@@ -273,6 +275,51 @@ public class ConfigUtilsTest {
         assertThat(ConfigUtils.abbreviate(Collections.emptyList())).isEmpty();
         assertThat(ConfigUtils.abbreviate(Arrays.asList("A", "B", "C"))).isEqualTo("A, B, C");
         assertThat(ConfigUtils.abbreviate(Arrays.asList("A", "B", "C", "D"))).isEqualTo("A, B, C, ...");
+    }
+
+    @Test
+    void ignoreSyntheticMembers() {
+        assertThat(ConfigUtils.getDeclaredMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class)).hasSize(1);
+        assertThat(ConfigUtils.getDeclaredMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class))
+                .noneMatch(Member::isSynthetic);
+        assertThat(ConfigUtils.getAllMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class, PlanningScore.class))
+                .hasSize(1);
+        assertThat(ConfigUtils.getAllMembers(ClassWithSyntheticFieldParent.ClassWithSyntheticField.class, PlanningScore.class))
+                .noneMatch(Member::isSynthetic);
+
+        assertThat(ConfigUtils.getDeclaredMembers(ClassWithBridgeMethod.class)).hasSize(2);
+        assertThat(ConfigUtils.getDeclaredMembers(ClassWithBridgeMethod.class)).noneMatch(Member::isSynthetic);
+        assertThat(ConfigUtils.getAllMembers(ClassWithBridgeMethod.class, PlanningScore.class)).hasSize(1);
+        assertThat(ConfigUtils.getAllMembers(ClassWithBridgeMethod.class, PlanningScore.class)).noneMatch(Member::isSynthetic);
+    }
+
+    public static class ClassWithSyntheticFieldParent {
+        int x;
+
+        public class ClassWithSyntheticField {
+            @PlanningScore
+            int y;
+        }
+    }
+
+    public static class ClassWithBridgeMethodParent<T> {
+
+        public T getScore() {
+            return null;
+        }
+
+        public void setScore(T score) {
+        }
+    }
+
+    public static class ClassWithBridgeMethod extends ClassWithBridgeMethodParent<Integer> {
+        public Integer getScore() {
+            return 0;
+        }
+
+        @PlanningScore
+        public void setScore(Integer score) {
+        }
     }
 
 }
