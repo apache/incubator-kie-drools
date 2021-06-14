@@ -36,6 +36,7 @@ import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static java.math.BigDecimal.valueOf;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -496,7 +497,7 @@ public class MvelDialectTest extends BaseModelTest {
         ksession.insert(john);
 
         assertEquals(1, ksession.fireAllRules());
-        assertThat(results).containsExactly(BigDecimal.valueOf(1), BigDecimal.valueOf(2));
+        assertThat(results).containsExactly(valueOf(1), valueOf(2));
     }
 
     @Test
@@ -1230,6 +1231,49 @@ public class MvelDialectTest extends BaseModelTest {
         assertThat(results).containsOnly(leonardo);
     }
 
+
+    public static BigDecimal bigDecimalFunc( BigDecimal bd){
+        return new BigDecimal(bd.toString());
+    }
+
+    @Test
+    public void testBigDecimalPromotionWithExternalFunction() {
+        // DROOLS-6410
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "import " + Address.class.getCanonicalName() + ";" +
+                "import " + BigDecimal.class.getCanonicalName() + ";" +
+                "import static " + MvelDialectTest.class.getCanonicalName() + ".bigDecimalFunc;" +
+                "import static " + Person.class.getCanonicalName() + ".identityBigDecimal;" +
+                "global java.util.List results;" +
+                "dialect \"mvel\"\n" +
+                "rule \"bigDecimalFunc\"\n" +
+                "    when\n" +
+                "        $p : Person($bd : (bigDecimalFunc(money) * 100 + 12), " +
+                        "            $bd2 : (identityBigDecimal(money) * 100 + 12))\n" + // 1012
+                "    then\n" +
+                        "BigDecimal resultAssigned = (bigDecimalFunc($p.money) * 100 + 12);\n" + // 1012
+                        "results.add(resultAssigned);\n" + // 101212
+                        "results.add($bd2);\n" + // 101212
+                        "results.add((identityBigDecimal($p.money) * 100 + 12));\n" + // 101212
+                        "results.add(bigDecimalFunc($bd) * 100 + 12);\n" + // 101212
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        ArrayList<BigDecimal> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Person leonardo = new Person("Leonardo", 4);
+        leonardo.setMoney( new BigDecimal( 10 ) );
+
+        ksession.insert(leonardo);
+
+        assertEquals( 1, ksession.fireAllRules() );
+
+        assertThat(results).containsExactly(valueOf(1012), valueOf(1012), valueOf(1012), valueOf(101212));
+    }
+
     @Test
     public void testBigDecimalPromotionUsingDefinedFunctionAndDeclaredType() {
         // DROOLS-6362
@@ -1270,10 +1314,10 @@ public class MvelDialectTest extends BaseModelTest {
         ArrayList<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
-        Person john = new Person("John", 10).setMoney(BigDecimal.valueOf(10));
+        Person john = new Person("John", 10).setMoney(valueOf(10));
         ksession.insert(john);
 
-        Person leonardo = new Person("Leonardo", 4).setMoney(BigDecimal.valueOf(4));
+        Person leonardo = new Person("Leonardo", 4).setMoney(valueOf(4));
         ksession.insert(leonardo);
 
         int rulesFired = ksession.fireAllRules();
