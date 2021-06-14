@@ -274,6 +274,10 @@ public class Person extends AbstractReactiveObject {
         return p1.getAge() + p2.getAge();
     }
 
+    public static BigDecimal identityBigDecimal( BigDecimal bd){
+        return new BigDecimal(bd.toString());
+    }
+
     public static Person identityFunction(Person p) {
         return p;
     }
