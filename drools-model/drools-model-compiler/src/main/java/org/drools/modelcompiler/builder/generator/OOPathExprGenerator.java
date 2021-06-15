@@ -45,6 +45,7 @@ import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
@@ -69,8 +70,16 @@ public class OOPathExprGenerator {
         String previousBind = originalBind;
 
         NodeList<OOPathChunk> chunks = ooPathExpr.getChunks();
+        boolean passive = false;
         for (int i = 0; i < chunks.size(); i++) {
             OOPathChunk chunk = chunks.get(i);
+            if (chunk.isPassive()) {
+                if (passive) {
+                    context.addCompilationError(new InvalidExpressionErrorResult("Invalid oopath expression '" + ooPathExpr + "': It is not possible to have 2 non-reactive parts in the same oopath"));
+                    break;
+                }
+                passive = true;
+            }
 
             final String fieldName = chunk.getField().toString();
 
@@ -95,7 +104,7 @@ public class OOPathExprGenerator {
             }
 
             final Expression accessorLambda = createLambdaAccessor(previousClass, exprType, ooPathChunkExpr);
-            final MethodCallExpr reactiveFrom = createFromExpr(previousBind, accessorLambda);
+            final MethodCallExpr reactiveFrom = createFromExpr(previousBind, accessorLambda, passive);
             previousBind = bindOOPathChunk(originalBind, patternParseResult, i, i == chunks.size()-1, chunk, fieldName, fieldType, accessorLambda, reactiveFrom);
             previousClass = fieldType;
         }
@@ -109,8 +118,8 @@ public class OOPathExprGenerator {
         return accessorLambda;
     }
 
-    private MethodCallExpr createFromExpr(String previousBind, Expression accessorLambda) {
-        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
+    private MethodCallExpr createFromExpr(String previousBind, Expression accessorLambda, boolean passive) {
+        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, passive ? FROM_CALL : REACTIVE_FROM_CALL);
         reactiveFrom.addArgument(context.getVarExpr(previousBind));
         reactiveFrom.addArgument(accessorLambda);
         return reactiveFrom;

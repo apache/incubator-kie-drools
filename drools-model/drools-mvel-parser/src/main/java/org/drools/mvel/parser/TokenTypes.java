@@ -129,6 +129,7 @@ import static org.drools.mvel.parser.GeneratedMvelParserConstants.OPENS;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.ORASSIGN;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.PACKAGE;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.PART_LETTER;
+import static org.drools.mvel.parser.GeneratedMvelParserConstants.PASSIVE_OOPATH;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.PLUS;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.PLUSASSIGN;
 import static org.drools.mvel.parser.GeneratedMvelParserConstants.PRIVATE;
@@ -383,6 +384,7 @@ public class TokenTypes {
             case DOT_DOT_SLASH:
             case HASHMARK:
             case EXCL_DOT:
+            case PASSIVE_OOPATH:
             case ASSIGN:
             case LT:
             case BANG:
