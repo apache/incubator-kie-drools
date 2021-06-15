@@ -36,26 +36,12 @@ public class KiePMMLExpressionFactory {
     }
 
     public static BlockStmt getKiePMMLExpression(final String variableName, final org.dmg.pmml.Expression expression) {
-        /*if (expression instanceof Aggregate) {
-            return null;
-        } else*/ if (expression instanceof Apply) {
+        if (expression instanceof Apply) {
             return getApplyVariableDeclaration(variableName, (Apply) expression);
         } else if (expression instanceof Constant) {
             return getConstantVariableDeclaration(variableName, (Constant) expression);
-//        } else if (expression instanceof Discretize) {
-//            return null;
         } else if (expression instanceof FieldRef) {
             return getFieldRefVariableDeclaration(variableName, (FieldRef) expression);
-//        } else if (expression instanceof Lag) {
-//            return null;
-//        } else if (expression instanceof MapValues) {
-//            return null;
-//        } else if (expression instanceof NormContinuous) {
-//            return null;
-//        } else if (expression instanceof NormDiscrete) {
-//            return null;
-//        } else if (expression instanceof TextIndex) {
-//            return null;
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }
