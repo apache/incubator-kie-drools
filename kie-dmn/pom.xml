@@ -22,7 +22,7 @@
     <module>kie-dmn-feel</module>
     <module>kie-dmn-feel-gwt-functions</module>
     <module>kie-dmn-feel-gwt</module>
-    <module>kie-dmn-feel-gwt-showcase</module>
+    <!-- <module>kie-dmn-feel-gwt-showcase</module> -->
     <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>
     <module>kie-dmn-validation-bootstrap</module>
@@ -48,5 +48,20 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <profiles>
+    <profile>
+      <id>gwt-showcase</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+        <property>
+          <name>gwt.compiler.skip</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-dmn-feel-gwt-showcase</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
