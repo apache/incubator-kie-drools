@@ -61,13 +61,8 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
         for (KiePMMLExpression kiePMMLExpression : kiePMMLExpressions) {
             expressionValues.add(kiePMMLExpression.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues));
         }
-        BUILTIN_FUNCTIONS builtinFunction = null;
-        try {
-            builtinFunction = BUILTIN_FUNCTIONS.byName(function);
-        } catch (KieEnumException e) {
-            // ignore - it is not a BUILTIN_FUNCTIONS
-        }
-        if (builtinFunction != null) {
+        if (BUILTIN_FUNCTIONS.isBUILTIN_FUNCTIONS(function)) {
+            BUILTIN_FUNCTIONS builtinFunction = BUILTIN_FUNCTIONS.byName(function);
             return builtinFunction.getValue(expressionValues.toArray(new Object[0]));
         } else {
             final KiePMMLDefineFunction definedFunction = defineFunctions

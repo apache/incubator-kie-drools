@@ -57,7 +57,6 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 import org.kie.pmml.api.enums.BUILTIN_FUNCTIONS;
-import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.utils.ConverterTypeUtil;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -559,17 +558,11 @@ public class ExpressionFunctionUtils {
         }
 
         final String function = apply.getFunction();
-        BUILTIN_FUNCTIONS builtinFunction = null;
-        try {
-            builtinFunction = BUILTIN_FUNCTIONS.byName(function);
-        } catch (KieEnumException e) {
-            // ignore - is not a BUILTIN_FUNCTIONS
-        }
         final BlockStmt applyBlock;
         final VariableDeclarator variableDeclarator;
         final MethodCallExpr functionMethodCall;
         final NodeList<com.github.javaparser.ast.expr.Expression> functionCallArguments;
-        if (builtinFunction != null) {
+        if (BUILTIN_FUNCTIONS.isBUILTIN_FUNCTIONS(function)) {
             final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
                     .getMethodsByName(APPLYEXPRESSIONBUILTINFUNCTIONINVOCATION)
                     .get(0)
@@ -593,7 +586,6 @@ public class ExpressionFunctionUtils {
             String inputDataVariableName = variableName + INPUT_DATA;
             inputData.setName(inputDataVariableName);
             functionCallArguments = NodeList.nodeList(new NameExpr(inputDataVariableName));
-
         } else {
             final MethodDeclaration methodDeclaration = EXPRESSION_TEMPLATE
                     .getMethodsByName(APPLYEXPRESSIONLOCALMETHODINVOCATION)
