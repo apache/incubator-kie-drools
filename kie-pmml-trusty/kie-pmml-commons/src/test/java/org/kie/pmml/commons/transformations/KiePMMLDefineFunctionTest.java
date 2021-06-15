@@ -25,7 +25,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class KiePMMLDefineFunctionTest {
 

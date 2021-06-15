@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.util.Arrays;
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -34,11 +35,10 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getArraysAsListInvocation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration;
 
 /**
  * Class meant to provide <i>helper</i> methods to retrieve <code>KiePMMLLocalTransformations</code> code-generators

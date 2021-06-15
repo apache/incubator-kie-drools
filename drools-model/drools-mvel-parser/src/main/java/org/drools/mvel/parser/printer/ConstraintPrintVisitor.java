@@ -230,6 +230,11 @@ public class ConstraintPrintVisitor extends PrettyPrintVisitor implements DrlVoi
             chunk.accept(this, arg);
             printer.print(chunk.getField().toString());
 
+            if (chunk.getInlineCast() != null) {
+                printer.print("#");
+                chunk.getInlineCast().accept( this, arg );
+            }
+
             List<DrlxExpression> condition = chunk.getConditions();
             final Iterator<DrlxExpression> iterator = condition.iterator();
             if (!condition.isEmpty()) {

@@ -308,7 +308,7 @@ public class AccumulateVisitor {
             drlxParseResult.setAccumulateBinding( inputPattern.getIdentifier() );
         }
 
-        return drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, input, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, drlxParseResult));
+        return drlxParseResult.acceptWithReturnValue(new ReplaceBindingVisitor(functionDSL, bindingId, methodCallExprType, accumulateFunctionResultType, bindExpressionVariable, drlxParseResult));
     }
 
     private PatternDescr findInputPattern(BaseDescr input) {
@@ -330,16 +330,14 @@ public class AccumulateVisitor {
 
         private final MethodCallExpr functionDSL;
         private final String bindingId;
-        private final BaseDescr input;
         private final Class<?> methodCallExprType;
         private final Class accumulateFunctionResultType;
         private final String bindExpressionVariable;
         private final SingleDrlxParseSuccess drlxParseResult;
 
-        ReplaceBindingVisitor(MethodCallExpr functionDSL, String bindingId, BaseDescr input, Class<?> methodCallExprType, Class accumulateFunctionResultType, String bindExpressionVariable, SingleDrlxParseSuccess drlxParseResult) {
+        ReplaceBindingVisitor(MethodCallExpr functionDSL, String bindingId, Class<?> methodCallExprType, Class accumulateFunctionResultType, String bindExpressionVariable, SingleDrlxParseSuccess drlxParseResult) {
             this.functionDSL = functionDSL;
             this.bindingId = bindingId;
-            this.input = input;
             this.methodCallExprType = methodCallExprType;
             this.accumulateFunctionResultType = accumulateFunctionResultType;
             this.bindExpressionVariable = bindExpressionVariable;
@@ -361,12 +359,6 @@ public class AccumulateVisitor {
             List<String> ids = new ArrayList<>();
             if (singleResult.getPatternBinding() != null) {
                  ids.add( singleResult.getPatternBinding() );
-            }
-            if (input instanceof PatternDescr) {
-                String patternId = ((PatternDescr) input).getIdentifier();
-                if (!ids.contains( patternId )) {
-                    ids.add( patternId );
-                }
             }
             return Optional.of(new NewBinding(ids, binding));
         }

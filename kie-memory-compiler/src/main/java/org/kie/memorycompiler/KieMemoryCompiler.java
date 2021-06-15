@@ -55,11 +55,10 @@ public class KieMemoryCompiler {
         MemoryCompilerClassLoader kieMemoryCompilerClassLoader = new MemoryCompilerClassLoader(classLoader);
 
         Map<String, Class<?>> toReturn = new HashMap<>();
-        for (String className : classNameSourceMap.keySet()) {
-            byte[] bytes = byteCode.get(className);
-            kieMemoryCompilerClassLoader.addCode( className, bytes );
+        for (Map.Entry<String, byte[]> entry : byteCode.entrySet()) {
+            kieMemoryCompilerClassLoader.addCode( entry.getKey(), entry.getValue() );
             try {
-                toReturn.put(className, kieMemoryCompilerClassLoader.loadClass(className));
+                toReturn.put(entry.getKey(), kieMemoryCompilerClassLoader.loadClass(entry.getKey()));
             } catch (ClassNotFoundException e) {
                 throw new KieMemoryCompilerException(e.getMessage(), e);
             }
@@ -133,11 +132,12 @@ public class KieMemoryCompiler {
         if (res.getErrors().length > 0) {
             throw new KieMemoryCompilerException(Arrays.toString( res.getErrors() ));
         }
+
         Map<String, byte[]> toReturn = new HashMap<>();
-        for (String className : classNameSourceMap.keySet()) {
-            byte[] bytes = store.read( toClassSource( className ) );
-            toReturn.put(className, bytes);
+        for (Map.Entry<String, byte[]> entry : store.getResources().entrySet()) {
+            toReturn.put(toClassName( entry.getKey() ), entry.getValue());
         }
+
         return toReturn;
     }
 
@@ -147,6 +147,13 @@ public class KieMemoryCompiler {
 
     private static String toClassSource( String s ) {
         return s.replace( '.', '/' ) + ".class";
+    }
+
+    private static String toClassName( String s ) {
+        if (s.endsWith(".class")) {
+            s = s.substring(0, s.length()-6);
+        }
+        return s.replace( '/', '.' );
     }
 
     public static class MemoryCompilerClassLoader extends ClassLoader {

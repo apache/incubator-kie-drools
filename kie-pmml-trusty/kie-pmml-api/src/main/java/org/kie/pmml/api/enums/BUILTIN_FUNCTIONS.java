@@ -105,6 +105,11 @@ public enum BUILTIN_FUNCTIONS {
         this.name = name;
     }
 
+    public static boolean isBUILTIN_FUNCTIONS(String name) {
+        return Arrays.stream(BUILTIN_FUNCTIONS.values())
+                .anyMatch(value -> name.equals(value.name));
+    }
+
     public static BUILTIN_FUNCTIONS byName(String name) {
         return Arrays.stream(BUILTIN_FUNCTIONS.values())
                 .filter(value -> name.equals(value.name))

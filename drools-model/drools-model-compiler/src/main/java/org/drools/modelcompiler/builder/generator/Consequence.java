@@ -75,7 +75,6 @@ import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_META
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADATA_INSTANCE;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findAllChildrenRecursive;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassFromType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isNameExprWithName;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.parseBlock;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -359,7 +358,10 @@ public class Consequence {
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
-                        ruleBlock.addStatement( createBitMaskField( updatedVar, bitMaskCreation ) );
+                        AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
+                        if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
+                            ruleBlock.addStatement(bitMaskAssign);
+                        }
                     }
 
                     updateExpr.addArgument( "mask_" + updatedVar );

@@ -38,6 +38,7 @@ import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -90,6 +91,7 @@ public class RuleContext {
     private List<Expression> expressions = new ArrayList<>();
     private Map<String, String> namedConsequences = new HashMap<>();
     private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
+    private BlockStmt ruleVariablesBlock = new BlockStmt();
 
     private List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
@@ -708,6 +710,10 @@ public class RuleContext {
 
     public AndDescr getParentDescr() {
         return parentDescr;
+    }
+
+    public BlockStmt getRuleVariablesBlock() {
+        return ruleVariablesBlock;
     }
 
     @Override

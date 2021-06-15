@@ -87,7 +87,7 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
 
     private Optional<Object> getFromKiePMMLNameValues(final List<KiePMMLNameValue> kiePMMLNameValues) {
         return kiePMMLNameValues
-                .parallelStream()
+                .stream()
                 .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(name))
                 .findFirst()
                 .map(KiePMMLNameValue::getValue);
@@ -98,7 +98,7 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
                                                   final List<KiePMMLOutputField> outputFields,
                                                   final List<KiePMMLNameValue> kiePMMLNameValues) {
         return derivedFields
-                .parallelStream()
+                .stream()
                 .filter(derivedField -> derivedField.getName().equals(name))
                 .findFirst()
                 .map(derivedField -> derivedField.evaluate(defineFunctions, derivedFields, outputFields,
@@ -110,7 +110,7 @@ public class KiePMMLFieldRef extends AbstractKiePMMLComponent implements KiePMML
                                                  final List<KiePMMLOutputField> outputFields,
                                                  final List<KiePMMLNameValue> kiePMMLNameValues) {
         return outputFields
-                .parallelStream()
+                .stream()
                 .filter(outputField -> outputField.getName().equals(name))
                 .findFirst()
                 .map(outputField -> outputField.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues));
