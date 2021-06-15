@@ -95,7 +95,8 @@ public class KiePMMLModelFactoryUtilsTest {
 
     @Before
     public void init() {
-        constructorDeclaration = compilationUnit.getClassByName(TEMPLATE_CLASS_NAME)
+        CompilationUnit clonedCompilationUnit = compilationUnit.clone();
+        constructorDeclaration = clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME)
                 .orElseThrow(() -> new RuntimeException("Failed to retrieve ClassOrInterfaceDeclaration " + TEMPLATE_CLASS_NAME + "  from " + TEMPLATE_SOURCE))
                 .getDefaultConstructor()
                 .orElseThrow(() -> new RuntimeException("Failed to retrieve default constructor from " + TEMPLATE_SOURCE));
@@ -108,8 +109,8 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals("Template", constructorDeclaration.getName().asString()); // as in the original template
         assertEquals("super(name, Collections.emptyList(), operator, second);", superInvocation.toString()); // as in
         // the original template
-        assertTrue(compilationUnit.getClassByName(TEMPLATE_CLASS_NAME).isPresent());
-        classOrInterfaceDeclaration = compilationUnit.getClassByName(TEMPLATE_CLASS_NAME).get();
+        assertTrue(clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME).isPresent());
+        classOrInterfaceDeclaration = clonedCompilationUnit.getClassByName(TEMPLATE_CLASS_NAME).get().clone();
     }
 
     @Test
