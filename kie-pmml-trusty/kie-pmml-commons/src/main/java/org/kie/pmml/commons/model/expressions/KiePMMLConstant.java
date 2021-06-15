@@ -20,12 +20,17 @@ import java.util.Objects;
 import java.util.StringJoiner;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 3312643278386342170L;
     private final Object value;
+
     public KiePMMLConstant(String name, List<KiePMMLExtension> extensions, Object value) {
         super(name, extensions);
         this.value = value;
@@ -33,6 +38,14 @@ public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMML
 
     public Object getValue() {
         return value;
+    }
+
+    @Override
+    public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                           final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
+                           final List<KiePMMLNameValue> kiePMMLNameValues) {
+        return getValue();
     }
 
     @Override
