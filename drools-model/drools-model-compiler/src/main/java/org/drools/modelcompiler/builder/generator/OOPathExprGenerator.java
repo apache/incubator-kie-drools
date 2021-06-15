@@ -178,7 +178,7 @@ public class OOPathExprGenerator {
                 SingleDrlxParseSuccess singleDrlx = ( SingleDrlxParseSuccess ) drlx;
                 if (singleDrlx.isOOPath()) {
                     if (oopathConstraint != null) {
-                        throw new UnsupportedOperationException("An oopath chunk can only hae a single oopath constraint");
+                        throw new UnsupportedOperationException("An oopath chunk can only have a single oopath constraint");
                     }
                     oopathConstraint = singleDrlx;
                     continue;
