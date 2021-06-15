@@ -17,19 +17,16 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class KiePMMLFieldRefTest {
 

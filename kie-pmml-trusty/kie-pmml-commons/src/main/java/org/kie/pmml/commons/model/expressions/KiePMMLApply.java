@@ -71,7 +71,7 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
             return builtinFunction.getValue(expressionValues.toArray(new Object[0]));
         } else {
             final KiePMMLDefineFunction definedFunction = defineFunctions
-                    .parallelStream()
+                    .stream()
                     .filter(defineFunction -> defineFunction.getName().equals(function))
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Unknown function " + function));
