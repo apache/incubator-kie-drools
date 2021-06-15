@@ -1065,28 +1065,25 @@ public class ExpressionTyper {
                     context.addReactOnProperties( firstName );
                 }
 
-                Optional<java.lang.reflect.Type> castType = ruleContext.explicitCastType(firstName)
-                        .flatMap(t -> safeResolveType(ruleContext.getTypeResolver(), t.asString()));
-
-                java.lang.reflect.Type typeOfFirstAccessor;
-
                 NameExpr thisAccessor = new NameExpr( THIS_PLACEHOLDER );
                 NameExpr scope = backReference.map( d -> new NameExpr( d.getBindingId() ) ).orElse( thisAccessor );
 
-                Expression fieldAccessor;
-                if(castType.isPresent()) {
-                    typeOfFirstAccessor = castType.get();
-                    ClassOrInterfaceType typeWithoutDollar = toClassOrInterfaceType(typeOfFirstAccessor.getTypeName());
-                    fieldAccessor = addCastToExpression(typeWithoutDollar, new MethodCallExpr(scope, firstAccessor.getName()), false);
-                } else if (isInLineCast) {
-                    typeOfFirstAccessor = typeCursor;
-                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
-                } else {
-                    typeOfFirstAccessor = firstAccessor.getGenericReturnType();
-                    fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+                Expression fieldAccessor = new MethodCallExpr(scope, firstAccessor.getName());
+
+                if (isInLineCast) {
+                    return of(new TypedExpressionCursor(fieldAccessor, typeCursor ) );
                 }
 
-                return of(new TypedExpressionCursor(fieldAccessor, typeOfFirstAccessor ) );
+                Optional<java.lang.reflect.Type> castType = ruleContext.explicitCastType(firstName)
+                        .flatMap(t -> safeResolveType(ruleContext.getTypeResolver(), t.asString()));
+
+                if (castType.isPresent()) {
+                    java.lang.reflect.Type typeOfFirstAccessor = castType.get();
+                    ClassOrInterfaceType typeWithoutDollar = toClassOrInterfaceType(typeOfFirstAccessor.getTypeName());
+                    return of(new TypedExpressionCursor(addCastToExpression(typeWithoutDollar, fieldAccessor, false), typeOfFirstAccessor ) );
+                }
+
+                return of(new TypedExpressionCursor(fieldAccessor, firstAccessor.getGenericReturnType() ) );
             }
 
             Field field = DrlxParseUtil.getField( classCursor, firstName );
