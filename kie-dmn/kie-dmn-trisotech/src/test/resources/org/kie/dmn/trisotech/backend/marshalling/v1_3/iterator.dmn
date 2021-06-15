@@ -25,7 +25,8 @@
 			id="_eb2d4652-e16b-4241-8323-81bfab3cc0ba" typeRef="Any" />
 		<boxedext:iterator
 			id="_84c7b094-6423-4c0e-b509-edaca31211ae" typeRef="Any" iteratorType="for" iteratorVariable="itVal">
-			<boxedext:in>
+			<boxedext:in 
+                typeRef="Any">
 				<semantic:literalExpression
 					typeRef="Any">
 					<semantic:text>[1,2,3,4]</semantic:text>
