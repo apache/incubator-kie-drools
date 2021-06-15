@@ -185,8 +185,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -208,8 +208,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution2";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -229,8 +229,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution3";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -255,8 +255,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId2 = "myCFExecution2";
         storeExecution(executionId2, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -282,8 +282,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecutionWithOutcomes(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -322,8 +322,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
@@ -369,8 +369,8 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         Collection<JsonNode> categories = List.of(new TextNode("1"), new TextNode("2"));
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test", "number", new CounterfactualDomainCategorical(categories));
 
@@ -415,10 +415,9 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecution(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision.
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         // For this test we're providing an incorrect structure for searchDomains but the correct structure for goals.
-        // See https://issues.redhat.com/browse/FAI-486
-
         assertThrows(IllegalArgumentException.class,
                 () -> trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.emptyList()));
     }
@@ -428,15 +427,25 @@ public abstract class AbstractTrustyServiceIT {
         String executionId = "myCFExecution1";
         storeExecutionWithOutcomes(executionId, 0L);
 
-        // The Goals and Search Domain structures must match those of the original decision.
-        // For this test we're providing the correct structure for searchDomains but an incorrect structure for goals.
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
+        // For this test we're providing the correct structure for searchDomains but a sub-structure for goals.
         CounterfactualSearchDomain searchDomain = CounterfactualSearchDomain.buildSearchDomainUnit("test",
                 "number",
                 new CounterfactualDomainRange(new IntNode(1), new IntNode(2)));
 
-        assertThrows(IllegalArgumentException.class,
-                () -> trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain)));
+        CounterfactualExplainabilityRequest request = trustyService.requestCounterfactuals(executionId, Collections.emptyList(), Collections.singletonList(searchDomain));
+
+        assertNotNull(request);
+        assertEquals(request.getExecutionId(), executionId);
+        assertNotNull(request.getCounterfactualId());
+        assertTrue(request.getGoals().isEmpty());
+
+        CounterfactualExplainabilityRequest result = trustyService.getCounterfactualRequest(executionId, request.getCounterfactualId());
+        assertNotNull(result);
+        assertEquals(request.getExecutionId(), result.getExecutionId());
+        assertEquals(request.getCounterfactualId(), result.getCounterfactualId());
+        assertTrue(result.getGoals().isEmpty());
     }
 
     @Test

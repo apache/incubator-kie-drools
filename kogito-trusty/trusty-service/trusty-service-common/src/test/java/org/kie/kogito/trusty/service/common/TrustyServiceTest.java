@@ -404,8 +404,8 @@ public class TrustyServiceTest {
         when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
         when(decisionStorage.get(eq(TEST_EXECUTION_ID))).thenReturn(TrustyServiceTestUtils.buildCorrectDecision(TEST_EXECUTION_ID));
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
                 List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
                         List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
@@ -437,8 +437,8 @@ public class TrustyServiceTest {
         when(trustyStorageServiceMock.getCounterfactualRequestStorage()).thenReturn(counterfactualStorage);
         when(decisionStorage.get(eq(TEST_EXECUTION_ID))).thenReturn(TrustyServiceTestUtils.buildCorrectDecision(TEST_EXECUTION_ID));
 
-        // The Goals and Search Domain structures must match those of the original decision
-        // See https://issues.redhat.com/browse/FAI-486
+        // The Goals structures must be comparable to the original decisions outcomes.
+        // The Search Domain structures must be identical those of the original decision inputs.
         trustyService.requestCounterfactuals(TEST_EXECUTION_ID,
                 List.of(TypedVariableWithValue.buildStructure("Fine", "tFine",
                         List.of(TypedVariableWithValue.buildUnit("Amount", "number", new IntNode(0)),
