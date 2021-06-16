@@ -54,6 +54,8 @@ import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeRangeIndexingTest {
@@ -139,8 +141,8 @@ public class AlphaNodeRangeIndexingTest {
         if (rangeIndexSize == 0) {
             assertNull(sinkAdapter.getRangeIndexMap());
         } else {
-            // assert only the first range index
-            assertEquals(rangeIndexSize, sinkAdapter.getRangeIndexMap().entrySet().iterator().next().getValue().size());
+            long count = sinkAdapter.getRangeIndexMap().values().stream().flatMap(index -> index.getAllValues().stream()).count();
+            assertEquals(rangeIndexSize, count);
         }
     }
 
@@ -1030,24 +1032,24 @@ public class AlphaNodeRangeIndexingTest {
     private void checkDifferentNumberOfDigitsInDecimal(String value) {
         String drl =
                 "import " + Factor.class.getCanonicalName() + ";\n" +
-                 "rule R1 when\n" +
-                 "    Factor( factorAmt > " + value + " )\n" +
-                 "then end\n" +
-                 "rule R2 when\n" +
-                 "    Factor( factorAmt > 0.0, factorAmt <= 1.0 )\n" +
-                 "then end\n" +
-                 "rule R3 when\n" +
-                 "    Factor( factorAmt > 1.0, factorAmt <= 3.0 )\n" +
-                 "then end\n" +
-                 "rule R4 when\n" +
-                 "    Factor( factorAmt > 3.0, factorAmt <= 6.0 )\n" +
-                 "then end\n" +
-                 "rule R5 when\n" +
-                 "    Factor( factorAmt > 6.0, factorAmt <= 10.0 )\n" +
-                 "then end\n" +
-                 "rule R6 when\n" +
-                 "    Factor( factorAmt > 10.0 )\n" +
-                 "then end\n";
+                     "rule R1 when\n" +
+                     "    Factor( factorAmt > " + value + " )\n" +
+                     "then end\n" +
+                     "rule R2 when\n" +
+                     "    Factor( factorAmt > 0.0, factorAmt <= 1.0 )\n" +
+                     "then end\n" +
+                     "rule R3 when\n" +
+                     "    Factor( factorAmt > 1.0, factorAmt <= 3.0 )\n" +
+                     "then end\n" +
+                     "rule R4 when\n" +
+                     "    Factor( factorAmt > 3.0, factorAmt <= 6.0 )\n" +
+                     "then end\n" +
+                     "rule R5 when\n" +
+                     "    Factor( factorAmt > 6.0, factorAmt <= 10.0 )\n" +
+                     "then end\n" +
+                     "rule R6 when\n" +
+                     "    Factor( factorAmt > 10.0 )\n" +
+                     "then end\n";
 
         final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
 
@@ -1067,5 +1069,131 @@ public class AlphaNodeRangeIndexingTest {
         public double getFactorAmt() {
             return factorAmt;
         }
+    }
+
+    @Test
+    public void testIntegerWithStaticMethodAddedBeforeThreshold() {
+        final String drl = "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "import " + StaticUtil.class.getCanonicalName() + "\n" +
+                           "rule test1\n when\n" +
+                           "   Person( age < StaticUtil.getThirty() )\n" +
+                           "then\n end\n" +
+                           "rule test2\n when\n" +
+                           "   Person( age < 30 )\n" +
+                           "then\n end\n" +
+                           "rule test3\n when\n" +
+                           "   Person( age > 8 )\n" +
+                           "then\n end\n" +
+                           "rule test4\n when\n" +
+                           "   Person( age >= 18 )\n" +
+                           "then\n end\n";
+
+        final KieBase kbase;
+
+        if (kieBaseTestConfiguration.isExecutableModel()) {
+            kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+            final KieSession ksession = kbase.newKieSession();
+            assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable in exec-model
+
+            ksession.insert(new Person("John", 18));
+            int fired = ksession.fireAllRules();
+            assertEquals(4, fired);
+
+            ksession.insert(new Person("Paul", 60));
+            fired = ksession.fireAllRules();
+            assertEquals(2, fired);
+
+        } else {
+            // Once DROOLS-6418 is fixed, this test will not throw IllegalStateException
+            try {
+                kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+                fail("Should throw IllegalStateException");
+            } catch (IllegalStateException ise) {
+                assertTrue(ise.getMessage().contains("Index conflict"));
+            }
+        }
+    }
+
+    @Test
+    public void testIntegerWithStaticMethodAddedAfterThreshold() {
+        final String drl = "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "import " + StaticUtil.class.getCanonicalName() + "\n" +
+                           "rule test1\n when\n" +
+                           "   Person( age >= 18 )\n" +
+                           "then\n end\n" +
+                           "rule test2\n when\n" +
+                           "   Person( age < 30 )\n" +
+                           "then\n end\n" +
+                           "rule test3\n when\n" +
+                           "   Person( age > 8 )\n" +
+                           "then\n end\n" +
+                           "rule test4\n when\n" +
+                           "   Person( age < StaticUtil.getThirty() )\n" +
+                           "then\n end\n";
+
+        final KieBase kbase;
+
+        if (kieBaseTestConfiguration.isExecutableModel()) {
+            kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+            final KieSession ksession = kbase.newKieSession();
+            assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable in exec-model
+
+            ksession.insert(new Person("John", 18));
+            int fired = ksession.fireAllRules();
+            assertEquals(4, fired);
+
+            ksession.insert(new Person("Paul", 60));
+            fired = ksession.fireAllRules();
+            assertEquals(2, fired);
+
+        } else {
+            // Once DROOLS-6418 is fixed, this test will not throw IllegalStateException
+            try {
+                kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+                fail("Should throw IllegalStateException");
+            } catch (IllegalStateException ise) {
+                assertTrue(ise.getMessage().contains("Index conflict"));
+            }
+        }
+    }
+
+    public static class StaticUtil {
+
+        public static int getThirty() {
+            return 30;
+        }
+    }
+
+    @Test
+    public void testSharedAlpha() {
+        final String drl = "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "rule test1\n when\n" +
+                           "   Person( age >= 18 )\n" +
+                           "then\n end\n" +
+                           "rule test2\n when\n" +
+                           "   Person( age < 30 )\n" +
+                           "then\n end\n" +
+                           "rule test3\n when\n" +
+                           "   Person( age > 8 )\n" +
+                           "then\n end\n" +
+                           "rule test4\n when\n" +
+                           "   Person( age < 30 )\n" +
+                           "then\n end\n";
+
+        final KieBase kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+        final KieSession ksession = kbase.newKieSession();
+
+        assertSinks(kbase, Person.class, 3, 3, 0, 3); // sinksLength = 3, sinkAdapterSize = 3, rangeIndexableSinks is null, Size of RangeIndexed nodes = 3
+
+        ksession.insert(new Person("John", 18));
+        int fired = ksession.fireAllRules();
+        assertEquals(4, fired);
+
+        ksession.insert(new Person("Paul", 60));
+        fired = ksession.fireAllRules();
+        assertEquals(2, fired);
     }
 }

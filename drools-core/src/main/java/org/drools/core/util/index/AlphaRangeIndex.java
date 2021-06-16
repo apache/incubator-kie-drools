@@ -71,7 +71,11 @@ public class AlphaRangeIndex implements Externalizable {
         IndexableConstraint constraint = (IndexableConstraint) alphaNode.getConstraint();
         Comparable key = extractKey(constraint);
         IndexType indexType = extractIndexType(constraint);
-        rangeIndex.addIndex(indexType, key, alphaNode);
+        AlphaNode previous = rangeIndex.addIndex(indexType, key, alphaNode);
+        if (previous != null) {
+            throw new IllegalStateException("Index conflict with " + alphaNode + " and " + previous + ". Please report this to Drools team." +
+                    " You can workaround this issue by setting system property 'drools.alphaNodeRangeIndexThreshold' to '0'");
+        }
         size++;
     }
 

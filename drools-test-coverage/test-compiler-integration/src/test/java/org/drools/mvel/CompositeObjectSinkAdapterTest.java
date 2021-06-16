@@ -65,6 +65,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
@@ -446,7 +447,133 @@ public class CompositeObjectSinkAdapterTest {
         assertEquals( 2,
                       ad.getHashableSinks().size() );
         assertNull( ad.getHashedSinkMap() );
-    }    
+    }
+
+    @Test
+    public void testRangeIndex() {
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter(3, 3);
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "price" );
+
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 10, useLambdaConstraint);
+
+        final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
+                                            constraint,
+                                            new MockObjectSource( buildContext.getNextId() ),
+                                            buildContext );
+
+        ad.addObjectSink( al1 );
+
+        assertNull( ad.getOtherSinks() );
+        assertNotNull( ad.getRangeIndexedFieldIndexes() );
+        assertEquals( 1,
+                      ad.getRangeIndexableSinks().size() );
+        assertEquals( al1,
+                      ad.getSinks()[0] );
+
+        AlphaNodeFieldConstraint constraint2 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 20, useLambdaConstraint);
+
+        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
+                                             constraint2,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+
+        ad.addObjectSink( al2 );
+
+        assertNull( ad.getRangeIndexMap() );
+        assertEquals( 2,
+                      ad.getRangeIndexableSinks().size() );
+
+        AlphaNodeFieldConstraint constraint3 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
+
+        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
+                                             constraint3,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+        ad.addObjectSink( al3 );
+
+        //this should now be nicely indexed.
+        assertNotNull( ad.getRangeIndexMap() );
+        assertNull( ad.getRangeIndexableSinks() );
+
+        // test propagation
+        Cheese cheese = new Cheese();
+        cheese.setPrice(25);
+        CompositeObjectSinkAdapter.FieldIndex fieldIndex = ad.getRangeIndexedFieldIndexes().get(0);
+
+        Collection<AlphaNode> matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
+        assertEquals(2, matchingAlphaNodes.size());
+        assertTrue(matchingAlphaNodes.contains(al1));
+        assertTrue(matchingAlphaNodes.contains(al2));
+
+
+        // should not find this one
+        cheese.setPrice(5);
+
+        matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
+        assertTrue(matchingAlphaNodes.isEmpty());
+
+        //now remove one, check the hashing is undone
+        ad.removeObjectSink( al2 );
+        assertNotNull( ad.getRangeIndexableSinks() );
+        assertEquals( 2,
+                      ad.getRangeIndexableSinks().size() );
+        assertNull( ad.getRangeIndexMap() );
+    }
+
+    @Test(expected = IllegalStateException.class)
+    public void testRangeIndexConflictKey() {
+        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter(3, 3);
+        InternalReadAccessor extractor = store.getReader( Cheese.class,
+                                                          "price" );
+
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 10, useLambdaConstraint);
+
+        final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
+                                            constraint,
+                                            new MockObjectSource( buildContext.getNextId() ),
+                                            buildContext );
+
+        ad.addObjectSink( al1 );
+
+        assertNull( ad.getOtherSinks() );
+        assertNotNull( ad.getRangeIndexedFieldIndexes() );
+        assertEquals( 1,
+                      ad.getRangeIndexableSinks().size() );
+        assertEquals( al1,
+                      ad.getSinks()[0] );
+
+        AlphaNodeFieldConstraint constraint2 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 20, useLambdaConstraint);
+
+        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
+                                             constraint2,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+
+        ad.addObjectSink( al2 );
+
+        assertNull( ad.getRangeIndexMap() );
+        assertEquals( 2,
+                      ad.getRangeIndexableSinks().size() );
+
+        AlphaNodeFieldConstraint constraint3 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
+
+        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
+                                             constraint3,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+        ad.addObjectSink( al3 );
+
+        // This unit test can reproduce the issue by the equivalent AlphaNodes. In actual build, al3 and al4 will be shared
+        AlphaNodeFieldConstraint constraint4 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
+
+        final AlphaNode al4 = new AlphaNode( buildContext.getNextId(),
+                                             constraint4,
+                                             new MockObjectSource( buildContext.getNextId() ),
+                                             buildContext );
+
+        ad.addObjectSink( al4 ); // throws IllegalStateException
+    }
 
     @Test
     public void testPropagationWithNullValue() {
