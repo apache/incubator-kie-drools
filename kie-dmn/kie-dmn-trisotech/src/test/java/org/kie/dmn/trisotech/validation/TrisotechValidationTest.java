@@ -80,12 +80,27 @@ public class TrisotechValidationTest {
                                              .theseModels(getReader("boxedcontextextension/iterator.dmn"));
         assertEquals(0, validate.size());
     }
+    @Test
+    public void testBoxedExtension_IteratorDataType13() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
+                                             .usingSchema(TrisotechSchema.INSTANCEv1_3)
+                                             .theseModels(getReader("boxedcontextextension/iterator-datatype.dmn"));
+        assertEquals(0, validate.size());
+    }
 
     @Test
     public void testBoxedExtension_Filter13() {
         List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
                                              .usingSchema(TrisotechSchema.INSTANCEv1_3)
                                              .theseModels(getReader("boxedcontextextension/filter.dmn"));
+        assertEquals(0, validate.size());
+    }
+
+    @Test
+    public void testBoxedExtension_FilterDataType13() {
+        List<DMNMessage> validate = validator.validateUsing(VALIDATE_SCHEMA, VALIDATE_MODEL, VALIDATE_COMPILATION)
+                                             .usingSchema(TrisotechSchema.INSTANCEv1_3)
+                                             .theseModels(getReader("boxedcontextextension/filter-datatype.dmn"));
         assertEquals(0, validate.size());
     }
 }
