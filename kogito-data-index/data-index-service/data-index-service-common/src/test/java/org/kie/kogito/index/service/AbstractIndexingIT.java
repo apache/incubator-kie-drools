@@ -32,7 +32,7 @@ public abstract class AbstractIndexingIT {
 
     @Inject
     @Any
-    InMemoryConnector connector;
+    public InMemoryConnector connector;
 
     protected void indexProcessCloudEvent(KogitoProcessCloudEvent event) {
         connector.source(KOGITO_PROCESSINSTANCES_EVENTS).send(event);

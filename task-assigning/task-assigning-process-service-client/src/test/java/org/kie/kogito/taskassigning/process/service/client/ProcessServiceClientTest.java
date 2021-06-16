@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.ClientServices;
 import org.kie.kogito.taskassigning.auth.BasicAuthenticationCredentials;
@@ -116,7 +117,7 @@ class ProcessServiceClientTest {
     }
 
     private ProcessServiceClientConfig createServiceConfig() {
-        String serviceUrl = System.getProperty(PROCESS_SERVICE_URL);
+        String serviceUrl = ConfigProvider.getConfig().getValue(PROCESS_SERVICE_URL, String.class);
         return ProcessServiceClientConfig.newBuilder()
                 .serviceUrl(serviceUrl)
                 .build();

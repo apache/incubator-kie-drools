@@ -30,7 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public abstract class AbstractKeycloakIntegrationIndexingServiceIT {
 
     @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY, defaultValue = "")
-    String keycloakURL;
+    public String keycloakURL;
 
     @Test
     void testUnauthorizedUserAccess() {

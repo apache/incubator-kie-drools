@@ -31,7 +31,6 @@ public abstract class BaseProcessTimerIT {
     public static final String TIMERS = "timers";
     public static final String TIMERS_CYCLE = "timerscycle";
     public static final String TIMERS_ON_TASK = "timersOnTask";
-    public static final String KOGITO_SERVICE_URL = "kogito.service.url";
 
     //Timers Tests
     @Test

@@ -35,7 +35,7 @@ class HealthCheckIT {
         String connection = "MongoDB connection health check";
 
         given()
-                .when().get("/health/ready")
+                .when().get("/q/health/ready")
                 .then()
                 .statusCode(200)
                 .body("status", equalTo(status))

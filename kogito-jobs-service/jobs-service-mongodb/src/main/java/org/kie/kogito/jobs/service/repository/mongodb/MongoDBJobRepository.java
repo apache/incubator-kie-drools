@@ -40,6 +40,7 @@ import io.quarkus.mongodb.FindOptions;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.quarkus.mongodb.reactive.ReactiveMongoCollection;
 import io.quarkus.runtime.StartupEvent;
+import io.smallrye.mutiny.infrastructure.Infrastructure;
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 
@@ -101,16 +102,22 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
                 eq(ID, job.getId()),
                 jsonToDocument(jobDetailsMarshaller.marshall(job)),
                 new FindOneAndReplaceOptions().upsert(true).returnDocument(AFTER))
-                .map(document -> jobDetailsMarshaller.unmarshall(documentToJson(document)))
-                .subscribeAsCompletionStage();
+                .map(document -> documentToJson(document))
+                .map(jobDetailsMarshaller::unmarshall)
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toCompletionStage();
     }
 
     @Override
     public CompletionStage<JobDetails> get(String id) {
         return collection.find(eq(ID, id))
                 .collect().first()
-                .map(document -> jobDetailsMarshaller.unmarshall(documentToJson(document)))
-                .subscribeAsCompletionStage();
+                .map(document -> documentToJson(document))
+                .map(jobDetailsMarshaller::unmarshall)
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toCompletionStage();
     }
 
     @Override
@@ -118,21 +125,29 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
         return collection.find(eq(ID, id))
                 .collect().with(counting())
                 .map(count -> count > 0)
-                .subscribeAsCompletionStage();
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toCompletionStage();
     }
 
     @Override
     public CompletionStage<JobDetails> delete(String id) {
         return collection.findOneAndDelete(eq(ID, id))
-                .map(document -> jobDetailsMarshaller.unmarshall(documentToJson(document)))
-                .subscribeAsCompletionStage();
+                .map(document -> documentToJson(document))
+                .map(jobDetailsMarshaller::unmarshall)
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toCompletionStage();
     }
 
     @Override
     public PublisherBuilder<JobDetails> findAll() {
-        return fromPublisher(
-                collection.find()
-                        .map(document -> jobDetailsMarshaller.unmarshall(documentToJson(document))));
+        return fromPublisher(collection.find()
+                .map(document -> documentToJson(document))
+                .map(jobDetailsMarshaller::unmarshall)
+                .emitOn(Infrastructure.getDefaultExecutor())
+                .convert()
+                .toPublisher());
     }
 
     @Override
@@ -144,7 +159,11 @@ public class MongoDBJobRepository extends BaseReactiveJobRepository implements R
                                 gt(FIRE_TIME_COLUMN, from.toInstant().toEpochMilli()),
                                 lt(FIRE_TIME_COLUMN, to.toInstant().toEpochMilli())),
                         new FindOptions().sort(descending("priority")))
-                        .map(document -> jobDetailsMarshaller.unmarshall(documentToJson(document))));
+                        .map(document -> documentToJson(document))
+                        .map(jobDetailsMarshaller::unmarshall)
+                        .emitOn(Infrastructure.getDefaultExecutor())
+                        .convert()
+                        .toPublisher());
     }
 
     static JsonObject documentToJson(Document document) {

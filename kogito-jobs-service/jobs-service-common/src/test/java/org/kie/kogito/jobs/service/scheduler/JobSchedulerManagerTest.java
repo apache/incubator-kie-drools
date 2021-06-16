@@ -67,7 +67,7 @@ class JobSchedulerManagerTest {
     private JobSchedulerManager tested;
 
     @Captor
-    private ArgumentCaptor<Consumer<Void>> captorFirstExecution;
+    private ArgumentCaptor<Runnable> captorFirstExecution;
 
     @Captor
     private ArgumentCaptor<Consumer<Long>> captorPeriodic;

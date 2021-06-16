@@ -34,7 +34,7 @@ import static org.kie.kogito.index.TestUtils.getProcessInstance;
 public abstract class AbstractStorageIT {
 
     @Inject
-    DataIndexStorageService cacheService;
+    public DataIndexStorageService cacheService;
 
     @Test
     void testObjectCreatedListener() throws Exception {

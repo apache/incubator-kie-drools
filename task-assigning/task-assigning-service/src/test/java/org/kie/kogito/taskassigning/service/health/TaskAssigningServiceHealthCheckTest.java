@@ -64,18 +64,18 @@ class TaskAssigningServiceHealthCheckTest {
 
     @ParameterizedTest
     @MethodSource("livenessCheckParams")
-    void livenessCheck(ServiceStatus status, ServiceMessage message, HealthCheckResponse.State expectedResponseState) {
+    void livenessCheck(ServiceStatus status, ServiceMessage message, HealthCheckResponse.Status expectedResponseStatus) {
         prepareTest(status, message);
         HealthCheck healthCheck = taskAssigningServiceHealthCheck.livenessCheck();
-        executeTest(healthCheck, status, message, expectedResponseState);
+        executeTest(healthCheck, status, message, expectedResponseStatus);
     }
 
     @ParameterizedTest
     @MethodSource("readinessCheckParams")
-    void readinessCheck(ServiceStatus status, ServiceMessage message, HealthCheckResponse.State expectedResponseState) {
+    void readinessCheck(ServiceStatus status, ServiceMessage message, HealthCheckResponse.Status expectedResponseStatus) {
         prepareTest(status, message);
         HealthCheck healthCheck = taskAssigningServiceHealthCheck.readinessCheck();
-        executeTest(healthCheck, status, message, expectedResponseState);
+        executeTest(healthCheck, status, message, expectedResponseStatus);
     }
 
     private void prepareTest(ServiceStatus status, ServiceMessage message) {
@@ -86,17 +86,17 @@ class TaskAssigningServiceHealthCheckTest {
     private void executeTest(HealthCheck healthCheck,
             ServiceStatus status,
             ServiceMessage message,
-            HealthCheckResponse.State expectedResponseState) {
+            HealthCheckResponse.Status expectedResponseStatus) {
         assertThat(healthCheck).isNotNull();
         HealthCheckResponse response = healthCheck.call();
-        verifyResponse(response, expectedResponseState, status, message);
+        verifyResponse(response, expectedResponseStatus, status, message);
     }
 
     private void verifyResponse(HealthCheckResponse response,
-            HealthCheckResponse.State expectedResponseState,
+            HealthCheckResponse.Status expectedResponseStatus,
             ServiceStatus expectedServiceStatus,
             ServiceMessage expectedServiceMessage) {
-        assertThat(response.getState()).isEqualTo(expectedResponseState);
+        assertThat(response.getStatus()).isEqualTo(expectedResponseStatus);
         if (expectedServiceMessage != null) {
             assertThat(response.getData()).isPresent();
             Map<String, Object> data = response.getData().get();
@@ -112,18 +112,18 @@ class TaskAssigningServiceHealthCheckTest {
 
     private static Stream<Arguments> livenessCheckParams() {
         return Stream.of(
-                Arguments.of(ServiceStatus.STARTING, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.UP),
-                Arguments.of(ServiceStatus.READY, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.UP),
-                Arguments.of(ServiceStatus.SHUTDOWN, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.DOWN),
-                Arguments.of(ServiceStatus.ERROR, mockMessage(ServiceMessage.Type.ERROR, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.DOWN));
+                Arguments.of(ServiceStatus.STARTING, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.UP),
+                Arguments.of(ServiceStatus.READY, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.UP),
+                Arguments.of(ServiceStatus.SHUTDOWN, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.DOWN),
+                Arguments.of(ServiceStatus.ERROR, mockMessage(ServiceMessage.Type.ERROR, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.DOWN));
     }
 
     private static Stream<Arguments> readinessCheckParams() {
         return Stream.of(
-                Arguments.of(ServiceStatus.READY, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.UP),
-                Arguments.of(ServiceStatus.STARTING, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.DOWN),
-                Arguments.of(ServiceStatus.SHUTDOWN, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.DOWN),
-                Arguments.of(ServiceStatus.ERROR, mockMessage(ServiceMessage.Type.ERROR, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.State.DOWN));
+                Arguments.of(ServiceStatus.READY, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.UP),
+                Arguments.of(ServiceStatus.STARTING, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.DOWN),
+                Arguments.of(ServiceStatus.SHUTDOWN, mockMessage(ServiceMessage.Type.INFO, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.DOWN),
+                Arguments.of(ServiceStatus.ERROR, mockMessage(ServiceMessage.Type.ERROR, MESSAGE_TIME, MESSAGE_VALUE), HealthCheckResponse.Status.DOWN));
     }
 
     private static ServiceMessage mockMessage(ServiceMessage.Type messageType, ZonedDateTime messageTime, String messageValue) {

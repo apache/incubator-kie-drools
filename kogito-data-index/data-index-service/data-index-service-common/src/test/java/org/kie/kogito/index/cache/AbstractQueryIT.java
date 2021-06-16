@@ -50,7 +50,7 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.notNull;
 public abstract class AbstractQueryIT {
 
     @Inject
-    DataIndexStorageService cacheService;
+    public DataIndexStorageService cacheService;
 
     @BeforeEach
     void setup() {

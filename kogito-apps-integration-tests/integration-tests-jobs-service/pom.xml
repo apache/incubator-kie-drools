@@ -43,4 +43,27 @@
     </dependency>
   </dependencies>
 
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-failsafe-plugin</artifactId>
+        <!-- overriding parent configuration because quarkus.http.test-port should not be set -->
+        <configuration combine.self="override">
+          <includes>
+            <include>${failsafe.include}</include>
+          </includes>
+          <excludes>
+            <exclude>${failsafe.exclude}</exclude>
+          </excludes>
+          <systemPropertyVariables>
+            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+            <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+            <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
+          </systemPropertyVariables>
+          <classesDirectory>${project.build.outputDirectory}</classesDirectory>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 </project>

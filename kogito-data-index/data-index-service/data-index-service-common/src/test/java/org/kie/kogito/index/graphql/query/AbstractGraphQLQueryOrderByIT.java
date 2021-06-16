@@ -40,13 +40,13 @@ import static io.restassured.RestAssured.given;
 import static java.lang.String.format;
 import static org.hamcrest.CoreMatchers.isA;
 
-abstract class AbstractGraphQLQueryOrderByIT {
+public abstract class AbstractGraphQLQueryOrderByIT {
 
     @Inject
-    GraphQLSchemaManager manager;
+    public GraphQLSchemaManager manager;
 
     @Inject
-    ProtobufService protobufService;
+    public ProtobufService protobufService;
 
     @Test
     void testProcessInstancesSort() {

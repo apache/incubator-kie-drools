@@ -41,8 +41,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 @ApplicationScoped
 public class ExplainabilityMessagingHandler {
@@ -51,7 +50,7 @@ public class ExplainabilityMessagingHandler {
 
     private static final URI URI_PRODUCER = URI.create("explainabilityService/ExplainabilityMessagingHandler");
 
-    private final PublishSubject<String> eventSubject = PublishSubject.create();
+    private final BroadcastProcessor<String> eventSubject = BroadcastProcessor.create();
 
     protected ExplanationService explanationService;
     protected LocalExplainerServiceHandlerRegistry explainerServiceHandlerRegistry;
@@ -132,7 +131,7 @@ public class ExplainabilityMessagingHandler {
 
     @Outgoing("trusty-explainability-result")
     public Publisher<String> getEventPublisher() {
-        return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
+        return eventSubject.toHotStream();
     }
 
 }

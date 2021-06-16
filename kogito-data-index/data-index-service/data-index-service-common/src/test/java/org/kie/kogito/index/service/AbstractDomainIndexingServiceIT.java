@@ -62,7 +62,7 @@ import static org.kie.kogito.index.model.ProcessInstanceState.ERROR;
 public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingServiceIT {
 
     @Inject
-    ProtobufService protobufService;
+    public ProtobufService protobufService;
 
     @Override
     void tearDown() {

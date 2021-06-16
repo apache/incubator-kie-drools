@@ -54,7 +54,7 @@ import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.kie.kogito.index.model.ProcessInstanceState.COMPLETED;
 
-abstract class AbstractMessagingLoadKafkaIT {
+public abstract class AbstractMessagingLoadKafkaIT {
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     String kafkaBootstrapServers;

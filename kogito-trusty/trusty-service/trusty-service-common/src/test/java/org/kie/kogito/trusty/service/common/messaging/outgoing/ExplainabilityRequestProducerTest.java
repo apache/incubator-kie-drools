@@ -22,13 +22,15 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.LIMEExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 
-import io.reactivex.subscribers.TestSubscriber;
+import io.smallrye.mutiny.helpers.test.AssertSubscriber;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ExplainabilityRequestProducerTest {
 
     @Test
     void test() {
-        TestSubscriber<String> subscriber = new TestSubscriber<>();
+        AssertSubscriber<String> subscriber = AssertSubscriber.create(1);
 
         ExplainabilityRequestProducer producer = new ExplainabilityRequestProducer();
         producer.getEventPublisher().subscribe(subscriber);
@@ -39,6 +41,6 @@ class ExplainabilityRequestProducerTest {
                 Collections.emptyMap(),
                 Collections.emptyMap()));
 
-        subscriber.assertValueCount(1);
+        assertEquals(1, subscriber.getItems().size());
     }
 }

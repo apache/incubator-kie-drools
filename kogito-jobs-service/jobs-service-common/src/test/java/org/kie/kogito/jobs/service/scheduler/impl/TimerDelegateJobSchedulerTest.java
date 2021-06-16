@@ -40,7 +40,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.reactivestreams.Publisher;
 
-import io.reactivex.Flowable;
+import io.smallrye.mutiny.Multi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -76,14 +76,14 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
     @Test
     void testDoSchedule() {
         PublisherBuilder<ManageableJobHandle> schedule = tested.doSchedule(scheduledJob, Optional.empty());
-        Flowable.fromPublisher(schedule.buildRs()).subscribe(dummyCallback(), dummyCallback());
+        Multi.createFrom().publisher(schedule.buildRs()).subscribe().with(dummyCallback(), dummyCallback());
         verify(timer).scheduleJob(any(HttpJob.class), any(HttpJobContext.class), eq(scheduledJob.getTrigger()));
     }
 
     @Test
     void testDoCancel() {
         Publisher<ManageableJobHandle> cancel = tested.doCancel(JobDetails.builder().of(scheduledJob).scheduledId(SCHEDULED_ID).build());
-        Flowable.fromPublisher(cancel).subscribe(dummyCallback(), dummyCallback());
+        Multi.createFrom().publisher(cancel).subscribe().with(dummyCallback(), dummyCallback());
         verify(timer).removeJob(any(ManageableJobHandle.class));
     }
 
@@ -91,7 +91,7 @@ class TimerDelegateJobSchedulerTest extends BaseTimerJobSchedulerTest {
     void testDoCancelNullId() {
         Publisher<ManageableJobHandle> cancel =
                 tested.doCancel(JobDetails.builder().of(scheduledJob).scheduledId(null).build());
-        Flowable.fromPublisher(cancel).subscribe(dummyCallback(), dummyCallback());
+        Multi.createFrom().publisher(cancel).subscribe().with(dummyCallback(), dummyCallback());
         verify(timer, never()).removeJob(any(ManageableJobHandle.class));
     }
 

@@ -40,11 +40,14 @@ import io.vertx.core.http.HttpClient;
 import io.vertx.core.http.HttpClientOptions;
 import io.vertx.core.http.WebSocket;
 import io.vertx.core.json.JsonObject;
-import io.vertx.ext.web.handler.graphql.ApolloWSMessageType;
 
 import static io.restassured.RestAssured.given;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.COMPLETE;
+import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_ACK;
+import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_INIT;
+import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_KEEP_ALIVE;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.DATA;
+import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.START;
 import static java.lang.String.format;
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
 import static org.hamcrest.CoreMatchers.isA;
@@ -55,16 +58,16 @@ import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT {
 
     @Inject
-    ProtobufService protobufService;
+    public ProtobufService protobufService;
 
     @Inject
-    MockGraphQLInstrumentation instrumentation;
+    public MockGraphQLInstrumentation instrumentation;
 
     @Inject
-    Vertx vertx;
+    public Vertx vertx;
 
     @Inject
-    DataIndexStorageService cacheService;
+    public DataIndexStorageService cacheService;
 
     private AtomicInteger counter = new AtomicInteger(0);
 
@@ -222,15 +225,20 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                         cf.complete(null);
                     } else if (DATA.getText().equals(type)) {
                         cf.complete(message.toJsonObject());
+                    } else if (CONNECTION_ACK.getText().equals(type)) {
+                        JsonObject init = new JsonObject()
+                                .put("id", String.valueOf(counter.getAndIncrement()))
+                                .put("type", START.getText())
+                                .put("payload", new JsonObject().put("query", subscription));
+                        webSocket.write(init.toBuffer());
+                    } else if (CONNECTION_KEEP_ALIVE.getText().equals(type)) {
+                        //Ignore
                     } else {
                         cf.completeExceptionally(new RuntimeException(format("Unexpected message type: %s\nMessage: %s", type, message.toString())));
                     }
                 });
 
-                JsonObject init = new JsonObject()
-                        .put("id", String.valueOf(counter.getAndIncrement()))
-                        .put("type", ApolloWSMessageType.START.getText())
-                        .put("payload", new JsonObject().put("query", subscription));
+                JsonObject init = new JsonObject().put("type", CONNECTION_INIT.getText());
                 webSocket.write(init.toBuffer());
             } else {
                 websocketRes.cause().printStackTrace();

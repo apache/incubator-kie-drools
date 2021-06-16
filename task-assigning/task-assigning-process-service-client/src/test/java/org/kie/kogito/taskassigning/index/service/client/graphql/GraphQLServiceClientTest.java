@@ -19,6 +19,7 @@ import java.util.Arrays;
 
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.taskassigning.auth.NoAuthenticationCredentials;
 
@@ -93,7 +94,7 @@ class GraphQLServiceClientTest {
     }
 
     private GraphQLServiceClientConfig createServiceConfig() {
-        String serviceUrl = System.getProperty(WireMockGraphQLResource.GRAPHQL_SERVICE_URL) + "/graphql";
+        String serviceUrl = ConfigProvider.getConfig().getValue(WireMockGraphQLResource.GRAPHQL_SERVICE_URL, String.class) + "/graphql";
         return GraphQLServiceClientConfig.newBuilder()
                 .serviceUrl(serviceUrl)
                 .build();

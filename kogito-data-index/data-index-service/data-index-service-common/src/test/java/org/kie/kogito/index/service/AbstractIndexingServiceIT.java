@@ -92,7 +92,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
     Duration timeout = Duration.ofSeconds(5);
 
     @Inject
-    DataIndexStorageService cacheService;
+    public DataIndexStorageService cacheService;
 
     @BeforeAll
     static void setup() {

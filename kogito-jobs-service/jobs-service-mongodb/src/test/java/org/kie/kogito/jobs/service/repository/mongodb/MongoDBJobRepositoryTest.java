@@ -35,6 +35,7 @@ import org.kie.kogito.jobs.service.model.job.Recipient;
 import org.kie.kogito.jobs.service.repository.marshaller.JobDetailsMarshaller;
 import org.kie.kogito.timer.impl.PointInTimeTrigger;
 import org.mockito.ArgumentCaptor;
+import org.reactivestreams.Publisher;
 
 import com.mongodb.client.model.FindOneAndReplaceOptions;
 import com.mongodb.client.model.ReturnDocument;
@@ -46,7 +47,9 @@ import io.quarkus.mongodb.reactive.ReactiveMongoDatabase;
 import io.smallrye.mutiny.Multi;
 import io.smallrye.mutiny.Uni;
 import io.smallrye.mutiny.groups.MultiCollect;
+import io.smallrye.mutiny.groups.MultiConvert;
 import io.smallrye.mutiny.groups.UniAwait;
+import io.smallrye.mutiny.groups.UniConvert;
 import io.vertx.core.json.JsonObject;
 
 import static com.mongodb.client.model.Filters.and;
@@ -63,6 +66,7 @@ import static org.kie.kogito.jobs.service.repository.mongodb.MongoDBJobRepositor
 import static org.kie.kogito.jobs.service.utils.DateUtil.DEFAULT_ZONE;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -116,9 +120,17 @@ class MongoDBJobRepositoryTest {
             jobDetailsMarshaller.unmarshall(marshalled);
             return multi;
         });
+        MultiConvert convertMulti = mock(MultiConvert.class);
+        when(multi.emitOn(any())).thenReturn(multi);
+        when(multi.convert()).thenReturn(convertMulti);
+        Publisher publisher = mock(Publisher.class);
+        when(convertMulti.toPublisher()).thenReturn(publisher);
 
         completableFuture = mock(CompletableFuture.class);
-        when(uni.subscribeAsCompletionStage()).thenReturn(completableFuture);
+        UniConvert convert = mock(UniConvert.class);
+        when(uni.emitOn(any())).thenReturn(uni);
+        when(uni.convert()).thenReturn(convert);
+        when(convert.toCompletionStage()).thenReturn(completableFuture);
 
         ZonedDateTime time = ZonedDateTime.now(DEFAULT_ZONE);
         PointInTimeTrigger trigger = new PointInTimeTrigger(time.toInstant().getEpochSecond(), null, null);
@@ -143,7 +155,7 @@ class MongoDBJobRepositoryTest {
         ArgumentCaptor<FindOneAndReplaceOptions> optionCaptor = ArgumentCaptor.forClass(FindOneAndReplaceOptions.class);
         verify(collection, times(1)).findOneAndReplace(filterCaptor.capture(), documentCaptor.capture(), optionCaptor.capture());
         verify(jobDetailsMarshaller, times(1)).marshall(unmarshalled);
-        verify(jobDetailsMarshaller, times(1)).unmarshall(marshalled);
+        verify(jobDetailsMarshaller, atLeastOnce()).unmarshall(marshalled);
 
         assertEquals(eq(ID, unmarshalled.getId()), filterCaptor.getValue());
         assertEquals(Document.parse(marshalled.toString()), documentCaptor.getValue());
@@ -158,7 +170,7 @@ class MongoDBJobRepositoryTest {
 
         ArgumentCaptor<Bson> filterCaptor = ArgumentCaptor.forClass(Bson.class);
         verify(collection, times(1)).find(filterCaptor.capture());
-        verify(jobDetailsMarshaller, times(1)).unmarshall(marshalled);
+        verify(jobDetailsMarshaller, atLeastOnce()).unmarshall(marshalled);
 
         assertEquals(eq(ID, unmarshalled.getId()), filterCaptor.getValue());
     }
@@ -182,7 +194,7 @@ class MongoDBJobRepositoryTest {
 
         ArgumentCaptor<Bson> filterCaptor = ArgumentCaptor.forClass(Bson.class);
         verify(collection, times(1)).findOneAndDelete(filterCaptor.capture());
-        verify(jobDetailsMarshaller, times(1)).unmarshall(marshalled);
+        verify(jobDetailsMarshaller, atLeastOnce()).unmarshall(marshalled);
 
         assertEquals(eq(ID, unmarshalled.getId()), filterCaptor.getValue());
     }
@@ -193,7 +205,7 @@ class MongoDBJobRepositoryTest {
         assertNotNull(result);
 
         verify(collection, times(1)).find();
-        verify(jobDetailsMarshaller, times(1)).unmarshall(marshalled);
+        verify(jobDetailsMarshaller, atLeastOnce()).unmarshall(marshalled);
     }
 
     @Test
@@ -207,7 +219,7 @@ class MongoDBJobRepositoryTest {
         ArgumentCaptor<Bson> filterCaptor = ArgumentCaptor.forClass(Bson.class);
         ArgumentCaptor<FindOptions> optionCaptor = ArgumentCaptor.forClass(FindOptions.class);
         verify(collection, times(1)).find(filterCaptor.capture(), optionCaptor.capture());
-        verify(jobDetailsMarshaller, times(1)).unmarshall(marshalled);
+        verify(jobDetailsMarshaller, atLeastOnce()).unmarshall(marshalled);
 
         assertEquals(and(
                 in("status", Arrays.stream(new JobStatus[] { JobStatus.SCHEDULED, JobStatus.RETRY }).map(Enum::name).collect(toList())),

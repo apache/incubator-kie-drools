@@ -28,8 +28,7 @@ import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 @ApplicationScoped
 public class ExplainabilityRequestProducer {
@@ -38,7 +37,7 @@ public class ExplainabilityRequestProducer {
 
     private static final URI URI_PRODUCER = URI.create("trustyService/ExplainabilityRequestProducer");
 
-    private final PublishSubject<String> eventSubject = PublishSubject.create();
+    private final BroadcastProcessor<String> eventSubject = BroadcastProcessor.create();
 
     public void sendEvent(BaseExplainabilityRequestDto request) {
         LOGGER.info("Sending explainability request with id {}", request.getExecutionId());
@@ -54,6 +53,6 @@ public class ExplainabilityRequestProducer {
 
     @Outgoing("trusty-explainability-request")
     public Publisher<String> getEventPublisher() {
-        return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
+        return eventSubject.toHotStream();
     }
 }

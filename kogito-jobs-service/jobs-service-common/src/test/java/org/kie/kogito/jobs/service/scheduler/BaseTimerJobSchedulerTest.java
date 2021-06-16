@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 import org.eclipse.microprofile.reactive.streams.operators.PublisherBuilder;
 import org.eclipse.microprofile.reactive.streams.operators.ReactiveStreams;
@@ -41,9 +42,7 @@ import org.mockito.Captor;
 import org.mockito.Mock;
 import org.reactivestreams.Publisher;
 
-import io.reactivex.Flowable;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
+import io.smallrye.mutiny.Multi;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.jobs.service.model.JobStatus.CANCELED;
@@ -342,8 +341,11 @@ public abstract class BaseTimerJobSchedulerTest {
         assertThat(scheduled).isNotNull().isPresent();
     }
 
-    private Disposable subscribeOn(Publisher<JobDetails> schedule) {
-        return Flowable.fromPublisher(schedule).subscribe(dummyCallback(), dummyCallback());
+    private void subscribeOn(Publisher<JobDetails> schedule) {
+        Multi.createFrom()
+                .publisher(schedule)
+                .subscribe()
+                .with(dummyCallback(), dummyCallback());
     }
 
     @Test

@@ -57,109 +57,88 @@ public class TriggerMarshaller {
 
     private static class PointInTimeTriggerAccessor {
 
-        private Date nextFireTime;
+        private Long nextFireTime;
 
         public PointInTimeTriggerAccessor() {
         }
 
         public PointInTimeTriggerAccessor(PointInTimeTrigger trigger) {
-            this.nextFireTime = trigger.hasNextFireTime();
+            this.nextFireTime = toTime(trigger.hasNextFireTime());
         }
 
         public PointInTimeTrigger to() {
             return Optional.ofNullable(this.nextFireTime)
-                    .map(Date::getTime)
                     .map(t -> new PointInTimeTrigger(t, null, null))
                     .orElse(null);
         }
 
-        public Date getNextFireTime() {
+        public Long getNextFireTime() {
             return nextFireTime;
         }
+    }
 
-        public void setNextFireTime(Date nextFireTime) {
-            this.nextFireTime = nextFireTime;
-        }
+    public static Long toTime(Date date) {
+        return Optional.ofNullable(date).map(Date::getTime).orElse(null);
+    }
+
+    public static Date toDate(Long time) {
+        return Optional.ofNullable(time).map(Date::new).orElse(null);
     }
 
     private static class IntervalTriggerAccessor {
 
-        private Date startTime;
-        private Date endTime;
+        private Long startTime;
+        private Long endTime;
         private int repeatLimit;
         private int repeatCount;
-        private Date nextFireTime;
+        private Long nextFireTime;
         private long period;
 
         public IntervalTriggerAccessor() {
         }
 
         public IntervalTriggerAccessor(IntervalTrigger trigger) {
-            this.startTime = trigger.getStartTime();
-            this.endTime = trigger.getEndTime();
+            this.startTime = toTime(trigger.getStartTime());
+            this.endTime = toTime(trigger.getEndTime());
             this.repeatLimit = trigger.getRepeatLimit();
             this.repeatCount = trigger.getRepeatCount();
-            this.nextFireTime = trigger.getNextFireTime();
+            this.nextFireTime = toTime(trigger.getNextFireTime());
             this.period = trigger.getPeriod();
         }
 
         public IntervalTrigger to() {
             IntervalTrigger intervalTrigger = new IntervalTrigger();
-            intervalTrigger.setStartTime(startTime);
-            intervalTrigger.setEndTime(endTime);
+            intervalTrigger.setStartTime(toDate(startTime));
+            intervalTrigger.setEndTime(toDate(endTime));
             intervalTrigger.setRepeatLimit(repeatLimit);
             intervalTrigger.setRepeatCount(repeatCount);
-            intervalTrigger.setNextFireTime(nextFireTime);
+            intervalTrigger.setNextFireTime(toDate(nextFireTime));
             intervalTrigger.setPeriod(period);
             return intervalTrigger;
         }
 
-        public Date getStartTime() {
+        public Long getStartTime() {
             return startTime;
         }
 
-        public void setStartTime(Date startTime) {
-            this.startTime = startTime;
-        }
-
-        public Date getEndTime() {
+        public Long getEndTime() {
             return endTime;
-        }
-
-        public void setEndTime(Date endTime) {
-            this.endTime = endTime;
         }
 
         public int getRepeatLimit() {
             return repeatLimit;
         }
 
-        public void setRepeatLimit(int repeatLimit) {
-            this.repeatLimit = repeatLimit;
-        }
-
         public int getRepeatCount() {
             return repeatCount;
         }
 
-        public void setRepeatCount(int repeatCount) {
-            this.repeatCount = repeatCount;
-        }
-
-        public Date getNextFireTime() {
+        public Long getNextFireTime() {
             return nextFireTime;
-        }
-
-        public void setNextFireTime(Date nextFireTime) {
-            this.nextFireTime = nextFireTime;
         }
 
         public long getPeriod() {
             return period;
-        }
-
-        public void setPeriod(long period) {
-            this.period = period;
         }
     }
 }

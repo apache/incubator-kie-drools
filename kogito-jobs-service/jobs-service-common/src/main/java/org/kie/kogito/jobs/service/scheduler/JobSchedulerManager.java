@@ -83,7 +83,7 @@ public class JobSchedulerManager {
         }
 
         //first execution
-        vertx.runOnContext(v -> loadJobDetailss());
+        vertx.runOnContext(this::loadJobDetailss);
         //periodic execution
         vertx.setPeriodic(TimeUnit.MINUTES.toMillis(loadJobIntervalInMinutes), id -> loadJobDetailss());
     }

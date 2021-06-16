@@ -31,7 +31,7 @@ import io.quarkus.oidc.AccessTokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.quarkus.vertx.http.runtime.security.QuarkusHttpUser;
 import io.vertx.core.MultiMap;
-import io.vertx.core.http.CaseInsensitiveHeaders;
+import io.vertx.core.Vertx;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
@@ -63,6 +63,9 @@ public class VertxRouterSetupTest {
 
     @Mock
     GraphQL graphQLMock;
+
+    @Mock
+    Vertx vertx;
 
     @InjectMocks
     @Spy
@@ -109,7 +112,7 @@ public class VertxRouterSetupTest {
 
         ArgumentCaptor<Function<RoutingContext, MultiMap>> functionCaptor = ArgumentCaptor.forClass(Function.class);
         verify(graphiQLHandlerMock).graphiQLRequestHeaders(functionCaptor.capture());
-        CaseInsensitiveHeaders headers = (CaseInsensitiveHeaders) functionCaptor.getValue().apply(routingContextMock);
+        MultiMap headers = functionCaptor.getValue().apply(routingContextMock);
 
         assertThat(headers.get(HttpHeaders.AUTHORIZATION)).isEqualTo("Bearer " + token);
     }

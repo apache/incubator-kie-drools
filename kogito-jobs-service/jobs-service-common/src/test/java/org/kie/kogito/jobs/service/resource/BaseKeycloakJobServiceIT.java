@@ -49,7 +49,10 @@ public abstract class BaseKeycloakJobServiceIT {
     public static final int FORBIDDEN_CODE = 401;
 
     @ConfigProperty(name = KeycloakQuarkusTestResource.KOGITO_KEYCLOAK_PROPERTY)
-    String keycloakURL;
+    private String keycloakURL;
+
+    @Inject
+    private ObjectMapper objectMapper;
 
     @BeforeAll
     public static void setup() {
@@ -57,9 +60,6 @@ public abstract class BaseKeycloakJobServiceIT {
         System.setProperty("quarkus.http.auth.permission.roles1.paths", "/*");
         System.setProperty("quarkus.http.auth.permission.roles1.policy", "role-policy1");
     }
-
-    @Inject
-    private ObjectMapper objectMapper;
 
     @Test
     void create() throws Exception {
