@@ -70,8 +70,8 @@ public class QueryGenerator {
         }
         queryCall.addArgument(new StringLiteralExpr(queryName));
         for (QueryParameter qp : context.getQueryParameters()) {
-            queryCall.addArgument(new ClassExpr(toClassOrInterfaceType(qp.type)));
-            queryCall.addArgument(new StringLiteralExpr(qp.name));
+            queryCall.addArgument(new ClassExpr(toClassOrInterfaceType(qp.getType())));
+            queryCall.addArgument(new StringLiteralExpr(qp.getName()));
         }
         packageModel.getQueryDefWithType().put(queryDefVariableName, new QueryDefWithType(queryDefType, queryCall, context));
     }
@@ -149,8 +149,8 @@ public class QueryGenerator {
             final String argument = descr.getParameters()[i];
             final String type = descr.getParameterTypes()[i];
             context.addDeclaration(argument, getClassFromContext(context.getTypeResolver(), type));
-            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type));
-            context.getQueryParameters().add(queryParameter);
+            QueryParameter queryParameter = new QueryParameter(argument, getClassFromContext(context.getTypeResolver(), type), i+1);
+            context.addQueryParameter(queryParameter);
             packageModel.putQueryVariable("query_" + toId( descr.getName() ), queryParameter);
         }
     }
@@ -159,7 +159,7 @@ public class QueryGenerator {
         ClassOrInterfaceType queryType = toClassOrInterfaceType( QueryDef.getQueryClassByArity(queryParameters.size()) );
 
         Type[] genericType = queryParameters.stream()
-                .map(e -> e.type)
+                .map(e -> e.getType())
                 .map(DrlxParseUtil::classToReferenceType)
                 .toArray(Type[]::new);
 
@@ -168,11 +168,6 @@ public class QueryGenerator {
         }
 
         return queryType;
-    }
-
-    public static boolean isLiteral(String value) {
-        return value != null && value.length() > 0 &&
-                ( Character.isDigit(value.charAt(0)) || value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) || value.endsWith( ".class" ) );
     }
 
     public static String toQueryDef(String queryName) {

@@ -475,7 +475,7 @@ public class ModelGenerator {
     public static void createVariables(BlockStmt block, PackageModel packageModel, RuleContext context) {
         for (DeclarationSpec decl : context.getAllDeclarations()) {
             boolean domainClass = packageModel.registerDomainClass( decl.getDeclarationClass() );
-            if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.queryParameterWithName(p -> p.name.equals(decl.getBindingId())).isPresent()) {
+            if (!packageModel.getGlobals().containsKey(decl.getBindingId()) && !context.getQueryParameterByName(decl.getBindingId()).isPresent()) {
                 addVariable(block, decl, context, domainClass);
             }
         }

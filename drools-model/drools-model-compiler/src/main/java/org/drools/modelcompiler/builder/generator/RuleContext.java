@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
@@ -69,7 +68,6 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-
 import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
@@ -82,42 +80,42 @@ public class RuleContext {
     private final RuleDescr ruleDescr;
     private final int ruleIndex;
 
-    private DRLIdGenerator idGenerator;
+    private final DRLIdGenerator idGenerator;
 
-    private Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
-    private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
-    private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    private Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
-    private List<Expression> expressions = new ArrayList<>();
-    private Map<String, String> namedConsequences = new HashMap<>();
+    private final Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
+    private final Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
+    private final List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
+    private final Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
+    private final List<Expression> expressions = new ArrayList<>();
+    private final Map<String, String> namedConsequences = new HashMap<>();
     private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
-    private BlockStmt ruleVariablesBlock = new BlockStmt();
+    private final BlockStmt ruleVariablesBlock = new BlockStmt();
 
-    private List<QueryParameter> queryParameters = new ArrayList<>();
+    private final List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
 
     private RuleUnitDescription ruleUnitDescr;
-    private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
-    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
+    private final Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
-    private Boolean isNestedInsideOr = false;
-    private Bag<String> bindingOr = new Bag<>();
-    private Set<String> unusableOrBinding = new HashSet<>();
+    private boolean isNestedInsideOr = false;
+    private final Bag<String> bindingOr = new Bag<>();
+    private final Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
     private int scopeCounter = 1;
     private Scope currentScope = new Scope();
-    private Deque<Scope> scopesStack = new LinkedList<>();
-    private Map<String, String> definedVars = new HashMap<>();
+    private final Deque<Scope> scopesStack = new LinkedList<>();
+    private final Map<String, String> definedVars = new HashMap<>();
 
-    private Map<String, Type> explicitCastType = new HashMap<>();
+    private final Map<String, Type> explicitCastType = new HashMap<>();
 
     // These are used for indexing see PatternBuilder:1198
-    private Set<String> patternBindings = new HashSet<>();
+    private final Set<String> patternBindings = new HashSet<>();
 
     private int legacyAccumulateCounter = 0;
 
@@ -126,8 +124,7 @@ public class RuleContext {
     private boolean hasCompilationError;
 
     public enum RuleDialect {
-        JAVA,
-        MVEL;
+        JAVA, MVEL
     }
 
     private AndDescr parentDescr;
@@ -153,7 +150,7 @@ public class RuleContext {
         }
 
         boolean useNamingConvention = false;
-        String unitName = null;
+        String unitName;
         AnnotationDescr unitAnn = ruleDescr.getAnnotation( "Unit" );
         if (unitAnn != null) {
             unitName = ( String ) unitAnn.getValue();
@@ -233,9 +230,8 @@ public class RuleContext {
         return kbuilder.hasResults( ResultSeverity.ERROR );
     }
 
-    public RuleContext addInlineCastType(String field, Type type) {
+    public void addInlineCastType(String field, Type type) {
         explicitCastType.put(field, type);
-        return this;
     }
 
     public Optional<Type> explicitCastType(String field) {
@@ -459,12 +455,16 @@ public class RuleContext {
         this.ruleDialect = ruleDialect;
     }
 
-    public Optional<QueryParameter> queryParameterWithName(Predicate<? super QueryParameter> predicate) {
-        return queryParameters.stream().filter(predicate).findFirst();
+    public Optional<QueryParameter> getQueryParameterByName(String name) {
+        return queryParameters.stream().filter(p -> p.getName().equals( name )).findFirst();
     }
 
     public List<QueryParameter> getQueryParameters() {
         return queryParameters;
+    }
+
+    public void addQueryParameter(QueryParameter queryParameter) {
+        queryParameters.add(queryParameter);
     }
 
     public List<Expression> getExpressions() {
@@ -557,11 +557,11 @@ public class RuleContext {
         }
     }
 
-    public Boolean isNestedInsideOr() {
+    public boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }
 
-    public void setNestedInsideOr(Boolean nestedInsideOr) {
+    public void setNestedInsideOr(boolean nestedInsideOr) {
         isNestedInsideOr = nestedInsideOr;
     }
 
@@ -590,7 +590,7 @@ public class RuleContext {
             new NameExpr( var );
         }
 
-        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals( x ));
+        Optional<QueryParameter> optQueryParameter = getQueryParameterByName(x);
         return optQueryParameter.map(qp -> {
 
             final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
@@ -626,7 +626,7 @@ public class RuleContext {
     private class Scope {
         private final String id;
         private final String forallFirstIdentifier;
-        private List<String> vars = new ArrayList<>();
+        private final List<String> vars = new ArrayList<>();
 
         private Scope() {
             this( "", null );
