@@ -50,11 +50,10 @@
   
   <profiles>
     <profile>
-      <id>gwt-showcase</id>
+      <id>fullProfile</id>
       <activation>
-        <activeByDefault>false</activeByDefault>
         <property>
-          <name>gwtShowcase</name>
+          <name>full</name>
         </property>
       </activation>
       <modules>
