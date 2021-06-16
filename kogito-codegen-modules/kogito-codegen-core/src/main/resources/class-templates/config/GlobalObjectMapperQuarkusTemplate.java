@@ -15,15 +15,12 @@
  */
 package $Package$;
 
-import java.util.List;
 
 import java.io.IOException;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JavaType;
 import javax.inject.Singleton;
 import javax.inject.Inject;
-
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
