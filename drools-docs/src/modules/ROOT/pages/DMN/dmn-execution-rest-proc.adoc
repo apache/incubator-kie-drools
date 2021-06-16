@@ -3,6 +3,58 @@
 
 Directly interacting with the REST endpoints of {KIE_SERVER} provides the most separation between the calling code and the decision logic definition. The calling code is completely free of direct dependencies, and you can implement it in an entirely different development platform such as `Node.js` or `.NET`. The examples in this section demonstrate Nix-style curl commands but provide relevant information to adapt to any REST client.
 
+When you use a REST endpoint of {KIE_SERVER}, the best practice is to define a domain object POJO Java class, annotated with standard {KIE_SERVER} marshalling annotations. For example, the following code is using a domain object `Person` class that is annotated properly:
+
+.Example POJO Java class
+[source,java]
+----
+@javax.xml.bind.annotation.XmlAccessorType(javax.xml.bind.annotation.XmlAccessType.FIELD)
+public class Person implements java.io.Serializable {
+
+    static final long serialVersionUID = 1L;
+
+    private java.lang.String id;
+    private java.lang.String name;
+    @javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter(org.kie.internal.jaxb.LocalDateXmlAdapter.class)
+    private java.time.LocalDate dojoining;
+
+    public Person() {
+    }
+
+    public java.lang.String getId() {
+        return this.id;
+    }
+
+    public void setId(java.lang.String id) {
+        this.id = id;
+    }
+
+    public java.lang.String getName() {
+        return this.name;
+    }
+
+    public void setName(java.lang.String name) {
+        this.name = name;
+    }
+
+    public java.time.LocalDate getDojoining() {
+        return this.dojoining;
+    }
+
+    public void setDojoining(java.time.LocalDate dojoining) {
+        this.dojoining = dojoining;
+    }
+
+    public Person(java.lang.String id, java.lang.String name,
+            java.time.LocalDate dojoining) {
+        this.id = id;
+        this.name = name;
+        this.dojoining = dojoining;
+    }
+
+}
+----
+
 For more information about the {KIE_SERVER} REST API, see
 ifdef::DM,PAM[]
 {URL_DEPLOYING_AND_MANAGING_SERVICES}#assembly-kie-apis[_{KIE_APIS}_].
