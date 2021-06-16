@@ -2,7 +2,7 @@ To compile and run this project in the main Maven build, ensure the necessary pr
 
 Eg.
 ```
-mvn clean install -Pgwt-showcase
+mvn clean install -PfullProfile
  or
-mvn clean install -DgwtShowcase
+mvn clean install -Dfull
 ```
