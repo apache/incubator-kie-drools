@@ -11,6 +11,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Maven Build
     steps:
+      - name: Free disk space
+        shell: bash
+        run: |
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          docker rmi $(docker image ls -aq)
+          df -h
       - name: Set up JDK
         uses: actions/setup-java@v1
         with:
