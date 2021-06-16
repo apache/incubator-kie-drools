@@ -26,7 +26,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.KogitoEventStreams;
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
 import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +40,7 @@ import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class, InfinispanSpringBootTestResource.Conditional.class })
+@ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class })
 public class PingPongMessageTest extends BaseRestTest {
 
     @Autowired

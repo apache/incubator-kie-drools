@@ -123,7 +123,6 @@
                         <include>org/kie/kogito/integrationtests/springboot/*</include>
                     </includes>
                     <systemPropertyVariables combine.children="append">
-                        <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
                         <container.image.kafka>@container.image.kafka@</container.image.kafka>
                     </systemPropertyVariables>
                 </configuration>

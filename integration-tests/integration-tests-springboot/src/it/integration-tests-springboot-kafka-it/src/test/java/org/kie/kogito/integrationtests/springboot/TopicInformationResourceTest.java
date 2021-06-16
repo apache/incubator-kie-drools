@@ -24,7 +24,6 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.event.ChannelType;
 import org.kie.kogito.event.Topic;
 import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,7 +36,7 @@ import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class , InfinispanSpringBootTestResource.Conditional.class })
+@ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class TopicInformationResourceTest extends BaseRestTest{
 

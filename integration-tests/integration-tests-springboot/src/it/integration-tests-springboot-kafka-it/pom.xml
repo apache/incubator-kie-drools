@@ -24,18 +24,10 @@
 
     <properties>
         <java.version>@maven.compiler.release@</java.version>
-        <version.org.infinispan>@version.org.infinispan@</version.org.infinispan>
     </properties>
     
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-bom</artifactId>
-                <version>${version.org.infinispan}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
             <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
@@ -72,18 +64,6 @@
         <dependency>
             <groupId>org.springframework.kafka</groupId>
             <artifactId>spring-kafka</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.infinispan</groupId>
-                    <artifactId>infinispan-server-testdriver-junit5</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -158,7 +138,6 @@
                 <version>@version.surefire.plugin@</version>
                 <configuration>
                     <systemPropertyVariables combine.children="append">
-                        <container.image.infinispan>@container.image.infinispan@</container.image.infinispan>
                         <container.image.kafka>@container.image.kafka@</container.image.kafka>
                     </systemPropertyVariables>
                 </configuration>

@@ -84,22 +84,6 @@ pipeline {
                 }
             }
         }
-        stage('Check Runtimes integration-tests with persistence') {
-            steps {
-                script {
-                    getMavenCommand('integration-tests', true, true)
-                        .withProfiles(['persistence'])
-                        .run('clean verify')
-                }
-            }
-            post {
-                cleanup {
-                    script {
-                        cleanContainers()
-                    }
-                }
-            }
-        }
     }
     post {
         always {
