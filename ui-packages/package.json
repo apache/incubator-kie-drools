@@ -10,7 +10,7 @@
     "init": "lerna bootstrap",
     "build": "lerna run build --stream --",
     "build:fast": "lerna run build:fast --stream --",
-    "build:prod": "lerna run build:prod --stream --",
+    "build:prod": "lerna run build:prod --include-dependencies --stream --",
     "test": "lerna run test:coverage --stream --",
     "cypress:run": "lerna run cypress:run --",
     "cypress:run-management-console": "cypress run --project ./packages/management-console",
