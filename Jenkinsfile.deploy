@@ -49,7 +49,7 @@ pipeline {
                         assert getProjectVersion()
                         assert getOptaPlannerVersion()
 
-                        if(isRelease()) {
+                        if (isRelease()) {
                             // Verify if on right release branch
                             assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                         }
@@ -91,10 +91,13 @@ pipeline {
                 }
             }
         }
-        stage('Build kogito-apps') {
+        stage('Deploy kogito-apps locally') {
+            when {
+                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+            }
             steps {
                 script {
-                    getMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    runMavenDeploy(params.SKIP_TESTS, true)
                 }
             }
             post {
@@ -103,20 +106,40 @@ pipeline {
                 }
             }
         }
-        stage('Deploy artifacts') {
+        stage('Deploy kogito-apps to repository') {
+            when {
+                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() }
+            }
             steps {
                 script {
-                    if (env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID) {
-                        // Deploy to specific repository with credentials
-                        runMavenDeployLocally()
-                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
-                    } else if(!isRelease() || env.MAVEN_DEPLOY_REPOSITORY) {
-                        runMavenDeploy()
-                    } else {
-                        // Deploy locally and then to staging
-                        runMavenDeployLocally()
-                        runMavenStage()
-                    }
+                    runMavenDeploy(params.SKIP_TESTS)
+                }
+            }
+            post {
+                always {
+                    saveReports(params.SKIP_TESTS)
+                }
+            }
+        }
+        stage('Upload artifacts to given repository') {
+            when {
+                expression { return isSpecificArtifactsUpload() }
+            }
+            steps {
+                script {
+                    // Deploy to specific repository with credentials
+                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
+                }
+            }
+        }
+        stage('Stage artifacts') {
+            when {
+                expression { return shouldStageArtifacts() }
+            }
+            steps {
+                script {
+                    // Stage release artifacts
+                    runMavenStage()
                 }
             }
         }
@@ -188,6 +211,14 @@ void commitAndCreatePR() {
     }
 }
 
+boolean isSpecificArtifactsUpload() {
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID
+}
+
+boolean shouldStageArtifacts() {
+    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+}
+
 boolean isRelease() {
     return env.RELEASE.toBoolean()
 }
@@ -196,7 +227,7 @@ boolean isCreatePr() {
     return params.CREATE_PR
 }
 
-String getRepoName(){
+String getRepoName() {
     return env.REPO_NAME
 }
 
@@ -205,7 +236,7 @@ String getGitAuthor() {
     return "${GIT_AUTHOR}"
 }
 
-String getBuildBranch(){
+String getBuildBranch() {
     return params.BUILD_BRANCH_NAME
 }
 
@@ -221,11 +252,11 @@ String getBotBranch() {
     return "${getProjectVersion()}-${env.BOT_BRANCH_HASH}"
 }
 
-String getBotAuthor(){
+String getBotAuthor() {
     return env.GIT_AUTHOR_BOT
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return env.BOT_CREDENTIALS_ID
 }
 
@@ -235,7 +266,7 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-MavenCommand getMavenCommand(){
+MavenCommand getMavenCommand() {
     MavenCommand mvnCmd = new MavenCommand(this, ['-fae'])
                 .withSettingsXmlId(env.MAVEN_SETTINGS_CONFIG_FILE_ID)
                 .inDirectory(getRepoName())
@@ -246,21 +277,16 @@ MavenCommand getMavenCommand(){
     return mvnCmd
 }
 
-void runMavenDeploy() {
+void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
     mvnCmd = getMavenCommand()
 
-    if(env.MAVEN_DEPLOY_REPOSITORY){
+    if(localDeployment) {
+        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
+    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
-}
-
-void runMavenDeployLocally() {
-    getMavenCommand()
-        .skipTests(true)
-        .withLocalDeployFolder(getLocalDeploymentFolder())
-        .run('clean deploy')
+    mvnCmd.skipTests(skipTests).run('clean deploy')
 }
 
 void runMavenStage() {
@@ -275,10 +301,10 @@ MavenStagingHelper getStagingHelper() {
                 .withNexusReleaseRepositoryId(env.NEXUS_RELEASE_REPOSITORY_ID)
 }
 
-String getLocalDeploymentFolder(){
+String getLocalDeploymentFolder() {
     return "${env.MAVEN_DEPLOY_LOCAL_DIR}/${getRepoName()}"
-} 
+}
 
 String getMavenRepoZipUrl() {
-     return "${env.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
+    return "${env.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
 }
