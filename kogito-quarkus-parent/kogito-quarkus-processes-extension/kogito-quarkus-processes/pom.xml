@@ -2,44 +2,30 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-  <modelVersion>4.0.0</modelVersion>
   <parent>
+    <artifactId>kogito-quarkus-processes-extension</artifactId>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-quarkus-extension</artifactId>
-    <version>2.0.0-SNAPSHOT</version>    
+    <version>2.0.0-SNAPSHOT</version>
   </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-  <artifactId>kogito-quarkus</artifactId>
-  <name>Kogito :: Quarkus Extension :: Runtime</name>
-  <description>Add business automation capabilities - processes and rules with Kogito (a toolkit that originates from projects Drools and jBPM)</description>
+  <artifactId>kogito-quarkus-processes</artifactId>
+  <name>Kogito :: Quarkus Processes Extension :: Runtime</name>
+  <description>Add Kogito Processes capabilities - Includes Process (jBPM) Engine</description>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-common</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-rules</artifactId>
+      <artifactId>jbpm-bpmn2</artifactId>
     </dependency>
-
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-decisions</artifactId>
+      <artifactId>process-serialization-protobuf</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-predictions</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-processes</artifactId>
-    </dependency>
-
   </dependencies>
 
   <build>
@@ -71,5 +57,4 @@
       </plugin>
     </plugins>
   </build>
-
 </project>

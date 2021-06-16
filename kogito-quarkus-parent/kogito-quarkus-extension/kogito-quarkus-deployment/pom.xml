@@ -44,30 +44,12 @@
             <version>${project.version}</version>
         </dependency>
 
-
-        <!-- codegen dependencies -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>kogito-codegen-processes</artifactId>
+            <artifactId>kogito-quarkus-processes-deployment</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
-        <!-- test -->
-        <dependency>
-            <groupId>io.quarkus</groupId>
-            <artifactId>quarkus-junit5-internal</artifactId>
-            <version>${version.io.quarkus}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.rest-assured</groupId>
-            <artifactId>rest-assured</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <build>

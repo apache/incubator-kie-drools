@@ -36,6 +36,7 @@
     <module>kogito-quarkus-decisions-extension</module>
     <module>kogito-quarkus-predictions-extension</module>
     <module>kogito-quarkus-serverless-workflow-extension</module>
+    <module>kogito-quarkus-processes-extension</module>
   </modules>
 
   <build>

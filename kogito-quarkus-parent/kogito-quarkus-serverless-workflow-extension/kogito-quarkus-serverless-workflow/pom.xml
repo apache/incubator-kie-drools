@@ -10,13 +10,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-quarkus-serverless-workflow</artifactId>
-  <name>Kogito :: Quarkus Workflows Extension :: Runtime</name>
+  <name>Kogito :: Quarkus Serverless Workflow Extension :: Runtime</name>
   <description>Add Kogito Serverless Workflows (SW) capabilities - Includes OpenApi Client, the Process engine, and Knative Eventing capabilities</description>
 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-quarkus-processes</artifactId>
     </dependency>
 
     <dependency>
