@@ -120,7 +120,7 @@ public class ServerlessWorkflowParser {
                 .name(eventDefinition.getName())
                 .metaData(Metadata.TRIGGER_MAPPING, DEFAULT_WORKFLOW_VAR)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
-                .metaData(Metadata.TRIGGER_REF, eventDefinition.getSource())
+                .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .trigger(JSON_NODE, DEFAULT_WORKFLOW_VAR);
     }
@@ -144,7 +144,7 @@ public class ServerlessWorkflowParser {
                 .name(eventDefinition.getName())
                 .metaData(Metadata.TRIGGER_TYPE, "ProduceMessage")
                 .metaData(Metadata.MAPPING_VARIABLE, DEFAULT_WORKFLOW_VAR)
-                .metaData(Metadata.TRIGGER_REF, eventDefinition.getSource())
+                .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE);
     }
 
@@ -154,9 +154,9 @@ public class ServerlessWorkflowParser {
                 .name(eventDefinition.getName())
                 .variableName(DEFAULT_WORKFLOW_VAR)
                 .metaData(Metadata.EVENT_TYPE, "message")
-                .metaData(Metadata.TRIGGER_REF, eventDefinition.getSource())
+                .metaData(Metadata.TRIGGER_REF, eventDefinition.getType())
                 .metaData(Metadata.MESSAGE_TYPE, JSON_NODE)
                 .metaData(Metadata.TRIGGER_TYPE, "ConsumeMessage")
-                .eventType("Message-" + eventDefinition.getSource());
+                .eventType("Message-" + eventDefinition.getType());
     }
 }

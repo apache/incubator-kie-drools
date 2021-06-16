@@ -18,6 +18,7 @@ package org.kie.kogito.serverless.workflow;
 import java.io.InputStreamReader;
 import java.util.Collections;
 
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.Constraint;
 import org.jbpm.workflow.core.node.ActionNode;
@@ -211,6 +212,8 @@ public class ServerlessWorkflowParsingTest {
 
         Node node = process.getNodes()[2];
         assertTrue(node instanceof StartNode);
+        assertEquals(((StartNode) node).getTriggers().size(), 1);
+        assertEquals(((StartNode) node).getMetaData(Metadata.TRIGGER_REF), "kafka");
         node = process.getNodes()[0];
         assertTrue(node instanceof EndNode);
         node = process.getNodes()[1];
@@ -510,7 +513,7 @@ public class ServerlessWorkflowParsingTest {
         assertEquals("TestKafkaEvent", actionNode.getName());
         assertEquals("ProduceMessage", actionNode.getMetaData("TriggerType"));
         assertEquals("workflowdata", actionNode.getMetaData("MappingVariable"));
-        assertEquals("testtopic", actionNode.getMetaData("TriggerRef"));
+        assertEquals("kafka", actionNode.getMetaData("TriggerRef"));
         assertEquals("com.fasterxml.jackson.databind.JsonNode", actionNode.getMetaData("MessageType"));
     }
 
