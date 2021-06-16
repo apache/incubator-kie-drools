@@ -51,7 +51,7 @@ public class KubernetesDiscoveredServiceWorkItemHandlerTest extends BaseTestKube
         metadata.setNamespace(MOCK_NAMESPACE);
         metadata.setLabels(Collections.singletonMap("test-kieserver", "service"));
 
-        final Service service = new Service("v1", "Service", metadata, serviceSpec, new ServiceStatus(new LoadBalancerStatus()));
+        final Service service = new Service("v1", "Service", metadata, serviceSpec, new ServiceStatus(Collections.emptyList(), new LoadBalancerStatus()));
         getClient().services().create(service);
 
         final DiscoveredServiceWorkItemHandler handler = new TestDiscoveredServiceWorkItemHandler(this);

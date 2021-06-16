@@ -22,18 +22,17 @@ import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
 import org.reactivestreams.Publisher;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 @Singleton
 public class QuarkusModelEventEmitter extends BaseModelEventEmitter {
 
-    private final PublishSubject<String> eventSubject;
+    private final BroadcastProcessor<String> eventSubject;
 
     @Inject
     public QuarkusModelEventEmitter(final DecisionModelResourcesProvider decisionModelResourcesProvider) {
         super(decisionModelResourcesProvider);
-        this.eventSubject = PublishSubject.create();
+        this.eventSubject = BroadcastProcessor.create();
     }
 
     @Override
@@ -43,7 +42,7 @@ public class QuarkusModelEventEmitter extends BaseModelEventEmitter {
 
     @Outgoing("kogito-tracing-model")
     public Publisher<String> getEventPublisher() {
-        return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
+        return eventSubject.toHotStream();
     }
 
     @Override

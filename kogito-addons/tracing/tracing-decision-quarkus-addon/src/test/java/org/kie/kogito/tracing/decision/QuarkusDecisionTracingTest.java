@@ -39,7 +39,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
 import io.cloudevents.jackson.JsonFormat;
-import io.reactivex.subscribers.TestSubscriber;
+import io.smallrye.mutiny.helpers.test.AssertSubscriber;
 import io.vertx.core.eventbus.EventBus;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -86,6 +86,7 @@ public class QuarkusDecisionTracingTest {
         final DMNRuntime runtime = buildDMNRuntime();
         final DecisionModel model = buildDecisionModel(runtime);
         final List<EvaluateEvent> events = testListener(true, runtime, model);
+        assertEquals(14, events.size());
         testCollector(events, model);
     }
 
@@ -94,6 +95,7 @@ public class QuarkusDecisionTracingTest {
         final DMNRuntime runtime = buildDMNRuntime();
         final DecisionModel model = buildDecisionModel(runtime);
         final List<EvaluateEvent> events = testListener(false, runtime, model);
+        assertEquals(14, events.size());
         testCollector(events, model);
     }
 
@@ -131,7 +133,7 @@ public class QuarkusDecisionTracingTest {
     }
 
     private void testCollector(List<EvaluateEvent> events, DecisionModel model) throws IOException {
-        TestSubscriber<String> subscriber = new TestSubscriber<>();
+        AssertSubscriber<String> subscriber = AssertSubscriber.create(1);
 
         final DecisionModels mockedDecisionModels = mock(DecisionModels.class);
         when(mockedDecisionModels.getDecisionModel(TEST_MODEL_NAMESPACE, TEST_MODEL_NAME)).thenReturn(model);
@@ -144,10 +146,13 @@ public class QuarkusDecisionTracingTest {
         eventEmitter.getEventPublisher().subscribe(subscriber);
         events.forEach(collector::onEvent);
 
-        subscriber.assertValueCount(1);
+        subscriber.assertNotTerminated();
+
+        List<String> items = subscriber.getItems();
+        assertEquals(1, items.size());
 
         CloudEvent cloudEvent = CloudEventUtils
-                .decode(subscriber.values().get(0))
+                .decode(items.get(0))
                 .orElseThrow(() -> new IllegalStateException("Can't decode CloudEvent"));
 
         assertEquals(TEST_EXECUTION_ID, cloudEvent.getId());

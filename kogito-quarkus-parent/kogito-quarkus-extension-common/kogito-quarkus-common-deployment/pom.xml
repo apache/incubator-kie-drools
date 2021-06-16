@@ -14,7 +14,6 @@
 
     <dependencies>
 
-
         <!-- kogito -->
         <dependency>
             <groupId>org.kie.kogito</groupId>

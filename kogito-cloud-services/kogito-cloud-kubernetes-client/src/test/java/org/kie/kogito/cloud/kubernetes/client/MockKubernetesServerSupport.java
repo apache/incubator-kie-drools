@@ -126,7 +126,7 @@ public abstract class MockKubernetesServerSupport {
         metadata.setNamespace(MOCK_NAMESPACE);
         metadata.setLabels(labels);
 
-        final Service service = new Service("v1", "Service", metadata, serviceSpec, new ServiceStatus(new LoadBalancerStatus()));
+        final Service service = new Service("v1", "Service", metadata, serviceSpec, new ServiceStatus(Collections.emptyList(), new LoadBalancerStatus()));
         if (namespace != null) {
             this.server.getClient().inNamespace(namespace).services().create(service);
         } else {

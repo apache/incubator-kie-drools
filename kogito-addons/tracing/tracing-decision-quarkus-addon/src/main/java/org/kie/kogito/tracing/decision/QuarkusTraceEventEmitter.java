@@ -20,21 +20,20 @@ import javax.inject.Singleton;
 import org.eclipse.microprofile.reactive.messaging.Outgoing;
 import org.reactivestreams.Publisher;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.subjects.PublishSubject;
+import io.smallrye.mutiny.operators.multi.processors.BroadcastProcessor;
 
 @Singleton
 public class QuarkusTraceEventEmitter implements EventEmitter {
 
-    private final PublishSubject<String> eventSubject;
+    private final BroadcastProcessor<String> eventSubject;
 
     public QuarkusTraceEventEmitter() {
-        this.eventSubject = PublishSubject.create();
+        this.eventSubject = BroadcastProcessor.create();
     }
 
     @Outgoing("kogito-tracing-decision")
     public Publisher<String> getEventPublisher() {
-        return eventSubject.toFlowable(BackpressureStrategy.BUFFER);
+        return eventSubject.toHotStream();
     }
 
     @Override

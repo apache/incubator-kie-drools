@@ -49,12 +49,12 @@ public class InfinispanHealthCheckIT {
 
         //testing Up
         HealthCheckResponse response = healthCheck.call();
-        assertThat(response.getState()).isEqualTo(HealthCheckResponse.State.UP);
+        assertThat(response.getStatus()).isEqualTo(HealthCheckResponse.Status.UP);
 
         resource.stop();
 
         //testing Down
         HealthCheckResponse response2 = healthCheck.call();
-        assertThat(response2.getState()).isEqualTo(HealthCheckResponse.State.DOWN);
+        assertThat(response2.getStatus()).isEqualTo(HealthCheckResponse.Status.DOWN);
     }
 }

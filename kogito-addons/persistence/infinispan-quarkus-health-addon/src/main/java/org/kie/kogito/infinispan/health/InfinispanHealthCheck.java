@@ -92,7 +92,7 @@ public class InfinispanHealthCheck implements HealthCheck {
                         .map(String::valueOf)
                         .collect(Collectors.joining(",")))
                 .name(state ? "Infinispan is Up" : "Infinispan is Down")
-                .state(state)
+                .status(state)
                 .build();
     }
 

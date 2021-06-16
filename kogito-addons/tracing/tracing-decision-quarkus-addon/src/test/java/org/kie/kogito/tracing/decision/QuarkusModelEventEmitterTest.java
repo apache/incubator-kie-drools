@@ -26,7 +26,7 @@ import org.kie.kogito.decision.DecisionModelResource;
 import org.kie.kogito.decision.DecisionModelResourcesProvider;
 
 import io.cloudevents.CloudEvent;
-import io.reactivex.subscribers.TestSubscriber;
+import io.smallrye.mutiny.helpers.test.AssertSubscriber;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -36,7 +36,7 @@ public class QuarkusModelEventEmitterTest {
 
     @Test
     public void testEmitEvent() {
-        final TestSubscriber<String> subscriber = new TestSubscriber<>();
+        final AssertSubscriber<String> subscriber = AssertSubscriber.create(2);
         final List<DecisionModelResource> models = Arrays.asList(makeModel(), makeModel());
         final DecisionModelResourcesProvider mockedDecisionModelResourcesProvider = () -> models;
 
@@ -44,9 +44,12 @@ public class QuarkusModelEventEmitterTest {
         eventEmitter.getEventPublisher().subscribe(subscriber);
         eventEmitter.publishDecisionModels();
 
-        subscriber.assertValueCount(2);
-        final String rawCloudEvent1 = subscriber.values().get(0);
-        final String rawCloudEvent2 = subscriber.values().get(1);
+        subscriber.assertNotTerminated();
+
+        List<String> items = subscriber.getItems();
+        assertEquals(2, items.size());
+        final String rawCloudEvent1 = items.get(0);
+        final String rawCloudEvent2 = items.get(1);
         final CloudEvent cloudEvent1 = CloudEventUtils.decode(rawCloudEvent1).orElseThrow(IllegalStateException::new);
         final CloudEvent cloudEvent2 = CloudEventUtils.decode(rawCloudEvent2).orElseThrow(IllegalStateException::new);
 
