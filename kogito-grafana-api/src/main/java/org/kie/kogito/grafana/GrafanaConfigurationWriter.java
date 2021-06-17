@@ -56,9 +56,9 @@ public class GrafanaConfigurationWriter {
      * @param handlerName: The name of the endpoint.
      * @return: The template customized for the endpoint.
      */
-    public static String generateOperationalDashboard(String templatePath, String dashboardName, String handlerName, boolean generateAuditLink) {
+    public static String generateOperationalDashboard(String templatePath, String dashboardName, String handlerName, KogitoGAV gav, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
-        template = customizeTemplate(template, handlerName);
+        template = customizeTemplate(template, handlerName, gav.getArtifactId(), gav.getVersion());
 
         JGrafana jgrafana = initialize(template, String.format("%s - Operational Dashboard", dashboardName), generateAuditLink);
 
@@ -73,9 +73,9 @@ public class GrafanaConfigurationWriter {
      * @param decisions: The decisions in the DMN model.
      * @return: The customized template containing also specific panels for the DMN decisions that have been specified in the arguments.
      */
-    public static String generateDomainSpecificDMNDashboard(String templatePath, String dashboardName, String endpoint, List<Decision> decisions, boolean generateAuditLink) {
+    public static String generateDomainSpecificDMNDashboard(String templatePath, String dashboardName, String endpoint, KogitoGAV gav, List<Decision> decisions, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
-        template = customizeTemplate(template, endpoint);
+        template = customizeTemplate(template, endpoint, gav.getArtifactId(), gav.getVersion());
 
         JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", dashboardName), generateAuditLink);
 
@@ -89,6 +89,8 @@ public class GrafanaConfigurationWriter {
                     List<Label> labels = new ArrayList<>();
                     labels.add(new Label("endpoint", "\"" + endpoint + "\""));
                     labels.add(new Label("decision", "\"" + decision.getName() + "\""));
+                    labels.add(new Label("artifactId", "\"" + gav.getArtifactId() + "\""));
+                    labels.add(new Label("version", "\"" + gav.getVersion() + "\""));
 
                     GrafanaFunction grafanaFunction = SupportedDecisionTypes.getGrafanaFunction(type.getLocalPart())
                             .orElseThrow(() -> new RuntimeException("Mismatch between supported Grafana DMN Types and defined functions"));
@@ -111,9 +113,9 @@ public class GrafanaConfigurationWriter {
      * @param endpoint: The name of the endpoint.
      * @return: The customized template containing also specific panels for the DMN decisions that have been specified in the arguments.
      */
-    public static String generateDomainSpecificDrlDashboard(String templatePath, String dashboardName, String endpoint, boolean generateAuditLink) {
+    public static String generateDomainSpecificDrlDashboard(String templatePath, String dashboardName, String endpoint, KogitoGAV gav, boolean generateAuditLink) {
         String template = readStandardDashboard(templatePath);
-        template = customizeTemplate(template, endpoint);
+        template = customizeTemplate(template, endpoint, gav.getArtifactId(), gav.getVersion());
 
         JGrafana jgrafana = initialize(template, String.format("%s - Domain Dashboard", dashboardName), generateAuditLink);
 
@@ -156,10 +158,12 @@ public class GrafanaConfigurationWriter {
         return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
     }
 
-    private static String customizeTemplate(String template, String handlerName) {
+    private static String customizeTemplate(String template, String handlerName, String artifactId, String version) {
         template = template.replaceAll("\\$handlerName\\$", handlerName);
         template = template.replaceAll("\\$id\\$", String.valueOf(new Random().nextInt()));
         template = template.replaceAll("\\$uid\\$", UUID.randomUUID().toString());
+        template = template.replaceAll("\\$gavArtifactId\\$", artifactId);
+        template = template.replaceAll("\\$gavVersion\\$", version);
         return template;
     }
 }

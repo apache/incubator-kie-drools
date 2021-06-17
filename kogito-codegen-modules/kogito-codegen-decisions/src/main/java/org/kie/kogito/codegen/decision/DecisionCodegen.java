@@ -43,6 +43,7 @@ import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNAllTypesIndex;
 import org.kie.dmn.typesafe.DMNTypeSafePackageName;
 import org.kie.dmn.typesafe.DMNTypeSafeTypeGenerator;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
@@ -237,11 +238,13 @@ public class DecisionCodegen extends AbstractGenerator {
                 operationalDashboardDmnTemplate,
                 dashboardName,
                 resourceGenerator.getNameURL(),
+                context().getGAV().orElse(KogitoGAV.EMPTY_GAV),
                 context().getAddonsConfig().useTracing());
         String domainDashboard = GrafanaConfigurationWriter.generateDomainSpecificDMNDashboard(
                 domainDashboardDmnTemplate,
                 dashboardName,
                 resourceGenerator.getNameURL(),
+                context().getGAV().orElse(KogitoGAV.EMPTY_GAV),
                 decisions,
                 context().getAddonsConfig().useTracing());
         generatedFiles.addAll(DashboardGeneratedFileUtils.operational(operationalDashboard, dashboardName + ".json"));

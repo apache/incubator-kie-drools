@@ -59,8 +59,8 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (rule) ((increase(drl_match_fired_nanosecond_sum{}[1m]))) / sum by (rule) ((increase(drl_match_fired_nanosecond_count{}[1m])))",
           "instant": false,
+          "expr": "sum by (rule) ((increase(drl_match_fired_nanosecond_sum{artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m]))) / sum by (rule) ((increase(drl_match_fired_nanosecond_count{artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m])))",
           "refId": "A"
         }
       ],
