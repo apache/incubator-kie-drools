@@ -573,6 +573,11 @@
         <version>${version.org.infinispan}</version>
       </dependency>
       <dependency>
+        <groupId>org.infinispan</groupId>
+        <artifactId>infinispan-commons-jdk11</artifactId>
+        <version>${version.org.infinispan}</version>
+      </dependency>
+      <dependency>
         <groupId>org.infinispan.protostream</groupId>
         <artifactId>protostream</artifactId>
         <version>${version.org.infinispan.protostream}</version>
