@@ -21,7 +21,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -33,11 +32,10 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.expressions.KiePMMLApply;
-import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
-import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -176,11 +174,20 @@ public class PostProcess {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
         }
         String variableName = outputField.getName();
-        Optional<Object> variableValue = Optional.empty();
-        if (outputField.getKiePMMLExpression() != null) {
-            final KiePMMLExpression kiePMMLExpression = outputField.getKiePMMLExpression();
-            variableValue = getValueFromKiePMMLExpression(kiePMMLExpression, model, kiePMMLNameValues);
+        List<KiePMMLDerivedField> derivedFields = new ArrayList<>();
+        List<KiePMMLDefineFunction> defineFunctions = new ArrayList<>();
+        if (model.getTransformationDictionary() != null) {
+            if (model.getTransformationDictionary().getDerivedFields() != null) {
+                derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
+            }
+            if (model.getTransformationDictionary().getDefineFunctions() != null) {
+                defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
+            }
         }
+        if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
+            derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
+        }
+        Optional<Object> variableValue = Optional.ofNullable(outputField.evaluate(defineFunctions, derivedFields, model.getKiePMMLOutputFields(), kiePMMLNameValues));
         variableValue.ifPresent(objValue -> toUpdate.addResultVariable(variableName, objValue));
     }
 
@@ -202,79 +209,7 @@ public class PostProcess {
         }
     }
 
-    static Optional<Object> getValueFromKiePMMLExpression(final KiePMMLExpression kiePMMLExpression,
-                                                          final KiePMMLModel model,
-                                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
-        String expressionType = kiePMMLExpression.getClass().getSimpleName();
-        Optional<Object> toReturn = Optional.empty();
-        switch (expressionType) {
-            case "KiePMMLApply":
-                toReturn = Stream.of(getValueFromKiePMMLApplyFunction((KiePMMLApply) kiePMMLExpression,
-                                                                      model,
-                                                                      kiePMMLNameValues),
-                                     getValueFromKiePMMLApplyMapMissingTo((KiePMMLApply) kiePMMLExpression),
-                                     getValueFromKiePMMLApplyMapDefaultValue((KiePMMLApply) kiePMMLExpression))
-                        .filter(Optional::isPresent)
-                        .map(Optional::get)
-                        .findFirst();
-                break;
-            case "KiePMMLConstant":
-                toReturn = getValueFromKiePMMLConstant((KiePMMLConstant) kiePMMLExpression);
-                break;
-            case "KiePMMLFieldRef":
-                toReturn =
-                        Stream.of(getValueFromKiePMMLNameValuesByVariableName(((KiePMMLFieldRef) kiePMMLExpression).getName(), kiePMMLNameValues),
-                                  getValueFromKiePMMLOutputFieldsByVariableName(((KiePMMLFieldRef) kiePMMLExpression).getName(), model, kiePMMLNameValues),
-                                  getMissingValueFromKiePMMLFieldRefMapMissingTo((KiePMMLFieldRef) kiePMMLExpression))
-                                .filter(Optional::isPresent)
-                                .map(Optional::get)
-                                .findFirst();
-                break;
-            default:
-                // Not implemented, yet
-                break;
-        }
-        return toReturn;
-    }
 
-    static Optional<Object> getValueFromKiePMMLApplyFunction(final KiePMMLApply kiePMMLApply,
-                                                             final KiePMMLModel model,
-                                                             final List<KiePMMLNameValue> kiePMMLNameValues) {
-        Optional<Object> optionalObjectParameter = Optional.empty();
-        if (kiePMMLApply.getKiePMMLExpressions() != null && !kiePMMLApply.getKiePMMLExpressions().isEmpty()) {
-            optionalObjectParameter = getValueFromKiePMMLExpression(kiePMMLApply.getKiePMMLExpressions().get(0),
-                                                                    model,
-                                                                    kiePMMLNameValues);
-        }
-        return getValueFromFunctionsMapByFunctionName(model.getFunctionsMap(),
-                                                      kiePMMLApply.getFunction(),
-                                                      kiePMMLNameValues,
-                                                      optionalObjectParameter.orElse(null));
-    }
-
-    static Optional<Object> getValueFromFunctionsMapByFunctionName(final Map<String,
-            BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap,
-                                                                   final String functionName,
-                                                                   final List<KiePMMLNameValue> kiePMMLNameValues,
-                                                                   final Object objectParameter) {
-        return functionsMap.entrySet()
-                .parallelStream()
-                .filter(entry -> entry.getKey().equals(functionName))
-                .map(entry -> entry.getValue().apply(kiePMMLNameValues, objectParameter))
-                .findFirst();
-    }
-
-    static Optional<Object> getValueFromKiePMMLConstant(final KiePMMLConstant kiePMMLConstant) {
-        return Optional.ofNullable(kiePMMLConstant.getValue());
-    }
-
-    static Optional<Object> getValueFromKiePMMLApplyMapMissingTo(final KiePMMLApply kiePMMLApply) {
-        return Optional.ofNullable(kiePMMLApply.getMapMissingTo());
-    }
-
-    static Optional<Object> getValueFromKiePMMLApplyMapDefaultValue(final KiePMMLApply kiePMMLApply) {
-        return Optional.ofNullable(kiePMMLApply.getDefaultValue());
-    }
 
     static Optional<Object> getValueFromKiePMMLNameValuesByVariableName(final String variableName,
                                                                         final List<KiePMMLNameValue> kiePMMLNameValues) {
@@ -284,30 +219,9 @@ public class PostProcess {
                 .findFirst();
     }
 
-    static Optional<Object> getValueFromKiePMMLOutputFieldsByVariableName(final String variableName,
-                                                                          final KiePMMLModel model,
-                                                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
-        final List<KiePMMLOutputField> kiePMMLOutputFields = model.getKiePMMLOutputFields();
-        Optional<KiePMMLOutputField> found = kiePMMLOutputFields.stream()
-                .filter(kiePMMLOutputField -> variableName.equals(kiePMMLOutputField.getName()))
-                .findFirst();
-        Optional<Object> variableValue = Optional.empty();
-        if (found.isPresent()) {
-            KiePMMLOutputField outputField = found.get();
-            if (outputField.getKiePMMLExpression() != null) {
-                final KiePMMLExpression kiePMMLExpression = outputField.getKiePMMLExpression();
-                variableValue = getValueFromKiePMMLExpression(kiePMMLExpression, model, kiePMMLNameValues);
-            }
-        }
-        return variableValue;
-    }
-
     static Optional<Object> getValueFromPMMLResultByVariableName(final String variableName,
                                                                  final PMML4Result pmml4Result) {
         return Optional.ofNullable(pmml4Result.getResultVariables().get(variableName));
     }
 
-    static Optional<Object> getMissingValueFromKiePMMLFieldRefMapMissingTo(final KiePMMLFieldRef kiePMMLFieldRef) {
-        return Optional.ofNullable(kiePMMLFieldRef.getMapMissingTo());
-    }
 }

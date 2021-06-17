@@ -36,7 +36,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.compiler.commons.mocks.KiePMMLTestModel.PMML_MODEL_TYPE;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
 /**
  * <b>Fake</b> <code>ModelImplementationProvider</code> used for testing. It is mapped to <code>TestModel</code> (mock)

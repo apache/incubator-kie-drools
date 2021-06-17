@@ -54,7 +54,7 @@ import static org.junit.Assert.assertTrue;
 public class UnmarshalMarshalTest {
 
     private static final StreamSource DMN13_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/DMN13.xsd").getFile());
-    private static final StreamSource DMN13_EXT_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/TrisotechDMN13.xsd").getFile());
+    private static final StreamSource DMN13_EXT_SCHEMA_SOURCE = new StreamSource(UnmarshalMarshalTest.class.getResource("/org/kie/dmn/trisotech/validation/extension/TrisotechDMN13.xsd").getFile());
     private static final DMNMarshaller MARSHALLER = new org.kie.dmn.backend.marshalling.v1x.XStreamMarshaller(Arrays.asList(new TrisotechBoxedExtensionRegister()));
     protected static final Logger LOG = LoggerFactory.getLogger(UnmarshalMarshalTest.class);
 

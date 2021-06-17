@@ -1462,6 +1462,10 @@ public class PatternDSL extends DSL {
         return new ConditionalConsequenceBuilder( expr );
     }
 
+    public static ConditionalConsequenceBuilder when() {
+        return new ConditionalConsequenceBuilder(null); // the condition is always true
+    }
+
     // -- rule --
 
     public static RuleBuilder rule( String name ) {

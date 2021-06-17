@@ -48,7 +48,7 @@ import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLOutputFieldFactory.getOutputFields;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldName;
 
 /**

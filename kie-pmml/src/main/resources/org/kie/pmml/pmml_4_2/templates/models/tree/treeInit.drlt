@@ -60,7 +60,7 @@ rule "Ensure Tree Statistics are Filled - @{context}"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience 100
 when
-    $node : @{context}TreeNode( context == "@{context}", $id : id, $master : counts, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
+    $node : @{context}TreeNode( context == "@{context}", $id : id, $confs : confidence, counts.size() == 0, $children : children, $numChi : children.size() )
 
     accumulate( @{context}TreeNode( context == $node.context, id memberOf $children, counts.size() > 0, $sub : counts, $x : recordCount )
                 and $k : String() from $sub.keySet(),

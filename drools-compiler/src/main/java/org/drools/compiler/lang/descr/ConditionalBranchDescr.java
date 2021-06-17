@@ -73,4 +73,16 @@ public class ConditionalBranchDescr extends BaseDescr {
         visitor.visit(this);
     }
 
+    public PatternDescr getReferringPatternDescr(AndDescr parent) {
+        PatternDescr patternRelated = null;
+        for (BaseDescr b : parent.getDescrs()) {
+            if (b.equals(this)) {
+                break;
+            }
+            if (b instanceof PatternDescr) {
+                patternRelated = (PatternDescr) b; // keep the closest PatternDescr
+            }
+        }
+        return patternRelated;
+    }
 }

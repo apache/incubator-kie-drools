@@ -15,7 +15,9 @@
  */
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -25,7 +27,10 @@ import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +40,6 @@ import org.slf4j.LoggerFactory;
 public class PreProcess {
 
     private static final Logger logger = LoggerFactory.getLogger(PreProcess.class);
-
 
     private PreProcess() {
         // Avoid instantiation
@@ -47,7 +51,7 @@ public class PreProcess {
         final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
         final List<KiePMMLNameValue> kiePMMLNameValues =
                 getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        executeTransformations(model, context, requestData, mappedRequestParams, kiePMMLNameValues);
+        executeTransformations(model, requestData, kiePMMLNameValues);
         return kiePMMLNameValues;
     }
 
@@ -77,47 +81,38 @@ public class PreProcess {
     }
 
     /**
-     * Execute <b>Transformations</b> on input data.
+     * Execute <b>transformations</b> on input data.
      * @param model
-     * @param context
      * @param requestData
-     * @param mappedRequestParams
      * @param kiePMMLNameValues
      * @see <a href="http://dmg.org/pmml/v4-4/Transformations.html">Transformations</a>
      * @see
      * <a href="http://dmg.org/pmml/v4-4/Transformations.html#xsdElement_LocalTransformations">LocalTransformations</a>
      */
     static void executeTransformations(final KiePMMLModel model,
-                                          final PMMLContext context,
-                                          final PMMLRequestData requestData,
-                                          final Map<String, ParameterInfo> mappedRequestParams,
-                                          final List<KiePMMLNameValue> kiePMMLNameValues) {
+                                       final PMMLRequestData requestData,
+                                       final List<KiePMMLNameValue> kiePMMLNameValues) {
         logger.debug("executeTransformations {} {}", model, requestData);
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap =
-                model.getCommonTransformationsMap();
-        commonTransformationsMap.forEach((fieldName, transformationFunction) -> {
-            // Common Transformations need to be done only once
-            if (!mappedRequestParams.containsKey(fieldName)) {
-                logger.debug("commonTransformation {} {}", fieldName, transformationFunction);
-                Object commonTranformation = transformationFunction.apply(kiePMMLNameValues);
-                requestData.addRequestParam(fieldName, commonTranformation);
-                context.addCommonTranformation(fieldName, commonTranformation);
-                kiePMMLNameValues.add(new KiePMMLNameValue(fieldName, commonTranformation));
+        List<KiePMMLDerivedField> derivedFields = new ArrayList<>();
+        List<KiePMMLDefineFunction> defineFunctions = new ArrayList<>();
+        if (model.getTransformationDictionary() != null) {
+            if (model.getTransformationDictionary().getDerivedFields() != null) {
+                derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
             }
-        });
-        final Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap =
-                model.getLocalTransformationsMap();
-        localTransformationsMap.forEach((fieldName, transformationFunction) -> {
-            logger.debug("localTransformation {} {}", fieldName, transformationFunction);
-            Object localTransformation = transformationFunction.apply(kiePMMLNameValues);
-            // Local Transformations need to be done for every model, eventually replacing previous ones
-            if (mappedRequestParams.containsKey(fieldName)) {
-                final ParameterInfo toRemove = mappedRequestParams.get(fieldName);
-                requestData.removeRequestParam(toRemove);
+            if (model.getTransformationDictionary().getDefineFunctions() != null) {
+                defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
             }
-            requestData.addRequestParam(fieldName, localTransformation);
-            context.addLocalTranformation(fieldName, localTransformation);
-        });
+        }
+        if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
+            derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
+        }
+        for (KiePMMLDerivedField derivedField : derivedFields) {
+            Object derivedValue = derivedField.evaluate(defineFunctions, derivedFields, Collections.emptyList(),  kiePMMLNameValues);
+            if (derivedValue != null) {
+                requestData.addRequestParam(derivedField.getName(), derivedValue);
+                kiePMMLNameValues.add(new KiePMMLNameValue(derivedField.getName(), derivedValue));
+            }
+        }
     }
 
     static List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(final Collection<ParameterInfo> parameterInfos) {
@@ -125,5 +120,4 @@ public class PreProcess {
                 .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
                 .collect(Collectors.toList());
     }
-
 }

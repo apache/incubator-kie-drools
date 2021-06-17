@@ -68,6 +68,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
+import static org.kie.pmml.commons.Constants.MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_PARAMETER_IN_CONSTRUCTOR_INVOCATION;
 import static org.kie.pmml.commons.Constants.MISSING_STATIC_INITIALIZER;
@@ -413,7 +414,7 @@ public class CommonCodegenUtils {
      */
     public static Optional<ExplicitConstructorInvocationStmt> getExplicitConstructorInvocationStmt(final BlockStmt body) {
         return body.getStatements().stream()
-                .filter(statement -> statement instanceof ExplicitConstructorInvocationStmt)
+                .filter(ExplicitConstructorInvocationStmt.class::isInstance)
                 .map(ExplicitConstructorInvocationStmt.class::cast)
                 .findFirst();
     }
@@ -777,6 +778,22 @@ public class CommonCodegenUtils {
      */
     public static MethodCallExpr methodCallExprFrom(String scope, String name, Expression... arguments) {
         return new MethodCallExpr(new NameExpr(scope), name, new NodeList<>(arguments));
+    }
+
+    /**
+     * Return a "chained" {@link MethodCallExpr} by name <b>parent</b> one.
+     * @param name the name of the method to call
+     * @param parent vararg list of {@link Expression} arguments
+     * @return the found {@link MethodCallExpr}
+     */
+    public static MethodCallExpr getChainedMethodCallExprFrom(String name, MethodCallExpr parent) {
+        return parent.stream()
+                .filter(expr -> expr instanceof MethodCallExpr &&
+                        ((MethodCallExpr) expr).getName().toString().equals(name))
+                .map(MethodCallExpr.class::cast)
+                .findFirst()
+                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CHAINED_METHOD_DECLARATION_TEMPLATE, name, parent)));
+
     }
 
     /**

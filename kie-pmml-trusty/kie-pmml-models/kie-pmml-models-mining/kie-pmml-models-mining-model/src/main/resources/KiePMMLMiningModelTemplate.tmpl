@@ -15,10 +15,19 @@
  */
 package org.kie.pmml.models.mining.model;
 
+import java.util.Arrays;
 import java.util.Collections;
 
-import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLParameterField;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
 
 public class KiePMMLMiningModelTemplate extends KiePMMLMiningModel {
 
@@ -28,6 +37,8 @@ public class KiePMMLMiningModelTemplate extends KiePMMLMiningModel {
         miningFunction = null;
         pmmlMODEL = null;
         segmentation = null;
+        transformationDictionary = null;
+        localTransformations = null;
     }
 
 }

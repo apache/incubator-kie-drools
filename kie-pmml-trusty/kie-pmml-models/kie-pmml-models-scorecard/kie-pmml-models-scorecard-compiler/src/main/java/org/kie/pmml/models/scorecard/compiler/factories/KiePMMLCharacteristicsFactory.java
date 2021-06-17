@@ -39,7 +39,6 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Predicate;
-import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
@@ -72,7 +71,7 @@ import static org.kie.pmml.commons.Constants.SCORE;
 import static org.kie.pmml.commons.Constants.STRING_OBJECT_MAP;
 import static org.kie.pmml.compiler.commons.utils.ExpressionFunctionUtils.getExpressionMethodDeclarationWithStringObjectMap;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 
 public class KiePMMLCharacteristicsFactory {
 

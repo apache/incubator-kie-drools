@@ -20,7 +20,6 @@ package org.drools.modelcompiler.builder.generator;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +45,7 @@ import static org.drools.core.util.ClassUtils.extractGenericType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
@@ -69,8 +69,17 @@ public class OOPathExprGenerator {
         Class<?> previousClass = originalClass;
         String previousBind = originalBind;
 
-        for (Iterator<OOPathChunk> iterator = ooPathExpr.getChunks().iterator(); iterator.hasNext(); ) {
-            OOPathChunk chunk = iterator.next();
+        NodeList<OOPathChunk> chunks = ooPathExpr.getChunks();
+        boolean passive = false;
+        for (int i = 0; i < chunks.size(); i++) {
+            OOPathChunk chunk = chunks.get(i);
+            if (chunk.isPassive()) {
+                if (passive) {
+                    context.addCompilationError(new InvalidExpressionErrorResult("Invalid oopath expression '" + ooPathExpr + "': It is not possible to have 2 non-reactive parts in the same oopath"));
+                    break;
+                }
+                passive = true;
+            }
 
             final String fieldName = chunk.getField().toString();
 
@@ -95,8 +104,8 @@ public class OOPathExprGenerator {
             }
 
             final Expression accessorLambda = createLambdaAccessor(previousClass, exprType, ooPathChunkExpr);
-            final MethodCallExpr reactiveFrom = createFromExpr(previousBind, accessorLambda);
-            previousBind = bindOOPathChunck(originalBind, patternParseResult, iterator, chunk, fieldName, fieldType, accessorLambda, reactiveFrom);
+            final MethodCallExpr reactiveFrom = createFromExpr(previousBind, accessorLambda, passive);
+            previousBind = bindOOPathChunk(originalBind, patternParseResult, i, i == chunks.size()-1, chunk, fieldName, fieldType, accessorLambda, reactiveFrom);
             previousClass = fieldType;
         }
     }
@@ -109,21 +118,21 @@ public class OOPathExprGenerator {
         return accessorLambda;
     }
 
-    private MethodCallExpr createFromExpr(String previousBind, Expression accessorLambda) {
-        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, REACTIVE_FROM_CALL);
+    private MethodCallExpr createFromExpr(String previousBind, Expression accessorLambda, boolean passive) {
+        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, passive ? FROM_CALL : REACTIVE_FROM_CALL);
         reactiveFrom.addArgument(context.getVarExpr(previousBind));
         reactiveFrom.addArgument(accessorLambda);
         return reactiveFrom;
     }
 
-    private String bindOOPathChunck(String originalBind, DrlxParseSuccess patternParseResult, Iterator<OOPathChunk> iterator, OOPathChunk chunk, String fieldName, Class<?> fieldType, Expression accessorLambda, MethodCallExpr reactiveFrom) {
+    private String bindOOPathChunk(String originalBind, DrlxParseSuccess patternParseResult, int pos, boolean isLast, OOPathChunk chunk, String fieldName, Class<?> fieldType, Expression accessorLambda, MethodCallExpr reactiveFrom) {
         String previousBind;
         final String bindingId;
-        if (!iterator.hasNext() && patternParseResult.getExprBinding() != null) {
+        if (isLast && patternParseResult.getExprBinding() != null) {
             bindingId = patternParseResult.getExprBinding();
             context.removeDeclarationById(bindingId);
         } else {
-            bindingId = context.getOOPathId(fieldType, originalBind + fieldName);
+            bindingId = context.getOOPathId(fieldType, originalBind + fieldName + pos);
         }
 
         DeclarationSpec newDeclaration = context.addDeclaration(bindingId, fieldType, reactiveFrom);
@@ -131,17 +140,17 @@ public class OOPathExprGenerator {
 
         final List<DrlxExpression> conditions = chunk.getConditions();
         if (conditions.isEmpty()) {
-            toPatternExpr(bindingId, Collections.emptyList(), patternParseResult);
+            toPatternExpr(bindingId, Collections.emptyList(), patternParseResult, fieldType);
         } else if (conditions.size() == 1 && conditions.get(0).getExpr().isIntegerLiteralExpr()) {
             // indexed access
             reactiveFrom.setArgument( 1, new MethodCallExpr(accessorLambda, "get", new NodeList<>(conditions.get(0).getExpr())) );
-            toPatternExpr(bindingId, Collections.emptyList(), patternParseResult);
+            toPatternExpr(bindingId, Collections.emptyList(), patternParseResult, fieldType);
         } else {
             Class<?> finalFieldType = fieldType;
             final List<DrlxParseResult> conditionParseResult = conditions.stream().map((DrlxExpression c) ->
                     new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
             ).collect(Collectors.toList());
-            toPatternExpr(bindingId, conditionParseResult, patternParseResult);
+            toPatternExpr(bindingId, conditionParseResult, patternParseResult, fieldType);
         }
 
         previousBind = bindingId;
@@ -167,20 +176,29 @@ public class OOPathExprGenerator {
         };
     }
 
-    private void toPatternExpr(String bindingId, List<DrlxParseResult> list, DrlxParseSuccess patternParseResult) {
+    private void toPatternExpr(String bindingId, List<DrlxParseResult> list, DrlxParseSuccess patternParseResult, Class<?> fieldType) {
         MethodCallExpr patternExpr = new MethodCallExpr( null, PATTERN_CALL );
         patternExpr.addArgument( context.getVar( bindingId ) );
+
+        SingleDrlxParseSuccess oopathConstraint = null;
 
         for (DrlxParseResult drlx : list) {
             if (drlx.isSuccess()) {
                 SingleDrlxParseSuccess singleDrlx = ( SingleDrlxParseSuccess ) drlx;
+                if (singleDrlx.isOOPath()) {
+                    if (oopathConstraint != null) {
+                        throw new UnsupportedOperationException("An oopath chunk can only have a single oopath constraint");
+                    }
+                    oopathConstraint = singleDrlx;
+                    continue;
+                }
                 if (singleDrlx.getExprBinding() != null) {
                     MethodCallExpr expr = expressionBuilder.buildBinding( singleDrlx );
                     expr.setScope( patternExpr );
                     patternExpr = expr;
                 }
                 if (singleDrlx.getExpr() != null && !(singleDrlx.getExpr() instanceof NameExpr)) {
-                    MethodCallExpr expr = ( MethodCallExpr ) expressionBuilder.buildExpressionWithIndexing( singleDrlx );
+                    MethodCallExpr expr = expressionBuilder.buildExpressionWithIndexing( singleDrlx );
                     expr.setScope( patternExpr );
                     patternExpr = expr;
                 }
@@ -190,6 +208,10 @@ public class OOPathExprGenerator {
         context.addExpression( patternExpr );
         if ( bindingId.equals( patternParseResult.getExprBinding() ) ) {
             context.registerOOPathPatternExpr(bindingId, patternExpr);
+        }
+
+        if (oopathConstraint != null) {
+            new OOPathExprGenerator(context, packageModel).visit(fieldType, bindingId, oopathConstraint);
         }
     }
 }

@@ -24,6 +24,7 @@ import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -109,6 +110,10 @@ public class JavaParserUtils {
 
     public static BlockStmt parseBlock(final String block) {
         return StaticJavaParser.parseBlock(block);
+    }
+
+    public static Statement parseStatement(final String statement) {
+        return StaticJavaParser.parseStatement(statement);
     }
 
     public static boolean equalsNode(Node node1, Node node2) {

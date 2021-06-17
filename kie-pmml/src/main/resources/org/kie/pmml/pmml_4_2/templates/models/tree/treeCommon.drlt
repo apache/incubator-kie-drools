@@ -27,14 +27,14 @@
 rule "Eval Tree Node @{context} - Up"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 when
-    $node : @{context}TreeNode( context == "@{context}", $id : id, $master : parent )
+    $node : @{context}TreeNode( context == "@{context}", $id : id, $parent : parent )
     $tok  : @{context}TreeToken( context == "@{context}", current == $id )
     not @{name}( context == "@{context}" )
 then
-//    System.out.println( "I'm here at " + $id +  ", going back up to " + $master );
+//    System.out.println( "I'm here at " + $id +  ", going back up to " + $parent );
     modify ( $tok ) {
         setDownward( false ),
-        setCurrent( $master );
+        setCurrent( $parent );
     }
 end
 

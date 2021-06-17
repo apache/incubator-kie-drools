@@ -15,14 +15,21 @@
  */
 package org.kie.pmml.commons.model.expressions;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.kie.pmml.api.enums.BUILTIN_FUNCTIONS;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
@@ -33,7 +40,6 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     private INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod;
     private List<KiePMMLExpression> kiePMMLExpressions;
 
-
     private KiePMMLApply(String name, List<KiePMMLExtension> extensions, String function) {
         super(name, extensions);
         this.function = function;
@@ -43,6 +49,31 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
         return new Builder(name, extensions, function);
     }
 
+    @Override
+    public Object evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                           final List<KiePMMLDerivedField> derivedFields,
+                           final List<KiePMMLOutputField> outputFields,
+                           final List<KiePMMLNameValue> kiePMMLNameValues) {
+        if (kiePMMLExpressions == null) {
+            return null;
+        }
+        List<Object> expressionValues = new ArrayList<>(); // <- Insertion order matter
+        for (KiePMMLExpression kiePMMLExpression : kiePMMLExpressions) {
+            expressionValues.add(kiePMMLExpression.evaluate(defineFunctions, derivedFields, outputFields, kiePMMLNameValues));
+        }
+        if (BUILTIN_FUNCTIONS.isBUILTIN_FUNCTIONS(function)) {
+            BUILTIN_FUNCTIONS builtinFunction = BUILTIN_FUNCTIONS.byName(function);
+            return builtinFunction.getValue(expressionValues.toArray(new Object[0]));
+        } else {
+            final KiePMMLDefineFunction definedFunction = defineFunctions
+                    .stream()
+                    .filter(defineFunction -> defineFunction.getName().equals(function))
+                    .findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("Unknown function " + function));
+            return definedFunction.evaluate(defineFunctions, derivedFields, outputFields, expressionValues);
+        }
+
+    }
 
     public String getFunction() {
         return function;
@@ -61,7 +92,7 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
     }
 
     public List<KiePMMLExpression> getKiePMMLExpressions() {
-        return  kiePMMLExpressions != null ? Collections.unmodifiableList(kiePMMLExpressions) : Collections.emptyList();
+        return kiePMMLExpressions != null ? Collections.unmodifiableList(kiePMMLExpressions) : Collections.emptyList();
     }
 
     @Override
@@ -129,8 +160,5 @@ public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExp
             }
             return this;
         }
-
     }
-
-
 }

@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.commons.utils;
+package org.kie.pmml.compiler.commons.codegenfactories;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
+import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -48,16 +47,19 @@ import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.populateMethodDeclarations;
-import static org.kie.pmml.compiler.commons.utils.DefineFunctionUtils.getDefineFunctionsMethodMap;
-import static org.kie.pmml.compiler.commons.utils.DerivedFieldFunctionUtils.getDerivedFieldsMethodMap;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransformationsFactory.LOCAL_TRANSFORMATIONS;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
 
 /**
  * Class to provide shared, helper methods to be invoked by model-specific
@@ -148,7 +150,7 @@ public class KiePMMLModelFactoryUtils {
     }
 
     /**
-     * Add <b>common</b> and <b>local</b> local transformations management inside the given
+     * Add <b>common</b> and <b>local</b> transformations management inside the given
      * <code>ClassOrInterfaceDeclaration</code>
      * @param toPopulate
      * @param transformationDictionary
@@ -157,29 +159,27 @@ public class KiePMMLModelFactoryUtils {
     public static void addTransformationsInClassOrInterfaceDeclaration(final ClassOrInterfaceDeclaration toPopulate,
                                                                        final TransformationDictionary transformationDictionary,
                                                                        final LocalTransformations localTransformations) {
-        final AtomicInteger arityCounter = new AtomicInteger(0);
-        final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap =
-                (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) ?
-                        getDerivedFieldsMethodMap(transformationDictionary.getDerivedFields(), arityCounter) :
-                        Collections.emptyMap();
-        final Map<String, MethodDeclaration> localDerivedFieldsMethodMap =
-                (localTransformations != null && localTransformations.getDerivedFields() != null) ?
-                        getDerivedFieldsMethodMap(localTransformations.getDerivedFields(), arityCounter) :
-                        Collections.emptyMap();
-        final Map<String, MethodDeclaration> defineFunctionsMethodMap =
-                (transformationDictionary != null && transformationDictionary.getDefineFunctions() != null) ?
-                        getDefineFunctionsMethodMap(transformationDictionary.getDefineFunctions()) :
-                        Collections.emptyMap();
-        populateMethodDeclarations(toPopulate, commonDerivedFieldsMethodMap.values());
-        populateMethodDeclarations(toPopulate, localDerivedFieldsMethodMap.values());
-        populateMethodDeclarations(toPopulate, defineFunctionsMethodMap.values());
+        String createTransformationDictionary = null;
+        if (transformationDictionary != null) {
+            BlockStmt createTransformationDictionaryBody = KiePMMLTransformationDictionaryFactory.getKiePMMLTransformationDictionaryVariableDeclaration(transformationDictionary);
+            createTransformationDictionaryBody.addStatement(getReturnStmt(TRANSFORMATION_DICTIONARY));
+            createTransformationDictionary = "createTransformationDictionary";
+            MethodDeclaration createTransformationDictionaryMethod = toPopulate.addMethod(createTransformationDictionary, Modifier.Keyword.PRIVATE);
+            createTransformationDictionaryMethod.setType(KiePMMLTransformationDictionary.class.getName());
+            createTransformationDictionaryMethod.setBody(createTransformationDictionaryBody);
+        }
+        String createLocalTransformations = null;
+        if (localTransformations != null) {
+            BlockStmt createLocalTransformationsBody = KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
+            createLocalTransformationsBody.addStatement(getReturnStmt(LOCAL_TRANSFORMATIONS));
+            createLocalTransformations = "createLocalTransformations";
+            MethodDeclaration createLocalTransformationsMethod = toPopulate.addMethod(createLocalTransformations, Modifier.Keyword.PRIVATE);
+            createLocalTransformationsMethod.setType(KiePMMLLocalTransformations.class.getName());
+            createLocalTransformationsMethod.setBody(createLocalTransformationsBody);
+        }
         final ConstructorDeclaration constructorDeclaration =
                 toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
-        populateTransformationsInConstructor(constructorDeclaration,
-                                             commonDerivedFieldsMethodMap,
-                                             localDerivedFieldsMethodMap);
-        populateFunctionsInConstructor(constructorDeclaration,
-                                             defineFunctionsMethodMap);
+        populateTransformationsInConstructor(constructorDeclaration, createTransformationDictionary, createLocalTransformations);
     }
 
     /**
@@ -289,28 +289,21 @@ public class KiePMMLModelFactoryUtils {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Populating the <b>commonTransformationsMap</b> and <b>localTransformationsMap</b> <code>Map&lt;String,
-     * Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
-     * @param constructorDeclaration
-     * @param commonDerivedFieldsMethodMap
-     * @param localDerivedFieldsMethodMap
-     */
-    static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration,
-                                                     final Map<String, MethodDeclaration> commonDerivedFieldsMethodMap, final Map<String, MethodDeclaration> localDerivedFieldsMethodMap) {
-        addMapPopulation(commonDerivedFieldsMethodMap, constructorDeclaration.getBody(), "commonTransformationsMap");
-        addMapPopulation(localDerivedFieldsMethodMap, constructorDeclaration.getBody(), "localTransformationsMap");
-    }
 
     /**
-     * Populating the <b>functionsMap</b> <code>Map&lt;String,
-     * Function&lt;List&lt;KiePMMLNameValue&gt;, Object&gt;&gt;</code>>s inside the constructor
-     *
+     * Populating the <b>transformationDictionary</b> and <b>localTransformations</b> variables inside the constructor
      * @param constructorDeclaration
-     * @param defineFunctionsMethodMap
+     * @param createTransformationDictionary
+     * @param createLocalTransformations
      */
-    static void populateFunctionsInConstructor(final ConstructorDeclaration constructorDeclaration,
-                                               final Map<String, MethodDeclaration> defineFunctionsMethodMap) {
-        addMapPopulation(defineFunctionsMethodMap, constructorDeclaration.getBody(), "functionsMap");
+    static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration,
+                                                     final String createTransformationDictionary, final String createLocalTransformations) {
+        Expression createTransformationDictionaryInitializer = createTransformationDictionary != null ?
+                new MethodCallExpr(new NameExpr("this"), createTransformationDictionary, NodeList.nodeList()) : new NullLiteralExpr();
+        setAssignExpressionValue(constructorDeclaration.getBody(), TRANSFORMATION_DICTIONARY, createTransformationDictionaryInitializer);
+        Expression createLocalTransformationsInitializer =  createLocalTransformations != null ?
+                new MethodCallExpr(new NameExpr("this"), createLocalTransformations, NodeList.nodeList()) : new NullLiteralExpr();
+        setAssignExpressionValue(constructorDeclaration.getBody(), LOCAL_TRANSFORMATIONS, createLocalTransformationsInitializer);
     }
+
 }

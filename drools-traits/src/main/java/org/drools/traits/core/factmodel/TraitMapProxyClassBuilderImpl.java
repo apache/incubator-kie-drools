@@ -70,11 +70,11 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         BitSet mask = traitRegistryImpl.getFieldMask(getTrait().getName(), core.getDefinedClass().getName() );
 
         String name = TraitFactoryImpl.getPropertyWrapperName(getTrait(), core );
-        String masterName = TraitFactoryImpl.getProxyName(getTrait(), core );
+        String proxyName = TraitFactoryImpl.getProxyName(getTrait(), core );
         Class<?> traitClass = getTrait().getDefinedClass();
 
         String internalWrapper  = BuildUtils.getInternalType( name );
-        String internalProxy    = BuildUtils.getInternalType( masterName );
+        String internalProxy    = BuildUtils.getInternalType( proxyName );
 
         String descrCore        = Type.getDescriptor( core.getDefinedClass() );
         String internalCore     = Type.getInternalName( core.getDefinedClass() );
@@ -316,13 +316,13 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
         helpBuildClass( core, cw, internalProxy, descrCore, mask );
 
-        buildFields( core, mask, masterName, mixinInfo, cw );
+        buildFields( core, mask, proxyName, mixinInfo, cw );
 
-        buildKeys( core, masterName, cw );
+        buildKeys( core, proxyName, cw );
 
-        buildMixinMethods( masterName, mixinInfo, cw );
+        buildMixinMethods( proxyName, mixinInfo, cw );
 
-        buildCommonMethods( cw, masterName );
+        buildCommonMethods( cw, proxyName );
 
         buildExtendedMethods( cw, trait, core );
 
@@ -334,7 +334,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
     }
 
-    protected void buildKeys( ClassDefinition core, String masterName, ClassWriter cw ) {
+    protected void buildKeys( ClassDefinition core, String proxyName, ClassWriter cw ) {
         boolean hasKeys = false;
         for ( FactField ff : trait.getFields() ) {
             if ( ff.isKey() ) {
@@ -343,34 +343,34 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
             }
         }
         if ( ! hasKeys ) {
-            buildEqualityMethods( cw, masterName, core.getClassName() );
+            buildEqualityMethods( cw, proxyName, core.getClassName() );
         } else {
-            buildKeyedEqualityMethods( cw, trait, masterName );
+            buildKeyedEqualityMethods( cw, trait, proxyName );
         }
     }
 
-    protected void buildFields( ClassDefinition core, BitSet mask, String masterName, MixinInfo mixinInfo, ClassWriter cw ) {
+    protected void buildFields( ClassDefinition core, BitSet mask, String proxyName, MixinInfo mixinInfo, ClassWriter cw ) {
         int j = 0;
         for ( FieldDefinition field : trait.getFieldsDefinitions() ) {
 
             boolean hardField = ! TraitRegistryImpl.isSoftField( field, j++, mask );
 
             if ( core.isFullTraiting() ) {
-                buildLogicalGetter( cw, field, masterName, core );
+                buildLogicalGetter( cw, field, proxyName, core );
                 if ( hardField ) {
-                    buildHardSetter( cw, field, masterName, trait, core );
+                    buildHardSetter( cw, field, proxyName, trait, core );
                 } else {
-                    buildSoftSetter( cw, field, masterName, core );
+                    buildSoftSetter( cw, field, proxyName, core );
                 }
             } else {
                 if ( ! hardField ) {
                     if (mixinInfo == null || !mixinInfo.isMixinGetter( field )) {
-                        buildSoftGetter( cw, field, masterName );
-                        buildSoftSetter( cw, field, masterName, core );
+                        buildSoftGetter( cw, field, proxyName );
+                        buildSoftSetter( cw, field, proxyName, core );
                     }
                 } else {
-                    buildHardGetter( cw, field, masterName, trait, core );
-                    buildHardSetter( cw, field, masterName, trait, core );
+                    buildHardGetter( cw, field, proxyName, trait, core );
+                    buildHardSetter( cw, field, proxyName, trait, core );
                 }
             }
         }
@@ -408,11 +408,11 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
         throw new NoSuchMethodException( "Constructor for " + klass + " using " + arg + " not found " );
     }
 
-    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core ) {
-        buildHardGetter( cw, field, masterName, proxy, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String proxyName, ClassDefinition proxy, ClassDefinition core ) {
+        buildHardGetter( cw, field, proxyName, proxy, core, BuildUtils.getterName( field.getName(), field.getTypeName() ), ACC_PUBLIC );
     }
 
-    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition proxy, ClassDefinition core, String getterName, int accessLevel ) {
+    protected void buildHardGetter( ClassVisitor cw, FieldDefinition field, String proxyName, ClassDefinition proxy, ClassDefinition core, String getterName, int accessLevel ) {
         Class fieldType = field.getType();
 
 
@@ -423,7 +423,7 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
                                            null);
         mv.visitCode();
 
-        TraitFactoryImpl.invokeExtractor(mv, masterName, core, field );
+        TraitFactoryImpl.invokeExtractor(mv, proxyName, core, field );
 
         if ( ! BuildUtils.isPrimitive( field.getTypeName() ) ) {
             mv.visitTypeInsn( CHECKCAST, Type.getInternalName( fieldType ) );
@@ -435,8 +435,8 @@ public class TraitMapProxyClassBuilderImpl extends AbstractProxyClassBuilderImpl
 
     }
 
-    protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core ) {
-        buildHardSetter(cw, field, masterName, trait, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC  );
+    protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String proxyName, ClassDefinition trait, ClassDefinition core ) {
+        buildHardSetter(cw, field, proxyName, trait, core, BuildUtils.setterName( field.getName()), ACC_PUBLIC  );
     }
 
     protected void buildSoftSetter( ClassVisitor cw, FieldDefinition field, String proxy, ClassDefinition core ) {

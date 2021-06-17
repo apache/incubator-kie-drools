@@ -553,4 +553,64 @@ public class NamedConsequencesTest extends BaseModelTest {
 
         Assertions.assertThat(results).containsExactlyInAnyOrder(10, 15);
     }
+
+    @Test
+    public void testMultipleIfAfterEval() {
+        String str = "import " + Cheese.class.getCanonicalName() + ";\n " +
+                     "global java.util.List results;\n" +
+                     "\n" +
+                     "rule R1 when\n" +
+                     "    $a: Cheese ( )\n" +
+                     "    eval( $a.getType().equals(\"stilton\") )\n" +
+                     "    if ( $a.getPrice() > 10 ) do[t1]\n" +
+                     "    if ( $a.getPrice() < 10 ) do[t2]\n" +
+                     "    $b: Cheese ( type == \"cheddar\" )\n" +
+                     "then\n" +
+                     "    results.add( $b.getType() );\n" +
+                     "then[t1]\n" +
+                     "    results.add( $a.getType().toUpperCase() );\n" +
+                     "then[t2]\n" +
+                     "    results.add( $a.getType() );\n" +
+                     "end\n";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        Cheese stilton = new Cheese("stilton", 5);
+        Cheese cheddar = new Cheese("cheddar", 7);
+
+        ksession.insert(stilton);
+        ksession.insert(cheddar);
+
+        ksession.fireAllRules();
+
+        assertEquals(2, results.size());
+        assertTrue(results.contains("cheddar"));
+        assertTrue(results.contains("stilton"));
+    }
+
+    public void testIfTrue() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p : Person()\n" +
+                     "  if (true) do[t1]\n" +
+                     "then\n" +
+                     "  result.add(\"main\");\n" +
+                     "then[t1]\n" +
+                     "  result.add(\"t1\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37));
+        ksession.fireAllRules();
+
+        assertEquals(2, result.size());
+        assertTrue(result.containsAll(asList("main", "t1")));
+    }
 }

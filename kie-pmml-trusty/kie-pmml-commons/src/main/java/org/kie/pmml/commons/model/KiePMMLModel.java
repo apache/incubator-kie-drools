@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -30,25 +28,28 @@ import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
+import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 
 /**
  * KIE representation of PMML model
  */
 public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements PMMLModel {
 
+    private static final long serialVersionUID = 759750766311061701L;
+
     protected PMML_MODEL pmmlMODEL;
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
-    protected Map<String, Function<List<KiePMMLNameValue>, Object>> commonTransformationsMap = new HashMap<>();
-    protected Map<String, Function<List<KiePMMLNameValue>, Object>> localTransformationsMap = new HashMap<>();
-    protected Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> functionsMap = new HashMap<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
     protected List<KiePMMLTarget> kiePMMLTargets = new ArrayList<>();
+    protected KiePMMLTransformationDictionary transformationDictionary;
+    protected KiePMMLLocalTransformations localTransformations;
+
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -72,18 +73,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Object> getMissingValueReplacementMap() {
         return Collections.unmodifiableMap(missingValueReplacementMap);
-    }
-
-    public Map<String, Function<List<KiePMMLNameValue>, Object>> getCommonTransformationsMap() {
-        return Collections.unmodifiableMap(commonTransformationsMap);
-    }
-
-    public Map<String, Function<List<KiePMMLNameValue>, Object>> getLocalTransformationsMap() {
-        return Collections.unmodifiableMap(localTransformationsMap);
-    }
-
-    public Map<String, BiFunction<List<KiePMMLNameValue>, Object, Object>> getFunctionsMap() {
-        return Collections.unmodifiableMap(functionsMap);
     }
 
     /**
@@ -130,6 +119,14 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public List<KiePMMLOutputField> getKiePMMLOutputFields() {
         return Collections.unmodifiableList(kiePMMLOutputFields);
+    }
+
+    public KiePMMLTransformationDictionary getTransformationDictionary() {
+        return transformationDictionary;
+    }
+
+    public KiePMMLLocalTransformations getLocalTransformations() {
+        return localTransformations;
     }
 
     /**

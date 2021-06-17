@@ -25,8 +25,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.compiler.lang.descr.AccumulateDescr;
-import org.drools.compiler.lang.descr.AndDescr;
-import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ConditionalBranchDescr;
 import org.drools.compiler.lang.descr.NamedConsequenceDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
@@ -63,7 +61,7 @@ public class NamedConsequenceVisitor {
     }
 
     public void visit(ConditionalBranchDescr desc) {
-        PatternDescr patternRelated = getReferringPatternDescr(desc, context.getParentDescr());
+        PatternDescr patternRelated = desc.getReferringPatternDescr(context.getParentDescr());
         if (patternRelated == null) {
             context.addCompilationError(new InvalidExpressionErrorResult("Related pattern cannot be found for " + desc));
             return;
@@ -135,21 +133,6 @@ public class NamedConsequenceVisitor {
                 .orElseThrow(() -> new InvalidNamedConsequenceException("Cannot find function identifier"));
 
         when.addArgument(context.getVarExpr(identifierDeclaration));
-    }
-
-    private PatternDescr getReferringPatternDescr(ConditionalBranchDescr desc, AndDescr parent) {
-        BaseDescr patternRelated = null;
-        for (BaseDescr b : parent.getDescrs()) {
-            if (b.equals(desc)) {
-                break;
-            }
-            if (b instanceof ConditionalBranchDescr) {
-                // multiple ConditionalBranchDescr can be in a row. So keep the previous PatternDescr
-            } else {
-                patternRelated = b;
-            }
-        }
-        return patternRelated instanceof PatternDescr ? (PatternDescr) patternRelated : null;
     }
 
     private MethodCallExpr onDSL(NamedConsequenceDescr namedConsequence) {
