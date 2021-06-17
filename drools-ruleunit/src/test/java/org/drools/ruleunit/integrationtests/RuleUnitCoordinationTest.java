@@ -37,8 +37,8 @@ public class RuleUnitCoordinationTest {
     public void testCoordination() throws Exception {
         String drl1 =
                 "package org.drools.ruleunit.integrationtests\n" +
-                "unit " + getCanonicalSimpleName( MasterModelUnit.class ) + ";\n" +
-                "import " + MasterModel.class.getCanonicalName() + "\n" +
+                "unit " + getCanonicalSimpleName( MainModelUnit.class ) + ";\n" +
+                "import " + MainModel.class.getCanonicalName() + "\n" +
                 "import " + ApplicableModel.class.getCanonicalName() + "\n" +
                 "import " + ApplyMathModel.class.getCanonicalName() + "\n" +
                 "import " + ApplyStringModel.class.getCanonicalName() + "\n" +
@@ -46,7 +46,7 @@ public class RuleUnitCoordinationTest {
                 "\n" +
                 "rule FindModelToApply \n" +
                 "when\n" +
-                "   $mm: MasterModel( subModels != null ) from models\n" +
+                "   $mm: MainModel( subModels != null ) from models\n" +
                 "   $am: ApplicableModel( applied == false, $idx: index ) from $mm.subModels\n" +
                 //"   not ApplicableModel( applied == false, index < $idx ) from $mm.subModels\n" +
                 "then\n" +
@@ -57,7 +57,7 @@ public class RuleUnitCoordinationTest {
         String drl2 =
                 "package org.drools.ruleunit.integrationtests\n" +
                 "unit " + getCanonicalSimpleName( ScheduledModelApplicationUnit.class ) + ";\n" +
-                "import " + MasterModel.class.getCanonicalName() + "\n" +
+                "import " + MainModel.class.getCanonicalName() + "\n" +
                 "import " + ApplicableModel.class.getCanonicalName() + "\n" +
                 "import " + ApplyMathModel.class.getCanonicalName() + "\n" +
                 "import " + ApplyStringModel.class.getCanonicalName() + "\n" +
@@ -92,31 +92,31 @@ public class RuleUnitCoordinationTest {
                 "end\n" +
                 "";
 
-        MasterModel master = new MasterModel("TestMaster");
+        MainModel main = new MainModel("TestMain");
         ApplyMathModel mathModel = new ApplyMathModel(1, "Math1", "add", 10, 10);
         ApplyStringModel stringModel = new ApplyStringModel(2, "String1", "concat", "hello", "world");
-        master.addSubModel(mathModel);
-        master.addSubModel(stringModel);
+        main.addSubModel(mathModel);
+        main.addSubModel(stringModel);
         KieBase kbase = new KieHelper().addContent( drl1, ResourceType.DRL )
                 .addContent(drl2, ResourceType.DRL)
                 .build();
         RuleUnitExecutor executor = RuleUnitExecutor.create().bind( kbase );
 
-        DataSource<MasterModel> masterModels = executor.newDataSource("models");
+        DataSource<MainModel> mainModels = executor.newDataSource("models");
         DataSource<ApplicableModel> applicableModels = executor.newDataSource("applicableModel");
-        FactHandle masterFH = masterModels.insert( master );
-        RuleUnit unit = new MasterModelUnit(masterModels,applicableModels);
+        FactHandle mainFH = mainModels.insert( main );
+        RuleUnit unit = new MainModelUnit(mainModels, applicableModels);
 //        int x = 1;
 //        while (x > 0) {
 //            x = executor.run( unit );
 //            System.out.println( x );
-//            // I'm reinserting the master model to reinforce its evaluation, as I said in our call this is necessary because
+//            // I'm reinserting the main model to reinforce its evaluation, as I said in our call this is necessary because
 //            // the second level froms are made on plain lists which are not normally re-evaluated by from nodes (regardless of rule units).
 //            // In theory also the update should be more correct and enough to reinforce this re-evaluation, but for some reason
 //            // in this case is not working. I suspect we have a bug in our NotNode related to this specific case, but I'm still
 //            // evaluating it. For now the insert should be good enough to allow you to make some progress on this.
-//            // masterModels.update( masterFH, master, "subModels" );
-//            masterModels.insert( master );
+//            // mainModels.update( mainFH, main, "subModels" );
+//            mainModels.insert( main );
 //        }
 
         executor.run( unit );
@@ -150,11 +150,11 @@ public class RuleUnitCoordinationTest {
 
     }
 
-    public static class MasterModel extends BasicModel {
+    public static class MainModel extends BasicModel {
         private List<ApplicableModel> subModels;
 
-        public MasterModel(String name) {
-            super(0,name,"master");
+        public MainModel(String name) {
+            super(0,name,"main");
             subModels = new ArrayList<>();
         }
 
@@ -264,16 +264,16 @@ public class RuleUnitCoordinationTest {
 
     }
 
-    public static class MasterModelUnit implements RuleUnit {
-        private DataSource<MasterModel> models;
+    public static class MainModelUnit implements RuleUnit {
+        private DataSource<MainModel> models;
         private DataSource<ApplicableModel> applicableModels;
 
-        public MasterModelUnit(DataSource<MasterModel> models, DataSource<ApplicableModel> applicableModels) {
+        public MainModelUnit(DataSource<MainModel> models, DataSource<ApplicableModel> applicableModels) {
             this.models = models;
             this.applicableModels = applicableModels;
         }
 
-        public DataSource<MasterModel> getModels() {
+        public DataSource<MainModel> getModels() {
             return models;
         }
 
@@ -283,15 +283,15 @@ public class RuleUnitCoordinationTest {
     }
 
     public static class ScheduledModelApplicationUnit implements RuleUnit {
-        private DataSource<MasterModel> models;
+        private DataSource<MainModel> models;
         private DataSource<ApplicableModel> applicableModels;
 
-        public ScheduledModelApplicationUnit(DataSource<MasterModel> models, DataSource<ApplicableModel> applicableModels) {
+        public ScheduledModelApplicationUnit(DataSource<MainModel> models, DataSource<ApplicableModel> applicableModels) {
             this.models = models;
             this.applicableModels = applicableModels;
         }
 
-        public DataSource<MasterModel> getModels() {
+        public DataSource<MainModel> getModels() {
             return models;
         }
 

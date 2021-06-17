@@ -306,7 +306,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		}
 	}
 
-	protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String masterName, ClassDefinition trait, ClassDefinition core, String setterName, int accessMode ) {
+	protected void buildHardSetter( ClassVisitor cw, FieldDefinition field, String proxyName, ClassDefinition trait, ClassDefinition core, String setterName, int accessMode ) {
 		MethodVisitor mv = cw.visitMethod( accessMode,
 		                                   setterName,
 		                                   "(" + Type.getDescriptor( field.getType() ) + ")V",
@@ -315,10 +315,10 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		mv.visitCode();
 
 		if ( core.isFullTraiting() ) {
-			helpSet( core, field, mv, masterName );
+			helpSet( core, field, mv, proxyName );
 		}
 
-		TraitFactoryImpl.invokeInjector(mv, masterName, core, field, false, 1 );
+		TraitFactoryImpl.invokeInjector(mv, proxyName, core, field, false, 1 );
 
 		mv.visitInsn( RETURN );
 
@@ -459,12 +459,12 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 
 
 
-	protected void logicalSetter( MethodVisitor mv, FieldDefinition field, String masterName, ClassDefinition core ) {
+	protected void logicalSetter( MethodVisitor mv, FieldDefinition field, String proxyName, ClassDefinition core ) {
 		String fieldType = field.getTypeName();
 		int reg = 1 + BuildUtils.sizeOf( fieldType );
 
 		mv.visitVarInsn( ALOAD, 0 );
-		mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( masterName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
+		mv.visitFieldInsn( GETFIELD, BuildUtils.getInternalType( proxyName ), "object", Type.getDescriptor( core.getDefinedClass() ) );
 		mv.visitTypeInsn( CHECKCAST, Type.getInternalName( TraitableBean.class ) );
 		mv.visitMethodInsn( INVOKEINTERFACE,
 		                    Type.getInternalName( TraitableBean.class ),
@@ -598,7 +598,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 	}
 
 
-	public void helpSet( ClassDefinition core, FieldDefinition field, MethodVisitor mv, String masterName ) {
+	public void helpSet( ClassDefinition core, FieldDefinition field, MethodVisitor mv, String proxyName ) {
 		// The trait field update will be done by the core setter. However, types may mismatch here
 		FieldDefinition hardField = core.getFieldByAlias( field.resolveAlias() );
 		boolean isHardField = field.getTypeName().equals( hardField.getTypeName() );
@@ -656,7 +656,7 @@ public abstract class AbstractProxyClassBuilderImpl implements TraitProxyClassBu
 		}
 
 		if ( isHardField && CoreWrapper.class.isAssignableFrom(core.getDefinedClass() ) ) {
-			logicalSetter( mv, field, masterName, core );
+			logicalSetter( mv, field, proxyName, core );
 		}
 	}
 
