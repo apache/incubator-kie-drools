@@ -32,6 +32,21 @@ $ mvn archetype:generate \
 
 This command generates a `sample-kogito` Maven project and imports the extension for all required dependencies and configurations to prepare your application for business automation.
 
+If you want to enable PMML execution for your project, add the following dependency to the `pom.xml` file in the Maven project that contains your {KOGITO} microservices:
+
+.Dependency to enable PMML execution
+[source,xml]
+----
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-pmml</artifactId>
+</dependency>
+<dependency>
+  <groupId>org.jpmml</groupId>
+  <artifactId>pmml-model</artifactId>
+</dependency>
+----
+
 On Quarkus, if you plan to run your application on OpenShift, you must also import the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension] for the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes], as shown in the following example:
 
 .SmallRye Health extension for Quarkus applications on OpenShift

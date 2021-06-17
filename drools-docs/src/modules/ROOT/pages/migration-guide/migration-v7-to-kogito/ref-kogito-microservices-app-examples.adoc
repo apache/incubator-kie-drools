@@ -1,7 +1,7 @@
 [id="ref-kogito-microservices-app-examples_{context}"]
 = Example applications with {KOGITO} microservices
 
-{KOGITO} microservices include example applications in the `{PRODUCT_FILE}-decision-services-quickstarts.zip` file. These example applications contain various types of services on Quarkus or Spring Boot to help you develop your own applications. The services use one or more Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) rule units, or Java classes to define the service logic.
+{KOGITO} microservices include example applications in the `{PRODUCT_FILE}-decision-services-quickstarts.zip` file. These example applications contain various types of services on Quarkus or Spring Boot to help you develop your own applications. The services use one or more Decision Model and Notation (DMN) decision models, Drools Rule Language (DRL) rule units, Predictive Model Markup Language (PMML) models, or Java classes to define the service logic.
 
 For information about each example application and instructions for using them, see the `README` file in the relevant application folder.
 
@@ -11,3 +11,8 @@ Decision services::
 * `dmn-quarkus-example` and `dmn-springboot-example`: A decision service (on Quarkus or Spring Boot) that uses DMN to determine driver penalty and suspension based on traffic violations.
 * `rules-quarkus-helloworld`: A Hello World decision service on Quarkus with a single DRL rule unit.
 * `ruleunit-quarkus-example` and `ruleunit-springboot-example`: A decision service (on Quarkus or Spring Boot) that uses DRL with rule units to validate a loan application and that exposes REST operations to view application status.
+* `dmn-pmml-quarkus-example` and `dmn-pmml-springboot-example`: A decision service (on Quarkus or Spring Boot) that uses DMN and PMML to determine driver penalty and suspension based on traffic violations.
+* `dmn-drools-quarkus-metrics` and `dmn-drools-springboot-metrics`: A decision service (on Quarkus or Spring Boot) that enables and consumes the runtime metrics monitoring feature in {KOGITO}.
+* `pmml-quarkus-example` and `pmml-springboot-example`: A decision service (on Quarkus or Spring Boot) that uses PMML.
+
+For more information about using DMN, DRL, and PMML models in {PRODUCT}, see {URL_DEVELOPING_DECISION_SERVICES}#assembly-dmn-models[_{DMN_MODELS}_], {URL_DEVELOPING_DECISION_SERVICES}#assembly-drl-rules[_{DRL_RULES}_], and {URL_DEVELOPING_DECISION_SERVICES}#assembly-pmml-models[_{PMML_MODELS}_].
