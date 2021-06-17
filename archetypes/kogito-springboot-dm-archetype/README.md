@@ -5,7 +5,7 @@ To generate new project for KaaS (Kjar as a Service) based on Spring Boot use fo
     ```
      mvn archetype:generate \
     -DarchetypeGroupId=org.kie.kogito \
-    -DarchetypeArtifactId=kogito-springboot-archetype \
+    -DarchetypeArtifactId=kogito-springboot-dm-archetype \
     -DarchetypeVersion=2.0.0-SNAPSHOT \
     -DgroupId=com.company \
     -DartifactId=sample-kogito
