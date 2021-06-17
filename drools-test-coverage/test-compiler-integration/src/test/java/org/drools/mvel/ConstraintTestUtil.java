@@ -51,7 +51,16 @@ public class ConstraintTestUtil {
             return LambdaConstraintTestUtil.createCheesePriceEqualsConstraint(rightvalue);
         } else {
             final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
-            return new MVELConstraintTestUtil("price == \"" + rightvalue + "\"", field, extractor);
+            return new MVELConstraintTestUtil("price == " + rightvalue, field, extractor);
+        }
+    }
+
+    public static AlphaNodeFieldConstraint createCheesePriceGreaterConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
+        if (useLambdaConstraint) {
+            return LambdaConstraintTestUtil.createCheesePriceGreaterConstraint(rightvalue);
+        } else {
+            final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
+            return new MVELConstraintTestUtil("price > " + rightvalue, field, extractor);
         }
     }
 }
