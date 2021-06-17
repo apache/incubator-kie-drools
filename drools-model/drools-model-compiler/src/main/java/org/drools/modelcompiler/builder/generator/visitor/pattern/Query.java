@@ -19,17 +19,27 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.List;
 
-import org.drools.compiler.lang.descr.BaseDescr;
-import org.drools.compiler.lang.descr.PatternDescr;
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.ExpressionStmt;
+import org.drools.compiler.lang.descr.BaseDescr;
+import org.drools.compiler.lang.descr.BindingDescr;
+import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
-import org.drools.modelcompiler.builder.generator.QueryGenerator;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.QueryParameter;
 import org.drools.modelcompiler.builder.generator.RuleContext;
+import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
@@ -58,10 +68,27 @@ class Query implements DSLNode {
 
         if (!constraintDescrs.isEmpty()) {
             List<QueryParameter> queryParams = packageModel.queryVariables( queryName );
-            Expression[] queryArgs = new Expression[queryParams.size()];
+            if (queryParams.size() != constraintDescrs.size()) {
+                context.addCompilationError(new InvalidExpressionErrorResult("Wrong number of argument invoking query '" + queryName + "'"));
+                return;
+            }
 
+            Expression[] queryArgs = new Expression[queryParams.size()];
             for (int i = 0; i < constraintDescrs.size(); i++) {
-                String itemText = constraintDescrs.get( i ).getText();
+                BaseDescr baseDescr = constraintDescrs.get( i );
+                String itemText = baseDescr.getText();
+
+                boolean isPositional = baseDescr instanceof ExprConstraintDescr && ((ExprConstraintDescr) baseDescr).getType() == ExprConstraintDescr.Type.POSITIONAL;
+                boolean isBinding = baseDescr instanceof BindingDescr || itemText.contains(":");
+
+                if ( ( !isPositional ) && ( !isBinding ) ) {
+                    // error, can't have non binding slots.
+                    context.addCompilationError( new InvalidExpressionErrorResult( "Query's must use positional or bindings, not field constraints: " + itemText ) );
+                } else if ( isPositional && isBinding ) {
+                    // error, can't have positional binding slots.
+                    context.addCompilationError( new InvalidExpressionErrorResult( "Query's can't use positional bindings: " + itemText ) );
+                }
+
                 int colonPos = itemText.indexOf( ':' );
 
                 if ( colonPos > 0 ) {
@@ -92,13 +119,57 @@ class Query implements DSLNode {
     }
 
     private void addQueryArg( List<QueryParameter> queryParams, Expression[] queryArgs, String itemText, int i ) {
-        if ( QueryGenerator.isLiteral( itemText ) ) {
+        if ( isLiteral( itemText ) ) {
             MethodCallExpr valueOfMethod = new MethodCallExpr( null, VALUE_OF_CALL );
             valueOfMethod.addArgument( new NameExpr( itemText ) );
             queryArgs[i] = valueOfMethod;
         } else {
-            context.addDeclaration( itemText, queryParams.get( i ).getType() );
-            queryArgs[i] = context.getVarExpr( itemText );
+            Expression expr = parseExpression(itemText);
+            if (expr.isNameExpr()) {
+                context.addDeclaration(itemText, queryParams.get(i).getType());
+                queryArgs[i] = context.getVarExpr(itemText);
+            } else {
+                String variableName = context.getExprId(queryParams.get(i).getType(), itemText);
+                context.addDeclaration(variableName, queryParams.get(i).getType(), createFromExpr(variableName, expr));
+                queryArgs[i] = context.getVarExpr(variableName);
+            }
+        }
+    }
+
+    private MethodCallExpr createFromExpr(String variableName, Expression expr) {
+        MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
+        dslExpr.addArgument( context.getVarExpr( variableName ) );
+        context.addExpression(dslExpr);
+
+        MethodCallExpr fromExpr = new MethodCallExpr(null, FROM_CALL);
+
+        LambdaExpr lambdaExpr = new LambdaExpr();
+        lambdaExpr.setEnclosingParameters(true);
+
+        TypedExpressionResult result = new ExpressionTyper(context).toTypedExpression(expr);
+        for (String usedDeclration : result.getExpressionTyperContext().getUsedDeclarations()) {
+            fromExpr.addArgument(context.getVarExpr(usedDeclration));
+            lambdaExpr.addParameter(new Parameter(context.getDelarationType(usedDeclration), usedDeclration));
+        }
+
+        fromExpr.addArgument(lambdaExpr);
+        if (result.getTypedExpression().isPresent()) {
+            lambdaExpr.setBody(new ExpressionStmt(result.getTypedExpression().get().getExpression()));
+        }
+        return fromExpr;
+    }
+
+    private static boolean isLiteral(String value) {
+        if ( value != null && value.length() > 0 &&
+                ( value.charAt(0) == '"' || "true".equals(value) || "false".equals(value) || "null".equals(value) || value.endsWith( ".class" ) ) ) {
+            return true;
+        }
+
+        try {
+            Double.parseDouble(value);
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
 }

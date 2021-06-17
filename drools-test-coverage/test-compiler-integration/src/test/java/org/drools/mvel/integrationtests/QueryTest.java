@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import javax.xml.bind.JAXBContext;
 
@@ -38,6 +40,7 @@ import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
+import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.runtime.rule.impl.FlatQueryResults;
 import org.drools.core.spi.ObjectType;
 import org.drools.mvel.compiler.Address;
@@ -47,6 +50,7 @@ import org.drools.mvel.compiler.InsertedObject;
 import org.drools.mvel.compiler.Interval;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Worker;
+import org.drools.mvel.compiler.oopath.model.Thing;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieUtil;
@@ -69,6 +73,7 @@ import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -87,8 +92,7 @@ public class QueryTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @org.junit.Rule
@@ -1397,5 +1401,34 @@ public class QueryTest {
         row = results.iterator().next();
         assertSame( question, row.get( "$question" ) );
         assertSame( questionVisible, row.get( "$visible" ) );
+    }
+
+    @Test
+    public void testQueryWithFrom() {
+        final String drl =
+                "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
+                "query isContainedIn( Thing $x, Thing $y )\n" +
+                "    $y := Thing() from $x.children\n" +
+                "or\n" +
+                "    ( $z := Thing() from $x.children and isContainedIn( $z, $y; ) )\n" +
+                "end\n";
+
+        final Thing smartphone = new Thing("smartphone");
+        final List<String> itemList = Arrays.asList(new String[] { "display", "keyboard", "processor" });
+        itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        ReteDumper.dumpRete(ksession);
+
+        ksession.insert(smartphone);
+
+        final QueryResults queryResults = ksession.getQueryResults("isContainedIn", new Object[] { smartphone, Variable.v });
+        final List<String> resultList = StreamSupport.stream(queryResults.spliterator(), false)
+                .map(row -> ((Thing) row.get("$y")).getName()).collect(Collectors.toList());
+        assertThat(resultList).as("Query does not contain all items").containsAll(itemList);
+
+        ksession.dispose();
     }
 }
