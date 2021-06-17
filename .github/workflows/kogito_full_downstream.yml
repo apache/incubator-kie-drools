@@ -1,9 +1,12 @@
 name: Kogito Build Chain Full Downstream
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [ labeled ]
 
 jobs:
   build-chain:
+    if: ${{ github.event.label.name == 'Kogito downstream' }}
     timeout-minutes: 240
     strategy:
       matrix:
