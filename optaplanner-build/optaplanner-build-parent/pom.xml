@@ -40,7 +40,7 @@
     <version.org.apache.poi>4.1.2</version.org.apache.poi>
     <version.org.assertj>3.19.0</version.org.assertj>
     <version.org.freemarker>2.3.31</version.org.freemarker>
-    <version.org.hibernate>5.4.29.Final</version.org.hibernate>
+    <version.org.hibernate>5.5.0.Final</version.org.hibernate>
     <version.org.jboss.jandex>2.3.0.Final</version.org.jboss.jandex>
     <version.org.jdom>1.1.3</version.org.jdom>
     <version.org.jfree.jfreechart>1.5.3</version.org.jfree.jfreechart>
