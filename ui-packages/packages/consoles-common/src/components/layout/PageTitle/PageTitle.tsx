@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { Flex, FlexItem, Title } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 export interface IOwnProps {
   title: any;

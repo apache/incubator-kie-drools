@@ -4,12 +4,12 @@ import {
   Breadcrumb,
   BreadcrumbItem
 } from '@patternfly/react-core';
+import { DomainExplorer } from '@kogito-apps/common';
 import {
   componentOuiaProps,
-  DomainExplorer,
   ouiaPageTypeAndObjectId,
   OUIAProps
-} from '@kogito-apps/common';
+} from '@kogito-apps/ouia-tools';
 import { Link } from 'react-router-dom';
 import { Redirect, RouteComponentProps, StaticContext } from 'react-router';
 import './DomainExplorerPage.css';

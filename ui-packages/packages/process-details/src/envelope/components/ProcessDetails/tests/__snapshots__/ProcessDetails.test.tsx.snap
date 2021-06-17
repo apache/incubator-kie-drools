@@ -300,7 +300,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                                 className="pf-c-tooltip"
                                 data-ouia-component-type="item-descriptor"
                                 data-ouia-safe={true}
-                                id="pf-tooltip-5"
+                                id="pf-tooltip-4"
                                 role="tooltip"
                                 style={
                                   Object {
@@ -329,7 +329,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                             }
                             trigger={
                               <span
-                                aria-describedby="pf-tooltip-5"
+                                aria-describedby="pf-tooltip-4"
                               >
                                 HotelBooking
                                  
@@ -344,7 +344,7 @@ exports[`ProcessDetails tests ProcessDetails tests with success results Snapshot
                               onFoundRef={[Function]}
                             >
                               <span
-                                aria-describedby="pf-tooltip-5"
+                                aria-describedby="pf-tooltip-4"
                               >
                                 HotelBooking
                                  

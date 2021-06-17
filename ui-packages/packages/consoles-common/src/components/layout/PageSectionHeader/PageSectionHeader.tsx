@@ -21,6 +21,7 @@ import {
   BreadcrumbItem
 } from '@patternfly/react-core';
 import PageTitle from '../PageTitle/PageTitle';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import * as H from 'history';
 
 type pathType = Pick<H.Location, 'pathname' | 'state'>;
@@ -29,10 +30,12 @@ interface PageSectionHeaderProps {
   breadcrumbText: string[];
   breadcrumbPath: Array<pathType | string>;
 }
-const PageSectionHeader: React.FC<PageSectionHeaderProps> = ({
+const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = ({
   titleText,
   breadcrumbText,
-  breadcrumbPath
+  breadcrumbPath,
+  ouiaId,
+  ouiaSafe
 }) => {
   const renderBreadcrumb = (): JSX.Element[] => {
     const items: JSX.Element[] = [];
@@ -54,7 +57,10 @@ const PageSectionHeader: React.FC<PageSectionHeaderProps> = ({
     return items;
   };
   return (
-    <PageSection variant="light">
+    <PageSection
+      variant="light"
+      {...componentOuiaProps(ouiaId, 'page-section-header', ouiaSafe)}
+    >
       <Breadcrumb>{renderBreadcrumb()}</Breadcrumb>
       <PageTitle title={titleText} />
     </PageSection>

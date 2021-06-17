@@ -26,7 +26,7 @@ import {
   Text,
   Tooltip
 } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import '../styles.css';
 import { Milestone } from '@kogito-apps/management-console-shared';

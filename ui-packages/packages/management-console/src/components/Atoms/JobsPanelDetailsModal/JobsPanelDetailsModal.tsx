@@ -1,5 +1,6 @@
 import React from 'react';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
   Modal,
   TextContent,

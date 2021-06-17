@@ -17,7 +17,7 @@
 import React from 'react';
 import JSONSchemaBridge from 'uniforms-bridge-json-schema';
 import { AutoFields, AutoForm, ErrorsField } from 'uniforms-patternfly';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   DefaultFormValidator,
   FormAction,

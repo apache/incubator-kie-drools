@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import ProcessListPage from '../ProcessListPage';
 import { BrowserRouter } from 'react-router-dom';
 import * as H from 'history';
@@ -36,12 +36,11 @@ describe('ProcessListPage tests', () => {
     history: H.createBrowserHistory()
   };
   it('Snapshot', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListPage {...props} />
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+      </BrowserRouter>
+    ).find('ProcessListPage');
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('MockedProcessListContainer').exists()).toBeTruthy();

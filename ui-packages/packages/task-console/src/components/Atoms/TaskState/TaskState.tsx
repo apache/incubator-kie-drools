@@ -16,7 +16,8 @@
 
 import React from 'react';
 
-import { componentOuiaProps, GraphQL, OUIAProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import { Label } from '@patternfly/react-core';
 import {

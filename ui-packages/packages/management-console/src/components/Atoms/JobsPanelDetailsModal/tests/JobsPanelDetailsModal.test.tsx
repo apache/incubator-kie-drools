@@ -1,6 +1,7 @@
 import React from 'react';
 import JobsPanelDetailsModal from '../JobsPanelDetailsModal';
-import { GraphQL, getWrapper } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Button } from '@patternfly/react-core';
 
@@ -45,8 +46,7 @@ const props = {
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Job details modal tests', () => {
   it('Snapshot testing', () => {
-    const wrapper = getWrapper(
-      <JobsPanelDetailsModal {...props} />,
+    const wrapper = mount(<JobsPanelDetailsModal {...props} />).find(
       'JobsPanelDetailsModal'
     );
     expect(wrapper).toMatchSnapshot();

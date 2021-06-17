@@ -23,7 +23,8 @@ import {
   getTriggerableNodes,
   TriggerableNode
 } from '../../../utils/Utils';
-import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import './ProcessDetailsNodeTrigger.css';
 import ProcessDetailsErrorModal from '../../Atoms/ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 

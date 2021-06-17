@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { DefaultUser } from '@kogito-apps/consoles-common';
 import TaskInboxContainer from '../TaskInboxContainer';
 import * as TaskInboxContext from '../../../../../../channel/inbox/TaskInboxContext';
@@ -36,7 +36,7 @@ jest
 
 describe('TaskInboxContainer tests', () => {
   it('Snapshot', () => {
-    const wrapper = getWrapper(<TaskInboxContainer />, 'TaskInboxContainer');
+    const wrapper = mount(<TaskInboxContainer />).find('TaskInboxContainer');
 
     expect(wrapper).toMatchSnapshot();
 

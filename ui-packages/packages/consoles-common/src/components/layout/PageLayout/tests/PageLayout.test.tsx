@@ -18,9 +18,9 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import * as Keycloak from '../../../../utils/KeycloakClient';
 import { PageSidebar } from '@patternfly/react-core';
+import { mount } from 'enzyme';
 
 import PageLayout from '../PageLayout';
-import { getWrapper } from '@kogito-apps/components-common';
 
 const props = {
   children: <React.Fragment>children rendered</React.Fragment>,
@@ -37,13 +37,12 @@ describe('PageLayout component tests', () => {
   isAuthEnabledMock.mockReturnValue(false);
 
   it('snapshot tests', () => {
-    const wrapper = getWrapper(<PageLayout {...props} />, 'PageLayout');
+    const wrapper = mount(<PageLayout {...props} />).find('PageLayout');
     expect(wrapper).toMatchSnapshot();
   });
 
   it('open with PageSidebar closed', () => {
-    let wrapper = getWrapper(
-      <PageLayout {...props} pageNavOpen={false} />,
+    let wrapper = mount(<PageLayout {...props} pageNavOpen={false} />).find(
       'PageLayout'
     );
     expect(wrapper).toMatchSnapshot();
@@ -59,7 +58,7 @@ describe('PageLayout component tests', () => {
       wrapper.find('Button').prop('onClick')(event);
     });
 
-    wrapper = wrapper.update().find(PageLayout);
+    wrapper = wrapper.update();
     expect(wrapper).toMatchSnapshot();
 
     pageSidebar = wrapper.find(PageSidebar);
@@ -68,7 +67,7 @@ describe('PageLayout component tests', () => {
   });
 
   it('check isNavOpen boolean', () => {
-    const wrapper = getWrapper(<PageLayout {...props} />, 'PageLayout');
+    const wrapper = mount(<PageLayout {...props} />).find('PageLayout');
     const event = {
       target: {}
     } as React.MouseEvent<HTMLInputElement>;

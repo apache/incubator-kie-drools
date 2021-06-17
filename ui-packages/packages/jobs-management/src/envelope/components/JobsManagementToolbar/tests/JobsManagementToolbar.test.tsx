@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import JobsManagementToolbar from '../JobsManagementToolbar';
 import { Job, JobStatus } from '@kogito-apps/management-console-shared';
@@ -76,16 +76,14 @@ describe('Jobs Management toolbar tests', () => {
     setIsLoading: jest.fn()
   };
   it('Snapshot test with default props', () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     expect(wrapper).toMatchSnapshot();
   });
 
   it('Test clearAllFilters', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     await act(async () => {
@@ -99,8 +97,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test Refresh button', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     await act(async () => {
@@ -113,8 +110,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test apply filter button', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     await act(async () => {
@@ -127,8 +123,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test chips delete with more chips', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     const type = 'Status';
@@ -147,10 +142,9 @@ describe('Jobs Management toolbar tests', () => {
 
   it('Test chips delete with empty chips', async () => {
     const chips = [];
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...{ ...props, chips }} />,
-      'JobsManagementToolbar'
-    );
+    const wrapper = mount(
+      <JobsManagementToolbar {...{ ...props, chips }} />
+    ).find('JobsManagementToolbar');
     const type = 'Status';
     const id = 'CANCELED';
     await act(async () => {
@@ -164,8 +158,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test filter dropdown for selection', async () => {
-    let wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    let wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     const event: any = {
@@ -193,8 +186,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test filter dropdown for deselection', async () => {
-    let wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    let wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     const event: any = {
@@ -222,8 +214,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test selections on dropdown', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     const event: any = {
@@ -239,8 +230,7 @@ describe('Jobs Management toolbar tests', () => {
   });
 
   it('Test toggles on dropdown', async () => {
-    const wrapper = getWrapper(
-      <JobsManagementToolbar {...props} />,
+    const wrapper = mount(<JobsManagementToolbar {...props} />).find(
       'JobsManagementToolbar'
     );
     await act(async () => {

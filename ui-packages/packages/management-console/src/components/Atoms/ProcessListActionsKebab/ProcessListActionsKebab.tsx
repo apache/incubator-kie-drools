@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { DropdownItem, Dropdown, KebabToggle } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { checkProcessInstanceState } from '../../../utils/Utils';
 interface IOwnProps {
   processInstance: GraphQL.ProcessInstance;

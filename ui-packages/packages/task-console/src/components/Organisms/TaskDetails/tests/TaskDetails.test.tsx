@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 import React from 'react';
-import { getWrapper, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskDetails from '../TaskDetails';
@@ -67,10 +68,9 @@ const getFormGroup = (wrapper: ReactWrapper, fieldId: string): ReactWrapper => {
 Date.now = jest.fn(() => 1601881200000); // UTC 2020-10-05 07:00:00
 describe('TaskDetails testing', () => {
   it('Snapshot testing', () => {
-    const wrapper = getWrapper(
-      <TaskDetails userTaskInstance={userTaskInstance} />,
-      'TaskDetails'
-    );
+    const wrapper = mount(
+      <TaskDetails userTaskInstance={userTaskInstance} />
+    ).find('TaskDetails');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -89,14 +89,13 @@ describe('TaskDetails testing', () => {
   });
 
   it('Snapshot testing with description', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTaskInstance={{
           ...{ ...userTaskInstance, description: 'This is a description' }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -106,14 +105,13 @@ describe('TaskDetails testing', () => {
   });
 
   it('Snapshot testing with owner', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTaskInstance={{
           ...{ ...userTaskInstance, actualOwner: 'John Snow' }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -123,7 +121,7 @@ describe('TaskDetails testing', () => {
   });
 
   it('Snapshot testing with completed task', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTaskInstance={{
           ...{
@@ -132,9 +130,8 @@ describe('TaskDetails testing', () => {
             completed: '2020-02-19T11:11:56.282Z'
           }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -143,7 +140,7 @@ describe('TaskDetails testing', () => {
   });
 
   it('Snapshot testing with potential groups and potential user', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTaskInstance={{
           ...{
@@ -152,9 +149,8 @@ describe('TaskDetails testing', () => {
             potentialUsers: ['john', 'mary']
           }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
     expect(wrapper).toMatchSnapshot();
     const potentialGroups = getFormGroup(wrapper, 'potential_groups');
     const potentialUsers = getFormGroup(wrapper, 'potential_users');

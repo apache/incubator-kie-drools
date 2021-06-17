@@ -26,7 +26,7 @@ import {
   Title
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface Props {
   displayName?: string;

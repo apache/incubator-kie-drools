@@ -2,8 +2,10 @@ import React from 'react';
 import DataTable, { DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
-import { getWrapperAsync } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { Label } from '@patternfly/react-core';
+import wait from 'waait';
+import { act } from 'react-dom/test-utils';
 
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
@@ -206,12 +208,16 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <DataTable {...props} />
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DataTable');
+    });
 
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
@@ -228,12 +234,16 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <DataTable {...props} />
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DataTable');
+    });
 
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
@@ -250,12 +260,16 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <DataTable {...props} />
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DataTable');
+    });
 
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
@@ -274,12 +288,16 @@ describe('DataTable component tests', () => {
       sortBy: {}
     };
 
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <DataTable {...props} />
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DataTable');
+    });
 
     wrapper
       .find('[aria-label="Data Table"]')

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import ProcessListToolbar from '../ProcessListToolbar';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 import { act } from 'react-dom/test-utils';
@@ -61,16 +61,14 @@ beforeEach(() => {
 
 describe('ProcessListToolbar test', () => {
   it('Snapshot tests', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     expect(wrapper).toMatchSnapshot();
   });
 
   it('on select status', async () => {
-    let wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    let wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     await act(async () => {
@@ -103,8 +101,7 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('delete a status chip', async () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     await act(async () => {
@@ -121,15 +118,14 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('delete a status chip', async () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ProcessListToolbar
         {...{
           ...props,
           filters: { ...props.filters, businessKey: ['GR1122', 'MTY11'] }
         }}
-      />,
-      'ProcessListToolbar'
-    );
+      />
+    ).find('ProcessListToolbar');
     await act(async () => {
       wrapper
         .find(ToolbarFilter)
@@ -145,8 +141,7 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('enter click on apply filter(business key)', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     wrapper.find(TextInput).simulate('keypress', { key: 'Enter' });
@@ -154,8 +149,7 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('reset filters', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     wrapper
@@ -170,8 +164,7 @@ describe('ProcessListToolbar test', () => {
   });
 
   it('apply filter click', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     wrapper
@@ -249,8 +242,7 @@ describe('ProcessListToolbar test', () => {
     it('multi abort click success', async () => {
       abortProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.delete.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...abortProps} />,
+      let wrapper = mount(<ProcessListToolbar {...abortProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -276,8 +268,7 @@ describe('ProcessListToolbar test', () => {
     it('multi abort click fail', async () => {
       abortProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.delete.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...abortProps} />,
+      let wrapper = mount(<ProcessListToolbar {...abortProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -311,8 +302,7 @@ describe('ProcessListToolbar test', () => {
     it('multi skip click success', async () => {
       skipProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.post.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...skipProps} />,
+      let wrapper = mount(<ProcessListToolbar {...skipProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -338,8 +328,7 @@ describe('ProcessListToolbar test', () => {
     it('multi skip click fail', async () => {
       skipProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.post.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...skipProps} />,
+      let wrapper = mount(<ProcessListToolbar {...skipProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -374,8 +363,7 @@ describe('ProcessListToolbar test', () => {
     it('multi retry click success', async () => {
       retryProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.post.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...retryProps} />,
+      let wrapper = mount(<ProcessListToolbar {...retryProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -401,8 +389,7 @@ describe('ProcessListToolbar test', () => {
     it('multi retry click fail', async () => {
       retryProps.selectedInstances = [ProcessInstances[0]];
       mockedAxios.post.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...retryProps} />,
+      let wrapper = mount(<ProcessListToolbar {...retryProps} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -427,8 +414,7 @@ describe('ProcessListToolbar test', () => {
     });
   });
   it('reset click tests', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     wrapper

@@ -18,7 +18,6 @@ import ErrorPopover from '../ErrorPopover';
 import { mount } from 'enzyme';
 import { Popover } from '@patternfly/react-core';
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
-import { getWrapper } from '@kogito-apps/components-common';
 const props = {
   processInstanceData: {
     id: 'e4448857-fa0c-403b-ad69-f0a353458b9d',
@@ -51,20 +50,19 @@ const props = {
 
 describe('Errorpopover component tests', () => {
   it('snapshot testing with error object', () => {
-    const wrapper = getWrapper(<ErrorPopover {...props} />, 'ErrorPopover');
+    const wrapper = mount(<ErrorPopover {...props} />).find('ErrorPopover');
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot testing without error object', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ErrorPopover
         {...{
           ...props,
           processInstanceData: { ...props.processInstanceData, error: null }
         }}
-      />,
-      'ErrorPopover'
-    );
+      />
+    ).find('ErrorPopover');
     expect(wrapper).toMatchSnapshot();
   });
 

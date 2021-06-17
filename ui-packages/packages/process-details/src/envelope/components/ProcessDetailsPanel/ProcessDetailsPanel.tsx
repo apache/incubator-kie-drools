@@ -33,12 +33,8 @@ import {
   ProcessInstance,
   ProcessInstanceIconCreator
 } from '@kogito-apps/management-console-shared';
-import {
-  componentOuiaProps,
-  ItemDescriptor,
-  OUIAProps,
-  EndpointLink
-} from '@kogito-apps/components-common';
+import { ItemDescriptor, EndpointLink } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { ProcessDetailsDriver } from '../../../api';
 
 interface IOwnProps {

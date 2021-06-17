@@ -18,12 +18,11 @@ import React, { useState } from 'react';
 import _ from 'lodash';
 import {
   AppContext,
-  componentOuiaProps,
   GraphQL,
   KogitoSpinner,
-  OUIAProps,
   useKogitoAppContext
 } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import {
   EmptyState,

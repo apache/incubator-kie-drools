@@ -16,7 +16,7 @@ import {
 } from '@patternfly/react-core';
 import { FilterIcon, SyncIcon } from '@patternfly/react-icons';
 import _ from 'lodash';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { getAllTaskStates } from '../../../util/Utils';
 import {
   ITaskConsoleFilterContext,

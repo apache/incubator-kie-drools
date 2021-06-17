@@ -17,7 +17,7 @@
 import React from 'react';
 import { Nav, NavItem, NavList } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { ouiaAttribute } from '@kogito-apps/components-common';
+import { ouiaAttribute } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   pathname: string;
@@ -25,15 +25,16 @@ interface IOwnProps {
 
 const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
   return (
-    <Nav aria-label="Nav" theme="dark">
+    <Nav aria-label="Nav" theme="dark" ouiaId="navigation-list">
       <NavList>
         <NavItem
           key={'process-instances-nav'}
           isActive={pathname === '/ProcessInstances'}
+          ouiaId="process-instances"
         >
           <Link
             to="/ProcessInstances"
-            {...ouiaAttribute('data-ouia-navigation-name', 'Processes')}
+            {...ouiaAttribute('data-ouia-navigation-name', 'process-instances')}
           >
             Process Instances
           </Link>
@@ -41,6 +42,7 @@ const ManagementConsoleNav: React.FC<IOwnProps> = ({ pathname }) => {
         <NavItem
           key={'jobs-management-nav'}
           isActive={pathname === '/JobsManagement'}
+          ouiaId="jobs-management"
         >
           <Link
             to="/JobsManagement"

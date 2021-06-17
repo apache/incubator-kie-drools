@@ -51,6 +51,7 @@ const ManagementConsole: React.FC<IOwnProps> = ({
         PageNav={
           <ManagementConsoleNav pathname={routeProps.location.pathname} />
         }
+        ouiaId="management-console"
       >
         {children}
       </PageLayout>

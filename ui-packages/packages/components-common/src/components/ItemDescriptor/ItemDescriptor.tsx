@@ -22,7 +22,7 @@ import {
   Text,
   TextVariants
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export interface ItemDescription {
   id: string;

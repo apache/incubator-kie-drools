@@ -29,8 +29,7 @@ import {
   TextVariants,
   Split,
   SplitItem,
-  Button,
-  OUIAProps
+  Button
 } from '@patternfly/react-core';
 import React, { useState, useEffect } from 'react';
 import { CaretDownIcon } from '@patternfly/react-icons';
@@ -40,7 +39,7 @@ import {
   TriggerableNode
 } from '@kogito-apps/management-console-shared';
 import { ProcessDetailsDriver } from 'packages/process-details/src/api';
-import { componentOuiaProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal/ProcessDetailsErrorModal';
 import '../styles.css';
 interface ProcessDetailsNodeTriggerProps {

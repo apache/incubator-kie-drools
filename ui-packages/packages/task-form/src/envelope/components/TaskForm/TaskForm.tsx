@@ -18,12 +18,11 @@ import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { Bullseye } from '@patternfly/react-core';
 import {
-  componentOuiaProps,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  KogitoSpinner,
-  OUIAProps
+  KogitoSpinner
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormDriver } from '../../../api';
 import { TaskFormSchema } from '../../../types';

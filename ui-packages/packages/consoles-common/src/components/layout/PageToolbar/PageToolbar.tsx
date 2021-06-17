@@ -28,7 +28,7 @@ import {
 import accessibleStyles from '@patternfly/react-styles/css/utilities/Accessibility/accessibility';
 import { css } from '@patternfly/react-styles';
 
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import AboutModalBox from '../AboutModalBox/AboutModalBox';
 import userImage from '../../../static/avatar.svg';
 import PageToolbarUsersDropdownGroup from '../PageToolbarUsersDropdownGroup/PageToolbarUsersDropdownGroup';

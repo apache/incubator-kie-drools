@@ -17,7 +17,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { ActionGroup } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   convertActionsToButton,
   FormAction

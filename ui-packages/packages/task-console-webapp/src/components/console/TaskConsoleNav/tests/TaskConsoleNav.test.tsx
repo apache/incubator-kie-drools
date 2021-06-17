@@ -15,18 +15,17 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskConsoleNav from '../TaskConsoleNav';
 import { MemoryRouter } from 'react-router-dom';
 
 describe('TaskConsoleNav tests', () => {
   it('Snapshot', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MemoryRouter>
         <TaskConsoleNav />
-      </MemoryRouter>,
-      'TaskConsoleNav'
-    );
+      </MemoryRouter>
+    ).find('TaskConsoleNav');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -39,12 +38,11 @@ describe('TaskConsoleNav tests', () => {
   });
 
   it('Snapshot with pathname', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MemoryRouter>
         <TaskConsoleNav pathname={'/TaskInbox'} />
-      </MemoryRouter>,
-      'TaskConsoleNav'
-    );
+      </MemoryRouter>
+    ).find('TaskConsoleNav');
 
     expect(wrapper).toMatchSnapshot();
 

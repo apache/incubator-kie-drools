@@ -15,11 +15,8 @@
  */
 
 import { act } from 'react-dom/test-utils';
-import {
-  getWrapperAsync,
-  GraphQL,
-  KogitoAppContextProvider
-} from '@kogito-apps/common';
+import { GraphQL, KogitoAppContextProvider } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/react-testing';
 import { TestingUserContext } from '../../../../../util/tests/utils/TestingUserContext';
 import TaskConsoleContext, {
@@ -41,20 +38,23 @@ export const getTaskInboxWrapper = async (
   let wrapper;
 
   await act(async () => {
-    wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <KogitoAppContextProvider userContext={new TestingUserContext()}>
-          <TaskConsoleContext.Provider value={consoleContext}>
-            <TaskConsoleFilterContext.Provider value={filterContext}>
-              <Router keyLength={0}>
-                <TaskInbox />
-              </Router>
-            </TaskConsoleFilterContext.Provider>
-          </TaskConsoleContext.Provider>
-        </KogitoAppContextProvider>
-      </MockedProvider>,
-      'TaskInbox'
-    );
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <KogitoAppContextProvider userContext={new TestingUserContext()}>
+            <TaskConsoleContext.Provider value={consoleContext}>
+              <TaskConsoleFilterContext.Provider value={filterContext}>
+                <Router keyLength={0}>
+                  <TaskInbox />
+                </Router>
+              </TaskConsoleFilterContext.Provider>
+            </TaskConsoleContext.Provider>
+          </KogitoAppContextProvider>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('TaskInbox');
+    });
     await wait();
   });
 

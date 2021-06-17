@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedMessageBusClientApi, testUserTask } from './mocks/Mocks';
 import TaskFormEnvelopeView, {
   TaskFormEnvelopeViewApi
@@ -30,10 +30,9 @@ describe('TaskFormEnvelopeView tests', () => {
     const channelApi = MockedMessageBusClientApi();
     const forwardRef = React.createRef<TaskFormEnvelopeViewApi>();
 
-    let wrapper = getWrapper(
-      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />,
-      'TaskFormEnvelopeView'
-    );
+    let wrapper = mount(
+      <TaskFormEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    ).find('TaskFormEnvelopeView');
 
     act(() => {
       if (forwardRef.current) {
@@ -41,9 +40,9 @@ describe('TaskFormEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update().find(TaskFormEnvelopeView);
+    wrapper = wrapper.update();
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(TaskFormEnvelopeView)).toMatchSnapshot();
 
     const taskForm = wrapper.find(TaskForm);
 

@@ -1,9 +1,11 @@
 import React from 'react';
 import UserTaskDataTableContainer from '../UserTaskDataTableContainer';
-import { getWrapperAsync, GraphQL, DataTable } from '@kogito-apps/common';
+import { GraphQL, DataTable } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
 import { act } from 'react-dom/test-utils';
+import wait from 'waait';
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -84,14 +86,18 @@ describe('UserTaskDataTableContainer component tests', () => {
       data: mockUserTaskInstancesData
     });
 
-    const wrapper = await getWrapperAsync(
-      <Router>
-        <MockedProvider>
-          <UserTaskDataTableContainer />
-        </MockedProvider>
-      </Router>,
-      'UserTaskDataTableContainer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <Router>
+          <MockedProvider>
+            <UserTaskDataTableContainer />
+          </MockedProvider>
+        </Router>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('UserTaskDataTableContainer');
+    });
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -103,14 +109,18 @@ describe('UserTaskDataTableContainer component tests', () => {
       networkStatus: 1
     });
 
-    const wrapper = await getWrapperAsync(
-      <Router>
-        <MockedProvider>
-          <UserTaskDataTableContainer />
-        </MockedProvider>
-      </Router>,
-      'UserTaskDataTableContainer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <Router>
+          <MockedProvider>
+            <UserTaskDataTableContainer />
+          </MockedProvider>
+        </Router>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('UserTaskDataTableContainer');
+    });
     expect(wrapper).toMatchSnapshot();
     expect(GraphQL.useGetUserTasksByStatesQuery).toBeCalled();
   });
@@ -123,14 +133,18 @@ describe('UserTaskDataTableContainer component tests', () => {
       networkStatus: 1
     });
 
-    const wrapper = await getWrapperAsync(
-      <Router>
-        <MockedProvider>
-          <UserTaskDataTableContainer />
-        </MockedProvider>
-      </Router>,
-      'UserTaskDataTableContainer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <Router>
+          <MockedProvider>
+            <UserTaskDataTableContainer />
+          </MockedProvider>
+        </Router>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('UserTaskDataTableContainer');
+    });
 
     await act(async () => {
       wrapper

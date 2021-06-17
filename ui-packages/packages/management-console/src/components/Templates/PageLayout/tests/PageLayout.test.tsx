@@ -1,9 +1,12 @@
 import React from 'react';
 import PageLayout from '../PageLayout';
 import { MockedProvider } from '@apollo/react-testing';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { MemoryRouter as Router } from 'react-router-dom';
 import * as H from 'history';
+import { act } from 'react-dom/test-utils';
+import wait from 'waait';
 
 const props = {
   location: {
@@ -155,15 +158,19 @@ jest.mock('@kogito-apps/common', () => ({
 }));
 describe('PageLayout tests', () => {
   it('snapshot testing', async () => {
-    let wrapper = await getWrapperAsync(
-      // keyLength set to zero to have stable snapshots
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <Router keyLength={0}>
-          <PageLayout {...props} />
-        </Router>
-      </MockedProvider>,
-      'PageLayout'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        // keyLength set to zero to have stable snapshots
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <Router keyLength={0}>
+            <PageLayout {...props} />
+          </Router>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('PageLayout');
+    });
     expect(wrapper.find('PageLayout')).toMatchSnapshot();
     wrapper = wrapper.update();
     wrapper

@@ -1,7 +1,7 @@
 import React from 'react';
-import { shallow } from 'enzyme';
+import { shallow, mount } from 'enzyme';
 import ProcessListToolbar from '../ProcessListToolbar';
-import { GraphQL, getWrapper } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import {
   Dropdown,
@@ -147,26 +147,23 @@ afterEach(() => {
 
 describe('ProcessListToolbar component tests', () => {
   it('Snapshot tests', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     expect(wrapper).toMatchSnapshot();
   });
 
   it('Snapshot tests for disabled filter button', () => {
-    let wrapper = getWrapper(
+    const wrapper = mount(
       <ProcessListToolbar
         {...{
           ...props,
           statusArray: [],
           filters: { status: [], businessKey: [] }
         }}
-      />,
-      'ProcessListToolbar'
-    );
-    wrapper = wrapper.find(ToolbarItem);
-    expect(wrapper).toMatchSnapshot();
+      />
+    ).find('ProcessListToolbar');
+    expect(wrapper.find(ToolbarItem)).toMatchSnapshot();
   });
 
   it('clearAll tests', () => {
@@ -196,7 +193,7 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('onSelect tests', async () => {
-    let wrapper = getWrapper(
+    let wrapper = mount(
       <ProcessListToolbar
         {...{
           ...props,
@@ -214,9 +211,8 @@ describe('ProcessListToolbar component tests', () => {
             businessKey: ['tra']
           }
         }}
-      />,
-      'ProcessListToolbar'
-    );
+      />
+    ).find('ProcessListToolbar');
     expect(wrapper.find('#status-select').exists()).toBeTruthy();
     await act(async () => {
       wrapper
@@ -386,8 +382,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.delete.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -417,8 +412,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.delete.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -452,8 +446,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -483,8 +476,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -518,8 +510,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockResolvedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -549,8 +540,7 @@ describe('ProcessListToolbar component tests', () => {
         initData.ProcessInstances[0].childProcessInstances[1]
       ];
       mockedAxios.post.mockRejectedValue({});
-      let wrapper = getWrapper(
-        <ProcessListToolbar {...props} />,
+      let wrapper = mount(<ProcessListToolbar {...props} />).find(
         'ProcessListToolbar'
       );
       await act(async () => {
@@ -576,8 +566,7 @@ describe('ProcessListToolbar component tests', () => {
   });
 
   it('reset click tests', () => {
-    const wrapper = getWrapper(
-      <ProcessListToolbar {...props} />,
+    const wrapper = mount(<ProcessListToolbar {...props} />).find(
       'ProcessListToolbar'
     );
     wrapper

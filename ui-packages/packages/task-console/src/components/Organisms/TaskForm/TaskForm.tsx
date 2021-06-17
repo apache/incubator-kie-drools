@@ -32,7 +32,7 @@ import {
 import { FormSchema } from '../../../util/uniforms/FormSchema';
 import { getTaskSchemaEndPoint } from '../../../util/Utils';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { OUIAProps } from '@kogito-apps/common';
+import { OUIAProps } from '@kogito-apps/ouia-tools';
 import EmptyTaskForm from '../EmptyTaskForm/EmptyTaskForm';
 import TaskFormRenderer from '../TaskFormRenderer/TaskFormRenderer';
 

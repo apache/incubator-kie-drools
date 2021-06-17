@@ -7,7 +7,8 @@ import {
 } from '@patternfly/react-core';
 import JobsPanelDetailsModal from '../JobsPanelDetailsModal/JobsPanelDetailsModal';
 import JobsRescheduleModal from '../JobsRescheduleModal/JobsRescheduleModal';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { setTitle, jobCancel } from '../../../utils/Utils';
 import JobsCancelModal from '../JobsCancelModal/JobsCancelModal';
 import { refetchContext } from '../../contexts';

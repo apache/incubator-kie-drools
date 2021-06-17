@@ -11,13 +11,15 @@ import {
   GraphQL,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  ouiaPageTypeAndObjectId,
   ServerErrors,
   LoadMore,
-  componentOuiaProps,
-  OUIAProps,
   constructObject
 } from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps,
+  OUIAProps
+} from '@kogito-apps/ouia-tools';
 import React, { useEffect, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';

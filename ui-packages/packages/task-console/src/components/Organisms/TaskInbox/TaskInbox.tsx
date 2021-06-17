@@ -25,11 +25,10 @@ import {
   KogitoSpinner,
   LoadMore,
   ServerErrors,
-  OUIAProps,
-  componentOuiaProps,
   AppContext,
   useKogitoAppContext
 } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import Columns from '../../../util/Columns';
 import _ from 'lodash';
 import TaskInboxToolbar from '../../Molecules/TaskInboxToolbar/TaskInboxToolbar';

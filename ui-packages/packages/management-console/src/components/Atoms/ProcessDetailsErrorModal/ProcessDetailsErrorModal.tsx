@@ -6,7 +6,7 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   errorString: string;

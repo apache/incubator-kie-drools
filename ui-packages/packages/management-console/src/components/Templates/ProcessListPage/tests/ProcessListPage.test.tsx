@@ -1,6 +1,7 @@
 import React from 'react';
 import ProcessListPage from '../ProcessListPage';
-import { GraphQL, getWrapperAsync, LoadMore } from '@kogito-apps/common';
+import { GraphQL, LoadMore } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { MockedProvider } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
 import { Button, EmptyState, EmptyStateBody } from '@patternfly/react-core';
@@ -10,6 +11,7 @@ import { match } from 'react-router';
 jest.mock('../../../Organisms/ProcessListTable/ProcessListTable');
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
 import { mockProcessData } from './mocks/LoadMoreMockData';
+import wait from 'waait';
 const MockedComponent = (): React.ReactElement => {
   return <></>;
 };
@@ -311,25 +313,33 @@ const mocks7 = [
 
 describe('ProcessListPage component tests', () => {
   it('initial render snapshot', async () => {
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks1} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock1} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks1} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock1} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     expect(wrapper.find('MockedProcessListTable').exists()).toBeTruthy();
   });
   it('on FilterClick tests- without businesskey', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks1} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock1} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks1} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock1} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     await act(async () => {
       wrapper
         .find('#apply-filter-button')
@@ -346,14 +356,18 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('on FilterClick tests- with businesskey', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks2} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock2} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks2} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock2} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     await act(async () => {
       wrapper
         .find('#apply-filter-button')
@@ -370,14 +384,18 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('error in query - without businesskey', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks3} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock1} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks3} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock1} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     wrapper = wrapper.update();
     wrapper = wrapper.find(EmptyState);
     expect(
@@ -391,27 +409,35 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('Snapshot tests for no status selected', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks5} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock3} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks5} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock3} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     wrapper = wrapper.find(EmptyState);
     expect(wrapper).toMatchSnapshot();
   });
 
   it('reset click in no status found test', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks5} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock3} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks5} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock3} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     await act(async () => {
       wrapper
         .find(EmptyState)
@@ -433,14 +459,18 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('Loadmore tests', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks6} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock1} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks6} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock1} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+    });
+    wrapper = wrapper.update().find('ProcessListPage');
     expect(
       wrapper.find('MockedProcessListTable').props()['initData'][
         'ProcessInstances'
@@ -465,14 +495,18 @@ describe('ProcessListPage component tests', () => {
   });
 
   it('sorting tests', async () => {
-    let wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={mocks7} addTypename={false}>
-          <ProcessListPage {...routeComponentPropsMock1} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'ProcessListPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={mocks7} addTypename={false}>
+            <ProcessListPage {...routeComponentPropsMock1} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListPage');
+    });
     await act(async () => {
       wrapper
         .find('MockedProcessListTable')

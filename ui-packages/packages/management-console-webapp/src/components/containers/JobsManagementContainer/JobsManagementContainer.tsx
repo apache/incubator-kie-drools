@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { OUIAProps } from '@kogito-apps/components-common';
+import { OUIAProps } from '@kogito-apps/ouia-tools';
 import { EmbeddedJobsManagement } from '@kogito-apps/jobs-management';
 import { JobsManagementGatewayApi } from '../../../channel/JobsManagement';
 import { useJobsManagementGatewayApi } from '../../../channel/JobsManagement/JobsManagementContext';

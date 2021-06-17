@@ -21,13 +21,12 @@ import {
   DataTable,
   DataTableColumn,
   LoadMore,
-  OUIAProps,
-  componentOuiaProps,
   KogitoEmptyState,
   KogitoEmptyStateType,
   KogitoSpinner,
   ServerErrors
 } from '@kogito-apps/components-common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import {
   QueryFilter,

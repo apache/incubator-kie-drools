@@ -8,13 +8,12 @@ import {
 } from '@patternfly/react-core';
 import React, { useContext, useState } from 'react';
 import {
-  componentOuiaProps,
   EndpointLink,
   GraphQL,
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  OUIAProps
+  KogitoEmptyStateType
 } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import TaskConsoleContext, {
   ITaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';

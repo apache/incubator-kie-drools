@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import TaskInboxContainer from '../TaskInboxContainer';
 import { MemoryRouter as Router } from 'react-router';
 import React from 'react';
@@ -24,12 +24,11 @@ jest.mock('../../../Molecules/UserTaskPageHeader/UserTaskPageHeader');
 
 describe('TaskInboxContainer tests', () => {
   it('TaskInboxContainer snapshot test', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <Router>
         <TaskInboxContainer />
-      </Router>,
-      'TaskInboxContainer'
-    );
+      </Router>
+    ).find('TaskInboxContainer');
 
     expect(wrapper).toMatchSnapshot();
   });

@@ -18,7 +18,7 @@ import React from 'react';
 import ProcessDetailsErrorModal from '../ProcessDetailsErrorModal';
 import { Button } from '@patternfly/react-core';
 import { setTitle } from '@kogito-apps/management-console-shared';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 
 const MockedIcon = (): React.ReactElement => {
   return <></>;
@@ -46,8 +46,7 @@ describe('Process details error modal tests', () => {
   };
 
   it('Snapshot test with default props', () => {
-    const wrapper = getWrapper(
-      <ProcessDetailsErrorModal {...props} />,
+    const wrapper = mount(<ProcessDetailsErrorModal {...props} />).find(
       'ProcessDetailsErrorModal'
     );
     expect(wrapper).toMatchSnapshot();

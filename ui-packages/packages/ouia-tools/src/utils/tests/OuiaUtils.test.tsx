@@ -4,9 +4,7 @@ import {
   ouiaAttribute,
   attributeOuiaId,
   componentOuiaProps,
-  ouiaPageTypeAndObjectId,
-  getWrapper,
-  getWrapperAsync
+  ouiaPageTypeAndObjectId
 } from '../OuiaUtils';
 
 describe('test function ouiaAttribute', () => {
@@ -108,48 +106,6 @@ describe('test ouiaPageTypeAndObjectId', () => {
     expect(document.body.removeAttribute).toBeCalledWith('data-ouia-page-type');
     expect(document.body.removeAttribute).toBeCalledWith(
       'data-ouia-page-object-id'
-    );
-  });
-});
-describe('test wrappers', () => {
-  it('getWrapper simple component', () => {
-    const wrapper = getWrapper(<div />, 'div');
-    expect(wrapper.find(<div />)).not.toBeNull();
-    expect(wrapper.getElement()).toEqual(<div />);
-  });
-  it('getWrapper parent-child', () => {
-    const wrapper = getWrapper(
-      <div>
-        <span />
-      </div>,
-      'span'
-    );
-    expect(wrapper.find(<span />)).not.toBeNull();
-    expect(wrapper.getElement()).toEqual(<span />);
-    expect(wrapper.parent().getElement()).toEqual(
-      <div>
-        <span />
-      </div>
-    );
-  });
-  it('getWrapperAsync simple component', async () => {
-    const wrapper = await getWrapperAsync(<div />, 'div');
-    expect(wrapper.find(<div />)).not.toBeNull();
-    expect(wrapper.getElement()).toEqual(<div />);
-  });
-  it('getWrapperAsync parent-child', async () => {
-    const wrapper = await getWrapperAsync(
-      <div>
-        <span />
-      </div>,
-      'span'
-    );
-    expect(wrapper.find(<span />)).not.toBeNull();
-    expect(wrapper.getElement()).toEqual(<span />);
-    expect(wrapper.parent().getElement()).toEqual(
-      <div>
-        <span />
-      </div>
     );
   });
 });

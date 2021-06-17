@@ -14,13 +14,8 @@ import {
 import React from 'react';
 import { LevelDownAltIcon, LevelUpAltIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
-import {
-  ItemDescriptor,
-  GraphQL,
-  EndpointLink,
-  OUIAProps,
-  componentOuiaProps
-} from '@kogito-apps/common';
+import { ItemDescriptor, GraphQL, EndpointLink } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
   getProcessInstanceDescription,
   ProcessInstanceIconCreator

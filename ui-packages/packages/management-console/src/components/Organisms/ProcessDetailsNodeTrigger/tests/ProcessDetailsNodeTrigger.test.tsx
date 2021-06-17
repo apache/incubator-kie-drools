@@ -1,10 +1,11 @@
 import React from 'react';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger';
-import { getWrapperAsync } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { DropdownToggle, DropdownItem, FlexItem } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import axios from 'axios';
 import ProcessDetailsErrorModal from '../../../Atoms/ProcessDetailsErrorModal/ProcessDetailsErrorModal';
+import wait from 'waait';
 jest.mock('axios');
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
@@ -40,10 +41,15 @@ const mockTriggerableNodes = [
 
 const getNodeTriggerWrapper = async () => {
   mockedAxios.get.mockResolvedValue({ data: mockTriggerableNodes });
-  return getWrapperAsync(
-    <ProcessDetailsNodeTrigger processInstanceData={ProcessInstanceData} />,
-    'ProcessDetailsNodeTrigger'
-  );
+  let wrapper;
+  await act(async () => {
+    wrapper = mount(
+      <ProcessDetailsNodeTrigger processInstanceData={ProcessInstanceData} />
+    );
+    await wait(0);
+    wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
+  });
+  return wrapper;
 };
 
 describe('Process details node trigger component tests', () => {
@@ -170,11 +176,15 @@ describe('Process details node trigger component tests', () => {
   });
   it('failed to retrieve nodes', async () => {
     mockedAxios.get.mockRejectedValue({ message: '404 error' });
-    let wrapper = await getWrapperAsync(
-      <ProcessDetailsNodeTrigger processInstanceData={ProcessInstanceData} />,
-      'ProcessDetailsNodeTrigger'
-    );
-    wrapper = wrapper.update().find(ProcessDetailsErrorModal);
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <ProcessDetailsNodeTrigger processInstanceData={ProcessInstanceData} />
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
+    });
+    wrapper = wrapper.find(ProcessDetailsErrorModal);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(ProcessDetailsErrorModal).exists()).toBeTruthy();
     expect(

@@ -6,12 +6,12 @@ import {
   Card,
   CardBody
 } from '@patternfly/react-core';
+import { DomainExplorerListDomains } from '@kogito-apps/common';
 import {
   componentOuiaProps,
-  DomainExplorerListDomains,
   ouiaPageTypeAndObjectId,
   OUIAProps
-} from '@kogito-apps/common';
+} from '@kogito-apps/ouia-tools';
 import { Link } from 'react-router-dom';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 

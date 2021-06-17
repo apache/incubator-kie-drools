@@ -19,11 +19,11 @@ import { act } from 'react-dom/test-utils';
 import wait from 'waait';
 import {
   DataTable,
-  getWrapper,
   LoadMore,
   KogitoEmptyState,
   ServerErrors
 } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TestTaskInboxDriver from './mocks/TestTaskInboxDriver';
 import { userTasks } from './mocks/MockData';
 import TaskInbox, { TaskInboxProps } from '../TaskInbox';
@@ -76,7 +76,7 @@ const getTaskInboxDriver = (items: number): TestTaskInboxDriver => {
 let props: TaskInboxProps;
 
 const getTaskInboxWrapper = () => {
-  return getWrapper(<TaskInbox {...props} />, 'TaskInbox');
+  return mount(<TaskInbox {...props} />).find('TaskInbox');
 };
 
 describe('TaskInbox tests', () => {

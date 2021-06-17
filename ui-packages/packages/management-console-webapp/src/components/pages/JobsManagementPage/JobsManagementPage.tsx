@@ -16,10 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { Card, PageSection } from '@patternfly/react-core';
-import {
-  OUIAProps,
-  ouiaPageTypeAndObjectId
-} from '@kogito-apps/components-common';
+import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
 import { PageSectionHeader } from '@kogito-apps/consoles-common';
 import JobsManagementContainer from '../../containers/JobsManagementContainer/JobsManagementContainer';
 import '../../styles.css';

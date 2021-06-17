@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { UncontrolledReactSVGPanZoom } from 'react-svg-pan-zoom';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   ReactSvgPanZoomLoader,
   SvgLoaderSelectElement

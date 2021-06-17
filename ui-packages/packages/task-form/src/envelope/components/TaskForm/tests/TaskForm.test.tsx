@@ -22,10 +22,10 @@ import TaskForm, { TaskFormProps } from '../TaskForm';
 import { TaskFormSchema } from '../../../../types';
 import { TaskFormDriver } from '../../../../api';
 import {
-  getWrapper,
   KogitoEmptyState,
   KogitoSpinner
 } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import TaskFormRenderer from '../../TaskFormRenderer/TaskFormRenderer';
 import EmptyTaskForm from '../../EmptyTaskForm/EmptyTaskForm';
@@ -73,7 +73,7 @@ const getTaskFormDriver = (schema?: TaskFormSchema): TaskFormDriver => {
 };
 
 const getTaskFormWrapper = () => {
-  return getWrapper(<TaskForm {...props} />, 'TaskForm');
+  return mount(<TaskForm {...props} />).find('TaskForm');
 };
 
 describe('TaskForm Test', () => {

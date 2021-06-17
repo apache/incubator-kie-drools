@@ -15,13 +15,14 @@
  */
 
 import React from 'react';
-import { getWrapper, getWrapperAsync } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedJobsManagementDriver } from '../../../../api/mocks/MockedJobsManagementDriver';
 import JobsManagement from '../JobsManagement';
 import { JobStatus } from '@kogito-apps/management-console-shared';
 import { OrderBy } from '../../../../api';
 import { Jobs } from '../__mocks__/mockData';
 import { act } from 'react-dom/test-utils';
+import wait from 'waait';
 
 jest.mock('../../JobsManagementToolbar/JobsManagementToolbar');
 jest.mock('../../JobsManagementTable/JobsManagementTable');
@@ -73,10 +74,12 @@ describe('JobsManagement component tests', () => {
     await props.driver.query.mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
-    const wrapper = await getWrapperAsync(
-      <JobsManagement {...props} />,
-      'JobsManagement'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagement {...props} />);
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagement');
+    });
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -88,10 +91,12 @@ describe('JobsManagement component tests', () => {
     );
     const selectedStatus = [JobStatus.Scheduled];
     const orderBy = { lastUpdate: OrderBy.ASC };
-    const wrapper = await getWrapperAsync(
-      <JobsManagement {...props} />,
-      'JobsManagement'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagement {...props} />);
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagement');
+    });
     await act(async () => {
       wrapper
         .find('LoadMore')
@@ -106,7 +111,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test onRefresh function', async () => {
-    let wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     wrapper = wrapper.update();
     const selectedStatus = [JobStatus.Scheduled];
     const orderBy = { lastUpdate: OrderBy.ASC };
@@ -124,7 +129,7 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test ResetToDefault method', async () => {
-    const wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    const wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     await act(async () => {
       wrapper
         .find('MockedJobsManagementToolbar')
@@ -140,10 +145,9 @@ describe('JobsManagement component tests', () => {
   });
 
   it('Test Ouiasafe prop', async () => {
-    const wrapper = getWrapper(
-      <JobsManagement {...{ ...props, ouiaSafe: false }} />,
-      'JobsManagement'
-    );
+    const wrapper = mount(
+      <JobsManagement {...{ ...props, ouiaSafe: false }} />
+    ).find('JobsManagement');
     await act(async () => {
       expect(wrapper.find('JobsManagement').props()['ouiaSafe']).toEqual(false);
     });
@@ -154,7 +158,7 @@ describe('JobsManagement component tests', () => {
     await props.driver.query.mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
-    let wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     await act(async () => {
       wrapper
         .find('MockedJobsManagementTable')
@@ -172,7 +176,7 @@ describe('JobsManagement component tests', () => {
     await props.driver.query.mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
-    let wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     await act(async () => {
       wrapper
         .find('MockedJobsManagementTable')
@@ -197,7 +201,7 @@ describe('JobsManagement component tests', () => {
     await props.driver.query.mockImplementationOnce(() =>
       Promise.resolve(Jobs)
     );
-    const wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    const wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     await act(async () => {
       wrapper
         .find('MockedJobsManagementTable')
@@ -217,7 +221,7 @@ describe('JobsManagement component tests', () => {
     await props.driver.bulkCancel.mockImplementationOnce(() =>
       Promise.resolve({ successJobs, failedJobs })
     );
-    let wrapper = getWrapper(<JobsManagement {...props} />, 'JobsManagement');
+    let wrapper = mount(<JobsManagement {...props} />).find('JobsManagement');
     let jobOperations;
     await act(async () => {
       jobOperations = wrapper.find('MockedJobsManagementToolbar').props()[

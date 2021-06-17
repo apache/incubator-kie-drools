@@ -1,7 +1,8 @@
 import React from 'react';
 import JobsManagementPage from '../JobsManagementPage';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
-import { MockedProvider } from '@apollo/react-testing';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
+import { MockedProvider, wait } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
 import { act } from 'react-dom/test-utils';
 import { JobsData } from '../mockData/JobsMockData';
@@ -201,14 +202,18 @@ describe('Jobs management page tests', () => {
     window.location = location;
   });
   it('snapshot test with mock data', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     expect(wrapper).toMatchSnapshot();
     wrapper.update();
     await act(async () => {
@@ -220,26 +225,34 @@ describe('Jobs management page tests', () => {
   });
 
   it('mock data with error response', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks3} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks3} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('ServerErrors')).toBeTruthy();
   });
   it('test modal handlers', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     await act(async () => {
       wrapper
         .find('MockedJobsPanelDetailsModal')
@@ -272,14 +285,18 @@ describe('Jobs management page tests', () => {
     );
   });
   it('toggle kebab', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     await act(async () => {
       wrapper
         .find('#jobs-management-buttons')
@@ -300,14 +317,18 @@ describe('Jobs management page tests', () => {
     ).toBeTruthy();
   });
   it('test click handler on empty state & empty state snapshot', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks5} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks5} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     await act(async () => {
       wrapper
         .find('JobsManagementFilters')
@@ -331,15 +352,18 @@ describe('Jobs management page tests', () => {
     ).toEqual(defaultChip);
   });
   it('Test pagination with mock responses with offset 0', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks4} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
-    wrapper = wrapper.update();
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks4} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     const tempJobs = wrapper.find('JobsManagementTable').props()['data'];
     expect(tempJobs[Object.keys(tempJobs)[0]].length).toEqual(10);
     await act(async () => {
@@ -352,15 +376,18 @@ describe('Jobs management page tests', () => {
     expect(wrapper.find('LoadMore').props()['isLoadingMore']).toEqual(true);
   });
   it('Test pagination with mock responses with offset 10', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks5} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
-    wrapper = wrapper.update();
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks5} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     const tempJobs = wrapper.find('JobsManagementTable').props()['data'];
     expect(tempJobs[Object.keys(tempJobs)[0]].length).toEqual(10);
     await act(async () => {
@@ -382,14 +409,18 @@ describe('Jobs management page tests', () => {
     expect(mocks5[0].request.variables.offset).toEqual(0);
   });
   it('test clearAllFilters on toolbar', async () => {
-    let wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <BrowserRouter>
-          <JobsManagementPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'JobsManagementPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <BrowserRouter>
+            <JobsManagementPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementPage');
+    });
     await act(async () => {
       wrapper
         .find('Toolbar')

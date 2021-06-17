@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+import { mount } from 'enzyme';
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
 import { ProcessInstance } from '@kogito-apps/management-console-shared';
 import ProcessDetailsContainer from '../ProcessDetailsContainer';
 import * as ProcessDetailsContext from '../../../../channel/ProcessDetails/ProcessDetailsContext';
@@ -37,10 +37,9 @@ const processInstance: ProcessInstance = {} as ProcessInstance;
 
 describe('WebApp - ProcessDetailsContainer tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = getWrapper(
-      <ProcessDetailsContainer processInstance={processInstance} />,
-      'ProcessDetailsContainer'
-    );
+    const wrapper = mount(
+      <ProcessDetailsContainer processInstance={processInstance} />
+    ).find('ProcessDetailsContainer');
     expect(wrapper).toMatchSnapshot();
   });
 });

@@ -14,6 +14,8 @@ exports[`PageLayout component tests open with PageSidebar closed 1`] = `
 >
   <Page
     className="kogito-consoles-common--PageLayout"
+    data-ouia-component-type="page"
+    data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
     header={
       <PageHeader
@@ -66,6 +68,8 @@ exports[`PageLayout component tests open with PageSidebar closed 1`] = `
   >
     <div
       className="pf-c-page kogito-consoles-common--PageLayout"
+      data-ouia-component-type="page"
+      data-ouia-safe={true}
     >
       <PageHeader
         data-ouia-header="true"
@@ -228,6 +232,8 @@ exports[`PageLayout component tests open with PageSidebar closed 2`] = `
 >
   <Page
     className="kogito-consoles-common--PageLayout"
+    data-ouia-component-type="page"
+    data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
     header={
       <PageHeader
@@ -280,6 +286,8 @@ exports[`PageLayout component tests open with PageSidebar closed 2`] = `
   >
     <div
       className="pf-c-page kogito-consoles-common--PageLayout"
+      data-ouia-component-type="page"
+      data-ouia-safe={true}
     >
       <PageHeader
         data-ouia-header="true"
@@ -441,6 +449,8 @@ exports[`PageLayout component tests snapshot tests 1`] = `
 >
   <Page
     className="kogito-consoles-common--PageLayout"
+    data-ouia-component-type="page"
+    data-ouia-safe={true}
     defaultManagedSidebarIsOpen={true}
     header={
       <PageHeader
@@ -493,6 +503,8 @@ exports[`PageLayout component tests snapshot tests 1`] = `
   >
     <div
       className="pf-c-page kogito-consoles-common--PageLayout"
+      data-ouia-component-type="page"
+      data-ouia-safe={true}
     >
       <PageHeader
         data-ouia-header="true"

@@ -21,7 +21,7 @@ import {
   AlertActionLink,
   Alert
 } from '@patternfly/react-core';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { NotificationType } from '../../../../util/Variants';
 
 describe('FormNotification test', () => {
@@ -32,10 +32,9 @@ describe('FormNotification test', () => {
       close: jest.fn()
     };
 
-    const wrapper = getWrapper(
-      <FormNotification notification={notificationProps} />,
-      'FormNotification'
-    );
+    const wrapper = mount(
+      <FormNotification notification={notificationProps} />
+    ).find('FormNotification');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -61,10 +60,9 @@ describe('FormNotification test', () => {
       details: 'The details here!'
     };
 
-    let wrapper = getWrapper(
-      <FormNotification notification={notificationProps} />,
-      'FormNotification'
-    );
+    let wrapper = mount(
+      <FormNotification notification={notificationProps} />
+    ).find('FormNotification');
     expect(wrapper).toMatchSnapshot();
 
     expect(wrapper.html()).toContain(notificationProps.message);
@@ -99,10 +97,9 @@ describe('FormNotification test', () => {
       }
     };
 
-    const wrapper = getWrapper(
-      <FormNotification notification={notificationProps} />,
-      'FormNotification'
-    );
+    const wrapper = mount(
+      <FormNotification notification={notificationProps} />
+    ).find('FormNotification');
     expect(wrapper).toMatchSnapshot();
 
     expect(wrapper.html()).toContain(notificationProps.message);

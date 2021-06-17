@@ -1,6 +1,6 @@
 import React, { FormEvent } from 'react';
 import TaskInboxToolbar from '../TaskInboxToolbar';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import {
   Select,
   SelectOption,
@@ -16,12 +16,11 @@ const applyFilter = jest.fn();
 const resetFilter = jest.fn();
 
 const getTaskInboxWrapper = context => {
-  return getWrapper(
+  return mount(
     <TaskConsoleFilterContext.Provider value={context}>
       <TaskInboxToolbar applyFilter={applyFilter} resetFilter={resetFilter} />
-    </TaskConsoleFilterContext.Provider>,
-    'TaskInboxToolbar'
-  );
+    </TaskConsoleFilterContext.Provider>
+  ).find('TaskInboxToolbar');
 };
 
 describe('TaskInbox toolbar tests', () => {

@@ -22,7 +22,7 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import '../../styles.css';
 import aboutPageBackground from '../../../static/kogitoAbout.png';
 import { useBrandContext } from '../BrandContext/BrandContext';

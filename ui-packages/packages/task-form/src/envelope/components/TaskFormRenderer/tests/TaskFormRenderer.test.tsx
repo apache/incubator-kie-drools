@@ -18,7 +18,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import TaskFormRenderer from '../TaskFormRenderer';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
 import { TaskFormSchema } from '../../../../types';
@@ -92,16 +92,15 @@ const getTaskFormRendererWrapper = (
   enabled: boolean,
   formData?: any
 ) => {
-  return getWrapper(
+  return mount(
     <TaskFormRenderer
       formSchema={formSchema}
       userTask={userTask}
       formData={formData}
       enabled={enabled}
       submit={doSubmit}
-    />,
-    'TaskFormRenderer'
-  );
+    />
+  ).find('TaskFormRenderer');
 };
 
 describe('TaskFormRenderer Test', () => {
@@ -199,9 +198,9 @@ describe('TaskFormRenderer Test', () => {
       actions[0].execute();
     });
 
-    wrapper = wrapper.update().find(TaskFormRenderer);
+    wrapper = wrapper.update();
 
-    renderer = wrapper.find(FormRenderer);
+    renderer = wrapper.find(TaskFormRenderer).find(FormRenderer);
 
     renderer.props().onSubmit(formData);
 

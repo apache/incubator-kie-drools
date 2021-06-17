@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import PageSectionHeader from '../PageSectionHeader';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -26,12 +26,11 @@ describe('PageSectionHeader tests', () => {
     breadcrumbPath: ['/', { pathname: '/ProcessInstances', state: {} }]
   };
   it('Snapshot test with default props', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <PageSectionHeader {...props} />
-      </BrowserRouter>,
-      'PageSectionHeader'
-    );
+      </BrowserRouter>
+    ).find('PageSectionHeader');
     expect(wrapper).toMatchSnapshot();
   });
 });

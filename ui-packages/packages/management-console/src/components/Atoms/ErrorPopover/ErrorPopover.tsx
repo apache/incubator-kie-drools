@@ -1,7 +1,8 @@
 import React from 'react';
 import { Popover, Button } from '@patternfly/react-core';
 import { ProcessInstanceIconCreator } from '../../../utils/Utils';
-import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import ProcessInstance = GraphQL.ProcessInstance;
 
 interface IOwnProps {

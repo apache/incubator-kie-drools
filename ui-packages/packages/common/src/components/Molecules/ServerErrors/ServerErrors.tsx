@@ -15,7 +15,7 @@ import {
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import '../../styles.css';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   error: any;

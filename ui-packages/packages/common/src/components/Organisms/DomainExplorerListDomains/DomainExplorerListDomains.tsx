@@ -15,7 +15,7 @@ import { CubesIcon } from '@patternfly/react-icons';
 import { Link } from 'react-router-dom';
 import { GraphQL } from '../../../graphql/types';
 import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 const DomainExplorerListDomains: React.FC<OUIAProps> = ({
   ouiaId,

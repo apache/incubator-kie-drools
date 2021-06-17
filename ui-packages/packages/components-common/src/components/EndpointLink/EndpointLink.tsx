@@ -16,7 +16,7 @@
 import React from 'react';
 import { Button } from '@patternfly/react-core';
 import { ExternalLinkAltIcon } from '@patternfly/react-icons';
-import { componentOuiaProps, OUIAProps } from '../../utils/OuiaUtils';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 interface IOwnProps {
   serviceUrl: string;
   isLinkShown: boolean;

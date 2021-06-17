@@ -11,7 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import { Redirect, StaticContext, RouteComponentProps } from 'react-router';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import * as H from 'history';
 
 interface IOwnProps {

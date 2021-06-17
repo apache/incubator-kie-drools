@@ -21,10 +21,9 @@ import {
   ServerErrors,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  LoadMore,
-  componentOuiaProps,
-  OUIAProps
+  LoadMore
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   JobsCancelModal,
   JobsDetailsModal,

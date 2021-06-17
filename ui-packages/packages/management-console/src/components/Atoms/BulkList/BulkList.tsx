@@ -7,11 +7,8 @@ import {
   TextList,
   TextListItem
 } from '@patternfly/react-core';
-import {
-  ItemDescriptor,
-  OUIAProps,
-  componentOuiaProps
-} from '@kogito-apps/common';
+import { ItemDescriptor } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export enum OperationType {
   ABORT = 'ABORT',

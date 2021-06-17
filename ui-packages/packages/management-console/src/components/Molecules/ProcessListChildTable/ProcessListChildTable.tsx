@@ -1,14 +1,13 @@
 import {
-  componentOuiaProps,
   EndpointLink,
   GraphQL,
   ItemDescriptor,
   KogitoEmptyState,
   KogitoEmptyStateType,
   KogitoSpinner,
-  OUIAProps,
   ServerErrors
 } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { HistoryIcon } from '@patternfly/react-icons';
 import { IRow, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import {

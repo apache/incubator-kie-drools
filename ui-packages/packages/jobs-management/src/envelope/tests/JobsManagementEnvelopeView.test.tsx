@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import JobsManagementEnvelopeView, {
   JobsManagementEnvelopeViewApi
@@ -31,10 +31,9 @@ describe('JobsManagementEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<JobsManagementEnvelopeViewApi>();
 
-    let wrapper = getWrapper(
-      <JobsManagementEnvelopeView channelApi={channelApi} ref={forwardRef} />,
-      'JobsManagementEnvelopeView'
-    );
+    const wrapper = mount(
+      <JobsManagementEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    ).find('JobsManagementEnvelopeView');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -44,11 +43,11 @@ describe('JobsManagementEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update().find(JobsManagementEnvelopeView);
+    const envelopeView = wrapper.update().find(JobsManagementEnvelopeView);
 
-    expect(wrapper).toMatchSnapshot();
+    expect(envelopeView).toMatchSnapshot();
 
-    const inbox = wrapper.find(JobsManagement);
+    const inbox = envelopeView.find(JobsManagement);
 
     expect(inbox.exists()).toBeTruthy();
     expect(inbox.props().isEnvelopeConnectedToChannel).toBeTruthy();

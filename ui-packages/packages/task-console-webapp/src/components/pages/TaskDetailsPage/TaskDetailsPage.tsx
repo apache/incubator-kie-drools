@@ -39,14 +39,16 @@ import {
   Title
 } from '@patternfly/react-core';
 import {
-  OUIAProps,
-  componentOuiaProps,
-  ouiaPageTypeAndObjectId,
   KogitoSpinner,
   ServerErrors,
   KogitoEmptyState,
   KogitoEmptyStateType
 } from '@kogito-apps/components-common';
+import {
+  OUIAProps,
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId
+} from '@kogito-apps/ouia-tools';
 import { PageTitle } from '@kogito-apps/consoles-common';
 import { UserTaskInstance, TaskState } from '@kogito-apps/task-console-shared';
 import { TaskInboxGatewayApi } from '../../../channel/inbox';

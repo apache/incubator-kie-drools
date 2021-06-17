@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import TestProcessListDriver from '../../ProcessListPage/tests/mocks/TestProcessListDriver';
@@ -79,8 +79,7 @@ describe('ProcessListChildTable test', () => {
     });
     let wrapper;
     await act(async () => {
-      wrapper = getWrapper(
-        <ProcessListChildTable {...props} />,
+      wrapper = mount(<ProcessListChildTable {...props} />).find(
         'ProcessListChildTable'
       );
     });
@@ -115,8 +114,7 @@ describe('ProcessListChildTable test', () => {
     });
     let wrapper;
     await act(async () => {
-      wrapper = getWrapper(
-        <ProcessListChildTable {...props} />,
+      wrapper = mount(<ProcessListChildTable {...props} />).find(
         'ProcessListChildTable'
       );
     });
@@ -156,8 +154,7 @@ describe('ProcessListChildTable test', () => {
     });
     let wrapper;
     await act(async () => {
-      wrapper = getWrapper(
-        <ProcessListChildTable {...props} />,
+      wrapper = mount(<ProcessListChildTable {...props} />).find(
         'ProcessListChildTable'
       );
     });
@@ -193,8 +190,7 @@ describe('ProcessListChildTable test', () => {
     });
     let wrapper;
     await act(async () => {
-      wrapper = getWrapper(
-        <ProcessListChildTable {...props} />,
+      wrapper = mount(<ProcessListChildTable {...props} />).find(
         'ProcessListChildTable'
       );
     });
@@ -236,8 +232,7 @@ describe('ProcessListChildTable test', () => {
     });
     let wrapper;
     await act(async () => {
-      wrapper = getWrapper(
-        <ProcessListChildTable {...props} />,
+      wrapper = mount(<ProcessListChildTable {...props} />).find(
         'ProcessListChildTable'
       );
     });

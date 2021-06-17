@@ -35,6 +35,9 @@
     "uniforms-bridge-json-schema": "3.0.0",
     "uniforms-patternfly": "4.1.2"
   },
+  "devDependencies": {
+    "@kogito-apps/ouia-tools": "^1.0.0"
+  },
   "jest": {
     "preset": "ts-jest/presets/js-with-ts",
     "setupFiles": [

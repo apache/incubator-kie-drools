@@ -10,7 +10,7 @@ import PageToolbar from '../../Molecules/PageToolbar/PageToolbar';
 import { aboutLogoContext } from '../../contexts';
 import '../../styles.css';
 
-import { ouiaAttribute } from '../../../utils/OuiaUtils';
+import { ouiaAttribute } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   children: React.ReactNode;

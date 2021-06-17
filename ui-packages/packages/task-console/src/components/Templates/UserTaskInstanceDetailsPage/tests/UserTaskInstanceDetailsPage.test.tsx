@@ -16,13 +16,9 @@
 
 import React from 'react';
 import * as H from 'history';
-import {
-  GraphQL,
-  KogitoEmptyState,
-  getWrapperAsync,
-  ServerErrors
-} from '@kogito-apps/common';
+import { GraphQL, KogitoEmptyState, ServerErrors } from '@kogito-apps/common';
 import UserTaskInstance = GraphQL.UserTaskInstance;
+import { mount } from 'enzyme';
 import TaskConsoleContext, {
   TaskConsoleContextImpl
 } from '../../../../context/TaskConsoleContext/TaskConsoleContext';
@@ -113,19 +109,22 @@ const props = {
   history: H.createBrowserHistory()
 };
 
-const getWrapper = async (mocks, context) => {
+const mountCustom = async (mocks, context) => {
   let wrapper = null;
   await act(async () => {
-    wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks} addTypename={false}>
-        <TaskConsoleContext.Provider value={context}>
-          <BrowserRouter>
-            <UserTaskInstanceDetailsPage {...props} />
-          </BrowserRouter>
-        </TaskConsoleContext.Provider>
-      </MockedProvider>,
-      'UserTaskInstanceDetailsPage'
-    );
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks} addTypename={false}>
+          <TaskConsoleContext.Provider value={context}>
+            <BrowserRouter>
+              <UserTaskInstanceDetailsPage {...props} />
+            </BrowserRouter>
+          </TaskConsoleContext.Provider>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('UserTaskInstanceDetailsPage');
+    });
     await wait();
   });
 
@@ -157,7 +156,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     ];
     const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(null);
-    const wrapper = await getWrapper(mocks, context);
+    const wrapper = await mountCustom(mocks, context);
     expect(wrapper).toMatchSnapshot();
 
     const emptyState = wrapper.find(KogitoEmptyState);
@@ -184,7 +183,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
       }
     ];
     const context = new TaskConsoleContextImpl<UserTaskInstance>();
-    const wrapper = await getWrapper(mocks, context);
+    const wrapper = await mountCustom(mocks, context);
     const serverErrors = wrapper.find(ServerErrors);
     expect(serverErrors).toMatchSnapshot();
     expect(serverErrors.exists()).toBeTruthy();
@@ -211,7 +210,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
       }
     ];
     context.setActiveItem(userTaskInstance);
-    const wrapper = await getWrapper(mocks, context);
+    const wrapper = await mountCustom(mocks, context);
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
 
@@ -233,7 +232,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
-    let wrapper = await getWrapper(mocks, context);
+    let wrapper = await mountCustom(mocks, context);
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
@@ -275,7 +274,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
-    let wrapper = await getWrapper(mocks, context);
+    let wrapper = await mountCustom(mocks, context);
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
@@ -312,7 +311,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
     const context = new TaskConsoleContextImpl<UserTaskInstance>();
     context.setActiveItem(userTaskInstance);
     const mocks = [];
-    let wrapper = await getWrapper(mocks, context);
+    let wrapper = await mountCustom(mocks, context);
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(Breadcrumb).exists()).toBeTruthy();
@@ -369,7 +368,7 @@ describe('UserTaskInstanceDetailsPage tests', () => {
       }
     ];
     context.setActiveItem(null);
-    let wrapper = await getWrapper(mocks, context);
+    let wrapper = await mountCustom(mocks, context);
     // open details drawer
     await act(async () => {
       wrapper

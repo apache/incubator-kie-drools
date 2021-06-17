@@ -2,7 +2,7 @@ import React from 'react';
 import DomainExplorerLandingPage from '../DomainExplorerLandingPage';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { MockedProvider } from '@apollo/react-testing';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 
 const MockedDomainExplorerListDomains = (): React.ReactElement => {
   return <></>;
@@ -29,14 +29,13 @@ describe('Domain Explorer Landing Page Component', () => {
     ouiaSafe: true
   };
   it('Snapshot test with default props', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MockedProvider mocks={[]} addTypename={false}>
         <Router keyLength={0}>
           <DomainExplorerLandingPage {...props} />
         </Router>
-      </MockedProvider>,
-      'DomainExplorerLandingPage'
-    );
+      </MockedProvider>
+    ).find('DomainExplorerLandingPage');
     expect(wrapper).toMatchSnapshot();
   });
 });

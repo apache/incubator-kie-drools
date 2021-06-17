@@ -3,7 +3,8 @@ import * as H from 'history';
 import ProcessDetailsPage from '../ProcessDetailsPage';
 import { MockedProvider } from '@apollo/react-testing';
 import { BrowserRouter } from 'react-router-dom';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import GetProcessInstanceByIdDocument = GraphQL.GetProcessInstanceByIdDocument;
 import GetJobsByProcessInstanceIdDocument = GraphQL.GetJobsByProcessInstanceIdDocument;
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
@@ -15,6 +16,7 @@ import * as Utils from '../../../../utils/Utils';
 import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import InlineSVG from 'react-inlinesvg';
+import wait from 'waait';
 // tslint:disable: no-string-literal
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 jest.mock('../../../Atoms/ProcessListModal/ProcessListModal');
@@ -515,27 +517,35 @@ describe('Process Details Page component tests', () => {
     })
   );
   it('snapshot testing in Active state', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     expect(wrapper).toMatchSnapshot();
   });
   describe('abort button click', () => {
     it('on successfull abort', async () => {
       mockedAxios.delete.mockResolvedValue({});
-      const wrapper = await getWrapperAsync(
-        <MockedProvider mocks={mocks1} addTypename={false}>
-          <BrowserRouter>
-            <ProcessDetailsPage {...props} />
-          </BrowserRouter>
-        </MockedProvider>,
-        'ProcessDetailsPage'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <MockedProvider mocks={mocks1} addTypename={false}>
+            <BrowserRouter>
+              <ProcessDetailsPage {...props} />
+            </BrowserRouter>
+          </MockedProvider>
+        );
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetailsPage');
+      });
       const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
       await act(async () => {
         wrapper
@@ -549,14 +559,18 @@ describe('Process Details Page component tests', () => {
     });
     it('on failed abort', async () => {
       mockedAxios.delete.mockRejectedValue({ message: '404 error' });
-      const wrapper = await getWrapperAsync(
-        <MockedProvider mocks={mocks1} addTypename={false}>
-          <BrowserRouter>
-            <ProcessDetailsPage {...props} />
-          </BrowserRouter>
-        </MockedProvider>,
-        'ProcessDetailsPage'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(
+          <MockedProvider mocks={mocks1} addTypename={false}>
+            <BrowserRouter>
+              <ProcessDetailsPage {...props} />
+            </BrowserRouter>
+          </MockedProvider>
+        );
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetailsPage');
+      });
       const handleAbortSpy = jest.spyOn(Utils, 'handleAbort');
       await act(async () => {
         wrapper
@@ -570,38 +584,50 @@ describe('Process Details Page component tests', () => {
     });
   });
   it('snapshot testing in Error state', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks2} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks2} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot testing in Suspended state', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks3} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks3} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot testing for error occurance', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks3} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props1} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks3} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props1} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     expect(wrapper).toMatchSnapshot();
   });
   it('Test refresh and save button', async () => {
@@ -610,14 +636,18 @@ describe('Process Details Page component tests', () => {
     delete window.location;
     // @ts-ignore
     window.location = { reload: jest.fn() };
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
     wrapper
       .find('#refresh-button')
@@ -651,14 +681,18 @@ describe('Process Details Page component tests', () => {
     delete window.location;
     // @ts-ignore
     window.location = { reload: jest.fn() };
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     const handleVariableUpdateSpy = jest.spyOn(Utils, 'handleVariableUpdate');
     wrapper
       .find('#refresh-button')
@@ -675,14 +709,20 @@ describe('Process Details Page component tests', () => {
   });
   it('test node trigger presence', async () => {
     // with active state- node trigger panel present
-    const wrapperWithNodeTrigger = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapperWithNodeTrigger;
+    await act(async () => {
+      wrapperWithNodeTrigger = mount(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapperWithNodeTrigger = wrapperWithNodeTrigger
+        .update()
+        .find('ProcessDetailsPage');
+    });
     expect(
       wrapperWithNodeTrigger.find('MockedProcessDetailsNodeTrigger').exists()
     ).toBeTruthy();
@@ -691,14 +731,20 @@ describe('Process Details Page component tests', () => {
     mockWithCompletedState[0].result.data.ProcessInstances[0].state =
       GraphQL.ProcessInstanceState.Completed;
     // with completed state - node trigger panel absent
-    const wrapperWithoutNodeTrigger1 = await getWrapperAsync(
-      <MockedProvider mocks={mockWithCompletedState} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapperWithoutNodeTrigger1;
+    await act(async () => {
+      wrapperWithoutNodeTrigger1 = mount(
+        <MockedProvider mocks={mockWithCompletedState} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapperWithoutNodeTrigger1 = wrapperWithoutNodeTrigger1
+        .update()
+        .find('ProcessDetailsPage');
+    });
     expect(
       wrapperWithoutNodeTrigger1
         .find('MockedProcessDetailsNodeTrigger')
@@ -709,14 +755,20 @@ describe('Process Details Page component tests', () => {
     mockWithAbortedState[0].result.data.ProcessInstances[0].state =
       GraphQL.ProcessInstanceState.Aborted;
     // with Aborted state - node trigger panel absent
-    const wrapperWithoutNodeTrigger2 = await getWrapperAsync(
-      <MockedProvider mocks={mockWithAbortedState} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapperWithoutNodeTrigger2;
+    await act(async () => {
+      wrapperWithoutNodeTrigger2 = mount(
+        <MockedProvider mocks={mockWithAbortedState} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapperWithoutNodeTrigger2 = wrapperWithoutNodeTrigger2
+        .update()
+        .find('ProcessDetailsPage');
+    });
     expect(
       wrapperWithoutNodeTrigger2
         .find('MockedProcessDetailsNodeTrigger')
@@ -725,14 +777,18 @@ describe('Process Details Page component tests', () => {
   });
 
   it('test api to get svg', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mocks1} addTypename={false}>
-        <BrowserRouter>
-          <ProcessDetailsPage {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessDetailsPage'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mocks1} addTypename={false}>
+          <BrowserRouter>
+            <ProcessDetailsPage {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsPage');
+    });
     wrapper.update();
     expect(
       wrapper.find('MockedProcessDetailsProcessDiagram').props()['svg']

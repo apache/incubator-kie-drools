@@ -1,4 +1,5 @@
-import { getWrapper, GraphQL, KogitoSpinner } from '@kogito-apps/common';
+import { GraphQL, KogitoSpinner } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import React from 'react';
 import ProcessListTable from '../ProcessListTable';
 import { BrowserRouter } from 'react-router-dom';
@@ -131,12 +132,11 @@ const props = {
 
 describe('ProcessListPage tests', () => {
   it('snapshot test for process list - without expanded', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...props} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     expect(wrapper).toMatchSnapshot();
   });
   it('snapshot test for disabled process and non "error" state', () => {
@@ -145,21 +145,19 @@ describe('ProcessListPage tests', () => {
       GraphQL.ProcessInstanceState.Active;
     clonedProps.initData.ProcessInstances[0].addons = [];
     clonedProps.initData.ProcessInstances[0].serviceUrl = null;
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...clonedProps} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     expect(wrapper).toMatchSnapshot();
   });
   it('snapshot for loading state', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...{ ...props, loading: true, initData: {} }} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     const spinner = wrapper.find(KogitoSpinner);
     expect(spinner.exists()).toBeTruthy();
     expect(spinner).toMatchSnapshot();
@@ -201,12 +199,11 @@ describe('ProcessListPage tests', () => {
     ];
     clonedProps.selectableInstances = 1;
 
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...clonedProps} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     await act(async () => {
       wrapper
         .find('CollapseColumn')
@@ -222,12 +219,11 @@ describe('ProcessListPage tests', () => {
   });
   it('checkbox click tests - selected', async () => {
     const clonedProps = _.cloneDeep(props);
-    let wrapper = getWrapper(
+    let wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...clonedProps} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     await act(async () => {
       wrapper
         .find(Checkbox)
@@ -239,12 +235,11 @@ describe('ProcessListPage tests', () => {
     expect(props.setSelectedInstances).toHaveBeenCalled();
   });
   it('checkbox click tests - unselected', async () => {
-    let wrapper = getWrapper(
+    let wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...props} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     await act(async () => {
       wrapper
         .find(Checkbox)
@@ -256,12 +251,11 @@ describe('ProcessListPage tests', () => {
     expect(props.setSelectedInstances).toHaveBeenCalled();
   });
   describe('skip call tests', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...props} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     it('on skip success', async () => {
       mockedAxios.post.mockResolvedValue({});
       await act(async () => {
@@ -303,12 +297,11 @@ describe('ProcessListPage tests', () => {
   });
 
   describe('Retry call tests', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...props} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     it('on retry success', async () => {
       mockedAxios.post.mockResolvedValue({});
       await act(async () => {
@@ -351,12 +344,11 @@ describe('ProcessListPage tests', () => {
     });
   });
   describe('Abort call tests', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ProcessListTable {...props} />
-      </BrowserRouter>,
-      'ProcessListTable'
-    );
+      </BrowserRouter>
+    ).find('ProcessListTable');
     it('on Abort success', async () => {
       mockedAxios.delete.mockResolvedValue({});
       await act(async () => {

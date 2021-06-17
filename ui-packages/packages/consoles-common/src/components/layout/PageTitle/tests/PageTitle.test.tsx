@@ -17,20 +17,19 @@
 import React from 'react';
 import PageTitle from '../PageTitle';
 import { Label } from '@patternfly/react-core';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 
 describe('PageTitle test', () => {
   it('default snapshot testing', () => {
-    const wrapper = getWrapper(<PageTitle title="Title" />, 'PageTitle');
+    const wrapper = mount(<PageTitle title="Title" />).find('PageTitle');
 
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot testing with extra', () => {
-    const wrapper = getWrapper(
-      <PageTitle title="Title" extra={<Label>Label</Label>} />,
-      'PageTitle'
-    );
+    const wrapper = mount(
+      <PageTitle title="Title" extra={<Label>Label</Label>} />
+    ).find('PageTitle');
 
     expect(wrapper).toMatchSnapshot();
 

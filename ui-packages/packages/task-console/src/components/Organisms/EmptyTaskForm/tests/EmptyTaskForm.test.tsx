@@ -20,11 +20,11 @@ import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import wait from 'waait';
 import {
-  getWrapper,
   GraphQL,
   KogitoAppContextProvider,
   UserContext
 } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
 import { TestingUserContext } from '../../../../util/tests/utils/TestingUserContext';
@@ -74,7 +74,7 @@ const getEmptyTaskFormWrapper = (
   formSubmitSuccessCallback?: () => void,
   formSubmitErrorCallback?: () => void
 ) => {
-  return getWrapper(
+  return mount(
     <KogitoAppContextProvider userContext={userContext}>
       <EmptyTaskForm
         formSchema={_.cloneDeep(ApplyForVisaForm)}
@@ -82,9 +82,8 @@ const getEmptyTaskFormWrapper = (
         onSubmitSuccess={formSubmitSuccessCallback}
         onSubmitError={formSubmitErrorCallback}
       />
-    </KogitoAppContextProvider>,
-    'EmptyTaskForm'
-  );
+    </KogitoAppContextProvider>
+  ).find('EmptyTaskForm');
 };
 
 let userContext: UserContext;

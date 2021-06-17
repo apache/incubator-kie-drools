@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskConsoleRoutes from '../TaskConsoleRoutes';
 import { MemoryRouter, Route } from 'react-router-dom';
 import { TaskDetailsPage, TaskInboxPage } from '../../../pages';
@@ -25,12 +25,11 @@ jest.mock('../../../pages/TaskDetailsPage/TaskDetailsPage');
 
 describe('TaskConsoleRoutes tests', () => {
   it('Default route test', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MemoryRouter keyLength={0} initialEntries={['/']}>
         <TaskConsoleRoutes />
-      </MemoryRouter>,
-      'TaskConsoleRoutes'
-    );
+      </MemoryRouter>
+    ).find('TaskConsoleRoutes');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -42,12 +41,11 @@ describe('TaskConsoleRoutes tests', () => {
   });
 
   it('TaskInbox route test', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MemoryRouter keyLength={0} initialEntries={['/TaskInbox']}>
         <TaskConsoleRoutes />
-      </MemoryRouter>,
-      'TaskConsoleRoutes'
-    );
+      </MemoryRouter>
+    ).find('TaskConsoleRoutes');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -59,12 +57,11 @@ describe('TaskConsoleRoutes tests', () => {
   });
 
   it('TaskDetails route test', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <MemoryRouter keyLength={0} initialEntries={['/TaskDetails/id']}>
         <TaskConsoleRoutes />
-      </MemoryRouter>,
-      'TaskConsoleRoutes'
-    );
+      </MemoryRouter>
+    ).find('TaskConsoleRoutes');
 
     expect(wrapper).toMatchSnapshot();
 

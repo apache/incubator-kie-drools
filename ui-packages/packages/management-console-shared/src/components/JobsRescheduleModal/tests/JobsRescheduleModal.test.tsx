@@ -17,7 +17,7 @@
 import React from 'react';
 import JobsRescheduleModal from '../JobsRescheduleModal';
 import { JobStatus } from '../../../types';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { Button } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 jest.mock('react-datetime-picker');
@@ -102,8 +102,7 @@ describe('Job reschedule modal tests', () => {
     global.Date = MockDate;
   });
   it('test job reschedule modal', async () => {
-    const wrapper = getWrapper(
-      <JobsRescheduleModal {...props} />,
+    const wrapper = mount(<JobsRescheduleModal {...props} />).find(
       'JobsRescheduleModal'
     );
     expect(wrapper).toMatchSnapshot();
@@ -157,8 +156,7 @@ describe('Job reschedule modal tests', () => {
     wrapper.update();
   });
   it('test reschedule with null interval/limit', () => {
-    const wrapper = getWrapper(
-      <JobsRescheduleModal {...props2} />,
+    const wrapper = mount(<JobsRescheduleModal {...props2} />).find(
       'JobsRescheduleModal'
     );
     expect(wrapper).toMatchSnapshot();

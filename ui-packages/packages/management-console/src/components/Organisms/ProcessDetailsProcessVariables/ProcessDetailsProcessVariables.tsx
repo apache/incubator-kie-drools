@@ -8,7 +8,8 @@ import {
 } from '@patternfly/react-core';
 import React from 'react';
 import ReactJson from 'react-json-view';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import './ProcessDetailsProcessVariables.css';
 

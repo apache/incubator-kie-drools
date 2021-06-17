@@ -9,7 +9,7 @@ import {
 import '../../styles.css';
 import { aboutLogoContext } from '../../contexts';
 import aboutPageBackground from '../../../static/kogitoAbout.png';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export interface IOwnProps {
   isOpenProp: boolean;

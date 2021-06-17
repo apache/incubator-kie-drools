@@ -10,7 +10,8 @@ import {
   Text,
   Tooltip
 } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import './ProcessDetailsMilestones.css';
 import Milestone = GraphQL.Milestone;

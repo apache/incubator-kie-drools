@@ -16,7 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { OUIAProps } from '@kogito-apps/components-common';
+import { OUIAProps } from '@kogito-apps/ouia-tools';
 import { EmbeddedProcessList } from '@kogito-apps/process-list';
 import { ProcessListGatewayApi } from '../../../channel/ProcessList';
 import { useProcessListGatewayApi } from '../../../channel/ProcessList/ProcessListContext';
@@ -30,7 +30,9 @@ interface ProcessListContainerProps {
 }
 
 const ProcessListContainer: React.FC<ProcessListContainerProps & OUIAProps> = ({
-  initialState
+  initialState,
+  ouiaId,
+  ouiaSafe
 }) => {
   const history = useHistory();
   const gatewayApi: ProcessListGatewayApi = useProcessListGatewayApi();

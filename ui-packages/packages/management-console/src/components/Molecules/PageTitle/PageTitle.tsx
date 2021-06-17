@@ -1,6 +1,6 @@
 import React from 'react';
 import { Title } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export interface IOwnProps {
   title: string;

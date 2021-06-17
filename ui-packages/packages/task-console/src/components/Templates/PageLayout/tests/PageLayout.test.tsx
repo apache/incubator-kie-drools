@@ -1,6 +1,6 @@
 import React from 'react';
 import { MemoryRouter as Router } from 'react-router-dom';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import PageLayout from '../PageLayout';
 import taskConsoleLogo from '../../../../static/taskConsoleLogo.svg';
 
@@ -25,12 +25,11 @@ jest.mock('@kogito-apps/common', () => ({
 function testRoute(route: string) {
   props.location.pathname = route;
 
-  const wrapper = getWrapper(
+  const wrapper = mount(
     <Router keyLength={0}>
       <PageLayout {...props} />
-    </Router>,
-    'PageLayout'
-  );
+    </Router>
+  ).find('PageLayout');
 
   expect(wrapper).toMatchSnapshot();
 

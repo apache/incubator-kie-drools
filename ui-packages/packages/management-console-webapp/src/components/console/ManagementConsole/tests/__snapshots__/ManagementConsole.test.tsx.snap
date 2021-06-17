@@ -216,6 +216,7 @@ exports[`ManagementConsole tests Snapshot test with default props 1`] = `
                           pathname="/"
                         />
                       }
+                      ouiaId="management-console"
                       pageNavOpen={true}
                     >
                       <MockedComponent />

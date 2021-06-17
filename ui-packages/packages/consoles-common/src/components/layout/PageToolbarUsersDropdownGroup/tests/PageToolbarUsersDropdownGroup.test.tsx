@@ -16,7 +16,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { DropdownGroup, DropdownItem } from '@patternfly/react-core';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import PageToolbarUsersDropdownGroup from '../PageToolbarUsersDropdownGroup';
 import {
   resetTestKogitoAppContext,
@@ -52,10 +52,9 @@ describe('PageToolbarUsersDropdownGroup tests', () => {
     testIsTestUserSystemEnabledMock.mockReturnValue(false);
     resetTestKogitoAppContext(true);
 
-    const wrapper = getWrapper(
-      <PageToolbarUsersDropdownGroup toggleAddUsersModal={jest.fn()} />,
-      'PageToolbarUsersDropdownGroup'
-    );
+    const wrapper = mount(
+      <PageToolbarUsersDropdownGroup toggleAddUsersModal={jest.fn()} />
+    ).find('PageToolbarUsersDropdownGroup');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -68,12 +67,9 @@ describe('PageToolbarUsersDropdownGroup tests', () => {
   it('Test render TestUserSystem enabled', () => {
     const toggleAddUserModal = jest.fn();
 
-    const wrapper = getWrapper(
-      <PageToolbarUsersDropdownGroup
-        toggleAddUsersModal={toggleAddUserModal}
-      />,
-      'PageToolbarUsersDropdownGroup'
-    );
+    const wrapper = mount(
+      <PageToolbarUsersDropdownGroup toggleAddUsersModal={toggleAddUserModal} />
+    ).find('PageToolbarUsersDropdownGroup');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -98,12 +94,9 @@ describe('PageToolbarUsersDropdownGroup tests', () => {
   it('Test render TestUserSystem enabled - switch user', () => {
     const toggleAddUserModal = jest.fn();
 
-    const wrapper = getWrapper(
-      <PageToolbarUsersDropdownGroup
-        toggleAddUsersModal={toggleAddUserModal}
-      />,
-      'PageToolbarUsersDropdownGroup'
-    );
+    const wrapper = mount(
+      <PageToolbarUsersDropdownGroup toggleAddUsersModal={toggleAddUserModal} />
+    ).find('PageToolbarUsersDropdownGroup');
 
     expect(wrapper).toMatchSnapshot();
 

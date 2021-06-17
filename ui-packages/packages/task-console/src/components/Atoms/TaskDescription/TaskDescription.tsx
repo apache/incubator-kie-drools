@@ -15,12 +15,8 @@
  */
 
 import React from 'react';
-import {
-  ItemDescriptor,
-  GraphQL,
-  OUIAProps,
-  componentOuiaProps
-} from '@kogito-apps/common';
+import { ItemDescriptor, GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { Link } from 'react-router-dom';
 import {
   ITaskConsoleContext,

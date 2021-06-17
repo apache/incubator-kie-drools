@@ -31,7 +31,7 @@ import useGetQueryTypesQuery = GraphQL.useGetQueryTypesQuery;
 import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
 import useGetColumnPickerAttributesQuery = GraphQL.useGetColumnPickerAttributesQuery;
 import useGetInputFieldsFromQueryQuery = GraphQL.useGetInputFieldsFromQueryQuery;
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 interface IOwnProps {
   domainName: string;
   rememberedParams: Record<string, unknown>[];

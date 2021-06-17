@@ -21,7 +21,7 @@ import FormFooter from '../../Atoms/FormFooter/FormFooter';
 import ModelConversionTool from '../../../util/uniforms/ModelConversionTool';
 import { DefaultFormValidator } from '../../../util/uniforms/FormValidator';
 import { FormSubmitHandler } from '../../../util/uniforms/FormSubmitHandler/FormSubmitHandler';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   formSchema: any;

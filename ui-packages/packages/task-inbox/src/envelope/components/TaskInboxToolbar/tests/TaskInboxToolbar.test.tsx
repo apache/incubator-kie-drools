@@ -15,7 +15,7 @@
  */
 
 import React, { FormEvent } from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskInboxToolbar from '../TaskInboxToolbar';
 import {
   getDefaultActiveTaskStates,
@@ -37,7 +37,7 @@ const refresh = jest.fn();
 let props;
 
 const getTaskInboxToolbarWrapper = () => {
-  return getWrapper(<TaskInboxToolbar {...props} />, 'TaskInboxToolbar');
+  return mount(<TaskInboxToolbar {...props} />).find('TaskInboxToolbar');
 };
 
 const selectTaskState = (wrapper, taskState: string) => {

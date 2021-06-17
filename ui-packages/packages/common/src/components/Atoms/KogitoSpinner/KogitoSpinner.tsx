@@ -5,7 +5,7 @@ import {
   EmptyStateIcon,
   Spinner
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface KogitoSpinnerProps {
   spinnerText: string;

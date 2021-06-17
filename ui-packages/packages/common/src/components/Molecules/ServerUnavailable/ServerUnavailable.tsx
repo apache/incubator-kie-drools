@@ -19,7 +19,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import { aboutLogoContext } from '../../contexts';
 import PageToolbar from '../PageToolbar/PageToolbar';
 import '../../styles.css';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   alt: string;

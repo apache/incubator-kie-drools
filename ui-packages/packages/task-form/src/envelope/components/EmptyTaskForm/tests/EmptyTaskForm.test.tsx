@@ -24,7 +24,7 @@ import {
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import EmptyTaskForm from '../EmptyTaskForm';
 import { ApplyForVisaForm } from '../../utils/tests/mocks/ApplyForVisa';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { TaskFormSchema } from '../../../../types';
 
 const testTask: UserTaskInstance = {
@@ -73,15 +73,14 @@ const getEmptyTaskFormWrapper = (
 ) => {
   doSubmit = jest.fn();
 
-  return getWrapper(
+  return mount(
     <EmptyTaskForm
       userTask={userTask}
       formSchema={schema}
       enabled={enabled}
       submit={doSubmit}
-    />,
-    'EmptyTaskForm'
-  );
+    />
+  ).find('EmptyTaskForm');
 };
 
 describe('EmptyTaskForm Test', () => {

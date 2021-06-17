@@ -16,7 +16,7 @@
 
 import React, { useEffect, useState } from 'react';
 import _ from 'lodash';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 import { TaskFormSchema } from '../../../types';
 

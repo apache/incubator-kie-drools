@@ -22,7 +22,7 @@ import {
   CheckCircleIcon,
   OnRunningIcon
 } from '@patternfly/react-icons';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '../../types';
 
 interface Props {

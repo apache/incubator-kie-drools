@@ -2,7 +2,7 @@ import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import DomainExplorer from '../DomainExplorer';
 import { MockedProvider } from '@apollo/react-testing';
-import { getWrapperAsync } from '../../../../utils/OuiaUtils';
+import { mount } from 'enzyme';
 import { GraphQL } from '../../../../graphql/types';
 import useGetQueryTypesQuery = GraphQL.useGetQueryTypesQuery;
 import useGetQueryFieldsQuery = GraphQL.useGetQueryFieldsQuery;
@@ -11,6 +11,7 @@ import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
 import useGetInputFieldsFromQueryQuery = GraphQL.useGetInputFieldsFromQueryQuery;
 import { act } from 'react-dom/test-utils';
 import reactApollo from 'react-apollo';
+import wait from 'waait';
 jest.mock('apollo-client');
 jest.mock('react-apollo', () => {
   const ApolloClient = { query: jest.fn() };
@@ -344,14 +345,18 @@ describe('Domain Explorer component', () => {
       loading: false,
       data: {}
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     await act(async () => {
       wrapper
         .find('Toolbar')
@@ -370,14 +375,18 @@ describe('Domain Explorer component', () => {
       data: null,
       error: {}
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find('h1').text()).toEqual('Error fetching data');
@@ -501,14 +510,18 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(wrapper.find(DomainExplorer)).toMatchSnapshot();
     expect(useGetQueryFieldsQuery).toHaveBeenCalled();
@@ -531,14 +544,18 @@ describe('Domain Explorer component', () => {
       data: null,
       error: {}
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(wrapper.find('h1').text()).toEqual('Error fetching data');
   });
@@ -549,14 +566,18 @@ describe('Domain Explorer component', () => {
       data: null,
       error: {}
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(wrapper.find('h1').text()).toEqual('Error fetching data');
   });
@@ -689,14 +710,18 @@ describe('Domain Explorer component', () => {
       loading: false,
       data: {}
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(wrapper.find(DomainExplorer)).toMatchSnapshot();
   });
@@ -819,14 +844,18 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(useGetQueryTypesQuery).toHaveBeenCalled();
@@ -960,14 +989,18 @@ describe('Domain Explorer component', () => {
         }
       }
     });
-    const wrapper = await getWrapperAsync(
-      <BrowserRouter>
-        <MockedProvider mocks={[]} addTypename={false}>
-          <DomainExplorer {...props} {...routeComponentPropsMock} />
-        </MockedProvider>
-      </BrowserRouter>,
-      'DomainExplorer'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <BrowserRouter>
+          <MockedProvider mocks={[]} addTypename={false}>
+            <DomainExplorer {...props} {...routeComponentPropsMock} />
+          </MockedProvider>
+        </BrowserRouter>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('DomainExplorer');
+    });
     wrapper.update();
     expect(useGetQueryFieldsQuery).toHaveBeenCalled();
     expect(useGetQueryTypesQuery).toHaveBeenCalled();

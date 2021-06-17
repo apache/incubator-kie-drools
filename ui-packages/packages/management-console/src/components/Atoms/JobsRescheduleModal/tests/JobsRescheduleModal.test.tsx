@@ -1,6 +1,7 @@
 import React from 'react';
 import JobsRescheduleModal from '../JobsRescheduleModal';
-import { GraphQL, getWrapper } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { InfoCircleIcon } from '@patternfly/react-icons';
 import { Button } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
@@ -100,8 +101,7 @@ describe('Job reschedule modal tests', () => {
   });
   it('test job reschedule modal', async () => {
     const handleJobRescheduleSpy = jest.spyOn(Utils, 'handleJobReschedule');
-    const wrapper = getWrapper(
-      <JobsRescheduleModal {...props} />,
+    const wrapper = mount(<JobsRescheduleModal {...props} />).find(
       'JobsRescheduleModal'
     );
     expect(wrapper).toMatchSnapshot();
@@ -155,8 +155,7 @@ describe('Job reschedule modal tests', () => {
     wrapper.update();
   });
   it('test reschedule with null interval/limit', () => {
-    const wrapper = getWrapper(
-      <JobsRescheduleModal {...props2} />,
+    const wrapper = mount(<JobsRescheduleModal {...props2} />).find(
       'JobsRescheduleModal'
     );
     expect(wrapper).toMatchSnapshot();

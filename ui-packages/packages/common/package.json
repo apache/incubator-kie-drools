@@ -30,6 +30,7 @@
     "codegen": "graphql-codegen"
   },
   "devDependencies": {
+    "@kogito-apps/ouia-tools": "^1.0.0",
     "@storybook/addon-a11y": "5.3.19",
     "@storybook/addon-actions": "5.3.18",
     "@storybook/addon-backgrounds": "5.3.19",

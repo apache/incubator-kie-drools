@@ -56,10 +56,14 @@ exports[`ProcessListPage tests Snapshot 1`] = `
     titleText="Process Instances"
   >
     <PageSection
+      data-ouia-component-type="page-section-header"
+      data-ouia-safe={true}
       variant="light"
     >
       <section
         className="pf-c-page__main-section pf-m-light"
+        data-ouia-component-type="page-section-header"
+        data-ouia-safe={true}
       >
         <Breadcrumb>
           <nav
@@ -178,9 +182,14 @@ exports[`ProcessListPage tests Snapshot 1`] = `
       </section>
     </PageSection>
   </PageSectionHeader>
-  <PageSection>
+  <PageSection
+    data-ouia-component-type="page-section-content"
+    data-ouia-safe={true}
+  >
     <section
       className="pf-c-page__main-section"
+      data-ouia-component-type="page-section-content"
+      data-ouia-safe={true}
     >
       <Card
         className="kogito-management-console__card-size"

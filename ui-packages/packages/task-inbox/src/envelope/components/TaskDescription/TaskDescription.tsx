@@ -15,11 +15,8 @@
  */
 
 import React from 'react';
-import {
-  componentOuiaProps,
-  OUIAProps,
-  ItemDescriptor
-} from '@kogito-apps/components-common';
+import { ItemDescriptor } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { UserTaskInstance } from '@kogito-apps/task-console-shared';
 
 interface IOwnProps {

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { Modal, Button, TextContent, Text } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import BulkList, { IOperation } from '../BulkList/BulkList';
 interface IOwnProps {
   modalTitle: JSX.Element;

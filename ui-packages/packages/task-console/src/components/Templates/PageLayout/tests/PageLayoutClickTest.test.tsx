@@ -1,6 +1,6 @@
 import React from 'react';
 import PageLayout from '../PageLayout';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { MemoryRouter as Router } from 'react-router-dom';
 
 const props: any = {
@@ -24,12 +24,11 @@ jest.mock('../../../Organisms/TaskInbox/TaskInbox.tsx');
 
 describe('PageLayout Click test', () => {
   it('Brand click testing', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <Router keyLength={0}>
         <PageLayout {...props} />
-      </Router>,
-      'PageLayout'
-    );
+      </Router>
+    ).find('PageLayout');
 
     wrapper
       .find('KogitoPageLayout')

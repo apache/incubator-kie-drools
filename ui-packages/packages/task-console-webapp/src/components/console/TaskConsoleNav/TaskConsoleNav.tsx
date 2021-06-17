@@ -17,7 +17,7 @@
 import React from 'react';
 import { Nav, NavItem, NavList } from '@patternfly/react-core';
 import { Link } from 'react-router-dom';
-import { ouiaAttribute } from '@kogito-apps/components-common';
+import { ouiaAttribute } from '@kogito-apps/ouia-tools';
 
 interface Props {
   pathname?: string;

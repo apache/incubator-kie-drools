@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskInboxPage from '../TaskInboxPage';
 import TaskInboxContainer from '../container/TaskInboxContainer/TaskInboxContainer';
 
@@ -23,7 +23,7 @@ jest.mock('../container/TaskInboxContainer/TaskInboxContainer');
 
 describe('TaskInboxPage tests', () => {
   it('Snapshot', () => {
-    const wrapper = getWrapper(<TaskInboxPage />, 'TaskInboxPage');
+    const wrapper = mount(<TaskInboxPage />).find('TaskInboxPage');
 
     expect(wrapper).toMatchSnapshot();
     expect(wrapper.find(TaskInboxContainer).exists()).toBeTruthy();

@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { Button } from '@patternfly/react-core';
 import ServerErrors from '../ServerErrors';
 
@@ -31,7 +31,7 @@ const props2 = {
 
 describe('ServerErrors component tests', () => {
   it('snapshot testing ', () => {
-    const wrapper = getWrapper(<ServerErrors {...props} />, 'ServerErrors');
+    const wrapper = mount(<ServerErrors {...props} />).find('ServerErrors');
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -39,12 +39,11 @@ describe('ServerErrors component tests', () => {
   it('snapshot with children ', () => {
     const onClickMock = jest.fn();
 
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ServerErrors {...props}>
         <Button onClick={onClickMock}>Go back</Button>
-      </ServerErrors>,
-      'ServerErrors'
-    );
+      </ServerErrors>
+    ).find('ServerErrors');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -61,7 +60,7 @@ describe('ServerErrors component tests', () => {
   });
 
   it('display error button click ', () => {
-    let wrapper = getWrapper(<ServerErrors {...props} />, 'ServerErrors');
+    let wrapper = mount(<ServerErrors {...props} />).find('ServerErrors');
 
     wrapper
       .find('#display-error')
@@ -79,13 +78,13 @@ describe('ServerErrors component tests', () => {
   });
 
   it('snapshot testing with small variant ', () => {
-    const wrapper = getWrapper(<ServerErrors {...props2} />, 'ServerErrors');
+    const wrapper = mount(<ServerErrors {...props2} />).find('ServerErrors');
 
     expect(wrapper).toMatchSnapshot();
   });
 
   it('display error button click with small variant ', () => {
-    let wrapper = getWrapper(<ServerErrors {...props2} />, 'ServerErrors');
+    let wrapper = mount(<ServerErrors {...props2} />).find('ServerErrors');
 
     wrapper
       .find('#display-error')

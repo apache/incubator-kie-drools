@@ -23,7 +23,7 @@ import { SyncIcon } from '@patternfly/react-icons';
 import '../../styles.css';
 import _ from 'lodash';
 import { filterColumnSelection, removeDuplicates } from '../../../utils/Utils';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface ResponseType {
   loading: boolean;

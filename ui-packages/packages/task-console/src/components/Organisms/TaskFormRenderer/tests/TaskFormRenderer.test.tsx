@@ -20,11 +20,11 @@ import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import wait from 'waait';
 import {
-  getWrapper,
   GraphQL,
   KogitoAppContextProvider,
   UserContext
 } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskFormRenderer from '../TaskFormRenderer';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
@@ -84,7 +84,7 @@ const getTaskFormRendererWrapper = (
   formSubmitSuccessCallback?: () => void,
   formSubmitErrorCallback?: () => void
 ) => {
-  return getWrapper(
+  return mount(
     <KogitoAppContextProvider userContext={userContext}>
       <TaskFormRenderer
         formSchema={_.cloneDeep(ApplyForVisaForm)}
@@ -92,9 +92,8 @@ const getTaskFormRendererWrapper = (
         onSubmitSuccess={formSubmitSuccessCallback}
         onSubmitError={formSubmitErrorCallback}
       />
-    </KogitoAppContextProvider>,
-    'TaskFormRenderer'
-  );
+    </KogitoAppContextProvider>
+  ).find('TaskFormRenderer');
 };
 
 enum Mode {

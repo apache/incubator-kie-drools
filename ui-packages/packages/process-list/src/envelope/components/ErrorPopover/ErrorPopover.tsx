@@ -17,7 +17,7 @@ import React from 'react';
 import { Popover, Button } from '@patternfly/react-core';
 import { ProcessInstanceIconCreator } from '../utils/ProcessListUtils';
 import { ProcessInstance } from '@kogito-apps/management-console-shared';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface ErrorPopoverProps {
   processInstanceData: ProcessInstance;

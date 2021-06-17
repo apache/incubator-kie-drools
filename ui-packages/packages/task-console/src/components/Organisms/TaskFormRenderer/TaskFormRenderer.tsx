@@ -26,7 +26,7 @@ import FormRenderer from '../../Molecules/FormRenderer/FormRenderer';
 import { TaskFormSubmitHandler } from '../../../util/uniforms/TaskFormSubmitHandler/TaskFormSubmitHandler';
 import { FormSchema } from '../../../util/uniforms/FormSchema';
 import UserTaskInstance = GraphQL.UserTaskInstance;
-import { OUIAProps } from '@kogito-apps/common';
+import { OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   task: UserTaskInstance;

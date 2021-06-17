@@ -8,14 +8,13 @@ import {
   ISortBy
 } from '@patternfly/react-table';
 import {
-  OUIAProps,
-  componentOuiaProps,
   GraphQL,
   constructObject,
   KogitoSpinner,
   KogitoEmptyState,
   KogitoEmptyStateType
 } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { Tooltip } from '@patternfly/react-core';
 import { JobsIconCreator, jobCancel } from '../../../utils/Utils';
 import Moment from 'react-moment';

@@ -24,7 +24,11 @@ import {
 } from '@patternfly/react-core';
 import '../../styles.css';
 
-import { ouiaAttribute } from '@kogito-apps/components-common';
+import {
+  componentOuiaProps,
+  ouiaAttribute,
+  OUIAProps
+} from '@kogito-apps/ouia-tools';
 import { BrandContext } from '../BrandContext/BrandContext';
 import PageToolbar from '../PageToolbar/PageToolbar';
 
@@ -37,13 +41,15 @@ interface IOwnProps {
   BrandClick: () => void;
 }
 
-const PageLayout: React.FC<IOwnProps> = ({
+const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   children,
   BrandSrc,
   PageNav,
   pageNavOpen,
   BrandAltText,
-  BrandClick
+  BrandClick,
+  ouiaId,
+  ouiaSafe
 }) => {
   const pageId = 'main-content-page-layout-default-nav';
 
@@ -98,6 +104,7 @@ const PageLayout: React.FC<IOwnProps> = ({
         mainContainerId={pageId}
         sidebar={Sidebar}
         className="kogito-consoles-common--PageLayout"
+        {...componentOuiaProps(ouiaId, 'page', ouiaSafe)}
       >
         {children}
       </Page>

@@ -16,12 +16,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { Bullseye, Card, PageSection } from '@patternfly/react-core';
-import {
-  OUIAProps,
-  ouiaPageTypeAndObjectId,
-  KogitoSpinner,
-  ServerErrors
-} from '@kogito-apps/components-common';
+import { KogitoSpinner, ServerErrors } from '@kogito-apps/components-common';
+import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
 import { RouteComponentProps } from 'react-router-dom';
 import { PageSectionHeader } from '@kogito-apps/consoles-common';
 import ProcessDetailsContainer from '../../containers/ProcessDetailsContainer/ProcessDetailsContainer';
@@ -44,14 +40,14 @@ const ProcessDetailsPage: React.FC<RouteComponentProps<
   H.LocationState
 > &
   OUIAProps> = ({ ...props }) => {
+  const processId = props.match.params.instanceID;
   useEffect(() => {
-    return ouiaPageTypeAndObjectId('process-details');
+    return ouiaPageTypeAndObjectId('process-instances', processId);
   });
 
   const gatewayApi: ProcessDetailsGatewayApi = useProcessDetailsGatewayApi();
 
   const history = useHistory();
-  const processId = props.match.params.instanceID;
   const [processInstance, setProcessInstance] = useState<ProcessInstance>(
     {} as ProcessInstance
   );

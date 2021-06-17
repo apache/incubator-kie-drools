@@ -2,7 +2,6 @@ import React from 'react';
 import { mount } from 'enzyme';
 import ServerErrors from '../ServerErrors';
 import { BrowserRouter } from 'react-router-dom';
-import { getWrapper } from '../../../../utils/OuiaUtils';
 
 const mockGoBack = jest.fn();
 const props = {
@@ -23,21 +22,19 @@ const props2 = {
 
 describe('ServerErrors component tests', () => {
   it('snapshot testing ', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ServerErrors {...props} />
-      </BrowserRouter>,
-      'ServerErrors'
-    );
+      </BrowserRouter>
+    ).find('ServerErrors');
     expect(wrapper).toMatchSnapshot();
   });
   it('goback button click ', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ServerErrors {...props} />
-      </BrowserRouter>,
-      'ServerErrors'
-    );
+      </BrowserRouter>
+    ).find('ServerErrors');
     wrapper
       .find('#goback-button')
       .first()
@@ -65,12 +62,11 @@ describe('ServerErrors component tests', () => {
     ).toEqual('"some error"');
   });
   it('snapshot testing with small variant ', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <ServerErrors {...props2} />
-      </BrowserRouter>,
-      'ServerErrors'
-    );
+      </BrowserRouter>
+    ).find('ServerErrors');
     expect(wrapper).toMatchSnapshot();
   });
 

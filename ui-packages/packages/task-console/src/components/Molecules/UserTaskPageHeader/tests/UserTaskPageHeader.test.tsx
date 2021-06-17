@@ -1,16 +1,15 @@
 import React from 'react';
 import UserTaskPageHeader from '../UserTaskPageHeader';
-import { getWrapper } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { BrowserRouter } from 'react-router-dom';
 
 describe('UserTaskPageHeader component tests', () => {
   it('Should render UserTaskPageHeader correctly', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <UserTaskPageHeader />
-      </BrowserRouter>,
-      'UserTaskPageHeader'
-    );
+      </BrowserRouter>
+    ).find('UserTaskPageHeader');
     expect(wrapper).toMatchSnapshot();
   });
 });

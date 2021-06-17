@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { Button, EmptyStateBody } from '@patternfly/react-core';
 import ServerUnavailablePage from '../ServerUnavailablePage';
 import { act } from 'react-dom/test-utils';
@@ -28,8 +28,7 @@ describe('ServerUnavailablePage tests', () => {
     reload.mockClear();
   });
   it('Snapshot with default name', () => {
-    const wrapper = getWrapper(
-      <ServerUnavailablePage reload={reload} />,
+    const wrapper = mount(<ServerUnavailablePage reload={reload} />).find(
       'ServerUnavailablePage'
     );
 
@@ -53,10 +52,9 @@ describe('ServerUnavailablePage tests', () => {
   it('Snapshot with custom name', () => {
     const customDisplayName: string = 'My custom display Name';
 
-    const wrapper = getWrapper(
-      <ServerUnavailablePage displayName={customDisplayName} reload={reload} />,
-      'ServerUnavailablePage'
-    );
+    const wrapper = mount(
+      <ServerUnavailablePage displayName={customDisplayName} reload={reload} />
+    ).find('ServerUnavailablePage');
 
     expect(wrapper).toMatchSnapshot();
 

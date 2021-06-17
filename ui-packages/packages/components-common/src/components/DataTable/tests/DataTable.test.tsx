@@ -19,7 +19,7 @@ import DataTable, { DataTableColumn } from '../DataTable';
 import { gql } from 'apollo-boost';
 import { MockedProvider } from '@apollo/react-testing';
 import { Label } from '@patternfly/react-core';
-import { getWrapperAsync } from '../../../utils/OuiaUtils';
+import { mount } from 'enzyme';
 
 // tslint:disable: no-string-literal
 // tslint:disable: no-unexpected-multiline
@@ -223,13 +223,12 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
+    const wrapper = await mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
+      </MockedProvider>
     );
-
+    wrapper.update();
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
 
@@ -245,12 +244,12 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
+    const wrapper = await mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
+      </MockedProvider>
     );
+    wrapper.update();
 
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
@@ -267,12 +266,12 @@ describe('DataTable component tests', () => {
       ErrorComponent: undefined
     };
 
-    const wrapper = await getWrapperAsync(
+    const wrapper = await mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
+      </MockedProvider>
     );
+    wrapper.update();
 
     expect(wrapper.find(DataTable)).toMatchSnapshot();
   });
@@ -291,12 +290,12 @@ describe('DataTable component tests', () => {
       sortBy: {}
     };
 
-    const wrapper = await getWrapperAsync(
+    const wrapper = await mount(
       <MockedProvider mocks={mocks} addTypename={false}>
         <DataTable {...props} />
-      </MockedProvider>,
-      'DataTable'
+      </MockedProvider>
     );
+    wrapper.update();
 
     wrapper
       .find('[aria-label="Data Table"]')

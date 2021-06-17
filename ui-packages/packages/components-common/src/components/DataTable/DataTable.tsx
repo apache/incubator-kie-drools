@@ -34,7 +34,7 @@ import reduce from 'lodash/reduce';
 import isFunction from 'lodash/isFunction';
 import uuidv4 from 'uuid';
 import jp from 'jsonpath';
-import { OUIAProps, componentOuiaProps } from '../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import KogitoSpinner from '../KogitoSpinner/KogitoSpinner';
 import {
   KogitoEmptyState,

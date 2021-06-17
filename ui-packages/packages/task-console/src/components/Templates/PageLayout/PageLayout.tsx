@@ -1,6 +1,7 @@
 import React from 'react';
 import { Nav, NavList, NavItem, OUIAProps } from '@patternfly/react-core';
-import { KogitoPageLayout, ouiaAttribute } from '@kogito-apps/common';
+import { KogitoPageLayout } from '@kogito-apps/common';
+import { ouiaAttribute } from '@kogito-apps/ouia-tools';
 import { Redirect, Route, Link, Switch } from 'react-router-dom';
 import taskConsoleLogo from '../../../static/taskConsoleLogo.svg';
 

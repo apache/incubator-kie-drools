@@ -8,7 +8,8 @@ import {
   ToolbarGroup,
   ToolbarItem
 } from '@patternfly/react-core';
-import { componentOuiaProps, GraphQL, OUIAProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 interface IOwnProps {
   selectedStatus: GraphQL.JobStatus[];
   setSelectedStatus: (

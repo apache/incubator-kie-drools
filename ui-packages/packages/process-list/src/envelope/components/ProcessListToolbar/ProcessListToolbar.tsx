@@ -53,7 +53,7 @@ import {
 } from '@kogito-apps/management-console-shared';
 import { ProcessInstanceFilter, ProcessListDriver } from '../../../api';
 import '../styles.css';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { formatForBulkListProcessInstance } from '../utils/ProcessListUtils';
 
 enum Category {

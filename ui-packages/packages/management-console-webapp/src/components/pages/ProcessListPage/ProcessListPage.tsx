@@ -18,8 +18,9 @@ import React, { useEffect } from 'react';
 import { Card, PageSection } from '@patternfly/react-core';
 import {
   OUIAProps,
-  ouiaPageTypeAndObjectId
-} from '@kogito-apps/components-common';
+  ouiaPageTypeAndObjectId,
+  componentOuiaProps
+} from '@kogito-apps/ouia-tools';
 import { RouteComponentProps } from 'react-router-dom';
 import { PageSectionHeader } from '@kogito-apps/consoles-common';
 import ProcessListContainer from '../../containers/ProcessListContainer/ProcessListContainer';
@@ -39,7 +40,7 @@ const ProcessListPage: React.FC<RouteComponentProps<
 > &
   OUIAProps> = props => {
   useEffect(() => {
-    return ouiaPageTypeAndObjectId('jobs-management');
+    return ouiaPageTypeAndObjectId('process-instances');
   });
   const initialState: ProcessListState =
     props.location && (props.location.state as ProcessListState);
@@ -50,8 +51,15 @@ const ProcessListPage: React.FC<RouteComponentProps<
         titleText="Process Instances"
         breadcrumbText={['Home', 'Processes']}
         breadcrumbPath={['/']}
+        ouiaId={props.ouiaId}
       />
-      <PageSection>
+      <PageSection
+        {...componentOuiaProps(
+          props.ouiaId,
+          'page-section-content',
+          props.ouiaSafe
+        )}
+      >
         <Card className="kogito-management-console__card-size">
           <ProcessListContainer initialState={initialState} />
         </Card>

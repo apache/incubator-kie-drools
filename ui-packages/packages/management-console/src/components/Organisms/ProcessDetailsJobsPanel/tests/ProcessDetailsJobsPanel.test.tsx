@@ -1,6 +1,8 @@
 import React from 'react';
 import ProcessDetailsJobsPanel from '../ProcessDetailsJobsPanel';
-import { getWrapperAsync } from '@kogito-apps/common';
+import { mount } from 'enzyme';
+import { act } from 'react-dom/test-utils';
+import { wait } from '@apollo/react-testing';
 jest.mock('../../../Atoms/JobActionsKebab/JobActionsKebab');
 
 const MockedComponent = (): React.ReactElement => {
@@ -86,17 +88,21 @@ const props2 = {
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 describe('Processdetails jobs pannel component tests', () => {
   it('Snapshot testing', async () => {
-    const wrapper = await getWrapperAsync(
-      <ProcessDetailsJobsPanel {...props} />,
-      'ProcessDetailsJobsPanel'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<ProcessDetailsJobsPanel {...props} />);
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsJobsPanel');
+    });
     expect(wrapper).toMatchSnapshot();
   });
   it('test expiration time', async () => {
-    const wrapper = await getWrapperAsync(
-      <ProcessDetailsJobsPanel {...props2} />,
-      'ProcessDetailsJobsPanel'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<ProcessDetailsJobsPanel {...props2} />);
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsJobsPanel');
+    });
     expect(wrapper).toMatchSnapshot();
   });
 });

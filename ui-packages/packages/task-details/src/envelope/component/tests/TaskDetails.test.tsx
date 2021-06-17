@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import React, { ReactElement } from 'react';
+import React from 'react';
 import { mount, ReactWrapper } from 'enzyme';
 import { KogitoSpinner } from '@kogito-apps/components-common';
 import { TaskState, UserTaskInstance } from '@kogito-apps/task-console-shared';
@@ -36,14 +36,6 @@ jest.mock('@kogito-apps/task-console-shared', () => ({
     return <MockedComponent />;
   }
 }));
-
-export const getWrapper = (
-  component: ReactElement,
-  name: string
-): ReactWrapper => {
-  const wrapper = mount(component);
-  return wrapper.update().find(name);
-};
 
 const userTaskInstance: UserTaskInstance = {
   id: '45a73767-5da3-49bf-9c40-d533c3e77ef3',
@@ -80,8 +72,7 @@ Date.now = jest.fn(() => 1601881200000); // UTC 2020-10-05 07:00:00
 
 describe('TaskDetails testing', () => {
   it('Spinner', () => {
-    const wrapper = getWrapper(
-      <TaskDetails userTask={undefined} />,
+    const wrapper = mount(<TaskDetails userTask={undefined} />).find(
       'TaskDetails'
     );
 
@@ -93,8 +84,7 @@ describe('TaskDetails testing', () => {
   });
 
   it('Snapshot', () => {
-    const wrapper = getWrapper(
-      <TaskDetails userTask={userTaskInstance} />,
+    const wrapper = mount(<TaskDetails userTask={userTaskInstance} />).find(
       'TaskDetails'
     );
 
@@ -116,14 +106,13 @@ describe('TaskDetails testing', () => {
   });
 
   it('Details with description', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTask={{
           ...{ ...userTaskInstance, description: 'This is a description' }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     const description = getFormGroup(wrapper, 'description');
     expect(description.exists()).toBeTruthy();
@@ -131,14 +120,13 @@ describe('TaskDetails testing', () => {
   });
 
   it('Details with owner', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTask={{
           ...{ ...userTaskInstance, actualOwner: 'John Snow' }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     const owner = getFormGroup(wrapper, 'owner');
     expect(owner.exists()).toBeTruthy();
@@ -146,7 +134,7 @@ describe('TaskDetails testing', () => {
   });
 
   it('Details with completed task', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTask={{
           ...{
@@ -155,16 +143,15 @@ describe('TaskDetails testing', () => {
             completed: new Date('2020-02-19T11:11:56.282Z')
           }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
 
     const completed = getFormGroup(wrapper, 'completed');
     expect(completed.exists()).toBeTruthy();
   });
 
   it('Details with potential groups and potential user', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskDetails
         userTask={{
           ...{
@@ -173,9 +160,8 @@ describe('TaskDetails testing', () => {
             potentialUsers: ['john', 'mary']
           }
         }}
-      />,
-      'TaskDetails'
-    );
+      />
+    ).find('TaskDetails');
     const potentialGroups = getFormGroup(wrapper, 'potential_groups');
     const potentialUsers = getFormGroup(wrapper, 'potential_users');
     expect(potentialGroups.exists()).toBeTruthy();

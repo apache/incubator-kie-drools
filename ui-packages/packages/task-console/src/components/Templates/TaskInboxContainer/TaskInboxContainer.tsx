@@ -16,7 +16,7 @@
 
 import React, { useEffect } from 'react';
 import { Card, Grid, GridItem, PageSection } from '@patternfly/react-core';
-import { ouiaPageTypeAndObjectId, OUIAProps } from '@kogito-apps/common';
+import { ouiaPageTypeAndObjectId, OUIAProps } from '@kogito-apps/ouia-tools';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
 import TaskInbox from '../../Organisms/TaskInbox/TaskInbox';
 

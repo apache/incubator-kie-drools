@@ -1,6 +1,6 @@
 import React from 'react';
 import ErrorPopover from '../ErrorPopover';
-import { GraphQL, getWrapper } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
 import ProcessInstanceState = GraphQL.ProcessInstanceState;
 import { mount } from 'enzyme';
 import { Popover } from '@patternfly/react-core';
@@ -36,20 +36,19 @@ const props = {
 
 describe('Errorpopover component tests', () => {
   it('snapshot testing with error object', () => {
-    const wrapper = getWrapper(<ErrorPopover {...props} />, 'ErrorPopover');
+    const wrapper = mount(<ErrorPopover {...props} />).find('ErrorPopover');
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot testing without error object', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ErrorPopover
         {...{
           ...props,
           processInstanceData: { ...props.processInstanceData, error: null }
         }}
-      />,
-      'ErrorPopover'
-    );
+      />
+    ).find('ErrorPopover');
     expect(wrapper).toMatchSnapshot();
   });
 

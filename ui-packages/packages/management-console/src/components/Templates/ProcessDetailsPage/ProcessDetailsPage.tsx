@@ -21,13 +21,15 @@ import {
 } from '@patternfly/react-core';
 import {
   ServerErrors,
-  ouiaPageTypeAndObjectId,
   ItemDescriptor,
   KogitoSpinner,
-  GraphQL,
+  GraphQL
+} from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
   componentOuiaProps,
   OUIAProps
-} from '@kogito-apps/common';
+} from '@kogito-apps/ouia-tools';
 import React, { useState, useEffect } from 'react';
 import _ from 'lodash';
 import { Link, Redirect, RouteComponentProps } from 'react-router-dom';

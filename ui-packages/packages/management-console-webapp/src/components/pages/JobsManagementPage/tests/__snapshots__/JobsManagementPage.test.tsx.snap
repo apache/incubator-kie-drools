@@ -17,10 +17,14 @@ exports[`WebApp - JobsManagementPage tests Snapshot test with default values 1`]
     titleText="Jobs Management"
   >
     <PageSection
+      data-ouia-component-type="page-section-header"
+      data-ouia-safe={true}
       variant="light"
     >
       <section
         className="pf-c-page__main-section pf-m-light"
+        data-ouia-component-type="page-section-header"
+        data-ouia-safe={true}
       >
         <Breadcrumb>
           <nav

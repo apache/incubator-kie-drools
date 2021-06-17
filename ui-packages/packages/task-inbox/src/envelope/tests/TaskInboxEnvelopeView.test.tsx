@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import { TaskInboxState } from '../../api';
 import TaskInboxEnvelopeView, {
@@ -49,10 +49,9 @@ describe('TaskInboxEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<TaskInboxEnvelopeViewApi>();
 
-    let wrapper = getWrapper(
-      <TaskInboxEnvelopeView channelApi={channelApi} ref={forwardRef} />,
-      'TaskInboxEnvelopeView'
-    );
+    let wrapper = mount(
+      <TaskInboxEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    ).find('TaskInboxEnvelopeView');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -66,11 +65,13 @@ describe('TaskInboxEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update().find(TaskInboxEnvelopeView);
+    wrapper = wrapper.update();
 
-    expect(wrapper).toMatchSnapshot();
+    const envelopeView = wrapper.find(TaskInboxEnvelopeView);
 
-    const inbox = wrapper.find(TaskInbox);
+    expect(envelopeView).toMatchSnapshot();
+
+    const inbox = envelopeView.find(TaskInbox);
 
     expect(inbox.exists()).toBeTruthy();
     expect(inbox.props().isEnvelopeConnectedToChannel).toBeTruthy();

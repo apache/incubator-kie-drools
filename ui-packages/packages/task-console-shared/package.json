@@ -28,6 +28,7 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
+    "@kogito-apps/ouia-tools": "^1.0.0",
     "babel-loader": "8.1.0",
     "react-docgen-typescript-loader": "3.7.2"
   },

@@ -25,12 +25,11 @@ import {
 } from '@patternfly/react-table';
 import { Tooltip } from '@patternfly/react-core';
 import {
-  OUIAProps,
-  componentOuiaProps,
   KogitoEmptyState,
   KogitoSpinner,
   KogitoEmptyStateType
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   setTitle,
   constructObject,

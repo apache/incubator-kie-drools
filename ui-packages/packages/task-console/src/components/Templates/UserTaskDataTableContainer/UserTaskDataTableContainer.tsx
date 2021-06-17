@@ -10,14 +10,16 @@ import React, { useEffect, useState } from 'react';
 import UserTaskPageHeader from '../../Molecules/UserTaskPageHeader/UserTaskPageHeader';
 import './UserTaskDataTable.css';
 import {
-  ouiaPageTypeAndObjectId,
   KogitoSpinner,
   DataTableColumn,
   DataTable,
-  GraphQL,
+  GraphQL
+} from '@kogito-apps/common';
+import {
+  ouiaPageTypeAndObjectId,
   OUIAProps,
   componentOuiaProps
-} from '@kogito-apps/common';
+} from '@kogito-apps/ouia-tools';
 import _ from 'lodash';
 
 const UserTaskLoadingComponent = (

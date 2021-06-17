@@ -1,6 +1,7 @@
 import React, { ReactElement } from 'react';
 import { Tooltip } from '@patternfly/react-core';
-import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import ProcessInstance = GraphQL.ProcessInstance;
 
 interface IOwnProps {

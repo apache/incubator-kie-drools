@@ -68,6 +68,8 @@
     "@graphql-codegen/typescript": "^1.12.2",
     "@graphql-codegen/typescript-operations": "^1.12.2",
     "@graphql-codegen/typescript-react-apollo": "^1.12.2",
+    "@kogito-apps/ouia-tools": "^1.0.0",
+    "@kogito-apps/cypress-ouia": "^1.0.0",
     "@types/enzyme": "^3.10.5",
     "@types/jest": "^25.1.2",
     "@types/react": "^16.9.43",
@@ -133,6 +135,7 @@
     "@patternfly/react-core": "4.84.4",
     "@patternfly/react-icons": "4.7.22",
     "@patternfly/react-styles": "4.7.22",
-    "@patternfly/react-tokens": "4.9.22"
+    "@patternfly/react-tokens": "4.9.22",
+    "axios": "0.21.1"
   }
 }

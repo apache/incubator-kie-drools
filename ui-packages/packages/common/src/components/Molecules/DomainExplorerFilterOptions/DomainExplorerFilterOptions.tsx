@@ -19,7 +19,7 @@ import useGetInputFieldsFromTypeQuery = GraphQL.useGetInputFieldsFromTypeQuery;
 import { QuestionCircleIcon } from '@patternfly/react-icons';
 import { constructObject, removeDuplicates } from '../../../utils/Utils';
 import '../../styles.css';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface ResponseType {
   loading?: boolean;

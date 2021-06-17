@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessListEnvelopeView, {
   ProcessListEnvelopeViewApi
@@ -31,22 +31,20 @@ describe('ProcessListEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<ProcessListEnvelopeViewApi>();
 
-    let wrapper = getWrapper(
-      <ProcessListEnvelopeView channelApi={channelApi} ref={forwardRef} />,
-      'ProcessListEnvelopeView'
+    let wrapper = mount(
+      <ProcessListEnvelopeView channelApi={channelApi} ref={forwardRef} />
     );
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find('ProcessListEnvelopeView')).toMatchSnapshot();
 
     act(() => {
       if (forwardRef.current) {
         forwardRef.current.initialize();
       }
+      wrapper = wrapper.update();
     });
 
-    wrapper = wrapper.update().find(ProcessListEnvelopeView);
-
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.update().find(ProcessListEnvelopeView)).toMatchSnapshot();
 
     const processList = wrapper.find(ProcessListPage);
 

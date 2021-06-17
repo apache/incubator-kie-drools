@@ -20,7 +20,7 @@ import {
   AlertActionCloseButton,
   AlertActionLink
 } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 export interface Notification {
   type: 'success' | 'error';

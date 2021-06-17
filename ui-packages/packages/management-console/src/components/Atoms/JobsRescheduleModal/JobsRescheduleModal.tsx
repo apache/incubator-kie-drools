@@ -10,7 +10,8 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { OutlinedClockIcon } from '@patternfly/react-icons';
 import DateTimePicker from 'react-datetime-picker';
 import { handleJobReschedule, setTitle } from '../../../utils/Utils';

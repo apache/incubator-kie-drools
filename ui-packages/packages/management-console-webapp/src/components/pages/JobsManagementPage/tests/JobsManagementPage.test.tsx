@@ -14,19 +14,18 @@
  * limitations under the License.
  */
 
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import React from 'react';
 import JobsManagementPage from '../JobsManagementPage';
 import { BrowserRouter } from 'react-router-dom';
 
 describe('WebApp - JobsManagementPage tests', () => {
   it('Snapshot test with default values', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <JobsManagementPage />
-      </BrowserRouter>,
-      'JobsManagementPage'
-    );
+      </BrowserRouter>
+    ).find('JobsManagementPage');
     expect(wrapper).toMatchSnapshot();
   });
 });

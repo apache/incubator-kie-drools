@@ -37,10 +37,9 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
   KogitoSpinner,
-  EndpointLink,
-  OUIAProps,
-  componentOuiaProps
+  EndpointLink
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { HistoryIcon } from '@patternfly/react-icons';
 import Moment from 'react-moment';
 import {

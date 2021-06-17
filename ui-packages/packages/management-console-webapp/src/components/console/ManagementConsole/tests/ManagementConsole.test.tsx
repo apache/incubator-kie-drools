@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import ManagementConsole from '../ManagementConsole';
 import ManagementConsoleRoutes from '../../ManagementConsoleRoutes/ManagementConsoleRoutes';
 import { ApolloClient } from 'apollo-client';
@@ -43,12 +43,11 @@ describe('ManagementConsole tests', () => {
       apolloClient: client,
       userContext: { getCurrentUser: jest.fn() }
     };
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ManagementConsole {...props}>
         <ManagementConsoleRoutes />
-      </ManagementConsole>,
-      'ManagementConsole'
-    );
+      </ManagementConsole>
+    ).find('ManagementConsole');
     expect(wrapper).toMatchSnapshot();
   });
 
@@ -59,12 +58,11 @@ describe('ManagementConsole tests', () => {
       apolloClient: client,
       userContext: { getCurrentUser: jest.fn() }
     };
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <ManagementConsole {...props}>
         <ManagementConsoleRoutes />
-      </ManagementConsole>,
-      'ManagementConsole'
-    );
+      </ManagementConsole>
+    ).find('ManagementConsole');
     await act(async () => {
       wrapper
         .find('PageLayout')

@@ -14,7 +14,7 @@ import {
   SearchIcon
 } from '@patternfly/react-icons';
 import '@patternfly/patternfly/patternfly-addons.css';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 export enum KogitoEmptyStateType {
   Search,

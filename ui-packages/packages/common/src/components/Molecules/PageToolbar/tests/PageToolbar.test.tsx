@@ -18,7 +18,7 @@ import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { shallow } from 'enzyme';
 import PageToolbar from '../PageToolbar';
-import { getWrapper } from '../../../../utils/OuiaUtils';
+import { mount } from 'enzyme';
 import { Dropdown } from '@patternfly/react-core';
 import {
   resetTestKogitoAppContext,
@@ -38,14 +38,14 @@ describe('PageToolbar component tests', () => {
   });
 
   it('Snapshot testing - auth disabled', () => {
-    const wrapper = getWrapper(<PageToolbar />, 'PageToolbar');
+    const wrapper = mount(<PageToolbar />).find('PageToolbar');
 
     expect(wrapper).toMatchSnapshot();
   });
 
   it('Snapshot testing - auth enabled', () => {
     resetTestKogitoAppContext(true);
-    const wrapper = getWrapper(<PageToolbar />, 'PageToolbar');
+    const wrapper = mount(<PageToolbar />).find('PageToolbar');
 
     expect(wrapper).toMatchSnapshot();
   });
@@ -147,7 +147,7 @@ describe('PageToolbar component tests', () => {
   });
 
   it('handleAboutModalToggle test', () => {
-    const wrapper = getWrapper(<PageToolbar />, 'PageToolbar');
+    const wrapper = mount(<PageToolbar />).find('PageToolbar');
 
     let aboutModalBox = wrapper.find('MockedAboutModalBox');
 
@@ -168,7 +168,7 @@ describe('PageToolbar component tests', () => {
   it('Testing handleaddUserModalToggle - TestUserSystem enabled', () => {
     testIsTestUserSystemEnabledMock.mockReturnValue(true);
 
-    const wrapper = getWrapper(<PageToolbar />, 'PageToolbar');
+    const wrapper = mount(<PageToolbar />).find('PageToolbar');
 
     let addUserModal = wrapper.find('MockedAddTestUser');
 
@@ -188,7 +188,7 @@ describe('PageToolbar component tests', () => {
   it('Testing handleaddUserModalToggle test - TestUserSystem disabled', () => {
     testIsTestUserSystemEnabledMock.mockReturnValue(false);
 
-    const wrapper = getWrapper(<PageToolbar />, 'PageToolbar');
+    const wrapper = mount(<PageToolbar />).find('PageToolbar');
 
     let addUserModal = wrapper.find('MockedAddTestUser');
 

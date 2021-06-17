@@ -17,7 +17,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import { Alert, Form } from '@patternfly/react-core';
-import { getWrapper } from '../../../../utils/OuiaUtils';
+import { mount } from 'enzyme';
 import AddTestUser from '../AddTestUser';
 import {
   resetTestKogitoAppContext,
@@ -53,10 +53,9 @@ describe('AddTestUser tests', () => {
   });
 
   it('Snapshot test - TestUserSystem enabled', () => {
-    const wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={jest.fn()} />,
-      'Stack'
-    );
+    const wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={jest.fn()} />
+    ).find('Stack');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -65,10 +64,9 @@ describe('AddTestUser tests', () => {
   });
 
   it('Snapshot test - TestUserSystem enabled - closed modal', () => {
-    const wrapper = getWrapper(
-      <AddTestUser isOpen={false} toggleModal={jest.fn()} />,
-      'Stack'
-    );
+    const wrapper = mount(
+      <AddTestUser isOpen={false} toggleModal={jest.fn()} />
+    ).find('Stack');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -79,10 +77,9 @@ describe('AddTestUser tests', () => {
   it('Snapshot test - TestUserSystem disabled', () => {
     testIsTestUserSystemEnabledMock.mockReturnValue(false);
 
-    const wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={jest.fn()} />,
-      'Stack'
-    );
+    const wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={jest.fn()} />
+    ).find('Stack');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -93,10 +90,9 @@ describe('AddTestUser tests', () => {
   it('Cancel test', () => {
     const toggleModal = jest.fn();
 
-    const wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={toggleModal} />,
-      'Form'
-    );
+    const wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={toggleModal} />
+    ).find('Form');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -116,10 +112,9 @@ describe('AddTestUser tests', () => {
   it('Add test with validation error', () => {
     const toggleModal = jest.fn();
 
-    let wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={toggleModal} />,
-      'Form'
-    );
+    let wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={toggleModal} />
+    ).find('Form');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -161,10 +156,9 @@ describe('AddTestUser tests', () => {
   it('Add test with successful validation', () => {
     const toggleModal = jest.fn();
 
-    let wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={toggleModal} />,
-      'Form'
-    );
+    let wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={toggleModal} />
+    ).find('Form');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -207,10 +201,9 @@ describe('AddTestUser tests', () => {
   it('Test userId field validations', () => {
     const toggleModal = jest.fn();
 
-    let wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={toggleModal} />,
-      'Form'
-    );
+    let wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={toggleModal} />
+    ).find('Form');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -285,10 +278,9 @@ describe('AddTestUser tests', () => {
   it('Test groups field validations', () => {
     const toggleModal = jest.fn();
 
-    let wrapper = getWrapper(
-      <AddTestUser isOpen={true} toggleModal={toggleModal} />,
-      'Form'
-    );
+    let wrapper = mount(
+      <AddTestUser isOpen={true} toggleModal={toggleModal} />
+    ).find('Form');
 
     expect(wrapper).toMatchSnapshot();
 

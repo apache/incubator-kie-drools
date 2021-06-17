@@ -25,7 +25,8 @@ import {
 } from '@patternfly/react-icons';
 import React, { useState } from 'react';
 import './ProcessDetailsTimeline.css';
-import { GraphQL, OUIAProps, componentOuiaProps } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
   handleRetry,
   handleSkip,

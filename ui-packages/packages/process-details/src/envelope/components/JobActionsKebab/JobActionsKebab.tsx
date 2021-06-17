@@ -28,7 +28,7 @@ import {
   Job,
   setTitle
 } from '@kogito-apps/management-console-shared';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { ProcessDetailsDriver } from '../../../api';
 
 interface IOwnProps {

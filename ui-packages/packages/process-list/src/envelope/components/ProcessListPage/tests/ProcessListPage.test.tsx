@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import React from 'react';
 import TestProcessListDriver from './mocks/TestProcessListDriver';
 import ProcessListPage from '../ProcessListPage';
@@ -66,7 +66,7 @@ const getProcessListDriver = (items: number): TestProcessListDriver => {
 let props;
 
 const getProcessListWrapper = () =>
-  getWrapper(<ProcessListPage {...props} />, 'ProcessListPage');
+  mount(<ProcessListPage {...props} />).find('ProcessListPage');
 describe('ProcessListPage test', () => {
   beforeEach(() => {
     jest.clearAllMocks();

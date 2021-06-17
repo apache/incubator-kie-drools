@@ -10,15 +10,14 @@ import {
   ISortBy
 } from '@patternfly/react-table';
 import {
-  componentOuiaProps,
   EndpointLink,
   GraphQL,
   ItemDescriptor,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  KogitoSpinner,
-  OUIAProps
+  KogitoSpinner
 } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   getProcessInstanceDescription,
   handleAbort,
@@ -88,7 +87,15 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
   ouiaSafe
 }) => {
   const [rowPairs, setRowPairs] = useState<RowPairType[]>([]);
-  const columns: string[] = ['Id', 'Status', 'Created', 'Last update'];
+  const columns: string[] = [
+    '__Toggle',
+    '__Select',
+    'Id',
+    'Status',
+    'Created',
+    'Last update',
+    '__Actions'
+  ];
   const [modalTitle, setModalTitle] = useState<string>('');
   const [modalContent, setModalContent] = useState<string>('');
   const [titleType, setTitleType] = useState<string>('');
@@ -299,6 +306,7 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
           onSkipClick={onSkipClick}
           onRetryClick={onRetryClick}
           onAbortClick={onAbortClick}
+          ouiaId={parentId}
         />
       );
     }
@@ -422,42 +430,48 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
         )}
       >
         <Thead>
-          <Tr>
-            <Th
-              style={{
-                width: '72px'
-              }}
-            />
-            <Th
-              style={{
-                width: '86px'
-              }}
-            />
+          <Tr ouiaId="process-list-table-header">
             {columns.map((column, columnIndex) => {
-              const sortParams = {
-                sort: {
-                  sortBy,
-                  onSort,
-                  columnIndex
-                }
-              };
+              let sortParams = {};
               if (!loading && rowPairs.length > 0) {
-                return (
-                  <Th key={columnIndex} {...sortParams}>
-                    {column}
-                  </Th>
-                );
-              } else {
-                return <Th key={columnIndex}>{column}</Th>;
+                sortParams = {
+                  sort: {
+                    sortBy,
+                    onSort,
+                    columnIndex
+                  }
+                };
               }
+              let styleParams = undefined;
+              switch (columnIndex) {
+                case 0:
+                  styleParams = { width: '72px' };
+                  sortParams = {};
+                  break;
+                case 1:
+                  styleParams = { width: '86px' };
+                  sortParams = {};
+                  break;
+                case columns.length - 1:
+                  styleParams = { width: '188px' };
+                  sortParams = {};
+                  break;
+              }
+              return (
+                <Th style={styleParams} key={columnIndex} {...sortParams}>
+                  {column.startsWith('__') ? '' : column}
+                </Th>
+              );
             })}
-            <Th style={{ width: '188px' }}>{columns[4]}</Th>
           </Tr>
         </Thead>
         {!loading && initData && rowPairs.length > 0 ? (
           rowPairs.map((pair, pairIndex) => {
             const parentRow = (
-              <Tr key={`${pairIndex}-parent`}>
+              <Tr
+                key={`${pairIndex}-parent`}
+                {...componentOuiaProps(pair.id, 'process-list-row', true)}
+              >
                 <Td
                   key={`${pairIndex}-parent-0`}
                   expand={{
@@ -465,11 +479,21 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
                     isExpanded: expanded[pairIndex],
                     onToggle: event => onToggle(pairIndex, pair)
                   }}
+                  {...componentOuiaProps(
+                    columns[0].toLocaleLowerCase(),
+                    'process-list-cell',
+                    true
+                  )}
                 />
                 {pair.parent.map((cell, cellIndex) => (
                   <Td
-                    key={`${pairIndex}-parent-${++cellIndex}`}
-                    dataLabel={columns[cellIndex]}
+                    key={`${pairIndex}-parent-${cellIndex}`}
+                    dataLabel={columns[cellIndex + 1]}
+                    {...componentOuiaProps(
+                      columns[cellIndex + 1].toLowerCase(),
+                      'process-list-cell',
+                      true
+                    )}
                   >
                     {cell}
                   </Td>
@@ -480,6 +504,11 @@ const ProcessListTable: React.FC<IOwnProps & OUIAProps> = ({
               <Tr
                 key={`${pairIndex}-child`}
                 isExpanded={expanded[pairIndex] === true}
+                {...componentOuiaProps(
+                  pair.id,
+                  'process-list-row-expanded',
+                  true
+                )}
               >
                 <Td key={`${pairIndex}-child-0`} />
                 {rowPairs[pairIndex].child.map((cell, cellIndex) => (

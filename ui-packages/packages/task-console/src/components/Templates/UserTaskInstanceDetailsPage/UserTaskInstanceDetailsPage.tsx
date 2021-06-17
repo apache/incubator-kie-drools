@@ -38,15 +38,17 @@ import {
   Tooltip
 } from '@patternfly/react-core';
 import {
-  componentOuiaProps,
   GraphQL,
   KogitoEmptyState,
   KogitoEmptyStateType,
-  ouiaPageTypeAndObjectId,
-  OUIAProps,
   KogitoSpinner,
   ServerErrors
 } from '@kogito-apps/common';
+import {
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+  OUIAProps
+} from '@kogito-apps/ouia-tools';
 import TaskConsoleContext, {
   ITaskConsoleContext
 } from '../../../context/TaskConsoleContext/TaskConsoleContext';

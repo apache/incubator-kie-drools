@@ -22,7 +22,7 @@ import {
   TextContent,
   Text
 } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 interface IOwnProps {
   errorString: string;

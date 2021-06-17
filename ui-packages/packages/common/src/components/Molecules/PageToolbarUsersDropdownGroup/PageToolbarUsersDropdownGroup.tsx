@@ -20,7 +20,7 @@ import {
   useKogitoAppContext
 } from '../../../environment/context/KogitoAppContext';
 import { DropdownGroup, DropdownItem, Tooltip } from '@patternfly/react-core';
-import { componentOuiaProps, OUIAProps } from '../../../utils/OuiaUtils';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { TestUserContext } from '../../../environment/auth/TestUserContext';
 import { isTestUserSystemEnabled } from '../../../utils/Utils';
 

@@ -17,15 +17,17 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-  componentOuiaProps,
   GraphQL,
   KogitoEmptyState,
   KogitoEmptyStateType,
   LoadMore,
-  ouiaPageTypeAndObjectId,
-  OUIAProps,
   ServerErrors
 } from '@kogito-apps/common';
+import {
+  componentOuiaProps,
+  ouiaPageTypeAndObjectId,
+  OUIAProps
+} from '@kogito-apps/ouia-tools';
 import PageTitle from '../../Molecules/PageTitle/PageTitle';
 import {
   Breadcrumb,

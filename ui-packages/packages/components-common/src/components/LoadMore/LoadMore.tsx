@@ -27,7 +27,7 @@ import {
   Split,
   SplitItem
 } from '@patternfly/react-core';
-import { OUIAProps, componentOuiaProps } from '../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import '../styles.css';
 import { CheckIcon } from '@patternfly/react-icons';
 

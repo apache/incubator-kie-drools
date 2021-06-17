@@ -1,12 +1,14 @@
 import React from 'react';
 import JobsManagementTable from '../JobsManagementTable';
-import { getWrapperAsync, GraphQL, getWrapper } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { Dropdown, DropdownItem, KebabToggle } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
 import * as Utils from '../../../../utils/Utils';
 import axios from 'axios';
 import { refetchContext } from '../../../contexts';
 import { SelectColumn } from '@patternfly/react-table';
+import { wait } from '@apollo/react-testing';
 jest.mock('axios');
 Date.now = jest.fn(() => new Date(Date.UTC(2020, 10, 30)).valueOf());
 const mockedAxios = axios as jest.Mocked<typeof axios>;
@@ -107,10 +109,14 @@ describe('Jobs management table component tests', () => {
     loading: false
   };
   it('Snapshot with default props', async () => {
-    const wrapper = await getWrapperAsync(
-      <JobsManagementTable {...props} />,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagementTable {...props} />);
+      await wait(0);
+      wrapper.update();
+      wrapper = wrapper.find('JobsManagementTable');
+    });
+
     expect(wrapper).toMatchSnapshot();
     const event: any = {};
     await act(async () => {
@@ -122,10 +128,12 @@ describe('Jobs management table component tests', () => {
   });
 
   it('test job details action', async () => {
-    let wrapper = await getWrapperAsync(
-      <JobsManagementTable {...props} />,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagementTable {...props} />);
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     wrapper
       .find(Dropdown)
       .at(1)
@@ -155,12 +163,16 @@ describe('Jobs management table component tests', () => {
     mockedAxios.delete.mockResolvedValue({});
     const jobCancelSpy = jest.spyOn(Utils, 'jobCancel');
     const refetch = jest.fn();
-    let wrapper = await getWrapperAsync(
-      <refetchContext.Provider value={refetch}>
-        <JobsManagementTable {...props} />
-      </refetchContext.Provider>,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <refetchContext.Provider value={refetch}>
+          <JobsManagementTable {...props} />
+        </refetchContext.Provider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     wrapper
       .find(Dropdown)
       .at(1)
@@ -191,12 +203,16 @@ describe('Jobs management table component tests', () => {
     mockedAxios.delete.mockRejectedValue({ message: '404 error' });
     const jobCancelSpy = jest.spyOn(Utils, 'jobCancel');
     const refetch = jest.fn();
-    let wrapper = await getWrapperAsync(
-      <refetchContext.Provider value={refetch}>
-        <JobsManagementTable {...props} />
-      </refetchContext.Provider>,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <refetchContext.Provider value={refetch}>
+          <JobsManagementTable {...props} />
+        </refetchContext.Provider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     wrapper
       .find(Dropdown)
       .at(1)
@@ -225,12 +241,16 @@ describe('Jobs management table component tests', () => {
   it('test job reschedule action', async () => {
     mockedAxios.delete.mockResolvedValue({});
     const refetch = jest.fn();
-    let wrapper = await getWrapperAsync(
-      <refetchContext.Provider value={refetch}>
-        <JobsManagementTable {...props} />
-      </refetchContext.Provider>,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <refetchContext.Provider value={refetch}>
+          <JobsManagementTable {...props} />
+        </refetchContext.Provider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     wrapper
       .find(Dropdown)
       .at(1)
@@ -258,10 +278,9 @@ describe('Jobs management table component tests', () => {
   });
 
   it('onSelect tests', async () => {
-    const wrapperWithoutSelectedInstances = getWrapper(
-      <JobsManagementTable {...props} />,
-      'JobsManagementTable'
-    );
+    const wrapperWithoutSelectedInstances = mount(
+      <JobsManagementTable {...props} />
+    ).find('JobsManagementTable');
     // select 1 row
     await act(async () => {
       wrapperWithoutSelectedInstances
@@ -270,12 +289,11 @@ describe('Jobs management table component tests', () => {
         .simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
-    const wrapperWithSelectedInstances = getWrapper(
+    const wrapperWithSelectedInstances = mount(
       <JobsManagementTable
         {...{ ...props, selectedJobInstances: [{ ...props.data.Jobs[1] }] }}
-      />,
-      'JobsManagementTable'
-    );
+      />
+    ).find('JobsManagementTable');
     //deselect 1 row
     await act(async () => {
       wrapperWithSelectedInstances
@@ -292,12 +310,11 @@ describe('Jobs management table component tests', () => {
         .simulate('change');
     });
     expect(props.setSelectedJobInstances).toHaveBeenCalled();
-    const wrapperWithAllSelected = getWrapper(
+    const wrapperWithAllSelected = mount(
       <JobsManagementTable
         {...{ ...props, selectedJobInstances: [...props.data.Jobs] }}
-      />,
-      'JobsManagementTable'
-    );
+      />
+    ).find('JobsManagementTable');
     //deselect all rows
     await act(async () => {
       wrapperWithAllSelected
@@ -310,10 +327,12 @@ describe('Jobs management table component tests', () => {
   it('test sorting controls', async () => {
     const handleSort: any = jest.spyOn(React, 'useState');
     handleSort.mockImplementation(sortBy => [sortBy, props.setSortBy]);
-    let wrapper = await getWrapperAsync(
-      <JobsManagementTable {...props} />,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagementTable {...props} />);
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     const event = { target: { innerText: 'Last update' } };
     const index = 1;
     const direction = 'asc';
@@ -328,21 +347,27 @@ describe('Jobs management table component tests', () => {
     expect(props.setOffset).toHaveBeenCalledWith(0);
   });
   it('loading state in table', async () => {
-    const wrapper = await getWrapperAsync(
-      <JobsManagementTable {...{ ...props, loading: true }} />,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(<JobsManagementTable {...{ ...props, loading: true }} />);
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     const loadingComponent = wrapper.find('KogitoSpinner');
     expect(loadingComponent.exists()).toBeTruthy();
     expect(loadingComponent).toMatchSnapshot();
   });
   it('loading empty in table', async () => {
-    const wrapper = await getWrapperAsync(
-      <JobsManagementTable
-        {...{ ...props, data: { ...props.data.Jobs, Jobs: [] } }}
-      />,
-      'JobsManagementTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <JobsManagementTable
+          {...{ ...props, data: { ...props.data.Jobs, Jobs: [] } }}
+        />
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('JobsManagementTable');
+    });
     const loadingComponent = wrapper.find('EmptyState');
     expect(loadingComponent.exists()).toBeTruthy();
     expect(loadingComponent).toMatchSnapshot();

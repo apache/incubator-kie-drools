@@ -5,10 +5,9 @@ import {
   KogitoPageLayout,
   PageNotFound,
   NoData,
-  ouiaAttribute,
-  GraphQL,
-  OUIAProps
+  GraphQL
 } from '@kogito-apps/common';
+import { ouiaAttribute, OUIAProps } from '@kogito-apps/ouia-tools';
 import ProcessListPage from '../ProcessListPage/ProcessListPage';
 import ProcessDetailsPage from '../ProcessDetailsPage/ProcessDetailsPage';
 import DomainExplorerPage from '../DomainExplorerPage/DomainExplorerPage';

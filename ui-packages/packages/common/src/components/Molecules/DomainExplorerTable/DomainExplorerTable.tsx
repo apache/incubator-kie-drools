@@ -39,7 +39,7 @@ import {
   KogitoEmptyStateType
 } from '../../Atoms/KogitoEmptyState/KogitoEmptyState';
 import { constructObject } from '../../../utils/Utils';
-import { OUIAProps, componentOuiaProps } from '../../../utils/OuiaUtils';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 
 interface RowContent {
   cells: string[] | Record<string, unknown>[];

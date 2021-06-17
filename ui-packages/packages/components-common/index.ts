@@ -30,5 +30,3 @@ export { default as KogitoSpinner } from './src/components/KogitoSpinner/KogitoS
 export { default as LoadMore } from './src/components/LoadMore/LoadMore';
 export { default as ServerErrors } from './src/components/ServerErrors/ServerErrors';
 export { default as EndpointLink } from './src/components/EndpointLink/EndpointLink';
-
-export * from './src/utils/OuiaUtils';

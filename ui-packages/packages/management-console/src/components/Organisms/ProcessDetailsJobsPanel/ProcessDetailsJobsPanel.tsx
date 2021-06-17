@@ -16,7 +16,8 @@ import {
 } from '@patternfly/react-table';
 import Moment from 'react-moment';
 import JobActionsKebab from '../../Atoms/JobActionsKebab/JobActionsKebab';
-import { OUIAProps, componentOuiaProps, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { JobsIconCreator } from '../../../utils/Utils';
 import { refetchContext } from '../../contexts';
 

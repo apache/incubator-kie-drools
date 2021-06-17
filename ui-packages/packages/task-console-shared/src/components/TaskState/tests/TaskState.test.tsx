@@ -23,7 +23,7 @@ import {
 import _ from 'lodash';
 import TaskState from '../TaskState';
 import { Label } from '@patternfly/react-core';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { UserTaskInstance } from '../../../types';
 
 const userTask: UserTaskInstance = {
@@ -72,7 +72,7 @@ jest.mock('@patternfly/react-icons', () => ({
 
 describe('TaskState', () => {
   it('Test show active task', () => {
-    const wrapper = getWrapper(<TaskState task={userTask} />, 'TaskState');
+    const wrapper = mount(<TaskState task={userTask} />).find('TaskState');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -89,7 +89,7 @@ describe('TaskState', () => {
     const task = _.clone(userTask);
     task.state = 'Aborted';
 
-    const wrapper = getWrapper(<TaskState task={task} />, 'TaskState');
+    const wrapper = mount(<TaskState task={task} />).find('TaskState');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -107,7 +107,7 @@ describe('TaskState', () => {
     task.state = 'Completed';
     task.completed = true;
 
-    const wrapper = getWrapper(<TaskState task={task} />, 'TaskState');
+    const wrapper = mount(<TaskState task={task} />).find('TaskState');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -121,8 +121,7 @@ describe('TaskState', () => {
   });
 
   it('Test show active task in label', () => {
-    const wrapper = getWrapper(
-      <TaskState task={userTask} variant={'label'} />,
+    const wrapper = mount(<TaskState task={userTask} variant={'label'} />).find(
       'TaskState'
     );
 
@@ -138,8 +137,7 @@ describe('TaskState', () => {
     const task = _.clone(userTask);
     task.state = 'Aborted';
 
-    const wrapper = getWrapper(
-      <TaskState task={task} variant={'label'} />,
+    const wrapper = mount(<TaskState task={task} variant={'label'} />).find(
       'TaskState'
     );
 
@@ -160,8 +158,7 @@ describe('TaskState', () => {
     task.state = 'Completed';
     task.completed = true;
 
-    const wrapper = getWrapper(
-      <TaskState task={task} variant={'label'} />,
+    const wrapper = mount(<TaskState task={task} variant={'label'} />).find(
       'TaskState'
     );
 

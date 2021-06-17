@@ -17,7 +17,7 @@
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 import ProcessDetails from '../ProcessDetails';
-import { getWrapperAsync } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedProcessDetailsDriver } from '../../../../embedded/tests/mocks/Mocks';
 import {
   Job,
@@ -26,6 +26,7 @@ import {
   ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
+import wait from 'waait';
 
 jest.mock('../../JobsPanel/JobsPanel');
 jest.mock('../../ProcessDiagram/ProcessDiagram');
@@ -160,18 +161,22 @@ describe('ProcessDetails tests', () => {
       );
     });
     it('Snapshot tests with default prop', async () => {
-      const wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       expect(wrapper).toMatchSnapshot();
     });
 
     it('Initiaload with query responses', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       expect(wrapper.find('MockedJobsPanel')).toBeTruthy();
       expect(wrapper.find('MockedProcessDiagram')).toBeTruthy();
@@ -179,10 +184,12 @@ describe('ProcessDetails tests', () => {
     });
 
     it('handle save option', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       await act(async () => {
         wrapper
@@ -193,10 +200,12 @@ describe('ProcessDetails tests', () => {
     });
 
     it('handle refresh option', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       await act(async () => {
         wrapper
@@ -333,10 +342,12 @@ describe('ProcessDetails tests', () => {
       );
     });
     it('Test svg error modal', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       await act(async () => {
         wrapper
@@ -350,10 +361,12 @@ describe('ProcessDetails tests', () => {
     });
 
     it('Test process variable success modal', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       await act(async () => {
         wrapper
@@ -407,10 +420,12 @@ describe('ProcessDetails tests', () => {
     });
 
     it('Test process variable error modal', async () => {
-      let wrapper = await getWrapperAsync(
-        <ProcessDetails {...props} />,
-        'ProcessDetails'
-      );
+      let wrapper;
+      await act(async () => {
+        wrapper = mount(<ProcessDetails {...props} />);
+        await wait(0);
+        wrapper = wrapper.update().find('ProcessDetails');
+      });
       wrapper = wrapper.update();
       await act(async () => {
         wrapper

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { act } from 'react-dom/test-utils';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import { MockedMessageBusClientApi } from './mocks/Mocks';
 import ProcessDetailsEnvelopeView, {
   ProcessDetailsEnvelopeViewApi
@@ -115,10 +115,9 @@ describe('ProcessDetailsEnvelopeView tests', () => {
 
     const forwardRef = React.createRef<ProcessDetailsEnvelopeViewApi>();
 
-    let wrapper = getWrapper(
-      <ProcessDetailsEnvelopeView channelApi={channelApi} ref={forwardRef} />,
-      'ProcessDetailsEnvelopeView'
-    );
+    let wrapper = mount(
+      <ProcessDetailsEnvelopeView channelApi={channelApi} ref={forwardRef} />
+    ).find('ProcessDetailsEnvelopeView');
 
     expect(wrapper).toMatchSnapshot();
 
@@ -128,9 +127,9 @@ describe('ProcessDetailsEnvelopeView tests', () => {
       }
     });
 
-    wrapper = wrapper.update().find(ProcessDetailsEnvelopeView);
+    wrapper = wrapper.update();
 
-    expect(wrapper).toMatchSnapshot();
+    expect(wrapper.find(ProcessDetailsEnvelopeView)).toMatchSnapshot();
 
     const ProcessDetailsWrapper = wrapper.find(ProcessDetails);
 

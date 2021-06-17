@@ -15,7 +15,7 @@
  */
 
 import React, { useState } from 'react';
-import { componentOuiaProps, OUIAProps } from '../../../utils/OuiaUtils';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   ActionGroup,
   Alert,

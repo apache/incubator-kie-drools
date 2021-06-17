@@ -32,10 +32,9 @@ import {
   KogitoEmptyState,
   KogitoEmptyStateType,
   ServerErrors,
-  LoadMore,
-  OUIAProps,
-  componentOuiaProps
+  LoadMore
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import { ISortBy } from '@patternfly/react-table';
 import _ from 'lodash';
 import { alterOrderByObj } from '../utils/ProcessListUtils';

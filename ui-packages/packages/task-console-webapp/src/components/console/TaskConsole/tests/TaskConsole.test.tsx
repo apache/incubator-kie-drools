@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskConsole from '../TaskConsole';
 import { ApolloClient } from 'apollo-client';
 import { TestUserContextImpl } from '@kogito-apps/consoles-common';
@@ -48,12 +48,11 @@ describe('TaskConsole tests', () => {
     };
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskConsole {...props}>
         <TaskConsoleRoutes />
-      </TaskConsole>,
-      'TaskConsole'
-    );
+      </TaskConsole>
+    ).find('TaskConsole');
 
     expect(wrapper).toMatchSnapshot();
   });

@@ -16,13 +16,13 @@ describe('Process List Page test', () => {
           cy.get('img')
             .should('have.attr', 'alt')
             .should('contains', 'Management Console');
-          cy.ouiaComponentType('page-toolbar').should('exist');
+          cy.ouiaType('page-toolbar').should('exist');
         });
     });
     it('Check navigation panel', () => {
       cy.get('[data-ouia-navigation=true]')
-        .ouiaComponentType('PF4/Nav')
-        .ouiaComponentId('navigation-list')
+        .ouiaType('PF4/Nav')
+        .ouiaId('navigation-list')
         .should('exist')
         .within($navigation => {
           cy.ouiaNavigationName()
@@ -45,13 +45,13 @@ describe('Process List Page test', () => {
     it('Check main content', () => {
       cy.get('[data-ouia-main=true]')
         .should('exist')
-        .ouiaComponentType('process-list-page')
+        .ouiaType('process-list-page')
         .should('exist')
         .within($page => {
-          cy.ouiaComponentType('page-title')
+          cy.ouiaType('page-title')
             .should('exist')
             .and('contain.text', 'Process Instances');
-          cy.ouiaComponentType('PF4/Breadcrumb')
+          cy.ouiaType('PF4/Breadcrumb')
             .should('exist')
             .within($nav => {
               // eslint-disable-next-line cypress/require-data-selectors
@@ -62,9 +62,9 @@ describe('Process List Page test', () => {
                   expect($items.eq(1)).to.contain.text('Process instances');
                 });
             });
-          cy.ouiaComponentType('process-list-toolbar').should('be.visible');
-          cy.ouiaComponentType('process-list-table').should('be.visible');
-          cy.ouiaComponentType('load-more')
+          cy.ouiaType('process-list-toolbar').should('be.visible');
+          cy.ouiaType('process-list-table').should('be.visible');
+          cy.ouiaType('load-more')
             .scrollIntoView()
             .should('be.visible');
         });
@@ -72,109 +72,93 @@ describe('Process List Page test', () => {
   });
   describe('Data presentation', () => {
     it('Table Layout', () => {
-      cy.ouiaComponentType('process-list-page').within($page => {
-        cy.ouiaComponentType('process-list-table')
-          .ouiaComponentType('process-list-table-item')
+      cy.ouiaType('process-list-page').within($page => {
+        cy.ouiaType('process-list-table')
+          .ouiaSafe()
+          .ouiaType('process-list-row')
           .should('have.length', 10)
-          .eq(0)
+          .ouiaId('8035b580-6ae4-4aa8-9ec0-e18e19809e0b1')
           .within($item => {
-            cy.ouiaComponentType('datalist-expand-toggle').should('be.visible');
-            cy.ouiaComponentType('datalist-checkbox')
-              .should('be.visible')
-              .and('be.enabled');
-            cy.ouiaComponentType('datalist-cell').then($cells => {
+            cy.ouiaType('process-list-cell').then($cells => {
+              cy.ouiaId('__toggle').should('be.visible');
+              cy.ouiaId('__select')
+                .should('be.visible')
+                .find('input')
+                .should('be.enabled');
+              cy.ouiaId('id').should('be.visible');
               cy.wrap($cells)
-                .ouiaComponentId('endpoint')
-                .should('be.visible');
-              cy.wrap($cells)
-                .ouiaComponentId('status')
+                .ouiaId('status')
                 .should('be.visible')
                 .and('contain.text', 'Active');
               cy.wrap($cells)
-                .ouiaComponentId('created')
+                .ouiaId('created')
                 .should('be.visible');
               cy.wrap($cells)
-                .ouiaComponentId('updated')
+                .ouiaId('last update')
+                .should('be.visible');
+              cy.wrap($cells)
+                .ouiaId('__actions')
                 .should('be.visible');
             });
           });
       });
     });
     it('Process-list-item expanded.', () => {
-      cy.ouiaComponentType('process-list-page').within($page => {
-        cy.ouiaComponentType('process-list-table')
-          .ouiaComponentType('process-list-table-item')
-          .ouiaComponentId('process-8035b580-6ae4-4aa8-9ec0-e18e19809e0b')
-          .within($item => {
-            cy.ouiaComponentType('process-list-table-item-expand').should(
-              'not.be.visible'
-            );
-            cy.ouiaComponentType('datalist-expand-toggle')
+      cy.ouiaType('process-list-page').within($page => {
+        cy.ouiaType('load-more')
+          .scrollIntoView()
+          .should('be.visible')
+          .ouiaType('PF4/Dropdown')
+          .click();
+        cy.ouiaType('process-list-table')
+          .ouiaSafe()
+          .within($table => {
+            cy.ouiaId(
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row-expanded'
+            )
+              .scrollIntoView()
+              .should('not.be.visible');
+            cy.ouiaId(
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row'
+            )
               .scrollIntoView()
               .should('be.visible')
-              .click({ force: true });
-            cy.ouiaComponentType('process-list-table-item-expand')
+              .within($row => {
+                cy.ouiaId('__toggle', 'process-list-cell')
+                  .scrollIntoView()
+                  .should('be.visible')
+                  .ouiaType('PF4/Button')
+                  .click();
+              });
+            cy.ouiaId(
+              '8035b580-6ae4-4aa8-9ec0-e18e19809e0b',
+              'process-list-row-expanded'
+            )
+              .scrollIntoView()
               .should('be.visible')
               .within($expanded => {
-                cy.ouiaComponentType('process-list-table-item').should(
-                  'have.length',
-                  4
-                );
-                cy.ouiaComponentId(
-                  'process-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e',
-                  'process-list-table-item'
-                )
-                  .should('be.visible')
-                  .within($it => {
-                    cy.ouiaComponentType('datalist-expand-toggle').should(
-                      'not.exist'
-                    );
-                    cy.ouiaComponentType('datalist-checkbox').should(
-                      'not.be.visible'
-                    );
-                    cy.ouiaComponentId('endpoint', 'datalist-cell')
-                      .should('be.visible')
-                      .and('contain.text', 'FlightBooking');
-                    cy.ouiaComponentId('status', 'datalist-cell')
-                      .should('be.visible')
-                      .and('contain.text', 'Completed');
-                  });
-              });
-            cy.ouiaComponentId(
-              'process-c54ca5b0-b975-46e2-a9a0-6a86bf7ac21eaccd',
-              'process-list-table-item'
-            )
-              .should('be.visible')
-              .within($it => {
-                cy.ouiaComponentType('datalist-expand-toggle').should(
-                  'not.exist'
-                );
-                cy.ouiaComponentType('datalist-checkbox').should(
-                  'not.be.visible'
-                );
-                cy.ouiaComponentId('endpoint', 'datalist-cell')
-                  .should('be.visible')
-                  .and('contain.text', 'FlightBooking test 1');
-                cy.ouiaComponentId('status', 'datalist-cell')
-                  .should('be.visible')
-                  .and('contain.text', 'Suspended');
+                // 1 header and 4 items
+                cy.ouiaType('PF4/TableRow').should('have.length', 5);
               });
           });
       });
     });
     it('Load More', () => {
-      cy.ouiaComponentType('process-list-page').within($page => {
-        cy.ouiaComponentType('process-list-table')
-          .ouiaComponentType('process-list-table-item')
+      cy.ouiaType('process-list-page').within($page => {
+        cy.ouiaType('process-list-table')
+          .ouiaSafe()
+          .ouiaType('process-list-row')
           .should('have.length', 10);
-        cy.ouiaComponentType('load-more')
+        cy.ouiaType('load-more')
           .scrollIntoView()
           .should('be.visible')
-          .ouiaComponentType('PF4/Dropdown')
+          .ouiaType('PF4/Dropdown')
           .click();
-        cy.ouiaComponentType('process-list-table')
-          .ouiaComponentType('process-list-table-item')
-          .should('have.length', 13);
+        cy.ouiaType('process-list-table')
+          .ouiaType('process-list-row')
+          .should('have.length', 14);
       });
     });
   });

@@ -1,11 +1,13 @@
 import { MockedProvider } from '@apollo/react-testing';
-import { getWrapperAsync, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import { Checkbox } from '@patternfly/react-core';
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import ProcessListChildTable from '../ProcessListChildTable';
 import _ from 'lodash';
 import { act } from 'react-dom/test-utils';
+import wait from 'waait';
 jest.mock('../../../Atoms/ErrorPopover/ErrorPopover');
 jest.mock('../../DisablePopup/DisablePopup');
 jest.mock('../../../Atoms/ProcessListActionsKebab/ProcessListActionsKebab');
@@ -157,54 +159,70 @@ describe('Process List Child Table tests', () => {
     }
   ];
   it('snapshot of children in table', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mockData} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListChildTable {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessListChildTable'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mockData} addTypename={false}>
+          <BrowserRouter>
+            <ProcessListChildTable {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper.update();
+      wrapper = wrapper.find('ProcessListChildTable');
+    });
+
     expect(wrapper).toMatchSnapshot();
   });
 
   it('snapshot for error', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mockDatawithError} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListChildTable {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessListChildTable'
-    );
-    const serverErrorComponent = wrapper.update().find('ServerErrors');
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mockDatawithError} addTypename={false}>
+          <BrowserRouter>
+            <ProcessListChildTable {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListChildTable');
+    });
+    const serverErrorComponent = wrapper.find('ServerErrors');
     expect(serverErrorComponent.exists()).toBeTruthy();
     expect(serverErrorComponent).toMatchSnapshot();
   });
 
   it('snapshot empty results', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mockDataWihEmptyResults} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListChildTable {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessListChildTable'
-    );
-    const emptyState = wrapper.update().find('EmptyState');
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mockDataWihEmptyResults} addTypename={false}>
+          <BrowserRouter>
+            <ProcessListChildTable {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper.update();
+    });
+    const emptyState = wrapper.find('EmptyState');
     expect(emptyState.exists()).toBeTruthy();
     expect(emptyState).toMatchSnapshot();
   });
   it('checkbox click tests - selected', async () => {
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mockData} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListChildTable {...props} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessListChildTable'
-    );
+    let wrapper;
     await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mockData} addTypename={false}>
+          <BrowserRouter>
+            <ProcessListChildTable {...props} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper.update();
       wrapper
         .find(Checkbox)
         .find('input')
@@ -217,15 +235,17 @@ describe('Process List Child Table tests', () => {
     clonedProps.initData.ProcessInstances[0].childProcessInstances[0][
       'isSelected'
     ] = true;
-    const wrapper = await getWrapperAsync(
-      <MockedProvider mocks={mockData} addTypename={false}>
-        <BrowserRouter>
-          <ProcessListChildTable {...clonedProps} />
-        </BrowserRouter>
-      </MockedProvider>,
-      'ProcessListChildTable'
-    );
+    let wrapper;
     await act(async () => {
+      wrapper = mount(
+        <MockedProvider mocks={mockData} addTypename={false}>
+          <BrowserRouter>
+            <ProcessListChildTable {...clonedProps} />
+          </BrowserRouter>
+        </MockedProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessListChildTable');
       wrapper
         .find(Checkbox)
         .find('input')

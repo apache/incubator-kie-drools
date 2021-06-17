@@ -1,6 +1,6 @@
 import React from 'react';
 import KogitoPageLayout from '../KogitoPageLayout';
-import { getWrapper } from '../../../../utils/OuiaUtils';
+import { mount } from 'enzyme';
 import { act } from 'react-dom/test-utils';
 import * as Keycloak from '../../../../utils/KeycloakClient';
 import { PageSidebar } from '@patternfly/react-core';
@@ -19,18 +19,16 @@ describe('KogitoPageLayout component tests', () => {
   const isAuthEnabledMock = jest.spyOn(Keycloak, 'isAuthEnabled');
   isAuthEnabledMock.mockReturnValue(false);
   it('snapshot tests', () => {
-    const wrapper = getWrapper(
-      <KogitoPageLayout {...props} />,
+    const wrapper = mount(<KogitoPageLayout {...props} />).find(
       'KogitoPageLayout'
     );
     expect(wrapper).toMatchSnapshot();
   });
 
   it('open with PageSidebar closed', () => {
-    let wrapper = getWrapper(
-      <KogitoPageLayout {...props} pageNavOpen={false} />,
-      'KogitoPageLayout'
-    );
+    const wrapper = mount(
+      <KogitoPageLayout {...props} pageNavOpen={false} />
+    ).find('KogitoPageLayout');
     expect(wrapper).toMatchSnapshot();
 
     let pageSidebar = wrapper.find(PageSidebar);
@@ -44,17 +42,16 @@ describe('KogitoPageLayout component tests', () => {
       wrapper.find('Button').prop('onClick')(event);
     });
 
-    wrapper = wrapper.update().find(KogitoPageLayout);
-    expect(wrapper).toMatchSnapshot();
+    const pageLayout = wrapper.update().find(KogitoPageLayout);
+    expect(pageLayout).toMatchSnapshot();
 
-    pageSidebar = wrapper.find(PageSidebar);
+    pageSidebar = pageLayout.find(PageSidebar);
     expect(pageSidebar.exists()).toBeTruthy();
     expect(pageSidebar.props().isNavOpen).toBeTruthy();
   });
 
   it('check isNavOpen boolean', () => {
-    const wrapper = getWrapper(
-      <KogitoPageLayout {...props} />,
+    const wrapper = mount(<KogitoPageLayout {...props} />).find(
       'KogitoPageLayout'
     );
     const event = {

@@ -1,0 +1,34 @@
+{
+  "name": "@kogito-apps/cypress-ouia",
+  "version": "1.0.0",
+  "description": "This library provides a set of OUIA cypress commands.",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "index.d.ts",
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "precommit": "lint-staged",
+    "build": "tsc --project ./tsconfig.json || echo error",
+    "build:prod": "yarn run clean && yarn run lint && yarn run build",
+    "lint": "eslint './src/**/*.ts{,x}'",
+    "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "@types/cypress": "^1.1.0"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "yarn run format",
+      "yarn run lint"
+    ]
+  }
+}

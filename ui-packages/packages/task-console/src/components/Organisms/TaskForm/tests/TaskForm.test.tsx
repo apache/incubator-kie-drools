@@ -20,12 +20,12 @@ import { act } from 'react-dom/test-utils';
 import _ from 'lodash';
 import wait from 'waait';
 import {
-  getWrapperAsync,
   GraphQL,
   KogitoAppContextProvider,
   UserContext,
   KogitoEmptyState
 } from '@kogito-apps/common';
+import { mount, ReactWrapper } from 'enzyme';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 import TaskForm from '../TaskForm';
 import ApplyForVisaForm from '../../../../util/tests/mocks/ApplyForVisa';
@@ -87,15 +87,14 @@ const userTaskInstance: UserTaskInstance = {
     'http://localhost:8080/travels/9ae7ce3b-d49c-4f35-b843-8ac3d22fa427/VisaApplication/45a73767-5da3-49bf-9c40-d533c3e77ef3'
 };
 
-const getWrapper = async (
+const mountCustom = async (
   userTaskInstance: GraphQL.UserTaskInstance,
   formSubmitSuccessCallback?: () => void,
   formSubmitErrorCallback?: () => void
-) => {
+): Promise<ReactWrapper> => {
   let wrapper;
-
   await act(async () => {
-    wrapper = await getWrapperAsync(
+    wrapper = mount(
       <KogitoAppContextProvider userContext={userContext}>
         <TaskConsoleContextProvider>
           <TaskForm
@@ -104,13 +103,12 @@ const getWrapper = async (
             onSubmitError={formSubmitErrorCallback}
           />
         </TaskConsoleContextProvider>
-      </KogitoAppContextProvider>,
-      'TaskForm'
+      </KogitoAppContextProvider>
     );
-    await wait();
+    await wait(0);
+    wrapper = wrapper.update().find('TaskForm');
   });
-
-  return (wrapper = wrapper.update().find(TaskForm));
+  return wrapper;
 };
 
 let userContext: UserContext;
@@ -127,14 +125,18 @@ describe('TaskForm Test', () => {
     });
     const context: ITaskConsoleContext<UserTaskInstance> = new TaskConsoleContextImpl();
     context.setActiveItem(userTaskInstance);
-    const wrapper = await getWrapperAsync(
-      <KogitoAppContextProvider userContext={new TestingUserContext()}>
-        <TaskConsoleContext.Provider value={context}>
-          <TaskForm onSubmitSuccess={jest.fn()} onSubmitError={jest.fn()} />
-        </TaskConsoleContext.Provider>
-      </KogitoAppContextProvider>,
-      'TaskForm'
-    );
+    let wrapper;
+    await act(async () => {
+      wrapper = mount(
+        <KogitoAppContextProvider userContext={new TestingUserContext()}>
+          <TaskConsoleContext.Provider value={context}>
+            <TaskForm onSubmitSuccess={jest.fn()} onSubmitError={jest.fn()} />
+          </TaskConsoleContext.Provider>
+        </KogitoAppContextProvider>
+      );
+      await wait(0);
+      wrapper = wrapper.update().find('TaskForm');
+    });
 
     wrapper.update();
 
@@ -155,7 +157,7 @@ describe('TaskForm Test', () => {
       status: 200,
       data: _.cloneDeep(ApplyForVisaForm)
     });
-    const wrapper = await getWrapper(userTaskInstance);
+    const wrapper = await mountCustom(userTaskInstance);
 
     wrapper.update();
 
@@ -180,7 +182,7 @@ describe('TaskForm Test', () => {
       data: formSchema
     });
 
-    const wrapper = await getWrapper(userTaskInstance);
+    const wrapper = await mountCustom(userTaskInstance);
 
     wrapper.update();
 
@@ -200,7 +202,7 @@ describe('TaskForm Test', () => {
       status: 500
     });
 
-    let wrapper = await getWrapper(userTaskInstance);
+    let wrapper = await mountCustom(userTaskInstance);
 
     wrapper = wrapper.update().find(TaskForm);
 
@@ -215,7 +217,7 @@ describe('TaskForm Test', () => {
       Promise.reject(new Error('This is an error loading the form'))
     );
 
-    const wrapper = await getWrapper(userTaskInstance, jest.fn(), jest.fn());
+    const wrapper = await mountCustom(userTaskInstance, jest.fn(), jest.fn());
 
     expect(wrapper).toMatchSnapshot();
 
@@ -234,7 +236,7 @@ describe('TaskForm Test', () => {
 
     const axiosCalls = mockedAxios.get.mock.calls.length;
 
-    const wrapper = await getWrapper(task);
+    const wrapper = await mountCustom(task);
 
     wrapper.update();
 
@@ -266,7 +268,7 @@ describe('TaskForm Test', () => {
       data: _.cloneDeep(ApplyForVisaForm)
     });
 
-    let wrapper = await getWrapper(
+    let wrapper = await mountCustom(
       userTaskInstance,
       formSubmitSuccessCallback,
       formSubmitErrorCallback
@@ -302,7 +304,7 @@ describe('TaskForm Test', () => {
       data: _.cloneDeep(ApplyForVisaForm)
     });
 
-    let wrapper = await getWrapper(
+    let wrapper = await mountCustom(
       userTaskInstance,
       formSubmitSuccessCallback,
       formSubmitErrorCallback

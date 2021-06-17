@@ -20,10 +20,14 @@ exports[`PageSectionHeader tests Snapshot test with default props 1`] = `
   titleText="Process Details"
 >
   <PageSection
+    data-ouia-component-type="page-section-header"
+    data-ouia-safe={true}
     variant="light"
   >
     <section
       className="pf-c-page__main-section pf-m-light"
+      data-ouia-component-type="page-section-header"
+      data-ouia-safe={true}
     >
       <Breadcrumb>
         <nav

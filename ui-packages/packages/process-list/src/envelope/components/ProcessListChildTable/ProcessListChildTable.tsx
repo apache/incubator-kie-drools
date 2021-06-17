@@ -28,10 +28,9 @@ import {
   ItemDescriptor,
   EndpointLink,
   KogitoEmptyState,
-  KogitoEmptyStateType,
-  componentOuiaProps,
-  OUIAProps
+  KogitoEmptyStateType
 } from '@kogito-apps/components-common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import {
   getProcessInstanceDescription,
   ProcessInstanceIconCreator

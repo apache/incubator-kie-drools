@@ -2,7 +2,7 @@ import React from 'react';
 import { PageSection } from '@patternfly/react-core';
 
 import PageTitle from '../PageTitle/PageTitle';
-import { componentOuiaProps, OUIAProps } from '@kogito-apps/common';
+import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 
 const UserTaskPageHeader: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
   return (

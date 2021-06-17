@@ -18,12 +18,13 @@ import React from 'react';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger';
 import { DropdownToggle, DropdownItem, FlexItem } from '@patternfly/react-core';
 import { act } from 'react-dom/test-utils';
-import { getWrapper, getWrapperAsync } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import {
   ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
 import TestProcessDetailsDriver from '../../../tests/mocks/TestProcessDetailsDriver';
+import wait from 'waait';
 jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');
 
 const processInstanceData: ProcessInstance = {
@@ -97,13 +98,18 @@ const mockTriggerableNodes = [
 ];
 
 const getNodeTriggerWrapper = async () => {
-  return getWrapperAsync(
-    <ProcessDetailsNodeTrigger
-      processInstanceData={processInstanceData}
-      driver={new TestProcessDetailsDriver('123')}
-    />,
-    'ProcessDetailsNodeTrigger'
-  );
+  let wrapper;
+  await act(async () => {
+    wrapper = mount(
+      <ProcessDetailsNodeTrigger
+        processInstanceData={processInstanceData}
+        driver={new TestProcessDetailsDriver('123')}
+      />
+    );
+    await wait(0);
+    wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
+  });
+  return wrapper;
 };
 
 describe('Process details node trigger component tests', () => {
@@ -175,13 +181,14 @@ describe('Process details node trigger component tests', () => {
     driverMockNodeTriggerSuccess.mockResolvedValue();
     let wrapper;
     await act(async () => {
-      wrapper = await getWrapperAsync(
+      wrapper = mount(
         <ProcessDetailsNodeTrigger
           processInstanceData={processInstanceData}
           driver={new TestProcessDetailsDriver('123')}
-        />,
-        'ProcessDetailsNodeTrigger'
+        />
       );
+      await wait(0);
+      wrapper = wrapper.update().find('ProcessDetailsNodeTrigger');
     });
 
     await act(async () => {
@@ -224,13 +231,12 @@ describe('Process details node trigger component tests', () => {
     driverMockGetTriggerableNode.mockRejectedValue({ message: '404 error' });
     let wrapper = null;
     await act(async () => {
-      wrapper = getWrapper(
+      wrapper = mount(
         <ProcessDetailsNodeTrigger
           processInstanceData={processInstanceData}
           driver={driver}
-        />,
-        'ProcessDetailsNodeTrigger'
-      );
+        />
+      ).find('ProcessDetailsNodeTrigger');
     });
     wrapper = wrapper.update().find('MockedProcessDetailsErrorModal');
     expect(wrapper).toMatchSnapshot();

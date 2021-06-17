@@ -15,7 +15,7 @@
  */
 
 import React from 'react';
-import { getWrapper } from '@kogito-apps/components-common';
+import { mount } from 'enzyme';
 import TaskFormContainer from '../TaskFormContainer';
 import { TaskFormGatewayApi } from '../../../../../../channel/forms';
 import * as TaskFormContext from '../../../../../../channel/forms/TaskFormContext';
@@ -61,14 +61,13 @@ describe('TaskFormContainer tests', () => {
   it('Snapshot', () => {
     const onSubmit = jest.fn();
     const onFailure = jest.fn();
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <TaskFormContainer
         userTask={testUserTask}
         onSubmitSuccess={onSubmit}
         onSubmitError={onFailure}
-      />,
-      'TaskFormContainer'
-    );
+      />
+    ).find('TaskFormContainer');
 
     expect(wrapper).toMatchSnapshot();
 

@@ -16,7 +16,7 @@
 
 import React from 'react';
 import { Job } from '../../types';
-import { OUIAProps, componentOuiaProps } from '@kogito-apps/components-common';
+import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import {
   Modal,
   TextContent,

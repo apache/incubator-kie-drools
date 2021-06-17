@@ -16,7 +16,8 @@
 
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { getWrapper, GraphQL } from '@kogito-apps/common';
+import { GraphQL } from '@kogito-apps/common';
+import { mount } from 'enzyme';
 import TaskDescription from '../TaskDescription';
 import UserTaskInstance = GraphQL.UserTaskInstance;
 
@@ -60,12 +61,11 @@ jest.mock('@kogito-apps/common', () => ({
 
 describe('TaskDescription test', () => {
   it('Render task description with task des', () => {
-    const wrapper = getWrapper(
+    const wrapper = mount(
       <BrowserRouter>
         <TaskDescription task={userTask} />
-      </BrowserRouter>,
-      'TaskDescription'
-    );
+      </BrowserRouter>
+    ).find('TaskDescription');
     expect(wrapper).toMatchSnapshot();
   });
 });
