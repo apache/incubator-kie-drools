@@ -19,7 +19,7 @@ public class Person extends AbstractReactiveObject {
     @Position(1)
     private int age;
 
-
+    public int publicAge;
     private long ageLong;
 
     private Address address;

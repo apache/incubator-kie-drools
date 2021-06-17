@@ -40,6 +40,7 @@ import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -315,6 +316,7 @@ public class Consequence {
     private boolean rewriteRHS(BlockStmt ruleBlock, BlockStmt rhs) {
         AtomicBoolean requireDrools = new AtomicBoolean(false);
         List<MethodCallExpr> methodCallExprs = rhs.findAll(MethodCallExpr.class);
+        List<AssignExpr> assignExprs = rhs.findAll(AssignExpr.class);
         List<MethodCallExpr> updateExprs = new ArrayList<>();
 
         Map<String, Type> rhsBodyDeclarations = new HashMap<>();
@@ -357,6 +359,7 @@ public class Consequence {
 
                     if ( !initializedBitmaskFields.contains( updatedVar ) ) {
                         Set<String> modifiedProps = findModifiedProperties( methodCallExprs, updateExpr, updatedVar, updatedClass );
+                        modifiedProps.addAll(findModifiedPropertiesFromAssignment( assignExprs, updateExpr, updatedVar, updatedClass ));
                         MethodCallExpr bitMaskCreation = createBitMaskInitialization( updatedClass, modifiedProps );
                         AssignExpr bitMaskAssign = createBitMaskField(updatedVar, bitMaskCreation);
                         if (!DrlxParseUtil.hasDuplicateExpr(ruleBlock, bitMaskAssign)) {
@@ -450,6 +453,21 @@ public class Consequence {
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
                     return new HashSet<>();
+                }
+            }
+        }
+        return modifiedProps;
+    }
+
+    private Set<String> findModifiedPropertiesFromAssignment(List<AssignExpr> assignExprs, MethodCallExpr updateExpr, String updatedVar, Class<?> updatedClass) {
+        Set<String> modifiedProps = new HashSet<>();
+        for (AssignExpr assignExpr : assignExprs) {
+            Expression target = assignExpr.getTarget();
+            if (target instanceof FieldAccessExpr) {
+                FieldAccessExpr fieldAccessExpr = (FieldAccessExpr)target;
+                Expression scope = fieldAccessExpr.getScope();
+                if (scope instanceof NameExpr && ((NameExpr)scope).getNameAsString().equals(updatedVar)) {
+                    modifiedProps.add(fieldAccessExpr.getNameAsString());
                 }
             }
         }
