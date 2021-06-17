@@ -22,7 +22,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
@@ -43,24 +45,31 @@ import static org.kie.kogito.process.ProcessInstanceReadMode.MUTABLE;
 
 public class JDBCProcessInstances implements MutableProcessInstances {
 
+    private static final String VERSION = "version";
+
+    private static final String PAYLOAD = "payload";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(JDBCProcessInstances.class);
 
     private final Process<?> process;
     private final ProcessInstanceMarshallerService marshaller;
     private final boolean autoDDL;
     private final DataSource dataSource;
+    private final boolean lock;
 
     private static final String FIND_ALL = "SELECT payload FROM process_instances WHERE process_id = ?";
-    private static final String FIND_BY_ID = "SELECT payload FROM process_instances WHERE id = ?";
-    private static final String INSERT = "INSERT INTO process_instances (id, payload, process_id) VALUES (?, ?, ?)";
+    private static final String FIND_BY_ID = "SELECT payload, version FROM process_instances WHERE id = ?";
+    private static final String INSERT = "INSERT INTO process_instances (id, payload, process_id, version) VALUES (?, ?, ?, ?)";
     private static final String UPDATE = "UPDATE process_instances SET payload = ? WHERE id = ?";
+    private static final String UPDATE_WITH_LOCK = "UPDATE process_instances SET payload = ?, version = ? WHERE id = ? and version = ?";
     private static final String DELETE = "DELETE FROM process_instances WHERE id = ?";
     private static final String COUNT = "SELECT COUNT(id) FROM process_instances WHERE process_id = ?";
 
-    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean autoDDL) {
+    public JDBCProcessInstances(Process<?> process, DataSource dataSource, boolean autoDDL, boolean lock) {
         this.dataSource = dataSource;
         this.process = process;
         this.autoDDL = autoDDL;
+        this.lock = lock;
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
         init();
     }
@@ -146,6 +155,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
             statement.setObject(1, id);
             statement.setBytes(2, payload);
             statement.setString(3, process.id());
+            statement.setLong(4, 1L);
             statement.executeUpdate();
         } catch (Exception e) {
             throw uncheckedException(e, "Error inserting process instance %s", id);
@@ -156,7 +166,14 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     @Override
     public void update(String id, ProcessInstance instance) {
         if (isActive(instance)) {
-            updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+            if (lock) {
+                boolean isUpdated = updateWithLock(UUID.fromString(id), marshaller.marshallProcessInstance(instance), instance.version());
+                if (!isUpdated) {
+                    throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+                }
+            } else {
+                updateInternal(UUID.fromString(id), marshaller.marshallProcessInstance(instance));
+            }
         }
         disconnect(instance);
     }
@@ -170,19 +187,36 @@ public class JDBCProcessInstances implements MutableProcessInstances {
         } catch (Exception e) {
             throw uncheckedException(e, "Error updating process instance %s", id);
         }
+    }
 
+    private boolean updateWithLock(UUID id, byte[] payload, long version) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement statement = connection.prepareStatement(UPDATE_WITH_LOCK)) {
+            statement.setBytes(1, payload);
+            statement.setLong(2, version + 1);
+            statement.setObject(3, id);
+            statement.setLong(4, version);
+            int count = statement.executeUpdate();
+            return count == 1;
+        } catch (Exception e) {
+            throw uncheckedException(e, "Error updating process instance %s", id);
+        }
     }
 
     @Override
     public void remove(String id) {
-        deleteInternal(UUID.fromString(id));
+        boolean isDeleted = deleteInternal(UUID.fromString(id));
+        if (lock && !isDeleted) {
+            throw uncheckedException(null, "The document with ID: %s was deleted by other request.", id);
+        }
     }
 
-    private void deleteInternal(UUID id) {
+    private boolean deleteInternal(UUID id) {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(DELETE)) {
             statement.setObject(1, id);
-            statement.executeUpdate();
+            int count = statement.executeUpdate();
+            return count == 1;
         } catch (Exception e) {
             throw uncheckedException(e, "Error deleting process instance %s", id);
         }
@@ -191,7 +225,16 @@ public class JDBCProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
-        return findByIdInternal(UUID.fromString(id)).map(b -> mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process) : marshaller.unmarshallReadOnlyProcessInstance(b, process));
+        ProcessInstance<?> instance = null;
+        Map<String, Object> map = findByIdInternal(UUID.fromString(id));
+        if (map.containsKey(PAYLOAD)) {
+            byte[] b = (byte[]) map.get(PAYLOAD);
+            instance = mode == MUTABLE ? marshaller.unmarshallProcessInstance(b, process)
+                    : marshaller.unmarshallReadOnlyProcessInstance(b, process);
+            ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
+            return Optional.of(instance);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -200,19 +243,25 @@ public class JDBCProcessInstances implements MutableProcessInstances {
                 .collect(Collectors.toList());
     }
 
-    private Optional<byte[]> findByIdInternal(UUID id) {
+    private Map<String, Object> findByIdInternal(UUID id) {
+        Map<String, Object> result = new HashMap<>();
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement statement = connection.prepareStatement(FIND_BY_ID)) {
             statement.setObject(1, id);
             try (ResultSet resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
-                    return Optional.ofNullable(resultSet.getBytes("payload"));
+                    Optional<byte[]> b = Optional.ofNullable(resultSet.getBytes(PAYLOAD));
+                    if (b.isPresent()) {
+                        result.put(PAYLOAD, b.get());
+                    }
+                    result.put(VERSION, resultSet.getLong(VERSION));
+                    return result;
                 }
             }
         } catch (Exception e) {
             throw uncheckedException(e, "Error finding process instance %s", id);
         }
-        return Optional.empty();
+        return result;
     }
 
     private List<byte[]> findAllInternal() {
@@ -222,7 +271,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
             statement.setString(1, process.id());
             try (ResultSet resultSet = statement.executeQuery()) {
                 while (resultSet.next()) {
-                    result.add(resultSet.getBytes("payload"));
+                    result.add(resultSet.getBytes(PAYLOAD));
                 }
             }
             return result;
@@ -234,6 +283,11 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     @Override
     public Integer size() {
         return countInternal().intValue();
+    }
+
+    @Override
+    public boolean lock() {
+        return this.lock;
     }
 
     private Long countInternal() {
@@ -252,7 +306,11 @@ public class JDBCProcessInstances implements MutableProcessInstances {
     }
 
     private void disconnect(ProcessInstance instance) {
-        Supplier<byte[]> supplier = () -> findByIdInternal(UUID.fromString(instance.id())).get();
+        Supplier<byte[]> supplier = () -> {
+            Map<String, Object> map = findByIdInternal(UUID.fromString(instance.id()));
+            ((AbstractProcessInstance<?>) instance).setVersion((Long) map.get(VERSION));
+            return (byte[]) map.get(PAYLOAD);
+        };
         ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 

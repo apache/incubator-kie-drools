@@ -39,8 +39,10 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
         this.autoDDL = autoDDL;
     }
 
+    public abstract boolean lock();
+
     @Override
     public JDBCProcessInstances createProcessInstances(Process<?> process) {
-        return new JDBCProcessInstances(process, dataSource, autoDDL);
+        return new JDBCProcessInstances(process, dataSource, autoDDL, lock());
     }
 }

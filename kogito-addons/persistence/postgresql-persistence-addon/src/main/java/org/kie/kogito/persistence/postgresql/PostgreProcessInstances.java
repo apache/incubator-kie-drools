@@ -153,14 +153,14 @@ public class PostgreProcessInstances implements MutableProcessInstances {
     }
 
     private void disconnect(ProcessInstance instance) {
-        Optional<Row> row = findByIdInternal(UUID.fromString(instance.id()));
-        if (row.isPresent()) {
-            Supplier<byte[]> supplier = () -> row
+        Supplier<byte[]> supplier = () -> {
+            Optional<Row> row = findByIdInternal(UUID.fromString(instance.id()));
+            ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
+            return row
                     .map(r -> r.getBuffer(PAYLOAD))
                     .map(Buffer::getBytes).get();
-            ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
-            ((AbstractProcessInstance) instance).setVersion(row.get().getLong(VERSION));
-        }
+        };
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 
     private boolean insertInternal(UUID id, byte[] payload) {

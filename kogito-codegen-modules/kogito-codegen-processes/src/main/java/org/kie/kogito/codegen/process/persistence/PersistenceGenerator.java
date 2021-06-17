@@ -564,6 +564,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addConstructor(Keyword.PROTECTED);
         }
 
+        addOptimisticLockFlag(persistenceProviderClazz);
         Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                 new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         generatedPgClientFile.ifPresent(generatedFiles::add);

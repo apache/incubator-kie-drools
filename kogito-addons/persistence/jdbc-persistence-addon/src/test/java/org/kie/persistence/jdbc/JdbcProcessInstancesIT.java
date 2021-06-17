@@ -18,83 +18,27 @@ package org.kie.persistence.jdbc;
 import java.util.Collections;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
-import org.drools.core.io.impl.ClassPathResource;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.auth.IdentityProviders;
-import org.kie.kogito.auth.SecurityPolicy;
-import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.persistence.jdbc.JDBCProcessInstances;
-import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessConfig;
 import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.ProcessInstanceReadMode;
 import org.kie.kogito.process.WorkItem;
 import org.kie.kogito.process.bpmn2.BpmnProcess;
 import org.kie.kogito.process.bpmn2.BpmnProcessInstance;
 import org.kie.kogito.process.bpmn2.BpmnVariables;
-import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
-import org.postgresql.ds.PGSimpleDataSource;
-import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_ACTIVE;
 import static org.kie.kogito.internal.process.runtime.KogitoProcessInstance.STATE_COMPLETED;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@Testcontainers
-class JdbcProcessInstancesIT {
-
-    @Container
-    final static KogitoPostgreSqlContainer container = new KogitoPostgreSqlContainer();
-    private static DataSource ds;
-
-    private SecurityPolicy securityPolicy = SecurityPolicy.of(IdentityProviders.of("john"));
-
-    private static final String TEST_ID = "02ac3854-46ee-42b7-8b63-5186c9889d96";
-
-    @BeforeAll
-    public static void startContainerAndPublicPortIsAvailable() {
-        container.start();
-        ds = getDataSource(container);
-    }
-
-    @AfterAll
-    public static void close() {
-        container.stop();
-    }
-
-    private BpmnProcess createProcess(ProcessConfig config, String fileName) {
-        BpmnProcess process = BpmnProcess.from(config, new ClassPathResource(fileName)).get(0);
-        process.setProcessInstancesFactory(new JDBCProcessInstancesFactory(ds));
-        process.configure();
-        process.instances().values(ProcessInstanceReadMode.MUTABLE).forEach(p -> p.abort());
-        return process;
-    }
-
-    private static DataSource getDataSource(final PostgreSQLContainer postgreSQLContainer) {
-
-        PGSimpleDataSource ds = new PGSimpleDataSource();
-
-        // Datasource initialization
-        ds.setUrl(postgreSQLContainer.getJdbcUrl());
-        ds.setUser(postgreSQLContainer.getUsername());
-        ds.setPassword(postgreSQLContainer.getPassword());
-        return ds;
-    }
+class JdbcProcessInstancesIT extends TestHelper {
 
     @Test
     void testBasicTaskFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", false);
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test",
                         "test")));
@@ -129,7 +73,7 @@ class JdbcProcessInstancesIT {
 
     @Test
     void testBasicFlow() {
-        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2");
+        BpmnProcess process = createProcess(null, "BPMN2-UserTask.bpmn2", false);
         ProcessInstance<BpmnVariables> processInstance = process.createInstance(BpmnVariables.create(Collections
                 .singletonMap("test",
                         "test")));
@@ -153,27 +97,9 @@ class JdbcProcessInstancesIT {
 
     @Test
     void testException() {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask-Script.bpmn2")).get(0);
-        process.setProcessInstancesFactory(new JDBCProcessInstancesFactory(null));
-        process.configure();
-
+        BpmnProcess process = configure(false);
         JDBCProcessInstances processInstances = (JDBCProcessInstances) process.instances();
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.size());
-        assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.values());
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.findById(TEST_ID));
         assertThatExceptionOfType(RuntimeException.class).isThrownBy(() -> processInstances.remove(TEST_ID));
-    }
-
-    private class JDBCProcessInstancesFactory extends KogitoProcessInstancesFactory {
-
-        public JDBCProcessInstancesFactory(DataSource dataSource) {
-            super(dataSource, true);
-        }
-
-        @Override
-        public JDBCProcessInstances createProcessInstances(Process<?> process) {
-            JDBCProcessInstances instances = spy(super.createProcessInstances(process));
-            return instances;
-        }
     }
 }
