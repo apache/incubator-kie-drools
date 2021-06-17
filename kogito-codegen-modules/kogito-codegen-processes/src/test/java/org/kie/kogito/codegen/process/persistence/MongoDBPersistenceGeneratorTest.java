@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
@@ -33,7 +34,12 @@ import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.FieldDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Name;
+import com.github.javaparser.ast.expr.NormalAnnotationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 
@@ -47,6 +53,10 @@ import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.MO
 class MongoDBPersistenceGeneratorTest {
 
     private static final String TEST_RESOURCES = "src/test/resources";
+
+    private static final String PERSISTENCE_FILE_PATH = "org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java";
+    private static final String TRANSACTION_FILE_PATH = "org/kie/kogito/mongodb/transaction/MongoDBTransactionManagerImpl.java";
+
     KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
             .withApplicationProperties(new File(TEST_RESOURCES))
             .withPackageName(this.getClass().getPackage().getName())
@@ -63,10 +73,11 @@ class MongoDBPersistenceGeneratorTest {
                 protoGenerator);
         Collection<GeneratedFile> generatedFiles = persistenceGenerator.generate();
 
-        Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.category() == GeneratedFileType.SOURCE.category()).findFirst();
+        Optional<GeneratedFile> generatedCLASSFile = generatedFiles.stream().filter(gf -> gf.category() == GeneratedFileType.SOURCE.category())
+                .filter(f -> PERSISTENCE_FILE_PATH.equals(f.relativePath())).findAny();
         assertTrue(generatedCLASSFile.isPresent());
         GeneratedFile classFile = generatedCLASSFile.get();
-        assertEquals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java", classFile.relativePath());
+        assertEquals(PERSISTENCE_FILE_PATH, classFile.relativePath());
 
         final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(classFile.contents()));
 
@@ -86,5 +97,54 @@ class MongoDBPersistenceGeneratorTest {
 
         final ReturnStmt returnStmt = (ReturnStmt) body.getStatements().get(0);
         assertThat(returnStmt.toString()).contains("kogito");
+
+        final MethodDeclaration transactionMethodDeclaration = classDeclaration.findFirst(MethodDeclaration.class, d -> "transactionManager".equals(d.getName().getIdentifier()))
+                .orElseThrow(() -> new NoSuchElementException("Class declaration doesn't contain a method named \"transactionManager\"!"));
+        assertNotNull(transactionMethodDeclaration);
+        assertTrue(transactionMethodDeclaration.getBody().isPresent());
+
+        final BlockStmt transactionMethodBody = transactionMethodDeclaration.getBody().get();
+        assertThat(transactionMethodBody.getStatements().size()).isOne();
+        assertTrue(transactionMethodBody.getStatements().get(0).isReturnStmt());
+
+        final ReturnStmt transactionReturnStmt = (ReturnStmt) transactionMethodBody.getStatements().get(0);
+        assertThat(transactionReturnStmt.toString()).contains("transactionManager");
+
+        Optional<GeneratedFile> generatedTransactionCLASSFile = generatedFiles.stream().filter(gf -> gf.category() == GeneratedFileType.SOURCE.category())
+                .filter(f -> TRANSACTION_FILE_PATH.equals(f.relativePath())).findAny();
+        assertTrue(generatedTransactionCLASSFile.isPresent());
+
+        final CompilationUnit transactionCompilationUnit = parse(new ByteArrayInputStream(generatedTransactionCLASSFile.get().contents()));
+        final ClassOrInterfaceDeclaration transactionClassDeclaration = transactionCompilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
+                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
+        assertNotNull(transactionClassDeclaration);
+
+        final List<ConstructorDeclaration> constructorDeclarations = transactionCompilationUnit.findAll(ConstructorDeclaration.class);
+        assertEquals(2, constructorDeclarations.size());
+
+        Optional<ConstructorDeclaration> annotatedConstructorDeclaration = constructorDeclarations.stream()
+                .filter(c -> c.isAnnotationPresent("Inject")).findAny();
+        assertTrue(annotatedConstructorDeclaration.isPresent());
+
+        final MethodDeclaration transactionEnabledMethodDeclaration = transactionClassDeclaration.findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals("enabled"))
+                .orElseThrow(() -> new NoSuchElementException("Class declaration doesn't contain a method named \"enabled\"!"));
+        assertNotNull(transactionEnabledMethodDeclaration);
+        assertTrue(transactionEnabledMethodDeclaration.getBody().isPresent());
+
+        final BlockStmt enabledMethodBody = transactionEnabledMethodDeclaration.getBody().get();
+        assertThat(enabledMethodBody.getStatements().size()).isOne();
+        assertTrue(enabledMethodBody.getStatements().get(0).isReturnStmt());
+
+        final ReturnStmt enabledReturnStmt = (ReturnStmt) enabledMethodBody.getStatements().get(0);
+        assertThat(enabledReturnStmt.toString()).contains("enabled");
+
+        final FieldDeclaration transactionEnabledFieldDeclaration = transactionClassDeclaration.findFirst(FieldDeclaration.class, f -> f.getVariable(0).getName().getIdentifier().equals("enabled"))
+                .orElseThrow(() -> new NoSuchElementException("Class declaration doesn't contain a field named \"enabled\"!"));
+        assertNotNull(transactionEnabledFieldDeclaration);
+        final NormalAnnotationExpr transactionEnabledAnnotationDeclaration =
+                transactionEnabledFieldDeclaration.findFirst(NormalAnnotationExpr.class, a -> ((Name) a.getChildNodes().get(0)).getIdentifier().equals("ConfigProperty"))
+                        .orElseThrow(() -> new NoSuchElementException("Field declaration doesn't contain an annotation  named \"ConfigProperty\"!"));
+        assertNotNull(transactionEnabledAnnotationDeclaration);
+        assertEquals("kogito.persistence.transaction.enabled", ((StringLiteralExpr) transactionEnabledAnnotationDeclaration.getChildNodes().get(1).getChildNodes().get(1)).getValue());
     }
 }

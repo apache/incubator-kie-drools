@@ -94,9 +94,15 @@ public class PersistenceGenerator extends AbstractGenerator {
     private static final String KOGITO_PROCESS_INSTANCE_FACTORY_PACKAGE = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
     private static final String KOGITO_PROCESS_INSTANCE_FACTORY_IMPL = "KogitoProcessInstancesFactoryImpl";
     private static final String KOGITO_PROCESS_INSTANCE_PACKAGE = "org.kie.kogito.persistence";
+    private static final String TRANSACTION_MANAGER_NAME = "transactionManager";
+    private static final String MONGODB_TRANSACTION_MANAGER_IMPL = "MongoDBTransactionManagerImpl";
+    private static final String MONGODB_TRANSACTION_MANAGER_PACKAGE = "org.kie.kogito.mongodb.transaction";
+    private static final String MONGODB_TRANSACTION_MANAGER_FULLNAME = "org.kie.kogito.mongodb.transaction.MongoDBTransactionManager";
     private static final String MONGODB_DB_NAME = "dbName";
     private static final String QUARKUS_PERSISTENCE_MONGODB_NAME_PROP = "quarkus.mongodb.database";
     private static final String SPRINGBOOT_PERSISTENCE_MONGODB_NAME_PROP = "spring.data.mongodb.database";
+    private static final String TRANSACTION_ENABLED = "enabled";
+    private static final String TRANSACTION_ENABLED_PROP = "kogito.persistence.transaction.enabled";
     private static final String OR_ELSE = "orElse";
     private static final String JAVA = ".java";
     private static final String KOGITO_PERSISTENCE_QUERY_TIMEOUT = "kogito.persistence.query.timeout.millis";
@@ -427,6 +433,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         ConstructorDeclaration constructor = createConstructorForClazz(persistenceProviderClazz);
         Optional<GeneratedFile> generatedClientFile = Optional.empty();
+        Optional<GeneratedFile> generatedTMFile = Optional.empty();
         if (context().hasDI()) {
             context().getDependencyInjectionAnnotator().withApplicationComponent(persistenceProviderClazz);
             context().getDependencyInjectionAnnotator().withInjection(constructor);
@@ -453,12 +460,14 @@ public class PersistenceGenerator extends AbstractGenerator {
 
             persistenceProviderClazz.addMember(dbNameField);
             persistenceProviderClazz.addMember(dbNameMethod);
+            generatedTMFile = mongodbBasedTransaction(persistenceProviderClazz);
             generatedClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                     new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         }
 
         Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
         generatedClientFile.ifPresent(generatedFiles::add);
+        generatedTMFile.ifPresent(generatedFiles::add);
         return generatedFiles;
     }
 
@@ -588,6 +597,57 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         persistenceProviderClazz.addMember(lockField);
         persistenceProviderClazz.addMember(enabledMethod);
+    }
+
+    private Optional<GeneratedFile> mongodbBasedTransaction(ClassOrInterfaceDeclaration persistenceProviderClazz) {
+        FieldDeclaration transactionManagerField = new FieldDeclaration().addVariable(new VariableDeclarator()
+                .setType(new ClassOrInterfaceType(null, MONGODB_TRANSACTION_MANAGER_FULLNAME))
+                .setName(TRANSACTION_MANAGER_NAME));
+
+        context().getDependencyInjectionAnnotator().withInjection(transactionManagerField);
+
+        BlockStmt transactionManagerMethodBody = new BlockStmt();
+        transactionManagerMethodBody.addStatement(new ReturnStmt(new NameExpr(TRANSACTION_MANAGER_NAME)));
+        MethodDeclaration transactionManagerMethod = new MethodDeclaration()
+                .addModifier(Keyword.PUBLIC)
+                .setName(TRANSACTION_MANAGER_NAME)
+                .setType(MONGODB_TRANSACTION_MANAGER_FULLNAME)
+                .setBody(transactionManagerMethodBody);
+
+        persistenceProviderClazz.addMember(transactionManagerField);
+        persistenceProviderClazz.addMember(transactionManagerMethod);
+
+        ClassOrInterfaceDeclaration transactionProviderClazz = new ClassOrInterfaceDeclaration()
+                .setName(MONGODB_TRANSACTION_MANAGER_IMPL).setModifiers(Modifier.Keyword.PUBLIC)
+                .addExtendedType(MONGODB_TRANSACTION_MANAGER_FULLNAME);
+
+        transactionProviderClazz.addConstructor(Keyword.PUBLIC).setBody(new BlockStmt().addStatement(new ExplicitConstructorInvocationStmt(false, null, NodeList.nodeList(new NullLiteralExpr()))));
+
+        ConstructorDeclaration transactionProviderConstructor = createConstructorForClazz(transactionProviderClazz);
+
+        context().getDependencyInjectionAnnotator().withApplicationComponent(transactionProviderClazz);
+        context().getDependencyInjectionAnnotator().withInjection(transactionProviderConstructor);
+
+        FieldDeclaration enabledField = new FieldDeclaration().addVariable(new VariableDeclarator()
+                .setType(new ClassOrInterfaceType(null,
+                        new SimpleName(Optional.class.getCanonicalName()),
+                        NodeList.nodeList(new ClassOrInterfaceType(null, Boolean.class.getCanonicalName()))))
+                .setName(TRANSACTION_ENABLED));
+        context().getDependencyInjectionAnnotator().withConfigInjection(enabledField, TRANSACTION_ENABLED_PROP);
+
+        BlockStmt enabledMethodBody = new BlockStmt();
+        enabledMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(TRANSACTION_ENABLED), OR_ELSE).addArgument(new BooleanLiteralExpr(false))));
+        MethodDeclaration enabledMethod = new MethodDeclaration()
+                .addModifier(Keyword.PUBLIC)
+                .setName(TRANSACTION_ENABLED)
+                .setType("boolean")
+                .setBody(enabledMethodBody);
+
+        transactionProviderClazz.addMember(enabledField);
+        transactionProviderClazz.addMember(enabledMethod);
+
+        return generatePersistenceProviderClazz(transactionProviderClazz,
+                new CompilationUnit(MONGODB_TRANSACTION_MANAGER_PACKAGE).addType(transactionProviderClazz));
     }
 
     private ConstructorDeclaration createConstructorForClazz(ClassOrInterfaceDeclaration persistenceProviderClazz) {

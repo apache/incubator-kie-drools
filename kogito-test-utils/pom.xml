@@ -61,7 +61,7 @@
       <version>${version.org.testcontainers}</version>
       <scope>compile</scope>
     </dependency>
-    
+
     <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>mongodb</artifactId>
@@ -107,5 +107,19 @@
       <scope>provided</scope>
     </dependency>
   </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <systemPropertyVariables combine.children="append">
+            <container.image.mongodb>${container.image.mongodb}</container.image.mongodb>
+          </systemPropertyVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
 
 </project>

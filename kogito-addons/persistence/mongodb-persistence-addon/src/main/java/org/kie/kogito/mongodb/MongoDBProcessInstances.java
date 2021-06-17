@@ -23,6 +23,7 @@ import java.util.function.Supplier;
 
 import org.bson.Document;
 import org.kie.kogito.Model;
+import org.kie.kogito.mongodb.transaction.MongoDBTransactionManager;
 import org.kie.kogito.process.MutableProcessInstances;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstanceDuplicatedException;
@@ -33,6 +34,8 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.client.ClientSession;
+import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoCursor;
@@ -49,11 +52,16 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     private org.kie.kogito.process.Process<?> process;
     private ProcessInstanceMarshallerService marshaller;
     private final MongoCollection<Document> collection;
+    private MongoDBTransactionManager transactionManager;
 
-    public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName) {
+    public MongoDBProcessInstances(MongoClient mongoClient, org.kie.kogito.process.Process<?> process, String dbName, MongoDBTransactionManager transactionManager) {
         this.process = process;
-        collection = getCollection(mongoClient, process.id(), dbName);
-        marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json")).build();
+        this.collection = getCollection(mongoClient, process.id(), dbName);
+        this.marshaller = ProcessInstanceMarshallerService.newBuilder()
+                .withDefaultObjectMarshallerStrategies()
+                .withContextEntries(singletonMap(MarshallerContextName.MARSHALLER_FORMAT, "json"))
+                .build();
+        this.transactionManager = transactionManager;
     }
 
     @Override
@@ -68,8 +76,11 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public Collection<ProcessInstance<T>> values(ProcessInstanceReadMode mode) {
+        FindIterable<Document> docs = Optional.ofNullable(transactionManager.getClientSession())
+                .map(collection::find)
+                .orElseGet(collection::find);
         List<ProcessInstance<T>> list = new ArrayList<>();
-        try (MongoCursor<Document> cursor = collection.find().iterator()) {
+        try (MongoCursor<Document> cursor = docs.iterator()) {
             while (cursor.hasNext()) {
                 list.add(unmarshall(cursor.next(), mode));
             }
@@ -93,14 +104,26 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     protected void updateStorage(String id, ProcessInstance<T> instance, boolean checkDuplicates) {
-        if (isActive(instance)) {
-            Document doc = Document.parse(new String(marshaller.marshallProcessInstance(instance)));
-            if (checkDuplicates) {
-                if (exists(id)) {
-                    throw new ProcessInstanceDuplicatedException(id);
+        if (!isActive(instance)) {
+            reloadProcessInstance(instance, id);
+            return;
+        }
+
+        ClientSession clientSession = transactionManager.getClientSession();
+        Document doc = Document.parse(new String(marshaller.marshallProcessInstance(instance)));
+        if (checkDuplicates) {
+            if (exists(id)) {
+                throw new ProcessInstanceDuplicatedException(id);
+            } else {
+                if (clientSession != null) {
+                    collection.insertOne(clientSession, doc);
                 } else {
                     collection.insertOne(doc);
                 }
+            }
+        } else {
+            if (clientSession != null) {
+                collection.replaceOne(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id), doc);
             } else {
                 collection.replaceOne(Filters.eq(PROCESS_INSTANCE_ID, id), doc);
             }
@@ -109,7 +132,9 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
     }
 
     private Document find(String id) {
-        return collection.find(Filters.eq(PROCESS_INSTANCE_ID, id)).first();
+        return Optional.ofNullable(transactionManager.getClientSession())
+                .map(r -> collection.find(r, Filters.eq(PROCESS_INSTANCE_ID, id)).first())
+                .orElseGet(() -> collection.find(Filters.eq(PROCESS_INSTANCE_ID, id)).first());
     }
 
     @Override
@@ -119,7 +144,12 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public void remove(String id) {
-        collection.deleteOne(Filters.eq(PROCESS_INSTANCE_ID, id));
+        ClientSession clientSession = transactionManager.getClientSession();
+        if (clientSession != null) {
+            collection.deleteOne(clientSession, Filters.eq(PROCESS_INSTANCE_ID, id));
+        } else {
+            collection.deleteOne(Filters.eq(PROCESS_INSTANCE_ID, id));
+        }
     }
 
     private void reloadProcessInstance(ProcessInstance<T> instance, String id) {
@@ -136,6 +166,8 @@ public class MongoDBProcessInstances<T extends Model> implements MutableProcessI
 
     @Override
     public Integer size() {
-        return (int) collection.countDocuments();
+        return Optional.ofNullable(transactionManager.getClientSession())
+                .map(r -> (int) collection.countDocuments(r))
+                .orElseGet(() -> (int) collection.countDocuments());
     }
 }

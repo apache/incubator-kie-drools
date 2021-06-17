@@ -49,6 +49,7 @@
     <container.image.infinispan>infinispan/server:${version.org.infinispan}</container.image.infinispan>
     <container.image.keycloak>jboss/keycloak:${version.org.keycloak}</container.image.keycloak>
     <container.image.kafka>confluentinc/cp-kafka:${version.org.confluent.kafka}</container.image.kafka>
+    <container.image.mongodb>mongo:${version.org.mongo}</container.image.mongodb>
 
     <maven.compiler.release>8</maven.compiler.release>
     <jacoco.agent.argLine/>

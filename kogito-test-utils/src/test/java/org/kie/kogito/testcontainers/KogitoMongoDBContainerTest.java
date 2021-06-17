@@ -45,4 +45,9 @@ class KogitoMongoDBContainerTest {
         doReturn(MAPPED_PORT).when(container).getMappedPort(KogitoMongoDBContainer.MONGODB_INTERNAL_PORT);
         assertEquals(MAPPED_PORT, container.getMappedPort());
     }
+
+    @Test
+    void shouldGetDockerImageName() {
+        assertEquals("library/" + System.getProperty(KogitoMongoDBContainer.MONGODB_PROPERTY), container.getDockerImageName());
+    }
 }
