@@ -24,17 +24,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType
 public enum MergeMode {
     /**
-     * The 'master' descriptor values are all kept
+     * The 'main' descriptor values are all kept
      */
     KEEP_ALL,
 
     /**
-     * The 'slave' descriptor values are all used
+     * The 'secondary' descriptor values are all used
      */
     OVERRIDE_ALL,
 
     /**
-     * The 'slave' non-empty values override corresponding values of the master, including collections
+     * The 'secondary' non-empty values override corresponding values of the main, including collections
      */
     OVERRIDE_EMPTY,
 

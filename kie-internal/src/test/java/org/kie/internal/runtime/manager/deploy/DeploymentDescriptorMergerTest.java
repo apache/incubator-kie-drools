@@ -521,7 +521,7 @@ public class DeploymentDescriptorMergerTest {
         assertEquals(0, outcome.getTaskEventListeners().size());
         assertEquals(1, outcome.getWorkItemHandlers().size());
 
-        // let's check if the slave version is preserved
+        // let's check if the secondary version is preserved
         NamedObjectModel model = outcome.getWorkItemHandlers().get(0);
         assertEquals("Log", model.getName());
         assertEquals("new org.jbpm.process.instance.impl.demo.CustomSystemOutWorkItemHandler()", model.getIdentifier());
