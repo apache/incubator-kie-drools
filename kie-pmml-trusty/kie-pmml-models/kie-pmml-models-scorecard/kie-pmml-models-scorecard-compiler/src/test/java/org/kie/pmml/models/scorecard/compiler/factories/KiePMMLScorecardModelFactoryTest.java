@@ -64,6 +64,7 @@ public class KiePMMLScorecardModelFactoryTest {
                                                            PACKAGE_NAME,
                                                            KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA,
                                                            KIE_PMML_SCORECARD_MODEL_TEMPLATE);
+    private static ClassOrInterfaceDeclaration scorecardTemplateOriginal;
     private static PMML basicComplexPartialScorePmml;
     private static DataDictionary basicComplexPartialScoreDataDictionary;
     private static TransformationDictionary basicComplexPartialScoreTransformationDictionary;
@@ -76,13 +77,13 @@ public class KiePMMLScorecardModelFactoryTest {
         basicComplexPartialScoreDataDictionary = basicComplexPartialScorePmml.getDataDictionary();
         basicComplexPartialScoreTransformationDictionary = basicComplexPartialScorePmml.getTransformationDictionary();
         basicComplexPartialScore = ((Scorecard) basicComplexPartialScorePmml.getModels().get(0));
+        scorecardTemplateOriginal = scorecardCloneCU.getClassByName(CONTAINER_CLASS_NAME)
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + CONTAINER_CLASS_NAME));
     }
 
     @Before
     public void setup() {
-        scorecardTemplate = scorecardCloneCU.getClassByName(CONTAINER_CLASS_NAME)
-                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + CONTAINER_CLASS_NAME))
-                .clone();
+        scorecardTemplate = scorecardTemplateOriginal.clone();
     }
 
     @Test
