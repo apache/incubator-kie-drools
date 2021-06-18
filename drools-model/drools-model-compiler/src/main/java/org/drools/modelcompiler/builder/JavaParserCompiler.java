@@ -36,6 +36,7 @@ import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -149,6 +150,13 @@ public class JavaParserCompiler {
 
             if (bytes == null) {
                 throw new ClassNotFoundException(className);
+            }
+
+            if (getParent() instanceof ProjectClassLoader) {
+                ((ProjectClassLoader) getParent()).storeClass(className, bytes);
+                try {
+                    return super.loadClass( className );
+                } catch (ClassNotFoundException cnfe) { }
             }
 
             return defineClass(className, bytes, 0, bytes.length);

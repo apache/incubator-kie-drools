@@ -28,7 +28,7 @@ import org.drools.compiler.kie.builder.impl.ResultsImpl;
 public class CanonicalModelBuildContext extends BuildContext {
 
     private final Map<String, String> resourceOwners = new HashMap<>();
-    private final Map<String, Set<String>> notOwnedPackages = new HashMap<>();
+    private final Map<String, Set<String>> notOwnedResources = new HashMap<>();
 
     private final Collection<GeneratedClassWithPackage> allGeneratedPojos = new HashSet<>();
     private final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
@@ -43,7 +43,7 @@ public class CanonicalModelBuildContext extends BuildContext {
     public boolean registerResourceToBuild(String kBaseName, String resource) {
         boolean newResource = resourceOwners.putIfAbsent(resource, kBaseName) == null;
         if (!newResource) {
-            notOwnedPackages.computeIfAbsent(kBaseName, n -> new HashSet<>()).add(resource);
+            notOwnedResources.computeIfAbsent(kBaseName, n -> new HashSet<>()).add(resource);
         }
         return newResource;
     }
@@ -62,7 +62,7 @@ public class CanonicalModelBuildContext extends BuildContext {
     }
 
     public Collection<String> getNotOwnedModelFiles(Map<String, ModelBuilderImpl> modelBuilders, String kBaseName) {
-        Collection<String> notOwned = notOwnedPackages.get(kBaseName);
+        Collection<String> notOwned = notOwnedResources.get(kBaseName);
         if (notOwned == null) {
             return Collections.emptyList();
         }

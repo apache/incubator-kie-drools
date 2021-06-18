@@ -225,14 +225,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
                              .flatMap(p -> p.getGeneratedPOJOsSource().stream().map(c -> new GeneratedClassWithPackage(c, p.getName(), p.getImports(), p.getStaticImports())))
                         .collect( Collectors.toList());
 
-
-        // Every class gets compiled in each classloader, maybe they can be compiled only one time?
-        final Map<String, Class<?>> allCompiledClasses = new HashMap<>();
-        for (CompositePackageDescr packageDescr : packages) {
-            InternalKnowledgePackage pkg = getPackageRegistry(packageDescr.getNamespace()).getPackage();
-            allCompiledClasses.putAll(compileType(this, pkg.getPackageClassLoader(), allGeneratedPojos));
-        }
-
+        Map<String, Class<?>> allCompiledClasses = compileType(this, getBuilderConfiguration().getClassLoader(), allGeneratedPojos);
         ((CanonicalModelBuildContext) getBuildContext()).registerGeneratedPojos(allGeneratedPojos, allCompiledClasses);
     }
 
