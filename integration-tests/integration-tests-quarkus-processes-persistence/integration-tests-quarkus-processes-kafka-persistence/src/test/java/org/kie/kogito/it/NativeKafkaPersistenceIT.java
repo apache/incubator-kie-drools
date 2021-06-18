@@ -15,9 +15,12 @@
  */
 package org.kie.kogito.it;
 
+import org.junit.jupiter.api.Disabled;
+
 import io.quarkus.test.junit.NativeImageTest;
 
 @NativeImageTest
+@Disabled("KOGITO-5362 Native Image tests are broken in Kafka persistence")
 public class NativeKafkaPersistenceIT extends KafkaPersistenceIT {
 
 }

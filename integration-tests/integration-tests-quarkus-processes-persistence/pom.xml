@@ -88,6 +88,7 @@
                   <goal>verify</goal>
                 </goals>
                 <configuration combine.self="override">
+                  <useModulePath>false</useModulePath>
                   <includes>
                     <include>**/Native*IT.java</include>
                   </includes>
