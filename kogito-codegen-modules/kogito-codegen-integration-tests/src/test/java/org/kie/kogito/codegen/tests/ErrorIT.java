@@ -17,7 +17,9 @@ package org.kie.kogito.codegen.tests;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
@@ -36,6 +38,64 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.process.impl.ProcessTestUtils.assertState;
 
 public class ErrorIT extends AbstractCodegenIT {
+
+    @Test
+    void testBoundaryErrorSubProcess() throws Exception {
+        Application app = generateCodeProcessesOnly("error/BoundaryErrorSubProcess.bpmn2");
+        assertThat(app).isNotNull();
+
+        List<String> completedNodesNames = completedNodesListener(app);
+
+        Process<? extends Model> p = app.get(Processes.class).processById("BoundaryErrorSubProcess");
+
+        ProcessInstance<?> processInstance = p.createInstance(p.createModel());
+
+        assertState(processInstance, ProcessInstance.STATE_PENDING);
+        processInstance.start();
+
+        assertState(processInstance, ProcessInstance.STATE_COMPLETED);
+        assertThat(completedNodesNames).contains("Error2Task");
+    }
+
+    @Test
+    void testBoundaryErrorWithCode1() throws Exception {
+        testBoundaryError("error1", "Error1Task");
+    }
+
+    @Test
+    void testBoundaryErrorWithCode2() throws Exception {
+        testBoundaryError("error2", "Error2Task");
+    }
+
+    @Test
+    void testBoundaryErrorWithoutCode() throws Exception {
+        testBoundaryError(null, "Error1Task", "Error2Task");
+    }
+
+    private void testBoundaryError(String errorType, String... taskToAssert) throws Exception {
+        Application app = generateCodeProcessesOnly("error/BoundaryError.bpmn2");
+        assertThat(app).isNotNull();
+
+        List<String> completedNodesNames = completedNodesListener(app);
+
+        Process<? extends Model> p = app.get(Processes.class).processById("BoundaryError");
+
+        Model model = p.createModel();
+
+        model.update(Collections.singletonMap("errorType", errorType));
+        ProcessInstance<?> processInstance = p.createInstance(model);
+
+        assertState(processInstance, ProcessInstance.STATE_PENDING);
+        processInstance.start();
+
+        if (Objects.nonNull(errorType)) {
+            assertState(processInstance, ProcessInstance.STATE_COMPLETED);
+            assertThat(completedNodesNames).contains(taskToAssert);
+        } else {
+            assertState(processInstance, ProcessInstance.STATE_ERROR);
+            assertThat(completedNodesNames).doesNotContain(taskToAssert);
+        }
+    }
 
     @Test
     void testEndError() throws Exception {

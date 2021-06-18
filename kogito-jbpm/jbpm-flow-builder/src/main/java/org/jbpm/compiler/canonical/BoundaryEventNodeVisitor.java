@@ -59,17 +59,17 @@ public class BoundaryEventNodeVisitor extends AbstractNodeVisitor<BoundaryEventN
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_VARIABLE_NAME, new StringLiteralExpr(node.getVariableName())));
             variable = variableScope.findVariable(node.getVariableName());
         }
-
-        if (EVENT_TYPE_SIGNAL.equals(node.getMetaData(EVENT_TYPE))) {
+        final String eventType = (String) node.getMetaData(EVENT_TYPE);
+        if (EVENT_TYPE_SIGNAL.equals(eventType)) {
             metadata.addSignal(node.getType(), variable != null ? variable.getType().getStringType() : null);
-        } else if (EVENT_TYPE_MESSAGE.equals(node.getMetaData(EVENT_TYPE))) {
+        } else if (EVENT_TYPE_MESSAGE.equals(eventType)) {
             Map<String, Object> nodeMetaData = node.getMetaData();
             metadata.addTrigger(new TriggerMetaData((String) nodeMetaData.get(TRIGGER_REF),
                     (String) nodeMetaData.get(TRIGGER_TYPE),
                     (String) nodeMetaData.get(MESSAGE_TYPE),
                     node.getVariableName(),
                     String.valueOf(node.getId())).validate());
-        } else if (EVENT_TYPE_COMPENSATION.equalsIgnoreCase((String) node.getMetaData(EVENT_TYPE)) && node.getAttachedToNodeId() != null) {
+        } else if (EVENT_TYPE_COMPENSATION.equalsIgnoreCase(eventType) && node.getAttachedToNodeId() != null) {
             body.addStatement(getFactoryMethod(getNodeId(node), METHOD_ADD_COMPENSATION_HANDLER, new StringLiteralExpr(node.getAttachedToNodeId())));
         }
 

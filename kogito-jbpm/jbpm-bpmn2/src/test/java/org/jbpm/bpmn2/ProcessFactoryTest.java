@@ -15,21 +15,35 @@
  */
 package org.jbpm.bpmn2;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
+import org.jbpm.process.instance.LightProcessRuntime;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
+import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.api.io.Resource;
+import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.internal.io.ResourceFactory;
+import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
+import static org.jbpm.ruleflow.core.Metadata.ERROR_EVENT;
+import static org.jbpm.ruleflow.core.Metadata.ERROR_STRUCTURE_REF;
 import static org.jbpm.ruleflow.core.Metadata.EVENT_TYPE_TIMER;
+import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DURATION;
+import static org.jbpm.ruleflow.core.Metadata.UNIQUE_ID;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -344,5 +358,72 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
         assertEquals(KogitoProcessInstance.STATE_COMPLETED,
                 pi.getState());
 
+    }
+
+    @Test
+    public void testBoundaryErrorEvent() throws Exception {
+        final String boundaryErrorEvent = "BoundaryErrorEvent";
+        final String errorCode = "java.lang.RuntimeException";
+        final String processId = "myProcess";
+        final RuleFlowProcessFactory factory = RuleFlowProcessFactory.createProcess(processId);
+        final String startNode = "Start";
+        final String task = "Task";
+        final String endOnError = "EndOnError";
+        factory
+                // header
+                .name("My process")
+                .packageName("org.kie.kogito")
+                // nodes
+                .startNode(1)
+                .name(startNode)
+                .metaData(UNIQUE_ID, startNode)
+                .done()
+                .workItemNode(2)
+                .name(task)
+                .workName(task)
+                .done()
+                .endNode(3)
+                .name("EndOnSuccess")
+                .done()
+                .boundaryEventNode(4)
+                .name(boundaryErrorEvent)
+                .attachedTo(2)
+                .metaData(ERROR_EVENT, errorCode)
+                .metaData(HAS_ERROR_EVENT, true)
+                .metaData(ERROR_STRUCTURE_REF, null)
+                .metaData("EventTpe", "error")
+                .metaData(UNIQUE_ID, boundaryErrorEvent)
+                .eventType("Error", errorCode)
+                .done()
+                .endNode(5)
+                .name(endOnError)
+                .metaData(UNIQUE_ID, endOnError)
+                .terminate(true)
+                .done()
+                // connections
+                .connection(1, 2)
+                .connection(2, 3)
+                .connection(4, 5);
+
+        final RuleFlowProcess process = factory.validate().getProcess();
+
+        final LightProcessRuntime processRuntime = LightProcessRuntime.ofProcess(process);
+
+        processRuntime.getKogitoWorkItemManager().registerWorkItemHandler(task, new ExceptionOnPurposeHandler());
+
+        final List<String> completedNodes = new ArrayList<>();
+        final KogitoProcessEventListener listener = new DefaultKogitoProcessEventListener() {
+            @Override
+            public void afterNodeLeft(ProcessNodeLeftEvent event) {
+                completedNodes.add(event.getNodeInstance().getNodeName());
+                super.afterNodeLeft(event);
+            }
+        };
+        processRuntime.addEventListener(listener);
+
+        ProcessInstance processInstance = processRuntime.startProcess(processId);
+
+        assertThat(processInstance.getState()).isEqualTo(KogitoProcessInstance.STATE_COMPLETED);
+        assertThat(completedNodes).contains(startNode, task, boundaryErrorEvent, endOnError);
     }
 }

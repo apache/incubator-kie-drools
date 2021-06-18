@@ -49,7 +49,6 @@ public class HelloService {
 
     public void helloNoOutput(String name, Integer age) {
         System.out.println("Service invoked with " + name.toString() + " " + age + " on service " + this.toString());
-
     }
 
     public String helloOutput(String name, Integer age) {
@@ -70,4 +69,15 @@ public class HelloService {
 
     }
 
+    public void error(String errorType) {
+        if ("error1".equals(errorType)) {
+            System.out.println("Mocking Throw Error1 (IllegalArgumentException)");
+            throw new IllegalArgumentException();
+        } else if ("error2".equals(errorType)) {
+            System.out.println("Mocking Throw Error2 (RuntimeException)");
+            throw new RuntimeException();
+        }
+        System.out.println("Mocking Throw Generic Error (UnsupportedOperationException)");
+        throw new UnsupportedOperationException();
+    }
 }

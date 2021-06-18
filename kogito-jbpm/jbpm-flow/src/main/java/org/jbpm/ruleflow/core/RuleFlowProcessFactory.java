@@ -21,7 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionHandler;
@@ -50,9 +52,13 @@ import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
 
+import static org.jbpm.process.core.context.exception.ExceptionScope.EXCEPTION_SCOPE;
 import static org.jbpm.ruleflow.core.Metadata.ACTION;
 import static org.jbpm.ruleflow.core.Metadata.ATTACHED_TO;
 import static org.jbpm.ruleflow.core.Metadata.CANCEL_ACTIVITY;
+import static org.jbpm.ruleflow.core.Metadata.ERROR_EVENT;
+import static org.jbpm.ruleflow.core.Metadata.ERROR_STRUCTURE_REF;
+import static org.jbpm.ruleflow.core.Metadata.HAS_ERROR_EVENT;
 import static org.jbpm.ruleflow.core.Metadata.SIGNAL_NAME;
 import static org.jbpm.ruleflow.core.Metadata.TIME_CYCLE;
 import static org.jbpm.ruleflow.core.Metadata.TIME_DATE;
@@ -73,6 +79,9 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
     public static final String METHOD_VARIABLE = "variable";
     public static final String METHOD_ADD_COMPENSATION_CONTEXT = "addCompensationContext";
     public static final String METHOD_ERROR_EXCEPTION_HANDLER = "errorExceptionHandler";
+    public static final String ERROR_TYPE_PREFIX = "Error-";
+    public static final String MESSAGE_TYPE_PREFIX = "Message-";
+    public static final String TIMER_TYPE_PREFIX = "Timer-";
 
     public static RuleFlowProcessFactory createProcess(String id) {
         return new RuleFlowProcessFactory(id);
@@ -259,11 +268,13 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
                 if (attachedTo != null) {
                     Node attachedNode = findNodeByIdOrUniqueIdInMetadata(nodeContainer, attachedTo, "Could not find node to attach to: " + attachedTo);
                     for (EventFilter filter : ((EventNode) node).getEventFilters()) {
-                        String type = ((EventTypeFilter) filter).getType();
-                        if (type.startsWith("Timer-")) {
+                        final String type = Optional.ofNullable(((EventTypeFilter) filter).getType()).orElse("");
+                        if (type.startsWith(TIMER_TYPE_PREFIX)) {
                             linkBoundaryTimerEvent(node, attachedTo, attachedNode);
-                        } else if (node.getMetaData().get(SIGNAL_NAME) != null || type.startsWith("Message-")) {
+                        } else if (node.getMetaData().get(SIGNAL_NAME) != null || type.startsWith(MESSAGE_TYPE_PREFIX)) {
                             linkBoundarySignalEvent(node, attachedTo);
+                        } else if (type.startsWith(ERROR_TYPE_PREFIX)) {
+                            linkBoundaryErrorEvent(node, attachedTo, attachedNode);
                         }
                     }
                 }
@@ -281,7 +292,7 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
         if (timeDuration != null) {
             timer.setDelay(timeDuration);
             timer.setTimeType(Timer.TIME_DURATION);
-            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeDuration + "-" + node.getId()));
+            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDuration + "-" + node.getId()));
         } else if (timeCycle != null) {
             int index = timeCycle.indexOf("###");
             if (index != -1) {
@@ -291,11 +302,11 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
             }
             timer.setDelay(timeCycle);
             timer.setTimeType(Timer.TIME_CYCLE);
-            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId()));
+            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeCycle + (timer.getPeriod() == null ? "" : "###" + timer.getPeriod()) + "-" + node.getId()));
         } else if (timeDate != null) {
             timer.setDate(timeDate);
             timer.setTimeType(Timer.TIME_DATE);
-            compositeNode.addTimer(timer, timerAction("Timer-" + attachedTo + "-" + timeDate + "-" + node.getId()));
+            compositeNode.addTimer(timer, timerAction(TIMER_TYPE_PREFIX + attachedTo + "-" + timeDate + "-" + node.getId()));
         }
 
         if (cancelActivity) {
@@ -322,6 +333,48 @@ public class RuleFlowProcessFactory extends RuleFlowNodeContainerFactory<RuleFlo
             actions.add(action);
             ((EventNode) node).setActions(EVENT_NODE_EXIT, actions);
         }
+    }
+
+    protected void linkBoundaryErrorEvent(Node node, String attachedTo, Node attachedNode) {
+        //same logic from ProcessHandler.linkBoundaryErrorEvent
+        final ContextContainer compositeNode = (ContextContainer) attachedNode;
+        final ExceptionScope exceptionScope =
+                Optional.ofNullable(compositeNode.getDefaultContext(EXCEPTION_SCOPE))
+                        .map(ExceptionScope.class::cast)
+                        .orElseGet(() -> {
+                            ExceptionScope scope = new ExceptionScope();
+                            compositeNode.addContext(scope);
+                            compositeNode.setDefaultContext(scope);
+                            return scope;
+                        });
+        final Boolean hasErrorCode = (Boolean) node.getMetaData().get(HAS_ERROR_EVENT);
+        final String errorCode = (String) node.getMetaData().get(ERROR_EVENT);
+        final String errorStructureRef = (String) node.getMetaData().get(ERROR_STRUCTURE_REF);
+        final ActionExceptionHandler exceptionHandler = new ActionExceptionHandler();
+        final EventNode eventNode = (EventNode) node;
+        final String variable = eventNode.getVariableName();
+
+        final DroolsConsequenceAction signalAction = new DroolsConsequenceAction("java", null);
+        signalAction.setMetaData(ACTION, new SignalProcessInstanceAction(ERROR_TYPE_PREFIX + attachedTo + "-" + errorCode, variable, SignalProcessInstanceAction.PROCESS_INSTANCE_SCOPE));
+        exceptionHandler.setAction(signalAction);
+        exceptionHandler.setFaultVariable(variable);
+        final String code = Optional.ofNullable(hasErrorCode)
+                .filter(Boolean.TRUE::equals)
+                .map(v -> errorCode)
+                .orElse(null);
+        exceptionScope.setExceptionHandler(code, exceptionHandler);
+
+        if (errorStructureRef != null) {
+            exceptionScope.setExceptionHandler(errorStructureRef, exceptionHandler);
+        }
+
+        final DroolsConsequenceAction cancelAction = new DroolsConsequenceAction("java", null);
+        cancelAction.setMetaData("Action", new CancelNodeInstanceAction(attachedTo));
+        final List<DroolsAction> actions = Optional
+                .ofNullable(eventNode.getActions(EVENT_NODE_EXIT))
+                .orElseGet(ArrayList::new);
+        actions.add(cancelAction);
+        eventNode.setActions(EVENT_NODE_EXIT, actions);
     }
 
     protected DroolsAction timerAction(String type) {

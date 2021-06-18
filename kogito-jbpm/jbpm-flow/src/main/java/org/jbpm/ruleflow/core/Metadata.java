@@ -31,6 +31,7 @@ public class Metadata {
     public static final String EVENT_TYPE_SIGNAL = "signal";
     public static final String EVENT_TYPE_MESSAGE = "message";
     public static final String EVENT_TYPE_COMPENSATION = "Compensation";
+    public static final String EVENT_TYPE_ERROR = "error";
     public static final String CUSTOM_SCOPE = "customScope";
     public static final String ATTACHED_TO = "AttachedTo";
     public static final String TIME_CYCLE = "TimeCycle";
@@ -54,6 +55,9 @@ public class Metadata {
     public static final String COMPLETION_CONDITION = "completionCondition";
     public static final String DATA_OUTPUTS = "DataOutputs";
     public static final String VARIABLE = "Variable";
+    public static final String HAS_ERROR_EVENT = "HasErrorEvent";
+    public static final String ERROR_EVENT = "ErrorEvent";
+    public static final String ERROR_STRUCTURE_REF = "ErrorStructureRef";
 
     private Metadata() {
     }
