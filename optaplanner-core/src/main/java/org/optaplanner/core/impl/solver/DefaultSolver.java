@@ -34,6 +34,10 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.BasicPlumbingTermination;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.Metrics;
+
 /**
  * Default implementation for {@link Solver}.
  *
@@ -54,6 +58,10 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
 
     private final String moveThreadCountDescription;
 
+    // Metrics
+    private LongTaskTimer solveLengthTimer;
+    private Counter errorCounter;
+
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
@@ -68,6 +76,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
+        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve-length");
+        this.errorCounter = Metrics.counter("optaplanner.solver.errors");
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -159,9 +169,17 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         outerSolvingStarted(solverScope);
         boolean restartSolver = true;
         while (restartSolver) {
-            solvingStarted(solverScope);
-            runPhases(solverScope);
-            solvingEnded(solverScope);
+            LongTaskTimer.Sample sample = solveLengthTimer.start();
+            try {
+                solvingStarted(solverScope);
+                runPhases(solverScope);
+                solvingEnded(solverScope);
+            } catch (Exception e) {
+                errorCounter.increment();
+                throw e;
+            } finally {
+                sample.stop();
+            }
             restartSolver = checkProblemFactChanges();
         }
         outerSolvingEnded(solverScope);

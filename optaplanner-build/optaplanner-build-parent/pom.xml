@@ -30,6 +30,7 @@
     <version.com.fasterxml.jackson.core>2.12.3</version.com.fasterxml.jackson.core>
     <version.com.h2database>1.4.197</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
+    <version.io.micrometer>1.6.6</version.io.micrometer>
     <version.io.quarkus>2.0.0.CR3</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.8.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.1</version.org.ow2.asm>
@@ -179,6 +180,13 @@
       </dependency>
 
       <!-- Normal dependencies versions-->
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-bom</artifactId>
+        <version>${version.io.micrometer}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <dependency>
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>

@@ -17,17 +17,25 @@
 package org.optaplanner.core.impl.solver;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.constructionheuristic.ConstructionHeuristicPhaseConfig;
 import org.optaplanner.core.config.phase.custom.CustomPhaseConfig;
+import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.phase.custom.NoChangeCustomPhaseCommand;
@@ -40,6 +48,9 @@ import org.optaplanner.core.impl.testdata.domain.chained.TestdataChainedSolution
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedEntity;
 import org.optaplanner.core.impl.testdata.domain.pinned.TestdataPinnedSolution;
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestMeterRegistry;
+
+import io.micrometer.core.instrument.Metrics;
 
 public class DefaultSolverTest {
 
@@ -57,6 +68,94 @@ public class DefaultSolverTest {
         solution = solver.solve(solution);
         assertThat(solution).isNotNull();
         assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+    }
+
+    @Test
+    public void solveMetrics() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        meterRegistry.publish();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isEqualTo("0.0");
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        AtomicBoolean updatedTime = new AtomicBoolean();
+        solver.addEventListener(event -> {
+            if (!updatedTime.get()) {
+                meterRegistry.getClock().addSeconds(2);
+                meterRegistry.publish();
+                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isEqualTo("1.0");
+                assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION"))
+                        .isEqualTo(TimeUnit.SECONDS.toNanos(2) + ".0");
+                updatedTime.set(true);
+            }
+        });
+        solution = solver.solve(solution);
+
+        meterRegistry.publish();
+        assertThat(solution).isNotNull();
+        assertThat(solution.getScore().isSolutionInitialized()).isTrue();
+
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isEqualTo("0.0");
+    }
+
+    public static class ErrorThrowingConstraintProvider implements ConstraintProvider {
+
+        @Override
+        public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+            return new Constraint[] {
+                    constraintFactory.from(TestdataEntity.class)
+                            .filter(e -> {
+                                throw new IllegalStateException("Thrown exception in constraint provider");
+                            })
+                            .penalize("throwing constraint", SimpleScore.ONE)
+            };
+        }
+    }
+
+    @Test
+    public void solveMetricsError() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+
+        solverConfig.setScoreDirectorFactoryConfig(
+                new ScoreDirectorFactoryConfig().withConstraintProviderClass(ErrorThrowingConstraintProvider.class));
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        Solver<TestdataSolution> solver = solverFactory.buildSolver();
+        meterRegistry.publish();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isEqualTo("0.0");
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        meterRegistry.publish();
+
+        assertThatCode(() -> {
+            solver.solve(solution);
+        }).hasMessageContaining("Thrown exception in constraint provider");
+
+        meterRegistry.getClock().addSeconds(1);
+        meterRegistry.publish();
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "ACTIVE_TASKS")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.solve-length", "DURATION")).isEqualTo("0.0");
+        assertThat(meterRegistry.getMeasurement("optaplanner.solver.errors", "COUNT")).isEqualTo("1.0");
     }
 
     @Test
