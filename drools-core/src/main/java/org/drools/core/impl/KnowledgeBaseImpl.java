@@ -1097,7 +1097,7 @@ public class KnowledgeBaseImpl
             // if we are running in STREAM mode, update expiration offset
             for( EntryPointNode ep : this.rete.getEntryPointNodes().values() ) {
                 for( ObjectTypeNode node : ep.getObjectTypeNodes().values() ) {
-                    if( node.isAssignableFrom( typeDeclaration.getObjectType() ) ) {
+                    if( node.getObjectType().equals( typeDeclaration.getObjectType() ) ) {
                         node.setExpirationOffset( Math.max( node.getExpirationOffset(), exp ) );
                     }
                 }
