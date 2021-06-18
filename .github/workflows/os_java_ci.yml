@@ -19,12 +19,15 @@ jobs:
     name: OS x Java
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        java-version: [11]
+        os: [ ubuntu-latest, windows-latest ]
+        java-version: [ 11 ]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     steps:
+      - name: Support longpaths
+        if: ${{ matrix.os == 'windows-latest' }}
+        run: git config --system core.longpaths true
       - name: Disk space report before modification
         if: ${{ matrix.os == 'ubuntu-latest' }}
         shell: bash
