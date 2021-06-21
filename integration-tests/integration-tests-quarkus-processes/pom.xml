@@ -30,19 +30,19 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-management-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>task-management-quarkus-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-task-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-svg-quarkus-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-process-svg</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-cloudevents-quarkus-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-cloudevents</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

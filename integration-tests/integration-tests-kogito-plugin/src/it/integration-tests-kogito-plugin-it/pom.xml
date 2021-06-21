@@ -13,7 +13,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>@maven.compiler.release@</maven.compiler.release>
     </properties>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -29,7 +29,8 @@
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>process-management-addon</artifactId>
+            <artifactId>kogito-addons-quarkus-process-management</artifactId>
+            <version>${kogito.version}</version>
         </dependency>
         <dependency>
             <groupId>io.quarkus</groupId>
