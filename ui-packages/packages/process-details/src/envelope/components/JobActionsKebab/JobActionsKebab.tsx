@@ -30,6 +30,7 @@ import {
 } from '@kogito-apps/management-console-shared';
 import { OUIAProps, componentOuiaProps } from '@kogito-apps/ouia-tools';
 import { ProcessDetailsDriver } from '../../../api';
+import { handleJobRescheduleUtil, jobCancel } from '../../../utils/Utils';
 
 interface IOwnProps {
   job: Job;
@@ -82,28 +83,19 @@ const JobActionsKebab: React.FC<IOwnProps & OUIAProps> = ({
     repeatLimit,
     scheduleDate
   ): Promise<void> => {
-    const response = await driver.rescheduleJob(
-      job,
+    await handleJobRescheduleUtil(
       repeatInterval,
       repeatLimit,
-      scheduleDate
+      scheduleDate,
+      job,
+      handleRescheduleAction,
+      driver,
+      setRescheduleError
     );
-    if (response && response.modalTitle === 'success') {
-      handleRescheduleAction();
-    } else if (response && response.modalTitle === 'failure') {
-      handleRescheduleAction();
-      setRescheduleError(response.modalContent);
-    }
   };
 
   const handleCancelAction = async (): Promise<void> => {
-    const cancelResponse = await driver.cancelJob(job);
-    const title: JSX.Element = setTitle(
-      cancelResponse.modalTitle,
-      'Job cancel'
-    );
-    setModalTitle(title);
-    setModalContent(cancelResponse.modalContent);
+    await jobCancel(driver, job, setModalTitle, setModalContent);
     handleCancelModalToggle();
   };
 

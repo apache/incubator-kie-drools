@@ -21,7 +21,8 @@ import {
   JobCancel,
   SvgSuccessResponse,
   SvgErrorResponse,
-  TriggerableNode
+  TriggerableNode,
+  NodeInstance
 } from '@kogito-apps/management-console-shared';
 
 export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
@@ -91,5 +92,31 @@ export class ProcessDetailsChannelApiImpl implements ProcessDetailsChannelApi {
   }
   processDetails__openProcessDetails(id: string): void {
     this.driver.openProcessInstanceDetails(id);
+  }
+
+  processDetails__handleProcessRetry(
+    processInstance: ProcessInstance
+  ): Promise<void> {
+    return this.driver.handleProcessRetry(processInstance);
+  }
+
+  processDetails__handleNodeInstanceCancel(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void> {
+    return this.driver.handleNodeInstanceCancel(processInstance, node);
+  }
+
+  processDetails__handleProcessSkip(
+    processInstance: ProcessInstance
+  ): Promise<void> {
+    return this.driver.handleProcessSkip(processInstance);
+  }
+
+  processDetails__handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: Pick<NodeInstance, 'id'>
+  ): Promise<void> {
+    return this.driver.handleNodeInstanceRetrigger(processInstance, node);
   }
 }

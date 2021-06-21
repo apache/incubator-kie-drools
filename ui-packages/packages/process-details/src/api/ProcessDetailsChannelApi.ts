@@ -20,7 +20,8 @@ import {
   JobCancel,
   SvgSuccessResponse,
   SvgErrorResponse,
-  TriggerableNode
+  TriggerableNode,
+  NodeInstance
 } from '@kogito-apps/management-console-shared';
 export interface ProcessDetailsChannelApi {
   processDetails__getProcessDiagram(
@@ -52,4 +53,18 @@ export interface ProcessDetailsChannelApi {
   processDetails__processDetailsQuery(id: string): Promise<ProcessInstance>;
   processDetails__jobsQuery(id: string): Promise<Job[]>;
   processDetails__openProcessDetails(id: string): void;
+  processDetails__handleProcessRetry(
+    processInstance: ProcessInstance
+  ): Promise<void>;
+  processDetails__handleNodeInstanceCancel(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void>;
+  processDetails__handleProcessSkip(
+    processInstance: ProcessInstance
+  ): Promise<void>;
+  processDetails__handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: Pick<NodeInstance, 'id'>
+  ): Promise<void>;
 }

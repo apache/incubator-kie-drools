@@ -18,6 +18,7 @@ import {
   Job,
   JobStatus,
   MilestoneStatus,
+  NodeInstance,
   ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
@@ -126,6 +127,25 @@ const data: ProcessInstance = {
   ]
 };
 
+export const processInstance: ProcessInstance = {
+  endpoint: '',
+  id: '',
+  lastUpdate: undefined,
+  nodes: [],
+  processId: '',
+  start: undefined,
+  state: undefined
+};
+
+export const node: NodeInstance = {
+  definitionId: '',
+  enter: undefined,
+  id: '',
+  name: '',
+  nodeId: '',
+  type: ''
+};
+
 describe('ProcessDetailsChannelApiImpl tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -190,5 +210,31 @@ describe('ProcessDetailsChannelApiImpl tests', () => {
   it('processDetails__jobsQuery', () => {
     api.processDetails__jobsQuery(id);
     expect(driver.jobsQuery).toHaveBeenCalledWith(id);
+  });
+
+  it('processDetails__handleProcessRetry', () => {
+    api.processDetails__handleProcessRetry(processInstance);
+    expect(driver.handleProcessRetry).toHaveBeenCalledWith(processInstance);
+  });
+
+  it('processDetails__handleNodeInstanceCancel', () => {
+    api.processDetails__handleNodeInstanceCancel(processInstance, node);
+    expect(driver.handleNodeInstanceCancel).toHaveBeenCalledWith(
+      processInstance,
+      node
+    );
+  });
+
+  it('processDetails__handleProcessSkip', () => {
+    api.processDetails__handleProcessSkip(processInstance);
+    expect(driver.handleProcessSkip).toHaveBeenCalledWith(processInstance);
+  });
+
+  it('processDetails__handleNodeInstanceRetrigger', () => {
+    api.processDetails__handleNodeInstanceRetrigger(processInstance, node);
+    expect(driver.handleNodeInstanceRetrigger).toHaveBeenCalledWith(
+      processInstance,
+      node
+    );
   });
 });

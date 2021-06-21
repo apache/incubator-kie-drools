@@ -18,6 +18,7 @@ import { ProcessDetailsDriver } from '../../../api';
 import {
   Job,
   JobCancel,
+  NodeInstance,
   ProcessInstance,
   SvgErrorResponse,
   SvgSuccessResponse,
@@ -119,5 +120,33 @@ export default class TestProcessDetailsDriver implements ProcessDetailsDriver {
 
   jobsQuery(id: string): Promise<Job[]> {
     return Promise.resolve([]);
+  }
+
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
+  handleNodeInstanceCancel(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
+    return new Promise((resolve, reject) => {
+      resolve();
+    });
+  }
+
+  handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: Pick<NodeInstance, 'id'>
+  ): Promise<void> {
+    return Promise.resolve(undefined);
   }
 }

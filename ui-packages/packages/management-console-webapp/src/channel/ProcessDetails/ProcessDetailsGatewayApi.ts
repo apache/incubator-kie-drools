@@ -21,16 +21,21 @@ import {
   JobCancel,
   SvgSuccessResponse,
   SvgErrorResponse,
-  TriggerableNode
+  TriggerableNode,
+  NodeInstance
 } from '@kogito-apps/management-console-shared';
 import {
   getSvg,
   handleJobReschedule,
   handleProcessAbort,
+  handleProcessRetry,
+  handleProcessSkip,
   jobCancel,
   getTriggerableNodes,
   handleNodeTrigger,
-  handleProcessVariableUpdate
+  handleNodeInstanceCancel,
+  handleProcessVariableUpdate,
+  handleNodeInstanceRetrigger
 } from '../../apis';
 
 export interface OnOpenProcessInstanceDetailsListener {
@@ -72,6 +77,16 @@ export interface ProcessDetailsGatewayApi {
   onOpenProcessInstanceDetailsListener: (
     listener: OnOpenProcessInstanceDetailsListener
   ) => ProcessDetailsUnSubscribeHandler;
+  handleProcessRetry: (processInstance: ProcessInstance) => Promise<void>;
+  handleNodeInstanceCancel: (
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ) => Promise<void>;
+  handleProcessSkip: (processInstance: ProcessInstance) => Promise<void>;
+  handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void>;
 }
 
 export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
@@ -179,5 +194,27 @@ export class ProcessDetailsGatewayApiImpl implements ProcessDetailsGatewayApi {
     return {
       unSubscribe
     };
+  }
+
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void> {
+    return handleProcessRetry(processInstance);
+  }
+
+  handleNodeInstanceCancel(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void> {
+    return handleNodeInstanceCancel(processInstance, node);
+  }
+
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void> {
+    return handleProcessSkip(processInstance);
+  }
+
+  handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void> {
+    return handleNodeInstanceRetrigger(processInstance, node);
   }
 }

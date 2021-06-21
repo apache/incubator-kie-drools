@@ -59,6 +59,7 @@ import ProcessDetailsPanel from '../ProcessDetailsPanel/ProcessDetailsPanel';
 import ProcessDetailsNodeTrigger from '../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger';
 import ProcessVariables from '../ProcessVariables/ProcessVariables';
 import ProcessDetailsMilestonesPanel from '../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel';
+import ProcessDetailsTimelinePanel from '../ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel';
 
 interface ProcessDetailsProps {
   isEnvelopeConnectedToChannel: boolean;
@@ -291,6 +292,14 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
     );
   };
 
+  const renderProcessTimeline = (): JSX.Element => {
+    return (
+      <FlexItem>
+        <ProcessDetailsTimelinePanel data={data} jobs={jobs} driver={driver} />
+      </FlexItem>
+    );
+  };
+
   const renderProcessDetails = (): JSX.Element => {
     return (
       <Flex direction={{ default: 'column' }} flex={{ default: 'flex_1' }}>
@@ -516,7 +525,7 @@ const ProcessDetails: React.FC<ProcessDetailsProps> = ({
                   direction={{ default: 'column' }}
                   flex={{ default: 'flex_1' }}
                 >
-                  <FlexItem>Process Timeline</FlexItem>
+                  {renderProcessTimeline()}
                   <FlexItem>
                     <JobsPanel jobs={jobs} driver={driver} />
                   </FlexItem>

@@ -25,6 +25,8 @@ import {
   Job,
   JobStatus,
   MilestoneStatus,
+  NodeInstance,
+  ProcessInstance,
   ProcessInstanceState
 } from '@kogito-apps/management-console-shared';
 
@@ -138,6 +140,25 @@ const data: any = {
   ]
 };
 
+export const processInstance: ProcessInstance = {
+  endpoint: '',
+  id: '',
+  lastUpdate: undefined,
+  nodes: [],
+  processId: '',
+  start: undefined,
+  state: undefined
+};
+
+export const node: NodeInstance = {
+  definitionId: '',
+  enter: undefined,
+  id: '',
+  name: '',
+  nodeId: '',
+  type: ''
+};
+
 describe('ProcessDetailsEnvelopeViewDriver tests', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -218,6 +239,38 @@ describe('ProcessDetailsEnvelopeViewDriver tests', () => {
       driver.jobsQuery(id);
 
       expect(requests.processDetails__jobsQuery).toHaveBeenCalledWith(id);
+    });
+
+    it('handleNodeInstanceCancel', () => {
+      driver.handleNodeInstanceCancel(processInstance, node);
+
+      expect(
+        requests.processDetails__handleNodeInstanceCancel
+      ).toHaveBeenCalledWith(processInstance, node);
+    });
+
+    it('handleProcessRetry', () => {
+      driver.handleProcessRetry(processInstance);
+
+      expect(requests.processDetails__handleProcessRetry).toHaveBeenCalledWith(
+        processInstance
+      );
+    });
+
+    it('handleProcessSkip', () => {
+      driver.handleProcessSkip(processInstance);
+
+      expect(requests.processDetails__handleProcessSkip).toHaveBeenCalledWith(
+        processInstance
+      );
+    });
+
+    it('handleNodeInstanceRetrigger', () => {
+      driver.handleNodeInstanceRetrigger(processInstance, node);
+
+      expect(
+        requests.processDetails__handleNodeInstanceRetrigger
+      ).toHaveBeenCalledWith(processInstance, node);
     });
   });
 });

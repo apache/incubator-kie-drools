@@ -17,6 +17,7 @@
 import { GraphQL } from '@kogito-apps/consoles-common';
 import {
   BulkProcessInstanceActionResponse,
+  NodeInstance,
   OperationType,
   ProcessInstance,
   TriggerableNode
@@ -250,6 +251,42 @@ export const handleProcessVariableUpdate = (
       })
       .catch(error => {
         reject(error.message);
+      });
+  });
+};
+
+export const handleNodeInstanceCancel = async (
+  processInstance: ProcessInstance,
+  node: NodeInstance
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .delete(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/nodeInstances/${node.id}`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => {
+        reject(error);
+      });
+  });
+};
+
+export const handleNodeInstanceRetrigger = (
+  processInstance: Pick<ProcessInstance, 'id' | 'serviceUrl' | 'processId'>,
+  node: Pick<NodeInstance, 'id'>
+): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(
+        `${processInstance.serviceUrl}/management/processes/${processInstance.processId}/instances/${processInstance.id}/nodeInstances/${node.id}`
+      )
+      .then(() => {
+        resolve();
+      })
+      .catch(error => {
+        reject(JSON.stringify(error.message));
       });
   });
 };

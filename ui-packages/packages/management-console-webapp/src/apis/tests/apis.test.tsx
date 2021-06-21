@@ -28,13 +28,16 @@ import {
   performMultipleCancel,
   getTriggerableNodes,
   handleNodeTrigger,
-  handleProcessVariableUpdate
+  handleProcessVariableUpdate,
+  handleNodeInstanceRetrigger,
+  handleNodeInstanceCancel
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
   OperationType,
   ProcessInstanceState,
-  MilestoneStatus
+  MilestoneStatus,
+  NodeInstance
 } from '@kogito-apps/management-console-shared';
 import { processInstance } from '../../channel/ProcessList/tests/ProcessListGatewayApi.test';
 jest.mock('axios');
@@ -726,6 +729,78 @@ describe('handle node trigger click tests', () => {
     mockedAxios.post.mockRejectedValue({ message: '404 error' });
     let result = '';
     await handleNodeTrigger(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('error');
+  });
+});
+
+describe('handle node instance trigger click tests', () => {
+  const node: NodeInstance = {
+    definitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+    name: 'Send visa application',
+    id: '1',
+    type: 'ActionNode',
+    nodeId: 'nodeOne',
+    enter: new Date('2020-11-11')
+  };
+  it('executes node instance trigger successfully', async () => {
+    let result = '';
+    mockedAxios.post.mockResolvedValue({});
+    await handleNodeInstanceRetrigger(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('success');
+  });
+
+  it('fails to execute instance node trigger', async () => {
+    mockedAxios.post.mockRejectedValue({ message: '404 error' });
+    let result = '';
+    await handleNodeInstanceRetrigger(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('error');
+  });
+});
+
+describe('handle node instance cancel', () => {
+  const node: NodeInstance = {
+    definitionId: '_BDA56801-1155-4AF2-94D4-7DAADED2E3C0',
+    name: 'Send visa application',
+    id: '1',
+    type: 'ActionNode',
+    nodeId: 'nodeOne',
+    enter: new Date('2020-11-11')
+  };
+  it('executes handle node instance cancel successfully', async () => {
+    let result = '';
+    mockedAxios.delete.mockResolvedValue({});
+    await handleNodeInstanceCancel(processInstance, node)
+      .then(() => {
+        result = 'success';
+      })
+      .catch(error => {
+        result = 'error';
+      });
+    expect(result).toEqual('success');
+  });
+
+  it('fails to handle node instance cancel', async () => {
+    mockedAxios.delete.mockRejectedValue({ message: '404 error' });
+    let result = '';
+    await handleNodeInstanceCancel(processInstance, node)
       .then(() => {
         result = 'success';
       })

@@ -27,6 +27,10 @@ export const MockedProcessDetailsDriver = jest.fn<ProcessDetailsDriver, []>(
     jobsQuery: jest.fn(),
     handleProcessAbort: jest.fn(),
     handleProcessVariableUpdate: jest.fn(),
-    openProcessInstanceDetails: jest.fn()
+    openProcessInstanceDetails: jest.fn(),
+    handleProcessRetry: jest.fn(),
+    handleNodeInstanceCancel: jest.fn(),
+    handleProcessSkip: jest.fn(),
+    handleNodeInstanceRetrigger: jest.fn()
   })
 );

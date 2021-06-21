@@ -127,7 +127,11 @@ export const MockedApiRequests = jest.fn<
   processDetails__handleNodeTrigger: jest.fn(),
   processDetails__jobsQuery: jest.fn(),
   processDetails__handleProcessAbort: jest.fn(),
-  processDetails__handleProcessVariableUpdate: jest.fn()
+  processDetails__handleProcessVariableUpdate: jest.fn(),
+  processDetails__handleProcessRetry: jest.fn(),
+  processDetails__handleNodeInstanceCancel: jest.fn(),
+  processDetails__handleProcessSkip: jest.fn(),
+  processDetails__handleNodeInstanceRetrigger: jest.fn()
 }));
 
 export const MockedApiNotifications = jest.fn<

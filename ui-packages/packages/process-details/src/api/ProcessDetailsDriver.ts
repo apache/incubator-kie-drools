@@ -20,7 +20,8 @@ import {
   JobCancel,
   SvgSuccessResponse,
   SvgErrorResponse,
-  TriggerableNode
+  TriggerableNode,
+  NodeInstance
 } from '@kogito-apps/management-console-shared';
 export interface ProcessDetailsDriver {
   getProcessDiagram(
@@ -48,4 +49,14 @@ export interface ProcessDetailsDriver {
   processDetailsQuery(id: string): Promise<ProcessInstance>;
   jobsQuery(id: string): Promise<Job[]>;
   openProcessInstanceDetails(id: string): void;
+  handleProcessRetry(processInstance: ProcessInstance): Promise<void>;
+  handleNodeInstanceCancel(
+    processInstance: ProcessInstance,
+    node: NodeInstance
+  ): Promise<void>;
+  handleProcessSkip(processInstance: ProcessInstance): Promise<void>;
+  handleNodeInstanceRetrigger(
+    processInstance: ProcessInstance,
+    node: Pick<NodeInstance, 'id'>
+  ): Promise<void>;
 }

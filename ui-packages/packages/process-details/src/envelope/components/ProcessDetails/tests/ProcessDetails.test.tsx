@@ -34,6 +34,9 @@ jest.mock('../../ProcessDetailsErrorModal/ProcessDetailsErrorModal');
 jest.mock('../../ProcessVariables/ProcessVariables');
 jest.mock('../../ProcessDetailsPanel/ProcessDetailsPanel');
 jest.mock('../../ProcessDetailsMilestonesPanel/ProcessDetailsMilestonesPanel');
+jest.mock('../../ProcessDetailsTimelinePanel/ProcessDetailsTimelinePanel');
+jest.mock('../../ProcessDetailsNodeTrigger/ProcessDetailsNodeTrigger');
+
 Date.now = jest.fn(() => 1592000000000); // UTC Fri Jun 12 2020 22:13:20
 
 describe('ProcessDetails tests', () => {
