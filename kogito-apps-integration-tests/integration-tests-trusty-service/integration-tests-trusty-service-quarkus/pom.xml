@@ -21,7 +21,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>tracing-decision-quarkus-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-tracing-decision</artifactId>
     </dependency>
 
     <!-- Build container image -->

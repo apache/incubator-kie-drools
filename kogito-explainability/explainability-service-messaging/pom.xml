@@ -27,11 +27,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>cloudevents-utils</artifactId>
+      <artifactId>kogito-addons-cloudevents-utils</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>tracing-decision-api</artifactId>
+      <artifactId>kogito-addons-tracing-decision-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

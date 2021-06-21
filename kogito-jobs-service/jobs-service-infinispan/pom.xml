@@ -47,7 +47,7 @@
         </dependency>
         <dependency>
             <groupId>org.kie.kogito</groupId>
-            <artifactId>infinispan-quarkus-health-addon</artifactId>
+            <artifactId>kogito-addons-quarkus-persistence-infinispan-health</artifactId>
         </dependency>
 
         <dependency>

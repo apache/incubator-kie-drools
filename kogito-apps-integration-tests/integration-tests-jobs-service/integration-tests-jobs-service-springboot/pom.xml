@@ -33,11 +33,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-management-addon</artifactId>
+      <artifactId>kogito-addons-springboot-process-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-management-springboot-addon</artifactId>
+      <artifactId>kogito-addons-springboot-jobs-management</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

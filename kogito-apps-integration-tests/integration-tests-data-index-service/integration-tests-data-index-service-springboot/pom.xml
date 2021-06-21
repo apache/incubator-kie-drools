@@ -44,11 +44,11 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-events-spring-boot-addon</artifactId>
+      <artifactId>kogito-addons-springboot-events-kafka</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>filesystem-persistence-addon</artifactId>
+      <artifactId>kogito-addons-persistence-filesystem</artifactId>
     </dependency>
     <dependency>
       <groupId>org.postgresql</groupId>

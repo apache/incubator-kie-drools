@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>typedvalue-api</artifactId>
+      <artifactId>kogito-addons-tracing-typedvalue-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.fasterxml.jackson.core</groupId>

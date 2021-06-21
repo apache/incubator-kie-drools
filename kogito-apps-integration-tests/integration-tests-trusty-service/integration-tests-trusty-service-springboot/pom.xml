@@ -23,7 +23,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>tracing-decision-springboot-addon</artifactId>
+      <artifactId>kogito-addons-springboot-tracing-decision</artifactId>
     </dependency>
 
     <dependency>

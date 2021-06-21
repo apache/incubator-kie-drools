@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>jobs-api</artifactId>
+      <artifactId>kogito-addons-jobs-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

@@ -15,7 +15,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>tracing-decision-api</artifactId>
+      <artifactId>kogito-addons-tracing-decision-api</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

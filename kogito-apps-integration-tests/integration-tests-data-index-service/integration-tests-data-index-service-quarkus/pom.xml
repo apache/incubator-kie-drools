@@ -19,7 +19,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-events-reactive-messaging-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-events-smallrye</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -31,7 +31,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>filesystem-persistence-addon</artifactId>
+      <artifactId>kogito-addons-persistence-filesystem</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -24,7 +24,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-svg-quarkus-addon</artifactId>
+      <artifactId>kogito-addons-quarkus-process-svg</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
