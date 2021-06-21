@@ -589,4 +589,28 @@ public class NamedConsequencesTest extends BaseModelTest {
         assertTrue(results.contains("cheddar"));
         assertTrue(results.contains("stilton"));
     }
+
+    public void testIfTrue() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  $p : Person()\n" +
+                     "  if (true) do[t1]\n" +
+                     "then\n" +
+                     "  result.add(\"main\");\n" +
+                     "then[t1]\n" +
+                     "  result.add(\"t1\");\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37));
+        ksession.fireAllRules();
+
+        assertEquals(2, result.size());
+        assertTrue(result.containsAll(asList("main", "t1")));
+    }
 }

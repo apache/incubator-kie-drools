@@ -345,6 +345,8 @@ TOKEN :
 | < DOT_DOT_SLASH: "../" >
 | < HASHMARK: "#" >
 | < EXCL_DOT: "!." >
+| < PASSIVE_OOPATH: "?/" >
+
 }
 
 /* LITERALS */
@@ -3167,12 +3169,21 @@ OOPathExpr OOPathExpr():
     OOPathChunk chunk;
 }
 {
-  "/" { begin=token(); }
-  chunk = OOPathChunk() { chunks.add(chunk); }
+  ((
+    "/" { begin=token(); }
+    chunk = OOPathChunk() { chunks.add(chunk); }
+  )
+  |
+  (
+    "?/" { begin=token(); }
+    chunk = OOPathChunk() { chunks.add(chunk.passive()); }
+  ))
   (
     ( "/" chunk = OOPathChunk() { chunks.add(chunk); } )
     |
     ( "." chunk = OOPathChunk() { chunks.add(chunk.singleValue()); } )
+    |
+    ( "?/" chunk = OOPathChunk() { chunks.add(chunk.passive()); } )
   )*
 
     { return new OOPathExpr(range(begin, token()), chunks); }

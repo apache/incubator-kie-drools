@@ -16,6 +16,8 @@
 
 package org.kie.dmn.trisotech.model.v1_3;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.model.api.Expression;
 import org.kie.dmn.model.v1_3.KieDMNModelInstrumentedBase;
 import org.kie.dmn.trisotech.model.api.NamedExpression;
@@ -23,13 +25,22 @@ import org.kie.dmn.trisotech.model.api.NamedExpression;
 public class TNamedExpression extends KieDMNModelInstrumentedBase implements NamedExpression {
 
     private String name;
+
     private Expression expression;
 
-    public TNamedExpression() {};
+    private QName typeRef;
+
+    public TNamedExpression() {
+    };
 
     public TNamedExpression(String name, Expression exp) {
+        this(name, exp, null);
+    }
+
+    public TNamedExpression(String name, Expression exp, QName typeRef) {
         this.name = name;
         this.expression = exp;
+        this.typeRef = typeRef;
     }
 
     @Override
@@ -50,6 +61,17 @@ public class TNamedExpression extends KieDMNModelInstrumentedBase implements Nam
     @Override
     public void setExpression(Expression expr) {
         this.expression = expr;
+    }
+
+    @Override
+    public QName getTypeRef() {
+        return typeRef;
+    }
+
+    @Override
+    public void setTypeRef(QName ref) {
+        this.typeRef = ref;
+
     }
 
 }

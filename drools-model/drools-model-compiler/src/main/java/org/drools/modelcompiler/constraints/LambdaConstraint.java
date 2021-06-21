@@ -114,7 +114,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public String toString() {
-        return evaluator.toString();
+        return "[" + evaluator.toString() + ", " + predicateInformation.getStringConstraint() + "]";
     }
 
     @Override

@@ -482,7 +482,7 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     /**
      * Returns a FieldIndex which Keeps a count on how many times a particular field is used with a range check
-     * in the sinks. Stores the FieldIndex for asc and desc separately
+     * in the sinks.
      */
     private FieldIndex registerFieldIndexForRange(final int index,
                                                   final InternalReadAccessor fieldExtractor) {
@@ -888,6 +888,10 @@ public class CompositeObjectSinkAdapter implements ObjectSinkPropagator {
 
     public List<FieldIndex> getHashedFieldIndexes() {
         return hashedFieldIndexes;
+    }
+
+    public List<FieldIndex> getRangeIndexedFieldIndexes() {
+        return rangeIndexedFieldIndexes;
     }
 
     public static class HashKey implements Externalizable {

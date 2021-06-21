@@ -36,6 +36,7 @@ import org.drools.compiler.compiler.JavaDialectConfiguration;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -81,7 +82,7 @@ public class JavaParserCompiler {
         String[] resources = writeModel(classes, srcMfs);
         CompilationResult resultCompilation = createDefaultCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
-        if(errors.length != 0) {
+        if (errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
             for (CompilationProblem error : errors) {
                 kbuilder.addBuilderResult(new CompilationProblemErrorResult(new CompilationProblemAdapter( error )));
@@ -90,17 +91,32 @@ public class JavaParserCompiler {
         }
 
         InternalClassLoader internalClassLoader = AccessController.doPrivileged((PrivilegedAction<InternalClassLoader>) () -> new InternalClassLoader( classLoader, trgMfs ));
+        return loadClasses(getClassNames(classLoader, trgMfs), internalClassLoader);
+    }
 
+    private static Map<String, Class<?>> loadClasses(List<String> classNames, InternalClassLoader internalClassLoader) {
         Map<String, Class<?>> result = new HashMap<>();
-        for (GeneratedClassWithPackage cls : classes) {
-            final String fullClassName = cls.getPackageName() + "." + cls.getGeneratedClass().getNameAsString();
+        for (String className : classNames) {
             try {
-                result.put(fullClassName, Class.forName(fullClassName, true, internalClassLoader));
+                result.put(className, Class.forName(className, true, internalClassLoader));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
             }
         }
         return result;
+    }
+
+    private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
+        List<String> classNames = new ArrayList<>();
+        for (Map.Entry<String, byte[]> entry : trgMfs.getMap().entrySet()) {
+            String fileName = entry.getKey();
+            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
+            classNames.add(className);
+            if (classLoader instanceof ProjectClassLoader) {
+                ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());
+            }
+        }
+        return classNames;
     }
 
     private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {

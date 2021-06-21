@@ -15,5 +15,5 @@
 # generated files
 dependency-reduced-pom.xml
 
-# these modules don't exist anymore on master
+# these modules don't exist anymore
 /drools-clips/
