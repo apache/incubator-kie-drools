@@ -18,7 +18,7 @@
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
-    <version.jmh>1.21</version.jmh>
+    <version.jmh>1.29</version.jmh>
     <!--
           Name of the benchmark Uber-JAR to generate.
         -->
