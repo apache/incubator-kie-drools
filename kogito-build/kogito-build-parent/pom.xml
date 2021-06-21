@@ -119,7 +119,7 @@
     <!-- Versions plugin should stay on version 2.5
       until https://github.com/mojohaus/versions-maven-plugin/issues/312 is fixed -->
     <version.versions.plugin>2.5</version.versions.plugin>
-    <version.jayway.jsonpath>2.4.0</version.jayway.jsonpath>
+    <version.jayway.jsonpath>2.6.0</version.jayway.jsonpath>
     <version.org.jsonschema2pojo-maven-plugin>1.0.1</version.org.jsonschema2pojo-maven-plugin>
 
     <!-- this version property is used in plugins but also in dependencies too -->
@@ -130,14 +130,14 @@
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
-    <version.com.github.victools>4.12.1</version.com.github.victools>
+    <version.com.github.victools>4.18.0</version.com.github.victools>
     <version.com.github.tomakehurst.wiremock>2.27.2</version.com.github.tomakehurst.wiremock>
-    <version.com.google.protobuf>3.15.0</version.com.google.protobuf>
+    <version.com.google.protobuf>3.15.8</version.com.google.protobuf>
     <version.org.openapitools>5.0.1</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>
     <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
     <version.com.sun.activation>1.2.0</version.com.sun.activation>
-    <version.com.thoughtworks.xstream>1.4.16</version.com.thoughtworks.xstream>
+    <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.javax.annotation>1.3.2</version.javax.annotation>
     <version.javax.annotation-api>1.3.2</version.javax.annotation-api>
     <version.javax.inject>1</version.javax.inject>
@@ -151,7 +151,7 @@
     <version.io.smallrye-open-api-core>2.1.4</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive>2.9.0</version.io.smallrye.reactive>
     <version.io.smallrye.reactive.mutiny-vertx-web-client>2.6.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
-    <version.io.swagger.core.v3>2.0.6</version.io.swagger.core.v3>
+    <version.io.swagger.core.v3>2.1.7</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.0.24</version.io.swagger.parser.v3>
 
     <version.org.apache.commons>3.12.0</version.org.apache.commons>
@@ -181,7 +181,7 @@
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.org.springframework.boot>2.3.4.RELEASE</version.org.springframework.boot>
-    <version.org.springdoc>1.5.2</version.org.springdoc>
+    <version.org.springdoc>1.5.8</version.org.springdoc>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
     <version.io.vertx>4.1.0</version.io.vertx>
   </properties>
