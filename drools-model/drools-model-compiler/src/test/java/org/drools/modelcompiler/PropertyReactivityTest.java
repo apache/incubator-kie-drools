@@ -1406,4 +1406,33 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals(2, ksession.fireAllRules(2));
     }
+
+    @Test
+    public void testPropertyReactivityWithPublicField() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person()\n" +
+                           "then\n" +
+                           "    modify($p) { publicAge = 41 };\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "    $p : Person(name == \"John\")\n" +
+                           "then\n" +
+                           "end\n" +
+                           "rule R3 when\n" +
+                           "    $p : Person(publicAge == 41)\n" +
+                           "then\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        p.publicAge = 40;
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(3, fired);
+        assertEquals(41, p.publicAge);
+    }
 }
