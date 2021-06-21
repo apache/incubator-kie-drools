@@ -20,6 +20,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import org.infinispan.client.hotrod.MetadataValue;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.kie.kogito.process.MutableProcessInstances;
@@ -38,11 +39,13 @@ public class CacheProcessInstances implements MutableProcessInstances {
     private final RemoteCache<String, byte[]> cache;
     private ProcessInstanceMarshallerService marshaller;
     private org.kie.kogito.process.Process<?> process;
+    private final boolean lock;
 
-    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName) {
+    public CacheProcessInstances(Process<?> process, RemoteCacheManager cacheManager, String templateName, boolean lock) {
         this.process = process;
         this.cache = cacheManager.administration().getOrCreateCache(process.id() + "_store", ignoreNullOrEmpty(templateName));
         this.marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
+        this.lock = lock;
     }
 
     @Override
@@ -52,12 +55,26 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @Override
     public Optional<? extends ProcessInstance> findById(String id, ProcessInstanceReadMode mode) {
+        return this.lock ? findWithLock(id, mode) : findInternal(id, mode);
+    }
+
+    private Optional<? extends ProcessInstance> findInternal(String id, ProcessInstanceReadMode mode) {
         byte[] data = cache.get(id);
         if (data == null) {
             return Optional.empty();
         }
-
         return Optional.of(mode == MUTABLE ? marshaller.unmarshallProcessInstance(data, process) : marshaller.unmarshallReadOnlyProcessInstance(data, process));
+    }
+
+    private Optional<? extends ProcessInstance> findWithLock(String id, ProcessInstanceReadMode mode) {
+        MetadataValue<byte[]> versionedCache = cache.getWithMetadata(id);
+        if (versionedCache != null) {
+            ProcessInstance<?> instance =
+                    mode == MUTABLE ? marshaller.unmarshallProcessInstance(versionedCache.getValue(), process) : marshaller.unmarshallReadOnlyProcessInstance(versionedCache.getValue(), process);
+            ((AbstractProcessInstance) instance).setVersion(versionedCache.getVersion());
+            return Optional.of(instance);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -75,7 +92,15 @@ public class CacheProcessInstances implements MutableProcessInstances {
 
     @Override
     public void remove(String id) {
-        cache.remove(id);
+        if (this.lock) {
+            MetadataValue<byte[]> versionedCache = cache.getWithMetadata(id);
+            boolean success = cache.removeWithVersion(id, versionedCache.getVersion());
+            if (!success) {
+                throw uncheckedException(null, "The document with ID: %s was deleted by other request.", id);
+            }
+        } else {
+            cache.remove(id);
+        }
     }
 
     protected String ignoreNullOrEmpty(String value) {
@@ -102,15 +127,52 @@ public class CacheProcessInstances implements MutableProcessInstances {
                     throw new ProcessInstanceDuplicatedException(id);
                 }
             } else {
-                cache.put(id, data);
+                if (this.lock) {
+                    boolean success = cache.replaceWithVersion(id, data, instance.version());
+                    if (!success) {
+                        throw uncheckedException(null, "The document with ID: %s was updated or deleted by other request.", id);
+                    }
+                } else {
+                    cache.put(id, data);
+                }
             }
-            Supplier<byte[]> supplier = () -> cache.get(id);
-            ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+            disconnect(id, instance);
         }
+    }
+
+    private void disconnect(String id, ProcessInstance instance) {
+        if (this.lock) {
+            reloadWithLock(id, instance);
+        } else {
+            reload(id, instance);
+        }
+    }
+
+    private void reloadWithLock(String id, ProcessInstance instance) {
+        Supplier<byte[]> supplier = () -> {
+            MetadataValue<byte[]> versionedCache = cache.getWithMetadata(id);
+            ((AbstractProcessInstance) instance).setVersion(versionedCache.getVersion());
+            return versionedCache.getValue();
+        };
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
+    }
+
+    private void reload(String id, ProcessInstance instance) {
+        Supplier<byte[]> supplier = () -> cache.get(id);
+        ((AbstractProcessInstance<?>) instance).internalRemoveProcessInstance(marshaller.createdReloadFunction(supplier));
     }
 
     @Override
     public boolean exists(String id) {
         return cache.containsKey(id);
+    }
+
+    @Override
+    public boolean lock() {
+        return this.lock;
+    }
+
+    private RuntimeException uncheckedException(Exception ex, String message, Object... param) {
+        return new RuntimeException(String.format(message, param), ex);
     }
 }

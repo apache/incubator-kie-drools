@@ -25,6 +25,7 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.infinispan.client.hotrod.RemoteCache;
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
+import org.infinispan.client.hotrod.impl.MetadataValueImpl;
 import org.jbpm.process.instance.impl.Action;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.WorkflowProcess;
@@ -58,6 +59,7 @@ import static org.mockito.Mockito.when;
 public class MockCacheProcessInstancesTest {
 
     private final ConcurrentHashMap<Object, Object> mockCache = new ConcurrentHashMap<>();
+
     private RemoteCacheManager cacheManager;
 
     @BeforeEach
@@ -66,7 +68,6 @@ public class MockCacheProcessInstancesTest {
         cacheManager = mock(RemoteCacheManager.class);
         RemoteCacheManagerAdmin admin = mock(RemoteCacheManagerAdmin.class);
         RemoteCache<Object, Object> cache = mock(RemoteCache.class);
-
         when(cacheManager.administration()).thenReturn(admin);
         when(admin.getOrCreateCache(any(), (String) any())).thenReturn(cache);
 
@@ -87,6 +88,10 @@ public class MockCacheProcessInstancesTest {
         when(cache.remove(any())).then(invocation -> {
             Object key = invocation.getArgument(0, Object.class);
             return mockCache.remove(key);
+        });
+        when(cache.getWithMetadata(any())).then(invocation -> {
+            Object key = invocation.getArgument(0, Object.class);
+            return mockCache.get(key) == null ? null : new MetadataValueImpl<>(1L, 1, 1L, 1, 1L, mockCache.get(key));
         });
         when(cache.size()).then(invocation -> mockCache.size());
     }
@@ -186,9 +191,7 @@ public class MockCacheProcessInstancesTest {
         processInstance.start();
         assertThat(processInstance.status()).isEqualTo(STATE_ACTIVE);
         mockCache.clear();
-
         assertThatThrownBy(() -> processInstance.workItems().get(0)).isInstanceOf(ProcessInstanceNotFoundException.class);
-
         Optional<? extends ProcessInstance<BpmnVariables>> loaded = process.instances().findById(processInstance.id());
         assertThat(loaded).isNotPresent();
     }
@@ -252,5 +255,9 @@ public class MockCacheProcessInstancesTest {
             super(cacheManager);
         }
 
+        @Override
+        public boolean lock() {
+            return false;
+        }
     }
 }

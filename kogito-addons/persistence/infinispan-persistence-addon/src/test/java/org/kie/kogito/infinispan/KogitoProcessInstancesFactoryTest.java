@@ -15,21 +15,11 @@
  */
 package org.kie.kogito.infinispan;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.infinispan.client.hotrod.RemoteCacheManager;
 import org.infinispan.client.hotrod.RemoteCacheManagerAdmin;
-import org.infinispan.protostream.BaseMarshaller;
-import org.infinispan.protostream.EnumMarshaller;
-import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.junit.jupiter.api.Test;
-import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.kogito.Model;
 import org.kie.kogito.persistence.KogitoProcessInstancesFactory;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
-import org.kie.kogito.process.impl.AbstractProcess;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -41,69 +31,13 @@ class KogitoProcessInstancesFactoryTest {
     void testCreate() {
         RemoteCacheManager cacheManager = mock(RemoteCacheManager.class);
         when(cacheManager.administration()).thenReturn(mock(RemoteCacheManagerAdmin.class));
-        List<BaseMarshaller<?>> myMarshallers = new ArrayList<>();
         KogitoProcessInstancesFactory factory = new KogitoProcessInstancesFactory(cacheManager) {
-
+            @Override
+            public boolean lock() {
+                return false;
+            }
         };
-        Process<?> myProcess = new MyProcessImpl();
-        CacheProcessInstances instances = factory.createProcessInstances(myProcess);
-        assertNotNull(instances);
-    }
 
-    private static class MyProcessImpl extends AbstractProcess<Model> {
-
-        @Override
-        public ProcessInstance<Model> createInstance(WorkflowProcessInstance wpi) {
-            return null;
-        }
-
-        @Override
-        public ProcessInstance<Model> createReadOnlyInstance(WorkflowProcessInstance wpi) {
-            return null;
-        }
-
-        @Override
-        public org.kie.api.definition.process.Process process() {
-            return new WorkflowProcessImpl();
-        }
-
-        @Override
-        public ProcessInstance<Model> createInstance(Model workingMemory) {
-            return null;
-        }
-    }
-
-    List<BaseMarshaller<?>> getMarshallers() {
-        List<BaseMarshaller<?>> marshallers = new ArrayList<>();
-        marshallers.add(new TheEnumMarshaller());
-        return marshallers;
-    }
-
-    private enum TheEnum {
-        YES,
-        NO
-    }
-
-    private static class TheEnumMarshaller implements EnumMarshaller<TheEnum> {
-
-        @Override
-        public TheEnum decode(int enumValue) {
-            return null;
-        }
-
-        @Override
-        public int encode(TheEnum theEnum) throws IllegalArgumentException {
-            return 0;
-        }
-
-        @Override
-        public Class<? extends TheEnum> getJavaClass() {
-            return null;
-        }
-
-        @Override
-        public String getTypeName() {
-            return null;
-        }
+        assertNotNull(factory.createProcessInstances(mock(Process.class)));
     }
 }

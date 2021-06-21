@@ -193,6 +193,7 @@ public class PersistenceGenerator extends AbstractGenerator {
         Collection<GeneratedFile> generatedFiles = protobufBasedPersistence();
         CompilationUnit compilationUnit = new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE);
         compilationUnit.getTypes().add(persistenceProviderClazz);
+        addOptimisticLockFlag(persistenceProviderClazz);
         generatePersistenceProviderClazz(persistenceProviderClazz, compilationUnit).ifPresent(generatedFiles::add);
         return generatedFiles;
     }

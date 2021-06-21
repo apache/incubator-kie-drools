@@ -169,5 +169,10 @@ class CacheProcessInstancesIT {
             super(cacheManager);
         }
 
+        @Override
+        public boolean lock() {
+            return false;
+        }
+
     }
 }
