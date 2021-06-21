@@ -70,7 +70,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         processInstance.start();
         assertEquals(STATE_ACTIVE, processInstance.status());
 
-        MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, factory.transactionManager());
+        MongoDBProcessInstances<?> mongodbInstance = new MongoDBProcessInstances<>(getMongoClient(), process, DB_NAME, factory.transactionManager(), false);
 
         assertThat(mongodbInstance.size()).isOne();
         assertThat(mongodbInstance.size()).isEqualTo(process.instances().size());
@@ -123,7 +123,7 @@ class PersistentProcessInstancesIT extends TestHelper {
         process.setProcessInstancesFactory(new MongoDBProcessInstancesFactory(getMongoClient()));
         process.configure();
 
-        MongoDBProcessInstances<BpmnVariables> mongodbInstance = new MongoDBProcessInstances<>(mongoClient, process, DB_NAME, transactionExecutor);
+        MongoDBProcessInstances<BpmnVariables> mongodbInstance = new MongoDBProcessInstances<>(mongoClient, process, DB_NAME, transactionExecutor, false);
 
         mongodbInstance.size();
         verify(mongoCollection, times(1)).countDocuments(eq(clientSession));
@@ -185,6 +185,11 @@ class PersistentProcessInstancesIT extends TestHelper {
         @Override
         public MongoDBTransactionManager transactionManager() {
             return this.transactionManager;
+        }
+
+        @Override
+        public boolean lock() {
+            return false;
         }
     }
 

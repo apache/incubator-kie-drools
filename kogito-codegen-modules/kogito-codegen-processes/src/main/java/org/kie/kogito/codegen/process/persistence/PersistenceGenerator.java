@@ -462,6 +462,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             persistenceProviderClazz.addMember(dbNameField);
             persistenceProviderClazz.addMember(dbNameMethod);
             generatedTMFile = mongodbBasedTransaction(persistenceProviderClazz);
+            addOptimisticLockFlag(persistenceProviderClazz);
             generatedClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
                     new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(persistenceProviderClazz));
         }

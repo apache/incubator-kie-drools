@@ -44,6 +44,12 @@ class KogitoProcessInstancesFactoryIT extends TestHelper {
             public MongoDBTransactionManager transactionManager() {
                 return transactionManager;
             }
+
+            @Override
+            public boolean lock() {
+                return false;
+            }
+
         };
         assertNotNull(factory);
         assertThat(factory.dbName()).isEqualTo(DB_NAME);

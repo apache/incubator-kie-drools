@@ -38,8 +38,10 @@ public abstract class KogitoProcessInstancesFactory implements ProcessInstancesF
 
     public abstract MongoDBTransactionManager transactionManager();
 
+    public abstract boolean lock();
+
     @Override
     public MongoDBProcessInstances<?> createProcessInstances(Process<?> process) {
-        return new MongoDBProcessInstances<>(mongoClient, process, dbName(), transactionManager());
+        return new MongoDBProcessInstances<>(mongoClient, process, dbName(), transactionManager(), lock());
     }
 }

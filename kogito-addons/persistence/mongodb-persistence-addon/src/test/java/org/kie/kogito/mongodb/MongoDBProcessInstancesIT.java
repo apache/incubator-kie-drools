@@ -301,5 +301,10 @@ class MongoDBProcessInstancesIT {
         public MongoDBTransactionManager transactionManager() {
             return transactionManager;
         }
+
+        @Override
+        public boolean lock() {
+            return false;
+        }
     }
 }
