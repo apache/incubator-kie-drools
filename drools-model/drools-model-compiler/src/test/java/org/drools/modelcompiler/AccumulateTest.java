@@ -3993,4 +3993,39 @@ public class AccumulateTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals(4, (int)holder.get());
     }
+
+    @Test
+    public void testIfInInlineAccumulate() {
+        // DROOLS-6429
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $avg : Integer() from accumulate (\n" +
+                "            Person( $age : age ), init( int count = 0; int sum = 0; ), " +
+                "                                        action( if ($age > 18) { count++; sum += $age; } ), " +
+                "                                        reverse( if ($age > 18) { count--; sum -= $age; } ), " +
+                "                                        result( sum / count )\n" +
+                "         )" +
+                "then\n" +
+                "  insert($avg);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert(new Person("Sofia", 10));
+        FactHandle fh_Mark = ksession.insert(new Person("Mark", 37));
+        FactHandle fh_Edson = ksession.insert(new Person("Edson", 35));
+        FactHandle fh_Mario = ksession.insert(new Person("Mario", 42));
+        ksession.fireAllRules();
+
+        List<Integer> results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(1, results.size());
+        assertThat(results, hasItem(38));
+
+        ksession.delete(fh_Mario);
+        ksession.fireAllRules();
+
+        results = getObjectsIntoList(ksession, Integer.class);
+        assertEquals(2, results.size());
+        assertThat(results, hasItem(36));
+    }
 }

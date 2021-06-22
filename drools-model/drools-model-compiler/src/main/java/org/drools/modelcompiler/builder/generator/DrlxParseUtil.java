@@ -688,7 +688,7 @@ public class DrlxParseUtil {
      *
      * @param expression a mutated expression
      */
-    public static void forceCastForName(String nameRef, Type type, Expression expression) {
+    public static void forceCastForName(String nameRef, Type type, Node expression) {
         List<NameExpr> allNameExprForName = expression.findAll(NameExpr.class, n -> n.getNameAsString().equals(nameRef));
         for (NameExpr n : allNameExprForName) {
             Optional<Node> parentNode = n.getParentNode();
@@ -705,7 +705,7 @@ public class DrlxParseUtil {
      * such that, if it contains a NameExpr for any of the <code>names</code>,
      * it is replaced with a FieldAccessExpr having <code>newScope</code> as the scope.
      */
-    public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Expression e) {
+    public static void rescopeNamesToNewScope(Expression newScope, List<String> names, Node e) {
 
         if (e instanceof NodeWithArguments) {
             NodeWithArguments<?> arguments = (NodeWithArguments) e;
@@ -725,8 +725,8 @@ public class DrlxParseUtil {
             rescopeNamesToNewScope(newScope, names, (( UnaryExpr ) e).getExpression());
         } else if (e instanceof EnclosedExpr) {
             rescopeNamesToNewScope(newScope, names, (( EnclosedExpr ) e).getInner());
-        } else {
-            Optional<Expression> rootNode = DrlxParseUtil.findRootNodeViaScope(e);
+        } else if (e instanceof Expression) {
+            Optional<Expression> rootNode = DrlxParseUtil.findRootNodeViaScope((Expression)e);
             if (rootNode.isPresent() && rootNode.get() instanceof NameExpr) {
                 NameExpr nameExpr = (NameExpr) rootNode.get();
                 if (names.contains(nameExpr.getNameAsString())) {
@@ -742,6 +742,10 @@ public class DrlxParseUtil {
                         e.replace(nameExpr, prepend);
                     }
                 }
+            }
+        } else {
+            for (Node child : e.getChildNodes()) {
+                rescopeNamesToNewScope(newScope, names, child);
             }
         }
     }
