@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
@@ -49,6 +50,9 @@ public class MVELConsequence
     private Serializable        expr;
 
     private String              consequenceName;
+
+    private AtomicBoolean initializing = new AtomicBoolean(false);
+    private volatile boolean initialized = false;
 
     public MVELConsequence() {
     }
@@ -84,10 +88,32 @@ public class MVELConsequence
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        
+
+        if (!initialized) {
+            if (initializing.compareAndSet(false, true)) {
+                innerEvaluate(knowledgeHelper, workingMemory);
+                synchronized (this) {
+                    initialized = true;
+                    notifyAll();
+                }
+                return;
+            } else {
+                synchronized (this) {
+                    if (!initialized) {
+                        wait();
+                    }
+                }
+            }
+        }
+
+        innerEvaluate(knowledgeHelper, workingMemory);
+    }
+
+    private void innerEvaluate(final KnowledgeHelper knowledgeHelper, final WorkingMemory workingMemory) {
+
         VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
                                                            knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
-        
+
         // do we have any functions for this namespace?
         InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
         if ( pkg != null ) {
