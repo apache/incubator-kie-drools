@@ -207,18 +207,11 @@ public class AccumulateInline {
     }
 
     private void writeAccumulateMethod(List<String> contextFieldNames, MethodDeclaration accumulateMethod, BlockStmt actionBlock) {
+        String parameterName = accumulateMethod.getParameter(1).getNameAsString();
         for (Statement stmt : actionBlock.getStatements()) {
-            final ExpressionStmt convertedExpressionStatement = new ExpressionStmt();
-            for (ExpressionStmt eStmt : stmt.findAll(ExpressionStmt.class)) {
-                final Expression expressionUntyped = eStmt.getExpression();
-                final String parameterName = accumulateMethod.getParameter(1).getNameAsString();
-
-                forceCastForName(parameterName, singleAccumulateType, expressionUntyped);
-                rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, expressionUntyped);
-                convertedExpressionStatement.setExpression(expressionUntyped);
-            }
-            accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new)
-                    .addStatement(convertedExpressionStatement);
+            forceCastForName(parameterName, singleAccumulateType, stmt);
+            rescopeNamesToNewScope(getDataNameExpr(), contextFieldNames, stmt);
+            accumulateMethod.getBody().orElseThrow(InvalidInlineTemplateException::new).addStatement(stmt);
         }
     }
 
@@ -229,7 +222,7 @@ public class AccumulateInline {
 
         if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
             actionCode = addSemicolonWhenMissing( actionCode);
-        } else if ( blockIsNonEmptyWithoutSemicolon( actionCode ) ) {
+        } else if ( nonEmptyBlockIsNotTerminated( actionCode ) ) {
             throw new MissingSemicolonInlineAccumulateException( "action" );
         }
 
@@ -266,7 +259,7 @@ public class AccumulateInline {
 
             if (context.getRuleDialect() == RuleContext.RuleDialect.MVEL) {
                 reverseCode = addSemicolonWhenMissing(reverseCode);
-            } else if (blockIsNonEmptyWithoutSemicolon(reverseCode)) {
+            } else if (nonEmptyBlockIsNotTerminated(reverseCode)) {
                 throw new MissingSemicolonInlineAccumulateException(REVERSE);
             }
 
@@ -343,8 +336,8 @@ public class AccumulateInline {
         return accumulateInlineClass.getMethodsByName(init).get(0);
     }
 
-    private boolean blockIsNonEmptyWithoutSemicolon(String block) {
-        return !"".equals(block) && !block.endsWith(";");
+    private boolean nonEmptyBlockIsNotTerminated(String block) {
+        return !"".equals(block) && !(block.endsWith(";") || block.endsWith("}"));
     }
 
     private String addSemicolonWhenMissing(String block) {
