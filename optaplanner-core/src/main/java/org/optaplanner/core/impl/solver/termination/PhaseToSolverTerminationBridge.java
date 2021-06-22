@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.solver.termination;
 
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
@@ -33,35 +32,9 @@ public class PhaseToSolverTerminationBridge<Solution_> extends AbstractTerminati
     // Lifecycle methods
     // ************************************************************************
 
-    @Override
-    public void solvingStarted(SolverScope<Solution_> solverScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
-    }
-
-    @Override
-    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-        solverTermination.phaseStarted(phaseScope);
-    }
-
-    @Override
-    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
-        solverTermination.stepStarted(stepScope);
-    }
-
-    @Override
-    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-        solverTermination.stepEnded(stepScope);
-    }
-
-    @Override
-    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-        solverTermination.phaseStarted(phaseScope);
-    }
-
-    @Override
-    public void solvingEnded(SolverScope<Solution_> solverScope) {
-        // Do not delegate the event to the solverTermination, because it already gets the event from the DefaultSolver
-    }
+    // Do not propagate any of the lifecycle events up to the solverTermination,
+    // because it already gets the solver events from the DefaultSolver
+    // and the phase/step events - if ever needed - should also come through the DefaultSolver
 
     // ************************************************************************
     // Terminated methods
