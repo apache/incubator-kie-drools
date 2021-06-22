@@ -15,52 +15,93 @@
  */
 package org.kie.pmml.models.scorecard.model;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
 
-import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
+import org.kie.pmml.commons.model.KiePMMLExtension;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Scorecard.html#xsdElement_Characteristic>Characteristic</a>
  */
 public class KiePMMLCharacteristic extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = 3302920103976105622L;
+    private final List<KiePMMLAttribute> attributes;
+    private String reasonCode = null;
+    private Number baselineScore = null;
 
-    protected KiePMMLCharacteristic(String modelName) {
-        super(modelName, Collections.emptyList());
+    private KiePMMLCharacteristic(String name, List<KiePMMLExtension> extensions, List<KiePMMLAttribute> attributes) {
+        super(name, extensions);
+        this.attributes = attributes;
     }
 
-    /**
-     * Method to return the <b>most specific</b> <code>Attribute</code> score
-     * @param attributeFunctions
-     * @param requestData
-     * @return
-     */
-    public static Optional<Number> getCharacteristicScore(final List<BiFunction<Map<String, Object>, Map<String, Object>, Number>> attributeFunctions,
-                                                          final Map<String, Object> requestData,
-                                                          final Map<String, Object> outputFieldsMap,
-                                                          final String reasonCode,
-                                                          final Number baseScore,
-                                                          final REASONCODE_ALGORITHM reasoncodeAlgorithm) {
-        Optional<Number> toReturn = Optional.empty();
-        for (BiFunction<Map<String, Object>, Map<String, Object>, Number> function : attributeFunctions) {
-            final Number evaluation = function.apply(requestData, outputFieldsMap);
-            if (evaluation != null) {
-                toReturn = Optional.ofNullable(evaluation);
-                if (reasonCode != null) {
-                    Number rankingScore = KiePMMLCharacteristics.calculatePartialScore(baseScore, evaluation, reasoncodeAlgorithm);
-                    outputFieldsMap.put(reasonCode, rankingScore);
-                }
-            }
-            if (toReturn.isPresent()) {
-                break;
+    public static Builder builder(String name, List<KiePMMLExtension> extensions, List<KiePMMLAttribute> attributes) {
+        return new Builder(name, extensions, attributes);
+    }
+
+    public Number getBaselineScore() {
+        return baselineScore;
+    }
+
+    public ReasonCodeValue evaluate(final List<KiePMMLDefineFunction> defineFunctions,
+                                    final List<KiePMMLDerivedField> derivedFields,
+                                    final List<KiePMMLOutputField> outputFields,
+                                    final Map<String, Object> inputData) {
+        for (KiePMMLAttribute attribute : attributes) {
+            Number attributeScore = attribute.evaluate(defineFunctions, derivedFields, outputFields, inputData);
+            if (attributeScore != null) {
+                String totalReasonCode = attribute.getReasonCode() != null ? attribute.getReasonCode() : reasonCode;
+                return new ReasonCodeValue(totalReasonCode, attributeScore);
             }
         }
-        return toReturn;
+        return null;
     }
 
+    public String getReasonCode() {
+        return reasonCode;
+    }
+
+    public static class ReasonCodeValue {
+
+        private final String reasonCode;
+        private final Number score;
+
+        public ReasonCodeValue(String reasonCode, Number score) {
+            this.reasonCode = reasonCode;
+            this.score = score;
+        }
+
+        public String getReasonCode() {
+            return reasonCode;
+        }
+
+        public Number getScore() {
+            return score;
+        }
+    }
+
+    public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLCharacteristic> {
+
+        private Builder(String name, List<KiePMMLExtension> extensions, List<KiePMMLAttribute> attributes) {
+            super("Characteristic-", () -> new KiePMMLCharacteristic(name, extensions, attributes));
+        }
+
+        public Builder withReasonCode(String reasonCode) {
+            if (reasonCode != null) {
+                toBuild.reasonCode = reasonCode;
+            }
+            return this;
+        }
+
+        public Builder withBaselineScore(Number baselineScore) {
+            if (baselineScore != null) {
+                toBuild.baselineScore = baselineScore;
+            }
+            return this;
+        }
+    }
 }

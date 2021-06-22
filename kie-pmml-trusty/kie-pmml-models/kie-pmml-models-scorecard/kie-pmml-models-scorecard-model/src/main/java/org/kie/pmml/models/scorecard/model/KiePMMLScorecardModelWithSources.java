@@ -27,7 +27,7 @@ public class KiePMMLScorecardModelWithSources extends KiePMMLScorecardModel impl
     protected Map<String, String> sourcesMap;
 
     public KiePMMLScorecardModelWithSources(String modelName, String kmodulePackageName, Map<String, String> sourcesMap) {
-        super(modelName);
+        super(modelName, null, null, null, false, null, null);
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
     }

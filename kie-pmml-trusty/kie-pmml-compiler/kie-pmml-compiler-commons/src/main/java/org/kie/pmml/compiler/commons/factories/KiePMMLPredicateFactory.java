@@ -79,6 +79,7 @@ import static org.kie.pmml.commons.Constants.MISSING_METHOD_IN_CLASS;
 import static org.kie.pmml.commons.Constants.MISSING_RETURN_IN_METHOD;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLCompoundPredicateFactory.getCompoundPredicateBody;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFalsePredicateFactory.getFalsePredicateBody;
 import static org.kie.pmml.compiler.commons.factories.KiePMMLSimplePredicateFactory.getSimplePredicateBody;
@@ -87,23 +88,22 @@ import static org.kie.pmml.compiler.commons.factories.KiePMMLTruePredicateFactor
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDataType;
 
 public class KiePMMLPredicateFactory {
 
-    static final String KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA = "KiePMMLSimplePredicateTemplate.tmpl";
-    static final String KIE_PMML_SIMPLE_PREDICATE_TEMPLATE = "KiePMMLSimplePredicateTemplate";
-    static final String KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA = "KiePMMLSimpleSetPredicateTemplate.tmpl";
-    static final String KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE = "KiePMMLSimpleSetPredicateTemplate";
-    static final String KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA = "KiePMMLCompoundPredicateTemplate.tmpl";
-    static final String KIE_PMML_COMPOUND_PREDICATE_TEMPLATE = "KiePMMLCompoundPredicateTemplate";
+    static final String KIE_PMML_SIMPLE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA = "KiePMMLSimplePredicateConstructorTemplate.tmpl";
+    static final String KIE_PMML_SIMPLE_PREDICATE_CONSTRUCTOR_TEMPLATE = "KiePMMLSimplePredicateConstructorTemplate";
+    static final String KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA = "KiePMMLSimpleSetPredicateConstructorTemplate.tmpl";
+    static final String KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE = "KiePMMLSimpleSetPredicateConstructorTemplate";
+    static final String KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA = "KiePMMLCompoundPredicateConstructorTemplate.tmpl";
+    static final String KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE = "KiePMMLCompoundPredicateConstructorTemplate";
     static final String KIE_PMML_OPERATOR_FUNCTION_TEMPLATE = "KiePMMLOperatorFunctionTemplate.tmpl";
     static final String KIE_PMML_OPERATOR_FUNCTION = "KiePMMLOperatorFunctionTemplate";
-    static final String KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA = "KiePMMLTruePredicateTemplate.tmpl";
-    static final String KIE_PMML_TRUE_PREDICATE_TEMPLATE = "KiePMMLTruePredicateTemplate";
-    static final String KIE_PMML_FALSE_PREDICATE_TEMPLATE_JAVA = "KiePMMLFalsePredicateTemplate.tmpl";
-    static final String KIE_PMML_FALSE_PREDICATE_TEMPLATE = "KiePMMLFalsePredicateTemplate";
+    static final String KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA = "KiePMMLTruePredicateConstructorTemplate.tmpl";
+    static final String KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE = "KiePMMLTruePredicateConstructorTemplate";
+    static final String KIE_PMML_FALSE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA = "KiePMMLFalsePredicateConstructorTemplate.tmpl";
+    static final String KIE_PMML_FALSE_PREDICATE_CONSTRUCTOR_TEMPLATE = "KiePMMLFalsePredicateConstructorTemplate";
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLPredicateFactory.class.getName());
 
     private KiePMMLPredicateFactory() {
@@ -221,7 +221,7 @@ public class KiePMMLPredicateFactory {
     static Map<String, String> getKiePMMLSimplePredicateSourcesMap(final KiePMMLSimplePredicate kiePMMLSimplePredicate, final String packageName) {
         String className = getSanitizedClassName(kiePMMLSimplePredicate.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
-                                                                                 KIE_PMML_SIMPLE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_SIMPLE_PREDICATE_TEMPLATE);
+                                                                                 KIE_PMML_SIMPLE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_SIMPLE_PREDICATE_CONSTRUCTOR_TEMPLATE);
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
@@ -239,7 +239,7 @@ public class KiePMMLPredicateFactory {
                                                                       final String packageName) {
         String className = getSanitizedClassName(kiePMMLSimpleSetPredicate.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
-                                                                                 KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE_JAVA, KIE_PMML_SIMPLE_SET_PREDICATE_TEMPLATE);
+                                                                                 KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_SIMPLE_SET_PREDICATE_CONSTRUCTOR_TEMPLATE);
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
@@ -261,7 +261,7 @@ public class KiePMMLPredicateFactory {
             kiePMMLCompoundPredicate.getKiePMMLPredicates().forEach(kiePMMLPredicate -> toReturn.putAll(getPredicateSourcesMap(kiePMMLPredicate, packageName)));
         }
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
-                                                                                 KIE_PMML_COMPOUND_PREDICATE_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_TEMPLATE);
+                                                                                 KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_COMPOUND_PREDICATE_CONSTRUCTOR_TEMPLATE);
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
@@ -290,7 +290,7 @@ public class KiePMMLPredicateFactory {
                                                                  final String packageName) {
         String className = getSanitizedClassName(kiePMMLTruePredicate.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
-                                                                                 KIE_PMML_TRUE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_TRUE_PREDICATE_TEMPLATE);
+                                                                                 KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_TRUE_PREDICATE_CONSTRUCTOR_TEMPLATE);
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
@@ -306,7 +306,7 @@ public class KiePMMLPredicateFactory {
                                                                   final String packageName) {
         String className = getSanitizedClassName(kiePMMLFalsePredicate.getId());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
-                                                                                 KIE_PMML_FALSE_PREDICATE_TEMPLATE_JAVA, KIE_PMML_FALSE_PREDICATE_TEMPLATE);
+                                                                                 KIE_PMML_FALSE_PREDICATE_CONSTRUCTOR_TEMPLATE_JAVA, KIE_PMML_FALSE_PREDICATE_CONSTRUCTOR_TEMPLATE);
         ClassOrInterfaceDeclaration predicateTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         final ConstructorDeclaration constructorDeclaration = predicateTemplate.getDefaultConstructor()
@@ -443,7 +443,7 @@ public class KiePMMLPredicateFactory {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, predicateName);
     }
 
-    static List<Object> getObjectsFromArray(Array source) {
+    public static List<Object> getObjectsFromArray(Array source) {
         Array.Type type = source.getType();
         List<Object> toReturn = new ArrayList<>();
         String stringValue = (String) source.getValue();
