@@ -49,3 +49,16 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       LOG_DIR: "/tmp/logs"
+  
+  kafdrop:
+    container_name: kafdrop
+    image: obsidiandynamics/kafdrop
+    network_mode: host
+    ports:
+      - 9000:9000
+    environment:
+      - KAFKA_BROKERCONNECT=PLAINTEXT://localhost:9092
+      - JVM_OPTS=-Xms32M -Xmx64M
+      - SERVER_SERVLET_CONTEXTPATH=/
+    depends_on:
+      - kafka
