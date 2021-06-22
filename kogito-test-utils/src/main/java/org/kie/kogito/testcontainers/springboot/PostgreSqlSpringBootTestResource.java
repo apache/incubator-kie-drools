@@ -15,12 +15,12 @@
  */
 package org.kie.kogito.testcontainers.springboot;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 
-import static java.util.Collections.singletonMap;
 import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL_CONNECTION_URI;
 
 /**
@@ -29,13 +29,22 @@ import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL
  */
 public class PostgreSqlSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoPostgreSqlContainer> {
 
+    public static final String SPRING_DATASOURCE_URL = "spring.datasource.url";
+    public static final String SPRING_DATASOURCE_USERNAME = "spring.datasource.username";
+    public static final String SPRING_DATASOURCE_PASSWORD = "spring.datasource.password";
+
     public PostgreSqlSpringBootTestResource() {
         super(new KogitoPostgreSqlContainer());
     }
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(POSTGRESQL_CONNECTION_URI, getTestResource().getReactiveUrl());
+        Map<String, String> properties = new HashMap<>();
+        properties.put(POSTGRESQL_CONNECTION_URI, getTestResource().getReactiveUrl());
+        properties.put(SPRING_DATASOURCE_URL, getTestResource().getJdbcUrl());
+        properties.put(SPRING_DATASOURCE_USERNAME, getTestResource().getUsername());
+        properties.put(SPRING_DATASOURCE_PASSWORD, getTestResource().getPassword());
+        return properties;
     }
 
     public static class Conditional extends PostgreSqlSpringBootTestResource {

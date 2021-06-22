@@ -22,6 +22,7 @@
     <module>integration-tests-springboot-processes-infinispan</module>
     <module>integration-tests-springboot-processes-postgresql</module>
     <module>integration-tests-springboot-processes-mongodb</module>
+    <module>integration-tests-springboot-processes-jdbc</module>
   </modules>
 
   <dependencyManagement>

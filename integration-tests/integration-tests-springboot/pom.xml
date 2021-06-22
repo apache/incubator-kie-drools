@@ -73,7 +73,10 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-addons-persistence-mongodb</artifactId>
     </dependency>
-
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-persistence-jdbc</artifactId>
+    </dependency>
   </dependencies>
 
   <build>
