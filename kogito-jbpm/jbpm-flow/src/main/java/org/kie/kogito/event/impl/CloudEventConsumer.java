@@ -64,22 +64,27 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
                             cloudEvent.getData(),
                             cloudEvent.getKogitoProcessinstanceId()));
                 } else {
-                    logger.warn("Process instance with id '{}' not found for triggering signal '{}'",
+                    logger.warn("Process instance with id '{}' not found for triggering signal '{}', starting a new one",
                             cloudEvent.getKogitoReferenceId(),
                             trigger);
+                    startNewInstance(process, model, cloudEvent, trigger);
                 }
             } else {
                 logger.debug("Received message without reference id, starting new process instance with trigger '{}'",
                         trigger);
-                ProcessInstance<M> pi = process.createInstance(model);
-                if (cloudEvent.getKogitoStartFromNode() != null && !cloudEvent.getKogitoStartFromNode().isEmpty()) {
-                    pi.startFrom(cloudEvent.getKogitoStartFromNode(), cloudEvent.getKogitoProcessinstanceId());
-                } else {
-                    pi.start(trigger, cloudEvent.getKogitoProcessinstanceId());
-                }
+                startNewInstance(process, model, cloudEvent, trigger);
             }
             return null;
         });
+    }
+
+    private void startNewInstance(Process<M> process, M model, T cloudEvent, String trigger) {
+        ProcessInstance<M> pi = process.createInstance(model);
+        if (cloudEvent.getKogitoStartFromNode() != null && !cloudEvent.getKogitoStartFromNode().isEmpty()) {
+            pi.startFrom(cloudEvent.getKogitoStartFromNode(), cloudEvent.getKogitoProcessinstanceId());
+        } else {
+            pi.start(trigger, cloudEvent.getKogitoProcessinstanceId());
+        }
     }
 
     private boolean ignoredMessageType(T cloudEvent, String type) {
