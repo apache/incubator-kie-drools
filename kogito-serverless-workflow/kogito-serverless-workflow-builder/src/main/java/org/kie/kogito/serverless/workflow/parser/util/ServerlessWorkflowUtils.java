@@ -124,6 +124,16 @@ public class ServerlessWorkflowUtils {
         return resolveFunctionMetadata(function, metadataKey, workflowAppContext, "");
     }
 
+    public static Integer resolveFunctionMetadataAsInt(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext) {
+        String value = resolveFunctionMetadata(function, metadataKey, workflowAppContext);
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ex) {
+            LOGGER.warn("Error converting {} to number", value, ex);
+            return null;
+        }
+    }
+
     public static String resolveFunctionMetadata(FunctionDefinition function, String metadataKey, WorkflowAppContext workflowAppContext, String defaultValue) {
         if (function != null && function.getMetadata() != null && function.getMetadata().containsKey(metadataKey)) {
             return function.getMetadata().get(metadataKey);

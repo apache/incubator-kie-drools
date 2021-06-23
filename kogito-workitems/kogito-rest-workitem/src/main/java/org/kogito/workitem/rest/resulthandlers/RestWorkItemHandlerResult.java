@@ -13,11 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.workflow.instance.impl;
+package org.kogito.workitem.rest.resulthandlers;
 
 import java.util.function.BiFunction;
 
+import org.kogito.workitem.rest.RestWorkItemTargetInfo;
+
+import io.vertx.mutiny.core.buffer.Buffer;
+import io.vertx.mutiny.ext.web.client.HttpResponse;
+
 /* Added to make it easier to search for ResultHandler bifunction implementations, 
  * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
-public interface WorkItemHandlerResult extends BiFunction<Object, Object, Object> {
+public interface RestWorkItemHandlerResult extends BiFunction<RestWorkItemTargetInfo, HttpResponse<Buffer>, Object> {
 }

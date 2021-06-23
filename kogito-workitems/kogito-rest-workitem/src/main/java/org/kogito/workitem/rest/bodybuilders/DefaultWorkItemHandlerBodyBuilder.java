@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.serverless.workflow.suppliers;
+package org.kogito.workitem.rest.bodybuilders;
 
-import java.util.function.Supplier;
+import java.util.Map;
+import java.util.function.UnaryOperator;
 
-import org.kogito.workitem.rest.resulthandlers.JSonPathResultHandler;
-
-import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
-
-public class JsonPathResultExprSupplier implements Supplier<Expression> {
-
+public class DefaultWorkItemHandlerBodyBuilder implements RestWorkItemHandlerBodyBuilder {
     @Override
-    public Expression get() {
-        return new ObjectCreationExpr().setType(JSonPathResultHandler.class.getCanonicalName());
+    public Object apply(Object contentData, Map<String, Object> parameters, UnaryOperator<Object> resolver) {
+        return contentData;
     }
 }

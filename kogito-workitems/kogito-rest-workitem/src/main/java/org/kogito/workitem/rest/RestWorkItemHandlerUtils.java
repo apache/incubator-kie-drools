@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kogito.workitem.rest.resulthandlers;
+package org.kogito.workitem.rest;
 
-import org.jbpm.workflow.instance.impl.WorkItemHandlerResult;
+import java.beans.IntrospectionException;
+import java.beans.Introspector;
+import java.beans.PropertyDescriptor;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,21 +28,47 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
-public class JSonPathResultHandler implements WorkItemHandlerResult {
+public class RestWorkItemHandlerUtils {
 
-    private static final Logger logger = LoggerFactory.getLogger(JSonPathResultHandler.class);
-
-    @Override
-    public Object apply(Object inputParameter, Object node) {
-        return transform((JsonObject) node, (ObjectNode) inputParameter);
+    private RestWorkItemHandlerUtils() {
     }
 
-    private ObjectNode transform(JsonObject src, ObjectNode target) {
+    private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandlerUtils.class);
+
+    public static <T> T mergeObject(T target, JsonObject jsonObject) {
+        return target instanceof ObjectNode ? (T) mergeJson(jsonObject, (ObjectNode) target) : mergeBean(jsonObject, target);
+    }
+
+    private static <T> T mergeBean(JsonObject src, T target) {
+        try {
+            PropertyDescriptor[] propertyDescritors = Introspector.getBeanInfo(target.getClass()).getPropertyDescriptors();
+            src.forEach(e -> setValue(propertyDescritors, target, e.getKey(), e.getValue()));
+            return target;
+        } catch (IntrospectionException e) {
+            throw new IllegalArgumentException("Wrong bean " + target, e);
+        }
+    }
+
+    private static void setValue(PropertyDescriptor[] propertyDescritors, Object target, String name, Object value) {
+        for (PropertyDescriptor descriptor : propertyDescritors) {
+            if (descriptor.getName().equals(name)) {
+                try {
+                    descriptor.getWriteMethod().invoke(target, value);
+                } catch (ReflectiveOperationException e) {
+                    logger.error("Error invoking setter for {} with value {}", name, value, e);
+                }
+                return;
+            }
+        }
+        logger.warn("No property found for name {}", name);
+    }
+
+    private static ObjectNode mergeJson(JsonObject src, ObjectNode target) {
         src.forEach(e -> setValue(target, e.getKey(), e.getValue()));
         return target;
     }
 
-    private void setValue(ObjectNode result, String key, Object value) {
+    private static void setValue(ObjectNode result, String key, Object value) {
         if (value instanceof Double) {
             result.put(key, (Double) value);
         } else if (value instanceof Float) {
@@ -55,7 +84,7 @@ public class JSonPathResultHandler implements WorkItemHandlerResult {
         } else if (value instanceof String) {
             result.put(key, (String) value);
         } else if (value instanceof JsonObject) {
-            result.set(key, transform((JsonObject) value, result.objectNode()));
+            result.set(key, mergeJson((JsonObject) value, result.objectNode()));
         } else if (value instanceof JsonArray) {
             ArrayNode array = result.arrayNode();
             ((JsonArray) value).forEach(v -> addValue(array, v));
@@ -65,7 +94,7 @@ public class JSonPathResultHandler implements WorkItemHandlerResult {
         }
     }
 
-    private void addValue(ArrayNode result, Object value) {
+    private static void addValue(ArrayNode result, Object value) {
         if (value instanceof Double) {
             result.add((Double) value);
         } else if (value instanceof Float) {
@@ -81,7 +110,7 @@ public class JSonPathResultHandler implements WorkItemHandlerResult {
         } else if (value instanceof String) {
             result.add((String) value);
         } else if (value instanceof JsonObject) {
-            result.add(transform((JsonObject) value, result.objectNode()));
+            result.add(mergeJson((JsonObject) value, result.objectNode()));
         } else if (value instanceof JsonArray) {
             ArrayNode array = result.arrayNode();
             ((JsonArray) value).forEach(v -> addValue(array, v));

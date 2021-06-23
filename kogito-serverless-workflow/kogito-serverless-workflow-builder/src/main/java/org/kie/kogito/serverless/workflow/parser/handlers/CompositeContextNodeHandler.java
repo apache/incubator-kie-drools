@@ -31,7 +31,7 @@ import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 import org.kie.kogito.serverless.workflow.parser.util.WorkflowAppContext;
 import org.kie.kogito.serverless.workflow.suppliers.JsonPathExprSupplier;
-import org.kie.kogito.serverless.workflow.suppliers.JsonPathResultExprSupplier;
+import org.kie.kogito.serverless.workflow.suppliers.RestBodyBuilderSupplier;
 import org.kogito.workitem.openapi.JsonNodeParameterResolver;
 import org.kogito.workitem.openapi.JsonNodeResultHandler;
 import org.kogito.workitem.openapi.suppliers.JsonNodeParameterExprSupplier;
@@ -155,24 +155,24 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .name(actionFunction.getName())
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, RestWorkItemHandler.REST_TASK_TYPE)
                         .workName(RestWorkItemHandler.REST_TASK_TYPE)
-                        .workParameter(RestWorkItemHandler.ENDPOINT, actionFunction.getOperation())
+                        .workParameter(RestWorkItemHandler.URL, actionFunction.getOperation())
                         .workParameter(RestWorkItemHandler.METHOD, ServerlessWorkflowUtils
-                                .resolveFunctionMetadata(actionFunction, RestWorkItemHandler.METHOD,
+                                .resolveFunctionMetadata(actionFunction, "method",
                                         workflowAppContext))
                         .workParameter(RestWorkItemHandler.USER, ServerlessWorkflowUtils
-                                .resolveFunctionMetadata(actionFunction, RestWorkItemHandler.USER,
+                                .resolveFunctionMetadata(actionFunction, "user",
                                         workflowAppContext))
                         .workParameter(RestWorkItemHandler.PASSWORD, ServerlessWorkflowUtils
-                                .resolveFunctionMetadata(actionFunction, RestWorkItemHandler.PASSWORD,
+                                .resolveFunctionMetadata(actionFunction, "password",
                                         workflowAppContext))
                         .workParameter(RestWorkItemHandler.HOST, ServerlessWorkflowUtils
-                                .resolveFunctionMetadata(actionFunction, RestWorkItemHandler.HOST,
+                                .resolveFunctionMetadata(actionFunction, "host",
                                         workflowAppContext))
                         .workParameter(RestWorkItemHandler.PORT, ServerlessWorkflowUtils
-                                .resolveFunctionMetadata(actionFunction, RestWorkItemHandler.PORT,
+                                .resolveFunctionMetadataAsInt(actionFunction, "port",
                                         workflowAppContext))
-                        .workParameter(RestWorkItemHandler.RESULT_HANDLER, new JsonPathResultExprSupplier())
-                        .inMapping(RestWorkItemHandler.PARAMETER,
+                        .workParameter(RestWorkItemHandler.BODY_BUILDER, new RestBodyBuilderSupplier())
+                        .inMapping(RestWorkItemHandler.CONTENT_DATA,
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)
                         .outMapping(RestWorkItemHandler.RESULT,
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);

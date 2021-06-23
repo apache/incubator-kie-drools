@@ -30,7 +30,7 @@ import static com.github.javaparser.StaticJavaParser.parse;
 
 public class RestTaskDescriptor implements TaskDescriptor {
 
-    public static final String TYPE = "Rest Task";
+    public static final String TYPE = "Rest";
 
     private final ProcessMetaData processMetadata;
 
