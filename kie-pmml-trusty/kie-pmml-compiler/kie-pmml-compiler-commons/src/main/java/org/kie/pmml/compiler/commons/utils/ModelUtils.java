@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.Apply;
+import org.dmg.pmml.Array;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -271,6 +272,30 @@ public class ModelUtils {
         }
         if (localTransformations != null && localTransformations.getDerivedFields() != null) {
             toReturn.addAll(localTransformations.getDerivedFields());
+        }
+        return toReturn;
+    }
+
+
+    public static List<Object> getObjectsFromArray(Array source) {
+        Array.Type type = source.getType();
+        List<Object> toReturn = new ArrayList<>();
+        String stringValue = (String) source.getValue();
+        String[] valuesArray = stringValue.split(" ");
+        for (String s : valuesArray) {
+            switch (type) {
+                case INT:
+                    toReturn.add(Integer.valueOf(s));
+                    break;
+                case STRING:
+                    toReturn.add(s);
+                    break;
+                case REAL:
+                    toReturn.add(Double.valueOf(s));
+                    break;
+                default:
+                    throw new KiePMMLException("Unknown Array " + type);
+            }
         }
         return toReturn;
     }

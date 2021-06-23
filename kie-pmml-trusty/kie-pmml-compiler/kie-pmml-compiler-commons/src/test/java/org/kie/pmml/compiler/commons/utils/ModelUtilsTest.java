@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -26,6 +27,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import org.dmg.pmml.Array;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
@@ -57,6 +59,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataTypes;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getMiningField;
@@ -613,6 +616,39 @@ public class ModelUtilsTest {
             dataDictionary.addDataFields(dataField);
         });
         ModelUtils.getDataType(dataDictionary, "NOT_EXISTING");
+    }
+
+    @Test
+    public void getObjectsFromArray() {
+        List<String> values = Arrays.asList("32", "11", "43");
+        Array array = getArray(Array.Type.INT, values);
+        List<Object> retrieved = ModelUtils.getObjectsFromArray(array);
+        assertEquals(values.size(), retrieved.size());
+        for (int i = 0; i < values.size(); i++) {
+            Object obj = retrieved.get(i);
+            assertTrue(obj instanceof Integer);
+            Integer expected = Integer.valueOf(values.get(i));
+            assertEquals(expected, obj);
+        }
+        values = Arrays.asList("just", "11", "fun");
+        array = getArray(Array.Type.STRING, values);
+        retrieved = ModelUtils.getObjectsFromArray(array);
+        assertEquals(values.size(), retrieved.size());
+        for (int i = 0; i < values.size(); i++) {
+            Object obj = retrieved.get(i);
+            assertTrue(obj instanceof String);
+            assertEquals(values.get(i), obj);
+        }
+        values = Arrays.asList("23.11", "11", "123.123");
+        array = getArray(Array.Type.REAL, values);
+        retrieved = ModelUtils.getObjectsFromArray(array);
+        assertEquals(values.size(), retrieved.size());
+        for (int i = 0; i < values.size(); i++) {
+            Object obj = retrieved.get(i);
+            assertTrue(obj instanceof Double);
+            Double expected = Double.valueOf(values.get(i));
+            assertEquals(expected, obj);
+        }
     }
 
     @Test
