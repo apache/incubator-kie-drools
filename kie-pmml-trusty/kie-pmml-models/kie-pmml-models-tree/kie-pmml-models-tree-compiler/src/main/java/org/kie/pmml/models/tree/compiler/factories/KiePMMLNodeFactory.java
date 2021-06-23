@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -33,23 +32,22 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Predicate;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.HasClassLoader;
-import org.kie.pmml.compiler.commons.factories.KiePMMLPredicateFactory;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils;
@@ -65,9 +63,9 @@ import static org.kie.pmml.commons.Constants.MISSING_METHOD_REFERENCE_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLPredicateFactory.getKiePMMLPredicate;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
 public class KiePMMLNodeFactory {
@@ -75,9 +73,7 @@ public class KiePMMLNodeFactory {
     static final String KIE_PMML_NODE_TEMPLATE_JAVA = "KiePMMLNodeTemplate.tmpl";
     static final String KIE_PMML_NODE_TEMPLATE = "KiePMMLNodeTemplate";
     static final String EVALUATE_NODE = "evaluateNode";
-    static final String EVALUATE_PREDICATE = "evaluatePredicate";
-    static final String PREDICATE_FUNCTION = "predicateFunction";
-    static final String STRING_OBJECT_MAP = "stringObjectMap";
+    static final String PREDICATE = "predicate";
     static final String SCORE = "score";
     static final String NODE_FUNCTIONS = "nodeFunctions";
     static final String EMPTY_LIST = "emptyList";
@@ -122,10 +118,8 @@ public class KiePMMLNodeFactory {
                                                    final DataDictionary dataDictionary,
                                                    final List<DerivedField> derivedFields,
                                                    final boolean isRoot) {
-        // Set 'evaluatePredicate'
-        populateEvaluatePredicate(toPopulate, dataDictionary, derivedFields, nodeNamesDTO, isRoot);
         // Set 'evaluateNode'
-        populateEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
+        populateEvaluateNode(toPopulate, nodeNamesDTO, derivedFields, dataDictionary, isRoot);
         // Set the nested nodes
         populatedNestedNodes(toPopulate, sourcesMap, dataDictionary,derivedFields, nodeNamesDTO);
         // merge generated methods in one class
@@ -165,10 +159,8 @@ public class KiePMMLNodeFactory {
                                                        derivedFields,
                                                        true);
                 } else {
-                    // Set 'evaluatePredicate'
-                    populateEvaluatePredicate(toPopulate, dataDictionary, derivedFields, nestedNodeNamesDTO, false);
                     // Set 'evaluateNode'
-                    populateEvaluateNode(toPopulate, nestedNodeNamesDTO, false);
+                    populateEvaluateNode(toPopulate, nestedNodeNamesDTO, derivedFields,dataDictionary,false);
                     mergeNode(toPopulate, nestedNodeNamesDTO);
                     populatedNestedNodes(toPopulate, sourcesMap, dataDictionary, derivedFields, nestedNodeNamesDTO);
                 }
@@ -246,57 +238,27 @@ public class KiePMMLNodeFactory {
     }
 
     /**
-     * Retrieve the <b>evaluatePredicate(?)</b> body for the given <code>NodeNamesDTO</code>' node.
-     * If the method is invoked for <b>root</b> node, the actual <code>evaluatePredicate</code> will be populated,
-     * otherwise the <b>evaluatePredicate{_NodeNamesDTO.nodeClassName_}</b>.
-     * In this latter case, eventually <b>nested</b> <code>Predicate</code>s of <code>CompoundPredicate</code> will also
-     * be add to <code>JavaParserDTO.nodeTemplate</code>
+     * Populate <b>nodeFunctions, score, predicateFunction</b> <code>VariableDeclarator</code>s initializers of the given <code>BlockStmt</code>
      *
      * @param toPopulate
-     * @param dataDictionary
-     * @param derivedFields
      * @param nodeNamesDTO
-     * @param isRoot
-     */
-    static void populateEvaluatePredicate(final JavaParserDTO toPopulate,
-                                          final DataDictionary dataDictionary,
-                                          final List<DerivedField> derivedFields,
-                                          final NodeNamesDTO nodeNamesDTO,
-                                          final boolean isRoot) {
-        final List<MethodDeclaration> compoundPredicateMethods = new ArrayList<>();
-        final BlockStmt evaluatePredicateBody =
-                KiePMMLPredicateFactory.getPredicateBody(nodeNamesDTO.node.getPredicate(),
-                                                         dataDictionary,
-                                                         derivedFields,
-                                                         compoundPredicateMethods,
-                                                         toPopulate.nodeClassName,
-                                                         nodeNamesDTO.nodeClassName,
-                                                         new AtomicInteger());
-
-        if (isRoot) {
-            toPopulate.evaluateRootPredicateMethod.setBody(evaluatePredicateBody);
-        } else {
-            final MethodDeclaration evaluatePredicateMethod =
-                    getEvaluateNestedPredicateMethodDeclaration(evaluatePredicateBody, nodeNamesDTO.nodeClassName);
-            compoundPredicateMethods.add(evaluatePredicateMethod);
-        }
-        CommonCodegenUtils.addMethodDeclarationsToClass(toPopulate.nodeTemplate, compoundPredicateMethods);
-    }
-
-    /**
-     * Populate <b>nodeFunctions, score, predicateFunction</b> <code>VariableDeclarator</code>s initializers of the given <code>BlockStmt</code>
-     * @param toPopulate
-     * @param nodeNamesDTO <code>NodeNamesDTO</code>
+     * @param derivedFields
+     * @param dataDictionary
      * @param isRoot
      */
     static void populateEvaluateNode(final JavaParserDTO toPopulate,
                                      final NodeNamesDTO nodeNamesDTO,
+                                     final List<DerivedField> derivedFields,
+                                     final DataDictionary dataDictionary,
                                      final boolean isRoot) {
         String nodeClassName = nodeNamesDTO.nodeClassName;
         final BlockStmt evaluateNodeBody = isRoot ? toPopulate.evaluateRootNodeBody :
                 toPopulate.getEvaluateNestedNodeMethodDeclaration(nodeClassName).getBody()
                         .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE,
                                                                                       EVALUATE_NODE + nodeClassName)));
+
+        // set 'predicate'
+        populateEvaluateNodeWithPredicate(evaluateNodeBody, nodeNamesDTO.node.getPredicate(), derivedFields, dataDictionary);
 
         // set 'nodeFunctions'
         final List<String> nestedNodesFullClasses = nodeNamesDTO.getNestedNodesFullClassNames(toPopulate.packageName);
@@ -305,8 +267,6 @@ public class KiePMMLNodeFactory {
         // set 'score'
         populateEvaluateNodeWithScore(evaluateNodeBody, nodeNamesDTO.node.getScore());
 
-        // set 'predicateFunction'
-        populateEvaluateNodeWithPredicateFunction(evaluateNodeBody, toPopulate.nodeClassName, nodeClassName, isRoot);
     }
 
     /**
@@ -390,66 +350,27 @@ public class KiePMMLNodeFactory {
     }
 
     /**
-     * Set the <b>predicateFunction</b> <code>VariableDeclarator</code> initializer of the given <code>BlockStmt</code> with a <code>MethodReferenceExpr</code> to an
-     * <b>evaluatePredicate</b> method.
-     *
-     * If the populated block belongs to the <b>root</b> <code>Node</code>, the reference would be to <code>evaluatePredicate</code>,
-     * otherwise to <code>evaluatePredicate{_nestedNodeClassName_}</code>
-     *
-     * For root:
-     * <p>
-     *     <code>{_nodeClassName_}::evaluatePredicate</code>
-     * </p>
-     *
-     * For children:
-     * <p>
-     *     <code>{_nodeClassName_}::evaluatePredicate{_nestedNodeClassName_}</code>
-     * </p>
+     * Set the <b>predicate</b> <code>VariableDeclarator</code> initializer of the given <code>BlockStmt</code>
      *
      *
      * @param toPopulate
-     * @param nodeClassName
-     * @param nestedNodeClassName
-     * @param isRoot
+     * @param predicate
+     * @param derivedFields
+     * @param dataDictionary
      */
-    static void populateEvaluateNodeWithPredicateFunction(final BlockStmt toPopulate,
-                                                          final String nodeClassName,
+    static void populateEvaluateNodeWithPredicate(final BlockStmt toPopulate,
+                                                  final Predicate predicate,
+                                                  final List<DerivedField> derivedFields,
+                                                  final DataDictionary dataDictionary
+                                                          /*final String nodeClassName,
                                                           final String nestedNodeClassName,
-                                                          final boolean isRoot) {
-        // set predicate function
-        MethodReferenceExpr predicateReference = new MethodReferenceExpr();
-        predicateReference.setScope(new NameExpr(nodeClassName));
-        String identifier = isRoot ? EVALUATE_PREDICATE : EVALUATE_PREDICATE + nestedNodeClassName;
-        predicateReference.setIdentifier(identifier);
-        CommonCodegenUtils.setVariableDeclaratorValue(toPopulate, PREDICATE_FUNCTION, predicateReference);
-    }
-
-    /**
-     * Returns the <code>MethodDeclaration</code> of a <b>nested</b> <code>Node</code> predicate,
-     * i.e. the predicate of a <b>children</b> <code>Node</code> .
-     * The method name will be <code>EVALUATE_PREDICATE + nodeClassName</code>.
-     * This method must not be invoked for the <b>root</b> <code>Node</code>
-     * <p>
-     *     <code>private static boolean evaluatePredicate{_nodeClassName_}(java.util.Map<String, Object> stringObjectMap)</code>
-     * </p>
-     * @param body
-     * @param nodeClassName
-     * @return
-     */
-    static MethodDeclaration getEvaluateNestedPredicateMethodDeclaration(final BlockStmt body,
-                                                                         final String nodeClassName) {
-        final MethodDeclaration toReturn = new MethodDeclaration();
-        toReturn.setType("boolean");
-        Parameter parameter = new Parameter();
-        parameter.setName(new SimpleName(STRING_OBJECT_MAP));
-        parameter.setType(getTypedClassOrInterfaceType(Map.class.getName(),
-                                                       Arrays.asList("String", "Object")));
-        toReturn.setParameters(NodeList.nodeList(parameter));
-        toReturn.setBody(body);
-        toReturn.setModifiers(Modifier.Keyword.PRIVATE, Modifier.Keyword.STATIC);
-        final String methodName = EVALUATE_PREDICATE + nodeClassName;
-        toReturn.setName(new SimpleName(methodName));
-        return toReturn;
+                                                          final boolean isRoot*/) {
+        // set predicate
+        BlockStmt toAdd = getKiePMMLPredicate(PREDICATE, predicate, derivedFields, dataDictionary);
+        final NodeList<Statement> predicateStatements = toAdd.getStatements();
+        for (int i = 0; i < predicateStatements.size(); i ++) {
+            toPopulate.addStatement(i, predicateStatements.get(i));
+        }
     }
 
     static class JavaParserDTO {
@@ -464,10 +385,8 @@ public class KiePMMLNodeFactory {
         // evaluateNode
         final MethodDeclaration evaluateRootNodeMethod;
         final BlockStmt evaluateRootNodeBody;
+        final BlockStmt evaluateRootNodeBodyClone;
         final VariableDeclarator evaluateRootNodeReferencesDeclarator;
-        // evaluatePredicate
-        final MethodDeclaration evaluateRootPredicateMethod;
-        final BlockStmt evaluateRootPredicateBody;
 
         JavaParserDTO(final NodeNamesDTO nodeNamesDTO, final String packageName) {
             this.nodeClassName = nodeNamesDTO.nodeClassName;
@@ -488,6 +407,7 @@ public class KiePMMLNodeFactory {
                     evaluateRootNodeMethod.getBody()
                             .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD,
                                                                                           EVALUATE_NODE)));
+            evaluateRootNodeBodyClone = evaluateRootNodeBody.clone();
             evaluateRootNodeReferencesDeclarator = evaluateRootNodeBody.findAll(VariableDeclarator.class)
                     .stream()
                     .filter(variableDeclarator -> variableDeclarator.getName().asString().equals(NODE_FUNCTIONS))
@@ -495,11 +415,6 @@ public class KiePMMLNodeFactory {
                     .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_VARIABLE_IN_BODY,
                                                                                   EVALUATE_NODE,
                                                                                   evaluateRootNodeBody)));
-            evaluateRootPredicateMethod = nodeTemplate.getMethodsByName(EVALUATE_PREDICATE).get(0);
-            evaluateRootPredicateBody =
-                    evaluateRootPredicateMethod.getBody()
-                            .orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_IN_METHOD,
-                                                                                          EVALUATE_PREDICATE)));
         }
 
         boolean limitReach() {
@@ -516,7 +431,7 @@ public class KiePMMLNodeFactory {
                                                                       Modifier.Keyword.STATIC);
             toReturn.setType(evaluateRootNodeMethod.getType());
             toReturn.setParameters(evaluateRootNodeMethod.getParameters());
-            BlockStmt blockStmt = evaluateRootNodeBody.clone();
+            BlockStmt blockStmt = evaluateRootNodeBodyClone.clone();
             final MethodCallExpr valuesInit = new MethodCallExpr();
             valuesInit.setScope(new TypeExpr(parseClassOrInterfaceType(Arrays.class.getName())));
             valuesInit.setName(AS_LIST);
