@@ -16,15 +16,18 @@
 package org.kie.kogito.explainability.local.counterfactual;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
@@ -53,6 +56,10 @@ import org.kie.kogito.explainability.model.domain.EmptyFeatureDomain;
 import org.kie.kogito.explainability.model.domain.FeatureDomain;
 import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 import org.kie.kogito.explainability.utils.DataUtils;
+import org.mockito.ArgumentCaptor;
+import org.optaplanner.core.api.score.buildin.bendablebigdecimal.BendableBigDecimalScore;
+import org.optaplanner.core.api.solver.SolverJob;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -67,6 +74,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class CounterfactualExplainerTest {
 
@@ -590,7 +598,6 @@ class CounterfactualExplainerTest {
             featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
             constraints.add(false);
         }
-        final DataDomain dataDomain = new DataDomain(featureBoundaries);
         final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(10L);
         // for the purpose of this test, only a few steps are necessary
         final SolverConfig solverConfig = CounterfactualConfigurationFactory
@@ -625,6 +632,64 @@ class CounterfactualExplainerTest {
         logger.debug("Outputs: {}", counterfactualResult.getOutput().get(0).getOutputs());
         //An intermediate result is generated when seed > 0
         verify(assertIntermediateCounterfactualNotNull, times(seed == 0 ? 0 : 1)).accept(any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 2, 3, 5, 8 })
+    @SuppressWarnings("unchecked")
+    void testSequenceIds(int numberOfIntermediateSolutions) throws ExecutionException, InterruptedException, TimeoutException {
+        final List<Long> sequenceIds = new ArrayList<>();
+        final Consumer<CounterfactualResult> captureSequenceIds = counterfactual -> {
+            sequenceIds.add(counterfactual.getSequenceId());
+        };
+
+        ArgumentCaptor<Consumer<CounterfactualSolution>> intermediateSolutionConsumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+
+        //Mock SolverManager and SolverJob to guarantee deterministic test behaviour 
+        SolverManager<CounterfactualSolution, UUID> solverManager = mock(SolverManager.class);
+        SolverJob<CounterfactualSolution, UUID> solverJob = mock(SolverJob.class);
+        CounterfactualSolution solution = mock(CounterfactualSolution.class);
+        BendableBigDecimalScore score = BendableBigDecimalScore.zero(0, 0);
+        when(solverManager.solveAndListen(any(), any(), any(), any())).thenReturn(solverJob);
+        when(solverJob.getFinalBestSolution()).thenReturn(solution);
+        when(solution.getScore()).thenReturn(score);
+
+        //Setup Explainer
+        final CounterfactualExplainer counterfactualExplainer =
+                CounterfactualExplainer
+                        .builder()
+                        .withSolverManagerFactory(solverConfig -> solverManager)
+                        .build();
+
+        //Setup mock model, what it does is not important
+        Prediction prediction = new CounterfactualPrediction(new PredictionInput(Collections.emptyList()),
+                new PredictionOutput(Collections.emptyList()),
+                new PredictionFeatureDomain(Collections.emptyList()),
+                Collections.emptyList(),
+                null,
+                UUID.randomUUID());
+
+        CounterfactualResult result = counterfactualExplainer.explainAsync(prediction,
+                (List<PredictionInput> inputs) -> CompletableFuture.completedFuture(Collections.emptyList()),
+                captureSequenceIds)
+                .get(Config.INSTANCE.getAsyncTimeout(),
+                        Config.INSTANCE.getAsyncTimeUnit());
+
+        verify(solverManager).solveAndListen(any(), any(), intermediateSolutionConsumerCaptor.capture(), any());
+        Consumer<CounterfactualSolution> intermediateSolutionConsumer = intermediateSolutionConsumerCaptor.getValue();
+
+        //Mock the intermediate Solution callback being invoked 
+        IntStream.range(0, numberOfIntermediateSolutions).forEach(i -> {
+            CounterfactualSolution intermediate = mock(CounterfactualSolution.class);
+            BendableBigDecimalScore intermediateScore = BendableBigDecimalScore.zero(0, 0);
+            when(intermediate.getScore()).thenReturn(intermediateScore);
+            intermediateSolutionConsumer.accept(intermediate);
+        });
+
+        //The final and intermediate Solutions should all have unique Sequence Ids.
+        sequenceIds.add(result.getSequenceId());
+        assertEquals(numberOfIntermediateSolutions + 1, sequenceIds.size());
+        assertEquals(numberOfIntermediateSolutions + 1, (int) sequenceIds.stream().distinct().count());
     }
 
     @ParameterizedTest

@@ -17,6 +17,7 @@
 package org.kie.kogito.trusty.storage.api.model;
 
 import java.util.Collection;
+import java.util.Objects;
 
 import javax.validation.constraints.NotNull;
 
@@ -31,6 +32,8 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
 
     public static final String COUNTERFACTUAL_SOLUTION_ID_FIELD = "solutionId";
+
+    public static final String COUNTERFACTUAL_SEQUENCE_ID_FIELD = "sequenceId";
 
     public static final String IS_VALID_FIELD = "isValid";
 
@@ -52,6 +55,10 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
     @JsonProperty(COUNTERFACTUAL_SOLUTION_ID_FIELD)
     @NotNull(message = "solutionId must be provided.")
     private String solutionId;
+
+    @JsonProperty(COUNTERFACTUAL_SEQUENCE_ID_FIELD)
+    @NotNull(message = "sequenceId must be provided.")
+    private Long sequenceId;
 
     @JsonProperty(IS_VALID_FIELD)
     @NotNull(message = "isValid object must be provided.")
@@ -75,6 +82,7 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
     public CounterfactualExplainabilityResult(@NotNull String executionId,
             @NotNull String counterfactualId,
             @NotNull String solutionId,
+            @NotNull Long sequenceId,
             @NotNull ExplainabilityStatus status,
             String statusDetails,
             @NotNull Boolean isValid,
@@ -82,12 +90,13 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
             @NotNull Collection<TypedVariableWithValue> inputs,
             @NotNull Collection<TypedVariableWithValue> outputs) {
         super(executionId, status, statusDetails);
-        this.counterfactualId = counterfactualId;
-        this.solutionId = solutionId;
-        this.isValid = isValid;
-        this.stage = stage;
-        this.inputs = inputs;
-        this.outputs = outputs;
+        this.counterfactualId = Objects.requireNonNull(counterfactualId);
+        this.solutionId = Objects.requireNonNull(solutionId);
+        this.sequenceId = Objects.requireNonNull(sequenceId);
+        this.isValid = Objects.requireNonNull(isValid);
+        this.stage = Objects.requireNonNull(stage);
+        this.inputs = Objects.requireNonNull(inputs);
+        this.outputs = Objects.requireNonNull(outputs);
     }
 
     public String getCounterfactualId() {
@@ -96,6 +105,10 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
 
     public String getSolutionId() {
         return solutionId;
+    }
+
+    public Long getSequenceId() {
+        return sequenceId;
     }
 
     public Boolean isValid() {
@@ -124,6 +137,10 @@ public class CounterfactualExplainabilityResult extends BaseExplainabilityResult
 
     public void setSolutionId(String solutionId) {
         this.solutionId = solutionId;
+    }
+
+    public void setSequenceId(Long sequenceId) {
+        this.sequenceId = sequenceId;
     }
 
     public void setValid(Boolean valid) {

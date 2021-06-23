@@ -21,6 +21,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -54,6 +55,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             LoggerFactory.getLogger(CounterfactualExplainer.class);
 
     private final SolverConfig solverConfig;
+    private final Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory;
     private final Executor executor;
 
     public static final Consumer<CounterfactualSolution> assignSolutionId =
@@ -61,6 +63,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
     public CounterfactualExplainer() {
         this.solverConfig = CounterfactualConfigurationFactory.builder().build();
+        this.solverManagerFactory = (solverConfig) -> SolverManager.create(solverConfig, new SolverManagerConfig());
         this.executor = ForkJoinPool.commonPool();
     }
 
@@ -77,8 +80,10 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
      * @param solverConfig An OptaPlanner {@link SolverConfig} configuration
      */
     protected CounterfactualExplainer(SolverConfig solverConfig,
+            Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory,
             Executor executor) {
         this.solverConfig = solverConfig;
+        this.solverManagerFactory = solverManagerFactory;
         this.executor = executor;
     }
 
@@ -90,12 +95,15 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         return new Builder();
     }
 
-    private Consumer<CounterfactualSolution> createSolutionConsumer(Consumer<CounterfactualResult> consumer) {
+    private Consumer<CounterfactualSolution> createSolutionConsumer(Consumer<CounterfactualResult> consumer,
+            AtomicLong sequenceId) {
         return counterfactualSolution -> {
             CounterfactualResult result = new CounterfactualResult(counterfactualSolution.getEntities(),
                     counterfactualSolution.getPredictionOutputs(),
                     counterfactualSolution.getScore().isFeasible(),
-                    counterfactualSolution.getSolutionId(), counterfactualSolution.getExecutionId());
+                    counterfactualSolution.getSolutionId(),
+                    counterfactualSolution.getExecutionId(),
+                    sequenceId.incrementAndGet());
             consumer.accept(result);
         };
     }
@@ -104,6 +112,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
     public CompletableFuture<CounterfactualResult> explainAsync(Prediction prediction,
             PredictionProvider model,
             Consumer<CounterfactualResult> intermediateResultsConsumer) {
+        final AtomicLong sequenceId = new AtomicLong(0);
         CounterfactualPrediction cfPrediction = (CounterfactualPrediction) prediction;
         final PredictionFeatureDomain featureDomain = cfPrediction.getDomain();
         final List<Boolean> constraints = cfPrediction.getConstraints();
@@ -118,12 +127,12 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                 uuid -> new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), executionId);
 
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
-            try (SolverManager<CounterfactualSolution, UUID> solverManager =
-                    SolverManager.create(solverConfig, new SolverManagerConfig())) {
+            try (SolverManager<CounterfactualSolution, UUID> solverManager = solverManagerFactory.apply(solverConfig)) {
 
                 SolverJob<CounterfactualSolution, UUID> solverJob =
                         solverManager.solveAndListen(executionId, initial,
-                                assignSolutionId.andThen(createSolutionConsumer(intermediateResultsConsumer)),
+                                assignSolutionId.andThen(createSolutionConsumer(intermediateResultsConsumer,
+                                        sequenceId)),
                                 null);
                 try {
                     // Wait until the solving ends
@@ -143,8 +152,12 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                         s.getEntities().stream().map(CounterfactualEntity::asFeature).collect(Collectors.toList())))));
         return CompletableFuture.allOf(cfOutputs, cfSolution).thenApply(v -> {
             CounterfactualSolution solution = cfSolution.join();
-            return new CounterfactualResult(solution.getEntities(), cfOutputs.join(), solution.getScore().isFeasible(),
-                    solution.getSolutionId(), solution.getExecutionId());
+            return new CounterfactualResult(solution.getEntities(),
+                    cfOutputs.join(),
+                    solution.getScore().isFeasible(),
+                    solution.getSolutionId(),
+                    solution.getExecutionId(),
+                    sequenceId.incrementAndGet());
         });
 
     }
@@ -152,6 +165,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
     public static class Builder {
         private Executor executor = ForkJoinPool.commonPool();
         private SolverConfig solverConfig = null;
+        private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory = null;
 
         private Builder() {
         }
@@ -166,13 +180,22 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return this;
         }
 
+        public Builder withSolverManagerFactory(Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory) {
+            this.solverManagerFactory = solverManagerFactory;
+            return this;
+        }
+
         public CounterfactualExplainer build() {
             // Create a default solver configuration if none provided
             if (this.solverConfig == null) {
                 this.solverConfig = CounterfactualConfigurationFactory.builder().build();
             }
+            if (this.solverManagerFactory == null) {
+                this.solverManagerFactory = (solverConfig) -> SolverManager.create(solverConfig, new SolverManagerConfig());
+            }
             return new CounterfactualExplainer(
                     solverConfig,
+                    solverManagerFactory,
                     executor);
         }
     }

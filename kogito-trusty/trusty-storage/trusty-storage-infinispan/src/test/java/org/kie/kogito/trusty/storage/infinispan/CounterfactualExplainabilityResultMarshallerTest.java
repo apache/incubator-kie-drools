@@ -33,9 +33,16 @@ public class CounterfactualExplainabilityResultMarshallerTest extends Marshaller
     @Test
     public void testWriteAndRead() throws IOException {
         List<TypedVariableWithValue> data = Collections.singletonList(TypedVariableWithValue.buildUnit("unitIn", "number", JsonNodeFactory.instance.numberNode(10)));
-        CounterfactualExplainabilityResult explainabilityResult = new CounterfactualExplainabilityResult("executionId", "counterfactualId", "solutionId",
-                ExplainabilityStatus.SUCCEEDED, "statusDetail", true,
-                CounterfactualExplainabilityResult.Stage.FINAL, data, data);
+        CounterfactualExplainabilityResult explainabilityResult = new CounterfactualExplainabilityResult("executionId",
+                "counterfactualId",
+                "solutionId",
+                0L,
+                ExplainabilityStatus.SUCCEEDED,
+                "statusDetail",
+                true,
+                CounterfactualExplainabilityResult.Stage.FINAL,
+                data,
+                data);
         CounterfactualExplainabilityResultMarshaller marshaller = new CounterfactualExplainabilityResultMarshaller(new ObjectMapper());
 
         marshaller.writeTo(writer, explainabilityResult);
@@ -44,6 +51,7 @@ public class CounterfactualExplainabilityResultMarshallerTest extends Marshaller
         Assertions.assertEquals(explainabilityResult.getExecutionId(), retrieved.getExecutionId());
         Assertions.assertEquals(explainabilityResult.getCounterfactualId(), retrieved.getCounterfactualId());
         Assertions.assertEquals(explainabilityResult.getSolutionId(), retrieved.getSolutionId());
+        Assertions.assertEquals(explainabilityResult.getSequenceId(), retrieved.getSequenceId());
         Assertions.assertEquals(explainabilityResult.getStatus(), retrieved.getStatus());
         Assertions.assertEquals(explainabilityResult.getStatusDetails(), retrieved.getStatusDetails());
         Assertions.assertEquals(explainabilityResult.getStage(), retrieved.getStage());

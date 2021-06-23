@@ -34,14 +34,20 @@ public class CounterfactualResult {
 
     private UUID solutionId;
     private UUID executionId;
+    private long sequenceId;
 
-    public CounterfactualResult(List<CounterfactualEntity> entities, List<PredictionOutput> output,
-            boolean valid, UUID solutionId, UUID executionId) {
+    public CounterfactualResult(List<CounterfactualEntity> entities,
+            List<PredictionOutput> output,
+            boolean valid,
+            UUID solutionId,
+            UUID executionId,
+            long sequenceId) {
         this.entities = entities;
         this.output = output;
         this.valid = valid;
         this.solutionId = solutionId;
         this.executionId = executionId;
+        this.sequenceId = sequenceId;
     }
 
     public List<CounterfactualEntity> getEntities() {
@@ -62,5 +68,9 @@ public class CounterfactualResult {
 
     public UUID getExecutionId() {
         return executionId;
+    }
+
+    public long getSequenceId() {
+        return sequenceId;
     }
 }

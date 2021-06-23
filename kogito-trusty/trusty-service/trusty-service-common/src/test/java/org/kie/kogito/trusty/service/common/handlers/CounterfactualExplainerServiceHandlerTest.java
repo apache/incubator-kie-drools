@@ -43,12 +43,17 @@ public class CounterfactualExplainerServiceHandlerTest
 
     private static final String SOLUTION_ID = "solutionId";
 
+    private static final Long SEQUENCE_ID = 1L;
+
+    private CounterfactualSlidingWindowExplainabilityResultsManager counterfactualExplainabilityResultsManager;
+
     @SuppressWarnings("rawtypes")
     private final Query query = mock(Query.class);
 
     @Override
     protected CounterfactualExplainerServiceHandler getHandler() {
-        return new CounterfactualExplainerServiceHandler(storageService);
+        counterfactualExplainabilityResultsManager = mock(CounterfactualSlidingWindowExplainabilityResultsManager.class);
+        return new CounterfactualExplainerServiceHandler(storageService, counterfactualExplainabilityResultsManager);
     }
 
     @Override
@@ -74,6 +79,7 @@ public class CounterfactualExplainerServiceHandlerTest
     public void setup() {
         super.setup();
         when(result.getStage()).thenReturn(CounterfactualExplainabilityResult.Stage.FINAL);
+        when(result.getCounterfactualId()).thenReturn(COUNTERFACTUAL_ID);
         when(result.getSolutionId()).thenReturn(SOLUTION_ID);
     }
 
@@ -133,6 +139,7 @@ public class CounterfactualExplainerServiceHandlerTest
         handler.storeExplainabilityResult(EXECUTION_ID, result);
 
         verify(storage).put(eq(SOLUTION_ID), eq(result));
+        verify(counterfactualExplainabilityResultsManager).purge(eq(COUNTERFACTUAL_ID), eq(storage));
     }
 
     @Test
@@ -141,6 +148,7 @@ public class CounterfactualExplainerServiceHandlerTest
         CounterfactualExplainabilityResultDto dto = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 SOLUTION_ID,
+                SEQUENCE_ID,
                 true,
                 CounterfactualExplainabilityResultDto.Stage.FINAL,
                 Collections.emptyMap(),
@@ -152,6 +160,7 @@ public class CounterfactualExplainerServiceHandlerTest
         assertEquals(EXECUTION_ID, result.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, result.getCounterfactualId());
         assertEquals(SOLUTION_ID, result.getSolutionId());
+        assertEquals(SEQUENCE_ID, result.getSequenceId());
         assertEquals(ExplainabilityStatus.SUCCEEDED, result.getStatus());
         assertTrue(result.isValid());
         assertEquals(CounterfactualExplainabilityResult.Stage.FINAL, result.getStage());
@@ -164,6 +173,7 @@ public class CounterfactualExplainerServiceHandlerTest
         CounterfactualExplainabilityResultDto dto = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 SOLUTION_ID,
+                SEQUENCE_ID,
                 true,
                 CounterfactualExplainabilityResultDto.Stage.INTERMEDIATE,
                 Collections.emptyMap(),
@@ -175,6 +185,7 @@ public class CounterfactualExplainerServiceHandlerTest
         assertEquals(EXECUTION_ID, result.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, result.getCounterfactualId());
         assertEquals(SOLUTION_ID, result.getSolutionId());
+        assertEquals(SEQUENCE_ID, result.getSequenceId());
         assertEquals(ExplainabilityStatus.SUCCEEDED, result.getStatus());
         assertTrue(result.isValid());
         assertEquals(CounterfactualExplainabilityResult.Stage.INTERMEDIATE, result.getStage());

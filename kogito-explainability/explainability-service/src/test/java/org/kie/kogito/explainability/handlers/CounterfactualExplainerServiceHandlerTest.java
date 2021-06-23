@@ -331,7 +331,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 1.0)))),
                 true,
                 UUID.fromString(SOLUTION_ID),
-                UUID.fromString(EXECUTION_ID));
+                UUID.fromString(EXECUTION_ID),
+                0);
 
         BaseExplainabilityResultDto base = handler.createSucceededResultDto(request, counterfactuals);
         assertTrue(base instanceof CounterfactualExplainabilityResultDto);
@@ -370,7 +371,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 null,
                 true,
                 UUID.fromString(SOLUTION_ID),
-                UUID.fromString(EXECUTION_ID));
+                UUID.fromString(EXECUTION_ID),
+                0);
 
         assertThrows(NullPointerException.class, () -> handler.createSucceededResultDto(request, counterfactuals));
     }
@@ -389,7 +391,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Collections.emptyList(),
                 true,
                 UUID.fromString(SOLUTION_ID),
-                UUID.fromString(EXECUTION_ID));
+                UUID.fromString(EXECUTION_ID),
+                0);
 
         assertThrows(IllegalStateException.class, () -> handler.createSucceededResultDto(request, counterfactuals));
     }
@@ -409,7 +412,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                         new PredictionOutput(List.of(new Output("output2", Type.NUMBER, new Value(777.0d), 2.0)))),
                 true,
                 UUID.fromString(SOLUTION_ID),
-                UUID.fromString(EXECUTION_ID));
+                UUID.fromString(EXECUTION_ID),
+                0);
 
         assertThrows(IllegalStateException.class, () -> handler.createSucceededResultDto(request, counterfactuals));
     }
@@ -428,7 +432,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 1.0)))),
                 true,
                 UUID.fromString(SOLUTION_ID),
-                UUID.fromString(EXECUTION_ID));
+                UUID.fromString(EXECUTION_ID),
+                0);
 
         BaseExplainabilityResultDto base = handler.createIntermediateResultDto(request, counterfactuals);
         assertTrue(base instanceof CounterfactualExplainabilityResultDto);

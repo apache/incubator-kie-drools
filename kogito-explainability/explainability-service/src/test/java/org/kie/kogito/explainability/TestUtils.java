@@ -104,6 +104,7 @@ public class TestUtils {
             List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 2.0)))),
             true,
             UUID.fromString(SOLUTION_ID),
-            UUID.fromString(EXECUTION_ID));
+            UUID.fromString(EXECUTION_ID),
+            0);
 
 }

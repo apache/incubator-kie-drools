@@ -63,7 +63,8 @@ public class ExplainerServiceHandlerRegistryTest {
     public void setup() {
         TrustyStorageService trustyStorage = mock(TrustyStorageService.class);
         limeExplainerServiceHandler = spy(new LIMEExplainerServiceHandler(trustyStorage));
-        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(trustyStorage));
+        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(trustyStorage,
+                mock(CounterfactualSlidingWindowExplainabilityResultsManager.class)));
         Instance<ExplainerServiceHandler<?, ?>> explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
         registry = new ExplainerServiceHandlerRegistry(explanationHandlers);
@@ -169,6 +170,7 @@ public class ExplainerServiceHandlerRegistryTest {
         CounterfactualExplainabilityResultDto dto = CounterfactualExplainabilityResultDto.buildSucceeded(EXECUTION_ID,
                 COUNTERFACTUAL_ID,
                 SOLUTION_ID,
+                0L,
                 true,
                 CounterfactualExplainabilityResultDto.Stage.FINAL,
                 Collections.emptyMap(),

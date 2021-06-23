@@ -477,6 +477,7 @@ public abstract class AbstractTrustyServiceIT {
                 new CounterfactualExplainabilityResult(executionId,
                         "counterfactualId",
                         "solutionId",
+                        0L,
                         ExplainabilityStatus.SUCCEEDED,
                         "status",
                         true,

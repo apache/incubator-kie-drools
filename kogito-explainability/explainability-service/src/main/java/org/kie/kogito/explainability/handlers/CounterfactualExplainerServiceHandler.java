@@ -185,6 +185,7 @@ public class CounterfactualExplainerServiceHandler
         return CounterfactualExplainabilityResultDto.buildSucceeded(request.getExecutionId(),
                 request.getCounterfactualId(),
                 result.getSolutionId().toString(),
+                result.getSequenceId(),
                 result.isValid(),
                 stage,
                 ConversionUtils.fromFeatureList(features),

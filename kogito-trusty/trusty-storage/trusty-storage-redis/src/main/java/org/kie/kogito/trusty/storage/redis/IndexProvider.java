@@ -95,6 +95,7 @@ public class IndexProvider {
         RedisCreateIndexEvent counterfactualResultsIndexEvent = new RedisCreateIndexEvent(COUNTERFACTUAL_RESULTS_STORAGE);
         counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualExplainabilityResult.EXECUTION_ID_FIELD, Schema.FieldType.FullText, false));
         counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualExplainabilityResult.COUNTERFACTUAL_ID_FIELD, Schema.FieldType.FullText, false));
+        counterfactualResultsIndexEvent.withField(new Schema.Field(CounterfactualExplainabilityResult.COUNTERFACTUAL_SEQUENCE_ID_FIELD, Schema.FieldType.FullText, true));
         indexManager.createIndex(counterfactualResultsIndexEvent);
     }
 }

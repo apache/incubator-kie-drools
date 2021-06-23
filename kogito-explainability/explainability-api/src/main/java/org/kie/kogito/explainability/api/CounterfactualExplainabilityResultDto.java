@@ -34,6 +34,8 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
 
     public static final String SOLUTION_ID_FIELD = "solutionId";
 
+    public static final String SEQUENCE_ID_FIELD = "sequenceId";
+
     public static final String IS_VALID_FIELD = "isValid";
 
     public static final String STAGE_FIELD = "stage";
@@ -54,6 +56,10 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
     @JsonProperty(SOLUTION_ID_FIELD)
     @NotNull(message = "solutionId must be provided.")
     private String solutionId;
+
+    @JsonProperty(SEQUENCE_ID_FIELD)
+    @NotNull(message = "sequenceId must be provided.")
+    private Long sequenceId;
 
     @JsonProperty(IS_VALID_FIELD)
     @NotNull(message = "isValid must be provided.")
@@ -78,6 +84,7 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
     private CounterfactualExplainabilityResultDto(@NotNull String executionId,
             @NotNull String counterfactualId,
             @NotNull String solutionId,
+            @NotNull Long sequenceId,
             @NotNull ExplainabilityStatus status,
             String statusDetails,
             @NotNull Boolean isValid,
@@ -87,6 +94,7 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
         super(executionId, status, statusDetails);
         this.counterfactualId = Objects.requireNonNull(counterfactualId);
         this.solutionId = Objects.requireNonNull(solutionId);
+        this.sequenceId = Objects.requireNonNull(sequenceId);
         this.isValid = Objects.requireNonNull(isValid);
         this.stage = Objects.requireNonNull(stage);
         this.inputs = Objects.requireNonNull(inputs);
@@ -96,6 +104,7 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
     public static CounterfactualExplainabilityResultDto buildSucceeded(String executionId,
             String counterfactualId,
             String solutionId,
+            Long sequenceId,
             Boolean isValid,
             CounterfactualExplainabilityResultDto.Stage stage,
             Map<String, TypedValue> inputs,
@@ -103,6 +112,7 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
         return new CounterfactualExplainabilityResultDto(executionId,
                 counterfactualId,
                 solutionId,
+                sequenceId,
                 ExplainabilityStatus.SUCCEEDED,
                 null,
                 isValid,
@@ -117,6 +127,7 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
         return new CounterfactualExplainabilityResultDto(executionId,
                 counterfactualId,
                 UUID.randomUUID().toString(),
+                Long.MAX_VALUE,
                 ExplainabilityStatus.FAILED,
                 statusDetails,
                 Boolean.FALSE,
@@ -131,6 +142,10 @@ public class CounterfactualExplainabilityResultDto extends BaseExplainabilityRes
 
     public String getSolutionId() {
         return solutionId;
+    }
+
+    public Long getSequenceId() {
+        return sequenceId;
     }
 
     public Boolean isValid() {
