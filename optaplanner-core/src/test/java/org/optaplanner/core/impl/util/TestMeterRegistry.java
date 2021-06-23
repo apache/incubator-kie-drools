@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.util;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ import io.micrometer.core.instrument.simple.SimpleConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 public class TestMeterRegistry extends SimpleMeterRegistry {
-    final Map<String, Map<String, String>> measurementMap;
+    final Map<String, Map<String, BigDecimal>> measurementMap;
 
     public TestMeterRegistry() {
         super(SimpleConfig.DEFAULT, new MockClock());
@@ -38,9 +39,9 @@ public class TestMeterRegistry extends SimpleMeterRegistry {
         return MockClock.clock(this);
     }
 
-    public String getMeasurement(String key, String statistic) {
+    public BigDecimal getMeasurement(String key, String statistic) {
         if (measurementMap.containsKey(key)) {
-            Map<String, String> meterMeasurementMap = measurementMap.get(key);
+            Map<String, BigDecimal> meterMeasurementMap = measurementMap.get(key);
             if (meterMeasurementMap.containsKey(statistic)) {
                 return meterMeasurementMap.get(statistic);
             } else {
@@ -56,10 +57,10 @@ public class TestMeterRegistry extends SimpleMeterRegistry {
 
     public void publish() {
         getMeters().forEach(meter -> {
-            final Map<String, String> meterMeasurementMap = new HashMap<>();
+            final Map<String, BigDecimal> meterMeasurementMap = new HashMap<>();
             measurementMap.put(meter.getId().getConventionName(NamingConvention.dot), meterMeasurementMap);
             meter.measure().forEach(measurement -> {
-                meterMeasurementMap.put(measurement.getStatistic().name(), String.format("%.1f", measurement.getValue()));
+                meterMeasurementMap.put(measurement.getStatistic().name(), BigDecimal.valueOf(measurement.getValue()));
             });
         });
     }
