@@ -28,8 +28,8 @@ public class SingleIrisKMeansClusteringTest extends AbstractSingleIrisKMeansClus
 
     private static final String FILE_NAME = "SingleIrisKMeansClustering.pmml";
 
-    public SingleIrisKMeansClusteringTest(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass) {
-        super(sepalLength, sepalWidth, petalLength, petalWidth, irisClass);
+    public SingleIrisKMeansClusteringTest(double sepalLength, double sepalWidth, double petalLength, double petalWidth, String irisClass, double outNormcontinuousField) {
+        super(sepalLength, sepalWidth, petalLength, petalWidth, irisClass, outNormcontinuousField);
     }
 
     @BeforeClass
@@ -40,12 +40,12 @@ public class SingleIrisKMeansClusteringTest extends AbstractSingleIrisKMeansClus
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {4.4, 3.0, 1.3, 0.2, "3"},
-                {5.0, 3.3, 1.4, 0.2, "3"},
-                {7.0, 3.2, 4.7, 1.4, "2"},
-                {5.7, 2.8, 4.1, 1.3, "4"},
-                {6.3, 3.3, 6.0, 2.5, "1"},
-                {6.7, 3.0, 5.2, 2.3, "1"}
+                {4.4, 3.0, 1.3, 0.2, "3", 4.966666666666667},
+                {5.0, 3.3, 1.4, 0.2, "3", 5.433333333333334},
+                {7.0, 3.2, 4.7, 1.4, "2", 6.950000000000001},
+                {5.7, 2.8, 4.1, 1.3, "4", 5.937500000000001},
+                {6.3, 3.3, 6.0, 2.5, "1", 6.1625},
+                {6.7, 3.0, 5.2, 2.3, "1", 6.575}
         });
     }
 
