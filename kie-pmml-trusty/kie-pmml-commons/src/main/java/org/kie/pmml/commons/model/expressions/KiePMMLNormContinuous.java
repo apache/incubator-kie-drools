@@ -40,7 +40,7 @@ public class KiePMMLNormContinuous extends AbstractKiePMMLComponent implements K
     private final OUTLIER_TREATMENT_METHOD outlierTreatmentMethod;
     private final Number mapMissingTo;
 
-    protected KiePMMLNormContinuous(final String name,
+    public KiePMMLNormContinuous(final String name,
                                     final List<KiePMMLExtension> extensions,
                                     final List<KiePMMLLinearNorm> linearNorms,
                                     final OUTLIER_TREATMENT_METHOD outlierTreatmentMethod,

@@ -25,10 +25,11 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
  */
 public class KiePMMLLinearNorm extends AbstractKiePMMLComponent {
 
+    private static final long serialVersionUID = -6437255657731885594L;
     private final double orig;
     private final double norm;
 
-    protected KiePMMLLinearNorm(String name, List<KiePMMLExtension> extensions, double orig, double norm) {
+    public KiePMMLLinearNorm(String name, List<KiePMMLExtension> extensions, double orig, double norm) {
         super(name, extensions);
         this.orig = orig;
         this.norm = norm;
