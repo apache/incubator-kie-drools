@@ -26,7 +26,7 @@ import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
 import static org.junit.Assert.*;
 
 public class KiePMMLNormContinuousTest {
-    
+
     @Test
     public void sortLinearNorms() {
         KiePMMLLinearNorm ln0 = new KiePMMLLinearNorm("0", Collections.emptyList(), 34, 45);
