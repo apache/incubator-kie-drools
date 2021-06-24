@@ -13,6 +13,7 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
+        timestamps()
         timeout(time: 3, unit: 'DAYS') // Turtle tests take ~2 days to complete.
     }
     // parameters {
