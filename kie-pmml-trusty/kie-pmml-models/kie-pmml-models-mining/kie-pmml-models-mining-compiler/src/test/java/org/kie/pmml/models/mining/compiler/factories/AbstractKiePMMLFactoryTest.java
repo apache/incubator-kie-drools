@@ -61,7 +61,7 @@ public abstract class AbstractKiePMMLFactoryTest {
         assertNotNull(MINING_MODEL);
         populateMissingIds(MINING_MODEL);
         DERIVED_FIELDS = getDerivedFields(TRANSFORMATION_DICTIONARY,
-                                                                  MINING_MODEL.getLocalTransformations());
+                                          MINING_MODEL.getLocalTransformations());
     }
 
     @Before

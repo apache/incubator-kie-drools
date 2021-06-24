@@ -74,7 +74,9 @@
     </Targets>
     <Segmentation multipleModelMethod="average">
       <Segment>
-        <True/>
+        <SimpleSetPredicate field="out_der_fun_occupation_referred" booleanOperator="isIn">
+          <Array n="5" type="string">SKYDIVER ASTRONAUT PROGRAMMER TEACHER INSTRUCTOR</Array>
+        </SimpleSetPredicate>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
             <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
