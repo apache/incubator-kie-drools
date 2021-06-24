@@ -31,8 +31,8 @@
     <version.com.h2database>1.4.197</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.io.micrometer>1.6.6</version.io.micrometer>
-    <version.io.quarkus>2.0.0.CR3</version.io.quarkus>
-    <version.io.quarkus.gizmo>1.0.8.Final</version.io.quarkus.gizmo>
+    <version.io.quarkus>2.0.0.Final</version.io.quarkus>
+    <version.io.quarkus.gizmo>1.0.9.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.1</version.org.ow2.asm>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
     <version.jakarta.xml.bind>2.3.3</version.jakarta.xml.bind>
@@ -47,7 +47,7 @@
     <version.org.jfree.jfreechart>1.5.3</version.org.jfree.jfreechart>
     <version.org.junit>5.7.1</version.org.junit>
     <version.org.mockito>3.10.0</version.org.mockito>
-    <version.org.postgresql>42.2.20</version.org.postgresql>
+    <version.org.postgresql>42.2.22</version.org.postgresql>
     <version.org.slf4j>1.7.30</version.org.slf4j>
     <version.org.springframework>5.3.6</version.org.springframework>
     <version.org.springframework.boot>2.4.5</version.org.springframework.boot>
