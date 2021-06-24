@@ -232,7 +232,7 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         Optional<PMML4Result> toReturn = Optional.empty();
         Map<String, Object> values = getUnwrappedParametersMap(pmmlContext.getRequestData().getMappedRequestParams());
         String modelName = toEvaluate.getModel().getName();
-        if (kiePMMLPredicate != null && kiePMMLPredicate.evaluate(values)) {
+        if (kiePMMLPredicate.evaluate(values)) {
             final PMMLRuntime pmmlRuntime = getPMMLRuntime(toEvaluate.getModel().getKModulePackageName(),
                                                                    knowledgeBase, containerModelName);
             logger.trace("{}: matching predicate, evaluating... ", toEvaluate.getId());

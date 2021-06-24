@@ -23,6 +23,7 @@ import java.util.List;
 import javax.xml.bind.JAXBException;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
@@ -36,6 +37,7 @@ import org.xml.sax.SAXException;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.utils.KiePMMLUtil.SEGMENTID_TEMPLATE;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 
 public abstract class AbstractKiePMMLFactoryTest {
 
@@ -44,6 +46,7 @@ public abstract class AbstractKiePMMLFactoryTest {
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;
+    protected static  List<DerivedField> DERIVED_FIELDS;
     protected static KnowledgeBuilderImpl KNOWLEDGE_BUILDER;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {
@@ -57,6 +60,8 @@ public abstract class AbstractKiePMMLFactoryTest {
         MINING_MODEL = (MiningModel) pmml.getModels().get(0);
         assertNotNull(MINING_MODEL);
         populateMissingIds(MINING_MODEL);
+        DERIVED_FIELDS = getDerivedFields(TRANSFORMATION_DICTIONARY,
+                                          MINING_MODEL.getLocalTransformations());
     }
 
     @Before

@@ -32,6 +32,7 @@ import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.Segment;
 import org.dmg.pmml.mining.Segmentation;
@@ -42,7 +43,6 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
-import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,11 +51,9 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
-import static org.kie.pmml.compiler.commons.factories.KiePMMLExtensionFactory.getKiePMMLExtensions;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
-import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegments;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMap;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.getSegmentsSourcesMapCompiled;
 
@@ -68,26 +66,8 @@ public class KiePMMLSegmentationFactory {
     private KiePMMLSegmentationFactory() {
     }
 
-    public static KiePMMLSegmentation getSegmentation(final DataDictionary dataDictionary,
-                                                      final TransformationDictionary transformationDictionary,
-                                                      final Segmentation segmentation,
-                                                      final String segmentationName,
-                                                      final String parentPackageName,
-                                                      final HasClassLoader hasClassloader) {
-        logger.debug("getSegmentation {}", segmentation);
-        final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
-        return KiePMMLSegmentation.builder(segmentationName,
-                                           getKiePMMLExtensions(segmentation.getExtensions()),
-                                           MULTIPLE_MODEL_METHOD.byName(segmentation.getMultipleModelMethod().value()))
-                .withSegments(getSegments(packageName,
-                                          dataDictionary,
-                                          transformationDictionary,
-                                          segmentation.getSegments(),
-                                          hasClassloader))
-                .build();
-    }
-
     public static Map<String, String> getSegmentationSourcesMap(final String parentPackageName,
+                                                                final List<DerivedField> derivedFields,
                                                                 final DataDictionary dataDictionary,
                                                                 final TransformationDictionary transformationDictionary,
                                                                 final Segmentation segmentation,
@@ -97,6 +77,7 @@ public class KiePMMLSegmentationFactory {
         logger.debug("getSegmentationSourcesMap {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         final Map<String, String> toReturn = getSegmentsSourcesMap(packageName,
+                                                                   derivedFields,
                                                                    dataDictionary,
                                                                    transformationDictionary,
                                                                    segmentation.getSegments(),
@@ -106,27 +87,29 @@ public class KiePMMLSegmentationFactory {
     }
 
     public static Map<String, String> getSegmentationSourcesMapCompiled(final String parentPackageName,
-                                                                final DataDictionary dataDictionary,
-                                                                final TransformationDictionary transformationDictionary,
-                                                                final Segmentation segmentation,
-                                                                final String segmentationName,
-                                                                final HasClassLoader hasClassloader,
-                                                                final List<KiePMMLModel> nestedModels) {
+                                                                        final List<DerivedField> derivedFields,
+                                                                        final DataDictionary dataDictionary,
+                                                                        final TransformationDictionary transformationDictionary,
+                                                                        final Segmentation segmentation,
+                                                                        final String segmentationName,
+                                                                        final HasClassLoader hasClassloader,
+                                                                        final List<KiePMMLModel> nestedModels) {
         logger.debug("getSegmentationSourcesMapCompiled {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         final Map<String, String> toReturn = getSegmentsSourcesMapCompiled(packageName,
-                                                                   dataDictionary,
-                                                                   transformationDictionary,
-                                                                   segmentation.getSegments(),
-                                                                   hasClassloader,
-                                                                   nestedModels);
+                                                                           derivedFields,
+                                                                           dataDictionary,
+                                                                           transformationDictionary,
+                                                                           segmentation.getSegments(),
+                                                                           hasClassloader,
+                                                                           nestedModels);
         return getSegmentationSourcesMapCommon(parentPackageName, segmentation, segmentationName, toReturn);
     }
 
     static Map<String, String> getSegmentationSourcesMapCommon(final String parentPackageName,
-                                                                        final Segmentation segmentation,
-                                                                        final String segmentationName,
-                                                                        final Map<String, String> toReturn) {
+                                                               final Segmentation segmentation,
+                                                               final String segmentationName,
+                                                               final Map<String, String> toReturn) {
         logger.debug("getSegmentationSourcesMapCommon {}", segmentation);
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segmentationName);
         String className = getSanitizedClassName(segmentationName);

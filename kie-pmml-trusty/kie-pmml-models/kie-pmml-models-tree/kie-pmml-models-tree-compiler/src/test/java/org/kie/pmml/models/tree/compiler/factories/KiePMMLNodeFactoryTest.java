@@ -27,10 +27,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -40,8 +37,8 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.FieldName;
@@ -56,6 +53,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.testutils.TestUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
 
@@ -65,7 +63,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
-import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomValue;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromSource;
@@ -73,11 +70,8 @@ import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.AS_LIST;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EMPTY_LIST;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EVALUATE_NODE;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.EVALUATE_PREDICATE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.NODE_FUNCTIONS;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.PREDICATE_FUNCTION;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE;
-import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.STRING_OBJECT_MAP;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
 public class KiePMMLNodeFactoryTest {
@@ -91,6 +85,7 @@ public class KiePMMLNodeFactoryTest {
     private static List<DerivedField> derivedFields1;
     private static PMML pmml2;
     private static Node nodeRoot;
+    private static Node compoundPredicateNode;
     private static Node nodeLeaf;
     private static DataDictionary dataDictionary2;
     private static List<DerivedField> derivedFields2;
@@ -107,6 +102,7 @@ public class KiePMMLNodeFactoryTest {
         dataDictionary2 = pmml2.getDataDictionary();
         derivedFields2 = getDerivedFields(pmml2.getTransformationDictionary(), model2.getLocalTransformations());
         nodeRoot = model2.getNode();
+        compoundPredicateNode = nodeRoot.getNodes().get(0);
         nodeLeaf = nodeRoot.getNodes().get(0).getNodes().get(0).getNodes().get(0);
 
     }
@@ -128,7 +124,7 @@ public class KiePMMLNodeFactoryTest {
         Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary1, derivedFields1,
                                                                                     PACKAGE_NAME);
         assertNotNull(retrieved);
-        commonVerifyNodeSource(retrieved, node1, PACKAGE_NAME);
+        commonVerifyNodeSource(retrieved, PACKAGE_NAME);
     }
 
     @Test
@@ -141,9 +137,6 @@ public class KiePMMLNodeFactoryTest {
         KiePMMLNodeFactory.populateJavaParserDTOAndSourcesMap(toPopulate, sourcesMap, nodeNamesDTO, dataDictionary2,
                                                               derivedFields2,
                                                               isRoot);
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate,
-                                                                              EVALUATE_PREDICATE).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
-        commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeNamesDTO.nodeClassName, isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
 
@@ -179,36 +172,6 @@ public class KiePMMLNodeFactoryTest {
     }
 
     @Test
-    public void populateEvaluatePredicate() {
-        final String packageName = "packageName";
-        final DataDictionary dataDictionary = getRandomDataDictionary();
-        final DataField dataField = dataDictionary.getDataFields().get(0);
-        dataField.setDataType(DataType.DOUBLE);
-
-        // empty node
-        boolean isRoot = false;
-        Node node = new NodeMock(false, dataField.getName().getValue(), dataField.getDataType());
-        KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(),
-                                                                                           "PARENTNODECLASS");
-        KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-
-        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, new ArrayList<>(), nodeNamesDTO, isRoot);
-        MethodDeclaration retrieved = CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate,
-                                                                              EVALUATE_PREDICATE + nodeNamesDTO.nodeClassName).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
-        commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeNamesDTO.nodeClassName, isRoot);
-
-        // root node
-        isRoot = true;
-        node = new NodeMock(true, dataField.getName().getValue(), dataField.getDataType());
-        nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
-        toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluatePredicate(toPopulate, dataDictionary, new ArrayList<>(), nodeNamesDTO, isRoot);
-        retrieved =
-                CommonCodegenUtils.getMethodDeclaration(toPopulate.nodeTemplate, EVALUATE_PREDICATE).orElseThrow(() -> new RuntimeException("No EVALUATE_PREDICATE in generated class"));
-        commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeNamesDTO.nodeClassName, isRoot);
-    }
-
-    @Test
     public void populateEvaluateNode() {
         final String packageName = "packageName";
         // empty node
@@ -217,14 +180,14 @@ public class KiePMMLNodeFactoryTest {
                                                                                            createNodeClassName(),
                                                                                            "PARENTNODECLASS");
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
+        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, derivedFields2, dataDictionary2, isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
 
         // populated node
         isRoot = true;
         nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(), null);
         toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
+        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, derivedFields2, dataDictionary2, isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
 
@@ -282,35 +245,36 @@ public class KiePMMLNodeFactoryTest {
     @Test
     public void populateEvaluateNodeWithPredicateFunction() {
         BlockStmt toPopulate = new BlockStmt();
-        VariableDeclarator variableDeclarator = new VariableDeclarator();
-        variableDeclarator.setName(PREDICATE_FUNCTION);
-        toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
-        final String nodeClassName = "NodeClassName";
-        final String nestedNodeClassName = "NestedNodeClassName";
-        boolean isRoot = true;
-        KiePMMLNodeFactory.populateEvaluateNodeWithPredicateFunction(toPopulate, nodeClassName, nestedNodeClassName,
-                                                                     isRoot);
-        commonVerifyEvaluateNodeWithPredicateFunction(variableDeclarator, nodeClassName, nestedNodeClassName, isRoot);
-        toPopulate = new BlockStmt();
-        variableDeclarator = new VariableDeclarator();
-        variableDeclarator.setName(PREDICATE_FUNCTION);
-        toPopulate.addStatement(new VariableDeclarationExpr(variableDeclarator));
-        assertFalse(variableDeclarator.getInitializer().isPresent());
-        isRoot = false;
-        KiePMMLNodeFactory.populateEvaluateNodeWithPredicateFunction(toPopulate, nodeClassName, nestedNodeClassName,
-                                                                     isRoot);
-        commonVerifyEvaluateNodeWithPredicateFunction(variableDeclarator, nodeClassName, nestedNodeClassName, isRoot);
-    }
-
-    @Test
-    public void getEvaluateNestedPredicateMethodDeclaration() {
-        final BlockStmt body = new BlockStmt();
-        final String nodeClassName = "NodeClassName";
-        // nested node
-        MethodDeclaration retrieved = KiePMMLNodeFactory.getEvaluateNestedPredicateMethodDeclaration(body,
-                                                                                                     nodeClassName);
-        commonVerifyEvaluatePredicateMethodDeclaration(retrieved, nodeClassName, false);
+        KiePMMLNodeFactory.populateEvaluateNodeWithPredicate(toPopulate, compoundPredicateNode.getPredicate(), derivedFields2, dataDictionary2);
+        Statement expected = JavaParserUtils.parseBlock("{\n" +
+                                                                "    KiePMMLSimplePredicate predicate_0 = " +
+                                                                "KiePMMLSimplePredicate.builder(\"temperature\", " +
+                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
+                                                                ".OPERATOR.GREATER_THAN).withValue(60.0).build();\n" +
+                                                                "    KiePMMLSimplePredicate predicate_1 = " +
+                                                                "KiePMMLSimplePredicate.builder(\"temperature\", " +
+                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
+                                                                ".OPERATOR.LESS_THAN).withValue(100.0).build();\n" +
+                                                                "    KiePMMLSimplePredicate predicate_2 = " +
+                                                                "KiePMMLSimplePredicate.builder(\"outlook\", " +
+                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
+                                                                ".OPERATOR.EQUAL).withValue(\"overcast\").build();\n" +
+                                                                "    KiePMMLSimplePredicate predicate_3 = " +
+                                                                "KiePMMLSimplePredicate.builder(\"humidity\", " +
+                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
+                                                                ".OPERATOR.LESS_THAN).withValue(70.0).build();\n" +
+                                                                "    KiePMMLSimplePredicate predicate_4 = " +
+                                                                "KiePMMLSimplePredicate.builder(\"windy\", " +
+                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
+                                                                ".OPERATOR.EQUAL).withValue(\"false\").build();\n" +
+                                                                "    KiePMMLCompoundPredicate predicate = " +
+                                                                "KiePMMLCompoundPredicate.builder(Collections" +
+                                                                ".emptyList(), org.kie.pmml.api.enums" +
+                                                                ".BOOLEAN_OPERATOR.AND).withKiePMMLPredicates(Arrays" +
+                                                                ".asList(predicate_0, predicate_1, predicate_2, " +
+                                                                "predicate_3, predicate_4)).build();\n" +
+                                                                "}");
+        assertTrue(JavaParserUtils.equalsNode(expected, toPopulate));
     }
 
     @Test
@@ -324,11 +288,7 @@ public class KiePMMLNodeFactoryTest {
                                           final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO, final boolean isRoot) {
         BlockStmt blockStmt = isRoot ? toPopulate.evaluateRootNodeBody :
                 toPopulate.nodeTemplate.getMethodsByName(EVALUATE_NODE + nodeNamesDTO.nodeClassName).get(0).getBody().orElseThrow(() -> new RuntimeException("No body in nested node evaluate node"));
-        VariableDeclarator variableDeclarator = CommonCodegenUtils.getVariableDeclarator(blockStmt,
-                                                                                         PREDICATE_FUNCTION).orElseThrow(() -> new RuntimeException("No PREDICATE_FUNCTION variable declarator in generated methodCallExpr"));
-        commonVerifyEvaluateNodeWithPredicateFunction(variableDeclarator, toPopulate.nodeClassName,
-                                                      nodeNamesDTO.nodeClassName, isRoot);
-        variableDeclarator =
+        VariableDeclarator variableDeclarator =
                 CommonCodegenUtils.getVariableDeclarator(blockStmt, SCORE).orElseThrow(() -> new RuntimeException("No SCORE variable declarator in generated methodCallExpr"));
         commonVerifyEvaluateNodeWithScore(variableDeclarator, nodeNamesDTO.node.getScore());
         variableDeclarator =
@@ -373,42 +333,11 @@ public class KiePMMLNodeFactoryTest {
         }
     }
 
-    private void commonVerifyEvaluateNodeWithPredicateFunction(final VariableDeclarator variableDeclarator,
-                                                               final String nodeClassName,
-                                                               final String nestedNodeClassName, final boolean isRoot) {
-        assertTrue(variableDeclarator.getInitializer().isPresent());
-        Expression expression = variableDeclarator.getInitializer().get();
-        assertTrue(expression instanceof MethodReferenceExpr);
-        MethodReferenceExpr retrieved = (MethodReferenceExpr) expression;
-        assertEquals(nodeClassName, retrieved.getScope().toString());
-        String expected = isRoot ? EVALUATE_PREDICATE : EVALUATE_PREDICATE + nestedNodeClassName;
-        assertEquals(expected, retrieved.getIdentifier());
-    }
-
-    private void commonVerifyEvaluatePredicateMethodDeclaration(final MethodDeclaration retrieved,
-                                                                final String nodeClassName,
-                                                                boolean isRoot) {
-        assertNotNull(retrieved);
-        assertEquals("boolean", retrieved.getType().asString());
-        assertEquals(1, retrieved.getParameters().size());
-        Parameter retrievedParameter = retrieved.getParameter(0);
-        String expected = STRING_OBJECT_MAP;
-        assertEquals(expected, retrievedParameter.getName().asString());
-        expected = String.format("%1$s<%2$s,%3$s>", Map.class.getName(), "String", "Object");
-        assertEquals(expected, retrievedParameter.getType().asString());
-        assertEquals(2, retrieved.getModifiers().size());
-        assertTrue(retrieved.getModifiers().stream().anyMatch(modifier -> modifier.getKeyword().equals(Modifier.Keyword.PRIVATE)));
-        assertTrue(retrieved.getModifiers().stream().anyMatch(modifier -> modifier.getKeyword().equals(Modifier.Keyword.STATIC)));
-        expected = isRoot ? EVALUATE_PREDICATE : EVALUATE_PREDICATE + nodeClassName;
-        assertEquals(expected, retrieved.getName().asString());
-    }
-
     private void commonVerifyNode(KiePMMLNode toVerify, Node original) {
         assertEquals(original.getId(), toVerify.getName());
     }
 
-    private void commonVerifyNodeSource(final Map<String, String> retrieved, final Node original,
-                                        final String packageName) {
+    private void commonVerifyNodeSource(final Map<String, String> retrieved, final String packageName) {
         assertEquals(1, retrieved.size());
         String toVerify = retrieved.values().iterator().next();
         CompilationUnit nodeCompilationUnit = getFromSource(toVerify);
