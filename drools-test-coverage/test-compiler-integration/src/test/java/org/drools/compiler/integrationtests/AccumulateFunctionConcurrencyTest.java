@@ -123,7 +123,7 @@ public class AccumulateFunctionConcurrencyTest {
 
             executor.shutdown();
             try {
-                executor.awaitTermination(10000000, TimeUnit.SECONDS);
+                executor.awaitTermination(300, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // ignore
             }

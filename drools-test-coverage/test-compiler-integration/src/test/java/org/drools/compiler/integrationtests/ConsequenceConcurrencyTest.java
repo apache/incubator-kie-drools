@@ -122,7 +122,7 @@ public class ConsequenceConcurrencyTest {
 
             executor.shutdown();
             try {
-                executor.awaitTermination(10, TimeUnit.SECONDS);
+                executor.awaitTermination(300, TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // ignore
             }
