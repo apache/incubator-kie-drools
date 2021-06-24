@@ -23,7 +23,6 @@ import java.util.UUID;
 
 import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -31,6 +30,7 @@ import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import io.quarkus.runtime.StartupEvent;
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
+import io.smallrye.common.annotation.Identifier;
 import io.vertx.mutiny.core.Vertx;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -48,7 +48,7 @@ class KafkaConfigurationIT {
     Vertx vertx;
 
     @Inject
-    @Named("default-kafka-broker")
+    @Identifier("default-kafka-broker")
     Instance<Map<String, Object>> defaultKafkaConfiguration;
 
     @Test
