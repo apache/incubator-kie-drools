@@ -15,6 +15,7 @@ pipeline {
         jdk 'kie-jdk11'
     }
     options {
+        timestamps()
         timeout(time: getTimeoutValue(), unit: 'MINUTES')
     }
     environment {

@@ -17,6 +17,7 @@ pipeline {
     }
 
     options {
+        timestamps()
         timeout(time: 360, unit: 'MINUTES')
     }
 
