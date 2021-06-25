@@ -35,10 +35,13 @@ import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Expression;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.Interval;
+import org.dmg.pmml.LinearNorm;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.NormContinuous;
+import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.ParameterField;
@@ -52,6 +55,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -62,6 +66,9 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;
+import org.kie.pmml.commons.model.expressions.KiePMMLNormContinuous;
+import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameOpType;
 
 import static org.kie.pmml.api.utils.PrimitiveBoxedUtils.getKiePMMLPrimitiveBoxed;
@@ -463,6 +470,12 @@ public class ModelUtils {
             case "FieldRef":
                 toReturn = convertToKiePMMLFieldRef((FieldRef) toConvert);
                 break;
+            case "NormContinuous":
+                toReturn = convertToKiePMMLNormContinuous((NormContinuous) toConvert);
+                break;
+            case "NormDiscrete":
+                toReturn = convertToKiePMMLNormDiscrete((NormDiscrete) toConvert);
+                break;
             default:
                 // Not implemented, yet
 
@@ -493,6 +506,27 @@ public class ModelUtils {
         return new KiePMMLFieldRef(toConvert.getField().getValue(), Collections.emptyList(),
                                    toConvert.getMapMissingTo());
     }
+
+    public static KiePMMLNormContinuous convertToKiePMMLNormContinuous(NormContinuous toConvert) {
+        final List<KiePMMLLinearNorm> linearNorms = toConvert.getLinearNorms().stream().map(ModelUtils::convertToKiePMMLLinearNorm).collect(Collectors.toList());
+        return new KiePMMLNormContinuous(toConvert.getField().getValue(),
+                                         Collections.emptyList(), linearNorms,
+                                         OUTLIER_TREATMENT_METHOD.byName(toConvert.getOutliers().value()),
+                                   toConvert.getMapMissingTo());
+    }
+
+    public static KiePMMLLinearNorm convertToKiePMMLLinearNorm(LinearNorm toConvert) {
+        return new KiePMMLLinearNorm(null, Collections.emptyList(),
+                                         toConvert.getOrig().doubleValue(), toConvert.getNorm().doubleValue());
+    }
+
+    public static KiePMMLNormDiscrete convertToKiePMMLNormDiscrete(NormDiscrete toConvert) {
+        return new KiePMMLNormDiscrete(toConvert.getField().getValue(),
+                                         Collections.emptyList(),
+                                         (String) toConvert.getValue(),
+                                         toConvert.getMapMissingTo());
+    }
+
 
     /**
      * Return a <code>List&lt;org.kie.pmml.commons.model.KiePMMLTarget&gt;</code> out of a <code>org.dmg.pmml

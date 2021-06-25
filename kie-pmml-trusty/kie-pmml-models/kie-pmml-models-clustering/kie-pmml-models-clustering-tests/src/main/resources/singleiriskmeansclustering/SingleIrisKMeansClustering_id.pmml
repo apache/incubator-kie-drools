@@ -40,6 +40,9 @@
       <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
+      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="double" optype="continuous">
+        <NormDiscrete field="class" value="1" />
+      </OutputField>
     </Output>
     <ComparisonMeasure kind="distance">
       <squaredEuclidean/>
