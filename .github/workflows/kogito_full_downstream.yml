@@ -4,6 +4,9 @@ on: [pull_request]
 
 jobs:
   build-chain:
+    concurrency:
+      group: kogito-full-downstream-${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         java-version: [11]
