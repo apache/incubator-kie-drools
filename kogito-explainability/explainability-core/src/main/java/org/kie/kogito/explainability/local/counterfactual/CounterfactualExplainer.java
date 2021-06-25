@@ -63,7 +63,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
     public CounterfactualExplainer() {
         this.solverConfig = CounterfactualConfigurationFactory.builder().build();
-        this.solverManagerFactory = (solverConfig) -> SolverManager.create(solverConfig, new SolverManagerConfig());
+        this.solverManagerFactory = solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
         this.executor = ForkJoinPool.commonPool();
     }
 
@@ -155,7 +155,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return new CounterfactualResult(solution.getEntities(),
                     cfOutputs.join(),
                     solution.getScore().isFeasible(),
-                    solution.getSolutionId(),
+                    UUID.randomUUID(),
                     solution.getExecutionId(),
                     sequenceId.incrementAndGet());
         });
@@ -180,7 +180,8 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             return this;
         }
 
-        public Builder withSolverManagerFactory(Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory) {
+        public Builder withSolverManagerFactory(
+                Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory) {
             this.solverManagerFactory = solverManagerFactory;
             return this;
         }
@@ -191,7 +192,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                 this.solverConfig = CounterfactualConfigurationFactory.builder().build();
             }
             if (this.solverManagerFactory == null) {
-                this.solverManagerFactory = (solverConfig) -> SolverManager.create(solverConfig, new SolverManagerConfig());
+                this.solverManagerFactory = solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
             }
             return new CounterfactualExplainer(
                     solverConfig,
