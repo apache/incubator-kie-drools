@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -212,6 +213,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
+    @Ignore("in case of standard-drl, MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable. But it doesn't make sense to keep compatibility for this behaviour")
     @Test
     public void testJoinStringToObjectNonComparable() {
 
