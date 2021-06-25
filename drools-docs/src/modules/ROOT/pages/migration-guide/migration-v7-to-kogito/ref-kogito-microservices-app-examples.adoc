@@ -5,6 +5,8 @@
 
 For information about each example application and instructions for using them, see the `README` file in the relevant application folder.
 
+NOTE: When you run examples in a local environment, ensure that the environment matches the requirements that are listed in the `README` file of the relevant application folder. Also, this might require making the necessary network ports available, as configured for Quarkus, Spring Boot, and docker-compose where applicable.
+
 The following list describes some of the examples provided with {KOGITO} microservices:
 
 Decision services::
