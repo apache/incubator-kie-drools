@@ -60,6 +60,14 @@
         <Constant>UNUSED</Constant>
       </Apply>
     </DerivedField>
+    <DerivedField name="normcontinuous_field" optype="continuous" dataType="double">
+      <NormContinuous field="salary">
+        <LinearNorm orig="4.7" norm="5.2"/>
+        <LinearNorm orig="5.6" norm="5.9"/>
+        <LinearNorm orig="6.4" norm="6.2"/>
+        <LinearNorm orig="6.8" norm="6.7"/>
+      </NormContinuous>
+    </DerivedField>
   </TransformationDictionary>
   <RegressionModel modelName="LinearRegressionSampleWithTransformations" functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
     <MiningSchema>
@@ -104,6 +112,9 @@
         <Apply function="fun_salary_fieldref">
           <Constant>987654321</Constant>
         </Apply>
+      </OutputField>
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+        <FieldRef field="normcontinuous_field"/>
       </OutputField>
     </Output>
     <Targets>

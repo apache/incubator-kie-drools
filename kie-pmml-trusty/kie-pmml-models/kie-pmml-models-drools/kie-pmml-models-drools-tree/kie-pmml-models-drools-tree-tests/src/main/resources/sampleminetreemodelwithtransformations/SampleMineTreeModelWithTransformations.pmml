@@ -35,6 +35,14 @@
     <DerivedField name="der_constant" optype="categorical" dataType="string">
       <Constant>constant</Constant>
     </DerivedField>
+    <DerivedField name="normcontinuous_field" optype="continuous" dataType="double">
+      <NormContinuous field="humidity">
+        <LinearNorm orig="4.7" norm="5.2"/>
+        <LinearNorm orig="5.6" norm="5.9"/>
+        <LinearNorm orig="6.4" norm="6.2"/>
+        <LinearNorm orig="6.8" norm="6.7"/>
+      </NormContinuous>
+    </DerivedField>
   </TransformationDictionary>
   <TreeModel modelName="SampleMineTreeModelWithTransformations" functionName="classification">
     <MiningSchema>
@@ -52,6 +60,9 @@
       </OutputField>
       <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
         <FieldRef field="der_constant"/>
+      </OutputField>
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+        <FieldRef field="normcontinuous_field"/>
       </OutputField>
     </Output>
     <Node score="nothing" id="1">
