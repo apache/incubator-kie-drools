@@ -112,7 +112,7 @@ public class JavaParserCompiler {
             String fileName = entry.getKey();
             String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
             classNames.add(className);
-            if (classLoader instanceof ProjectClassLoader) {
+            if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {
                 ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());
             }
         }
