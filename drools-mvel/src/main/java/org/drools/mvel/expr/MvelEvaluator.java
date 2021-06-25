@@ -41,6 +41,10 @@ public class MvelEvaluator<T> {
         return THREAD_SAFE ? new MvelEvaluator.ThreadSafe(expr) : new MvelEvaluator(expr);
     }
 
+    public T evaluate(Object ctx) {
+        return evaluate(ctx, null);
+    }
+
     public T evaluate(VariableResolverFactory factory) {
         return evaluate(null, factory);
     }
@@ -50,7 +54,7 @@ public class MvelEvaluator<T> {
     }
 
     private <T> T internalEvaluate(Object ctx, VariableResolverFactory factory) {
-        if (MVELDebugHandler.isDebugMode()) {
+        if (MVELDebugHandler.isDebugMode() && this.expr instanceof CompiledExpression) {
             CompiledExpression compexpr = (CompiledExpression) this.expr;
             if (MVELDebugHandler.verbose) {
                 logger.info(DebugTools.decompile(compexpr));
