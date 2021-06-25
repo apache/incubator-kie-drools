@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 
 import javax.inject.Inject;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
@@ -64,7 +65,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
     @Inject
     public ProtobufService protobufService;
 
-    @Override
+    @AfterEach
     void tearDown() {
         super.tearDown();
         if (cacheService.getDomainModelCache("travels") != null) {

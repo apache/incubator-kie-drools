@@ -24,6 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import javax.inject.Inject;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.DataIndexStorageService;
 import org.kie.kogito.index.TestUtils;
@@ -46,6 +47,7 @@ import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.COMPLETE;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_ACK;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_INIT;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_KEEP_ALIVE;
+import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.CONNECTION_TERMINATE;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.DATA;
 import static io.vertx.ext.web.handler.graphql.ApolloWSMessageType.START;
 import static java.lang.String.format;
@@ -71,8 +73,16 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
 
     private AtomicInteger counter = new AtomicInteger(0);
 
+    private HttpClient httpClient;
+
+    @BeforeEach
+    void setup() {
+        httpClient = vertx.createHttpClient(new HttpClientOptions().setDefaultPort(TestUtils.getPortFromConfig()));
+    }
+
     @AfterEach
     void tearDown() {
+        httpClient.close();
         cacheService.getJobsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();
@@ -211,9 +221,9 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
     }
 
     private CompletableFuture<JsonObject> subscribe(String subscription) throws Exception {
-        HttpClient httpClient = vertx.createHttpClient(new HttpClientOptions().setDefaultPort(TestUtils.getPortFromConfig()));
         CompletableFuture<JsonObject> cf = new CompletableFuture<>();
         CompletableFuture<Void> wsFuture = new CompletableFuture<>();
+        JsonObject terminate = new JsonObject().put("type", CONNECTION_TERMINATE.getText());
         instrumentation.setFuture(wsFuture);
         httpClient.webSocket("/graphql", websocketRes -> {
             if (websocketRes.succeeded()) {
@@ -222,8 +232,10 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                     JsonObject json = message.toJsonObject();
                     String type = json.getString("type");
                     if (COMPLETE.getText().equals(type)) {
+                        webSocket.write(terminate.toBuffer());
                         cf.complete(null);
                     } else if (DATA.getText().equals(type)) {
+                        webSocket.write(terminate.toBuffer());
                         cf.complete(message.toJsonObject());
                     } else if (CONNECTION_ACK.getText().equals(type)) {
                         JsonObject init = new JsonObject()
@@ -234,6 +246,7 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                     } else if (CONNECTION_KEEP_ALIVE.getText().equals(type)) {
                         //Ignore
                     } else {
+                        webSocket.write(terminate.toBuffer());
                         cf.completeExceptionally(new RuntimeException(format("Unexpected message type: %s\nMessage: %s", type, message.toString())));
                     }
                 });
@@ -245,7 +258,6 @@ public abstract class AbstractWebSocketSubscriptionIT extends AbstractIndexingIT
                 wsFuture.completeExceptionally(websocketRes.cause());
             }
         });
-        cf.whenComplete((r, t) -> httpClient.close());
         wsFuture.get(1, TimeUnit.MINUTES);
         return cf;
     }
