@@ -74,19 +74,25 @@ public class ReactiveMessagingEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().equals("ProcessInstanceEvent") && processInstancesEvents.orElse(true)) {
-
-            publishToTopic(event, processInstancesEventsEmitter, PI_TOPIC_NAME);
-        } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents.orElse(true)) {
-
-            publishToTopic(event, userTasksEventsEmitter, UI_TOPIC_NAME);
-        } else if (event.getType().equals("VariableInstanceEvent") && variablesEvents.orElse(true)) {
-
-            publishToTopic(event, variablesEventsEmitter, VI_TOPIC_NAME);
-        } else {
-            logger.warn("Unknown type of event '{}', ignoring", event.getType());
+        switch (event.getType()) {
+            case "ProcessInstanceEvent":
+                if (processInstancesEvents.orElse(true)) {
+                    publishToTopic(event, processInstancesEventsEmitter, PI_TOPIC_NAME);
+                }
+                break;
+            case "UserTaskInstanceEvent":
+                if (userTasksEvents.orElse(true)) {
+                    publishToTopic(event, userTasksEventsEmitter, UI_TOPIC_NAME);
+                }
+                break;
+            case "VariableInstanceEvent":
+                if (variablesEvents.orElse(true)) {
+                    publishToTopic(event, variablesEventsEmitter, VI_TOPIC_NAME);
+                }
+                break;
+            default:
+                logger.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
         }
-
     }
 
     @Override

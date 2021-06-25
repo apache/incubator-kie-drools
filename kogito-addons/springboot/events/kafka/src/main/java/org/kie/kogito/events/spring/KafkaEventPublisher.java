@@ -59,17 +59,24 @@ public class KafkaEventPublisher implements EventPublisher {
 
     @Override
     public void publish(DataEvent<?> event) {
-        if (event.getType().equals("ProcessInstanceEvent") && processInstancesEvents) {
-
-            publishToTopic(event, eventsEmitter, PI_TOPIC_NAME);
-        } else if (event.getType().equals("UserTaskInstanceEvent") && userTasksEvents) {
-
-            publishToTopic(event, eventsEmitter, UI_TOPIC_NAME);
-        } else if (event.getType().equals("VariableInstanceEvent") && variablesEvents) {
-
-            publishToTopic(event, eventsEmitter, VI_TOPIC_NAME);
-        } else {
-            logger.warn("Unknown type of event '{}', ignoring", event.getType());
+        switch (event.getType()) {
+            case "ProcessInstanceEvent":
+                if (processInstancesEvents) {
+                    publishToTopic(event, eventsEmitter, PI_TOPIC_NAME);
+                }
+                break;
+            case "UserTaskInstanceEvent":
+                if (userTasksEvents) {
+                    publishToTopic(event, eventsEmitter, UI_TOPIC_NAME);
+                }
+                break;
+            case "VariableInstanceEvent":
+                if (variablesEvents) {
+                    publishToTopic(event, eventsEmitter, VI_TOPIC_NAME);
+                }
+                break;
+            default:
+                logger.debug("Unknown type of event '{}', ignoring for this publisher", event.getType());
         }
     }
 
