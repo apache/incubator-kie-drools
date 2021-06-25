@@ -4,6 +4,9 @@ on: [pull_request]
 
 jobs:
   runtime-build:
+    concurrency:
+      group: runtimes_pr-${{ github.head_ref }}
+      cancel-in-progress: true
     timeout-minutes: 120
     strategy:
       matrix:
