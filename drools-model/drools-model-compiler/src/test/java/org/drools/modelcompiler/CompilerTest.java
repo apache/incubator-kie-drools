@@ -1998,6 +1998,23 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testHalfBinaryOrWithParenthesis() {
+        // DROOLS-6006
+        final String drl1 =
+                "rule R1 when\n" +
+                "    Integer(intValue (< 2 || > 5))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( 3 );
+        ksession.insert( 4 );
+        ksession.insert( 6 );
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
     public void testComplexHalfBinary() {
         // DROOLS-6006
         final String drl1 =
@@ -2011,6 +2028,60 @@ public class CompilerTest extends BaseModelTest {
         ksession.insert( 3 );
         ksession.insert( 4 );
         ksession.insert( 6 );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testHalfBinaryOnComparable() {
+        // DROOLS-6421
+        final String drl1 =
+                "rule R1 when\n" +
+                "    String(this (> \"C\" && < \"K\"))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( "B" );
+        ksession.insert( "D" );
+        ksession.insert( "H" );
+        ksession.insert( "S" );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testHalfBinaryOrOnComparable() {
+        // DROOLS-6421
+        final String drl1 =
+                "rule R1 when\n" +
+                "    String(this (< \"C\" || > \"K\"))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( "B" );
+        ksession.insert( "D" );
+        ksession.insert( "H" );
+        ksession.insert( "S" );
+        assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testComplexHalfBinaryOnComparable() {
+        // DROOLS-6421
+        final String drl1 =
+                "rule R1 when\n" +
+                "    String(this ((> \"C\" && < \"K\") || (> \"P\" && < \"R\")))\n" +
+                "then\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( drl1 );
+
+        ksession.insert( "B" );
+        ksession.insert( "D" );
+        ksession.insert( "Q" );
+        ksession.insert( "S" );
         assertEquals( 2, ksession.fireAllRules() );
     }
 
