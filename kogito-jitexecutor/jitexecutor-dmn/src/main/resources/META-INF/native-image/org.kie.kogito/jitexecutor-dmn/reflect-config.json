@@ -764,6 +764,9 @@
       "name":"java.io.File"
     },
     {
+      "name":"java.io.InputStream"
+    },
+    {
       "name":"java.lang.Boolean"
     },
     {

@@ -10,6 +10,10 @@
   <artifactId>jitexecutor-dmn</artifactId>
   <name>Kogito Apps :: JIT Executor DMN</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.jitexecutor.dmn</java.module.name>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -12,6 +12,10 @@
   <artifactId>jitexecutor-runner</artifactId>
   <name>Kogito Apps :: JIT Executor Runner</name>
 
+  <properties>
+    <java.module.name>org.kie.kogito.jitexecutor.runner</java.module.name>
+  </properties>
+
   <dependencies>
     <!-- ensure Quarkus' openapi takes precedence over the v7 dependency -->
     <dependency>
