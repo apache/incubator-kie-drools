@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -32,9 +33,11 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.LocalTransformations;
@@ -55,6 +58,7 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 
 import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldFactory.getOutputFieldVariableDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
@@ -130,10 +134,20 @@ public class KiePMMLModelFactoryUtils {
         methodDeclaration.setType(returnedType);
         BlockStmt body = new BlockStmt();
         methodDeclaration.setBody(body);
+        NodeList<Expression> arguments = new NodeList<>();
         for (org.dmg.pmml.OutputField outputField : outputFields) {
-            BlockStmt toAdd = getOutputFieldVariableDeclaration(outputField.getName().getValue(), outputField);
+            String outputFieldVariableName = getSanitizedClassName(outputField.getName().getValue()).toLowerCase();
+            BlockStmt toAdd = getOutputFieldVariableDeclaration(outputFieldVariableName, outputField);
             toAdd.getStatements().forEach(body::addStatement);
+            arguments.add(new NameExpr(outputFieldVariableName));
         }
+        MethodCallExpr methodCallExpr = new MethodCallExpr();
+        methodCallExpr.setScope(new NameExpr(Arrays.class.getSimpleName()));
+        methodCallExpr.setName("asList");
+        methodCallExpr.setArguments(arguments);
+        ReturnStmt returnStmt = new ReturnStmt();
+        returnStmt.setExpression(methodCallExpr);
+        body.addStatement(returnStmt);
     }
 
 //    /**

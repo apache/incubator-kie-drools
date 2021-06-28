@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -101,9 +102,9 @@ public class KiePMMLModelCodegenUtils {
         CommonCodegenUtils.setAssignExpressionValue(body, "targetField", targetFieldExpression);
         if (pmmlModel.getOutput() != null) {
             addGetCreatedKiePMMLOutputFieldsMethod(modelTemplate, pmmlModel.getOutput().getOutputFields());
-            MethodReferenceExpr getCreatedKiePMMLOutputFieldsExpr = new MethodReferenceExpr();
+            MethodCallExpr getCreatedKiePMMLOutputFieldsExpr = new MethodCallExpr();
             getCreatedKiePMMLOutputFieldsExpr.setScope(new ThisExpr());
-            getCreatedKiePMMLOutputFieldsExpr.setIdentifier(GET_CREATED_KIEPMMLOUTPUTFIELDS);
+            getCreatedKiePMMLOutputFieldsExpr.setName(GET_CREATED_KIEPMMLOUTPUTFIELDS);
             CommonCodegenUtils.setAssignExpressionValue(body, "kiePMMLOutputFields", getCreatedKiePMMLOutputFieldsExpr);
         }
         //        addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
