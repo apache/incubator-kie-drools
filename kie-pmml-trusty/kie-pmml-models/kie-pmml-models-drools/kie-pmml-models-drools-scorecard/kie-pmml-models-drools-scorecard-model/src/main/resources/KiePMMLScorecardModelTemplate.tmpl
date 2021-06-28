@@ -2,16 +2,11 @@ package org.kie.pmml.models.drools.scorecard.model;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.kie.pmml.commons.model.KiePMMLOutputField;
-import org.kie.pmml.commons.model.expressions.KiePMMLApply;
-import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
-import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
-import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
-import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
-import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
-import org.kie.pmml.commons.transformations.KiePMMLParameterField;
-import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
+import org.kie.pmml.commons.model.expressions.*;
+import org.kie.pmml.commons.transformations.*;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.drools.scorecard.model.KiePMMLScorecardModel;
 
@@ -25,6 +20,7 @@ public class KiePMMLScorecardModelTemplate extends KiePMMLScorecardModel {
         miningFunction = null;
         transformationDictionary = null;
         localTransformations = null;
+        kiePMMLOutputFields = null;
     }
 
     @Override
