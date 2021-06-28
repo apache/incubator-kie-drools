@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.explainability.integrationtests.dmn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,9 +43,15 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 class DecisionModelWrapper implements PredictionProvider {
 
     private final DecisionModel decisionModel;
+    private final List<String> skippedDecisions;
 
     DecisionModelWrapper(DecisionModel decisionModel) {
+        this(decisionModel, Collections.emptyList());
+    }
+
+    DecisionModelWrapper(DecisionModel decisionModel, List<String> skippedDecisions) {
         this.decisionModel = decisionModel;
+        this.skippedDecisions = skippedDecisions;
     }
 
     @Override
@@ -56,15 +63,18 @@ class DecisionModelWrapper implements PredictionProvider {
             DMNResult dmnResult = decisionModel.evaluateAll(context);
             List<Output> outputs = new LinkedList<>();
             for (DMNDecisionResult decisionResult : dmnResult.getDecisionResults()) {
-                Value value = new Value(decisionResult.getResult());
-                Type type;
-                if (Double.isNaN(value.asNumber())) {
-                    type = Type.TEXT;
-                } else {
-                    type = Type.NUMBER;
+                String decisionName = decisionResult.getDecisionName();
+                if (!skippedDecisions.contains(decisionName)) {
+                    Value value = new Value(decisionResult.getResult());
+                    Type type;
+                    if (Double.isNaN(value.asNumber())) {
+                        type = Type.TEXT;
+                    } else {
+                        type = Type.NUMBER;
+                    }
+                    Output output = new Output(decisionName, type, value, 1d);
+                    outputs.add(output);
                 }
-                Output output = new Output(decisionResult.getDecisionName(), type, value, 1d);
-                outputs.add(output);
             }
             PredictionOutput predictionOutput = new PredictionOutput(outputs);
             predictionOutputs.add(predictionOutput);
@@ -82,7 +92,11 @@ class DecisionModelWrapper implements PredictionProvider {
                 if (isList) {
                     List<Object> objects = new ArrayList<>(compositeFeatures.size());
                     for (Feature fs : compositeFeatures) {
-                        objects.add(fs.getValue().getUnderlyingObject());
+                        try {
+                            objects.add(toMap((List<Feature>) fs.getValue().getUnderlyingObject()));
+                        } catch (ClassCastException cce) {
+                            objects.add(fs.getValue().getUnderlyingObject());
+                        }
                     }
                     map.put(f.getName(), objects);
                 } else {

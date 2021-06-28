@@ -34,6 +34,7 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.local.lime.optim.LimeConfigOptimizer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -59,35 +60,13 @@ class FraudScoringDmnLimeExplainerTest {
 
     @Test
     void testFraudScoringDMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
-        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/fraud.dmn")));
-        assertEquals(1, dmnRuntime.getModels().size());
+        PredictionProvider model = getModel();
 
-        final String FRAUD_NS = "http://www.redhat.com/dmn/definitions/_81556584-7d78-4f8c-9d5f-b3cddb9b5c73";
-        final String FRAUD_NAME = "fraud-scoring";
-        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, FRAUD_NS, FRAUD_NAME);
-        List<Map<String, Object>> transactions = new LinkedList<>();
-        Map<String, Object> t1 = new HashMap<>();
-        t1.put("Card Type", "Debit");
-        t1.put("Location", "Local");
-        t1.put("Amount", 1000);
-        t1.put("Auth Code", "Authorized");
-        transactions.add(t1);
-        Map<String, Object> t2 = new HashMap<>();
-        t2.put("Card Type", "Credit");
-        t2.put("Location", "Local");
-        t2.put("Amount", 100000);
-        t2.put("Auth Code", "Denied");
-        transactions.add(t2);
-        Map<String, Object> map = new HashMap<>();
-        map.put("Transactions", transactions);
-
-        PredictionProvider model = new DecisionModelWrapper(decisionModel);
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newCompositeFeature("context", map));
-        PredictionInput predictionInput = new PredictionInput(features);
+        PredictionInput predictionInput = getTestInput();
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
+
         Random random = new Random();
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
@@ -112,12 +91,70 @@ class FraudScoringDmnLimeExplainerTest {
         String decision = "Risk Score";
         List<PredictionInput> inputs = new ArrayList<>();
         for (int n = 0; n < 10; n++) {
-            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(predictionInput.getFeatures(), perturbationContext)));
         }
         DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
         int k = 2;
         int chunkSize = 2;
         double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
         AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
+    }
+
+    private PredictionProvider getModel() {
+        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/fraud.dmn")));
+        assertEquals(1, dmnRuntime.getModels().size());
+        final String FRAUD_NS = "http://www.redhat.com/dmn/definitions/_81556584-7d78-4f8c-9d5f-b3cddb9b5c73";
+        final String FRAUD_NAME = "fraud-scoring";
+        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, FRAUD_NS, FRAUD_NAME);
+        return new DecisionModelWrapper(decisionModel, List.of("Last Transaction", "Merchant Blacklist"));
+    }
+
+    private PredictionInput getTestInput() {
+        List<Map<String, Object>> transactions = new LinkedList<>();
+        Map<String, Object> t1 = new HashMap<>();
+        t1.put("Card Type", "Credit");
+        t1.put("Location", "Global");
+        t1.put("Amount", 141);
+        t1.put("Auth Code", "Denied");
+        transactions.add(t1);
+        Map<String, Object> t2 = new HashMap<>();
+        t2.put("Card Type", "Debit");
+        t2.put("Location", "Local");
+        t2.put("Amount", 19);
+        t2.put("Auth Code", "Approved");
+        transactions.add(t2);
+        Map<String, Object> map = new HashMap<>();
+        map.put("Transactions", transactions);
+
+        List<Feature> features = new ArrayList<>();
+        features.add(FeatureFactory.newCompositeFeature("context", map));
+        return new PredictionInput(features);
+    }
+
+    @Test
+    void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer();
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
+        LimeExplainer limeExplainer = new LimeExplainer(optimizedConfig);
+        PredictionInput testPredictionInput = getTestInput();
+        List<PredictionOutput> testPredictionOutputs = model.predictAsync(List.of(testPredictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
+
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
+                0.5, 0.5));
     }
 }

@@ -49,4 +49,12 @@ public class EncodingParams {
     public double getNumericTypeClusterThreshold() {
         return numericTypeClusterThreshold;
     }
+
+    @Override
+    public String toString() {
+        return "EncodingParams{" +
+                "numericTypeClusterGaussianFilterWidth=" + numericTypeClusterGaussianFilterWidth +
+                ", numericTypeClusterThreshold=" + numericTypeClusterThreshold +
+                '}';
+    }
 }

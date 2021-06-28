@@ -17,11 +17,7 @@ package org.kie.kogito.explainability.explainability.integrationtests.dmn;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -34,16 +30,12 @@ import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.global.pdp.PartialDependencePlotExplainer;
-import org.kie.kogito.explainability.model.Feature;
-import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.PartialDependenceGraph;
-import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.explainability.utils.DataUtils;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -60,7 +52,7 @@ class PrequalificationDmnPDPExplainerTest {
 
         PredictionProvider model = new DecisionModelWrapper(decisionModel);
 
-        List<PredictionInput> inputs = getInputs();
+        List<PredictionInput> inputs = DmnTestUtils.randomPrequalificationInputs();
         List<PredictionOutput> predictionOutputs = model.predictAsync(inputs)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         List<Prediction> predictions = new ArrayList<>();
@@ -75,27 +67,4 @@ class PrequalificationDmnPDPExplainerTest {
         Assertions.assertThat(pdps).hasSize(25);
     }
 
-    private List<PredictionInput> getInputs() {
-        List<PredictionInput> predictionInputs = new ArrayList<>();
-
-        final Map<String, Object> borrower = new HashMap<>();
-        borrower.put("Monthly Other Debt", 1000);
-        borrower.put("Monthly Income", 10000);
-        final Map<String, Object> contextVariables = new HashMap<>();
-        contextVariables.put("Appraised Value", 500000);
-        contextVariables.put("Loan Amount", 300000);
-        contextVariables.put("Credit Score", 600);
-        contextVariables.put("Borrower", borrower);
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newCompositeFeature("context", contextVariables));
-        PredictionInput predictionInput = new PredictionInput(features);
-
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            List<Feature> perturbFeatures = DataUtils.perturbFeatures(predictionInput.getFeatures(), new PerturbationContext(random, predictionInput.getFeatures().size()));
-            predictionInputs.add(new PredictionInput(perturbFeatures));
-        }
-
-        return predictionInputs;
-    }
 }

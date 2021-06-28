@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 
 import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.BeforeAll;
@@ -29,6 +31,7 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.local.lime.optim.LimeConfigOptimizer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -43,6 +46,7 @@ import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
+import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 import org.kie.pmml.api.runtime.PMMLRuntime;
@@ -66,31 +70,12 @@ class PmmlRegressionLimeExplainerTest {
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
         LimeConfig limeConfig = new LimeConfig()
-                .withSamples(10)
+                .withSamples(100)
                 .withPerturbationContext(perturbationContext);
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-        List<Feature> features = new ArrayList<>();
-        features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
-        features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
-        features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
-        features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
-        PredictionInput input = new PredictionInput(features);
+        PredictionInput input = getTestInput();
 
-        PredictionProvider model = inputs -> CompletableFuture.supplyAsync(() -> {
-            List<PredictionOutput> outputs = new ArrayList<>();
-            for (PredictionInput input1 : inputs) {
-                List<Feature> features1 = input1.getFeatures();
-                LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
-                        features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
-                        features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
-                PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
-                String species = result.getResultVariables().get("Species").toString();
-                double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
-                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
-                outputs.add(predictionOutput);
-            }
-            return outputs;
-        });
+        PredictionProvider model = getModel();
         List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         assertThat(predictionOutputs).isNotNull();
@@ -106,9 +91,44 @@ class PmmlRegressionLimeExplainerTest {
             assertThat(v).isEqualTo(1d);
         }
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                0.0, 0.0));
+                0.1, 0.1));
 
+        List<PredictionInput> inputs = getSamples();
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
         String decision = "species";
+        int k = 2;
+        int chunkSize = 5;
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
+    }
+
+    @Test
+    void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = getSamples();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer();
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
+        LimeExplainer limeExplainer = new LimeExplainer(optimizedConfig);
+        PredictionInput testPredictionInput = getTestInput();
+        List<PredictionOutput> testPredictionOutputs = model.predictAsync(List.of(testPredictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
+
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
+                0.5, 0.5));
+    }
+
+    private List<PredictionInput> getSamples() {
         List<PredictionInput> inputs = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
             List<Feature> fs = new ArrayList<>();
@@ -118,10 +138,33 @@ class PmmlRegressionLimeExplainerTest {
             fs.add(FeatureFactory.newNumericalFeature("petalWidth", i + 1));
             inputs.add(new PredictionInput(fs));
         }
-        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-        int k = 2;
-        int chunkSize = 5;
-        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-        AssertionsForClassTypes.assertThat(f1).isBetween(0d, 1d);
+        return inputs;
+    }
+
+    private PredictionProvider getModel() {
+        return inputs -> CompletableFuture.supplyAsync(() -> {
+            List<PredictionOutput> outputs = new ArrayList<>();
+            for (PredictionInput input1 : inputs) {
+                List<Feature> features1 = input1.getFeatures();
+                LogisticRegressionIrisDataExecutor pmmlModel = new LogisticRegressionIrisDataExecutor(
+                        features1.get(0).getValue().asNumber(), features1.get(1).getValue().asNumber(),
+                        features1.get(2).getValue().asNumber(), features1.get(3).getValue().asNumber());
+                PMML4Result result = pmmlModel.execute(logisticRegressionIrisRuntime);
+                String species = result.getResultVariables().get("Species").toString();
+                double score = Double.parseDouble(result.getResultVariables().get("Probability_" + species).toString());
+                PredictionOutput predictionOutput = new PredictionOutput(List.of(new Output("species", Type.TEXT, new Value(species), 1d)));
+                outputs.add(predictionOutput);
+            }
+            return outputs;
+        });
+    }
+
+    private PredictionInput getTestInput() {
+        List<Feature> features = new ArrayList<>();
+        features.add(FeatureFactory.newNumericalFeature("sepalLength", 6.9));
+        features.add(FeatureFactory.newNumericalFeature("sepalWidth", 3.1));
+        features.add(FeatureFactory.newNumericalFeature("petalLength", 5.1));
+        features.add(FeatureFactory.newNumericalFeature("petalWidth", 2.3));
+        return new PredictionInput(features);
     }
 }

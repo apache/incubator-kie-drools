@@ -34,6 +34,7 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.local.lime.optim.LimeConfigOptimizer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -59,33 +60,16 @@ class PrequalificationDmnLimeExplainerTest {
 
     @Test
     void testPrequalificationDMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
-        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/Prequalification-1.dmn")));
-        assertEquals(1, dmnRuntime.getModels().size());
+        PredictionProvider model = getModel();
 
-        final String NS = "http://www.trisotech.com/definitions/_f31e1f8e-d4ce-4a3a-ac3b-747efa6b3401";
-        final String NAME = "Prequalification";
-        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, NS, NAME);
-
-        final Map<String, Object> borrower = new HashMap<>();
-        borrower.put("Monthly Other Debt", 1000);
-        borrower.put("Monthly Income", 10000);
-        final Map<String, Object> contextVariables = new HashMap<>();
-        contextVariables.put("Appraised Value", 500000);
-        contextVariables.put("Loan Amount", 300000);
-        contextVariables.put("Credit Score", 600);
-        contextVariables.put("Borrower", borrower);
-        List<Feature> features = new LinkedList<>();
-        features.add(FeatureFactory.newCompositeFeature("context", contextVariables));
-        PredictionInput predictionInput = new PredictionInput(features);
-
-        PredictionProvider model = new DecisionModelWrapper(decisionModel);
+        PredictionInput predictionInput = getTestInput();
 
         Random random = new Random();
 
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
         LimeConfig limeConfig = new LimeConfig()
-                .withSamples(300)
+                .withSamples(10)
                 .withPerturbationContext(perturbationContext);
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
 
@@ -103,12 +87,12 @@ class PrequalificationDmnLimeExplainerTest {
         }
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                0.5, 0.5));
+                0.3, 0.3));
 
         String decision = "LLPA";
         List<PredictionInput> inputs = new ArrayList<>();
         for (int n = 0; n < 10; n++) {
-            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(predictionInput.getFeatures(), perturbationContext)));
         }
         DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
         int k = 2;
@@ -116,5 +100,53 @@ class PrequalificationDmnLimeExplainerTest {
         double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
         AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
 
+    }
+
+    @Test
+    void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = DmnTestUtils.randomPrequalificationInputs();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 10)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withSampling(false);
+        Random random = new Random();
+        random.setSeed(0);
+        LimeConfig initialConfig = new LimeConfig().withSamples(10);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
+
+        LimeExplainer limeExplainer = new LimeExplainer(optimizedConfig);
+        PredictionInput testPredictionInput = getTestInput();
+        List<PredictionOutput> testPredictionOutputs = model.predictAsync(List.of(testPredictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
+
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
+                0.4, 0.4));
+    }
+
+    private PredictionInput getTestInput() {
+        final Map<String, Object> borrower = new HashMap<>();
+        borrower.put("Monthly Other Debt", 1000);
+        borrower.put("Monthly Income", 10000);
+        final Map<String, Object> contextVariables = new HashMap<>();
+        contextVariables.put("Appraised Value", 500000);
+        contextVariables.put("Loan Amount", 300000);
+        contextVariables.put("Credit Score", 600);
+        contextVariables.put("Borrower", borrower);
+        List<Feature> features = new LinkedList<>();
+        features.add(FeatureFactory.newCompositeFeature("context", contextVariables));
+        return new PredictionInput(features);
+    }
+
+    private PredictionProvider getModel() {
+        DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/Prequalification-1.dmn")));
+        assertEquals(1, dmnRuntime.getModels().size());
+
+        final String NS = "http://www.trisotech.com/definitions/_f31e1f8e-d4ce-4a3a-ac3b-747efa6b3401";
+        final String NAME = "Prequalification";
+        DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, NS, NAME);
+        return new DecisionModelWrapper(decisionModel);
     }
 }

@@ -92,4 +92,12 @@ public class PredictionInputsDataDistribution implements DataDistribution {
             return featureDistributions;
         }
     }
+
+    @Override
+    public String toString() {
+        return "PredictionInputsDataDistribution{" +
+                "inputs=" + inputs +
+                ", random=" + random +
+                '}';
+    }
 }

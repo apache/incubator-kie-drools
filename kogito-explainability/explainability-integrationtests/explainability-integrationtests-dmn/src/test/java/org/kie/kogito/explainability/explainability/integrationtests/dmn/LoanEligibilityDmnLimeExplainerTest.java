@@ -33,6 +33,7 @@ import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
+import org.kie.kogito.explainability.local.lime.optim.LimeConfigOptimizer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -48,6 +49,7 @@ import org.kie.kogito.explainability.utils.DataUtils;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.ValidationUtils;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -56,13 +58,76 @@ class LoanEligibilityDmnLimeExplainerTest {
 
     @Test
     void testLoanEligibilityDMNExplanation() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        PredictionInput predictionInput = getTestInput();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
+        Random random = new Random();
+        random.setSeed(0);
+
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig limeConfig = new LimeConfig()
+                .withPerturbationContext(perturbationContext);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        for (Saliency saliency : saliencyMap.values()) {
+            assertNotNull(saliency);
+        }
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
+                0.4, 0.4));
+
+        String decision = "Eligibility";
+        List<PredictionInput> inputs = new ArrayList<>();
+        for (int n = 0; n < 10; n++) {
+            inputs.add(new PredictionInput(DataUtils.perturbFeatures(predictionInput.getFeatures(), perturbationContext)));
+        }
+        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
+        int k = 2;
+        int chunkSize = 2;
+        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
+        AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
+    }
+
+    @Test
+    void testExplanationStabilityWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer();
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withPerturbationContext(perturbationContext);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
+
+        LimeExplainer limeExplainer = new LimeExplainer(optimizedConfig);
+        PredictionInput testPredictionInput = getTestInput();
+        List<PredictionOutput> testPredictionOutputs = model.predictAsync(List.of(testPredictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
+
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
+                0.5, 0.5));
+    }
+
+    private PredictionProvider getModel() {
         DMNRuntime dmnRuntime = DMNKogito.createGenericDMNRuntime(new InputStreamReader(getClass().getResourceAsStream("/dmn/LoanEligibility.dmn")));
         assertEquals(1, dmnRuntime.getModels().size());
 
         final String FRAUD_NS = "https://github.com/kiegroup/kogito-examples/dmn-quarkus-listener-example";
         final String FRAUD_NAME = "LoanEligibility";
         DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, FRAUD_NS, FRAUD_NAME);
+        return new DecisionModelWrapper(decisionModel);
+    }
 
+    private PredictionInput getTestInput() {
         final Map<String, Object> client = new HashMap<>();
         client.put("Age", 43);
         client.put("Salary", 1950);
@@ -74,37 +139,8 @@ class LoanEligibilityDmnLimeExplainerTest {
         contextVariables.put("Client", client);
         contextVariables.put("Loan", loan);
 
-        PredictionProvider model = new DecisionModelWrapper(decisionModel);
         List<Feature> features = new ArrayList<>();
         features.add(FeatureFactory.newCompositeFeature("context", contextVariables));
-        PredictionInput predictionInput = new PredictionInput(features);
-        List<PredictionOutput> predictionOutputs = model.predictAsync(List.of(predictionInput))
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        Prediction prediction = new SimplePrediction(predictionInput, predictionOutputs.get(0));
-        Random random = new Random();
-        random.setSeed(0);
-        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
-        LimeConfig limeConfig = new LimeConfig()
-                .withSamples(100)
-                .withPerturbationContext(perturbationContext);
-        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
-        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
-                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
-        for (Saliency saliency : saliencyMap.values()) {
-            assertNotNull(saliency);
-        }
-        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, prediction, limeExplainer, 1,
-                0.5, 0.5));
-
-        String decision = "Eligibility";
-        List<PredictionInput> inputs = new ArrayList<>();
-        for (int n = 0; n < 10; n++) {
-            inputs.add(new PredictionInput(DataUtils.perturbFeatures(features, perturbationContext)));
-        }
-        DataDistribution distribution = new PredictionInputsDataDistribution(inputs);
-        int k = 2;
-        int chunkSize = 2;
-        double f1 = ExplainabilityMetrics.getLocalSaliencyF1(decision, model, limeExplainer, distribution, k, chunkSize);
-        AssertionsForClassTypes.assertThat(f1).isBetween(0.5d, 1d);
+        return new PredictionInput(features);
     }
 }

@@ -17,10 +17,7 @@ package org.kie.kogito.explainability.explainability.integrationtests.dmn;
 
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
@@ -32,16 +29,12 @@ import org.kie.kogito.dmn.DMNKogito;
 import org.kie.kogito.dmn.DmnDecisionModel;
 import org.kie.kogito.explainability.Config;
 import org.kie.kogito.explainability.global.pdp.PartialDependencePlotExplainer;
-import org.kie.kogito.explainability.model.Feature;
-import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.PartialDependenceGraph;
-import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.model.SimplePrediction;
-import org.kie.kogito.explainability.utils.DataUtils;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -58,7 +51,7 @@ class FraudScoringDmnPDPExplainerTest {
         DecisionModel decisionModel = new DmnDecisionModel(dmnRuntime, FRAUD_NS, FRAUD_NAME);
         PredictionProvider model = new DecisionModelWrapper(decisionModel);
 
-        List<PredictionInput> inputs = getInputs();
+        List<PredictionInput> inputs = DmnTestUtils.randomFraudScoringInputs();
         List<PredictionOutput> predictionOutputs = model.predictAsync(inputs)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         List<Prediction> predictions = new ArrayList<>();
@@ -71,37 +64,6 @@ class FraudScoringDmnPDPExplainerTest {
 
         assertThat(pdps).isNotNull();
         Assertions.assertThat(pdps).hasSize(32);
-
     }
 
-    private List<PredictionInput> getInputs() {
-        List<PredictionInput> predictionInputs = new ArrayList<>();
-        List<Map<String, Object>> transactions = new ArrayList<>();
-        Map<String, Object> t1 = new HashMap<>();
-        t1.put("Card Type", "Debit");
-        t1.put("Location", "Local");
-        t1.put("Amount", 1000);
-        t1.put("Auth Code", "Authorized");
-        transactions.add(t1);
-        Map<String, Object> t2 = new HashMap<>();
-        t2.put("Card Type", "Credit");
-        t2.put("Location", "Local");
-        t2.put("Amount", 100000);
-        t2.put("Auth Code", "Denied");
-        transactions.add(t2);
-        Map<String, Object> map = new HashMap<>();
-        map.put("Transactions", transactions);
-        List<Feature> features = new ArrayList<>();
-        features.add(FeatureFactory.newCompositeFeature("context", map));
-        PredictionInput predictionInput = new PredictionInput(features);
-        predictionInputs.add(predictionInput);
-
-        Random random = new Random();
-        for (int i = 0; i < 100; i++) {
-            List<Feature> perturbFeatures = DataUtils.perturbFeatures(predictionInput.getFeatures(), new PerturbationContext(random, predictionInput.getFeatures().size()));
-            predictionInputs.add(new PredictionInput(perturbFeatures));
-        }
-
-        return predictionInputs;
-    }
 }

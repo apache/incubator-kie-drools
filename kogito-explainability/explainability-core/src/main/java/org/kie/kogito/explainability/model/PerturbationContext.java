@@ -41,4 +41,12 @@ public class PerturbationContext {
     public Random getRandom() {
         return random;
     }
+
+    @Override
+    public String toString() {
+        return "PerturbationContext{" +
+                "random=" + random +
+                ", noOfPerturbations=" + noOfPerturbations +
+                '}';
+    }
 }

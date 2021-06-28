@@ -121,7 +121,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                         if (noOfRetries > 0) {
                             PerturbationContext newPerturbationContext;
                             int newNoOfSamples;
-                            if (limeConfig.adaptDatasetVariance()) {
+                            if (limeConfig.isAdaptDatasetVariance()) {
                                 int nextPerturbationSize = Math.max(perturbationContext.getNoOfPerturbations() + 1,
                                         linearizedTargetInputFeatures.size() / noOfRetries);
                                 // make sure to stay within the max no. of features boundaries
