@@ -31,6 +31,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
+/**
+ * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_Apply>Apply</a>
+ */
 public class KiePMMLApply extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = -6975232157053159223L;

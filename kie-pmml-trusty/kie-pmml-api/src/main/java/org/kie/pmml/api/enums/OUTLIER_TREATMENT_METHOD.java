@@ -23,15 +23,11 @@ import org.kie.pmml.api.exceptions.KieEnumException;
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_OUTLIER-TREATMENT-METHOD>OUTLIER-TREATMENT-METHOD</a>
  */
-public enum OUTLIER_TREATMENT_METHOD {
+public enum OUTLIER_TREATMENT_METHOD implements Named {
 
-    ASSOCIATION_RULES("associationRules"),
-    SEQUENCES("sequences"),
-    CLASSIFICATION("classification"),
-    REGRESSION("regression"),
-    CLUSTERING("clustering"),
-    TIME_SERIES("timeSeries"),
-    MIXED("mixed");
+    AS_IS("asIs"),
+    AS_MISSING_VALUES("asMissingValues"),
+    AS_EXTREME_VALUES("asExtremeValues");
 
     private String name;
 
@@ -40,9 +36,10 @@ public enum OUTLIER_TREATMENT_METHOD {
     }
 
     public static OUTLIER_TREATMENT_METHOD byName(String name) {
-        return Arrays.stream(OUTLIER_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+        return Arrays.stream(OUTLIER_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find OUTLIER_TREATMENT_METHOD with name: " + name));
     }
 
+    @Override
     public String getName() {
         return name;
     }

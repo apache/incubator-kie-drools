@@ -28,6 +28,8 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -1434,5 +1436,26 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         assertEquals(3, fired);
         assertEquals(41, p.publicAge);
+    }
+
+    @Test
+    public void testUnknownPropertyNameInWatch() throws Exception {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "global java.util.List result;\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person( name == \"John\" ) @watch( ageX )\n" +
+                           "then\n" +
+                           "    result.add($p.getName());\n" +
+                           "    modify($p) { setLikes(\"stilton\") }\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "    $p : Person(likes == \"stilton\")\n" +
+                           "then\n" +
+                           "    modify($p) { setAge(20) }\n" +
+                           "end\n";
+
+        KieBuilder kbuilder = createKieBuilder(str);
+        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
     }
 }

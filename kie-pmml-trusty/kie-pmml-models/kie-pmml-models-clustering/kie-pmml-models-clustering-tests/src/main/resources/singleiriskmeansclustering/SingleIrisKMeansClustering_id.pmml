@@ -18,6 +18,16 @@
     </DataField>
     <DataField name="class" optype="continuous" dataType="string"/>
   </DataDictionary>
+  <TransformationDictionary>
+    <DerivedField name="normcontinuous_field" optype="continuous" dataType="double">
+      <NormContinuous field="sepal_length">
+        <LinearNorm orig="4.7" norm="5.2"/>
+        <LinearNorm orig="5.6" norm="5.9"/>
+        <LinearNorm orig="6.4" norm="6.2"/>
+        <LinearNorm orig="6.8" norm="6.7"/>
+      </NormContinuous>
+    </DerivedField>
+  </TransformationDictionary>
   <ClusteringModel modelName="SingleIrisKMeansClustering" functionName="clustering" modelClass="centerBased" numberOfClusters="4">
     <MiningSchema>
       <MiningField name="sepal_length" invalidValueTreatment="asIs"/>
@@ -26,6 +36,11 @@
       <MiningField name="petal_width" invalidValueTreatment="asIs"/>
       <MiningField name="class" usageType="predicted"/>
     </MiningSchema>
+    <Output>
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+        <FieldRef field="normcontinuous_field"/>
+      </OutputField>
+    </Output>
     <ComparisonMeasure kind="distance">
       <squaredEuclidean/>
     </ComparisonMeasure>

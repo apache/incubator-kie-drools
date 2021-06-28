@@ -26,6 +26,9 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
+/**
+ * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_Constant>Constant</a>
+ */
 public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMMLExpression {
 
     private static final long serialVersionUID = 3312643278386342170L;

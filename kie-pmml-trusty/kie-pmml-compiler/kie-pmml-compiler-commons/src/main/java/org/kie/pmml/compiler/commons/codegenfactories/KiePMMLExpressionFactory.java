@@ -19,10 +19,12 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.FieldRef;
+import org.dmg.pmml.NormContinuous;
 
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory.getFieldRefVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration;
 
 /**
  * Facade for actual implementations
@@ -42,10 +44,11 @@ public class KiePMMLExpressionFactory {
             return getConstantVariableDeclaration(variableName, (Constant) expression);
         } else if (expression instanceof FieldRef) {
             return getFieldRefVariableDeclaration(variableName, (FieldRef) expression);
+        } else if (expression instanceof NormContinuous) {
+            return getNormContinuousVariableDeclaration(variableName, (NormContinuous) expression);
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }
     }
-
 
 }
