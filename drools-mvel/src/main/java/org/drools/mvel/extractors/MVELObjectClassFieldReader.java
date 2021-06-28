@@ -136,8 +136,7 @@ public class MVELObjectClassFieldReader extends BaseObjectClassFieldReader imple
     /* (non-Javadoc)
      * @see org.kie.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
-    public Object getValue(InternalWorkingMemory workingMemory,
-                           Object object) {
+    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
         return evaluator.evaluate( object  );
     }
 
