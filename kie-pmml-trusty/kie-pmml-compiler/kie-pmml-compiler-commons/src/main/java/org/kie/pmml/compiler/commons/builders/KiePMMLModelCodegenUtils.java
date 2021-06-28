@@ -76,7 +76,6 @@ public class KiePMMLModelCodegenUtils {
         final String generatedClassName = getSanitizedClassName(name);
         final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(pmmlModel.getMiningSchema(), dataDictionary);
         final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(pmmlModel.getOutput(), dataDictionary);
-//        final List<KiePMMLOutputField> kiePMMLOutputFields = getOutputFields(pmmlModel);
         final Expression miningFunctionExpression;
         if (pmmlModel.getMiningFunction() != null) {
             MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(pmmlModel.getMiningFunction().value());
@@ -107,7 +106,6 @@ public class KiePMMLModelCodegenUtils {
             getCreatedKiePMMLOutputFieldsExpr.setName(GET_CREATED_KIEPMMLOUTPUTFIELDS);
             CommonCodegenUtils.setAssignExpressionValue(body, "kiePMMLOutputFields", getCreatedKiePMMLOutputFieldsExpr);
         }
-        //        addKiePMMLOutputFieldsPopulation(body, kiePMMLOutputFields);
     }
 
     static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(DataDictionary dataDictionary, Model pmmlModel) {
