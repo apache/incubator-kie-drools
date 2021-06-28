@@ -95,16 +95,26 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
         return new Builder();
     }
 
+    /**
+     * Wrap the provided {@link Consumer<CounterfactualResult>} in a OptaPlanner-accepted
+     * {@link Consumer<CounterfactualSolution>}.
+     * The consumer is only called when the provided {@link CounterfactualSolution} is valid.
+     * 
+     * @param consumer {@link Consumer<CounterfactualResult>} provided to the explainer for intermediate results
+     * @return {@link Consumer<CounterfactualSolution>} as accepted by OptaPlanner
+     */
     private Consumer<CounterfactualSolution> createSolutionConsumer(Consumer<CounterfactualResult> consumer,
             AtomicLong sequenceId) {
         return counterfactualSolution -> {
-            CounterfactualResult result = new CounterfactualResult(counterfactualSolution.getEntities(),
-                    counterfactualSolution.getPredictionOutputs(),
-                    counterfactualSolution.getScore().isFeasible(),
-                    counterfactualSolution.getSolutionId(),
-                    counterfactualSolution.getExecutionId(),
-                    sequenceId.incrementAndGet());
-            consumer.accept(result);
+            if (counterfactualSolution.getScore().isFeasible()) {
+                CounterfactualResult result = new CounterfactualResult(counterfactualSolution.getEntities(),
+                        counterfactualSolution.getPredictionOutputs(),
+                        counterfactualSolution.getScore().isFeasible(),
+                        counterfactualSolution.getSolutionId(),
+                        counterfactualSolution.getExecutionId(),
+                        sequenceId.incrementAndGet());
+                consumer.accept(result);
+            }
         };
     }
 

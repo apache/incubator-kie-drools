@@ -72,8 +72,8 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.atLeast;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -590,16 +590,25 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("class", Type.BOOLEAN, new Value(false), 0.0d));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.9));
+
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
-        for (int i = 0; i < 4; i++) {
-            features.add(TestUtils.getMockedNumericFeature(i));
-            featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
-            constraints.add(false);
-        }
-        final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(10L);
+        features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
+        constraints.add(false);
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
+        constraints.add(false);
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
+        constraints.add(false);
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
+        constraints.add(false);
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+
+        final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(10_000L);
         // for the purpose of this test, only a few steps are necessary
         final SolverConfig solverConfig = CounterfactualConfigurationFactory
                 .builder().withTerminationConfig(terminationConfig).build();
@@ -615,7 +624,11 @@ class CounterfactualExplainerTest {
                         .build();
 
         PredictionInput input = new PredictionInput(features);
-        PredictionProvider model = TestUtils.getSumSkipModel(0);
+
+        final double center = 400.0;
+        final double epsilon = 10.0;
+        final PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
+
         PredictionOutput output = new PredictionOutput(goal);
         Prediction prediction = new CounterfactualPrediction(input,
                 output,
@@ -631,8 +644,8 @@ class CounterfactualExplainerTest {
         }
 
         logger.debug("Outputs: {}", counterfactualResult.getOutput().get(0).getOutputs());
-        //An intermediate result is generated when seed > 0
-        verify(assertIntermediateCounterfactualNotNull, times(seed == 0 ? 0 : 1)).accept(any());
+        // At least one intermediate result is generated
+        verify(assertIntermediateCounterfactualNotNull, atLeast(1)).accept(any());
     }
 
     @ParameterizedTest
@@ -647,7 +660,7 @@ class CounterfactualExplainerTest {
         ArgumentCaptor<Consumer<CounterfactualSolution>> intermediateSolutionConsumerCaptor =
                 ArgumentCaptor.forClass(Consumer.class);
 
-        //Mock SolverManager and SolverJob to guarantee deterministic test behaviour 
+        //Mock SolverManager and SolverJob to guarantee deterministic test behaviour
         SolverManager<CounterfactualSolution, UUID> solverManager = mock(SolverManager.class);
         SolverJob<CounterfactualSolution, UUID> solverJob = mock(SolverJob.class);
         CounterfactualSolution solution = mock(CounterfactualSolution.class);
@@ -680,7 +693,7 @@ class CounterfactualExplainerTest {
         verify(solverManager).solveAndListen(any(), any(), intermediateSolutionConsumerCaptor.capture(), any());
         Consumer<CounterfactualSolution> intermediateSolutionConsumer = intermediateSolutionConsumerCaptor.getValue();
 
-        //Mock the intermediate Solution callback being invoked 
+        //Mock the intermediate Solution callback being invoked
         IntStream.range(0, numberOfIntermediateSolutions).forEach(i -> {
             CounterfactualSolution intermediate = mock(CounterfactualSolution.class);
             BendableBigDecimalScore intermediateScore = BendableBigDecimalScore.zero(0, 0);
@@ -700,26 +713,26 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.9));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
         features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
 
         final double center = 400.0;
-        final double epsilon = 1e-10;
+        final double epsilon = 10.0;
 
         PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
 
@@ -773,7 +786,7 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.9));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.5));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
