@@ -32,9 +32,10 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.expr.MVELCompilationUnit.DroolsVarFactory;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 /**
  * An MVEL accumulator implementation
@@ -49,10 +50,10 @@ public class MVELAccumulator
     MVELCompilationUnit       reverseUnit;
     MVELCompilationUnit       resultUnit;
     
-    private Serializable      init;
-    private Serializable      action;
-    private Serializable      reverse;
-    private Serializable      result;
+    private MvelEvaluator<Void> init;
+    private MvelEvaluator<Void> action;
+    private MvelEvaluator<Void> reverse;
+    private MvelEvaluator<Void> result;
 
     public MVELAccumulator() {
     }
@@ -88,12 +89,12 @@ public class MVELAccumulator
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule) {
-        init = initUnit.getCompiledExpression( runtimeData );
-        action = actionUnit.getCompiledExpression( runtimeData );
-        result = resultUnit.getCompiledExpression( runtimeData );
+        init = createMvelEvaluator( initUnit.getCompiledExpression( runtimeData ) );
+        action = createMvelEvaluator( actionUnit.getCompiledExpression( runtimeData ) );
+        result = createMvelEvaluator( resultUnit.getCompiledExpression( runtimeData ) );
                 
         if ( reverseUnit != null ) {
-            reverse = reverseUnit.getCompiledExpression( runtimeData, rule != null ? rule.toRuleNameAndPathString() : null );
+            reverse = createMvelEvaluator( reverseUnit.getCompiledExpression( runtimeData, rule != null ? rule.toRuleNameAndPathString() : null ) );
         }
     }
 
@@ -124,9 +125,7 @@ public class MVELAccumulator
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        MVELSafeHelper.getEvaluator().executeExpression( this.init,
-                                null,
-                                factory );
+        this.init.evaluate( factory );
         
         
         DroolsVarFactory df = ( DroolsVarFactory ) factory.getNextFactory();
@@ -164,11 +163,9 @@ public class MVELAccumulator
                 shadow[i] = factory.getIndexedVariableResolver( i ).getValue();
             }
         }
-        MVELSafeHelper.getEvaluator().executeExpression( this.action,
-                                null,
-                                factory );
-        
-        
+
+        this.action.evaluate( factory );
+
         if ( localVars.length > 0 ) {
             for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
                 localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
@@ -210,10 +207,8 @@ public class MVELAccumulator
             }
         }
 
-        MVELSafeHelper.getEvaluator().executeExpression( this.reverse,
-                                null,
-                                factory );
-        
+        this.reverse.evaluate( factory );
+
         if ( localVars.length > 0 ) {
             for ( int i = 0; i < df.getOtherVarsLength(); i++ ) {
                 localVars[i] = factory.getIndexedVariableResolver( df.getOtherVarsPos() + i ).getValue();
@@ -239,7 +234,7 @@ public class MVELAccumulator
         VariableResolverFactory factory = factoryContext.getResultFactory();
         resultUnit.updateFactory( null, tuple, localVars, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver(), factory );
 
-        return MVELSafeHelper.getEvaluator().executeExpression( this.result, null, factory );
+        return this.result.evaluate( factory );
     }
 
     public boolean supportsReverse() {
