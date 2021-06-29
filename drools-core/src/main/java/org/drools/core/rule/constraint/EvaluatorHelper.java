@@ -250,22 +250,24 @@ public class EvaluatorHelper {
     }
 
     public static boolean coercingComparison(Object obj1, Object obj2, String op) {
-        try {
-            double d1 = toDouble( obj1 );
-            double d2 = toDouble( obj2 );
+        if (canCoerceToNumber(obj1, obj2)) {
+            try {
+                double d1 = toDouble( obj1 );
+                double d2 = toDouble( obj2 );
 
-            if (Double.isNaN( d1 ) || Double.isNaN( d2 )) {
-                return false;
-            }
+                if (Double.isNaN( d1 ) || Double.isNaN( d2 )) {
+                    return false;
+                }
 
-            switch (op) {
-                case "<": return d1 < d2;
-                case "<=": return d1 <= d2;
-                case ">": return d1 > d2;
-                case ">=": return d1 >= d2;
-            }
+                switch (op) {
+                    case "<": return d1 < d2;
+                    case "<=": return d1 <= d2;
+                    case ">": return d1 > d2;
+                    case ">=": return d1 >= d2;
+                }
 
-        } catch (NumberFormatException nfe) { }
+            } catch (NumberFormatException nfe) { }
+        }
 
         String s1 = obj1.toString();
         String s2 = obj2.toString();
@@ -277,6 +279,15 @@ public class EvaluatorHelper {
         }
 
         throw new UnsupportedOperationException("Unable to compare " + obj1 + " and " + obj2);
+    }
+
+    private static boolean canCoerceToNumber(Object left, Object right) {
+        // don't coerce to number when the left type is String and the right type is not number (to meet mvel behaviour)
+        if (left instanceof String && !(right instanceof Number)) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     private static double toDouble(Object obj) {
