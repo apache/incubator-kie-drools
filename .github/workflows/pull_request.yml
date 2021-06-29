@@ -4,6 +4,9 @@ on: [pull_request]
 
 jobs:
   build-chain:
+    concurrency:
+      group: pull_request-${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]

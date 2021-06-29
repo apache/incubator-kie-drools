@@ -67,9 +67,6 @@ import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import org.drools.mvelcompiler.CompiledExpressionResult;
 import org.drools.mvelcompiler.ConstraintCompiler;
-import org.drools.mvelcompiler.context.MvelCompilerContext;
-
-import static java.util.Arrays.asList;
 
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.DIVIDE;
@@ -84,6 +81,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.PLUS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.REMAINDER;
+import static java.util.Arrays.asList;
 import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createConstraintCompiler;
@@ -486,7 +484,7 @@ public class ConstraintParser {
 
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
-        } else if(arithmeticExpr && (left.isBigDecimal())) {
+        } else if (arithmeticExpr && (left.isBigDecimal())) {
             ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, Optional.of(patternType));
             CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
 
@@ -496,7 +494,7 @@ public class ConstraintParser {
                 return new DrlxParseFail(new ParseExpressionErrorResult(drlxExpr));
             }
             // This special comparisons
-            SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(operator, left, right);
+            SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(expressionTyper, operator, left, right);
             combo = specialComparisonResult.expression;
             left = specialComparisonResult.coercedLeft;
             right = specialComparisonResult.coercedRight;
@@ -623,17 +621,41 @@ public class ConstraintParser {
         return te.getRawClass().equals(Object.class);
     }
 
-    private SpecialComparisonResult handleSpecialComparisonCases(BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
-        if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && (isComparisonOperator(operator))) {
+    private SpecialComparisonResult handleSpecialComparisonCases(ExpressionTyper expressionTyper, BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
+        if (isLogicalOperator(operator)) {
+            Expression rewrittenLeft = handleSpecialComparisonCases(expressionTyper, left);
+            Expression rewrittenRight = handleSpecialComparisonCases(expressionTyper, right);
+            if (rewrittenLeft != null && rewrittenRight != null) {
+                return new SpecialComparisonResult(new EnclosedExpr(new BinaryExpr(rewrittenLeft, rewrittenRight, operator)), left, right);
+            }
+        }
+
+        boolean comparison = isComparisonOperator(operator);
+        if ((isAnyOperandBigDecimal(left, right) || isAnyOperandBigInteger(left, right)) && comparison) {
             return compareBigDecimal(operator, left, right);
         }
 
-        if ( isComparisonOperator( operator ) ) {
+        if ( comparison ) {
             SpecialComparisonCase methodName = specialComparisonFactory(left, right);
             return methodName.createCompareMethod(operator);
         }
 
         return new SpecialComparisonResult(new BinaryExpr( left.getExpression(), right.getExpression(), operator ), left, right);
+    }
+
+    private Expression handleSpecialComparisonCases(ExpressionTyper expressionTyper, TypedExpression typedExpression) {
+        if (typedExpression.getExpression() instanceof BinaryExpr) {
+            BinaryExpr binaryExpr = (BinaryExpr) typedExpression.getExpression();
+            if (!(binaryExpr.getLeft() instanceof MethodCallExpr) && !(binaryExpr.getRight() instanceof MethodCallExpr)) {
+                Optional<TypedExpression> leftTyped = expressionTyper.toTypedExpression(binaryExpr.getLeft()).getTypedExpression();
+                Optional<TypedExpression> rightTyped = expressionTyper.toTypedExpression(binaryExpr.getRight()).getTypedExpression();
+                if (leftTyped.isPresent() && rightTyped.isPresent()) {
+                    SpecialComparisonResult leftResult = handleSpecialComparisonCases(expressionTyper, binaryExpr.getOperator(), leftTyped.get(), rightTyped.get());
+                    return leftResult.expression;
+                }
+            }
+        }
+        return null;
     }
 
     static class SpecialComparisonResult {
