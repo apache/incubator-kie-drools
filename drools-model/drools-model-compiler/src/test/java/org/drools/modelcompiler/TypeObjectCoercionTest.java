@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -211,18 +210,6 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.insert(new ObjectHolder("DEF"));
         assertEquals(1, ksession.fireAllRules()); // standard-drl : "DEF" < "ABC" (String comparison)
         ksession.dispose();
-    }
-
-    @Ignore("in case of standard-drl, MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable. But it doesn't make sense to keep compatibility for this behaviour")
-    @Test
-    public void testJoinStringToObjectNonComparable() {
-
-        KieSession ksession = getKieSessionForJoinStringToObject();
-
-        // Object > String "10"
-        ksession.insert(new StringHolder("10"));
-        ksession.insert(new ObjectHolder(new Object())); // not Comparable
-        assertEquals(0, ksession.fireAllRules()); // in case of standard-drl, MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
     }
 
     private KieSession getKieSessionForJoinIntegerToObject() {
