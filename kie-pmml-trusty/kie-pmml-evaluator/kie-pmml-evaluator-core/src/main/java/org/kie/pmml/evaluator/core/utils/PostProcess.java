@@ -162,7 +162,10 @@ public class PostProcess {
                     .map(Optional::get)
                     .findFirst();
         }
-        variableValue.ifPresent(objValue -> toUpdate.addResultVariable(outputField.getName(), objValue));
+        variableValue.ifPresent(objValue -> {
+            toUpdate.addResultVariable(outputField.getName(), objValue);
+            kiePMMLNameValues.add(new KiePMMLNameValue(outputField.getName(), objValue));
+        });
     }
 
     static void populateTransformedOutputField(final KiePMMLOutputField outputField,
