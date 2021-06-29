@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class ProjectJobSchedulingPerformanceTest extends SolverPerformanceTest<S
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-152/-69]soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-193/-92]soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "0hard/-152medium/-69soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-193medium/-92soft", EnvironmentMode.FAST_ASSERT));
     }
 }

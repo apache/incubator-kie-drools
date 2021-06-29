@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,10 +22,10 @@ import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
-import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 import org.optaplanner.examples.projectjobscheduling.domain.resource.Resource;
-import org.optaplanner.persistence.xstream.api.score.buildin.bendable.BendableScoreXStreamConverter;
+import org.optaplanner.persistence.xstream.api.score.buildin.hardmediumsoft.HardMediumSoftScoreXStreamConverter;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 import com.thoughtworks.xstream.annotations.XStreamConverter;
@@ -42,8 +42,8 @@ public class Schedule extends AbstractPersistable {
 
     private List<Allocation> allocationList;
 
-    @XStreamConverter(BendableScoreXStreamConverter.class)
-    private BendableScore score;
+    @XStreamConverter(HardMediumSoftScoreXStreamConverter.class)
+    private HardMediumSoftScore score;
 
     @ProblemFactCollectionProperty
     public List<Project> getProjectList() {
@@ -99,12 +99,12 @@ public class Schedule extends AbstractPersistable {
         this.allocationList = allocationList;
     }
 
-    @PlanningScore(bendableHardLevelsSize = 1, bendableSoftLevelsSize = 2)
-    public BendableScore getScore() {
+    @PlanningScore
+    public HardMediumSoftScore getScore() {
         return score;
     }
 
-    public void setScore(BendableScore score) {
+    public void setScore(HardMediumSoftScore score) {
         this.score = score;
     }
 

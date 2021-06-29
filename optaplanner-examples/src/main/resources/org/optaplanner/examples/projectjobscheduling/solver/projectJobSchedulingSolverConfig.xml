@@ -8,8 +8,12 @@
   <entityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</entityClass>
 
   <scoreDirectorFactory>
+    <!--<constraintProviderClass>org.optaplanner.examples.projectjobscheduling.optional.score.ProjectJobSchedulingConstraintProvider</constraintProviderClass>-->
     <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
     <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingConstraints.drl</scoreDrl>-->
+    <!--<assertionScoreDirectorFactory>-->
+      <!--<scoreDrl>org/optaplanner/examples/projectjobscheduling/solver/projectJobSchedulingConstraints.drl</scoreDrl>-->
+    <!--</assertionScoreDirectorFactory>-->
   </scoreDirectorFactory>
   <termination>
     <minutesSpentLimit>5</minutesSpentLimit>

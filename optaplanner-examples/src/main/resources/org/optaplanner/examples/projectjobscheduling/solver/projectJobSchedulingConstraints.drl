@@ -17,7 +17,7 @@
 package org.optaplanner.examples.projectjobscheduling.solver;
     dialect "java"
 
-import org.optaplanner.core.api.score.buildin.bendable.BendableScoreHolder;
+import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScoreHolder;
 
 import org.optaplanner.examples.projectjobscheduling.domain.Allocation;
 import org.optaplanner.examples.projectjobscheduling.domain.ExecutionMode;
@@ -31,7 +31,7 @@ import org.optaplanner.examples.projectjobscheduling.score.capacity.RenewableRes
 import org.optaplanner.examples.projectjobscheduling.score.capacity.ResourceCapacityTracker;
 import org.optaplanner.examples.projectjobscheduling.optional.score.drools.RenewableResourceUsedDay;
 
-global BendableScoreHolder scoreHolder;
+global HardMediumSoftScoreHolder scoreHolder;
 
 // ############################################################################
 // Hard constraints
@@ -49,7 +49,7 @@ rule "nonrenewableResourceCapacity"
             $used > $capacity
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, 0, $capacity - $used);
+        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $used);
 end
 
 rule "renewableResourceUsedDay"
@@ -76,7 +76,7 @@ rule "renewableResourceCapacity"
             $used > $capacity
         )
     then
-        scoreHolder.addHardConstraintMatch(kcontext, 0, $capacity - $used);
+        scoreHolder.addHardConstraintMatch(kcontext, $capacity - $used);
 end
 
 // ############################################################################
@@ -88,7 +88,7 @@ rule "totalProjectDelay"
         Allocation(jobType == JobType.SINK, endDate != null, $endDate : endDate,
                $criticalPathEndDate : projectCriticalPathEndDate)
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 0,  $criticalPathEndDate - $endDate);
+        scoreHolder.addMediumConstraintMatch(kcontext, $criticalPathEndDate - $endDate);
 end
 
 
@@ -99,5 +99,5 @@ rule "totalMakespan"
             $maxProjectEndDate : max($endDate)
         )
     then
-        scoreHolder.addSoftConstraintMatch(kcontext, 1, - (Integer) $maxProjectEndDate);
+        scoreHolder.addSoftConstraintMatch(kcontext, - (Integer) $maxProjectEndDate);
 end
