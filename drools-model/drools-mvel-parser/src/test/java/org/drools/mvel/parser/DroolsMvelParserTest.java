@@ -437,6 +437,24 @@ public class DroolsMvelParserTest {
     }
 
     @Test
+    public void testAndWithImplicitParameterAndParenthesisOnThis() {
+        String expr = "this (> 1 && < 2)";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.AND, comboExpr.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExpr.getLeft();
+        assertEquals("this", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExpr.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+    }
+
+    @Test
     public void testAndWithImplicitParameterAndParenthesisComplex() {
         String expr = "value ((> 1 && < 2) || (> 3 && < 4))";
         Expression expression = parseExpression( parser, expr ).getExpr();

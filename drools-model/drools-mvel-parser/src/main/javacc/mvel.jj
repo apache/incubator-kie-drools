@@ -1891,6 +1891,13 @@ Expression PrimaryPrefix():
 	  ret = Literal()
 	|
 	  <THIS> { ret = new ThisExpr(tokenRange(), null); }
+	  	[ args = Arguments() { hasArgs=true; } ]
+	  	{
+
+	  		if (hasArgs) {
+	  			ret = parseThisExprOrHalfBinary(range(ret, token()), (ThisExpr) ret, args);
+			}
+	  	}
 	|
 	  <SUPER> { ret = new SuperExpr(tokenRange(), null); }
 	  (
