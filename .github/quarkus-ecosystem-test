@@ -2,7 +2,7 @@
 set -e
 
 # update the version
-mvn versions:set-property -pl kogito-build-parent -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
+mvn versions:set-property -pl :kogito-build-parent -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
 
 # run the tests
 mvn --settings .github/quarkus-ecosystem-maven-settings.xml -B clean install -Dnative -Dquarkus.native.container-build=true
