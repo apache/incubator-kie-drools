@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kogito-addons</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kogito-addons-deprecated-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Kogito :: Add-Ons :: Deprecated</name>
+  <description>Home for deprecated addons that will be discontinued in future releases. Do not use these dependencies.</description>
+  <modules>
+    <module>cloudevents-utils</module>
+    <module>cloudevents-common-addon</module>
+    <module>cloudevents-quarkus-addon</module>
+    <module>cloudevents-spring-boot-addon</module>
+    <module>kogito-event-driven-decisions-common</module>
+    <module>kogito-event-driven-decisions-quarkus-addon</module>
+    <module>kogito-event-driven-decisions-springboot-addon</module>
+    <module>knative-eventing-addon</module>
+    <module>monitoring-core-common</module>
+    <module>monitoring-core-quarkus-addon</module>
+    <module>monitoring-core-springboot-addon</module>
+    <module>monitoring-prometheus-common</module>
+    <module>monitoring-prometheus-quarkus-addon</module>
+    <module>monitoring-prometheus-springboot-addon</module>
+  </modules>
+</project>
