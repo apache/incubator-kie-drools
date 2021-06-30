@@ -58,7 +58,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
 import static com.github.javaparser.StaticJavaParser.parse;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 public class ModelMetaData {
@@ -211,42 +210,12 @@ public class ModelMetaData {
             fd.createGetter();
             fd.createSetter();
 
-            // toMap method body
-            MethodCallExpr putVariable = new MethodCallExpr(new NameExpr("params"), "put");
-            putVariable.addArgument(new StringLiteralExpr(varName));
-            putVariable.addArgument(new FieldAccessExpr(new ThisExpr(), sanitizedName));
-            toMapBody.addStatement(putVariable);
-
-            ClassOrInterfaceType type = parseClassOrInterfaceType(vtype);
-
-            // from map instance method body
-            FieldAccessExpr instanceField = new FieldAccessExpr(new ThisExpr(), sanitizedName);
-            staticFromMap.addStatement(new AssignExpr(instanceField, new CastExpr(
-                    type,
-                    new MethodCallExpr(
-                            new NameExpr("params"),
-                            "get")
-                                    .addArgument(new StringLiteralExpr(varName))),
-                    AssignExpr.Operator.ASSIGN));
         }
 
         Optional<MethodDeclaration> toMapMethod = modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("toMap"));
 
         toMapBody.addStatement(new ReturnStmt(new NameExpr("params")));
         toMapMethod.ifPresent(methodDeclaration -> methodDeclaration.setBody(toMapBody));
-
-        //first setting return type for the fromMap with no id parameter
-        modelClass.findFirst(MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 1)
-                .ifPresent(m -> m.setType(modelClassSimpleName));
-
-        //second setting return type for the fromMap with id parameter
-        modelClass.findFirst(
-                // make sure to take only the method with two parameters (id, businessKey and params)
-                MethodDeclaration.class, sl -> sl.getName().asString().equals("fromMap") && sl.getParameters().size() == 2)
-                .ifPresent(m -> {
-                    m.setBody(staticFromMap.addStatement(new ReturnStmt(new ThisExpr())));
-                    m.setType(modelClassSimpleName);
-                });
 
         return compilationUnit;
     }

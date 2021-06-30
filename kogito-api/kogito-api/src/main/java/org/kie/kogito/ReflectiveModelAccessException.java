@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,17 @@
  */
 package org.kie.kogito;
 
-import java.util.Map;
+public class ReflectiveModelAccessException extends IllegalArgumentException {
 
-/**
- * To be implemented by classes which can express its internal information as a Map
- */
-public interface MapOutput {
+    public ReflectiveModelAccessException(Exception e) {
+        super(e);
+    }
 
-    /**
-     * Returns class representation as map
-     * 
-     * @return non null map of data extracted from the class
-     */
-    default Map<String, Object> toMap() {
-        return Models.toMap(this);
+    public ReflectiveModelAccessException(String msg, NoSuchMethodException e) {
+        super(msg, e);
+    }
+
+    public ReflectiveModelAccessException(String msg) {
+        super(msg);
     }
 }

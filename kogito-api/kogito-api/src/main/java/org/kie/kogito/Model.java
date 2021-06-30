@@ -23,5 +23,7 @@ import java.util.Map;
  */
 public interface Model extends MapInput, MapOutput {
 
-    void update(Map<String, Object> params);
+    default void update(Map<String, Object> params) {
+        Models.fromMap(this, params);
+    }
 }

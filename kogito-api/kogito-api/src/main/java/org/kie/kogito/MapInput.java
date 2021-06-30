@@ -28,5 +28,9 @@ public interface MapInput {
      * @param params Map containing keys which matches names of fields
      *        in the class
      */
-    MapInput fromMap(Map<String, Object> params);
+    default MapInput fromMap(Map<String, Object> params) {
+        Models.fromMap(this, params);
+        return this;
+    }
+
 }

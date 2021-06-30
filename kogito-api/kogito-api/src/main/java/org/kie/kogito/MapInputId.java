@@ -18,16 +18,18 @@ package org.kie.kogito;
 import java.util.Map;
 
 /**
- * To be implemented by classes which can express its internal information as a Map
+ * To be implemented by classes which can be populated from a Map
  */
-public interface MapOutput {
+public interface MapInputId {
 
     /**
-     * Returns class representation as map
+     * Fills the class with information retrieved from the map
      * 
-     * @return non null map of data extracted from the class
+     * @param params Map containing keys which matches names of fields
+     *        in the class
      */
-    default Map<String, Object> toMap() {
-        return Models.toMap(this);
+    default void fromMap(String id, Map<String, Object> params) {
+        Models.fromMap(this, id, params);
     }
+
 }
