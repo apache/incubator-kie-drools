@@ -42,6 +42,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.evaluator.api.container.PMMLPackage;
 import org.kie.pmml.evaluator.assembler.container.PMMLPackageImpl;
 import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImpl;
@@ -83,12 +84,7 @@ public class PMMLRuntimeFactoryInternalTest {
         knowledgeBuilder.addPackage(new KnowledgePackageImpl("namespace_1"));
         knowledgeBuilder.addPackage(new KnowledgePackageImpl("namespace_2"));
         PMMLPackage pmmlPkg = new PMMLPackageImpl();
-        pmmlPkg.addAll(Collections.singleton(new KiePMMLModel("FAKE", Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        }));
+        pmmlPkg.addAll(Collections.singleton(new KiePMMLTestingModel("FAKE", Collections.emptyList())));
         KnowledgePackageImpl pmmlKnowledgePackage = new KnowledgePackageImpl("pmmled_package");
         pmmlKnowledgePackage.getResourceTypePackages().put(ResourceType.PMML, pmmlPkg);
         KieBase retrieved = PMMLRuntimeFactoryInternal.createKieBase(knowledgeBuilder);
