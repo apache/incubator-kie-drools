@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -67,6 +68,31 @@ public class TestUtils {
                 }
                 PredictionOutput predictionOutput = new PredictionOutput(
                         List.of(new Output("sum-but" + skipFeatureIndex, Type.NUMBER, new Value(result), 1d)));
+                predictionOutputs.add(predictionOutput);
+            }
+            return predictionOutputs;
+        });
+    }
+
+    /**
+     * Test model which returns the inputs as outputs, except for a single specified feature
+     * 
+     * @param featureIndex Index of the input feature to omit from output
+     * @return A {@link PredictionProvider} model
+     */
+    public static PredictionProvider getFeatureSkipModel(int featureIndex) {
+        return inputs -> supplyAsync(() -> {
+            List<PredictionOutput> predictionOutputs = new LinkedList<>();
+            for (PredictionInput predictionInput : inputs) {
+                List<Feature> features = predictionInput.getFeatures();
+                List<Output> outputs = new ArrayList<>();
+                for (int i = 0; i < features.size(); i++) {
+                    if (i != featureIndex) {
+                        Feature feature = features.get(i);
+                        outputs.add(new Output(feature.getName(), feature.getType(), feature.getValue(), 1.0));
+                    }
+                }
+                PredictionOutput predictionOutput = new PredictionOutput(outputs);
                 predictionOutputs.add(predictionOutput);
             }
             return predictionOutputs;
