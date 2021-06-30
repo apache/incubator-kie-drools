@@ -4028,4 +4028,68 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals(2, results.size());
         assertThat(results, hasItem(36));
     }
+
+    @Test
+    public void testBindVariableUsedInSubsequentAccumulateString() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List result;\n" +
+                     "rule X when\n" +
+                     "  accumulate( Person($name : name);\n" +
+                     "    $count : count($name),\n" +
+                     "    $maxName : max($name);\n" +
+                     "    $count > 1\n" +
+                     "  )\n" +
+                     "  accumulate( Person(name == $maxName, $age : age);\n" +
+                     "    $maxAge : max($age)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.add($maxAge);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37));
+        ksession.insert(new Person("John", 60));
+        ksession.insert(new Person("Paul", 35));
+        ksession.insert(new Person("Paul", 50));
+
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(50);
+    }
+
+    @Test
+    public void testBindVariableUsedInSubsequentAccumulateBigDecimal() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "global java.util.List result;\n" +
+                     "rule X when\n" +
+                     "  accumulate( Person($money : money);\n" +
+                     "    $count : count($money),\n" +
+                     "    $maxMoney : max($money);\n" +
+                     "    $count > 1\n" +
+                     "  )\n" +
+                     "  accumulate( Person(money == $maxMoney, $age : age);\n" +
+                     "    $maxAge : max($age)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.add($maxAge);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 37, new BigDecimal("100.0")));
+        ksession.insert(new Person("John", 60, new BigDecimal("100.0")));
+        ksession.insert(new Person("Paul", 35, new BigDecimal("200.0")));
+        ksession.insert(new Person("Paul", 50, new BigDecimal("200.0")));
+
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactly(50);
+    }
 }
