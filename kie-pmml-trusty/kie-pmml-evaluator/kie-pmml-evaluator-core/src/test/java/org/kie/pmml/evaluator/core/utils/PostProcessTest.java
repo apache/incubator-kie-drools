@@ -16,10 +16,10 @@
 
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -31,8 +31,10 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
+import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
@@ -63,14 +65,14 @@ public class PostProcessTest {
         // Build model
         String TARGET_NAME = "TARGET_NAME";
         String FIELD_NAME = "FIELD_NAME";
-        KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, Collections.emptyList())
+        KiePMMLTarget kiePMMLTarget = KiePMMLTarget.builder(TARGET_NAME, new ArrayList())
                 .withMin(4.34)
                 .withField(FIELD_NAME)
                 .build();
         List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET",
-                                                                                                Collections.emptyList()).build());
+                                                                                                new ArrayList()).build());
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel model =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .withKiePMMLTargets(kiePMMLTargets)
                         .build();
@@ -79,41 +81,48 @@ public class PostProcessTest {
         toModify.setResultCode(ResultCode.FAIL.getName());
         toModify.addResultVariable(FIELD_NAME, 4.33);
         assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
-        PostProcess.executeTargets(toModify, model);
+        ProcessingDTO processingDTO = getProcessingDTO(model, new ArrayList(),  new ArrayList());
+        PostProcess.executeTargets(toModify, processingDTO);
         assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
         toModify.setResultCode(ResultCode.OK.getName());
-        PostProcess.executeTargets(toModify, model);
+        PostProcess.executeTargets(toModify, processingDTO);
         assertEquals(4.33, toModify.getResultVariables().get(FIELD_NAME));
         toModify.setResultObjectName(FIELD_NAME);
-        PostProcess.executeTargets(toModify, model);
+        PostProcess.executeTargets(toModify, processingDTO);
         assertEquals(4.34, toModify.getResultVariables().get(FIELD_NAME));
     }
 
     @Test
     public void populatePredictedOutputField() {
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.PREDICTED_VALUE)
                 .build();
         final PMML4Result toUpdate = new PMML4Result();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
-        PostProcess.populatePredictedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, kiePMMLNameValues,  new ArrayList());
+        PostProcess.populatePredictedOutputField(outputField,
+                                                   toUpdate,
+                                                   processingDTO);
         assertTrue(toUpdate.getResultVariables().isEmpty());
         //
         final String targetField = "targetField";
-        outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.PREDICTED_VALUE)
                 .withTargetField(targetField)
                 .build();
         final Object targetValue = 54346.32454;
         final KiePMMLNameValue kiePMMLNameValue = new KiePMMLNameValue(targetField, targetValue);
         kiePMMLNameValues.add(kiePMMLNameValue);
-        PostProcess.populatePredictedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
+        processingDTO = getProcessingDTO(kiePMMLModel, kiePMMLNameValues,  new ArrayList());
+        PostProcess.populatePredictedOutputField(outputField,
+                                                   toUpdate,
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(kiePMMLNameValue.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -122,42 +131,51 @@ public class PostProcessTest {
     @Test(expected = KiePMMLException.class)
     public void populatePredictedOutputFieldWrongResultFeature() {
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
-        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel,
-                                                   Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
+        PostProcess.populateTransformedOutputField(outputField,
+                                                   new PMML4Result(),
+                                                   processingDTO);
     }
 
     @Test
     public void populateTransformedOutputField() {
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         final PMML4Result toUpdate = new PMML4Result();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
-        PostProcess.populateTransformedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, kiePMMLNameValues,  new ArrayList());
+        PostProcess.populateTransformedOutputField(outputField,
+                                                   toUpdate,
+                                                   processingDTO);
         assertTrue(toUpdate.getResultVariables().isEmpty());
         //
         final String value = "String";
         final String CONSTANT_NAME = "CONSTANT_NAME";
-        KiePMMLConstant kiePMMLConstant = new KiePMMLConstant(CONSTANT_NAME, Collections.emptyList(), value);
+        KiePMMLConstant kiePMMLConstant = new KiePMMLConstant(CONSTANT_NAME, new ArrayList(), value);
 
-        outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLConstant)
                 .build();
-        PostProcess.populateTransformedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
+
+        processingDTO = getProcessingDTO(kiePMMLModel, kiePMMLNameValues,  new ArrayList());
+        PostProcess.populateTransformedOutputField(outputField,
+                                                   toUpdate,
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(kiePMMLConstant.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -166,44 +184,46 @@ public class PostProcessTest {
     @Test(expected = KiePMMLException.class)
     public void populateTransformedOutputFieldWrongResultFeature() {
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
-        PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel,
-                                                   Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
+        PostProcess.populateTransformedOutputField(outputField,
+                                                   new PMML4Result(),
+                                                   processingDTO);
     }
 
     @Test
-    public void populateTransformedOutputFieldWithApplyWithConsants() {
+    public void populateTransformedOutputFieldWithApplyWithConstants() {
         //     <Apply function="/">
         //        <Constant>100.0</Constant>
         //        <Constant>5.0</Constant>
         //      </Apply>
         final String functionName = "/";
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), functionName)
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, new ArrayList(), value1);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), functionName)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
 
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         final PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         Object expected = value1 / value2;
@@ -215,8 +235,8 @@ public class PostProcessTest {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
-        final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, new ArrayList(), value1);
+        final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, new ArrayList(),
                                                                              DATA_TYPE.DOUBLE.getName(),
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLConstant1)
@@ -225,50 +245,50 @@ public class PostProcessTest {
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
         //      </Apply>
-        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
+        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, new ArrayList(), null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef, kiePMMLConstant2))
                 .build();
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         Object expected = value1 / value2;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         //
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+                , new ArrayList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
         //
         toUpdate = new PMML4Result();
+        processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -279,7 +299,7 @@ public class PostProcessTest {
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, new ArrayList(), value1);
         final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
         .emptyList(),
                                                                               DATA_TYPE.DOUBLE.getName(),
@@ -289,8 +309,8 @@ public class PostProcessTest {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //        <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DerivedField>
-        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
-        final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
+        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_REF_FIELD, new ArrayList(), null);
+        final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(CUSTOM_FIELD, new ArrayList(),
                                                                               DATA_TYPE.DOUBLE.getName(),
                                                                               OP_TYPE.CONTINUOUS.getName(),
                                                                               kiePMMLFieldRef).build();
@@ -298,50 +318,50 @@ public class PostProcessTest {
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
         //      </Apply>
-        final KiePMMLFieldRef kiePMMLFieldRef2 = new KiePMMLFieldRef(CUSTOM_FIELD, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
+        final KiePMMLFieldRef kiePMMLFieldRef2 = new KiePMMLFieldRef(CUSTOM_FIELD, new ArrayList(), null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef2, kiePMMLConstant2))
                 .build();
         Object expected = value1 / value2;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+                , new ArrayList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
         kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
         //
         toUpdate = new PMML4Result();
+        processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -355,12 +375,12 @@ public class PostProcessTest {
         //        <Constant>36.0</Constant>
         //      </Apply>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), 64.0);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), 36);
-        final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", Collections.emptyList(), "+")
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_2, new ArrayList(), 64.0);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), 36);
+        final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", new ArrayList(), "+")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
-        final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
+        final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, new ArrayList(),
                                                                               DATA_TYPE.DOUBLE.getName(),
                                                                               OP_TYPE.CONTINUOUS.getName(),
                                                                               kiePMMLApplyRef).build();
@@ -368,49 +388,49 @@ public class PostProcessTest {
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
         //      </Apply>
-        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant3 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
+        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, new ArrayList(), null);
+        final KiePMMLConstant kiePMMLConstant3 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef, kiePMMLConstant3))
                 .build();
         Object expected = value1 / value2;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
         // From LocalTransformations
         KiePMMLLocalTransformations localTransformations = KiePMMLLocalTransformations.builder("localTransformations"
-                , Collections.emptyList())
+                , new ArrayList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
         //
         toUpdate = new PMML4Result();
+        processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -421,42 +441,42 @@ public class PostProcessTest {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DefineFunction>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, new ArrayList(), value1);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
         .emptyList(),
                                                                                OP_TYPE.CONTINUOUS.getName(),
-                                                                               Collections.emptyList(),
+                                                                               new ArrayList(),
                                                                                kiePMMLConstant1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <FieldRef>CUSTOM_FIELD</FieldRef>
         //        <Constant>5.0</Constant>
         //      </Apply>
-        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
+        final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(CUSTOM_FIELD, new ArrayList(), null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef, kiePMMLConstant2))
                 .build();
         Object expected = value1;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -467,7 +487,7 @@ public class PostProcessTest {
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
         //        <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, new ArrayList(), value1);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections
         .emptyList(),
                                                                               DATA_TYPE.DOUBLE.getName(),
@@ -476,41 +496,41 @@ public class PostProcessTest {
         // <DefineFunction name="CUSTOM_FUNCTION" optype="continuous" dataType="double">
         //     <FieldRef>CUSTOM_REF_FIELD</FieldRef>
         // </DefineFunction>
-        final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(CUSTOM_REF_FIELD, Collections.emptyList(), null);
+        final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(CUSTOM_REF_FIELD, new ArrayList(), null);
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
         .emptyList(),
                                                                                OP_TYPE.CONTINUOUS.getName(),
-                                                                               Collections.emptyList(),
+                                                                               new ArrayList(),
                                                                                kiePMMLFieldRef1);
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>5.0</Constant>
         //      </Apply>
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Collections.singletonList(kiePMMLConstant2))
                 .build();
         Object expected = value1;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -527,9 +547,9 @@ public class PostProcessTest {
         // </DefineFunction>
         final KiePMMLParameterField kiePMMLParameterField = KiePMMLParameterField.builder(PARAM_1, Collections
         .emptyList()).build();
-        final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", Collections.emptyList(), "/")
+        final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(PARAM_1, new ArrayList(), null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, new ArrayList(), value2);
+        final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", new ArrayList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLConstant2))
                 .build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections
@@ -541,31 +561,31 @@ public class PostProcessTest {
         //     <Apply function="CUSTOM_FUNCTION">
         //        <Constant>100.0</Constant>
         //      </Apply>
-        final KiePMMLConstant kiePMMLConstant3 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value1);
-        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
+        final KiePMMLConstant kiePMMLConstant3 = new KiePMMLConstant(PARAM_2, new ArrayList(), value1);
+        KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", new ArrayList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Collections.singletonList(kiePMMLConstant3))
                 .build();
         Object expected = value1/value2;
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                "transformationDictionary", new ArrayList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
-                .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .builder("TESTINGMODEL", new ArrayList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLApply)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList<>(), new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(expected, toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -574,23 +594,23 @@ public class PostProcessTest {
     @Test
     public void populateTransformedOutputFieldWithConstant() {
         final String value = "String";
-        KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value);
+        KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", new ArrayList(), value);
 
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         //
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLConstant)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, new ArrayList(),  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   Collections.emptyList());
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(kiePMMLConstant.getValue(), toUpdate.getResultVariables().get(OUTPUT_NAME));
@@ -600,9 +620,9 @@ public class PostProcessTest {
     public void populateTransformedOutputFieldWithFieldRef() {
         final String mapMissingTo = "mapMissingTo";
         final String variableName = "variableName";
-        KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(variableName, Collections.emptyList(), mapMissingTo);
+        KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(variableName, new ArrayList(), mapMissingTo);
         PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", new ArrayList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
@@ -610,67 +630,23 @@ public class PostProcessTest {
         final Object variableValue = 543.65434;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
         final String OUTPUT_NAME = "OUTPUT_NAME";
-        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
+        KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, new ArrayList())
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .withKiePMMLExpression(kiePMMLFieldRef)
                 .build();
         PMML4Result toUpdate = new PMML4Result();
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLModel, kiePMMLNameValues,  new ArrayList());
         PostProcess.populateTransformedOutputField(outputField,
                                                    toUpdate,
-                                                   kiePMMLModel,
-                                                   kiePMMLNameValues);
+                                                   processingDTO);
         assertFalse(toUpdate.getResultVariables().isEmpty());
         assertTrue(toUpdate.getResultVariables().containsKey(OUTPUT_NAME));
         assertEquals(variableValue, toUpdate.getResultVariables().get(OUTPUT_NAME));
     }
 
-    @Test
-    public void getValueFromKiePMMLNameValuesByVariableName() {
-        final String variableName = "variableName";
-        final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
-                "val-" + i, i)).collect(Collectors.toList());
-        Optional<Object> retrieved = PostProcess.getValueFromKiePMMLNameValuesByVariableName(variableName,
-                                                                                             kiePMMLNameValues);
-        assertFalse(retrieved.isPresent());
-        final Object variableValue = 243.94;
-        kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
-        retrieved = PostProcess.getValueFromKiePMMLNameValuesByVariableName(variableName, kiePMMLNameValues);
-        assertTrue(retrieved.isPresent());
-        assertEquals(variableValue, retrieved.get());
-    }
-
-    @Test
-    public void getValueFromPMMLResultByVariableName() {
-        final String variableName = "variableName";
-        final PMML4Result pmml4Result = new PMML4Result();
-        Optional<Object> retrieved = PostProcess.getValueFromPMMLResultByVariableName(variableName, pmml4Result);
-        assertFalse(retrieved.isPresent());
-        final Object variableValue = 243.94;
-        pmml4Result.addResultVariable(variableName, variableValue);
-        retrieved = PostProcess.getValueFromPMMLResultByVariableName(variableName, pmml4Result);
-        assertTrue(retrieved.isPresent());
-        assertEquals(variableValue, retrieved.get());
-    }
-
-    private List<KiePMMLDerivedField> getDerivedFields() {
-        // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
-        //     <Constant>100.0</Constant>
-        // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
-        final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(PARAM_1, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
-                                                                              kiePMMLConstant1)
-                .build();
-        // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
-        //     <Constant>5.0</Constant>
-        // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
-        final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(PARAM_2, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
-                                                                              kiePMMLConstant2)
-                .build();
-        return Arrays.asList(derivedField1, derivedField2);
+    private ProcessingDTO getProcessingDTO(final KiePMMLModel model,
+                                           final List<KiePMMLNameValue> kiePMMLNameValues,
+                                           final List<String> orderedReasonCodes) {
+        return new ProcessingDTO(model, kiePMMLNameValues, orderedReasonCodes);
     }
 }
