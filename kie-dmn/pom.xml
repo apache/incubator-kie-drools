@@ -60,6 +60,17 @@
         <module>kie-dmn-feel-gwt-showcase</module>
       </modules>
     </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+            <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-dmn-xls2dmn-cli</module>
+      </modules>
+    </profile>
   </profiles>
 
 </project>
