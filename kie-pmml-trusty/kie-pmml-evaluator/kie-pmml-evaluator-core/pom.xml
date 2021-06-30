@@ -27,6 +27,13 @@
     </dependency>
     <!-- EXTERNAL -->
     <!-- TEST -->
+    <!-- PMML -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
   </dependencies>
 
 </project>

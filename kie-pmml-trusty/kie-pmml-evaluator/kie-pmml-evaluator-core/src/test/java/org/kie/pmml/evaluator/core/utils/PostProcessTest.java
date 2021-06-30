@@ -37,12 +37,12 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
-import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImplTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -69,8 +69,7 @@ public class PostProcessTest {
                 .build();
         List<KiePMMLTarget> kiePMMLTargets = Arrays.asList(kiePMMLTarget, KiePMMLTarget.builder("NEW_TARGET",
                                                                                                 Collections.emptyList()).build());
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel model =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .withKiePMMLTargets(kiePMMLTargets)
                         .build();
@@ -98,8 +97,8 @@ public class PostProcessTest {
         final PMML4Result toUpdate = new PMML4Result();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         PostProcess.populatePredictedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
@@ -125,8 +124,8 @@ public class PostProcessTest {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel,
@@ -142,8 +141,8 @@ public class PostProcessTest {
         final PMML4Result toUpdate = new PMML4Result();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         PostProcess.populateTransformedOutputField(outputField, toUpdate, kiePMMLModel, kiePMMLNameValues);
@@ -169,8 +168,8 @@ public class PostProcessTest {
         KiePMMLOutputField outputField = KiePMMLOutputField.builder(OUTPUT_NAME, Collections.emptyList())
                 .withResultFeature(RESULT_FEATURE.ANTECEDENT)
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         PostProcess.populateTransformedOutputField(outputField, new PMML4Result(), kiePMMLModel,
@@ -190,7 +189,7 @@ public class PostProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
 
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .build();
         //
@@ -241,7 +240,7 @@ public class PostProcessTest {
                 "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -259,7 +258,7 @@ public class PostProcessTest {
                 , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
@@ -309,7 +308,7 @@ public class PostProcessTest {
                 "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -332,7 +331,7 @@ public class PostProcessTest {
                 , Collections.emptyList())
                 .withDerivedFields(Arrays.asList(derivedField1, derivedField2))
                 .build();
-        kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
@@ -379,7 +378,7 @@ public class PostProcessTest {
                 "transformationDictionary", Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -401,7 +400,7 @@ public class PostProcessTest {
                 , Collections.emptyList())
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withLocalTransformations(localTransformations)
                 .build();
@@ -442,7 +441,7 @@ public class PostProcessTest {
                 "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -496,7 +495,7 @@ public class PostProcessTest {
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -551,7 +550,7 @@ public class PostProcessTest {
                 "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
@@ -576,8 +575,8 @@ public class PostProcessTest {
         final String value = "String";
         KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value);
 
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         //
@@ -601,8 +600,8 @@ public class PostProcessTest {
         final String mapMissingTo = "mapMissingTo";
         final String variableName = "variableName";
         KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(variableName, Collections.emptyList(), mapMissingTo);
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel =
-                PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+        KiePMMLTestingModel kiePMMLModel =
+                KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
                                                                         MINING_FUNCTION.REGRESSION)
                         .build();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(

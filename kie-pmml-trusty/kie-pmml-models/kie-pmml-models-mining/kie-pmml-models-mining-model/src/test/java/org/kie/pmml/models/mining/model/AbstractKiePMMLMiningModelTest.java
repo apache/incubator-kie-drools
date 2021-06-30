@@ -17,13 +17,13 @@ package org.kie.pmml.models.mining.model;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.api.enums.OPERATOR;
+import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.models.mining.model.enums.MULTIPLE_MODEL_METHOD;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
@@ -56,11 +56,6 @@ public abstract class AbstractKiePMMLMiningModelTest {
     }
 
     public static KiePMMLModel getKiePMMLModel(String modelName) {
-        return new KiePMMLModel(modelName, Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        };
+        return new KiePMMLTestingModel(modelName, Collections.emptyList());
     }
 }

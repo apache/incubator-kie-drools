@@ -34,12 +34,12 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
-import org.kie.pmml.evaluator.core.service.PMMLRuntimeInternalImplTest;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -61,7 +61,7 @@ public class PreProcessTest {
         Map<String, Object> missingValueReplacementMap = new HashMap<>();
         missingValueReplacementMap.put("fieldA", "one");
         missingValueReplacementMap.put("fieldB", 2);
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel model = PMMLRuntimeInternalImplTest.KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withMissingValueReplacementMap(missingValueReplacementMap)
                 .build();
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
@@ -127,7 +127,7 @@ public class PreProcessTest {
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
-        PMMLRuntimeInternalImplTest.KiePMMLTestingModel kiePMMLModel = PMMLRuntimeInternalImplTest.KiePMMLTestingModel
+        KiePMMLTestingModel kiePMMLModel = KiePMMLTestingModel
                 .builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
                 .withTransformationDictionary(transformationDictionary)
                 .build();
