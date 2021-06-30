@@ -16,6 +16,23 @@
     <version.jib-maven-plugin>2.5.2</version.jib-maven-plugin>
   </properties>
 
+  <!-- The BOM guarantees the transitive dependencies -->
+  <!-- in this case, Spring Kafka brings a different context version other defined in the SB:
+  https://github.com/spring-projects/spring-kafka/blob/v2.6.6/build.gradle#L69
+  Added after SB upgrade: https://issues.redhat.com/browse/KOGITO-5251
+  -->
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-dependencies</artifactId>
+        <version>${version.org.springframework.boot}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
