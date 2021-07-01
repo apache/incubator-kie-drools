@@ -17,6 +17,10 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-quarkus-rules</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-legacy-api</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>io.quarkus</groupId>

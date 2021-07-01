@@ -87,7 +87,7 @@ class PredictionCodegenTest {
         KogitoBuildContext context = contextBuilder.build();
         PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
                 context, CollectedResourceProducer.fromFiles(BASE_PATH, MINING_FULL_SOURCE.toFile()));
-        generateAllFiles(context, codeGenerator, 67, 18, 1, true);
+        generateAllFiles(context, codeGenerator, 62, 13, 1, true);
     }
 
     @ParameterizedTest

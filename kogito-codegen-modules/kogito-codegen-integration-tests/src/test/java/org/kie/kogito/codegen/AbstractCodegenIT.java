@@ -90,7 +90,7 @@ public class AbstractCodegenIT {
                     "import org.drools.modelcompiler.builder.KieBaseBuilder;\n" +
                     "\n" +
                     "\n" +
-                    "public class ProjectRuntime implements org.kie.kogito.rules.KieRuntimeBuilder {\n" +
+                    "public class ProjectRuntime implements org.kie.kogito.legacy.rules.KieRuntimeBuilder {\n" +
                     "\n" +
                     "    public static final ProjectRuntime INSTANCE = new ProjectRuntime();\n" +
                     "\n" +

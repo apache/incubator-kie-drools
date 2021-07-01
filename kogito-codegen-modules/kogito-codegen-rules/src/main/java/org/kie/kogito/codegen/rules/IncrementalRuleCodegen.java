@@ -55,7 +55,6 @@ import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.AbstractGenerator;
@@ -71,11 +70,6 @@ import org.kie.kogito.rules.units.AssignableChecker;
 import org.kie.kogito.rules.units.ReflectiveRuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
 import static org.drools.compiler.kie.builder.impl.AbstractKieModule.addDTableToCompiler;
@@ -182,10 +176,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
 
         if (hasRuleUnits) {
             generateRuleUnits(errors, generatedFiles);
-        } else {
-            if (context().hasDI() && !hotReloadMode) {
-                generateSessionUnits(generatedFiles);
-            }
+        } else if (context().hasClassAvailable("org.kie.kogito.legacy.rules.KieRuntimeBuilder")) {
             generateProject(dummyReleaseId, modelsByUnit, generatedFiles);
         }
 
@@ -381,31 +372,6 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
         QueryGenerator queryGenerator = query.getQueryGenerator();
         generatedFiles.add(queryGenerator.generate());
         return Optional.of(queryGenerator.getQueryClassName());
-    }
-
-    private void generateSessionUnits(List<GeneratedFile> generatedFiles) {
-        TemplatedGenerator generator = TemplatedGenerator.builder()
-                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
-                .withPackageName("org.drools.project.model")
-                .build(context(), "SessionRuleUnit");
-        for (KieBaseModel kBaseModel : kieModuleModel.getKieBaseModels().values()) {
-            for (String sessionName : kBaseModel.getKieSessionModels().keySet()) {
-                CompilationUnit cu = generator.compilationUnitOrThrow();
-                ClassOrInterfaceDeclaration template = cu.findFirst(ClassOrInterfaceDeclaration.class).get();
-                context().getDependencyInjectionAnnotator().withNamedSingletonComponent(template, "$SessionName$");
-                template.setName("SessionRuleUnit_" + sessionName);
-
-                template.findAll(FieldDeclaration.class).stream()
-                        .filter(fd -> fd.getVariable(0).getNameAsString().equals("runtimeBuilder"))
-                        .forEach(fd -> context().getDependencyInjectionAnnotator().withInjection(fd));
-
-                template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$SessionName$", sessionName)));
-                generatedFiles.add(new GeneratedFile(
-                        RULE_TYPE,
-                        "org/drools/project/model/SessionRuleUnit_" + sessionName + ".java",
-                        cu.toString()));
-            }
-        }
     }
 
     private void addUnitConfToKieModule(RuleUnitDescription ruleUnitDescription) {

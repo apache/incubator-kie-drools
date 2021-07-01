@@ -16,6 +16,11 @@
         <!-- test -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
+            <artifactId>kogito-legacy-api</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-codegen-api</artifactId>
             <scope>test</scope>
         </dependency>
