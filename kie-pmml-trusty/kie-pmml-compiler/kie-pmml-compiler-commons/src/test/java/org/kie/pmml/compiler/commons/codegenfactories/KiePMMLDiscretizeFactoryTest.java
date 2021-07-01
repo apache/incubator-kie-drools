@@ -95,12 +95,12 @@ public class KiePMMLDiscretizeFactoryTest {
                                                                               "%1$s_1_Interval);\n" +
                                                                               "    KiePMMLDiscretize %1$s = " +
                                                                               "new KiePMMLDiscretize" +
-                                                                              "(\"%1$s\", Collections" +
+                                                                              "(\"%2$s\", Collections" +
                                                                               ".emptyList(), Arrays.asList" +
                                                                               "(%1$s_0, %1$s_1), " +
-                                                                              "\"%2$s\", \"%3$s\", " +
-                                                                              "%4$s);\n" +
-                                                                              "}", variableName, MAP_MISSING_TO, DEFAULTVALUE, dataTypeString));
+                                                                              "\"%3$s\", \"%4$s\", " +
+                                                                              "%5$s);\n" +
+                                                                              "}", variableName, NAME, MAP_MISSING_TO, DEFAULTVALUE, dataTypeString));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, KiePMMLDiscretize.class, KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
