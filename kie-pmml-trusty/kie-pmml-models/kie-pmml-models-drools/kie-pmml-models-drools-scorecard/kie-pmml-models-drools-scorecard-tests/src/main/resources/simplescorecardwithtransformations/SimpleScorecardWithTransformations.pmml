@@ -8,7 +8,7 @@
   <TransformationDictionary>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_reason"/>
-      <NormDiscrete field="eval_reasoncode" value="Input1ReasonCode" />
+      <NormDiscrete field="eval_reason" value="Input1ReasonCode" />
     </DefineFunction>
     <DefineFunction name="fun_input1_fieldref" optype="continuous" dataType="double">
       <ParameterField name="input1_fake"/>
