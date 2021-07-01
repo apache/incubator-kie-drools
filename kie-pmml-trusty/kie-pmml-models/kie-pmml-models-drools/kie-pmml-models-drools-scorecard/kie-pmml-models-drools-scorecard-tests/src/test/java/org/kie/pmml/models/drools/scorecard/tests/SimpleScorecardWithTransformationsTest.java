@@ -43,6 +43,7 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
     private static final String OUT_DER_CONSTANT = "out_der_constant";
     private static final String CONSTANT = "constant";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -98,6 +99,14 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
             } else {
                 Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
             }
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (input1 > 4.2 && input1 < 9.8) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (input1 >= 15.4 && input1 < 22.1) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
     }
 }
