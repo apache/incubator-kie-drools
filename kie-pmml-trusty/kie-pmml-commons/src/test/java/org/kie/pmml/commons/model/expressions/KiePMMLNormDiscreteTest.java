@@ -19,6 +19,7 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.Collections;
 
 import org.junit.Test;
+import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
@@ -32,7 +33,8 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = 1.0;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        Object retrieved = kiePMMLNormContinuous.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(mapMissingTo, retrieved);
     }
@@ -43,7 +45,8 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        Object retrieved = kiePMMLNormContinuous.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),  Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
+        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
+        Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(1.0, retrieved);
     }
@@ -54,7 +57,8 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        Object retrieved = kiePMMLNormContinuous.evaluate(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),  Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
+        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
+        Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(0.0, retrieved);
     }

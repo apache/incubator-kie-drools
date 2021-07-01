@@ -18,11 +18,8 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.List;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
-import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
-import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 import static org.kie.pmml.commons.model.expressions.ExpressionsUtils.getFromPossibleSources;
 
@@ -47,10 +44,8 @@ public class KiePMMLNormDiscrete extends AbstractKiePMMLComponent implements Kie
 
 
     @Override
-    public Object evaluate(List<KiePMMLDefineFunction> defineFunctions, List<KiePMMLDerivedField> derivedFields,
-                           List<KiePMMLOutputField> outputFields, List<KiePMMLNameValue> kiePMMLNameValues) {
-        String input = (String) getFromPossibleSources(name, defineFunctions, derivedFields, outputFields,
-                                                       kiePMMLNameValues)
+    public Object evaluate(final ProcessingDTO processingDTO) {
+        String input = (String) getFromPossibleSources(name, processingDTO)
                 .orElse(null);
         if (input == null) {
             return mapMissingTo;
