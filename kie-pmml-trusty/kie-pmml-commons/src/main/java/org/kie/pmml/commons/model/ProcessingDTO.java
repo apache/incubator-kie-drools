@@ -100,26 +100,41 @@ public class ProcessingDTO {
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
-        return defineFunctions;
+        return Collections.unmodifiableList(defineFunctions);
     }
 
     public List<KiePMMLDerivedField> getDerivedFields() {
-        return derivedFields;
+        return Collections.unmodifiableList(derivedFields);
     }
 
     public List<KiePMMLOutputField> getOutputFields() {
-        return outputFields;
+        return Collections.unmodifiableList(outputFields);
     }
 
     public List<KiePMMLTarget> getKiePMMLTargets() {
-        return kiePMMLTargets;
+        return Collections.unmodifiableList(kiePMMLTargets);
     }
 
     public List<KiePMMLNameValue> getKiePMMLNameValues() {
-        return kiePMMLNameValues;
+        return Collections.unmodifiableList(kiePMMLNameValues);
+    }
+
+    /**
+     * Add the given <code>KiePMMLNameValue</code> to <b>kiePMMLNameValues</b>
+     * if there is not another with the same name; otherwise replace it.
+     * @param toAdd
+     * @return
+     */
+    public boolean addKiePMMLNameValue(KiePMMLNameValue toAdd) {
+        kiePMMLNameValues.removeIf(kpm -> kpm.getName().equals(toAdd.getName()));
+        return kiePMMLNameValues.add(toAdd);
     }
 
     public List<String> getOrderedReasonCodes() {
-        return orderedReasonCodes;
+        return Collections.unmodifiableList(orderedReasonCodes);
+    }
+
+    public boolean addOrderedReasonCodes(List<String> toAdd) {
+        return orderedReasonCodes.addAll(toAdd);
     }
 }

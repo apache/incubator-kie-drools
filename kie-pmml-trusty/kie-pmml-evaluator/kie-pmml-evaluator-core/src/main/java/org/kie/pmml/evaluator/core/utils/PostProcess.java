@@ -52,7 +52,7 @@ public class PostProcess {
     public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
-        toReturn.getResultVariables().forEach((key, value) -> processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(key, value)));
+        toReturn.getResultVariables().forEach((key, value) -> processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         populateOutputFields(toReturn, processingDTO,  model);
     }
 
@@ -135,7 +135,7 @@ public class PostProcess {
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
                                               LinkedHashMap::new));
             final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-            processingDTO.getOrderedReasonCodes().addAll(orderedReasonCodes);
+            processingDTO.addOrderedReasonCodes(orderedReasonCodes);
             reasonCodeOutputFields
                     .forEach(outputField -> populateReasonCodeOutputField(outputField,
                                                                           toUpdate,
@@ -155,7 +155,7 @@ public class PostProcess {
         variableValue.ifPresent(objValue -> {
             String variableName = outputField.getName();
             toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(variableName, objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
         });
     }
 
@@ -170,7 +170,7 @@ public class PostProcess {
         variableValue.ifPresent(objValue -> {
             String variableName = outputField.getName();
             toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(variableName, objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
         });
     }
 
@@ -184,7 +184,7 @@ public class PostProcess {
         Optional<Object> variableValue = Optional.ofNullable(outputField.evaluateReasonCodeValue(processingDTO));
         variableValue.ifPresent(objValue -> {
             toUpdate.addResultVariable(outputField.getName(), objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(outputField.getName(), objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(outputField.getName(), objValue));
         });
     }
 

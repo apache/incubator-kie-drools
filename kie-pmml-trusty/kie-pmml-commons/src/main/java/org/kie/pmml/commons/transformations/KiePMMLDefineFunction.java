@@ -75,11 +75,8 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
             }
         }
         for (KiePMMLNameValue kiePMMLNameValue : kiePMMLNameValues) {
-            processingDTO.getKiePMMLNameValues()
-                    .removeIf(kpm -> kpm.getName().equals(kiePMMLNameValue.getName()));
-            processingDTO.getKiePMMLNameValues().add(kiePMMLNameValue);
+            processingDTO.addKiePMMLNameValue(kiePMMLNameValue);
         }
-        processingDTO.getKiePMMLNameValues() .addAll(kiePMMLNameValues);
         return kiePMMLExpression.evaluate(processingDTO);
     }
 }
