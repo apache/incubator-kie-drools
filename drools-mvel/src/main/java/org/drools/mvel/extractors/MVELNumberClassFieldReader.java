@@ -22,10 +22,12 @@ import java.io.ObjectOutput;
 import org.drools.core.base.extractors.BaseNumberClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompileable;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.mvel2.compiler.ExecutableStatement;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 /**
  * A class field extractor that uses MVEL engine to extract the actual value for a given
@@ -35,7 +37,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
 
     private static final long   serialVersionUID = 510l;
 
-    private ExecutableStatement mvelExpression   = null;
+    private MvelEvaluator<Void> evaluator;
 
     private String              className;
     private String              expr;
@@ -74,7 +76,7 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     }
     
     public void setExecutableStatement(ExecutableStatement expression) {
-        this.mvelExpression = expression;
+        this.evaluator = createMvelEvaluator( expression );
     }
 
     public String getClassName() {
@@ -108,10 +110,8 @@ public class MVELNumberClassFieldReader extends BaseNumberClassFieldReader imple
     /* (non-Javadoc)
      * @see org.kie.base.extractors.BaseObjectClassFieldExtractor#getValue(java.lang.Object)
      */
-    public Object getValue(InternalWorkingMemory workingMemory,
-                           Object object) {
-        return MVELSafeHelper.getEvaluator().executeExpression( mvelExpression,
-                                       object  );
+    public Object getValue(InternalWorkingMemory workingMemory, Object object) {
+        return evaluator.evaluate( object  );
     }
 
     /**

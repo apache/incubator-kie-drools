@@ -212,17 +212,6 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.dispose();
     }
 
-    @Test
-    public void testJoinStringToObjectNonComparable() {
-
-        KieSession ksession = getKieSessionForJoinStringToObject();
-
-        // Object > String "10"
-        ksession.insert(new StringHolder("10"));
-        ksession.insert(new ObjectHolder(new Object())); // not Comparable
-        assertEquals(0, ksession.fireAllRules()); // in case of standard-drl, MathProcessor.doOperationNonNumeric() returns false when the left operand is not Comparable
-    }
-
     private KieSession getKieSessionForJoinIntegerToObject() {
 
         final String drl1 =

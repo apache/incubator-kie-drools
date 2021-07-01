@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.implementations;
 
+import java.util.Collections;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
@@ -24,9 +25,11 @@ import org.dmg.pmml.MiningSchema;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
 import org.junit.Test;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.commons.mocks.KiePMMLTestModel;
+import org.kie.pmml.compiler.commons.mocks.TestModel;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertEquals;
@@ -53,11 +56,14 @@ public class KiePMMLModelRetrieverTest {
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
+        pmmlModel.getModels().set(0, new TestModel());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(PACKAGE_NAME,
                                                                                                       pmmlModel.getDataDictionary(),
                                                                                                       pmmlModel.getTransformationDictionary(),
                                                                                                       pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
+        assertTrue(retrieved.get() instanceof KiePMMLTestingModel);
     }
 
     @Test
@@ -105,7 +111,9 @@ public class KiePMMLModelRetrieverTest {
 
     @Test
     public void getPopulatedWithPMMLModelFields() {
-        KiePMMLTestModel toPopulate = new KiePMMLTestModel();
+        KiePMMLTestingModel toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
+                                                                     Collections.emptyList(),
+                                                                     MINING_FUNCTION.REGRESSION).build();
         assertTrue(toPopulate.getMiningFields().isEmpty());
         assertTrue(toPopulate.getOutputFields().isEmpty());
         final MiningSchema miningSchema = getRandomMiningSchema();
@@ -115,21 +123,35 @@ public class KiePMMLModelRetrieverTest {
                                                                               miningField.getOpType(),
                                                                               getRandomDataType())).toArray(DataField[]::new));
         final Output output = getRandomOutput();
-        KiePMMLTestModel populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, miningSchema, output);
+        KiePMMLTestingModel populated =
+                (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
+                                                                                            dataDictionary,
+                                                                                            miningSchema, output);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
-        toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, miningSchema, null);
+        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
+                                                 Collections.emptyList(),
+                                                 MINING_FUNCTION.REGRESSION).build();
+        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
+                                                                                                dataDictionary,
+                                                                                                miningSchema, null);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertTrue(populated.getOutputFields().isEmpty());
-        toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, null, output);
+        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
+                                                 Collections.emptyList(),
+                                                 MINING_FUNCTION.REGRESSION).build();
+        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
+                                                                                                dataDictionary, null,
+                                                                                                output);
         assertTrue(populated.getMiningFields().isEmpty());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
-        toPopulate = new KiePMMLTestModel();
-        populated = (KiePMMLTestModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate, dataDictionary, null, null);
+        toPopulate = KiePMMLTestingModel.builder("TESTINGMODEL",
+                                                 Collections.emptyList(),
+                                                 MINING_FUNCTION.REGRESSION).build();
+        populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
+                                                                                                dataDictionary, null,
+                                                                                                null);
         assertTrue(populated.getMiningFields().isEmpty());
         assertTrue(populated.getOutputFields().isEmpty());
     }
-
 }

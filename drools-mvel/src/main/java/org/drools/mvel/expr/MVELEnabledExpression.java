@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -32,8 +31,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Enabled;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELEnabledExpression
     implements
@@ -46,7 +46,7 @@ public class MVELEnabledExpression
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
+    private MvelEvaluator<Boolean> evaluator;
 
     public MVELEnabledExpression() {
     }
@@ -73,11 +73,11 @@ public class MVELEnabledExpression
     }    
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public boolean getValue(final Tuple tuple,
@@ -94,9 +94,7 @@ public class MVELEnabledExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        return ((Boolean) MVEL.executeExpression( this.expr,
-                                                  null,
-                                                  factory )).booleanValue();
+        return evaluator.evaluate( factory );
     }
     
     public String toString() {
