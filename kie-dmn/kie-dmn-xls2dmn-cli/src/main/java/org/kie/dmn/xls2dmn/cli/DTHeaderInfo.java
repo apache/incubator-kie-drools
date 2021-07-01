@@ -22,7 +22,7 @@ import java.util.List;
 
 public class DTHeaderInfo {
 
-	private final String sheetName;
+    private final String sheetName;
     private final List<String> original;
     private final int hIndex;
     private final Collection<String> requiredInput;
@@ -34,12 +34,11 @@ public class DTHeaderInfo {
         this.hIndex = hIndex;
         this.requiredInput = new ArrayList<>(requiredInput);
         this.requiredDecision = new ArrayList<>(requiredDecision);
-	}
+    }
 
     @Override
     public String toString() {
-        return "DTHeaderInfo [hIndex=" + hIndex + ", original=" + original + ", requiredDecision=" + requiredDecision
-                + ", requiredInput=" + requiredInput + ", sheetName=" + sheetName + "]";
+        return "DTHeaderInfo [hIndex=" + hIndex + ", original=" + original + ", requiredDecision=" + requiredDecision + ", requiredInput=" + requiredInput + ", sheetName=" + sheetName + "]";
     }
 
     public String getSheetName() {
@@ -62,5 +61,4 @@ public class DTHeaderInfo {
         return requiredDecision;
     }
 
-    
 }
