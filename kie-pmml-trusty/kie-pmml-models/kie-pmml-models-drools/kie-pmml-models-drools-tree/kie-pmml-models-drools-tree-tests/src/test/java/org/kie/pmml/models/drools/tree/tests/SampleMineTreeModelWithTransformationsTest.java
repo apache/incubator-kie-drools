@@ -33,7 +33,6 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest {
 
-
     private static final String FILE_NAME = "SampleMineTreeModelWithTransformations.pmml";
     private static final String MODEL_NAME = "SampleMineTreeModelWithTransformations";
     private static final String TARGET_FIELD = "decision";
