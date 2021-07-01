@@ -28,12 +28,9 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.spi.Consequence;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.mvel2.MVEL;
-import org.mvel2.compiler.CompiledExpression;
-import org.mvel2.debug.DebugTools;
 import org.mvel2.integration.VariableResolverFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConsequence
     implements
@@ -41,14 +38,13 @@ public class MVELConsequence
     MVELCompileable,
         Externalizable {
     private static final long   serialVersionUID = 510l;
-    protected static transient Logger logger = LoggerFactory.getLogger(MVELConsequence.class);
 
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
-
     private String              consequenceName;
+
+    private MvelEvaluator<Void> evaluator;
 
     public MVELConsequence() {
     }
@@ -75,44 +71,31 @@ public class MVELConsequence
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public void evaluate(final KnowledgeHelper knowledgeHelper,
                          final WorkingMemory workingMemory) throws Exception {
-        
-        VariableResolverFactory factory = unit.getFactory( knowledgeHelper,  ((AgendaItem)knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
-                                                           knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
-        
+
+        VariableResolverFactory factory = unit.getFactory(knowledgeHelper, ((AgendaItem) knowledgeHelper.getMatch()).getTerminalNode().getRequiredDeclarations(),
+                knowledgeHelper.getRule(), knowledgeHelper.getTuple(), null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver());
+
         // do we have any functions for this namespace?
-        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage( "MAIN" );
-        if ( pkg != null ) {
-            MVELDialectRuntimeData data = ( MVELDialectRuntimeData ) pkg.getDialectRuntimeRegistry().getDialectData( this.id );
-            factory.setNextFactory( data.getFunctionFactory() );
+        InternalKnowledgePackage pkg = workingMemory.getKnowledgeBase().getPackage("MAIN");
+        if (pkg != null) {
+            MVELDialectRuntimeData data = (MVELDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(this.id);
+            factory.setNextFactory(data.getFunctionFactory());
         }
 
-        CompiledExpression compexpr = (CompiledExpression) this.expr;
-
-        if ( MVELDebugHandler.isDebugMode() ) {
-            if ( MVELDebugHandler.verbose ) {
-                logger.info(DebugTools.decompile(compexpr));
-            }
-            MVEL.executeDebugger( compexpr,
-                                  knowledgeHelper,
-                                  factory );
-        } else {
-            MVEL.executeExpression( compexpr,
-                                    knowledgeHelper,
-                                    factory );
-        }
+        evaluator.evaluate(knowledgeHelper, factory);
     }
 
     public Serializable getCompExpr() {
-        return expr;
+        return evaluator != null ? evaluator.getExpr() : null;
     }
 
     public String getName() {

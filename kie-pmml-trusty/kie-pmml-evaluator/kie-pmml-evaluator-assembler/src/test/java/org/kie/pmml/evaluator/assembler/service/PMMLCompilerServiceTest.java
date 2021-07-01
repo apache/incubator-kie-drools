@@ -21,19 +21,21 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import org.drools.core.io.impl.FileSystemResource;
 import org.junit.Test;
 import org.kie.api.io.Resource;
-import org.kie.pmml.commons.HasRule;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.HasSourcesMap;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModelWithSources;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.junit.Assert.assertEquals;
@@ -47,7 +49,8 @@ public class PMMLCompilerServiceTest {
     @Test
     public void populateWithPMMLRuleMappers() {
         final List<KiePMMLModel> toPopulate = new ArrayList<>();
-        toPopulate.add( new KiePMMLModelHasSourceMap("TEST", Collections.emptyList()));
+        toPopulate.add( new KiePMMLTestingModelWithSources("TEST", "kmodulePackageName",
+                                                           Collections.emptyMap()));
         toPopulate.add( new KiePMMLModelHasRule("TEST", Collections.emptyList()));
         toPopulate.add( new KiePMMLModelHasNestedModelsHasRule("TEST", Collections.emptyList()));
         toPopulate.add( new KiePMMLModelHasNestedModelsHasSourceMap("TEST", Collections.emptyList()));
@@ -72,21 +75,22 @@ public class PMMLCompilerServiceTest {
 
     @Test
     public void addPMMLRuleMapperHasSourcesMap() {
-        KiePMMLModelHasSourceMap kiePmmlModel = new KiePMMLModelHasSourceMap("TEST", Collections.emptyList());
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        KiePMMLTestingModelWithSources kiePmmlModel = new KiePMMLTestingModelWithSources("TEST", "kmodulePackageName",
+                                                                             Collections.emptyMap());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         final List<String> generatedRuleMappers = IntStream.range(0, 3).mapToObj(i -> "apackage.Rule_" + i).collect(Collectors.toList());
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, generatedRuleMappers, "source_path");
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
     }
 
     @Test
     public void addPMMLRuleMapperHasRule() {
         KiePMMLModelHasRule kiePmmlModel = new KiePMMLModelHasRule("TEST", Collections.emptyList());
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         final List<String> generatedRuleMappers = new ArrayList<>();
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, generatedRuleMappers, "source_path");
         String expected = kiePmmlModel.getKModulePackageName() + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME;
-        assertTrue(kiePmmlModel.sourcesMap.containsKey(expected));
+        assertTrue(kiePmmlModel.getSourcesMap().containsKey(expected));
         expected =  kiePmmlModel.getKModulePackageName() + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME;
         assertTrue(generatedRuleMappers.contains(expected));
     }
@@ -95,10 +99,10 @@ public class PMMLCompilerServiceTest {
     public void addPMMLRuleMapperKiePMMLModelHasNestedModelsHasRule() {
         KiePMMLModelHasNestedModelsHasRule kiePmmlModel = new KiePMMLModelHasNestedModelsHasRule("TEST",
                                                                                                  Collections.emptyList());
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         final List<String> generatedRuleMappers = new ArrayList<>();
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, generatedRuleMappers, "source_path");
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         assertEquals(kiePmmlModel.nestedModels.size(), generatedRuleMappers.size());
         generatedRuleMappers.forEach(ret -> assertEquals(kiePmmlModel.getKModulePackageName() + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME, ret));
         kiePmmlModel.nestedModels.forEach(nestedModel -> {
@@ -110,10 +114,10 @@ public class PMMLCompilerServiceTest {
     public void addPMMLRuleMapperKiePMMLModelHasNestedModelsHasSourceMap() {
         KiePMMLModelHasNestedModelsHasSourceMap kiePmmlModel = new KiePMMLModelHasNestedModelsHasSourceMap("TEST",
                                                                                                            Collections.emptyList());
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         final List<String> generatedRuleMappers = new ArrayList<>();
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, generatedRuleMappers, "source_path");
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         assertTrue(generatedRuleMappers.isEmpty());
         kiePmmlModel.nestedModels.forEach(nestedModel -> {
             assertTrue(((HasSourcesMap) nestedModel).getSourcesMap().isEmpty());
@@ -122,30 +126,28 @@ public class PMMLCompilerServiceTest {
 
     @Test(expected = KiePMMLException.class)
     public void addPMMLRuleMapperNoHasSourceMap() {
-        final KiePMMLModel kiePmmlModel = new KiePMMLModel("name", Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        };
+        final KiePMMLModel kiePmmlModel = new KiePMMLTestingModel("name", Collections.emptyList());
         PMMLCompilerService.addPMMLRuleMapper(kiePmmlModel, new ArrayList<>(), "source_path");
     }
 
     @Test
     public void addPMMLRuleMappersHasSourceMap() {
-        KiePMMLModelHasSourceMap kiePmmlModel = new KiePMMLModelHasSourceMap("TEST", Collections.emptyList());
-        assertTrue(kiePmmlModel.sourcesMap.isEmpty());
+        KiePMMLTestingModelWithSources kiePmmlModel = new KiePMMLTestingModelWithSources("TEST", "kmodulePackageName",
+                                                                                         new HashMap<>());
+        assertTrue(kiePmmlModel.getSourcesMap().isEmpty());
         final List<String> generatedRuleMappers = IntStream.range(0, 3)
                 .mapToObj(i -> "apackage" + i + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME).collect(Collectors.toList());
         PMMLCompilerService.addPMMLRuleMappers(kiePmmlModel, generatedRuleMappers, "source_path");
-        assertFalse(kiePmmlModel.sourcesMap.isEmpty());
+        assertFalse(kiePmmlModel.getSourcesMap().isEmpty());
         String expected =  kiePmmlModel.getKModulePackageName() + "." + KIE_PMML_RULE_MAPPERS_CLASS_NAME;
-        assertTrue(kiePmmlModel.sourcesMap.containsKey(expected));
+        assertTrue(kiePmmlModel.getSourcesMap().containsKey(expected));
     }
 
     @Test(expected = KiePMMLException.class)
     public void addPMMLRuleMappersNotHasSourceMap() {
-        final KiePMMLModel kiePmmlModel = getKiePMMLModel();
+        final KiePMMLModel kiePmmlModel = KiePMMLTestingModel.builder("name",
+                                                                      Collections.emptyList(),
+                                                                      MINING_FUNCTION.REGRESSION).build();
         final List<String> generatedRuleMappers = IntStream.range(0, 3)
                 .mapToObj(i -> "apackage" + i + "." + KIE_PMML_RULE_MAPPER_CLASS_NAME).collect(Collectors.toList());
         PMMLCompilerService.addPMMLRuleMappers(kiePmmlModel, generatedRuleMappers, "source_path");
@@ -166,45 +168,12 @@ public class PMMLCompilerServiceTest {
         assertEquals(fileName, retrieved);
     }
 
-    private KiePMMLModel getKiePMMLModel() {
-        return new KiePMMLModel("name", Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        };
-    }
-
-    private static class KiePMMLModelHasSourceMap extends KiePMMLModel implements HasSourcesMap {
-
-        protected final Map<String, String> sourcesMap = new HashMap<>();
-
-        public KiePMMLModelHasSourceMap(String name, List<KiePMMLExtension> extensions) {
-            super(name, extensions);
-        }
-
-        @Override
-        public Map<String, String> getSourcesMap() {
-            return Collections.unmodifiableMap(sourcesMap);
-        }
-
-        @Override
-        public void addSourceMap(String key, String value) {
-            sourcesMap.put(key, value);
-        }
-
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
-        }
-    }
-
-    private static class KiePMMLModelHasRule extends KiePMMLModelHasSourceMap implements HasRule {
+    private static class KiePMMLModelHasRule extends KiePMMLTestingModelWithSources implements HasRule {
 
         private final String pkgUUID = generateUUID();
 
         public KiePMMLModelHasRule(String name, List<KiePMMLExtension> extensions) {
-            super(name, extensions);
+            super(name, "kmodulePackageName", new HashMap<>());
         }
 
         @Override
@@ -213,12 +182,12 @@ public class PMMLCompilerServiceTest {
         }
     }
 
-    private static class KiePMMLModelHasNestedModelsHasRule extends KiePMMLModelHasSourceMap implements HasNestedModels {
+    private static class KiePMMLModelHasNestedModelsHasRule extends KiePMMLTestingModelWithSources implements HasNestedModels {
 
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
 
         public KiePMMLModelHasNestedModelsHasRule(String name, List<KiePMMLExtension> extensions) {
-            super(name, extensions);
+            super(name, "kmodulePackageName", new HashMap<>());
             IntStream.range(0, 3).forEach(i -> nestedModels.add(new KiePMMLModelHasRule(name + "_" + i,
                                                                                         Collections.emptyList())));
         }
@@ -229,14 +198,15 @@ public class PMMLCompilerServiceTest {
         }
     }
 
-    private static class KiePMMLModelHasNestedModelsHasSourceMap extends KiePMMLModelHasSourceMap implements HasNestedModels {
+    private static class KiePMMLModelHasNestedModelsHasSourceMap extends KiePMMLTestingModelWithSources implements HasNestedModels {
 
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
 
         public KiePMMLModelHasNestedModelsHasSourceMap(String name, List<KiePMMLExtension> extensions) {
-            super(name, extensions);
-            IntStream.range(0, 3).forEach(i -> nestedModels.add(new KiePMMLModelHasSourceMap(name + "_" + i,
-                                                                                             Collections.emptyList())));
+            super(name, "kmodulePackageName", new HashMap<>());
+            IntStream.range(0, 3).forEach(i -> nestedModels.add(new KiePMMLTestingModelWithSources(name + "_" + i,
+                                                                                                   "kmodulePackageName",
+                                                                                             Collections.emptyMap())));
         }
 
         @Override

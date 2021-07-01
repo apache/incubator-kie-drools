@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -35,8 +34,9 @@ import org.drools.core.spi.Salience;
 import org.drools.core.time.TimeUtils;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.kie.api.definition.rule.Rule;
-import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELSalienceExpression
     implements
@@ -49,7 +49,7 @@ public class MVELSalienceExpression
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
+    private MvelEvaluator<Object> evaluator;
 
     public MVELSalienceExpression() {
     }
@@ -76,11 +76,11 @@ public class MVELSalienceExpression
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public int getValue(final KnowledgeHelper khelper,
@@ -99,7 +99,7 @@ public class MVELSalienceExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-        Object value = MVEL.executeExpression( this.expr, factory );
+        Object value = evaluator.evaluate( factory );
         if (value instanceof String) {
             value = TimeUtils.parseTimeString( (String)value );
         }

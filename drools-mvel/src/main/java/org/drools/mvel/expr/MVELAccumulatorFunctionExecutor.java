@@ -28,8 +28,9 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.MvelAccumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.mvel.MVELDialectRuntimeData;
-import org.mvel2.MVEL;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 /**
  * An MVEL accumulator function executor implementation
@@ -45,7 +46,7 @@ public class MVELAccumulatorFunctionExecutor
     private MVELCompilationUnit                        unit;
     private org.kie.api.runtime.rule.AccumulateFunction function;
 
-    private Serializable                               expression;
+    private MvelEvaluator<Object> evaluator;
 
     public MVELAccumulatorFunctionExecutor() {
 
@@ -70,11 +71,11 @@ public class MVELAccumulatorFunctionExecutor
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expression = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator(unit.getCompiledExpression( runtimeData ));
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule) {
-        expression = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator(unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ));
     }
 
     /* (non-Javadoc)
@@ -108,7 +109,7 @@ public class MVELAccumulatorFunctionExecutor
         
         VariableResolverFactory factory = unit.getFactory( null, null, null, handle, tuple, null, (InternalWorkingMemory) workingMemory, workingMemory.getGlobalResolver()  );
         
-        final Object value = MVEL.executeExpression( this.expression, handle.getObject(), factory );
+        final Object value = evaluator.evaluate( handle.getObject(), factory );
         return this.function.accumulateValue( (Serializable) context, value );
     }
 
