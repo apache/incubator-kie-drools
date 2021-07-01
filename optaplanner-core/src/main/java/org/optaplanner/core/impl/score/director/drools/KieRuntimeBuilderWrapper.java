@@ -17,7 +17,7 @@
 package org.optaplanner.core.impl.score.director.drools;
 
 import org.kie.api.KieBase;
-import org.kie.kogito.rules.KieRuntimeBuilder;
+import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 
 /**
  * Wraps {@link KieRuntimeBuilder} so the dependency on kogito-api is optional.

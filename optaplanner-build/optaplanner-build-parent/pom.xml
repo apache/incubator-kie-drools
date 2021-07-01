@@ -144,6 +144,11 @@
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-legacy-api</artifactId>
+        <version>${version.org.kie.kogito}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
         <artifactId>drools-core</artifactId>
         <version>${version.org.kie.kogito}</version>
         <exclusions>

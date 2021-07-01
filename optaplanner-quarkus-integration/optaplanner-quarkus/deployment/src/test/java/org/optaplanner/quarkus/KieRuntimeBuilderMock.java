@@ -28,7 +28,7 @@ import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
-import org.kie.kogito.rules.KieRuntimeBuilder;
+import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 import org.kie.kogito.rules.RuleConfig;
 import org.optaplanner.core.config.util.ConfigUtils;
 

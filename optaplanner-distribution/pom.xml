@@ -53,7 +53,7 @@
                 </additionalDependency>
                 <additionalDependency>
                   <groupId>org.kie.kogito</groupId>
-                  <artifactId>kogito-api</artifactId>
+                  <artifactId>kogito-legacy-api</artifactId>
                   <version>${version.org.kie.kogito}</version>
                 </additionalDependency>
                 <additionalDependency>
