@@ -178,7 +178,7 @@ public class GuidedDecisionTreeModelMarshallingVisitor {
 
     protected StringBuilder generateRuleHeaderDRL() {
         final StringBuilder sb = new StringBuilder();
-        sb.append("rule \"").append(baseRuleName).append("_").append(new Integer(ruleCount).toString()).append("\"\n");
+        sb.append("rule \"").append(baseRuleName).append("_").append(Integer.valueOf(ruleCount).toString()).append("\"\n");
         return sb;
     }
 

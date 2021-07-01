@@ -407,7 +407,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_BYTE.equals(dataType)) {
             try {
-                return new ByteValue(new Byte(value));
+                return new ByteValue(Byte.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Byte.class.getName()));
@@ -415,7 +415,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(dataType)) {
             try {
-                return new DoubleValue(new Double(value));
+                return new DoubleValue(Double.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Double.class.getName()));
@@ -423,7 +423,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_FLOAT.equals(dataType)) {
             try {
-                return new FloatValue(new Float(value));
+                return new FloatValue(Float.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Float.class.getName()));
@@ -431,7 +431,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_INTEGER.equals(dataType)) {
             try {
-                return new IntegerValue(new Integer(value));
+                return new IntegerValue(Integer.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Integer.class.getName()));
@@ -439,7 +439,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_LONG.equals(dataType)) {
             try {
-                return new LongValue(new Long(value));
+                return new LongValue(Long.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Long.class.getName()));
@@ -447,7 +447,7 @@ public class GuidedDecisionTreeModelUnmarshallingVisitor {
             }
         } else if (DataType.TYPE_NUMERIC_SHORT.equals(dataType)) {
             try {
-                return new ShortValue(new Short(value));
+                return new ShortValue(Short.valueOf(value));
             } catch (NumberFormatException e) {
                 messages.add(new DataTypeConversionErrorParserMessage(value,
                                                                       Short.class.getName()));
