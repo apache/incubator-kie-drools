@@ -33,7 +33,6 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
 
-
     private static final String FILE_NAME = "SimpleScorecardWithTransformations.pmml";
     private static final String MODEL_NAME = "SimpleScorecardWithTransformations";
     private static final String TARGET_FIELD = "Score";
