@@ -67,7 +67,7 @@ public class PostProcess {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
                                           LinkedHashMap::new));
         final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-        toPopulate.__(orderedReasonCodes);
+        toPopulate.addOrderedReasonCodes(orderedReasonCodes);
     }
 
     /**
