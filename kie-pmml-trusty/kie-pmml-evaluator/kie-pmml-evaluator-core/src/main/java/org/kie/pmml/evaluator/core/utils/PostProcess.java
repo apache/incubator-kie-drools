@@ -57,7 +57,7 @@ public class PostProcess {
     }
 
     static void populateProcessingDTO(final PMML4Result pmml4Result, final KiePMMLModel model, final ProcessingDTO toPopulate) {
-        pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.getKiePMMLNameValues().add(new KiePMMLNameValue(key, value)));
+        pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue
                 = model.getOutputFieldsMap().entrySet()
                 .stream()
@@ -67,7 +67,7 @@ public class PostProcess {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
                                           LinkedHashMap::new));
         final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-        toPopulate.getOrderedReasonCodes().addAll(orderedReasonCodes);
+        toPopulate.__(orderedReasonCodes);
     }
 
     /**
@@ -140,16 +140,6 @@ public class PostProcess {
         }
         List<KiePMMLOutputField> reasonCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.REASON_CODE);
         if (reasonCodeOutputFields != null) {
-//            final Map<String, Double> sortedByValue
-//                    = model.getOutputFieldsMap().entrySet()
-//                    .stream()
-//                    .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
-//                    .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
-//                    .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-//                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-//                                              LinkedHashMap::new));
-//            final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-//            processingDTO.getOrderedReasonCodes().addAll(orderedReasonCodes);
             reasonCodeOutputFields
                     .forEach(outputField -> populateReasonCodeOutputField(outputField,
                                                                           toUpdate,
@@ -169,7 +159,7 @@ public class PostProcess {
         variableValue.ifPresent(objValue -> {
             String variableName = outputField.getName();
             toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(variableName, objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
         });
     }
 
@@ -184,7 +174,7 @@ public class PostProcess {
         variableValue.ifPresent(objValue -> {
             String variableName = outputField.getName();
             toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(variableName, objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
         });
     }
 
@@ -198,7 +188,7 @@ public class PostProcess {
         Optional<Object> variableValue = Optional.ofNullable(outputField.evaluateReasonCodeValue(processingDTO));
         variableValue.ifPresent(objValue -> {
             toUpdate.addResultVariable(outputField.getName(), objValue);
-            processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(outputField.getName(), objValue));
+            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(outputField.getName(), objValue));
         });
     }
 
