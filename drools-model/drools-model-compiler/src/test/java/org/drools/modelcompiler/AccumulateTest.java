@@ -4092,4 +4092,44 @@ public class AccumulateTest extends BaseModelTest {
 
         Assertions.assertThat(result).containsExactly(50);
     }
+
+    @Test
+    public void testCollectAfterAccumulate() {
+        String str = "import " + Person.class.getCanonicalName() + ";\n" +
+                     "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                     "import " + ArrayList.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R when\n" +
+                     "  accumulate (\n" +
+                     "    Person($age: age),\n" +
+                     "    $maxAge: max($age)\n" +
+                     "  )\n" +
+                     "  $list: ArrayList() from collect (\n" +
+                     "    Person(age < $maxAge)\n" +
+                     "  )\n" +
+                     "then\n" +
+                     "  result.addAll($list)\n" +
+                     "end";
+        try {
+            KieSession ksession = getKieSession(str);
+            List<Person> result = new ArrayList<>();
+            ksession.setGlobal("result", result);
+
+            Person john = new Person("John", 37);
+            Person bob = new Person("Bob", 37);
+            Person paul = new Person("Paul", 35);
+            Person george = new Person("George", 34);
+            ksession.insert(john);
+            ksession.insert(bob);
+            ksession.insert(paul);
+            ksession.insert(george);
+
+            ksession.fireAllRules();
+
+            Assertions.assertThat(result).containsExactlyInAnyOrder(paul, george);
+        } catch (Throwable ex) {
+            Assertions.fail("Should not have thrown.", ex);
+        }
+    }
 }
