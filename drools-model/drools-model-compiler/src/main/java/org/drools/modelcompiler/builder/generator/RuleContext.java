@@ -356,6 +356,7 @@ public class RuleContext {
         }
         this.scopedDeclarations.put(d.getBindingId(), d);
         this.allDeclarations.put(d.getBindingId(), d);
+        definedVars.put(bindingId, bindingId);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
