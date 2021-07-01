@@ -42,6 +42,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String CONSTANT = "constant";
     private static final String WEATHERDECISION = "weatherdecision";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -86,6 +87,14 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (temperature > 4.2 && temperature < 9.8) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (temperature >= 15.4 && temperature < 32.1) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
     }
 }
