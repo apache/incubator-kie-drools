@@ -19,6 +19,7 @@ package org.kie.dmn.xls2dmn.cli;
 import java.io.File;
 import java.util.Arrays;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -37,6 +38,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class XLS2DMNParserTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(XLS2DMNParserTest.class);
+    private DMNRuntime dmnRuntime;
+    private DMNModel dmnModel;
 
     private DMNRuntime getRuntimeLoanApprovalXslx() throws Exception {
         File tempFile = File.createTempFile("xls2dmn", ".dmn");
@@ -51,11 +54,14 @@ public class XLS2DMNParserTest {
         return dmnRuntime;
     }
 
-    @Test
-    public void testLoanApprovalXslx() throws Exception {
-        final DMNRuntime dmnRuntime = getRuntimeLoanApprovalXslx();
-        DMNModel dmnModel = dmnRuntime.getModels().get(0);
+    @Before
+    public void init() throws Exception {
+        dmnRuntime = getRuntimeLoanApprovalXslx();
+        dmnModel = dmnRuntime.getModels().get(0);
+    }
 
+    @Test
+    public void testLoanApprovalXslx() {
         DMNContext dmnContext = dmnRuntime.newContext();
         dmnContext.set("DTI Ratio", 1);
         dmnContext.set("PITI Ratio", 1);
@@ -67,10 +73,7 @@ public class XLS2DMNParserTest {
     }
     
     @Test
-    public void testLoanApprovalXslx_Approved() throws Exception {
-        final DMNRuntime dmnRuntime = getRuntimeLoanApprovalXslx();
-        DMNModel dmnModel = dmnRuntime.getModels().get(0);
-
+    public void testLoanApprovalXslx_Approved() {
         DMNContext dmnContext = dmnRuntime.newContext();
         dmnContext.set("DTI Ratio", .1);
         dmnContext.set("PITI Ratio", .1);
