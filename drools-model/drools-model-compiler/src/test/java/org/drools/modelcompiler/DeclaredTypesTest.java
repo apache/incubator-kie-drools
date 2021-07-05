@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
@@ -538,7 +539,7 @@ public class DeclaredTypesTest extends BaseModelTest {
         Object f1 = factType.newInstance();
         Object n1 = nestedType.newInstance();
 
-        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
 
         nestedType.set(n1, "d", df.parse("01-Jan-2020"));
         factType.set(f1, "n", n1);
