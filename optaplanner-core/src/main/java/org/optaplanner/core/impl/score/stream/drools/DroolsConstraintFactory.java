@@ -79,6 +79,7 @@ public final class DroolsConstraintFactory<Solution_> extends InnerConstraintFac
     // Getters/setters
     // ************************************************************************
 
+    @Override
     public SolutionDescriptor<Solution_> getSolutionDescriptor() {
         return solutionDescriptor;
     }

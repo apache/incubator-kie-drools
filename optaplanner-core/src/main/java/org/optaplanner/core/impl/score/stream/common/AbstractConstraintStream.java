@@ -88,6 +88,7 @@ public abstract class AbstractConstraintStream<Solution_> implements ConstraintS
     // Getters/setters
     // ************************************************************************
 
+    @Override
     public abstract InnerConstraintFactory<Solution_> getConstraintFactory();
 
     @Override
