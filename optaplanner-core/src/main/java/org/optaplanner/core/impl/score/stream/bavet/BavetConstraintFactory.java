@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
@@ -59,7 +60,8 @@ public final class BavetConstraintFactory<Solution_> extends InnerConstraintFact
     // SessionFactory creation
     // ************************************************************************
 
-    public BavetConstraintSessionFactory<Solution_, ?> buildSessionFactory(Constraint[] constraints) {
+    public <Score_ extends Score<Score_>> BavetConstraintSessionFactory<Solution_, Score_> buildSessionFactory(
+            Constraint[] constraints) {
         List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
         Set<String> constraintIdSet = new HashSet<>(constraints.length);
         for (Constraint constraint : constraints) {

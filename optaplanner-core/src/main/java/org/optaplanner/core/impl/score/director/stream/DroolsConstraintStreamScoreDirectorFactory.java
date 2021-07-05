@@ -35,8 +35,7 @@ public final class DroolsConstraintStreamScoreDirectorFactory<Solution_, Score_ 
         DroolsConstraintFactory<Solution_> constraintFactory =
                 new DroolsConstraintFactory<>(solutionDescriptor, droolsAlphaNetworkCompilationEnabled);
         constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory =
-                (DroolsConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
+        this.constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
     @Override

@@ -35,8 +35,7 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
         super(solutionDescriptor);
         BavetConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
         constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory =
-                (BavetConstraintSessionFactory<Solution_, Score_>) constraintFactory.buildSessionFactory(constraints);
+        this.constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
     }
 
     @Override
