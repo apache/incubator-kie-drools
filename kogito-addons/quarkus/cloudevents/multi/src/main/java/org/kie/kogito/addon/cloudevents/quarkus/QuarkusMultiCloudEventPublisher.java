@@ -117,7 +117,10 @@ public class QuarkusMultiCloudEventPublisher implements ChannelRegistar {
     @Override
     public void initialize() {
         try {
-            mediatorManager.addAnalyzed(mediatorConf(channelResolver.getInputChannels()));
+            Collection<String> inputChannels = channelResolver.getInputChannels();
+            if (!inputChannels.isEmpty()) {
+                mediatorManager.addAnalyzed(mediatorConf(inputChannels));
+            }
         } catch (NoSuchMethodException e) {
             throw new IllegalStateException(e);
         }
