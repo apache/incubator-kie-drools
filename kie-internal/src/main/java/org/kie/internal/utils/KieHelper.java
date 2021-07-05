@@ -79,15 +79,18 @@ public class KieHelper {
     }
 
     public KieBase build(Class<? extends KieBuilder.ProjectType> projectType, KieBaseOption... options) {
-        KieContainer kieContainer = getKieContainer(projectType);
         if (options == null || options.length == 0) {
-            return kieContainer.getKieBase();
+            return getKieContainer(projectType).getKieBase();
         }
         KieBaseConfiguration kieBaseConf = ks.newKieBaseConfiguration();
         for (KieBaseOption option : options) {
             kieBaseConf.setOption(option);
         }
+        return build(projectType, kieBaseConf);
+    }
 
+    public KieBase build(Class<? extends KieBuilder.ProjectType> projectType, KieBaseConfiguration kieBaseConf) {
+        KieContainer kieContainer = getKieContainer(projectType);
         return kieContainer.newKieBase(kieBaseConf);
     }
 
