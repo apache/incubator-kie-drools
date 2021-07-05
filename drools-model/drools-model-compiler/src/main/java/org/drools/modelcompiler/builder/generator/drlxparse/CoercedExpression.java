@@ -46,6 +46,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
@@ -180,6 +181,8 @@ public class CoercedExpression {
             coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(expression)));
         } else if (typedExpression.getType() == Object.class) {
             coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(expression, "toString"));
+        } else if (expression instanceof NameExpr) {
+                coercedExpression = typedExpression.cloneWithNewExpression(new CastExpr(toClassOrInterfaceType(String.class), expression));
         } else {
             coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(expression.toString()));
         }

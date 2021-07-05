@@ -171,7 +171,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        ksession.insert(new Person("John1", 41, null));
+        ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
         ksession.fireAllRules();
 
@@ -215,7 +215,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        ksession.insert(new Person("John1", 41, null));
+        ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
         ksession.fireAllRules();
 

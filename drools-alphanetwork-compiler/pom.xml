@@ -27,6 +27,7 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-mvel</artifactId>
+      <scope>test</scope>
     </dependency>
 
     <dependency>
