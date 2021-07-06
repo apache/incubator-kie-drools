@@ -83,6 +83,21 @@
         <LinearNorm orig="6.8" norm="6.7"/>
       </NormContinuous>
     </DerivedField>
+    <DerivedField name="mapvalued_field" optype="categorical" dataType="string">
+      <MapValues outputColumn="out" dataType="string">
+        <FieldColumnPair field="car_location" column="carlocation"/>
+        <InlineTable>
+          <row>
+            <carlocation>carpark</carlocation>
+            <out>inside</out>
+          </row>
+          <row>
+            <carlocation>street</carlocation>
+            <out>outside</out>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DerivedField>
   </TransformationDictionary>
   <RegressionModel modelName="LinearRegressionSampleWithTransformations" functionName="regression" algorithmName="linearRegression" targetFieldName="number_of_claims">
     <MiningSchema>
@@ -140,6 +155,9 @@
         <Apply function="discretize_function" >
           <FieldRef field="age"/>
         </Apply>
+      </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <FieldRef field="mapvalued_field"/>
       </OutputField>
     </Output>
     <Targets>
