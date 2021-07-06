@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 set -e
 
-# update the version
+# update Quarkus dependencies
+mvn versions:compare-dependencies \
+    -pl :kogito-build-parent \
+    -DremotePom=io.quarkus:quarkus-bom:${QUARKUS_VERSION} \
+    -DupdatePropertyVersions=true \
+    -DupdateDependencies=true \
+    -DgenerateBackupPoms=false
+
+# update Quarkus version
 mvn versions:set-property -pl :kogito-build-parent -Dproperty=version.io.quarkus -DnewVersion=${QUARKUS_VERSION} -DgenerateBackupPoms=false
 
 # run the tests
