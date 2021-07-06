@@ -137,7 +137,7 @@ public class XLS2DMNParser implements DecisionTableParser {
         final Map<String, List<DataListener>> sheetListeners = new HashMap<>();
         for (DTHeaderInfo hi : headerInfos.values()) {
             String sheetName = hi.getSheetName();
-            DRGElement drgElem = definitions.getDrgElement().stream().filter(e -> e.getName().equals(sheetName)).findFirst().orElseThrow(RuntimeException::new);
+            DRGElement drgElem = definitions.getDrgElement().stream().filter(e -> e.getName().equals(sheetName)).findFirst().orElseThrow(() -> new XLS2DMNException("Unable to locate DRG element for sheet: " + sheetName));
             DecisionTable dt = (DecisionTable) ((Decision) drgElem).getExpression();
             DTSheetListener listener = new DTSheetListener(dt, hi);
             sheetListeners.put(sheetName, Arrays.asList(listener));
@@ -148,8 +148,8 @@ public class XLS2DMNParser implements DecisionTableParser {
         try {
             Files.write(outFile.toPath(), xml.getBytes());
         } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+            LOG.error("Unable to write to outputfile.", e);
+            throw new XLS2DMNException("Unable to write to outputfile", e);
         }
         LOG.debug("output XML can be displayed at trace level",xml);
         LOG.trace("output XML:\n{}",xml);
@@ -241,13 +241,13 @@ public class XLS2DMNParser implements DecisionTableParser {
             List<String> requiredDecision = new ArrayList<>();
             int hIndex = kv.getValue().indexOf(sheetName);
             if (hIndex < 0) {
-                throw new RuntimeException("There is no result output column in sheet: " + sheetName);
+                throw new XLS2DMNException("There is no result output column in sheet: " + sheetName);
             }
             if (hIndex != kv.getValue().size()) {
                 for (int i = hIndex+1; i < kv.getValue().size(); i++) {
                     String afterIndexValue = kv.getValue().get(i);
                     if (!(afterIndexValue == null || afterIndexValue.isEmpty())) {
-                        throw new RuntimeException("Decision name was not last, on the right I found "+afterIndexValue);
+                        throw new XLS2DMNException("Decision name was not last, on the right I found " + afterIndexValue);
                     }
                 }
             }
