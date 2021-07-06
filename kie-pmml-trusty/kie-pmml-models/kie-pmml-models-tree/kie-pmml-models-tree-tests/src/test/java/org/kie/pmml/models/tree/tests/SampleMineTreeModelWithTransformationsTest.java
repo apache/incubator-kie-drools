@@ -45,6 +45,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String WEATHERDECISION = "weatherdecision";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -73,7 +74,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     }
 
     @Test
-    public void testSetPredicateTree() {
+    public void testSetPredicateTree() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
@@ -98,5 +99,21 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (expectedResult) {
+            case "sunglasses":
+                expected = "sun";
+                break;
+            case "umbrella":
+                expected = "rain";
+                break;
+            case "nothing":
+                expected = "dunno";
+                break;
+            default:
+                throw new Exception("Unexpected expectedResult " + expectedResult);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
     }
 }
