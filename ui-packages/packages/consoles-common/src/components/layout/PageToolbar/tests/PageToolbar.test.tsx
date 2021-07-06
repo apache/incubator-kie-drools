@@ -21,17 +21,13 @@ import { Dropdown } from '@patternfly/react-core';
 import PageToolbar from '../PageToolbar';
 import {
   resetTestKogitoAppContext,
-  testHandleLogoutMock,
-  testIsTestUserSystemEnabledMock
+  testHandleLogoutMock
 } from '../../../../environment/auth/tests/utils/KogitoAppContextTestingUtils';
 
 jest.mock('../../AboutModalBox/AboutModalBox');
-jest.mock('../../PageToolbarUsersDropdownGroup/PageToolbarUsersDropdownGroup');
-jest.mock('../../AddTestUser/AddTestUser');
 
 describe('PageToolbar component tests', () => {
   beforeEach(() => {
-    testIsTestUserSystemEnabledMock.mockReturnValue(false);
     testHandleLogoutMock.mockClear();
     resetTestKogitoAppContext(false);
   });
@@ -95,20 +91,6 @@ describe('PageToolbar component tests', () => {
     expect(dropdownItems.length).toStrictEqual(1);
   });
 
-  it('Testing dropdown items - auth disabled TestUserSystem enabled', () => {
-    testIsTestUserSystemEnabledMock.mockReturnValue(true);
-
-    const wrapper = shallow(<PageToolbar />);
-
-    expect(wrapper).toMatchSnapshot();
-
-    const dropdown = wrapper.find(Dropdown);
-
-    const dropdownItems = dropdown.prop('dropdownItems');
-
-    expect(dropdownItems.length).toStrictEqual(3);
-  });
-
   it('Testing select dropdown test', () => {
     let wrapper = shallow(<PageToolbar />);
 
@@ -162,45 +144,5 @@ describe('PageToolbar component tests', () => {
     aboutModalBox = wrapper.update().find('MockedAboutModalBox');
 
     expect(aboutModalBox.prop('isOpenProp')).toBeTruthy();
-  });
-
-  it('Testing handleaddUserModalToggle - TestUserSystem enabled', () => {
-    testIsTestUserSystemEnabledMock.mockReturnValue(true);
-
-    const wrapper = mount(<PageToolbar />).find('PageToolbar');
-
-    let addUserModal = wrapper.find('MockedAddTestUser');
-
-    expect(addUserModal.exists()).toBeTruthy();
-
-    expect(addUserModal.prop('isOpen')).toBeFalsy();
-
-    act(() => {
-      addUserModal.props()['toggleModal']();
-    });
-
-    addUserModal = wrapper.update().find('MockedAddTestUser');
-
-    expect(addUserModal.prop('isOpen')).toBeTruthy();
-  });
-
-  it('Testing handleaddUserModalToggle test - TestUserSystem disabled', () => {
-    testIsTestUserSystemEnabledMock.mockReturnValue(false);
-
-    const wrapper = mount(<PageToolbar />).find('PageToolbar');
-
-    let addUserModal = wrapper.find('MockedAddTestUser');
-
-    expect(addUserModal.exists()).toBeTruthy();
-
-    expect(addUserModal.prop('isOpen')).toBeFalsy();
-
-    act(() => {
-      addUserModal.props()['toggleModal']();
-    });
-
-    addUserModal = wrapper.update().find('MockedAddTestUser');
-
-    expect(addUserModal.prop('isOpen')).toBeFalsy();
   });
 });

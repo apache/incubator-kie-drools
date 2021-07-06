@@ -31,14 +31,11 @@ import { css } from '@patternfly/react-styles';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
 import AboutModalBox from '../AboutModalBox/AboutModalBox';
 import userImage from '../../../static/avatar.svg';
-import PageToolbarUsersDropdownGroup from '../PageToolbarUsersDropdownGroup/PageToolbarUsersDropdownGroup';
-import AddTestUser from '../AddTestUser/AddTestUser';
 import {
   ANONYMOUS_USER,
   LogoutUserContext,
   supportsLogout
 } from '../../../environment/auth';
-import { isTestUserSystemEnabled } from '../../../utils/Utils';
 import {
   AppContext,
   useKogitoAppContext
@@ -50,18 +47,11 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const [modalToggle, setmodalToggle] = useState<boolean>(false);
-  const [addUserToggle, setAddUserToggle] = useState<boolean>(false);
 
   const context: AppContext = useKogitoAppContext();
 
-  const testUserSystemEnabled = isTestUserSystemEnabled();
-
   const handleAboutModalToggle = () => {
     setmodalToggle(!modalToggle);
-  };
-
-  const handleAddUserModalToggle = () => {
-    setAddUserToggle(!addUserToggle);
   };
 
   const onDropdownToggle = _isDropdownOpen => {
@@ -100,18 +90,6 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
     </DropdownItem>
   );
 
-  if (testUserSystemEnabled) {
-    userDropdownItems.push(
-      <DropdownSeparator key={userDropdownItems.length} />
-    );
-    userDropdownItems.push(
-      <PageToolbarUsersDropdownGroup
-        key={userDropdownItems.length}
-        toggleAddUsersModal={() => setAddUserToggle(true)}
-      />
-    );
-  }
-
   if (supportsLogout(context.userContext)) {
     userDropdownItems.push(
       <DropdownSeparator key={userDropdownItems.length} />
@@ -128,10 +106,6 @@ const PageToolbar: React.FunctionComponent<OUIAProps> = ({
       <AboutModalBox
         isOpenProp={modalToggle}
         handleModalToggleProp={handleAboutModalToggle}
-      />
-      <AddTestUser
-        isOpen={testUserSystemEnabled && addUserToggle}
-        toggleModal={handleAddUserModalToggle}
       />
       <Toolbar {...componentOuiaProps(ouiaId, 'page-toolbar', ouiaSafe)}>
         <ToolbarGroup>

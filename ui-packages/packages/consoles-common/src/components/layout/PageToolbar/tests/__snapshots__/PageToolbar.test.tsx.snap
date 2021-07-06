@@ -6,10 +6,6 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
     handleModalToggleProp={[Function]}
     isOpenProp={false}
   />
-  <MockedAddTestUser
-    isOpen={false}
-    toggleModal={[Function]}
-  />
   <Toolbar
     data-ouia-component-type="page-toolbar"
     data-ouia-safe={true}
@@ -60,7 +56,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                         }
                         onToggle={[Function]}
                       >
-                        john
+                        Anonymous
                       </DropdownToggle>
                     }
                   >
@@ -93,7 +89,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                           }
                           onToggle={[Function]}
                         >
-                          john
+                          Anonymous
                         </DropdownToggle>
                       }
                     >
@@ -148,7 +144,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                                   <span
                                     class="pf-c-dropdown__toggle-text"
                                   >
-                                    john
+                                    Anonymous
                                   </span>
                                   <span
                                     class="pf-c-dropdown__toggle-icon"
@@ -219,7 +215,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                                     <span
                                       class="pf-c-dropdown__toggle-text"
                                     >
-                                      john
+                                      Anonymous
                                     </span>
                                     <span
                                       class="pf-c-dropdown__toggle-icon"
@@ -273,7 +269,7 @@ exports[`PageToolbar component tests Snapshot testing - auth disabled 1`] = `
                               <span
                                 className="pf-c-dropdown__toggle-text"
                               >
-                                john
+                                Anonymous
                               </span>
                               <span
                                 className="pf-c-dropdown__toggle-icon"
@@ -362,10 +358,6 @@ exports[`PageToolbar component tests Snapshot testing - auth enabled 1`] = `
   <MockedAboutModalBox
     handleModalToggleProp={[Function]}
     isOpenProp={false}
-  />
-  <MockedAddTestUser
-    isOpen={false}
-    toggleModal={[Function]}
   />
   <Toolbar
     data-ouia-component-type="page-toolbar"
@@ -732,10 +724,6 @@ exports[`PageToolbar component tests Testing dropdown items - auth disabled 1`] 
     handleModalToggleProp={[Function]}
     isOpenProp={false}
   />
-  <MockedAddTestUser
-    isOpen={false}
-    toggleModal={[Function]}
-  />
   <Toolbar
     data-ouia-component-type="page-toolbar"
     data-ouia-safe={true}
@@ -768,63 +756,7 @@ exports[`PageToolbar component tests Testing dropdown items - auth disabled 1`] 
               }
               onToggle={[Function]}
             >
-              john
-            </DropdownToggle>
-          }
-        />
-      </ToolbarItem>
-    </ForwardRef>
-  </Toolbar>
-</Fragment>
-`;
-
-exports[`PageToolbar component tests Testing dropdown items - auth disabled TestUserSystem enabled 1`] = `
-<Fragment>
-  <MockedAboutModalBox
-    handleModalToggleProp={[Function]}
-    isOpenProp={false}
-  />
-  <MockedAddTestUser
-    isOpen={false}
-    toggleModal={[Function]}
-  />
-  <Toolbar
-    data-ouia-component-type="page-toolbar"
-    data-ouia-safe={true}
-  >
-    <ForwardRef>
-      <ToolbarItem
-        className="pf-u-screen-reader pf-u-visible-on-md"
-      >
-        <Dropdown
-          dropdownItems={
-            Array [
-              <DropdownItem
-                onClick={[Function]}
-              >
-                About
-              </DropdownItem>,
-              <DropdownSeparator />,
-              <MockedPageToolbarUsersDropdownGroup
-                toggleAddUsersModal={[Function]}
-              />,
-            ]
-          }
-          isOpen={false}
-          isPlain={true}
-          onSelect={[Function]}
-          position="right"
-          toggle={
-            <DropdownToggle
-              icon={
-                <Avatar
-                  alt="User Avatar"
-                  src="avatar.svg"
-                />
-              }
-              onToggle={[Function]}
-            >
-              john
+              Anonymous
             </DropdownToggle>
           }
         />
@@ -839,10 +771,6 @@ exports[`PageToolbar component tests Testing dropdown items - auth enabled 1`] =
   <MockedAboutModalBox
     handleModalToggleProp={[Function]}
     isOpenProp={false}
-  />
-  <MockedAddTestUser
-    isOpen={false}
-    toggleModal={[Function]}
   />
   <Toolbar
     data-ouia-component-type="page-toolbar"

@@ -16,5 +16,3 @@
 
 export * from './Auth';
 export * from './KeycloakUserContext';
-export * from './TestUserContext';
-export * from './TestUserManager';

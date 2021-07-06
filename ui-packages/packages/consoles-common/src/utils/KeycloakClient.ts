@@ -19,10 +19,8 @@ import {
   ANONYMOUS_USER,
   User,
   UserContext,
-  TestUserContextImpl,
   KeycloakUserContext
 } from '../environment/auth';
-import { isTestUserSystemEnabled } from './Utils';
 
 export const isAuthEnabled = (): boolean => {
   // @ts-ignore
@@ -64,15 +62,11 @@ export const loadSecurityContext = async (onloadSuccess: () => void) => {
 };
 
 const getNonAuthUserContext = (): UserContext => {
-  if (isTestUserSystemEnabled()) {
-    return new TestUserContextImpl();
-  } else {
-    return {
-      getCurrentUser(): User {
-        return ANONYMOUS_USER;
-      }
-    };
-  }
+  return {
+    getCurrentUser(): User {
+      return ANONYMOUS_USER;
+    }
+  };
 };
 export const getToken = (): string => {
   if (isAuthEnabled()) {

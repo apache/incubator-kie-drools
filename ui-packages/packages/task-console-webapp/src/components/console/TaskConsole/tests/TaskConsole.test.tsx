@@ -18,7 +18,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 import TaskConsole from '../TaskConsole';
 import { ApolloClient } from 'apollo-client';
-import { TestUserContextImpl } from '@kogito-apps/consoles-common';
+import { TestUserContext } from '@kogito-apps/consoles-common';
 import TaskConsoleRoutes from '../../TaskConsoleRoutes/TaskConsoleRoutes';
 
 const MockedComponent = (): React.ReactElement => {
@@ -42,9 +42,11 @@ describe('TaskConsole tests', () => {
   it('Snapshot', () => {
     // @ts-ignore
     const client = new ApolloClientMock();
+    // @ts-ignore
+    const testContext = new TestUserContext();
     const props = {
       apolloClient: client,
-      userContext: new TestUserContextImpl()
+      userContext: testContext
     };
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore

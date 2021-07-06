@@ -3,20 +3,12 @@
 exports[`KogitoAppContextProvider tests Snapshot testing 1`] = `
 <KogitoAppContextProvider
   userContext={
-    TestUserContextImpl {
-      "currentUser": Object {
+    TestUserContext {
+      "user": DefaultUser {
         "groups": Array [
           "employees",
         ],
         "id": "john",
-      },
-      "userManager": TestUserManagerImpl {
-        "system": Array [
-          "john",
-          "mary",
-          "poul",
-        ],
-        "users": Array [],
       },
     }
   }
@@ -24,20 +16,12 @@ exports[`KogitoAppContextProvider tests Snapshot testing 1`] = `
   <MockedComponent
     context={
       AppContextImpl {
-        "userContext": TestUserContextImpl {
-          "currentUser": Object {
+        "userContext": TestUserContext {
+          "user": DefaultUser {
             "groups": Array [
               "employees",
             ],
             "id": "john",
-          },
-          "userManager": TestUserManagerImpl {
-            "system": Array [
-              "john",
-              "mary",
-              "poul",
-            ],
-            "users": Array [],
           },
         },
       }

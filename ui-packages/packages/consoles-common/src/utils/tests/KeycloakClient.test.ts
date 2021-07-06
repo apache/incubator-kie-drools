@@ -15,20 +15,10 @@
  */
 
 import * as KeycloakClient from '../KeycloakClient';
-import * as Utils from '../Utils';
 import axios from 'axios';
-import {
-  ANONYMOUS_USER,
-  KeycloakUserContext,
-  TestUserContextImpl
-} from '../../environment/auth';
+import { ANONYMOUS_USER, KeycloakUserContext } from '../../environment/auth';
 
 const isAuthEnabledMock = jest.spyOn(KeycloakClient, 'isAuthEnabled');
-
-const isTestUserSystemEnabledMock = jest.spyOn(
-  Utils,
-  'isTestUserSystemEnabled'
-);
 
 describe('Tests for keycloak client functions', () => {
   const mockUserContext = {
@@ -39,7 +29,6 @@ describe('Tests for keycloak client functions', () => {
 
   beforeEach(() => {
     isAuthEnabledMock.mockReturnValue(true);
-    isTestUserSystemEnabledMock.mockReturnValue(false);
   });
 
   describe('Wrong API usage tests', () => {
@@ -54,7 +43,6 @@ describe('Tests for keycloak client functions', () => {
 
       const context = KeycloakClient.getLoadedSecurityContext();
 
-      expect(context).not.toBeInstanceOf(TestUserContextImpl);
       expect(context.getCurrentUser()).toBe(ANONYMOUS_USER);
     });
   });
@@ -73,20 +61,17 @@ describe('Tests for keycloak client functions', () => {
 
     const context = KeycloakClient.getLoadedSecurityContext();
 
-    expect(context).not.toBeInstanceOf(TestUserContextImpl);
     expect(context.getCurrentUser()).toBe(ANONYMOUS_USER);
   });
 
   it('Test getLoadedSecurityContext - without auth test user system enabled', async () => {
     isAuthEnabledMock.mockReturnValue(false);
-    isTestUserSystemEnabledMock.mockReturnValue(true);
 
     // eslint-disable-next-line
     await KeycloakClient.loadSecurityContext(() => {});
 
     const context = KeycloakClient.getLoadedSecurityContext();
 
-    expect(context).toBeInstanceOf(TestUserContextImpl);
     expect(context.getCurrentUser().id).toEqual('john');
     expect(context.getCurrentUser().groups).toHaveLength(1);
     expect(context.getCurrentUser().groups).toContain('employees');
@@ -153,13 +138,19 @@ describe('Tests for keycloak client functions', () => {
       // tslint:disable-next-line:no-floating-promises
       axios.interceptors.response.handlers[0].rejected({
         response: {
-          status: 401,
-          config: 'http://originalRequest'
+          error: {
+            status: 401,
+            config: 'http://originalRequest'
+          }
         }
       })
     ).rejects.toMatchObject({
-      status: 401,
-      config: 'http://originalRequest'
+      response: {
+        error: {
+          status: 401,
+          config: 'http://originalRequest'
+        }
+      }
     });
 
     expect(

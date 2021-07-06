@@ -15,22 +15,15 @@
  */
 
 import * as Keycloak from '../../../../utils/KeycloakClient';
-import * as Utils from '../../../../utils/Utils';
 import * as KogitoAppContext from '../../../context/KogitoAppContext';
-import { TestUserContextImpl } from '../../TestUserContext';
 import { KeycloakUserContext } from '../../KeycloakUserContext';
+import { TestUserContext } from '../../../context/TestUserContext';
 
 export const testIsAuthEnabledMock = jest.spyOn(Keycloak, 'isAuthEnabled');
 testIsAuthEnabledMock.mockReturnValue(true);
 
 export const testHandleLogoutMock = jest.spyOn(Keycloak, 'handleLogout');
 testHandleLogoutMock.mockImplementation(jest.fn());
-
-export const testIsTestUserSystemEnabledMock = jest.spyOn(
-  Utils,
-  'isTestUserSystemEnabled'
-);
-testIsTestUserSystemEnabledMock.mockReturnValue(false);
 
 const newContext = (authEnabled: boolean): KogitoAppContext.AppContext => {
   const testUserSystem = authEnabled
@@ -39,7 +32,7 @@ const newContext = (authEnabled: boolean): KogitoAppContext.AppContext => {
         roles: ['user', 'manager'],
         token: 'token'
       })
-    : new TestUserContextImpl();
+    : new TestUserContext();
 
   return new KogitoAppContext.AppContextImpl(testUserSystem);
 };

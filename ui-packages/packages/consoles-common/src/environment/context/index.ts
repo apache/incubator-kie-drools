@@ -20,3 +20,4 @@ export {
   useKogitoAppContext
 } from './KogitoAppContext';
 export { default as KogitoAppContextProvider } from './KogitoAppContextProvider';
+export * from './TestUserContext';

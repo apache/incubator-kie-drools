@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-import { isAuthEnabled } from './KeycloakClient';
+import { ANONYMOUS_USER, User, UserContext } from '../auth';
 
-export const isTestUserSystemEnabled = () => {
-  const testSystemEnabled: boolean =
-    // @ts-ignore
-    window.TEST_USER_SYSTEM_ENABLED || process.env.TEST_USER_SYSTEM_ENABLED;
+export class TestUserContext implements UserContext {
+  public readonly user: User;
+  constructor() {
+    this.user = ANONYMOUS_USER;
+  }
 
-  return !isAuthEnabled() && testSystemEnabled;
-};
+  getCurrentUser(): User {
+    return this.user;
+  }
+}
