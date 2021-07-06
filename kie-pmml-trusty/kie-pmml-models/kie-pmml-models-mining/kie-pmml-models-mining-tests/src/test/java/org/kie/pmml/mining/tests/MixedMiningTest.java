@@ -43,6 +43,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private static final String CONSTANT_OCCUPATION = "CONSTANT_OCCUPATION";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -89,7 +90,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
     }
 
     @Test
-    public void testMixedMining() {
+    public void testMixedMining() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -123,5 +124,27 @@ public class MixedMiningTest extends AbstractPMMLTest {
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (categoricalX) {
+            case "red":
+                expected = "der";
+                break;
+            case "green":
+                expected = "neerg";
+                break;
+            case "blue":
+                expected = "eulb";
+                break;
+            case "orange":
+                expected = "egnaro";
+                break;
+            case "yellow":
+                expected = "wolley";
+                break;
+            default:
+                throw new Exception("Unexpected categoricalX " + categoricalX);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
     }
 }
