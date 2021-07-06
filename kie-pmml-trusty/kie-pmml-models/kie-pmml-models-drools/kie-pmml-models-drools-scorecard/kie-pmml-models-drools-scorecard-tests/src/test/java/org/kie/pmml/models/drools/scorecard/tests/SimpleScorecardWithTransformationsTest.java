@@ -126,7 +126,5 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
             }
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
         }
-
-
     }
 }
