@@ -32,6 +32,7 @@ import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator.DSFormalParameter;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElementReference;
@@ -61,6 +62,9 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         DMNCompilerHelper.checkVariableName(model, ds, ds.getName());
         if (ds.getVariable() != null && ds.getVariable().getTypeRef() != null) {
             type = compiler.resolveTypeRef(model, ds, ds.getVariable(), ds.getVariable().getTypeRef());
+            if (type instanceof SimpleFnTypeImpl) {
+                type = ((SimpleFnTypeImpl) type).getReturnType();
+            }
         } else {
             // for now the call bellow will return type UNKNOWN
             type = compiler.resolveTypeRef(model, ds, ds, null);

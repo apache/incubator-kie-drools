@@ -40,7 +40,7 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
     public static final Logger LOG = LoggerFactory.getLogger(DMNTyperefTest.class);
 
     @Test
-    public void testSimpleItemDefinition() {
+    public void testCircular3() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("circular3.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_EEE7FA5B-AF9C-4937-8870-D612D4D8D860", "new-file");
         assertThat(dmnModel).isNotNull();
@@ -55,6 +55,25 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision-1")).isEqualTo("named John Doe age 40 ext age 41");
+    }
+
+    @Test
+    public void testGenFn1() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType1.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType1");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", "Hello, ");
+        context.set("in2", "World!");
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        LOG.debug("{}", dmnResult);
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
     }
 
 }

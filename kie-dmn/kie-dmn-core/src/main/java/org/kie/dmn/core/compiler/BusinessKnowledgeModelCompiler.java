@@ -21,6 +21,7 @@ import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DRGElement;
@@ -45,6 +46,9 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
         DMNCompilerHelper.checkVariableName( model, bkm, bkm.getName() );
         if (bkm.getVariable().getTypeRef() != null) { // variable must be present, otherwise error was already reported above.
             type = compiler.resolveTypeRef(model, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef());
+            if (type instanceof SimpleFnTypeImpl) {
+                type = ((SimpleFnTypeImpl) type).getReturnType();
+            }
         } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
             type = compiler.resolveTypeRef(model, bkm, bkm.getEncapsulatedLogic().getExpression(), bkm.getEncapsulatedLogic().getExpression().getTypeRef());
         } else {
