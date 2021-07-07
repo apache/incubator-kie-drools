@@ -127,7 +127,7 @@ public class RuleBaseConfiguration
 
     protected static final transient Logger logger = LoggerFactory.getLogger(RuleBaseConfiguration.class);
 
-    private ChainedProperties chainedProperties;
+    private transient ChainedProperties chainedProperties;
 
     private boolean immutable;
 
@@ -189,7 +189,6 @@ public class RuleBaseConfiguration
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
-        out.writeObject(chainedProperties);
         out.writeBoolean(immutable);
         out.writeBoolean(sequential);
         out.writeObject(sequentialAgenda);
@@ -223,7 +222,6 @@ public class RuleBaseConfiguration
 
     public void readExternal(ObjectInput in) throws IOException,
             ClassNotFoundException {
-        chainedProperties = (ChainedProperties) in.readObject();
         immutable = in.readBoolean();
         sequential = in.readBoolean();
         sequentialAgenda = (SequentialAgenda) in.readObject();
