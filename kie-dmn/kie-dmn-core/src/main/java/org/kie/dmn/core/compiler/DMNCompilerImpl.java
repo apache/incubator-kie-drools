@@ -26,12 +26,14 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -350,6 +352,26 @@ public class DMNCompilerImpl implements DMNCompiler {
         
         List<ItemDefinition> ordered = new ItemDefinitionDependenciesSorter(model.getNamespace()).sort(dmndefs.getItemDefinition());
         
+        Set<String> names = new HashSet<>();
+        for (ItemDefinition id : ordered) {
+            boolean added = names.add(id.getName());
+            if (!added) {
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      id,
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.DUPLICATED_ITEM_DEFINITION,
+                                      id.getName());
+            }
+            if (id.getItemComponent() != null && id.getItemComponent().size() > 0) {
+                DMNCompilerHelper.checkVariableName(model, id, id.getName());
+                CompositeTypeImpl compType = new CompositeTypeImpl(model.getNamespace(), id.getName(), id.getId(), id.isIsCollection());
+                DMNType preregistered = model.getTypeRegistry().registerType(compType);
+            }
+        }
+
         for ( ItemDefinition id : ordered ) {
             ItemDefNodeImpl idn = new ItemDefNodeImpl( id );
             DMNType type = buildTypeDef(ctx, model, idn, id, null);
@@ -614,31 +636,22 @@ public class DMNCompilerImpl implements DMNCompiler {
                     }
                 }
             }
-        } else {
+        } else if (itemDef.getItemComponent() != null && itemDef.getItemComponent().size() > 0) {
             // this is a composite type
-            DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
-            CompositeTypeImpl compType = new CompositeTypeImpl( dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection() );
-            type = compType;
+            // first, locate preregistered or create anonymous inner composite
             if (topLevel == null) {
-                DMNType registered = dmnModel.getTypeRegistry().registerType( type );
-                if( registered != type ) {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           itemDef,
-                                           dmnModel,
-                                           null,
-                                           null,
-                                           Msg.DUPLICATED_ITEM_DEFINITION,
-                                           itemDef.getName() );
-                }
+                type = (CompositeTypeImpl) dmnModel.getTypeRegistry().resolveType(dmnModel.getNamespace(), itemDef.getName());
             } else {
+                DMNCompilerHelper.checkVariableName( dmnModel, itemDef, itemDef.getName() );
+                type = new CompositeTypeImpl(dmnModel.getNamespace(), itemDef.getName(), itemDef.getId(), itemDef.isIsCollection());
                 ((BaseDMNTypeImpl) type).setBelongingType(topLevel);
             }
+            // second, add fields to located composite
             for (ItemDefinition fieldDef : itemDef.getItemComponent()) {
                 DMNCompilerHelper.checkVariableName(dmnModel, fieldDef, fieldDef.getName());
-                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, compType);
+                DMNType fieldType = buildTypeDef(ctx, dmnModel, node, fieldDef, type);
                 fieldType = fieldType != null ? fieldType : dmnModel.getTypeRegistry().unknown();
-                compType.addField(fieldDef.getName(), fieldType);
+                ((CompositeTypeImpl) type).addField(fieldDef.getName(), fieldType);
             }
         }
         return type;
