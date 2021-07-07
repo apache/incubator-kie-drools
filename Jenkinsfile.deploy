@@ -123,22 +123,45 @@ pipeline {
                 }
             }
         }
-        stage('Deploy artifacts') {
+        stage('Deploy to repository') {
+            when {
+                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
+            }
             steps {
                 script {
-                    // Usually `env.MAVEN_DEPLOY_REPOSITORY` is used for testing purpose
-                    if (env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID) {
-                        // Deploy to specific repository with credentials
-                        runMavenDeployLocally()
-                        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
-                    } else if (!isRelease() || env.MAVEN_DEPLOY_REPOSITORY) {
-                        // Normal deploy
-                        runMavenDeploy()
-                    } else {
-                        // Deploy locally and then to staging
-                        runMavenDeployLocally()
-                        runMavenStage()
-                    }
+                    runMavenDeploy(params.SKIP_TESTS)
+                }
+            }
+        }
+        stage('Deploy locally') {
+            when {
+                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+            }
+            steps {
+                script {
+                    runMavenDeploy(params.SKIP_TESTS, true)
+                }
+            }
+        }
+        stage('Upload artifacts to given repository') {
+            when {
+                expression { return isSpecificArtifactsUpload() }
+            }
+            steps {
+                script {
+                    // Deploy to specific repository with credentials
+                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(), getMavenRepoZipUrl())
+                }
+            }
+        }
+        stage('Stage artifacts') {
+            when {
+                expression { return shouldStageArtifacts() }
+            }
+            steps {
+                script {
+                    // Stage release artifacts
+                    runMavenStage()
                 }
             }
         }
@@ -208,6 +231,18 @@ void commitAndCreatePR() {
     deployProperties["${getRepoName()}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
 }
 
+boolean isSpecificArtifactsUpload() {
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID
+}
+
+boolean shouldStageArtifacts() {
+    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+}
+
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+}
+
 boolean isRelease() {
     return env.RELEASE.toBoolean()
 }
@@ -259,25 +294,20 @@ MavenCommand getMavenCommand(String directory = '') {
                 .withProperty('full')
 }
 
-void runMavenDeploy() {
+void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
     mvnCmd = getMavenCommand()
 
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
+    if(localDeployment) {
+        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
+    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    mvnCmd.skipTests(skipTests).run('clean deploy')
 }
 
 String getMavenRepoZipUrl() {
     return "${env.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
-}
-
-void runMavenDeployLocally() {
-    getMavenCommand()
-        .skipTests(true)
-        .withLocalDeployFolder(getLocalDeploymentFolder())
-        .run('clean deploy')
 }
 
 void runMavenStage() {
