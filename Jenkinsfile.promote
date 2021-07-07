@@ -66,7 +66,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir(optaplannerRepository) {
                         checkoutRepo(optaplannerRepository)
@@ -81,7 +81,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir(vehicleRoutingRepository) {
                         checkoutRepo(vehicleRoutingRepository)
@@ -96,7 +96,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir(employeeRosteringRepository) {
                         checkoutRepo(employeeRosteringRepository)
@@ -111,7 +111,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir(quickstartsRepository) {
                         checkoutRepo(quickstartsRepository)
@@ -126,7 +126,7 @@ pipeline {
             when {
                 expression { return isRelease() }
             }
-            steps{
+            steps {
                 script {
                     dir(quickstartsRepository) {
                         checkoutTag(quickstartsRepository, getGitTag(), stableBranchName)
@@ -287,7 +287,7 @@ pipeline {
                         prepareForPR(quickstartsRepository)
                         updateQuickstartsVersions(nextMicroSnapshotVersion)
 
-                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"));
+                        String prLink = commitAndCreatePR(("[${getBuildBranch()}] Update snapshot version to ${nextMicroSnapshotVersion}"))
                         setPipelinePrLink(quickstartsRepository, prLink)
                     }
                     dir(quickstartsRepository) {
@@ -312,32 +312,32 @@ pipeline {
 // Deployment properties
 //////////////////////////////////////////////////////////////////////////////
 
-void readDeployProperties(){
+void readDeployProperties() {
     String deployUrl = params.DEPLOY_BUILD_URL
-    if (deployUrl != ''){
-        if(!deployUrl.endsWith('/')){
+    if (deployUrl != '') {
+        if (!deployUrl.endsWith('/')) {
             deployUrl += '/'
         }
         sh "wget ${deployUrl}artifact/${env.PROPERTIES_FILE_NAME} -O ${env.PROPERTIES_FILE_NAME}"
         deployProperties = readProperties file: env.PROPERTIES_FILE_NAME
         // echo all properties
-        echo deployProperties.collect{ entry -> "${entry.key}=${entry.value}" }.join('\n')
+        echo deployProperties.collect { entry -> "${entry.key}=${entry.value}" }.join('\n')
     }
 }
 
-boolean hasDeployProperty(String key){
+boolean hasDeployProperty(String key) {
     return deployProperties[key] != null
 }
 
-String getDeployProperty(String key){
-    if(hasDeployProperty(key)){
+String getDeployProperty(String key) {
+    if (hasDeployProperty(key)) {
         return deployProperties[key]
     }
     return ''
 }
 
-String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
-    if (params[paramKey] != ''){
+String getParamOrDeployProperty(String paramKey, String deployPropertyKey) {
+    if (params[paramKey] != '') {
         return params[paramKey]
     }
     return getDeployProperty(deployPropertyKey)
@@ -346,6 +346,14 @@ String getParamOrDeployProperty(String paramKey, String deployPropertyKey){
 //////////////////////////////////////////////////////////////////////////////
 // Getter / Setter
 //////////////////////////////////////////////////////////////////////////////
+
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
+}
+
+boolean isNotTestingBuild() {
+    return getGitAuthor() == 'kiegroup'
+}
 
 boolean isRelease() {
     return env.RELEASE.toBoolean()
@@ -379,27 +387,27 @@ String getGitAuthor() {
     return env.GIT_AUTHOR
 }
 
-String getGitAuthorCredsID(){
+String getGitAuthorCredsID() {
     return env.AUTHOR_CREDS_ID
 }
 
-String getBotAuthorCredsID(){
+String getBotAuthorCredsID() {
     return env.BOT_CREDENTIALS_ID
 }
 
-String getDeployPrLink(String repo){
+String getDeployPrLink(String repo) {
     return getDeployProperty("${repo}.pr.link")
 }
 
-String getPipelinePrLink(String repo){
+String getPipelinePrLink(String repo) {
     return pipelineProperties["${repo}.pr.link"]
 }
 
-void setPipelinePrLink(String repo, String value){
+void setPipelinePrLink(String repo, String value) {
     pipelineProperties["${repo}.pr.link"] = value
 }
 
-String getSnapshotBranch(){
+String getSnapshotBranch() {
     return "${getNextMicroSnapshotVersion(getProjectVersion()).toLowerCase()}-${env.BOT_BRANCH_HASH}"
 }
 
@@ -456,7 +464,7 @@ String commitAndCreatePR(String commitMsg, Closure precommit, String localBranch
     return githubscm.createPR(commitMsg, prBody, targetBranch, getBotAuthorCredsID())
 }
 
-void commitAndForcePushProtectedBranch(String repo, String branch){
+void commitAndForcePushProtectedBranch(String repo, String branch) {
     githubscm.commitChanges("[${getBuildBranch()}] Update ${branch} to ${getProjectVersion()}", {
         githubscm.findAndStageNotIgnoredFiles('pom.xml')
         githubscm.findAndStageNotIgnoredFiles('build.gradle')
@@ -464,7 +472,7 @@ void commitAndForcePushProtectedBranch(String repo, String branch){
     try {
         forcePushProtectedBranch(repo, branch)
     }
-    catch (exception){
+    catch (exception) {
         println "[ERROR] Force push branch: ${branch} from repo : ${repo} failed with exception: ${exception}"
         currentBuild.result = 'UNSTABLE'
     }
@@ -495,14 +503,18 @@ void installGithubCLI() {
 }
 
 void uploadDistribution(String directory) {
-    echo "uploadDistribution for ${directory}"
-    dir(directory) {
-        withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
-                keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
-            // For testing, simulate connection via SSH:
-            // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
-            sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+    if (isNotTestingBuild()) {
+        echo "uploadDistribution for ${directory}"
+        dir(directory) {
+            withCredentials(bindings: [sshUserPrivateKey(credentialsId: 'optaplanner-filemgmt',
+                    keyFileVariable: 'SSH_KEY_JBOSS_FILEMGMT')]) {
+                // For testing, simulate connection via SSH:
+                // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
+                sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
+                    }
         }
+    } else {
+        echo 'No uploadDistribution due to testing build'
     }
 }
 
@@ -516,11 +528,15 @@ MavenCommand getMavenCommand() {
 }
 
 void runMavenDeploy(MavenCommand mvnCmd) {
-    mvnCmd = mvnCmd.clone()
-    if(env.MAVEN_DEPLOY_REPOSITORY){
-        mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
+    if (shouldDeployToRepository()) {
+        mvnCmd = mvnCmd.clone()
+        if (env.MAVEN_DEPLOY_REPOSITORY) {
+            mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
+        }
+        mvnCmd.skipTests(true).run('clean deploy')
+    } else {
+        echo 'Testing environment and no specific deploy repository given => no deployment'
     }
-    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 void removeJbossNexusFromMavenAndGradle() {
@@ -542,27 +558,27 @@ String getGhCredsID() {
 String getProtectionMapScript() {
     return "if .restrictions == null then . + {\"restrictions_used\":null}  " + //upd user set restrictions if not empty
             "else . + {\"restrictions_used\":{\"users\":[.restrictions.users[].login], \"team\":[.restrictions.users[].slug]}} end |" +
-            " {" +
+            ' {' +
                 "\"required_status_checks\": .required_status_checks," +
                 "\"required_pull_request_reviews\": .required_pull_request_reviews," +
                 "\"enforce_admins\":(.enforce_admins.enabled)," +
                 " \"restrictions\":.restrictions_used" +
-            "}";
+            '}'
 }
 
 def enableForcePushes(String repo, String protectedBranch) {
     if (isBranchProtected(repo, protectedBranch)) {
-        setAllowForcePushes(repo, protectedBranch, "true")
+        setAllowForcePushes(repo, protectedBranch, 'true')
     }
 }
 
 def disableForcePushes(String repo, String protectedBranch) {
     if (isBranchProtected(repo, protectedBranch)) {
-        setAllowForcePushes(repo, protectedBranch, "false")
+        setAllowForcePushes(repo, protectedBranch, 'false')
     }
 }
 
-boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "../gh") {
+boolean isBranchProtected(String repo, String protectedBranch, String ghPath = '../gh') {
     assertGithubCLI(ghPath)
     boolean isProtected = true // Suppose it is protected by default
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
@@ -573,7 +589,7 @@ boolean isBranchProtected(String repo, String protectedBranch, String ghPath = "
     return isProtected
 }
 
-def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = "../gh") {
+def setAllowForcePushes(String repo, String protectedBranch, String enabled, String ghPath = '../gh') {
     assertGithubCLI(ghPath)
     //Use separate admin token credentials
     withCredentials([string(credentialsId: getGhCredsID(), variable: 'GITHUB_TOKEN')]) {
@@ -588,38 +604,38 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
         //update protection on git
         def allowForcePushEnabled = sh(script:
                 "${ghPath} api -XPUT 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' " +
-                        "--input protectionParameters.json |" +
+                        '--input protectionParameters.json |' +
                         " jq '.allow_force_pushes.enabled'", returnStdout: true).trim()
         assert allowForcePushEnabled == enabled
 
         //check that protection didn't changed except for allow_force_pushes
         sh "${ghPath} api 'repos/${getGitAuthor()}/${repo}/branches/${protectedBranch}/protection' | " +
-                "jq 'del(.allow_force_pushes)' > protectionAfter.json";
-        def differences = sh(script: "diff protectionBefore.json protectionAfter.json | cat", returnStdout: true)
+                "jq 'del(.allow_force_pushes)' > protectionAfter.json"
+        def differences = sh(script: 'diff protectionBefore.json protectionAfter.json | cat', returnStdout: true)
         if (differences) {
-            error "Protection settings lost" +
-                    "\nBefore: " +
+            error 'Protection settings lost' +
+                    '\nBefore: ' +
                     "\n${readFile 'protectionBefore.json'} " +
-                    "\nAfter: " +
+                    '\nAfter: ' +
                     "\n${readFile 'protectionAfter.json'} " +
-                    "\nDifferences: " +
+                    '\nDifferences: ' +
                     "\n${differences} " +
-                    "\nProtection parameters: " +
+                    '\nProtection parameters: ' +
                     "\n${readFile 'protectionParameters.json'} " +
-                    "Please rollback to Before state and update getProtectionMapScript"
+                    'Please rollback to Before state and update getProtectionMapScript'
         }
         //cleanup workspace
-        sh "rm -f protectionParameters.json protectionBefore.json protectionAfter.json"
+        sh 'rm -f protectionParameters.json protectionBefore.json protectionAfter.json'
     }
 }
 
 def forcePushProtectedBranch(String repo, String protectedBranch) {
     enableForcePushes(repo, protectedBranch)
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-        sh """
+        sh '''
         git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
         git push origin ${protectedBranch} --force
-        """
+        '''
     }
     disableForcePushes(repo, protectedBranch)
 }
@@ -629,18 +645,20 @@ void gradleVersionsUpdate(String newVersion) {
 }
 
 void updateQuickstartsVersions(String newVersion) {
-    maven.mvnSetVersionProperty("version.org.optaplanner", newVersion)
+    maven.mvnSetVersionProperty('version.org.optaplanner', newVersion)
     maven.mvnVersionsUpdateParentAndChildModules(newVersion, true)
     gradleVersionsUpdate(newVersion)
 
     assert !sh(script:
             "grep -Rn \"${getProjectVersion()}\" --include={pom.xml,build.gradle} | " +
-             "cat", returnStdout: true)
+             'cat', returnStdout: true)
 }
 
 void assertGithubCLI(String ghPath) {
-    if (fileExists(ghPath))
+    if (fileExists(ghPath)) {
         echo "[INFO] gh found at $ghPath"
-    else
+    }
+    else {
         error "gh not found at $ghPath"
+    }
 }

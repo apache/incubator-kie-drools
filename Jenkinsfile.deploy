@@ -171,12 +171,53 @@ pipeline {
             }
         }
 
-        stage('Deploy artifacts') {
+        stage('Deploy to repository') {
+            when {
+                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
+            }
             steps {
                 script {
-                    deployMavenArtifacts(getOptaplannerMavenCommand(), optaplannerRepository)
-                    deployMavenArtifacts(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
-                    deployMavenArtifacts(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
+                    runMavenDeploy(getOptaplannerMavenCommand(), params.SKIP_TESTS)
+                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), params.SKIP_TESTS)
+                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), params.SKIP_TESTS)
+                }
+            }
+        }
+        stage('Deploy locally') {
+            when {
+                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+            }
+            steps {
+                script {
+                    runMavenDeploy(getOptaplannerMavenCommand(), params.SKIP_TESTS, optaplannerRepository)
+                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), params.SKIP_TESTS, vehicleRoutingRepository)
+                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), params.SKIP_TESTS, employeeRosteringRepository)
+                }
+            }
+        }
+        stage('Upload artifacts to given repository') {
+            when {
+                expression { return isSpecificArtifactsUpload() }
+            }
+            steps {
+                script {
+                    // Deploy to specific repository with credentials
+                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(optaplannerRepository), getMavenRepoZipUrl())
+                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(vehicleRoutingRepository), getMavenRepoZipUrl())
+                    maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(employeeRosteringRepository), getMavenRepoZipUrl())
+                }
+            }
+        }
+        stage('Stage artifacts') {
+            when {
+                expression { return shouldStageArtifacts() }
+            }
+            steps {
+                script {
+                    // Stage release artifacts
+                    runMavenStage(getOptaplannerMavenCommand(), optaplannerRepository)
+                    runMavenStage(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    runMavenStage(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
                 }
             }
         }
@@ -268,7 +309,7 @@ void updateQuickstartsVersions(){
                     'grep -v -e "${getProjectVersion()}" | ' +
                     'cat', returnStdout: true)
         }
-   }
+    }
 }
 
 void gradleVersionsUpdate(String repo, String newVersion) {
@@ -332,7 +373,7 @@ void commitAndCreatePR(String repo, String buildBranch) {
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
-        deployProperties["${repo}.pr.link"] = isRelease() ? 
+        deployProperties["${repo}.pr.link"] = isRelease() ?
                                                 githubscm.createPRWithLabels(commitMsg, prBody, buildBranch, ['DO_NOT_MERGE'] as String[], getBotAuthorCredsID()) :
                                                 githubscm.createPR(commitMsg, prBody, buildBranch, getBotAuthorCredsID())
     }
@@ -380,40 +421,20 @@ void mavenCleanInstallOptaPlannerParents() {
         .run('clean install')
 }
 
-void deployMavenArtifacts(MavenCommand mvnCmd, String localDeployId) {
-    if (env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID) {
-        // Deploy to specific repository with credentials
-        runMavenDeployLocally(mvnCmd, localDeployId)
-        maven.uploadLocalArtifacts(env.MAVEN_REPO_CREDS_ID, getLocalDeploymentFolder(localDeployId), getMavenRepoZipUrl())
-    } else if (!isRelease() || env.MAVEN_DEPLOY_REPOSITORY) {
-        // Normal deploy
-        runMavenDeploy(mvnCmd)
-    } else {
-        // Deploy locally and then to staging
-        runMavenDeployLocally(mvnCmd, localDeployId)
-        runMavenStage(mvnCmd, localDeployId)
-    }
-}
-
-void runMavenDeploy(MavenCommand mvnCmd) {
+void runMavenDeploy(MavenCommand mvnCmd, boolean skipTests = true, String localDeploymentId = '') {
     mvnCmd = mvnCmd.clone()
 
-    if (env.MAVEN_DEPLOY_REPOSITORY) {
+    if(localDeploymentId) {
+        mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder(localDeploymentId))
+    } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(true).run('clean deploy')
+    mvnCmd.skipTests(skipTests).run('clean deploy')
 }
 
 String getMavenRepoZipUrl() {
     return "${params.MAVEN_DEPLOY_REPOSITORY.replaceAll('/content/', '/service/local/').replaceFirst('/*$', '')}/content-compressed"
-}
-
-void runMavenDeployLocally(MavenCommand mvnCmd, String localDeployId) {
-    mvnCmd.clone()
-        .skipTests(true)
-        .withLocalDeployFolder(getLocalDeploymentFolder(localDeployId))
-        .run('clean deploy')
 }
 
 void runMavenStage(MavenCommand mvnCmd, String localDeployId) {
@@ -434,6 +455,22 @@ String getLocalDeploymentFolder(String localDeployId) {
 
 // Getters and Setters of params/properties
 
+boolean isSpecificArtifactsUpload() {
+    return env.MAVEN_DEPLOY_REPOSITORY && env.MAVEN_REPO_CREDS_ID
+}
+
+boolean shouldStageArtifacts() {
+    return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
+}
+
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || isNotTestingBuild()
+}
+
+boolean isNotTestingBuild() {
+    return getGitAuthor() == 'kiegroup'
+}
+
 boolean isRelease() {
     return env.RELEASE.toBoolean()
 }
@@ -445,7 +482,6 @@ boolean isCreatePr() {
 boolean skipUnitTests(){
     return params.SKIP_TESTS;
 }
-
 
 boolean skipIntegrationTests(){
     return params.SKIP_INTEGRATION_TESTS;
