@@ -61,27 +61,27 @@ public class LambdaConstraintTestUtil {
         return new LambdaConstraint(constraintEvaluator);
     }
 
-    public static LambdaConstraint createCheeseTypeEqualsConstraint(final String rightValue) {
+    public static LambdaConstraint createCheeseTypeEqualsConstraint(final String rightValue, int indexId) {
         // Typical LambdaConstraint used in drools-test-coverage. (type == "xxx")
         Pattern pattern = new Pattern( 0, new ClassObjectType( Cheese.class )  );
         Predicate1<Cheese> predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getType(), rightValue));
-        AlphaIndexImpl<Cheese, String> index = new AlphaIndexImpl<Cheese, String>(String.class, org.drools.model.Index.ConstraintType.EQUAL, 1, _this -> _this.getType(), rightValue);
+        AlphaIndexImpl<Cheese, String> index = new AlphaIndexImpl<Cheese, String>(String.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getType(), rightValue);
         return createLambdaConstraint1(Cheese.class, pattern, predicate, index);
     }
 
-    public static LambdaConstraint createCheesePriceEqualsConstraint(final int rightValue) {
+    public static LambdaConstraint createCheesePriceEqualsConstraint(final int rightValue, int indexId) {
         // Typical LambdaConstraint used in drools-test-coverage. (price == xxx)
         Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
         Predicate1<Cheese> predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getPrice(), rightValue));
-        AlphaIndexImpl<Cheese, Integer> index = new AlphaIndexImpl<Cheese, Integer>(Integer.class, org.drools.model.Index.ConstraintType.EQUAL, 1, _this -> _this.getPrice(), rightValue);
+        AlphaIndexImpl<Cheese, Integer> index = new AlphaIndexImpl<Cheese, Integer>(Integer.class, org.drools.model.Index.ConstraintType.EQUAL, indexId, _this -> _this.getPrice(), rightValue);
         return createLambdaConstraint1(Cheese.class, pattern, predicate, index);
     }
 
-    public static LambdaConstraint createCheesePriceGreaterConstraint(final int rightValue) {
+    public static LambdaConstraint createCheesePriceGreaterConstraint(final int rightValue, int indexId) {
         // Typical LambdaConstraint used in drools-test-coverage. (price > xxx)
         Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
         Predicate1<Cheese> predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterThan(_this.getPrice(), rightValue));
-        AlphaIndexImpl<Cheese, Integer> index = new AlphaIndexImpl<Cheese, Integer>(Integer.class, org.drools.model.Index.ConstraintType.GREATER_THAN, 1, _this -> _this.getPrice(), rightValue);
+        AlphaIndexImpl<Cheese, Integer> index = new AlphaIndexImpl<Cheese, Integer>(Integer.class, org.drools.model.Index.ConstraintType.GREATER_THAN, indexId, _this -> _this.getPrice(), rightValue);
         return createLambdaConstraint1(Cheese.class, pattern, predicate, index);
     }
 
