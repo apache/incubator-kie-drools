@@ -3,25 +3,8 @@ import org.kie.jenkins.jobdsl.KogitoConstants
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
-boolean isMainBranch() {
-    return "${GIT_BRANCH}" == "${GIT_MAIN_BRANCH}"
-}
-
 def getDefaultJobParams(String repoName = 'optaplanner') {
-    return [
-        job: [
-            name: repoName
-        ],
-        git: [
-            author: "${GIT_AUTHOR_NAME}",
-            branch: "${GIT_BRANCH}",
-            repository: repoName,
-            credentials: "${GIT_AUTHOR_CREDENTIALS_ID}",
-            token_credentials: "${GIT_AUTHOR_TOKEN_CREDENTIALS_ID}"
-        ],
-        env: [:],
-        pr: [:]
-    ]
+    return KogitoJobTemplate.getDefaultJobParams(this, repoName)
 }
 
 Map getMultijobPRConfig() {
@@ -59,46 +42,40 @@ def bddRuntimesPrFolder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${Ko
 def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BRANCH_FOLDER}"
 def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
 
-if (isMainBranch()) {
-    // Old PR checks. To be removed once supported release branches (<= 8.7.x) are no more there.
-    // TODO remove method calls once 8.5.x and 8.7.x are no more supported
+if (Utils.isMainBranch(this)) {
+    // Old PR checks.
+    // To be removed once 8.5.x release branch is no more maintained.
+    // TODO remove method calls once 8.5.x is no more supported
     setupOptaplannerPrJob()
     setupOptaplannerQuarkusLTSPrJob()
     setupOptaplannerNativePrJob()
-
-    // Optaplanner PR checks
-    setupMultijobPrDefaultChecks()
-    setupMultijobPrNativeChecks()
-    setupMultijobPrLTSChecks()
+    // End of old PR checks
 
     // Optaweb PR checks
     setupOptawebEmployeeRosteringPrJob()
     setupOptawebVehicleRoutingPrJob()
 
     // For BDD runtimes PR job
-    folder(KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER)
-    folder(bddRuntimesPrFolder)
-
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
 
+// Optaplanner PR checks
+setupMultijobPrDefaultChecks()
+setupMultijobPrNativeChecks()
+setupMultijobPrLTSChecks()
+
 // Nightly jobs
-folder(KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER)
-folder(nightlyBranchFolder)
 setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 
 // No release directly on main branch
-if (!isMainBranch()) {
-    folder(KogitoConstants.KOGITO_DSL_RELEASE_FOLDER)
-    folder(releaseBranchFolder)
+if (!Utils.isMainBranch(this)) {
     setupDeployJob(releaseBranchFolder, KogitoJobType.RELEASE)
     setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
 }
 
 def otherFolder = KogitoConstants.KOGITO_DSL_OTHER_FOLDER
-if (isMainBranch()) {
-    folder(otherFolder)
+if (Utils.isMainBranch(this)) {
     setupOptaPlannerTurtleTestsJob(otherFolder)
 }
 
@@ -106,64 +83,49 @@ if (isMainBranch()) {
 // Methods
 /////////////////////////////////////////////////////////////////
 
-// TODO remove method once 8.5.x and 8.7.x are no more supported
+// TODO remove method once 8.5.x is no more supported
 void setupOptaplannerPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    jobParams.pr.run_only_for_branches = ['8.5.x']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
-// TODO remove method once 8.5.x and 8.7.x are no more supported
+// TODO remove method once 8.5.x is no more supported
 void setupOptaplannerQuarkusLTSPrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    jobParams.pr.run_only_for_branches = ['8.5.x']
     KogitoJobTemplate.createQuarkusLTSPRJob(this, jobParams)
 }
 
-// TODO remove method once 8.5.x and 8.7.x are no more supported
+// TODO remove method once 8.5.x is no more supported
 void setupOptaplannerNativePrJob() {
     def jobParams = getDefaultJobParams()
-    jobParams.pr.whiteListTargetBranches = ['8.5.x', '8.7.x']
+    jobParams.pr.run_only_for_branches = ['8.5.x']
     KogitoJobTemplate.createNativePRJob(this, jobParams)
 }
 
 void setupOptawebEmployeeRosteringPrJob() {
     def jobParams = getDefaultJobParams('optaweb-employee-rostering')
-    jobParams.pr = [ whiteListTargetBranches: ['master'] ]
+    jobParams.pr.run_only_for_branches = ['master']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupOptawebVehicleRoutingPrJob() {
     def jobParams = getDefaultJobParams('optaweb-vehicle-routing')
-    jobParams.pr = [ whiteListTargetBranches: ['master'] ]
+    jobParams.pr.run_only_for_branches = ['master']
     KogitoJobTemplate.createPRJob(this, jobParams)
 }
 
 void setupMultijobPrDefaultChecks() {
-    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) {
-        def jobParams = getDefaultJobParams()
-        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
-        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
-        return jobParams
-    }
+    KogitoJobTemplate.createMultijobPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrNativeChecks() {
-    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) {
-        def jobParams = getDefaultJobParams()
-        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
-        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
-        return jobParams
-    }
+    KogitoJobTemplate.createMultijobNativePRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
 void setupMultijobPrLTSChecks() {
-    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) {
-        def jobParams = getDefaultJobParams()
-        // TODO remove 8.* branches once 8.5.x and 8.7.x are no more supported
-        jobParams.pr.blackListTargetBranches = ['7.x', '8.5.x', '8.7.x']
-        return jobParams
-    }
+    KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
 void setupDeployJob(String jobFolder, KogitoJobType jobType) {
