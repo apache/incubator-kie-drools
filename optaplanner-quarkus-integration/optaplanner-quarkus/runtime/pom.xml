@@ -68,6 +68,13 @@
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-legacy-api</artifactId>
+      <exclusions>
+        <!-- See the explanation at optaplanner-core dependency's exclusions above. -->
+        <exclusion>
+          <groupId>org.drools</groupId>
+          <artifactId>drools-core</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
