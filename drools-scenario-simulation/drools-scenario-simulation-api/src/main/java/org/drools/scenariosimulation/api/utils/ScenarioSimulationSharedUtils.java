@@ -16,6 +16,7 @@
 package org.drools.scenariosimulation.api.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -31,12 +32,21 @@ public class ScenarioSimulationSharedUtils {
     }
 
     /**
-     * Returns true if given string isList or isMap
+     * Returns true if given string isCollection or isMap
+     * @param className
+     * @return
+     */
+    public static boolean isCollectionOrMap(String className) {
+        return isCollection(className) || isMap(className);
+    }
+
+    /**
+     * Returns true if given string equals to canonical name of Collection or isList
      * @param className
      * @return
      */
     public static boolean isCollection(String className) {
-        return isList(className) || isMap(className);
+        return Collection.class.getCanonicalName().equals(className) ||  isList(className);
     }
 
     /**
