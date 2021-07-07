@@ -87,6 +87,12 @@ public class FEELImpl
                 frame.setValue(f.getName(), f);
                 functions.put(f.getName(), f);
             }
+            for (Map.Entry<String,Object> v : p.getValues().entrySet()) {
+                if (frame == null) {
+                    frame = new ExecutionFrameImpl(null);
+                }
+                frame.setValue(v.getKey(), v.getValue());
+            }
         }
         doCompile = profiles.stream().anyMatch(DoCompileFEELProfile.class::isInstance);
         customFrame = Optional.ofNullable(frame);
