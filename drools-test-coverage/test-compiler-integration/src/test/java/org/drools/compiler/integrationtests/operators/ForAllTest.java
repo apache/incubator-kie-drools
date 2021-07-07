@@ -325,4 +325,54 @@ public class ForAllTest {
 
         Assert.assertEquals(firing ? 1 : 0, ksession.fireAllRules());
     }
+
+    @Test
+    public void testForallWithMultipleConstraints() throws Exception {
+        checkForallWithComplexExpression("value > 1, value < 10");
+    }
+
+    @Test
+    public void testForallWithAnd() throws Exception {
+        checkForallWithComplexExpression("value > 1 && value < 10");
+    }
+
+    @Test
+    public void testForallWithAndInMultipleConstraints() throws Exception {
+        checkForallWithComplexExpression("value > 1, value > 2 && value < 10");
+    }
+
+    @Test
+    public void testForallWithOr() throws Exception {
+        checkForallWithComplexExpression("value < 1 || value > 50");
+    }
+
+    private void checkForallWithComplexExpression(String expression) throws Exception {
+        // DROOLS-6469
+        String drl =
+                "package test\n" +
+                "declare Fact\n" +
+                "    tag : String\n" +
+                "    value : int\n" +
+                "end\n" +
+                "rule \"Rule\"\n" +
+                "when\n" +
+                "forall (f:Fact(tag == \"X\") Fact(this==f, " + expression + "))\n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("forall-test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        FactType ft = kbase.getFactType("test", "Fact");
+        Object f1 = ft.newInstance();
+        ft.set(f1, "tag", "X");
+        ft.set(f1, "value", 42);
+        ksession.insert(f1);
+        Object f2 = ft.newInstance();
+        ft.set(f2, "tag", "Y");
+        ft.set(f2, "value", 42);
+        ksession.insert(f2);
+
+        Assert.assertEquals(0, ksession.fireAllRules());
+    }
 }
