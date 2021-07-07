@@ -29,7 +29,7 @@ class ShapPredictionTest {
 
     @Test
     void getConfig() {
-        Random rn = new Random(1);
+        PerturbationContext pc = new PerturbationContext(new Random(1), 0);
         List<Feature> fs = Arrays.asList(
                 FeatureFactory.newNumericalFeature("f", 1.),
                 FeatureFactory.newNumericalFeature("f", 2.));
@@ -42,7 +42,7 @@ class ShapPredictionTest {
         ShapConfig skConfig = ShapConfig.builder()
                 .withLink(ShapConfig.LinkType.IDENTITY)
                 .withBackground(pis)
-                .withRN(rn)
+                .withPC(pc)
                 .withNSamples(100)
                 .build();
         ShapPrediction sp = new ShapPrediction(pi, po, skConfig);

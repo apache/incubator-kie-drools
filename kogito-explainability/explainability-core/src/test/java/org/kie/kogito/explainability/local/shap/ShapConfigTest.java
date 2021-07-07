@@ -26,6 +26,7 @@ import java.util.concurrent.ForkJoinPool;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.utils.MatrixUtils;
 
@@ -36,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ShapConfigTest {
-    Random rn = new Random();
+    PerturbationContext pc = new PerturbationContext(new Random(), 0);
     List<Feature> fs = Arrays.asList(
             FeatureFactory.newNumericalFeature("f", 1.),
             FeatureFactory.newNumericalFeature("f", 2.));
@@ -52,14 +53,14 @@ class ShapConfigTest {
         ShapConfig skConfig = ShapConfig.builder()
                 .withLink(ShapConfig.LinkType.IDENTITY)
                 .withBackground(pis)
-                .withRN(rn)
+                .withPC(pc)
                 .withExecutor(executor)
                 .withNSamples(100)
                 .build();
         assertEquals(ShapConfig.LinkType.IDENTITY, skConfig.getLink());
         assertTrue(skConfig.getNSamples().isPresent());
         assertEquals(100, skConfig.getNSamples().get());
-        assertSame(rn, skConfig.getRN());
+        assertSame(pc, skConfig.getPC());
         assertSame(executor, skConfig.getExecutor());
         assertSame(pis, skConfig.getBackground());
         assertTrue(Arrays.deepEquals(piMatrix, skConfig.getBackgroundMatrix()));

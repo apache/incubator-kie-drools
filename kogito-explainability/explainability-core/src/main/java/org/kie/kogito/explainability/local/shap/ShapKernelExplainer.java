@@ -439,7 +439,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
 
             RandomChoice<Integer> subsetSampler = new RandomChoice<>(subsetSizesRemaining, subsetSizeWeights);
             List<Integer> sizeSamples = subsetSampler.sample(shapStats.getNumSamplesRemaining() * 4,
-                    sdc.getConfig().getRN());
+                    sdc.getConfig().getPC().getRandom());
             List<Integer> maskSizes = IntStream.range(0, sdc.getNumVarying()).boxed().collect(Collectors.toList());
 
             int sampleIdx = 0;
@@ -616,7 +616,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
     private double[] runWLRR(double[][] maskDiff, double[] adjY, double[] ws, double outputChange,
             int dropIdx, ShapDataCarrier sdc) {
         WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(maskDiff, adjY,
-                ws, false, sdc.getConfig().getRN());
+                ws, false, sdc.getConfig().getPC().getRandom());
         double[] coeffs = wlrr.getCoefficients();
         int usedCoefs = 0;
         double[] shapSlice = new double[sdc.getCols()];

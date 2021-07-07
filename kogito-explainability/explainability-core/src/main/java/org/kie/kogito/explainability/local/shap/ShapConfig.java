@@ -19,10 +19,10 @@ package org.kie.kogito.explainability.local.shap;
 import java.security.SecureRandom;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
+import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.utils.MatrixUtils;
 
@@ -34,7 +34,7 @@ public class ShapConfig {
 
     private final LinkType link;
     private final Integer nSamples;
-    private final Random rn;
+    private final PerturbationContext pc;
     private final Executor executor;
     private final List<PredictionInput> background;
     private final double[][] backgroundMatrix;
@@ -51,15 +51,15 @@ public class ShapConfig {
      *        output. This should be a representative sample of the data, to provide a useful
      *        null background for the model. Automated guidance for background data selection
      *        is a WIP.
-     * @param rn: Random number generator
+     * @param pc: PerturbationContext for random number generator
      * @param executor: The executor to use for the Shap CompletableFutures
      * @param nSamples: int, the number of data samples to run when computing shap values
      */
-    protected ShapConfig(LinkType link, List<PredictionInput> background, Random rn, Executor executor, Integer nSamples) {
+    protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor, Integer nSamples) {
         this.link = link;
         this.background = background;
         this.backgroundMatrix = MatrixUtils.matrixFromPredictionInput(background);
-        this.rn = rn;
+        this.pc = pc;
         this.executor = executor;
         this.nSamples = nSamples;
     }
@@ -77,7 +77,7 @@ public class ShapConfig {
         // optional
         private Executor builderExecutor = ForkJoinPool.commonPool();
         private Integer builderNSamples = null;
-        private Random builderRN = new SecureRandom();
+        private PerturbationContext builderPC = new PerturbationContext(new SecureRandom(), 0);
 
         private Builder() {
         }
@@ -141,12 +141,12 @@ public class ShapConfig {
         /**
          * Add a random number generator to the builder
          *
-         * @param rn: Random number generator, Default is SecureRandom
+         * @param pc: PerturbationContext to hold random number generator, Default is SecureRandom
          *
          * @return Builder
          */
-        public Builder withRN(Random rn) {
-            this.builderRN = rn;
+        public Builder withPC(PerturbationContext pc) {
+            this.builderPC = pc;
             return this;
         }
 
@@ -163,7 +163,7 @@ public class ShapConfig {
             if (this.builderBackground.isEmpty()) {
                 throw new IllegalArgumentException("Background data list cannot be empty.");
             }
-            return new ShapConfig(this.builderLink, this.builderBackground, this.builderRN, this.builderExecutor, this.builderNSamples);
+            return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor, this.builderNSamples);
         }
     }
 
@@ -174,8 +174,8 @@ public class ShapConfig {
         return this.link;
     }
 
-    public Random getRN() {
-        return this.rn;
+    public PerturbationContext getPC() {
+        return this.pc;
     }
 
     public double[][] getBackgroundMatrix() {

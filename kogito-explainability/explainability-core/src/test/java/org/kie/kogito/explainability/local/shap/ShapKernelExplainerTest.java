@@ -28,13 +28,7 @@ import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.TestUtils;
-import org.kie.kogito.explainability.model.Feature;
-import org.kie.kogito.explainability.model.FeatureFactory;
-import org.kie.kogito.explainability.model.Prediction;
-import org.kie.kogito.explainability.model.PredictionInput;
-import org.kie.kogito.explainability.model.PredictionOutput;
-import org.kie.kogito.explainability.model.PredictionProvider;
-import org.kie.kogito.explainability.model.ShapPrediction;
+import org.kie.kogito.explainability.model.*;
 import org.kie.kogito.explainability.utils.MatrixUtils;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -121,9 +115,9 @@ class ShapKernelExplainerTest {
             { { -4.33333333, 0., -5.33333333, 8., -6. }, { -8.6666666667, 0., -10.666666666, 16., -12. } },
     };
 
-    Random rn = new Random(0);
+    PerturbationContext pc = new PerturbationContext(new Random(0), 0);
 
-    ShapConfig.Builder testConfig = ShapConfig.builder().withLink(ShapConfig.LinkType.IDENTITY).withRN(rn);
+    ShapConfig.Builder testConfig = ShapConfig.builder().withLink(ShapConfig.LinkType.IDENTITY).withPC(pc);
 
     // test helper functions ===========================================================================================
     // create a list of prediction inputs from double matrix
@@ -235,7 +229,7 @@ class ShapKernelExplainerTest {
                 .withBackground(background)
                 .withLink(ShapConfig.LinkType.LOGIT)
                 .withNSamples(100)
-                .withRN(rn)
+                .withPC(pc)
                 .build();
         shapTestCase(model, skConfig, toExplainLogit, logitSHAP);
     }
@@ -437,7 +431,7 @@ class ShapKernelExplainerTest {
                 .withBackground(createPIFromMatrix(backgroundLogit))
                 .withLink(ShapConfig.LinkType.LOGIT)
                 .withNSamples(100)
-                .withRN(rn)
+                .withPC(pc)
                 .build();
         for (int i = 0; i < 10; i++) {
             shapTestCase(model, skConfig1, ske, toExplainOneVariance, oneVarianceOneOutputSHAP);
