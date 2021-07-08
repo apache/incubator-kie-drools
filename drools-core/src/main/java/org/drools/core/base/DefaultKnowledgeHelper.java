@@ -385,12 +385,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
     
     public InternalFactHandle getFactHandle(InternalFactHandle handle) {
-        Object object = handle.getObject();
-        handle = getFactHandleFromWM( object );
-        if ( handle == null ) {
-            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        return handle;
+        InternalFactHandle handleFromWM = getFactHandleFromWM( handle.getObject() );
+        return handleFromWM != null ? handleFromWM : handle;
     }
     
     public void update(final FactHandle handle,

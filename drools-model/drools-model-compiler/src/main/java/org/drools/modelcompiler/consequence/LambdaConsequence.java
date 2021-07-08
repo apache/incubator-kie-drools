@@ -96,7 +96,7 @@ public class LambdaConsequence implements Consequence {
         for (Variable var : vars) {
             if ( var.isFact() ) {
                 Declaration declaration = declarations[declrCounter++];
-                InternalFactHandle fh = getOriginalFactHandle( tuple.get( declaration ) );
+                InternalFactHandle fh = getOriginalFactHandle( knowledgeHelper, declaration, tuple.get( declaration ), useDrools );
                 if ( useDrools ) {
                     fhLookup.put( fh.getObject(), fh );
                 }
@@ -108,7 +108,10 @@ public class LambdaConsequence implements Consequence {
         return objects;
     }
 
-    private static InternalFactHandle getOriginalFactHandle( InternalFactHandle handle ) {
+    private static InternalFactHandle getOriginalFactHandle( KnowledgeHelper knowledgeHelper, Declaration declaration, InternalFactHandle handle, boolean useDrools ) {
+        if ( useDrools && declaration.isInternalFact() ) {
+            handle = knowledgeHelper.getFactHandle(handle);
+        }
         if ( !handle.isEvent() ) {
             return handle;
         }
@@ -142,7 +145,7 @@ public class LambdaConsequence implements Consequence {
 
         Tuple tuple = knowledgeHelper.getTuple();
         for (int j = 0; j < factSuppliers.length; j++) {
-            tuple = factSuppliers[j].resolveAndStore(facts, workingMemory, tuple, fhLookup);
+            tuple = factSuppliers[j].resolveAndStore(facts, knowledgeHelper, workingMemory, tuple, fhLookup);
         }
 
         if (globalSuppliers != null) {
@@ -208,7 +211,7 @@ public class LambdaConsequence implements Consequence {
             tupleFactSupplier.setFirst( first );
             first = false;
 
-            tupleFactSupplier.resolveAndStore(facts, workingMemory, current.getFactHandle(), fhLookup);
+            tupleFactSupplier.resolveAndStore(facts, knowledgeHelper, workingMemory, current.getFactHandle(), fhLookup);
         }
 
         this.factSuppliers = factSuppliers.toArray( new TupleFactSupplier[factSuppliers.size()] );
@@ -262,17 +265,17 @@ public class LambdaConsequence implements Consequence {
             }
         }
 
-        public Tuple resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup) {
+        public Tuple resolveAndStore(Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, Tuple tuple, FactHandleLookup fhLookup) {
             // traverses the tuple of as many steps as distance between the former supplier and this one
             for (int i = 0; i < offsetFromPrior; i++) {
                 tuple = tuple.getParent();
             }
-            resolveAndStore(facts, workingMemory, tuple.getFactHandle(), fhLookup);
+            resolveAndStore(facts, knowledgeHelper, workingMemory, tuple.getFactHandle(), fhLookup);
             return tuple;
         }
 
-        public void resolveAndStore(Object[] facts, InternalWorkingMemory workingMemory, InternalFactHandle factHandle, FactHandleLookup fhLookup) {
-            InternalFactHandle fh = getOriginalFactHandle( factHandle );
+        public void resolveAndStore(Object[] facts, KnowledgeHelper knowledgeHelper, InternalWorkingMemory workingMemory, InternalFactHandle factHandle, FactHandleLookup fhLookup) {
+            InternalFactHandle fh = getOriginalFactHandle( knowledgeHelper, declaration, factHandle, useDrools );
             if ( useDrools ) {
                 fhLookup.put( fh.getObject(), fh );
             }
