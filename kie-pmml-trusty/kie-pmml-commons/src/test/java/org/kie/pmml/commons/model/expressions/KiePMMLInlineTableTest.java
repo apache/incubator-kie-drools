@@ -61,6 +61,14 @@ public class KiePMMLInlineTableTest {
     }
 
     @Test
+    public void evaluateKeyFoundMatching() {
+        KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
+        Optional<Object> retrieved = kiePMMLInlineTable.evaluate(Collections.singletonMap("KEY-1-1", "VALUE-1-1"), "KEY-1-2");
+        assertTrue(retrieved.isPresent());
+        assertEquals("VALUE-1-2", retrieved.get());
+    }
+
+    @Test
     public void evaluateKeyFoundMultipleNotMatching() {
         KiePMMLInlineTable kiePMMLInlineTable = new KiePMMLInlineTable("name", Collections.emptyList(), ROWS);
         Map<String, Object> columnPairsMap = IntStream.range(0, 2).boxed()
