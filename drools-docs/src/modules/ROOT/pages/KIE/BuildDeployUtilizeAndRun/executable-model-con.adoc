@@ -4,7 +4,7 @@
 
 Rule assets in {PRODUCT} are built from executable rule models by default with the standard `kie-maven-plugin` plugin. Executable rule models are embedded models that provide a Java-based representation of a rule set for execution at build time. The executable model is a more efficient alternative to the standard asset packaging in previous versions of {PRODUCT} and enables KIE containers and KIE bases to be created more quickly, especially when you have large lists of DRL (Drools Rule Language) files and other {PRODUCT} assets.
 
-If you do not use the `kie-maven-plugin` plugin or if the required `drools-model-compiler` dependency is missing from your project, then rule assets are built without executable models.
+If you do not use the `kie-maven-plugin` plugin or if the required `drools-model-compiler` dependency is missing from your project, then rule assets are built without executable models. Therefore, to generate the executable model during build time, ensure that the `kie-maven-plugin` plugin and `drools-model-compiler` dependency are added in your project `pom.xml` file.
 
 Executable rule models provide the following specific advantages for your projects:
 
