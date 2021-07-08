@@ -931,6 +931,15 @@ public class DrlxParseUtil {
         return ruleBlock.findFirst(expr.getClass(), expr::equals).isPresent();
     }
 
+    public static Expression stripEnclosedExpr(EnclosedExpr eExpr) {
+        Expression inner = eExpr.getInner();
+        if (inner instanceof EnclosedExpr) {
+            return stripEnclosedExpr((EnclosedExpr) inner);
+        } else {
+            return inner;
+        }
+    }
+
     private DrlxParseUtil() {
         // It is not allowed to create instances of util classes.
     }
