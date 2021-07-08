@@ -18,6 +18,7 @@ package org.kie.pmml.commons.model.expressions;
 import java.io.Serializable;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * KiePMML representation of an InlineTable <b>Row</b>
@@ -31,10 +32,11 @@ public class KiePMMLRow implements Serializable {
         this.columnValues = columnValues;
     }
 
-    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn) {
+    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn, final String regexField) {
         boolean matching = true;
+        boolean isRegex = regexField != null && columnValues.containsKey(regexField) && (boolean) columnValues.get(regexField);
         for (Map.Entry<String, Object> columnPairEntry : columnPairsMap.entrySet()) {
-            matching = isMatching(columnPairEntry.getKey(), columnPairEntry.getValue());
+            matching = isRegex ? isRegexMatching(columnPairEntry.getKey(), (String) columnPairEntry.getValue()) : isMatching(columnPairEntry.getKey(), columnPairEntry.getValue());
             if (!matching) {
                 break;
             }
@@ -44,6 +46,11 @@ public class KiePMMLRow implements Serializable {
 
     boolean isMatching(String columnName, Object value) {
        return columnValues.containsKey(columnName) && columnValues.get(columnName).equals(value);
+    }
+
+    boolean isRegexMatching(String columnName, String value) {
+        Pattern pattern = Pattern.compile(value);
+        return columnValues.containsKey(columnName) && pattern.matcher(columnValues.get(columnName).toString()).find();
     }
 
 }

@@ -154,29 +154,6 @@ public class KiePMMLModelFactoryUtilsTest {
         commonVerifyOutputFieldsObjectCreation(arguments, outputFields);
     }
 
-//    @Test
-//    public void addKiePMMLOutputFieldsPopulation() {
-//        BlockStmt blockStmt = new BlockStmt();
-//        List<KiePMMLOutputField> outputFields = IntStream.range(0, 3)
-//                .mapToObj(index -> KiePMMLOutputField.builder("OUTPUTFIELD-" + index, Collections.emptyList())
-//                        .withRank(new Random().nextInt(3))
-//                        .withValue("VALUE-" + index)
-//                        .withTargetField("TARGETFIELD-" + index)
-//                        .build())
-//                .collect(Collectors.toList());
-//        KiePMMLModelFactoryUtils.addKiePMMLOutputFieldsPopulation(blockStmt, outputFields);
-//        List<MethodCallExpr> retrieved = getMethodCallExprList(blockStmt, outputFields.size(), "kiePMMLOutputFields",
-//                                                               "add");
-//        for (KiePMMLOutputField outputField : outputFields) {
-//            assertTrue(retrieved.stream()
-//                               .filter(methodCallExpr -> methodCallExpr.getArguments().size() == 1)
-//                               .map(methodCallExpr -> methodCallExpr.getArgument(0))
-//                               .filter(Expression::isMethodCallExpr)
-//                               .map(expressionArgument -> (MethodCallExpr) expressionArgument)
-//                               .anyMatch(methodCallExpr -> evaluateKiePMMLOutputFieldPopulation(methodCallExpr, outputField)));
-//        }
-//    }
-
     @Test
     public void addTransformationsInClassOrInterfaceDeclaration() {
         assertTrue(classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").isEmpty());
@@ -188,83 +165,80 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(1, classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").size());
         MethodDeclaration expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
                                                                          ".KiePMMLTransformationDictionary createTransformationDictionary() {\n" +
-                                                                         "        KiePMMLParameterField " +
+                                                                         "    KiePMMLParameterField " +
                                                                          "CONSTANT_FUNCTION_0 = KiePMMLParameterField" +
                                                                          ".builder(\"empty\", Collections.emptyList()" +
                                                                          ").withDataType(null).withOpType(null)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLConstant " +
+                                                                         "    KiePMMLConstant " +
                                                                          "CONSTANT_FUNCTION_Expression = new " +
                                                                          "KiePMMLConstant" +
                                                                          "(\"CONSTANT_FUNCTION_Expression\", " +
                                                                          "Collections.emptyList(), " +
                                                                          "\"CONSTANT_FUNCTION_VALUE\");\n" +
-                                                                         "        KiePMMLDefineFunction " +
-                                                                         "CONSTANT_FUNCTION = new " +
-                                                                         "KiePMMLDefineFunction" +
+                                                                         "    KiePMMLDefineFunction CONSTANT_FUNCTION" +
+                                                                         " = new KiePMMLDefineFunction" +
                                                                          "(\"CONSTANT_FUNCTION\", Collections" +
                                                                          ".emptyList(), \"categorical\", Arrays" +
                                                                          ".asList(CONSTANT_FUNCTION_0), " +
                                                                          "CONSTANT_FUNCTION_Expression);\n" +
-                                                                         "        KiePMMLParameterField " +
+                                                                         "    KiePMMLParameterField " +
                                                                          "FIELDREF_FUNCTION_0 = KiePMMLParameterField" +
                                                                          ".builder(\"fieldRed\", Collections" +
                                                                          ".emptyList()).withDataType(null).withOpType" +
                                                                          "(null).withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "FIELDREF_FUNCTION_Expression = new " +
                                                                          "KiePMMLFieldRef(\"Petal.Length\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLDefineFunction " +
-                                                                         "FIELDREF_FUNCTION = new " +
-                                                                         "KiePMMLDefineFunction" +
+                                                                         "    KiePMMLDefineFunction FIELDREF_FUNCTION" +
+                                                                         " = new KiePMMLDefineFunction" +
                                                                          "(\"FIELDREF_FUNCTION\", Collections" +
                                                                          ".emptyList(), \"continuous\", Arrays.asList" +
                                                                          "(FIELDREF_FUNCTION_0), " +
                                                                          "FIELDREF_FUNCTION_Expression);\n" +
-                                                                         "        KiePMMLParameterField " +
-                                                                         "APPLY_FUNCTION_0 = KiePMMLParameterField" +
-                                                                         ".builder(\"fieldRed\", Collections" +
-                                                                         ".emptyList()).withDataType(null).withOpType" +
-                                                                         "(null).withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLParameterField APPLY_FUNCTION_0 " +
+                                                                         "= KiePMMLParameterField.builder" +
+                                                                         "(\"fieldRed\", Collections.emptyList())" +
+                                                                         ".withDataType(null).withOpType(null)" +
+                                                                         ".withDisplayName(null).build();\n" +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "APPLY_FUNCTION_Expression_0 = new " +
                                                                          "KiePMMLFieldRef(\"Petal.Length\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLApply " +
-                                                                         "APPLY_FUNCTION_Expression = KiePMMLApply" +
-                                                                         ".builder(\"APPLY_FUNCTION_Expression\", " +
-                                                                         "Collections.emptyList(), " +
-                                                                         "\"FIELDREF_FUNCTION\").withDefaultValue" +
-                                                                         "(null).withMapMissingTo(null)" +
-                                                                         ".withInvalidValueTreatmentMethod" +
+                                                                         "    KiePMMLApply APPLY_FUNCTION_Expression " +
+                                                                         "= KiePMMLApply.builder" +
+                                                                         "(\"APPLY_FUNCTION_Expression\", Collections" +
+                                                                         ".emptyList(), \"FIELDREF_FUNCTION\")" +
+                                                                         ".withDefaultValue(null).withMapMissingTo" +
+                                                                         "(null).withInvalidValueTreatmentMethod" +
                                                                          "(\"returnInvalid\").withKiePMMLExpressions" +
                                                                          "(Arrays.asList(APPLY_FUNCTION_Expression_0)" +
                                                                          ").build();\n" +
-                                                                         "        KiePMMLDefineFunction " +
-                                                                         "APPLY_FUNCTION = new KiePMMLDefineFunction" +
+                                                                         "    KiePMMLDefineFunction APPLY_FUNCTION = " +
+                                                                         "new KiePMMLDefineFunction" +
                                                                          "(\"APPLY_FUNCTION\", Collections.emptyList" +
                                                                          "(), \"continuous\", Arrays.asList" +
                                                                          "(APPLY_FUNCTION_0), " +
                                                                          "APPLY_FUNCTION_Expression);\n" +
-                                                                         "        KiePMMLConstant " +
+                                                                         "    KiePMMLConstant " +
                                                                          "transformationDictionaryDerivedField_0_0 = " +
                                                                          "new KiePMMLConstant" +
                                                                          "(\"transformationDictionaryDerivedField_0_0" +
                                                                          "\", Collections.emptyList(), " +
                                                                          "\"CONSTANT_DERIVEDFIELD_VALUE\");\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_0 = " +
                                                                          "KiePMMLDerivedField.builder" +
                                                                          "(\"CONSTANT_DERIVEDFIELD\", Collections" +
                                                                          ".emptyList(), \"string\", \"categorical\", " +
                                                                          "transformationDictionaryDerivedField_0_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "transformationDictionaryDerivedField_1_0_0 " +
                                                                          "= new KiePMMLFieldRef(\"Petal.Length\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLApply " +
+                                                                         "    KiePMMLApply " +
                                                                          "transformationDictionaryDerivedField_1_0 = " +
                                                                          "KiePMMLApply.builder" +
                                                                          "(\"transformationDictionaryDerivedField_1_0" +
@@ -275,58 +249,108 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "(\"returnInvalid\").withKiePMMLExpressions" +
                                                                          "(Arrays.asList" +
                                                                          "(transformationDictionaryDerivedField_1_0_0)).build();\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_1 = " +
                                                                          "KiePMMLDerivedField.builder" +
                                                                          "(\"APPLY_DERIVEDFIELD\", Collections" +
                                                                          ".emptyList(), \"double\", \"continuous\", " +
                                                                          "transformationDictionaryDerivedField_1_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "transformationDictionaryDerivedField_2_0 = " +
                                                                          "new KiePMMLFieldRef(\"Ref\", Collections" +
                                                                          ".emptyList(), null);\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_2 = " +
                                                                          "KiePMMLDerivedField.builder(\"BackRef\", " +
                                                                          "Collections.emptyList(), \"double\", " +
                                                                          "\"continuous\", " +
                                                                          "transformationDictionaryDerivedField_2_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "transformationDictionaryDerivedField_3_0 = " +
                                                                          "new KiePMMLFieldRef(\"Petal.Width\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_3 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageOne\", " +
                                                                          "Collections.emptyList(), \"double\", " +
                                                                          "\"continuous\", " +
                                                                          "transformationDictionaryDerivedField_3_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "transformationDictionaryDerivedField_4_0 = " +
                                                                          "new KiePMMLFieldRef(\"StageOne\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_4 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageTwo\", " +
                                                                          "Collections.emptyList(), \"double\", " +
                                                                          "\"continuous\", " +
                                                                          "transformationDictionaryDerivedField_4_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLFieldRef " +
+                                                                         "    KiePMMLFieldRef " +
                                                                          "transformationDictionaryDerivedField_5_0 = " +
                                                                          "new KiePMMLFieldRef(\"StageTwo\", " +
                                                                          "Collections.emptyList(), null);\n" +
-                                                                         "        KiePMMLDerivedField " +
+                                                                         "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_5 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageThree\"," +
                                                                          " Collections.emptyList(), \"double\", " +
                                                                          "\"continuous\", " +
                                                                          "transformationDictionaryDerivedField_5_0)" +
                                                                          ".withDisplayName(null).build();\n" +
-                                                                         "        KiePMMLTransformationDictionary " +
+                                                                         "    KiePMMLFieldColumnPair " +
+                                                                         "transformationDictionaryDerivedField_6_0_0 " +
+                                                                         "= new KiePMMLFieldColumnPair(\"BAND\", " +
+                                                                         "Collections.emptyList(), \"band\");\n" +
+                                                                         "    KiePMMLFieldColumnPair " +
+                                                                         "transformationDictionaryDerivedField_6_0_1 " +
+                                                                         "= new KiePMMLFieldColumnPair(\"STATE\", " +
+                                                                         "Collections.emptyList(), \"state\");\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_0_columnValues = Stream.of(new Object[][] { { \"band\", \"1\" }, { \"state\", \"MN\" }, { \"out\", \"10000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_0 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_0_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_1_columnValues = Stream.of(new Object[][] { { \"band\", \"1\" }, { \"state\", \"IL\" }, { \"out\", \"12000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_1 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_1_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_2_columnValues = Stream.of(new Object[][] { { \"band\", \"1\" }, { \"state\", \"NY\" }, { \"out\", \"20000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_2 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_2_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_3_columnValues = Stream.of(new Object[][] { { \"band\", \"2\" }, { \"state\", \"MN\" }, { \"out\", \"20000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_3 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_3_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_4_columnValues = Stream.of(new Object[][] { { \"band\", \"2\" }, { \"state\", \"IL\" }, { \"out\", \"23000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_4 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_4_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_5_columnValues = Stream.of(new Object[][] { { \"band\", \"2\" }, { \"state\", \"NY\" }, { \"out\", \"30000\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable_5 = new KiePMMLRow(transformationDictionaryDerivedField_6_0_InlineTable_5_columnValues);\n" +
+                                                                         "    KiePMMLInlineTable " +
+                                                                         "transformationDictionaryDerivedField_6_0_InlineTable = new KiePMMLInlineTable(\"transformationDictionaryDerivedField_6_0_InlineTable\", Collections.emptyList(), Arrays.asList(transformationDictionaryDerivedField_6_0_InlineTable_0, transformationDictionaryDerivedField_6_0_InlineTable_1, transformationDictionaryDerivedField_6_0_InlineTable_2, transformationDictionaryDerivedField_6_0_InlineTable_3, transformationDictionaryDerivedField_6_0_InlineTable_4, transformationDictionaryDerivedField_6_0_InlineTable_5));\n" +
+                                                                         "    KiePMMLMapValues " +
+                                                                         "transformationDictionaryDerivedField_6_0 = " +
+                                                                         "KiePMMLMapValues.builder" +
+                                                                         "(\"transformationDictionaryDerivedField_6_0" +
+                                                                         "\", Collections.emptyList(), \"out\")" +
+                                                                         ".withDefaultValue(null).withMapMissingTo" +
+                                                                         "(null).withDataType(org.kie.pmml.api.enums" +
+                                                                         ".DATA_TYPE.INTEGER).withKiePMMLInlineTable" +
+                                                                         "(transformationDictionaryDerivedField_6_0_InlineTable).withKiePMMLFieldColumnPairs(Arrays.asList(transformationDictionaryDerivedField_6_0_0, transformationDictionaryDerivedField_6_0_1)).build();\n" +
+                                                                         "    KiePMMLDerivedField " +
+                                                                         "transformationDictionaryDerivedField_6 = " +
+                                                                         "KiePMMLDerivedField.builder(\"mapvalued\", " +
+                                                                         "Collections.emptyList(), \"double\", " +
+                                                                         "\"continuous\", " +
+                                                                         "transformationDictionaryDerivedField_6_0)" +
+                                                                         ".withDisplayName(null).build();\n" +
+                                                                         "    KiePMMLTransformationDictionary " +
                                                                          "transformationDictionary = " +
                                                                          "KiePMMLTransformationDictionary.builder" +
                                                                          "(\"transformationDictionary\", Collections" +
@@ -339,10 +363,11 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "transformationDictionaryDerivedField_2, " +
                                                                          "transformationDictionaryDerivedField_3, " +
                                                                          "transformationDictionaryDerivedField_4, " +
-                                                                         "transformationDictionaryDerivedField_5))" +
+                                                                         "transformationDictionaryDerivedField_5, " +
+                                                                         "transformationDictionaryDerivedField_6))" +
                                                                          ".build();\n" +
-                                                                         "        return transformationDictionary;\n" +
-                                                                         "    }");
+                                                                         "    return transformationDictionary;\n" +
+                                                                         "}");
         MethodDeclaration retrieved = classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +

@@ -35,9 +35,9 @@ public class KiePMMLInlineTable extends AbstractKiePMMLComponent {
         this.rows = rows;
     }
 
-    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn) {
+    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn, final String regexField) {
         return rows.stream()
-                .map(row -> row.evaluate(columnPairsMap, outputColumn))
+                .map(row -> row.evaluate(columnPairsMap, outputColumn, regexField))
                 .filter(Optional::isPresent)
                 .findFirst()
                 .map(Optional::get);
