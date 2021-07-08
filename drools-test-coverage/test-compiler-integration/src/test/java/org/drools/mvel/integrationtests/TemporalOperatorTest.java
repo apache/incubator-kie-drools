@@ -107,6 +107,52 @@ public class TemporalOperatorTest {
         }
     }
 
+    @Test
+    public void testCompareMaxLocalDates() {
+        // DROOLS-6431
+        checkMaxDate( "localDate == LocalDate.MAX" );
+    }
+
+    @Test
+    public void testCompareTimeAndMaxLocalDates() {
+        // DROOLS-6431
+        checkMaxDate( "localDateTime == LocalDate.MAX" );
+    }
+
+    @Test
+    public void testCompareLocalDatesAndMaxTime() {
+        // DROOLS-6431
+        checkMaxDate( "localDate == LocalDateTime.MAX" );
+    }
+
+    @Test
+    public void testCompareMaxLocalDateTimes() {
+        // DROOLS-6431
+        checkMaxDate( "localDateTime == LocalDateTime.MAX" );
+    }
+
+    private void checkMaxDate(String constraint) {
+        String str =
+                "import " + TimestampedObject.class.getCanonicalName() + ";\n" +
+                "import " + LocalDate.class.getCanonicalName() + ";\n" +
+                "import " + LocalDateTime.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $t1 : TimestampedObject(" + constraint + ")\n" +
+                "then\n" +
+                "end\n";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
+        try {
+            TimestampedObject t1 = new TimestampedObject( "t1", LocalDateTime.now() );
+
+            ksession.insert( t1 );
+            assertEquals(0, ksession.fireAllRules());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
     public static class TimestampedObject {
         private final String name;
         private final LocalDateTime localDateTime;
