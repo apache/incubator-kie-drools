@@ -556,7 +556,7 @@ public abstract class AbstractModel<T> implements PMML4Model {
         if (generatedModelIds.containsKey(mt)) {
             lastId = generatedModelIds.get(mt);
         } else {
-            lastId = new Integer(-1);
+            lastId = Integer.valueOf(-1);
         }
         lastId++;
         mid.append(lastId);

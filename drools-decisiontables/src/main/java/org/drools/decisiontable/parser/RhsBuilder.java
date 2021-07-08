@@ -56,7 +56,7 @@ public class RhsBuilder implements SourceBuilder {
     }
 
     public void addTemplate(int row, int column, String content) {
-        Integer key = new Integer(column);
+        Integer key = Integer.valueOf(column);
         content = content.trim();
         if (isBoundVar()) {
             content = variable + "." + content + ";";
@@ -70,7 +70,7 @@ public class RhsBuilder implements SourceBuilder {
 
     public void addCellValue(int row, int column, String value) {
         hasValues = true;
-        String template = (String) this.templates.get(new Integer(column));
+        String template = (String) this.templates.get(Integer.valueOf(column));
         if (template == null) {
             throw new DecisionTableParseException("No code snippet for " +
                                                           this.actionTypeCode + ", above cell " +

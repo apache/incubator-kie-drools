@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -107,7 +108,7 @@ public class TimeFunction
             int nanosecs = 0;
             if( seconds instanceof BigDecimal ) {
                 BigDecimal secs = (BigDecimal) seconds;
-                nanosecs = secs.subtract( secs.setScale( 0, BigDecimal.ROUND_DOWN ) ).multiply( NANO_MULT ).intValue();
+                nanosecs = secs.subtract( secs.setScale( 0, RoundingMode.DOWN ) ).multiply( NANO_MULT ).intValue();
             }
 
             if ( offset == null ) {
