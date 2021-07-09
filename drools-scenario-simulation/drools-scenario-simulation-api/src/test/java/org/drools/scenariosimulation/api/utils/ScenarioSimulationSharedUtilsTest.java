@@ -23,6 +23,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import org.junit.Test;
 
@@ -37,7 +38,8 @@ public class ScenarioSimulationSharedUtilsTest {
 
     List<String> mapValues = Arrays.asList(Map.class.getCanonicalName(),
                                            HashMap.class.getCanonicalName(),
-                                           LinkedHashMap.class.getCanonicalName());
+                                           LinkedHashMap.class.getCanonicalName(),
+                                           TreeMap.class.getCanonicalName());
 
     @Test
     public void isCollectionOrMap() {

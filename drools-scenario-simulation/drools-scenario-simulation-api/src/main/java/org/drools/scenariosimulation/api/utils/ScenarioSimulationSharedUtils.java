@@ -22,6 +22,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class ScenarioSimulationSharedUtils {
 
@@ -68,7 +69,8 @@ public class ScenarioSimulationSharedUtils {
     public static boolean isMap(String className) {
         return Map.class.getCanonicalName().equals(className) ||
                 HashMap.class.getCanonicalName().equals(className) ||
-                LinkedHashMap.class.getCanonicalName().equals(className);
+                LinkedHashMap.class.getCanonicalName().equals(className) ||
+                TreeMap.class.getCanonicalName().equals(className);
     }
 
     /**
