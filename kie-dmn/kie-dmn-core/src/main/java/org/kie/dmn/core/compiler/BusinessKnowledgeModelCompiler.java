@@ -16,6 +16,9 @@
 
 package org.kie.dmn.core.compiler;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -29,6 +32,7 @@ import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.FunctionItem;
+import org.kie.dmn.model.api.InformationItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,7 +87,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
             ctx.setVariable(bkmi.getName(), bkmi.getResultType());
             FunctionDefinition funcDef = bkmi.getBusinessKnowledModel().getEncapsulatedLogic();
-            if (bkmi.getType() != null) {
+            if (bkmi.getType() != null && funcDef != null) {
                 checkFnConsistency(model, bkmi, bkmi.getType(), funcDef);
             }
             DMNExpressionEvaluator exprEvaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, bkmi, bkmi.getName(), funcDef );
@@ -107,6 +111,20 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                                   bkmi.getName(),
                                   fi.getParameters().size(),
                                   funcDef.getFormalParameter().size());
+        }
+        List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
+        List<String> funcDefParamNames = funcDef.getFormalParameter().stream().map(InformationItem::getName).collect(Collectors.toList());
+        if (!fiParamNames.equals(funcDefParamNames)) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  bkmi.getBusinessKnowledModel(),
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
+                                  bkmi.getName(),
+                                  fiParamNames,
+                                  funcDefParamNames);
         }
     }
 }
