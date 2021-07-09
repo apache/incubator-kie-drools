@@ -1,0 +1,35 @@
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns="https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" id="_FF9AAED2-3194-41C3-92E6-B62C1CBE3D4F" name="wireGenFnType2" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD">
+  <dmn:itemDefinition name="tFN1" isCollection="false">
+    <dmn:functionItem outputTypeRef="string">
+        <dmn:parameters name="in1" typeRef="string"/>
+    </dmn:functionItem>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_03EB96BB-4576-40BB-8442-B496A8EA252F" name="in1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_2B0E414C-67D2-4D36-BCD3-F98ED3052069" name="in1" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:inputData id="_B1B257A7-4DE1-4461-893A-2B333F4168E2" name="in2">
+    <dmn:extensionElements/>
+    <dmn:variable id="_73CDC111-B71E-47C4-BC48-1BAE8EDB13B9" name="in2" typeRef="string"/>
+  </dmn:inputData>
+  <dmn:decision id="_E3618CF2-B8D7-4647-B33F-9A85DA4DF4AA" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_67363191-C7D3-48C7-9395-FCD94DFD9D79" name="Decision-1" typeRef="Any"/>
+    <dmn:informationRequirement id="_27A2B0C4-69D4-4899-A140-8A9955ACEC25">
+      <dmn:requiredInput href="#_03EB96BB-4576-40BB-8442-B496A8EA252F"/>
+    </dmn:informationRequirement>
+    <dmn:informationRequirement id="_BA83681C-66DE-4463-93DA-A04CD347A857">
+      <dmn:requiredInput href="#_B1B257A7-4DE1-4461-893A-2B333F4168E2"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_05282384-DE67-42ED-A53C-10BAB9FE63C7">
+      <dmn:text>in1+in2</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmn:decisionService id="_F9F1A357-F305-40E4-8FF2-570066A9EA44" name="DecisionService-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_1A90A797-3CC9-4706-B941-2F158CC8C3C2" name="DecisionService-1" typeRef="tFN1"/>
+    <dmn:outputDecision href="#_E3618CF2-B8D7-4647-B33F-9A85DA4DF4AA"/>
+    <dmn:inputData href="#_03EB96BB-4576-40BB-8442-B496A8EA252F"/>
+    <dmn:inputData href="#_B1B257A7-4DE1-4461-893A-2B333F4168E2"/>
+  </dmn:decisionService>
+</dmn:definitions>

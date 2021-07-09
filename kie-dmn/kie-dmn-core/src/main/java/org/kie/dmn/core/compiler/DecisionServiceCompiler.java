@@ -38,6 +38,7 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
+import org.kie.dmn.model.api.FunctionItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -195,5 +196,75 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
 
         DMNDecisionServiceFunctionDefinitionEvaluator exprEvaluator = new DMNDecisionServiceFunctionDefinitionEvaluator(ni, parameters, coerceSingleton);
         ni.setEvaluator(exprEvaluator);
+
+        if (ni.getType() != null) {
+            checkFnConsistency(model, ni, ni.getType());
+        }
+    }
+
+    private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type) {
+        SimpleFnTypeImpl fnType = ((SimpleFnTypeImpl) type);
+        FunctionItem fi = fnType.getFunctionItem();
+        if (fi.getParameters().size() != ni.getInputParameters().size()) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  ni.getDecisionService(),
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.PARAMETER_COUNT_MISMATCH_COMPILING,
+                                  ni.getName(),
+                                  fi.getParameters().size(),
+                                  ni.getInputParameters().size());
+            return;
+        }
+        //        for (int i = 0; i < fi.getParameters().size(); i++) {
+        //            InformationItem fiII = fi.getParameters().get(i);
+        //            InformationItem fdII = funcDef.getFormalParameter().get(i);
+        //            if (!fiII.getName().equals(fdII.getName())) {
+        //                List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
+        //                List<String> funcDefParamNames = funcDef.getFormalParameter().stream().map(InformationItem::getName).collect(Collectors.toList());
+        //                MsgUtil.reportMessage(LOG,
+        //                                      DMNMessage.Severity.ERROR,
+        //                                      bkmi.getBusinessKnowledModel(),
+        //                                      model,
+        //                                      null,
+        //                                      null,
+        //                                      Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
+        //                                      bkmi.getName(),
+        //                                      fiParamNames,
+        //                                      funcDefParamNames);
+        //                return;
+        //            }
+        //            QName fiQname = fiII.getTypeRef();
+        //            QName fdQname = fdII.getTypeRef();
+        //            if (fiQname != null && fdQname != null && !fiQname.equals(fdQname)) {
+        //                MsgUtil.reportMessage(LOG,
+        //                                      DMNMessage.Severity.ERROR,
+        //                                      bkmi.getBusinessKnowledModel(),
+        //                                      model,
+        //                                      null,
+        //                                      null,
+        //                                      Msg.PARAMETER_TYPEREF_MISMATCH_COMPILING,
+        //                                      bkmi.getName(),
+        //                                      fiII.getName(),
+        //                                      fiQname,
+        //                                      fdQname);
+        //            }
+        //        }
+        //        QName fiReturnType = fi.getOutputTypeRef();
+        //        QName fdReturnType = funcDef.getExpression().getTypeRef();
+        //        if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
+        //            MsgUtil.reportMessage(LOG,
+        //                                  DMNMessage.Severity.ERROR,
+        //                                  bkmi.getBusinessKnowledModel(),
+        //                                  model,
+        //                                  null,
+        //                                  null,
+        //                                  Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
+        //                                  bkmi.getName(),
+        //                                  fiReturnType,
+        //                                  fdReturnType);
+        //        }
     }
 }
