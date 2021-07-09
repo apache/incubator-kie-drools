@@ -189,6 +189,8 @@ public class RuleBaseConfiguration
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
+        // avoid serializing user defined system properties
+        chainedProperties.filterDroolsPropertiesForSerialization();
         out.writeObject(chainedProperties);
         out.writeBoolean(immutable);
         out.writeBoolean(sequential);
