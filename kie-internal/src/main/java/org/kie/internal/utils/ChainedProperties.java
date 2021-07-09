@@ -29,6 +29,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,6 +50,11 @@ import org.slf4j.LoggerFactory;
 public class ChainedProperties
     implements
     Externalizable, Cloneable {
+
+    private static final String[] PROPERTIES_ALLOWED_PREFIX = new String[] {
+            "java.", "jdk.", "sun.", "user.", "os.", "jboss.",
+            "drools.", "jbpm.", "org.uberfire.", "file.", "path.", "line."
+    };
 
     protected static transient Logger logger = LoggerFactory.getLogger(ChainedProperties.class);
 
@@ -88,6 +94,30 @@ public class ChainedProperties
                 loadProperties(confURL, this.defaultProps);
             } catch (ClassNotFoundException e) { }
         }
+    }
+
+    public void filterDroolsPropertiesForSerialization() {
+        props = props.stream().map(this::filterDroolsProperties).collect(Collectors.toList());
+        defaultProps = defaultProps.stream().map(this::filterDroolsProperties).collect(Collectors.toList());
+    }
+
+    private Properties filterDroolsProperties(Properties originalProperties) {
+        Properties droolsProperties = new Properties();
+        for (Map.Entry<Object, Object> entry : originalProperties.entrySet()) {
+            if (isAllowedPropertyPrefix(entry.getKey().toString())) {
+                droolsProperties.setProperty(entry.getKey().toString(), entry.getValue().toString());
+            }
+        }
+        return droolsProperties;
+    }
+
+    private boolean isAllowedPropertyPrefix(String name) {
+        for (String prefix : PROPERTIES_ALLOWED_PREFIX) {
+            if (name.startsWith(prefix)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
