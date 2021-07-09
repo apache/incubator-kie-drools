@@ -19,6 +19,8 @@ package org.kie.dmn.core.compiler;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.xml.namespace.QName;
+
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
@@ -111,20 +113,41 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                                   bkmi.getName(),
                                   fi.getParameters().size(),
                                   funcDef.getFormalParameter().size());
+            return;
         }
-        List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
-        List<String> funcDefParamNames = funcDef.getFormalParameter().stream().map(InformationItem::getName).collect(Collectors.toList());
-        if (!fiParamNames.equals(funcDefParamNames)) {
-            MsgUtil.reportMessage(LOG,
-                                  DMNMessage.Severity.ERROR,
-                                  bkmi.getBusinessKnowledModel(),
-                                  model,
-                                  null,
-                                  null,
-                                  Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
-                                  bkmi.getName(),
-                                  fiParamNames,
-                                  funcDefParamNames);
+        for (int i = 0; i < fi.getParameters().size(); i++) {
+            InformationItem fiII = fi.getParameters().get(i);
+            InformationItem fdII = funcDef.getFormalParameter().get(i);
+            if (!fiII.getName().equals(fdII.getName())) {
+                List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
+                List<String> funcDefParamNames = funcDef.getFormalParameter().stream().map(InformationItem::getName).collect(Collectors.toList());
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      bkmi.getBusinessKnowledModel(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
+                                      bkmi.getName(),
+                                      fiParamNames,
+                                      funcDefParamNames);
+                return;
+            }
+            QName fiQname = fiII.getTypeRef();
+            QName fdQname = fdII.getTypeRef();
+            if (fiQname != null && fdQname != null && !fiQname.equals(fdQname)) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      bkmi.getBusinessKnowledModel(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.PARAMETER_TYPEREF_MISMATCH_COMPILING,
+                                      bkmi.getName(),
+                                      fiII.getName(),
+                                      fiQname,
+                                      fdQname);
+            }
         }
     }
 }
