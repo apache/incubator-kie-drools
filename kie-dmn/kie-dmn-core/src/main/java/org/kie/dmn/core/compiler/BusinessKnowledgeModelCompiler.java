@@ -39,6 +39,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
         BusinessKnowledgeModel bkm = (BusinessKnowledgeModel) de;
         BusinessKnowledgeModelNodeImpl bkmn = new BusinessKnowledgeModelNodeImpl( bkm );
         DMNType type = null;
+        DMNType fnType = null;
         if ( bkm.getVariable() == null ) {
             DMNCompilerHelper.reportMissingVariable( model, de, bkm, Msg.MISSING_VARIABLE_FOR_BKM );
             return;
@@ -47,6 +48,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
         if (bkm.getVariable().getTypeRef() != null) { // variable must be present, otherwise error was already reported above.
             type = compiler.resolveTypeRef(model, bkm, bkm.getVariable(), bkm.getVariable().getTypeRef());
             if (type instanceof SimpleFnTypeImpl) {
+                fnType = type;
                 type = ((SimpleFnTypeImpl) type).getReturnType();
             }
         } else if (bkm.getVariable().getTypeRef() == null && bkm.getEncapsulatedLogic().getExpression() != null && bkm.getEncapsulatedLogic().getExpression().getTypeRef() != null) {
@@ -55,6 +57,7 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
             // for now the call bellow will return type UNKNOWN
             type = compiler.resolveTypeRef(model, bkm, bkm, null);
         }
+        bkmn.setType(fnType);
         bkmn.setResultType( type );
         model.addBusinessKnowledgeModel( bkmn );
     }

@@ -55,6 +55,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
      */
     public void compileNode(DecisionService ds, DMNCompilerImpl compiler, DMNModelImpl model) {
         DMNType type = null;
+        DMNType fnType = null;
         if (ds.getVariable() == null) { // even for the v1.1 backport, variable creation is taken care in DMNCompiler.
             DMNCompilerHelper.reportMissingVariable(model, ds, ds, Msg.MISSING_VARIABLE_FOR_DS);
             return;
@@ -63,13 +64,14 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         if (ds.getVariable() != null && ds.getVariable().getTypeRef() != null) {
             type = compiler.resolveTypeRef(model, ds, ds.getVariable(), ds.getVariable().getTypeRef());
             if (type instanceof SimpleFnTypeImpl) {
+                fnType = type;
                 type = ((SimpleFnTypeImpl) type).getReturnType();
             }
         } else {
             // for now the call bellow will return type UNKNOWN
             type = compiler.resolveTypeRef(model, ds, ds, null);
         }
-        DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(ds, type);
+        DecisionServiceNodeImpl bkmn = new DecisionServiceNodeImpl(ds, fnType, type);
         model.addDecisionService(bkmn);
     }
 
