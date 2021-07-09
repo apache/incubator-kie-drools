@@ -2,17 +2,18 @@
   <dmn:extensionElements/>
   <dmn:itemDefinition name="tFN1" isCollection="false">
     <dmn:functionItem outputTypeRef="string">
-        <dmn:parameters name="p1" typeRef="number"/>
-        <dmn:parameters name="p2" typeRef="number"/>
+        <dmn:parameters name="p1" typeRef="string"/>
+        <dmn:parameters name="p2" typeRef="string"/>
+        <dmn:parameters name="p3" typeRef="string"/>
     </dmn:functionItem>
   </dmn:itemDefinition>
   <dmn:inputData id="_03EB96BB-4576-40BB-8442-B496A8EA252F" name="in1">
     <dmn:extensionElements/>
-    <dmn:variable id="_2B0E414C-67D2-4D36-BCD3-F98ED3052069" name="in1" typeRef="number"/>
+    <dmn:variable id="_2B0E414C-67D2-4D36-BCD3-F98ED3052069" name="in1" typeRef="string"/>
   </dmn:inputData>
   <dmn:inputData id="_B1B257A7-4DE1-4461-893A-2B333F4168E2" name="in2">
     <dmn:extensionElements/>
-    <dmn:variable id="_73CDC111-B71E-47C4-BC48-1BAE8EDB13B9" name="in2" typeRef="number"/>
+    <dmn:variable id="_73CDC111-B71E-47C4-BC48-1BAE8EDB13B9" name="in2" typeRef="string"/>
   </dmn:inputData>
   <dmn:decision id="_E3618CF2-B8D7-4647-B33F-9A85DA4DF4AA" name="Decision-1">
     <dmn:extensionElements/>
@@ -35,7 +36,7 @@
     <dmn:encapsulatedLogic id="_0AE3BF9A-946D-49A2-BBF0-2450C2625ACC" kind="FEEL">
       <dmn:formalParameter id="_1AB7592E-F48A-4DD1-8415-F87C4CAEB4DF" name="p1"/>
       <dmn:formalParameter id="_2F1E5677-68C1-48C4-B125-F729C988A8A6" name="p2"/>
-      <dmn:literalExpression id="_764BB2B3-8897-4FA8-B669-5882B6D184E1" typeRef="number">
+      <dmn:literalExpression id="_764BB2B3-8897-4FA8-B669-5882B6D184E1">
         <dmn:text>p1+p2</dmn:text>
       </dmn:literalExpression>
     </dmn:encapsulatedLogic>

@@ -149,5 +149,19 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
                                       fdQname);
             }
         }
+        QName fiReturnType = fi.getOutputTypeRef();
+        QName fdReturnType = funcDef.getExpression().getTypeRef();
+        if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  bkmi.getBusinessKnowledModel(),
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
+                                  bkmi.getName(),
+                                  fiReturnType,
+                                  fdReturnType);
+        }
     }
 }

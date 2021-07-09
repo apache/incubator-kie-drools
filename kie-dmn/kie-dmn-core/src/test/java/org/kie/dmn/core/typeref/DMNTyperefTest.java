@@ -101,4 +101,11 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
     }
 
+    @Test
+    public void test_bkmWrongFnType4() {
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType4.dmn", this.getClass());
+        assertThat(messages).isNotNull().isNotEmpty();
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH)));
+    }
+
 }
