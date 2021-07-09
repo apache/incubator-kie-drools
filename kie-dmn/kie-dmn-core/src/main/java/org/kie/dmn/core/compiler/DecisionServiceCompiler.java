@@ -178,11 +178,12 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       node.getName());
             }
         }
+        List<DecisionNode> outputDecisions = new ArrayList<>();
         for (DMNElementReference er : ni.getDecisionService().getOutputDecision()) {
             String id = DMNCompilerImpl.getId(er);
-            DecisionNode input = model.getDecisionById(id);
-            if (input != null) {
-                // nothing to do.
+            DecisionNode outDecision = model.getDecisionById(id);
+            if (outDecision != null) {
+                outputDecisions.add(outDecision);
             } else {
                 MsgUtil.reportMessage(LOG,
                                       DMNMessage.Severity.ERROR,
@@ -202,11 +203,11 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
         ni.setEvaluator(exprEvaluator);
 
         if (ni.getType() != null) {
-            checkFnConsistency(model, ni, ni.getType());
+            checkFnConsistency(model, ni, ni.getType(), outputDecisions);
         }
     }
 
-    private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type) {
+    private void checkFnConsistency(DMNModelImpl model, DecisionServiceNodeImpl ni, DMNType type, List<DecisionNode> outputDecisions) {
         SimpleFnTypeImpl fnType = ((SimpleFnTypeImpl) type);
         FunctionItem fi = fnType.getFunctionItem();
         if (fi.getParameters().size() != ni.getInputParameters().size()) {
@@ -262,19 +263,21 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       fdQname);
             }
         }
-        //        QName fiReturnType = fi.getOutputTypeRef();
-        //        QName fdReturnType = funcDef.getExpression().getTypeRef();
-        //        if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
-        //            MsgUtil.reportMessage(LOG,
-        //                                  DMNMessage.Severity.ERROR,
-        //                                  bkmi.getBusinessKnowledModel(),
-        //                                  model,
-        //                                  null,
-        //                                  null,
-        //                                  Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
-        //                                  bkmi.getName(),
-        //                                  fiReturnType,
-        //                                  fdReturnType);
-        //        }
+        QName fiReturnType = fi.getOutputTypeRef();
+        if (ni.getDecisionService().getOutputDecision().size() == 1) {
+            QName fdReturnType = outputDecisions.get(0).getDecision().getVariable().getTypeRef();
+            if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
+                                      ni.getName(),
+                                      fiReturnType,
+                                      fdReturnType);
+            }
+        }
     }
 }

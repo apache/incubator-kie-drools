@@ -84,28 +84,28 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
     public void test_bkmWrongFnType() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
     @Test
     public void test_bkmWrongFnType2() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType2.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
     @Test
     public void test_bkmWrongFnType3() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType3.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
     @Test
     public void test_bkmWrongFnType4() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType4.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
     @Test
@@ -146,21 +146,28 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
     public void test_dsWrongFnType2() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType2.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
     @Test
     public void test_dsWrongFnType3() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType3.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
     }
 
     @Test
     public void test_dsWrongFnType4() {
         final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType4.dmn", this.getClass());
         assertThat(messages).isNotNull().isNotEmpty();
-        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH))).isTrue();
+    }
+
+    @Test
+    public void test_dsWrongFnType5() {
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("dsWrongFnType5.dmn", this.getClass());
+        assertThat(messages).isNotNull().isNotEmpty();
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
 }
