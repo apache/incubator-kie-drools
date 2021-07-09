@@ -666,7 +666,7 @@ public class DMNCompilerImpl implements DMNCompiler {
                 DMNType resolveTypeRef = resolveTypeRef(dmnModel, itemDef, itemDef, p.getTypeRef());
                 params.put(p.getName(), resolveTypeRef);
             }
-            DMNType returnType = resolveTypeRef(dmnModel, itemDef, itemDef, itemDef.getTypeRef());
+            DMNType returnType = resolveTypeRef(dmnModel, itemDef, itemDef, fi.getOutputTypeRef());
             List<Type> feelPs = fi.getParameters().stream().map(InformationItem::getName).map(n -> ((BaseDMNTypeImpl) params.get(n)).getFeelType()).collect(Collectors.toList());
             GenFnType feeltype = new GenFnType(feelPs, ((BaseDMNTypeImpl) returnType).getFeelType());
             type = new SimpleFnTypeImpl(namespace, name, id, feeltype, params, returnType);
