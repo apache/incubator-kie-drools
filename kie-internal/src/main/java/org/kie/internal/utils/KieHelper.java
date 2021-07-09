@@ -115,7 +115,7 @@ public class KieHelper {
     }
 
     public Results verify() {
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs, classLoader ).buildAll();
+        KieBuilder kieBuilder = (( InternalKieBuilder ) ks.newKieBuilder( kfs, classLoader )).withKModuleModel( kieModuleModel ).buildAll();
         return kieBuilder.getResults();
     }
 
