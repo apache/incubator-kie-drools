@@ -108,4 +108,38 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH)));
     }
 
+    @Test
+    public void testGenFn2() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType2.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType2");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", "Hello, ");
+        context.set("in2", "World!");
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DecisionService-1");
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        LOG.debug("{}", dmnResult);
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
+    }
+
+    @Test
+    public void test_dsWrongFnType() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("dsWrongFnType.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "dsWrongFnType");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", "Hello, ");
+        context.set("in2", "World!");
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DecisionService-1");
+        assertThat(dmnResult.getMessages()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isNotEmpty();
+    }
+
 }
