@@ -17,6 +17,7 @@
 package org.kie.dmn.core.compiler;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -34,6 +35,7 @@ import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator.DSForm
 import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
 import org.kie.dmn.core.ast.InputDataNodeImpl;
+import org.kie.dmn.core.ast.ItemDefNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
@@ -43,6 +45,7 @@ import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.FunctionItem;
 import org.kie.dmn.model.api.InformationItem;
+import org.kie.dmn.model.api.ItemDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -277,6 +280,42 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       ni.getName(),
                                       fiReturnType,
                                       fdReturnType);
+            }
+        } else if (ni.getDecisionService().getOutputDecision().size() > 1) {
+            LinkedHashMap<String, QName> fdComposite = new LinkedHashMap<>();
+            for (DecisionNode dn : outputDecisions) {
+                fdComposite.put(dn.getName(), dn.getDecision().getVariable().getTypeRef());
+            }
+            final QName lookup = DMNCompilerImpl.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), fiReturnType, model.getNamespace());
+            Optional<ItemDefNodeImpl> composite = model.getItemDefinitions().stream().filter(id -> id.getModelNamespace().equals(lookup.getNamespaceURI()) && id.getName().equals(lookup.getLocalPart())).map(ItemDefNodeImpl.class::cast).findFirst();
+            if (!composite.isPresent()) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
+                                      ni.getName(),
+                                      lookup,
+                                      fdComposite);
+                return;
+            }
+            LinkedHashMap<String, QName> fiComposite = new LinkedHashMap<>();
+            for (ItemDefinition ic : composite.get().getItemDef().getItemComponent()) {
+                fiComposite.put(ic.getName(), ic.getTypeRef());
+            }
+            if (!fiComposite.equals(fdComposite)) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.RETURNTYPE_TYPEREF_MISMATCH_COMPILING,
+                                      ni.getName(),
+                                      fiComposite,
+                                      fdComposite);
             }
         }
     }
