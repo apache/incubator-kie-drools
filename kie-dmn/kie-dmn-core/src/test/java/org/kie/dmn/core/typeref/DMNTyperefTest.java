@@ -16,8 +16,12 @@
 
 package org.kie.dmn.core.typeref;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNContext;
+import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
@@ -74,6 +78,13 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
+    }
+
+    @Test
+    public void test_bkmWrongFnType() {
+        final List<DMNMessage> messages = DMNRuntimeUtil.createExpectingDMNMessages("bkmWrongFnType.dmn", this.getClass());
+        assertThat(messages).isNotNull().isNotEmpty();
+        assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.PARAMETER_MISMATCH)));
     }
 
 }

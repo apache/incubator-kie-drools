@@ -1,9 +1,10 @@
-<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns="https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" id="_FF9AAED2-3194-41C3-92E6-B62C1CBE3D4F" name="wireGenFnType1" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD">
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns="ns1" xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/" id="_FF9AAED2-3194-41C3-92E6-B62C1CBE3D4F" name="bkmWrongFnType" typeLanguage="https://www.omg.org/spec/DMN/20191111/FEEL/" namespace="ns1">
   <dmn:extensionElements/>
   <dmn:itemDefinition name="tFN1" isCollection="false">
     <dmn:functionItem outputTypeRef="string">
         <dmn:parameters name="p1" typeRef="string"/>
         <dmn:parameters name="p2" typeRef="string"/>
+        <dmn:parameters name="p3" typeRef="string"/>
     </dmn:functionItem>
   </dmn:itemDefinition>
   <dmn:inputData id="_03EB96BB-4576-40BB-8442-B496A8EA252F" name="in1">

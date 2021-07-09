@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.compiler;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.core.ast.DMNNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
@@ -23,13 +24,19 @@ import org.kie.dmn.core.ast.BusinessKnowledgeModelNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.model.api.BusinessKnowledgeModel;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.FunctionDefinition;
+import org.kie.dmn.model.api.FunctionItem;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.dmn.core.compiler.DecisionCompiler.loadInCtx;
 
 public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
+
+    private static final Logger LOG = LoggerFactory.getLogger(BusinessKnowledgeModelCompiler.class);
     @Override
     public boolean accept(DRGElement de) {
         return de instanceof BusinessKnowledgeModel;
@@ -76,10 +83,30 @@ public class BusinessKnowledgeModelCompiler implements DRGElementCompiler {
             // to allow recursive call from inside a BKM node, a variable for self must be available for the compiler context:
             ctx.setVariable(bkmi.getName(), bkmi.getResultType());
             FunctionDefinition funcDef = bkmi.getBusinessKnowledModel().getEncapsulatedLogic();
+            if (bkmi.getType() != null) {
+                checkFnConsistency(model, bkmi, bkmi.getType(), funcDef);
+            }
             DMNExpressionEvaluator exprEvaluator = compiler.getEvaluatorCompiler().compileExpression( ctx, model, bkmi, bkmi.getName(), funcDef );
             bkmi.setEvaluator( exprEvaluator );
         } finally {
             ctx.exitFrame();
+        }
+    }
+
+    private void checkFnConsistency(DMNModelImpl model, BusinessKnowledgeModelNodeImpl bkmi, DMNType type, FunctionDefinition funcDef) {
+        SimpleFnTypeImpl fnType = ((SimpleFnTypeImpl) type);
+        FunctionItem fi = fnType.getFunctionItem();
+        if (fi.getParameters().size() != funcDef.getFormalParameter().size()) {
+            MsgUtil.reportMessage(LOG,
+                                  DMNMessage.Severity.ERROR,
+                                  bkmi.getBusinessKnowledModel(),
+                                  model,
+                                  null,
+                                  null,
+                                  Msg.PARAMETER_COUNT_MISMATCH_COMPILING,
+                                  bkmi.getName(),
+                                  fi.getParameters().size(),
+                                  funcDef.getFormalParameter().size());
         }
     }
 }
