@@ -227,7 +227,7 @@ public class LhsBuilder implements SourceBuilder {
         if (this.constraints.isEmpty()) {
             return;
         }
-        Integer key = new Integer( column );
+        Integer key = Integer.valueOf( column );
         String content = this.constraints.get( key );
         if ( content == null ) {
             throw new DecisionTableParseException( "No code snippet for CONDITION in cell " +

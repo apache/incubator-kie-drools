@@ -164,42 +164,42 @@ class RuleModelPersistenceHelper {
             }
         } else if (DataType.TYPE_NUMERIC_BYTE.equals(dataType)) {
             try {
-                new Byte(value);
+                Byte.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;
             }
         } else if (DataType.TYPE_NUMERIC_DOUBLE.equals(dataType)) {
             try {
-                new Double(value);
+                Double.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;
             }
         } else if (DataType.TYPE_NUMERIC_FLOAT.equals(dataType)) {
             try {
-                new Float(value);
+                Float.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;
             }
         } else if (DataType.TYPE_NUMERIC_INTEGER.equals(dataType)) {
             try {
-                new Integer(value);
+                Integer.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;
             }
         } else if (DataType.TYPE_NUMERIC_LONG.equals(dataType)) {
             try {
-                new Long(value);
+                Long.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;
             }
         } else if (DataType.TYPE_NUMERIC_SHORT.equals(dataType)) {
             try {
-                new Short(value);
+                Short.valueOf(value);
                 return FieldNatureType.TYPE_LITERAL;
             } catch (NumberFormatException e) {
                 return FieldNatureType.TYPE_FORMULA;

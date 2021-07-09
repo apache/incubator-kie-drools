@@ -23,7 +23,7 @@ public class PMML4Placeholder extends PMML4Data<Object> {
 	PMML4Placeholder(String correlationId, String name, String context) {
 		super(correlationId, name, context, true);
 		setMissing(true);
-		setValue(new Integer(0));
+		setValue(Integer.valueOf(0));
 	}
 
 	@Override

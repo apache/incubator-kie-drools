@@ -143,7 +143,7 @@ public class AvailablePortFinder {
 
             try {
                 s = new ServerSocket(i);
-                result.add(new Integer(i));
+                result.add(Integer.valueOf(i));
             } catch (IOException e) {
             } finally {
                 if (s != null) {

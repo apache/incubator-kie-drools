@@ -82,7 +82,7 @@ public class KnowledgeStoreServiceImpl
             throw new IllegalArgumentException( "Environment cannot be null" );
         }
 
-        ExecutableRunner runner = (ExecutableRunner) buildCommandService( new Long( id),
+        ExecutableRunner runner = (ExecutableRunner) buildCommandService( Long.valueOf( id),
                                                                           kbase,
                                                                           mergeConfig( configuration ),
                                                                           environment );

@@ -135,7 +135,7 @@ public class DTCellValue52 {
                 break;
             case NUMERIC_BYTE:
                 if (!emptyValue) {
-                    setNumericValue(new Byte("0"));
+                    setNumericValue(Byte.valueOf("0"));
                 }
                 this.dataType = DataType.DataTypes.NUMERIC_BYTE;
                 break;
@@ -153,7 +153,7 @@ public class DTCellValue52 {
                 break;
             case NUMERIC_INTEGER:
                 if (!emptyValue) {
-                    setNumericValue(new Integer("0"));
+                    setNumericValue(Integer.valueOf("0"));
                 }
                 this.dataType = DataType.DataTypes.NUMERIC_INTEGER;
                 break;
@@ -165,7 +165,7 @@ public class DTCellValue52 {
                 break;
             case NUMERIC_SHORT:
                 if (!emptyValue) {
-                    setNumericValue(new Short("0"));
+                    setNumericValue(Short.valueOf("0"));
                 }
                 this.dataType = DataType.DataTypes.NUMERIC_SHORT;
                 break;

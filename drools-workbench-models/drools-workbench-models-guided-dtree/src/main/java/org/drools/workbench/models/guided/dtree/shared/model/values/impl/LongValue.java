@@ -37,9 +37,9 @@ public class LongValue implements Value<Long> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Long(value));
+            setValue(Long.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Long(0));
+            setValue(Long.valueOf(0));
         }
     }
 
