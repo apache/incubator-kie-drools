@@ -19,6 +19,7 @@ package org.kie.dmn.core.compiler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
 
@@ -30,7 +31,9 @@ import org.kie.dmn.api.core.ast.InputDataNode;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator;
 import org.kie.dmn.core.ast.DMNDecisionServiceFunctionDefinitionEvaluator.DSFormalParameter;
+import org.kie.dmn.core.ast.DecisionNodeImpl;
 import org.kie.dmn.core.ast.DecisionServiceNodeImpl;
+import org.kie.dmn.core.ast.InputDataNodeImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.SimpleFnTypeImpl;
 import org.kie.dmn.core.util.Msg;
@@ -39,6 +42,7 @@ import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DRGElement;
 import org.kie.dmn.model.api.DecisionService;
 import org.kie.dmn.model.api.FunctionItem;
+import org.kie.dmn.model.api.InformationItem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -218,40 +222,46 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                   ni.getInputParameters().size());
             return;
         }
-        //        for (int i = 0; i < fi.getParameters().size(); i++) {
-        //            InformationItem fiII = fi.getParameters().get(i);
-        //            InformationItem fdII = funcDef.getFormalParameter().get(i);
-        //            if (!fiII.getName().equals(fdII.getName())) {
-        //                List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
-        //                List<String> funcDefParamNames = funcDef.getFormalParameter().stream().map(InformationItem::getName).collect(Collectors.toList());
-        //                MsgUtil.reportMessage(LOG,
-        //                                      DMNMessage.Severity.ERROR,
-        //                                      bkmi.getBusinessKnowledModel(),
-        //                                      model,
-        //                                      null,
-        //                                      null,
-        //                                      Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
-        //                                      bkmi.getName(),
-        //                                      fiParamNames,
-        //                                      funcDefParamNames);
-        //                return;
-        //            }
-        //            QName fiQname = fiII.getTypeRef();
-        //            QName fdQname = fdII.getTypeRef();
-        //            if (fiQname != null && fdQname != null && !fiQname.equals(fdQname)) {
-        //                MsgUtil.reportMessage(LOG,
-        //                                      DMNMessage.Severity.ERROR,
-        //                                      bkmi.getBusinessKnowledModel(),
-        //                                      model,
-        //                                      null,
-        //                                      null,
-        //                                      Msg.PARAMETER_TYPEREF_MISMATCH_COMPILING,
-        //                                      bkmi.getName(),
-        //                                      fiII.getName(),
-        //                                      fiQname,
-        //                                      fdQname);
-        //            }
-        //        }
+        for (int i = 0; i < fi.getParameters().size(); i++) {
+            InformationItem fiII = fi.getParameters().get(i);
+            String fpName = ni.getInputParameters().keySet().stream().skip(i).findFirst().orElse(null);
+            if (!fiII.getName().equals(fpName)) {
+                List<String> fiParamNames = fi.getParameters().stream().map(InformationItem::getName).collect(Collectors.toList());
+                List<String> funcDefParamNames = ni.getInputParameters().keySet().stream().collect(Collectors.toList());
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.PARAMETER_NAMES_MISMATCH_COMPILING,
+                                      ni.getName(),
+                                      fiParamNames,
+                                      funcDefParamNames);
+                return;
+            }
+            QName fiQname = fiII.getTypeRef();
+            QName fdQname = null;
+            DMNNode fpDMNNode = ni.getInputParameters().get(fpName);
+            if (fpDMNNode instanceof InputDataNodeImpl) {
+                fdQname = ((InputDataNodeImpl) fpDMNNode).getInputData().getVariable().getTypeRef();
+            } else if (fpDMNNode instanceof DecisionNodeImpl) {
+                fdQname = ((DecisionNodeImpl) fpDMNNode).getDecision().getVariable().getTypeRef();
+            }
+            if (fiQname != null && fdQname != null && !fiQname.equals(fdQname)) {
+                MsgUtil.reportMessage(LOG,
+                                      DMNMessage.Severity.ERROR,
+                                      ni.getDecisionService(),
+                                      model,
+                                      null,
+                                      null,
+                                      Msg.PARAMETER_TYPEREF_MISMATCH_COMPILING,
+                                      ni.getName(),
+                                      fiII.getName(),
+                                      fiQname,
+                                      fdQname);
+            }
+        }
         //        QName fiReturnType = fi.getOutputTypeRef();
         //        QName fdReturnType = funcDef.getExpression().getTypeRef();
         //        if (fiReturnType != null && fdReturnType != null && !fiReturnType.equals(fdReturnType)) {
