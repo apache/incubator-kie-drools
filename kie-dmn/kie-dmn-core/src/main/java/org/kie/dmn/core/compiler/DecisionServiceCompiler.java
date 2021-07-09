@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.xml.namespace.QName;
@@ -282,11 +283,12 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
                                       fdReturnType);
             }
         } else if (ni.getDecisionService().getOutputDecision().size() > 1) {
+            final Function<QName, QName> lookupFn = (in) -> DMNCompilerImpl.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), in, model.getNamespace());
             LinkedHashMap<String, QName> fdComposite = new LinkedHashMap<>();
             for (DecisionNode dn : outputDecisions) {
-                fdComposite.put(dn.getName(), dn.getDecision().getVariable().getTypeRef());
+                fdComposite.put(dn.getName(), lookupFn.apply(dn.getDecision().getVariable().getTypeRef()));
             }
-            final QName lookup = DMNCompilerImpl.getNamespaceAndName(ni.getDecisionService(), model.getImportAliasesForNS(), fiReturnType, model.getNamespace());
+            final QName lookup = lookupFn.apply(fiReturnType);
             Optional<ItemDefNodeImpl> composite = model.getItemDefinitions().stream().filter(id -> id.getModelNamespace().equals(lookup.getNamespaceURI()) && id.getName().equals(lookup.getLocalPart())).map(ItemDefNodeImpl.class::cast).findFirst();
             if (!composite.isPresent()) {
                 MsgUtil.reportMessage(LOG,
@@ -303,7 +305,7 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             }
             LinkedHashMap<String, QName> fiComposite = new LinkedHashMap<>();
             for (ItemDefinition ic : composite.get().getItemDef().getItemComponent()) {
-                fiComposite.put(ic.getName(), ic.getTypeRef());
+                fiComposite.put(ic.getName(), lookupFn.apply(ic.getTypeRef()));
             }
             if (!fiComposite.equals(fdComposite)) {
                 MsgUtil.reportMessage(LOG,
@@ -319,4 +321,5 @@ public class DecisionServiceCompiler implements DRGElementCompiler {
             }
         }
     }
+
 }

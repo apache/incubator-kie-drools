@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.typeref;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.junit.Test;
@@ -184,4 +185,23 @@ public class DMNTyperefTest extends BaseInterpretedVsCompiledTest {
         assertThat(messages.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.TYPEREF_MISMATCH))).isTrue();
     }
 
+    @Test
+    public void testGenFn3() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("wireGenFnType3.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_10795E58-CD3F-4203-B4D7-C80D9D8BE7BD", "wireGenFnType3");
+        assertThat(dmnModel).isNotNull();
+        assertThat(dmnModel.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnModel.getMessages())).isFalse();
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("in1", "Hello, ");
+        context.set("in2", "World!");
+
+        final DMNResult dmnResult = runtime.evaluateDecisionService(dmnModel, context, "DecisionService-1");
+        assertThat(dmnResult.hasErrors()).as(DMNRuntimeUtil.formatMessages(dmnResult.getMessages())).isFalse();
+
+        LOG.debug("{}", dmnResult);
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision-1")).isEqualTo("Hello, World!");
+        assertThat(result.get("Decision-2")).isEqualTo(new BigDecimal(47));
+    }
 }
