@@ -28,10 +28,7 @@ Map getMultijobPRConfig() {
             ], [
                 id: 'Optaplanner',
                 dependsOn: 'Runtimes',
-                repository: 'optaplanner',
-                // TODO remove once https://issues.redhat.com/browse/KOGITO-4113 is done 
-                // as it will become the default path
-                jenkinsfile: '.ci/jenkins/Jenkinsfile',
+                repository: 'optaplanner'
             ], [
                 id: 'Apps',
                 dependsOn: 'Optaplanner',
