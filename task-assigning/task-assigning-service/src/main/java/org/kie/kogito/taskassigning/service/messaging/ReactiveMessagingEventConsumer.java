@@ -63,8 +63,8 @@ public class ReactiveMessagingEventConsumer {
             return message.nack(new TaskAssigningException("Task assigning service is in fail fast mode" +
                     " and is not able to accept messages"));
         } else {
-            return managedExecutor.runAsync(() -> handleEvent(message.getPayload()))
-                    .thenRun(message::ack);
+            managedExecutor.runAsync(() -> handleEvent(message.getPayload()));
+            return message.ack();
         }
     }
 

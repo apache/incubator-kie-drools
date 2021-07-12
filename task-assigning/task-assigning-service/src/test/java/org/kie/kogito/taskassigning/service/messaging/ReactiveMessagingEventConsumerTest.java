@@ -54,9 +54,6 @@ class ReactiveMessagingEventConsumerTest {
     @Captor
     private ArgumentCaptor<Runnable> runAsyncCaptor;
 
-    @Captor
-    private ArgumentCaptor<Runnable> thenRunCaptor;
-
     @Mock
     private Message<UserTaskEvent> message;
 
@@ -90,8 +87,6 @@ class ReactiveMessagingEventConsumerTest {
         verify(taskAssigningServiceEventConsumer).accept(taskDataEventCaptor.capture());
         assertThat(taskDataEventCaptor.getValue().getTaskId()).isEqualTo(TASK_ID);
         assertThat(taskDataEventCaptor.getValue().getEventTime()).isEqualTo(LAST_MODIFICATION_DATE);
-        verify(future).thenRun(thenRunCaptor.capture());
-        thenRunCaptor.getValue().run();
         verify(message).ack();
     }
 
