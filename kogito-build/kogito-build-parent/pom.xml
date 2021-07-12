@@ -51,7 +51,9 @@
     <container.image.kafka>confluentinc/cp-kafka:${version.org.confluent.kafka}</container.image.kafka>
     <container.image.mongodb>mongo:${version.org.mongo}</container.image.mongodb>
 
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.release>11</maven.compiler.release>
+    <maven.compiler.source>11</maven.compiler.source>
+    <maven.compiler.target>11</maven.compiler.target>
     <jacoco.agent.argLine/>
     <!--
       JaCoCo coverage data file location. Using a single file for appending in the project's root directory makes it
