@@ -17,7 +17,9 @@ package org.kie.pmml.commons.model.expressions;
 
 import java.io.Serializable;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 /**
@@ -32,11 +34,15 @@ public class KiePMMLRow implements Serializable {
         this.columnValues = columnValues;
     }
 
-    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn, final String regexField) {
+    public Optional<Object> evaluate(final Map<String, Object> columnPairsMap, final String outputColumn,
+                                     final String regexField) {
         boolean matching = true;
-        boolean isRegex = regexField != null && columnValues.containsKey(regexField) && (boolean) columnValues.get(regexField);
+        boolean isRegex =
+                regexField != null && columnValues.containsKey(regexField) && (boolean) columnValues.get(regexField);
         for (Map.Entry<String, Object> columnPairEntry : columnPairsMap.entrySet()) {
-            matching = isRegex ? isRegexMatching(columnPairEntry.getKey(), (String) columnPairEntry.getValue()) : isMatching(columnPairEntry.getKey(), columnPairEntry.getValue());
+            Object value = columnValues.get(columnPairEntry.getKey());
+            matching = isRegex ? isRegexMatching(value.toString(), (String) columnPairEntry.getValue()) :
+                    isMatching(value, columnPairEntry.getValue());
             if (!matching) {
                 break;
             }
@@ -44,13 +50,29 @@ public class KiePMMLRow implements Serializable {
         return matching ? Optional.ofNullable(columnValues.get(outputColumn)) : Optional.empty();
     }
 
-    boolean isMatching(String columnName, Object value) {
-       return columnValues.containsKey(columnName) && columnValues.get(columnName).equals(value);
+    public void replace(final AtomicReference<String> text, final String inField, final String outField, final String regexField) {
+        boolean isRegex =
+                regexField != null && columnValues.containsKey(regexField) && (boolean) columnValues.get(regexField);
+        String replaced = isRegex ? regexReplace(text.get(), (String) columnValues.get(outField), (String) columnValues.get(inField))
+                : replace(text.get(), (String) columnValues.get(outField), (String)  columnValues.get(inField));
+        text.set(replaced);
     }
 
-    boolean isRegexMatching(String columnName, String value) {
-        Pattern pattern = Pattern.compile(value);
-        return columnValues.containsKey(columnName) && pattern.matcher(columnValues.get(columnName).toString()).find();
+    boolean isMatching(Object original, Object value) {
+        return Objects.equals(original, value);
     }
 
+    boolean isRegexMatching(String original, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(original).find();
+    }
+
+    String replace(String original, String replacement, String value) {
+        return original.replaceAll(value, replacement);
+    }
+
+    String regexReplace(String original, String replacement, String regex) {
+        Pattern pattern = Pattern.compile(regex);
+        return pattern.matcher(original).replaceAll(replacement);
+    }
 }

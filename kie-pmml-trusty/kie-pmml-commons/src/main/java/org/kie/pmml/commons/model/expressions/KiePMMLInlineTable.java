@@ -18,6 +18,7 @@ package org.kie.pmml.commons.model.expressions;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
@@ -41,5 +42,9 @@ public class KiePMMLInlineTable extends AbstractKiePMMLComponent {
                 .filter(Optional::isPresent)
                 .findFirst()
                 .map(Optional::get);
+    }
+
+    public void replace(final AtomicReference<String> text, final String inField, final String outField, final String regexField) {
+        rows.forEach(row -> row.replace(text, inField, outField, regexField));
     }
 }
