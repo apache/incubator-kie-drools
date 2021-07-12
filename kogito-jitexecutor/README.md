@@ -1,6 +1,6 @@
 # Kogito JIT Executor
 
-Kogito JIT (Just In Time) Executor is an application that allow to execute a business model on the fly on a given context. 
+Kogito JIT (Just In Time) Executor is an application that allow to execute a business model on the fly on a given context. The JIT Executor is intended to be an helpful support during **_Modeling and Development phases_**; for instance, when modeling a DMN asset, the JIT Executor can be used to support live interactions with the DMN model, while still being authored. The JIT Executor is **not** recommended for Deployment solution; when looking to deploy to the Cloud, we recommend to build and deploy a standard Kogito -based project containing the assets, in order to take advantage of the all features and full capabilities of the [Kogito platform](https://docs.kogito.kie.org/latest/html_single/#con-kogito-automation_kogito-docs).
 
 At the moment, the application supports only DMN models.
 
