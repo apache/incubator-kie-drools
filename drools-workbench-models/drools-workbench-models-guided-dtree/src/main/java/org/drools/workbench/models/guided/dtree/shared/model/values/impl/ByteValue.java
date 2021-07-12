@@ -37,9 +37,9 @@ public class ByteValue implements Value<Byte> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Byte(value));
+            setValue(Byte.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Byte("0"));
+            setValue(Byte.valueOf("0"));
         }
     }
 

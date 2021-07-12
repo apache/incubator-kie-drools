@@ -45,7 +45,7 @@ public abstract class BaseDoubleClassFieldReader extends BaseClassFieldReader {
     }
 
     public Object getValue(InternalWorkingMemory workingMemory, final Object object) {
-        return new Double( getDoubleValue( workingMemory, object ) );
+        return Double.valueOf( getDoubleValue( workingMemory, object ) );
     }
 
     public boolean getBooleanValue(InternalWorkingMemory workingMemory, final Object object) {

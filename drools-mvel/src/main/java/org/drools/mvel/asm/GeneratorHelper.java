@@ -57,7 +57,7 @@ import static org.mvel2.asm.Opcodes.ISTORE;
 
 public final class GeneratorHelper {
 
-    public static final Long INVOKER_SERIAL_UID = new Long(510L);
+    public static final Long INVOKER_SERIAL_UID = Long.valueOf(510L);
 
     // DeclarationMatcher
 

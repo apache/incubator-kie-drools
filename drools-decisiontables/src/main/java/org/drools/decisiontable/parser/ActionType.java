@@ -163,7 +163,7 @@ public class ActionType {
                                                                code.getColHeader() + "/" + code.getColShort() + " columns is " +
                                                                code.getMaxCount() + ", in cell " + RuleSheetParserUtil.rc2name( row, column ) );
             }
-            actionTypeMap.put( new Integer( column ), new ActionType( code ) );
+            actionTypeMap.put( Integer.valueOf( column ), new ActionType( code ) );
         } else {
             throw new DecisionTableParseException(
                     "Invalid column header: " + value + ", should be CONDITION, ACTION or attribute, " +
