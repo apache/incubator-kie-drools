@@ -92,13 +92,13 @@ pipeline {
                 }
             }
         }
-        stage('Deploy kogito-apps locally') {
+        stage('Deploy kogito-apps to repository') {
             when {
-                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
+                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() && shouldDeployToRepository() }
             }
             steps {
                 script {
-                    runMavenDeploy(params.SKIP_TESTS, true)
+                    runMavenDeploy(params.SKIP_TESTS)
                 }
             }
             post {
@@ -107,13 +107,13 @@ pipeline {
                 }
             }
         }
-        stage('Deploy kogito-apps to repository') {
+        stage('Deploy kogito-apps locally') {
             when {
-                expression { return !shouldStageArtifacts() && !isSpecificArtifactsUpload() }
+                expression { return shouldStageArtifacts() || isSpecificArtifactsUpload() }
             }
             steps {
                 script {
-                    runMavenDeploy(params.SKIP_TESTS)
+                    runMavenDeploy(params.SKIP_TESTS, true)
                 }
             }
             post {
@@ -220,6 +220,10 @@ boolean shouldStageArtifacts() {
     return !isSpecificArtifactsUpload() && isRelease() && !env.MAVEN_DEPLOY_REPOSITORY
 }
 
+boolean shouldDeployToRepository() {
+    return env.MAVEN_DEPLOY_REPOSITORY || getGitAuthor() == 'kiegroup'
+}
+
 boolean isRelease() {
     return env.RELEASE.toBoolean()
 }
@@ -262,7 +266,7 @@ String getBotAuthorCredsID() {
 }
 
 void setDeployPropertyIfNeeded(String key, def value) {
-    if (value != null && value != '') {
+    if (value) {
         deployProperties[key] = value
     }
 }
@@ -281,7 +285,7 @@ MavenCommand getMavenCommand() {
 void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
     mvnCmd = getMavenCommand()
 
-    if(localDeployment) {
+    if (localDeployment) {
         mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder())
     } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
