@@ -52,4 +52,10 @@ public class FixedDoubleEntity extends AbstractNumericEntity<Double> {
     public double distance() {
         return 0.0;
     }
+
+    @Override
+    public double similarity() {
+        return 1.0;
+    }
+
 }

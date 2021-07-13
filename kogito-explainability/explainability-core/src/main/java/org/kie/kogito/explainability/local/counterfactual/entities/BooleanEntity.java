@@ -45,7 +45,8 @@ public class BooleanEntity extends AbstractEntity<Boolean> {
      * @param constrained Whether this entity's value should be fixed or not
      */
     public static BooleanEntity from(Feature originalFeature, boolean constrained) {
-        return new BooleanEntity((Boolean) originalFeature.getValue().getUnderlyingObject(), originalFeature.getName(), constrained);
+        return new BooleanEntity((Boolean) originalFeature.getValue().getUnderlyingObject(), originalFeature.getName(),
+                constrained);
     }
 
     /**
@@ -67,6 +68,11 @@ public class BooleanEntity extends AbstractEntity<Boolean> {
     @Override
     public double distance() {
         return proposedValue.equals(originalValue) ? 0.0 : 1.0;
+    }
+
+    @Override
+    public double similarity() {
+        return 1.0 - distance();
     }
 
     /**

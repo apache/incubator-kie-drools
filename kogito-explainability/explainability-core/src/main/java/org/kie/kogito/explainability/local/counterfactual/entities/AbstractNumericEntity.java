@@ -29,15 +29,18 @@ public abstract class AbstractNumericEntity<T extends Number> extends AbstractEn
     protected T rangeMinimum;
     protected T rangeMaximum;
     protected Double stdDev;
+    protected Double range;
 
     protected AbstractNumericEntity() {
         super();
     }
 
-    protected AbstractNumericEntity(T originalValue, String featureName, T minimum, T maximum, FeatureDistribution featureDistribution, boolean constrained) {
+    protected AbstractNumericEntity(T originalValue, String featureName, T minimum, T maximum,
+            FeatureDistribution featureDistribution, boolean constrained) {
         super(originalValue, featureName, constrained);
         this.rangeMinimum = minimum;
         this.rangeMaximum = maximum;
+        this.range = maximum.doubleValue() - minimum.doubleValue();
 
         if (featureDistribution != null) {
             final double[] samples = featureDistribution.getAllSamples().stream().mapToDouble(Value::asNumber).toArray();
@@ -77,6 +80,11 @@ public abstract class AbstractNumericEntity<T extends Number> extends AbstractEn
         } else {
             return distance;
         }
+    }
+
+    @Override
+    public double similarity() {
+        return 1.0 - Math.abs(this.proposedValue.doubleValue() - originalValue.doubleValue()) / this.range;
     }
 
     /**

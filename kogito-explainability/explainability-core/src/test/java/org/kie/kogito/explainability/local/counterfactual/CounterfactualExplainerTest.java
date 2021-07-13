@@ -115,7 +115,7 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("class", Type.BOOLEAN, new Value(false), 0.0d));
+        final List<Output> goal = List.of(new Output("class", Type.NUMBER, new Value(10.0), 0.0d));
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
@@ -590,21 +590,21 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.9));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
-        features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num1", 100.0));
         constraints.add(false);
         featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num2", 100.0));
         constraints.add(false);
         featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num3", 100.0));
         constraints.add(false);
         featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
-        features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
+        features.add(FeatureFactory.newNumericalFeature("f-num4", 100.0));
         constraints.add(false);
         featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
 
@@ -625,8 +625,9 @@ class CounterfactualExplainerTest {
 
         PredictionInput input = new PredictionInput(features);
 
-        final double center = 400.0;
+        final double center = 500.0;
         final double epsilon = 10.0;
+
         final PredictionProvider model = TestUtils.getSumThresholdModel(center, epsilon);
 
         PredictionOutput output = new PredictionOutput(goal);
@@ -713,23 +714,23 @@ class CounterfactualExplainerTest {
         Random random = new Random();
         random.setSeed(seed);
 
-        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.9));
+        final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
 
         List<Feature> features = new LinkedList<>();
         List<FeatureDomain> featureBoundaries = new LinkedList<>();
         List<Boolean> constraints = new LinkedList<>();
         features.add(FeatureFactory.newNumericalFeature("f-num1", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num2", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num3", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
         features.add(FeatureFactory.newNumericalFeature("f-num4", 10.0));
         constraints.add(false);
-        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 1000.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 10000.0));
 
         final double center = 400.0;
         final double epsilon = 10.0;

@@ -574,9 +574,11 @@ public class DataUtils {
                 double[] mins = new double[draws];
                 double[] maxs = new double[draws];
                 for (int i = 0; i < draws; i++) {
-                    List<Value> sampledValues = DataUtils.sampleWithReplacement(values, sampleSize, perturbationContext.getRandom());
+                    List<Value> sampledValues =
+                            DataUtils.sampleWithReplacement(values, sampleSize, perturbationContext.getRandom());
                     double mean = DataUtils.getMean(sampledValues.stream().mapToDouble(Value::asNumber).toArray());
-                    double stdDev = Math.pow(DataUtils.getStdDev(sampledValues.stream().mapToDouble(Value::asNumber).toArray(), mean), 2);
+                    double stdDev = Math
+                            .pow(DataUtils.getStdDev(sampledValues.stream().mapToDouble(Value::asNumber).toArray(), mean), 2);
                     double min = sampledValues.stream().mapToDouble(Value::asNumber).min().orElse(Double.MIN_VALUE);
                     double max = sampledValues.stream().mapToDouble(Value::asNumber).max().orElse(Double.MAX_VALUE);
                     means[i] = mean;
@@ -588,7 +590,8 @@ public class DataUtils {
                 double finalStdDev = Math.sqrt(DataUtils.getMean(stdDevs));
                 double finalMin = DataUtils.getMean(mins);
                 double finalMax = DataUtils.getMean(maxs);
-                double[] doubles = DataUtils.generateData(finalMean, finalStdDev, featureDistributionSize, perturbationContext.getRandom());
+                double[] doubles = DataUtils.generateData(finalMean, finalStdDev, featureDistributionSize,
+                        perturbationContext.getRandom());
                 double[] boundedData = Arrays.stream(doubles).map(d -> Math.min(Math.max(d, finalMin), finalMax)).toArray();
                 NumericFeatureDistribution numericFeatureDistribution = new NumericFeatureDistribution(feature, boundedData);
                 featureDistributions.put(feature.getName(), numericFeatureDistribution);

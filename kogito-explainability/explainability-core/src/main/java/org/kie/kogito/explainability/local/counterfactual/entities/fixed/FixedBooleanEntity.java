@@ -54,6 +54,11 @@ public class FixedBooleanEntity extends AbstractEntity<Boolean> {
         return 0.0;
     }
 
+    @Override
+    public double similarity() {
+        return 1.0;
+    }
+
     /**
      * Returns the {@link FixedBooleanEntity} as a {@link Feature}
      *

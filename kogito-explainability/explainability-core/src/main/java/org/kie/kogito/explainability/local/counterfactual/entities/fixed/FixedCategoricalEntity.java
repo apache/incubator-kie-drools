@@ -53,6 +53,11 @@ public class FixedCategoricalEntity extends AbstractEntity<String> {
         return 0.0;
     }
 
+    @Override
+    public double similarity() {
+        return 1.0;
+    }
+
     /**
      * Returns the {@link FixedCategoricalEntity} as a {@link Feature}
      *
