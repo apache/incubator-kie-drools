@@ -25,6 +25,10 @@
       <groupId>org.infinispan</groupId>
       <artifactId>infinispan-client-hotrod</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.infinispan</groupId>
+      <artifactId>infinispan-commons-jdk11</artifactId>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
