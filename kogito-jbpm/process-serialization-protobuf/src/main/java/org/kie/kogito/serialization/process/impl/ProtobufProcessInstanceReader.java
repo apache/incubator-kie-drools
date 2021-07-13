@@ -385,19 +385,19 @@ public class ProtobufProcessInstanceReader {
                     humanTaskNodeInstance.getNotStartedDeadlineTimers().putAll(buildDeadlines(workItemData.getStartDeadlinesMap()));
                     humanTaskNodeInstance.getNotStartedReassignments().putAll(buildReassignments(workItemData.getStartReassigmentsMap()));
 
-                    if (workItemData.getTaskName() != null) {
+                    if (workItemData.hasTaskName()) {
                         workItem.setTaskName(workItemData.getTaskName());
                     }
-                    if (workItemData.getTaskDescription() != null) {
+                    if (workItemData.hasTaskDescription()) {
                         workItem.setTaskDescription(workItemData.getTaskDescription());
                     }
-                    if (workItemData.getTaskPriority() != null) {
+                    if (workItemData.hasTaskPriority()) {
                         workItem.setTaskPriority(workItemData.getTaskPriority());
                     }
-                    if (workItemData.getTaskReferenceName() != null) {
+                    if (workItemData.hasTaskReferenceName()) {
                         workItem.setReferenceName(workItemData.getTaskReferenceName());
                     }
-                    if (workItemData.getActualOwner() != null) {
+                    if (workItemData.hasActualOwner()) {
                         workItem.setActualOwner(workItemData.getActualOwner());
                     }
                     workItem.getAdminUsers().addAll(workItemData.getAdminUsersList());
