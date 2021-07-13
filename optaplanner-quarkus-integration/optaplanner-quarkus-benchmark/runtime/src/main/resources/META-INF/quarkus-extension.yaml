@@ -1,5 +1,5 @@
 ---
-name: "OptaPlanner AI constraint solver benchmark"
+name: "OptaPlanner benchmark"
 metadata:
   keywords:
     - "optaplanner"
