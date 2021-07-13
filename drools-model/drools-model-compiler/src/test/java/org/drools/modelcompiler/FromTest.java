@@ -39,6 +39,7 @@ import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.ToysStore;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -141,7 +142,7 @@ public class FromTest extends BaseModelTest {
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
     }
 
-    @Test
+    @Test @Ignore
     public void testModifyWithFrom() {
         // DROOLS-6486
         final String str =
