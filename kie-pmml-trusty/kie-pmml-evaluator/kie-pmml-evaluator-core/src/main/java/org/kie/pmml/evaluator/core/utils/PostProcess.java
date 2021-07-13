@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
@@ -145,6 +146,15 @@ public class PostProcess {
                                                                           toUpdate,
                                                                           processingDTO));
         }
+
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.PREDICTED_DISPLAY_VALUE), model::getPredictedDisplayValue);
+
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_ID), model::getEntityId);
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_ID), model::getEntityId);
+
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.AFFINITY), model::getAffinity);
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_AFFINITY), model::getAffinity);
+        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_AFFINITY), model::getAffinity);
     }
 
     static void populatePredictedOutputField(final KiePMMLOutputField outputField,
@@ -154,13 +164,8 @@ public class PostProcess {
         if (!RESULT_FEATURE.PREDICTED_VALUE.equals(outputField.getResultFeature())) {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
         }
-        Optional<Object> variableValue =
-                Optional.ofNullable(outputField.evaluatePredictedValue(processingDTO));
-        variableValue.ifPresent(objValue -> {
-            String variableName = outputField.getName();
-            toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
-        });
+        Optional<Object> variableValue = Optional.ofNullable(outputField.evaluatePredictedValue(processingDTO));
+        variableValue.ifPresent(objValue -> addVariable(toUpdate, processingDTO, outputField.getName(), objValue));
     }
 
     static void populateTransformedOutputField(final KiePMMLOutputField outputField,
@@ -171,11 +176,7 @@ public class PostProcess {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
         }
         Optional<Object> variableValue = Optional.ofNullable(outputField.evaluateTransformedValue(processingDTO));
-        variableValue.ifPresent(objValue -> {
-            String variableName = outputField.getName();
-            toUpdate.addResultVariable(variableName, objValue);
-            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, objValue));
-        });
+        variableValue.ifPresent(objValue -> addVariable(toUpdate, processingDTO, outputField.getName(), objValue));
     }
 
     static void populateReasonCodeOutputField(final KiePMMLOutputField outputField,
@@ -186,10 +187,18 @@ public class PostProcess {
             throw new KiePMMLException("Unexpected " + outputField.getResultFeature());
         }
         Optional<Object> variableValue = Optional.ofNullable(outputField.evaluateReasonCodeValue(processingDTO));
-        variableValue.ifPresent(objValue -> {
-            toUpdate.addResultVariable(outputField.getName(), objValue);
-            processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(outputField.getName(), objValue));
-        });
+        variableValue.ifPresent(objValue -> addVariable(toUpdate, processingDTO, outputField.getName(), objValue));
+    }
+
+    private static void populateOutputFields(PMML4Result toUpdate, ProcessingDTO processingDTO, List<KiePMMLOutputField> outputFields, Supplier<Object> valueSupplier) {
+        if (outputFields != null) {
+            outputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), valueSupplier.get()));
+        }
+    }
+
+    private static void addVariable(PMML4Result toUpdate, ProcessingDTO processingDTO, String variableName, Object variableValue) {
+        toUpdate.addResultVariable(variableName, variableValue);
+        processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, variableValue));
     }
 
 }
