@@ -59,11 +59,9 @@ export QUARKUS_INFINISPAN_CLIENT_AUTH_PASSWORD=mypassword
 #### Handling failures
 
 The Trusty service by default is configured so that if a connection exception occurs during the processing of a kafka event, the message is not acked and the application is set in an unhealthy status. It's responsability of the underlying orchestrator to redeploy the service until the infrastructural issue is fixed. 
-If you are not using any orchestrator, we suggest you to set up the following ENV variables so to disable this behaviour. With the following variables
+If you are not using any orchestrator, we suggest you to set up the following ENV variable so to disable this behaviour. With the following variables
 ```bash
-export MP_MESSAGING_INCOMING_TRUSTY_EXPLAINABILITY_RESULT_FAILURE_STRATEGY=ignore
-export MP_MESSAGING_INCOMING_KOGITO_TRACING_DECISION_FAILURE_STRATEGY=ignore
-export MP_MESSAGING_INCOMING_KOGITO_TRACING_MODEL_FAILURE_STRATEGY=ignore
+export KAFKA_APPLICATION_FAILURE_STRATEGY=ignore
 ```
 the application discards all the events even if it would be possible to recover them in a second moment. This prevents the trusty service to stay in an unhealthy status waiting for redeployment.
 
