@@ -183,4 +183,20 @@ class OpenNLPLimeExplainerTest {
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
                 0.9, 0.8));
     }
+
+    @Test
+    void testExplanationImpactScoreWithOptimization() throws ExecutionException, InterruptedException, TimeoutException, IOException {
+        PredictionProvider model = getModel();
+        List<PredictionInput> samples = getSamples(getTokenizer());
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().forImpactScore().withSampling(false);
+        Random random = new Random();
+        random.setSeed(0);
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(new PerturbationContext(random, 1));
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(limeConfig, predictions, model);
+        Assertions.assertThat(optimizedConfig).isNotSameAs(limeConfig);
+    }
 }

@@ -30,7 +30,7 @@ class LimeConfigEntityFactoryTest {
 
     @Test
     void testEmptySolutionConversion() {
-        LimeStabilitySolution solution = new LimeStabilitySolution();
+        LimeConfigSolution solution = new LimeConfigSolution();
         LimeConfig limeConfig = LimeConfigEntityFactory.toLimeConfig(solution);
         assertThat(limeConfig).isNotNull();
     }
@@ -41,7 +41,7 @@ class LimeConfigEntityFactoryTest {
         LimeConfig config = new LimeConfig();
         List<Prediction> predictions = Collections.emptyList();
         List<LimeConfigEntity> entities = Collections.emptyList();
-        LimeStabilitySolution solution = new LimeStabilitySolution(config, predictions, entities, model);
+        LimeConfigSolution solution = new LimeConfigSolution(config, predictions, entities, model);
         LimeConfig limeConfig = LimeConfigEntityFactory.toLimeConfig(solution);
         assertThat(limeConfig).isNotNull();
     }

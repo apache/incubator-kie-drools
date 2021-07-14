@@ -53,7 +53,7 @@ public class LimeConfigOptimizer {
     private boolean samplingEntities;
     private boolean encodingEntities;
     private boolean weightingEntities;
-    private EasyScoreCalculator<LimeStabilitySolution, SimpleBigDecimalScore> scoreCalculator;
+    private EasyScoreCalculator<LimeConfigSolution, SimpleBigDecimalScore> scoreCalculator;
 
     public LimeConfigOptimizer() {
         this.timeLimit = DEFAULT_TIME_LIMIT;
@@ -89,7 +89,7 @@ public class LimeConfigOptimizer {
         return this;
     }
 
-    public LimeConfigOptimizer withScoreCalculator(EasyScoreCalculator<LimeStabilitySolution, SimpleBigDecimalScore> scoreCalculator) {
+    public LimeConfigOptimizer withScoreCalculator(EasyScoreCalculator<LimeConfigSolution, SimpleBigDecimalScore> scoreCalculator) {
         this.scoreCalculator = scoreCalculator;
         return this;
     }
@@ -113,12 +113,12 @@ public class LimeConfigOptimizer {
             return config;
         }
 
-        LimeStabilitySolution initialSolution = new LimeStabilitySolution(config, predictions, entities, model);
+        LimeConfigSolution initialSolution = new LimeConfigSolution(config, predictions, entities, model);
         SolverConfig solverConfig = new SolverConfig();
 
         solverConfig.withEntityClasses(NumericLimeConfigEntity.class, BooleanLimeConfigEntity.class);
 
-        solverConfig.withSolutionClass(LimeStabilitySolution.class);
+        solverConfig.withSolutionClass(LimeConfigSolution.class);
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(scoreCalculator.getClass());
@@ -137,15 +137,15 @@ public class LimeConfigOptimizer {
 
         solverConfig.setPhaseConfigList(phaseConfigs);
 
-        try (SolverManager<LimeStabilitySolution, UUID> solverManager =
+        try (SolverManager<LimeConfigSolution, UUID> solverManager =
                 SolverManager.create(solverConfig, new SolverManagerConfig())) {
 
             UUID executionId = UUID.randomUUID();
-            SolverJob<LimeStabilitySolution, UUID> solverJob =
+            SolverJob<LimeConfigSolution, UUID> solverJob =
                     solverManager.solve(executionId, initialSolution);
             try {
                 // Wait until the solving ends
-                LimeStabilitySolution finalBestSolution = solverJob.getFinalBestSolution();
+                LimeConfigSolution finalBestSolution = solverJob.getFinalBestSolution();
                 LimeConfig finalConfig = LimeConfigEntityFactory.toLimeConfig(finalBestSolution);
                 BigDecimal score = finalBestSolution.getScore().getScore();
                 logger.info("final best solution score {} with config {}", score, finalConfig);
@@ -158,5 +158,15 @@ public class LimeConfigOptimizer {
                 throw new IllegalStateException("Solving failed (Thread interrupted)", e);
             }
         }
+    }
+
+    public LimeConfigOptimizer forImpactScore() {
+        this.scoreCalculator = new LimeImpactScoreCalculator();
+        return this;
+    }
+
+    public LimeConfigOptimizer forStabilityScore() {
+        this.scoreCalculator = new LimeStabilityScoreCalculator();
+        return this;
     }
 }

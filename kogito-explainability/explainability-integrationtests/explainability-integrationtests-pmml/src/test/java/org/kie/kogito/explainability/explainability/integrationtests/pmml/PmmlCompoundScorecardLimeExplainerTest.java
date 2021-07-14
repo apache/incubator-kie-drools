@@ -130,6 +130,24 @@ class PmmlCompoundScorecardLimeExplainerTest {
                 0.6, 0.6));
     }
 
+    @Test
+    void testExplanationImpactScoreWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = getSamples();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().forImpactScore();
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
+    }
+
     private List<PredictionInput> getSamples() {
         List<PredictionInput> inputs = new ArrayList<>();
         for (int i = 0; i < 20; i++) {

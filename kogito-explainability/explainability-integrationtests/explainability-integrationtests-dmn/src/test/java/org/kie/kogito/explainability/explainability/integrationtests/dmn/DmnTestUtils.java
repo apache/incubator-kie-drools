@@ -39,7 +39,7 @@ public class DmnTestUtils {
         t1.put("Auth Code", "Authorized");
         transactions.add(t1);
         Map<String, Object> t2 = new HashMap<>();
-        t2.put("Card Type", "Credit");
+        t2.put("Card Type", "Prepaid");
         t2.put("Location", "Local");
         t2.put("Amount", 100000);
         t2.put("Auth Code", "Denied");

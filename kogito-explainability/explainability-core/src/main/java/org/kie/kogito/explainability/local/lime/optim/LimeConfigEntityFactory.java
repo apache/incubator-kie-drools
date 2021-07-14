@@ -64,7 +64,7 @@ class LimeConfigEntityFactory {
     private LimeConfigEntityFactory() {
     }
 
-    static LimeConfig toLimeConfig(LimeStabilitySolution solution) {
+    static LimeConfig toLimeConfig(LimeConfigSolution solution) {
         List<LimeConfigEntity> entities = solution.getEntities();
         LimeConfig config = solution.getConfig().copy();
         for (LimeConfigEntity entity : entities) {

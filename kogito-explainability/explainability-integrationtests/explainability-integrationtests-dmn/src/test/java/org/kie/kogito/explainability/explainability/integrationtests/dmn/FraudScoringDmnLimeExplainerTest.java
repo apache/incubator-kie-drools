@@ -112,7 +112,7 @@ class FraudScoringDmnLimeExplainerTest {
     private PredictionInput getTestInput() {
         List<Map<String, Object>> transactions = new LinkedList<>();
         Map<String, Object> t1 = new HashMap<>();
-        t1.put("Card Type", "Credit");
+        t1.put("Card Type", "Prepaid");
         t1.put("Location", "Global");
         t1.put("Amount", 141);
         t1.put("Auth Code", "Denied");
@@ -156,5 +156,24 @@ class FraudScoringDmnLimeExplainerTest {
 
         assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
                 0.5, 0.5));
+    }
+
+    @Test
+    void testExplanationImpactScoreWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 10)).get();
+        List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().forImpactScore().withSampling(false);
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withSamples(10)
+                .withPerturbationContext(perturbationContext);
+        LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
+
+        assertThat(optimizedConfig).isNotSameAs(initialConfig);
     }
 }

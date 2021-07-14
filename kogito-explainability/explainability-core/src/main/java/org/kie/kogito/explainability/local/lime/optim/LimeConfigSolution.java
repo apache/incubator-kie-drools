@@ -27,7 +27,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
 
 @PlanningSolution
-public class LimeStabilitySolution {
+public class LimeConfigSolution {
 
     private LimeConfig config = new LimeConfig();
 
@@ -41,10 +41,10 @@ public class LimeStabilitySolution {
     @PlanningScore
     private SimpleBigDecimalScore score;
 
-    public LimeStabilitySolution() {
+    public LimeConfigSolution() {
     }
 
-    public LimeStabilitySolution(LimeConfig config, List<Prediction> predictions,
+    public LimeConfigSolution(LimeConfig config, List<Prediction> predictions,
             List<LimeConfigEntity> entities, PredictionProvider model) {
         this.config = config;
         this.predictions = predictions;
