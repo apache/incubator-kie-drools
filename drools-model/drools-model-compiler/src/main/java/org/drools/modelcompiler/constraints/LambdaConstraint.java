@@ -260,6 +260,10 @@ public class LambdaConstraint extends AbstractConstraint {
         return evaluator.hashCode();
     }
 
+    public PredicateInformation getPredicateInformation() {
+        return predicateInformation;
+    }
+
     public static class LambdaContextEntry implements ContextEntry {
 
         private Tuple tuple;

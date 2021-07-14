@@ -38,6 +38,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -90,10 +91,10 @@ public class JavaDialectTest {
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof MVELConstraint ) {
-            FieldValue fieldVal = (( MVELConstraint ) constraint).getField();
-            assertEquals( "xxx", fieldVal.getValue() );
-        }
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert(new Person("xxx"));
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
     }
     
 

@@ -95,6 +95,7 @@ import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalize
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
 import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
+import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;
 
