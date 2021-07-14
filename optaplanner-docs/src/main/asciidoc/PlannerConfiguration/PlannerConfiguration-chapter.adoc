@@ -397,7 +397,7 @@ If historic data needs to be considered too, then create problem fact to hold th
 
 [NOTE]
 ====
-Planning entity `hashCode()` implementations must remain constant. Therefore entity `hashCode()` must not depend on any planning variables. Pay special attention when using data structures with auto-generated `hashCode()` as entities, such as Java records or Kotlin data classes. ```
+Planning entity `hashCode()` implementations must remain constant. Therefore entity `hashCode()` must not depend on any planning variables. Pay special attention when using data structures with auto-generated `hashCode()` as entities, such as Java records or Kotlin data classes.
 ====
 
 [[planningEntityDifficulty]]

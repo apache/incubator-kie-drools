@@ -453,7 +453,7 @@ The count is collected in an `int`. Variants of this collector:
 * `countLong()` collects a `long` value instead of an `int` value.
 
 To count a bi, tri or quad stream, use `countBi()`, `countTri()` or `countQuad()` respectively,
-because - unlike the other build-in collectors - they aren't overloaded methods due to Java's generics erasure.
+because - unlike the other built-in collectors - they aren't overloaded methods due to Java's generics erasure.
 
 [[collectorsCountDistinct]]
 ===== `countDistinct()` collector
@@ -564,7 +564,7 @@ Variants of this collector:
 [NOTE]
 ====
 The iteration order of elements in the resulting collection is not guaranteed to be stable,
-unless it is a sorted collector such as `toSortedSet` or `toSortedMap.
+unless it is a sorted collector such as `toSortedSet` or `toSortedMap`.
 ====
 
 
@@ -594,7 +594,7 @@ On `UniConstraintStream`, the `ifExistsOther()` building block is also available
 `from()` constraint match type is the same as the `ifExists()` type.
 
 Conversely, if the `ifNotExists()` building block is used (as well as the `ifNotExistsOther()` building block on
-`UniConstraintStream`) you can achieve the opposite affect:
+`UniConstraintStream`) you can achieve the opposite effect:
 
 [source,java,options="nowrap"]
 ----
@@ -641,7 +641,7 @@ The result of such mapping is `UniConstraintStream` of the mapped tuples.
 
 [NOTE]
 ====
-In the example above, the mapping function produces duplicate tuples if two different `CloudProcess`es share a single `CloudComputer`.
+In the example above, the mapping function produces duplicate tuples if two different ``CloudProcess``es share a single `CloudComputer`.
 That is, such `CloudComputer` appears in the resulting constraint stream twice.
 See <<constraintStreamsDealingWithDuplicateTuplesUsingDistinct,`distinct()`>> for how to deal with duplicate tuples.
 ====
@@ -790,7 +790,7 @@ In this case, the test data includes two instances of the `Queen` planning entit
         Queen queen2 = new Queen(1, row1, column2);
 ----
 
-Further down, the following code test the constraint:
+Further down, the following code tests the constraint:
 
 [source,java,options="nowrap"]
 ----
@@ -838,7 +838,7 @@ There are only two notable differences to the previous example.
 First, the `verifyThat()` call takes no argument here, signifying that the entire `ConstraintProvider` instance is
 being tested.
 Second, instead of either a `penalizesBy()` or `rewardsWith()` call, the `scores(...)` method is used.
-This runs the `ConstraintProvider` on the given facts and returns a sum of `Score`s of all constraint matches resulting
+This runs the `ConstraintProvider` on the given facts and returns a sum of ``Score``s of all constraint matches resulting
 from the given facts.
 
 Using this method, you ensure that the constraint provider does not miss any constraints and that the scoring function
