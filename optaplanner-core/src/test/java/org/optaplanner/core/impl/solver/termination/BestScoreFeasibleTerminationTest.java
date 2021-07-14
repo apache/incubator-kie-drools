@@ -17,8 +17,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.bendable.BendableScore;
@@ -27,6 +26,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.buildin.hardsoft.HardSoftScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class BestScoreFeasibleTerminationTest {
 
@@ -34,8 +34,8 @@ public class BestScoreFeasibleTerminationTest {
     public void solveTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
-        Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[] {});
-        SolverScope solverScope = mock(SolverScope.class);
+        Termination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition, new double[] {});
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
         when(solverScope.getStartingInitializedScore()).thenReturn(HardSoftScore.of(-100, -100));
         when(solverScope.isBestSolutionInitialized()).thenReturn(true);
@@ -64,9 +64,9 @@ public class BestScoreFeasibleTerminationTest {
     public void phaseTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(1);
-        Termination termination = new BestScoreFeasibleTermination(scoreDefinition, new double[] {});
-        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getScoreDefinition()).thenReturn(new HardSoftScoreDefinition());
+        Termination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition, new double[] {});
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
+        when(phaseScope.getScoreDefinition()).thenReturn((ScoreDefinition) new HardSoftScoreDefinition());
         when(phaseScope.getStartingScore()).thenReturn(HardSoftScore.of(-100, -100));
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
 
@@ -94,7 +94,7 @@ public class BestScoreFeasibleTerminationTest {
     public void calculateTimeGradientBendableScoreHHSSS() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getFeasibleLevelsSize()).thenReturn(2);
-        BestScoreFeasibleTermination termination = new BestScoreFeasibleTermination(scoreDefinition,
+        BestScoreFeasibleTermination<TestdataSolution> termination = new BestScoreFeasibleTermination<>(scoreDefinition,
                 new double[] { 0.75 });
 
         // Normal cases

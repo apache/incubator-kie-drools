@@ -19,9 +19,7 @@ package org.optaplanner.core.impl.solver.termination;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.withPrecision;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.Clock;
 
@@ -32,6 +30,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
@@ -40,7 +39,7 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
     @Test
     public void forNegativeUnimprovedTimeMillis_exceptionIsThrown() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+                .isThrownBy(() -> new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination<>(
                         -1L,
                         SimpleScore.of(0)))
                 .withMessageContaining("cannot be negative");
@@ -48,12 +47,12 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
     @Test
     public void scoreImproves_terminationIsPostponed() {
-        SolverScope<?> solverScope = mock(SolverScope.class);
-        AbstractPhaseScope<?> phaseScope = mock(LocalSearchPhaseScope.class);
-        AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
+        AbstractStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);
 
-        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+        Termination<TestdataSolution> termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination<>(
                 1000L,
                 SimpleScore.of(7),
                 clock);
@@ -101,12 +100,12 @@ public class UnimprovedTimeMillisSpentScoreDifferenceThresholdTerminationTest {
 
     @Test
     public void scoreImprovesTooLate_terminates() {
-        SolverScope<?> solverScope = mock(SolverScope.class);
-        AbstractPhaseScope<?> phaseScope = mock(LocalSearchPhaseScope.class);
-        AbstractStepScope<?> stepScope = mock(LocalSearchStepScope.class);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(LocalSearchPhaseScope.class);
+        AbstractStepScope<TestdataSolution> stepScope = mock(LocalSearchStepScope.class);
         Clock clock = mock(Clock.class);
 
-        Termination termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination(
+        Termination<TestdataSolution> termination = new UnimprovedTimeMillisSpentScoreDifferenceThresholdTermination<>(
                 1000L,
                 SimpleScore.of(7),
                 clock);

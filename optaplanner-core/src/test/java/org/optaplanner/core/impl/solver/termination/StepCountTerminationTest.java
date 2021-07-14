@@ -18,17 +18,17 @@ package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class StepCountTerminationTest {
 
     @Test
     public void phaseTermination() {
-        Termination termination = new StepCountTermination(4);
+        Termination<TestdataSolution> termination = new StepCountTermination(4);
         AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
 
         when(phaseScope.getNextStepIndex()).thenReturn(0);

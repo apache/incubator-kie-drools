@@ -18,8 +18,7 @@ package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.math.BigDecimal;
 
@@ -33,6 +32,7 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class BestScoreTerminationTest {
 
@@ -40,8 +40,9 @@ public class BestScoreTerminationTest {
     public void solveTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
-        Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.of(-1000), new double[] {});
-        SolverScope solverScope = mock(SolverScope.class);
+        Termination<TestdataSolution> termination =
+                new BestScoreTermination<>(scoreDefinition, SimpleScore.of(-1000), new double[] {});
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         when(solverScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         when(solverScope.isBestSolutionInitialized()).thenReturn(true);
         when(solverScope.getStartingInitializedScore()).thenReturn(SimpleScore.of(-1100));
@@ -70,9 +71,10 @@ public class BestScoreTerminationTest {
     public void phaseTermination() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
-        Termination termination = new BestScoreTermination(scoreDefinition, SimpleScore.of(-1000), new double[] {});
-        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
-        when(phaseScope.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
+        Termination<TestdataSolution> termination =
+                new BestScoreTermination<>(scoreDefinition, SimpleScore.of(-1000), new double[] {});
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
+        when(phaseScope.getScoreDefinition()).thenReturn((ScoreDefinition) new SimpleScoreDefinition());
         when(phaseScope.isBestSolutionInitialized()).thenReturn(true);
         when(phaseScope.getStartingScore()).thenReturn(SimpleScore.of(-1100));
 
@@ -100,7 +102,7 @@ public class BestScoreTerminationTest {
     public void calculateTimeGradientSimpleScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
-        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
+        BestScoreTermination<TestdataSolution> termination = new BestScoreTermination<>(scoreDefinition,
                 SimpleScore.of(10), new double[] {});
 
         assertThat(termination.calculateTimeGradient(
@@ -122,7 +124,7 @@ public class BestScoreTerminationTest {
     public void calculateTimeGradientSimpleBigDecimalScore() {
         ScoreDefinition scoreDefinition = mock(ScoreDefinition.class);
         when(scoreDefinition.getLevelsSize()).thenReturn(1);
-        BestScoreTermination termination = new BestScoreTermination(scoreDefinition,
+        BestScoreTermination<TestdataSolution> termination = new BestScoreTermination<>(scoreDefinition,
                 SimpleBigDecimalScore.of(new BigDecimal("10.00")), new double[] {});
 
         assertThat(termination.calculateTimeGradient(

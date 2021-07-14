@@ -18,19 +18,19 @@ package org.optaplanner.core.impl.solver.termination;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.data.Offset.offset;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 public class TimeMillisSpentTerminationTest {
 
     @Test
     public void solveTermination() {
-        Termination termination = new TimeMillisSpentTermination(1000L);
-        SolverScope solverScope = mock(SolverScope.class);
+        Termination<TestdataSolution> termination = new TimeMillisSpentTermination<>(1000L);
+        SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
 
         when(solverScope.calculateTimeMillisSpentUpToNow()).thenReturn(0L);
         assertThat(termination.isSolverTerminated(solverScope)).isFalse();
@@ -54,8 +54,8 @@ public class TimeMillisSpentTerminationTest {
 
     @Test
     public void phaseTermination() {
-        Termination termination = new TimeMillisSpentTermination(1000L);
-        AbstractPhaseScope phaseScope = mock(AbstractPhaseScope.class);
+        Termination<TestdataSolution> termination = new TimeMillisSpentTermination<>(1000L);
+        AbstractPhaseScope<TestdataSolution> phaseScope = mock(AbstractPhaseScope.class);
 
         when(phaseScope.calculatePhaseTimeMillisSpentUpToNow()).thenReturn(0L);
         assertThat(termination.isPhaseTerminated(phaseScope)).isFalse();
