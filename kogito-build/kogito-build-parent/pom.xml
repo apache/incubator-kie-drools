@@ -107,7 +107,7 @@
     <version.native2ascii.plugin>1.0-beta-1</version.native2ascii.plugin>
     <version.org.xolstice.maven.protobuf>0.6.1</version.org.xolstice.maven.protobuf>
     <version.plexus>1.6</version.plexus>
-    <version.plexus.classworld>2.5.2</version.plexus.classworld>
+    <version.plexus.classworld>2.6.0</version.plexus.classworld>
     <version.plugin.plugin>3.6.0</version.plugin.plugin>
     <version.project.sources.plugin>0.3</version.project.sources.plugin>
     <version.rpkgtests.maven.plugin>0.10.0</version.rpkgtests.maven.plugin>
@@ -126,7 +126,7 @@
     <version.org.jsonschema2pojo-maven-plugin>1.0.1</version.org.jsonschema2pojo-maven-plugin>
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.0.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.0.1.Final</version.io.quarkus>
 
     <!-- dependencies versions -->
     <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
