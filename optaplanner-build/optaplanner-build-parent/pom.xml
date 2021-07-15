@@ -31,7 +31,7 @@
     <version.com.h2database>1.4.197</version.com.h2database>
     <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.io.micrometer>1.6.6</version.io.micrometer>
-    <version.io.quarkus>2.0.0.Final</version.io.quarkus>
+    <version.io.quarkus>2.0.1.Final</version.io.quarkus>
     <version.io.quarkus.gizmo>1.0.9.Final</version.io.quarkus.gizmo>
     <version.org.ow2.asm>9.1</version.org.ow2.asm>
     <version.jakarta.json.bind>1.0.2</version.jakarta.json.bind>
