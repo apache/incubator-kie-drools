@@ -50,7 +50,9 @@ if (Utils.isMainBranch(this)) {
     // Old PR checks.
     // To be removed once supported release branches (<= 1.7.x) are no more there.
     setupPrJob()
-    setupQuarkusLTSPrJob()
+    // Disabled until Quarkus 2.2 is out
+    // Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
+    // setupQuarkusLTSPrJob()
     setupNativePrJob()
     // End of old PR checks
 
@@ -60,14 +62,18 @@ if (Utils.isMainBranch(this)) {
 // PR checks
 setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
-setupMultijobPrLTSChecks()
+// Disabled until Quarkus 2.2 is out
+// Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
+// setupMultijobPrLTSChecks()
 
 // Nightly jobs
 if (Utils.isMainBranch(this)) {
     setupDroolsJob(nightlyBranchFolder)
 
     setupQuarkusJob(nightlyBranchFolder, 'main')
-    setupQuarkusJob(nightlyBranchFolder, "${QUARKUS_LTS_VERSION}")
+    // Disabled until Quarkus 2.2 is out
+    // Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
+    // setupQuarkusJob(nightlyBranchFolder, "${QUARKUS_LTS_VERSION}")
 }
 setupSonarCloudJob(nightlyBranchFolder)
 setupNativeJob(nightlyBranchFolder)
