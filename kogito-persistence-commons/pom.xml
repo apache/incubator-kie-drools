@@ -21,5 +21,6 @@
     <module>persistence-commons-mongodb</module>
     <module>persistence-commons-redis</module>
     <module>persistence-commons-postgresql</module>
+    <module>kogito-ddl</module>
   </modules>
 </project>
