@@ -17,6 +17,7 @@
     <module>mongodb</module>
     <module>postgresql</module>
     <module>jdbc</module>
+    <module>ddl</module>
   </modules>
 
 </project>
