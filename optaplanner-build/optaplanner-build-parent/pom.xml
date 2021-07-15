@@ -57,8 +57,7 @@
     <!-- ************************************************************************ -->
 
     <maven.min.version>3.6.2</maven.min.version>
-    <!-- An upcoming minor 8.x release will change this to 11 because the 8.x series require Java 11 or higher. -->
-    <maven.compiler.release>8</maven.compiler.release>
+    <maven.compiler.release>11</maven.compiler.release>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
@@ -684,16 +683,18 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.2.0</version>
+          <!--
+            Do not upgrade unless prepared to deal with JPMS issues.
+            If upgrading, ensure build still passes with the full profile (-Dfull).
+          -->
+          <version>3.0.1</version>
           <configuration>
             <author>false</author>
             <failOnError>true</failOnError>
             <!--
                  Disabled to workaround the following issue on JDK 16+:
                  Warning:  javadoc: warning - The -footer option is no longer supported and will be ignored.
-
                  Since we do not add the footer ourselves, it must be the plugin itself.
-                 Therefore until a new Javadoc plugin version is released, there is no better workaround.
             -->
             <!-- <failOnWarnings>true</failOnWarnings>-->
             <quiet>true</quiet>
@@ -955,25 +956,6 @@
         </plugins>
       </build>
     </profile>
-    <profile>
-      <id>java11-specific-config</id>
-      <activation>
-        <jdk>[11,)</jdk>
-      </activation>
-      <build>
-        <pluginManagement>
-          <plugins>
-            <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-javadoc-plugin</artifactId>
-              <configuration>
-                <release>${maven.compiler.release}</release>
-              </configuration>
-            </plugin>
-          </plugins>
-        </pluginManagement>
-      </build>
-    </profile>
     <!--
       Creates JaCoCo XML reports and invokes the Sonar scanner, which uploads code quality data into the SonarCloud.
     -->
@@ -1124,10 +1106,10 @@
             <artifactId>maven-javadoc-plugin</artifactId>
             <executions>
               <execution>
-                <id>javadoc-javadoc</id>
+                <id>build-javadoc-jar</id>
                 <phase>package</phase>
                 <goals>
-                  <goal>javadoc-no-fork</goal>
+                  <goal>jar</goal>
                 </goals>
               </execution>
             </executions>

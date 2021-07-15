@@ -776,7 +776,7 @@ Your mileage may vary.
 ** No experimentally proven advice yet (but prefer Linux anyway).
 * JDK
 ** Version: Our benchmarks have consistently shown improvements in performance when comparing new JDK releases with their predecessors. It is therefore recommended using the latest available JDK. If you're interested in the performance comparisons of OptaPlanner running of different JDK releases, you can find them in the form of blog posts in https://www.optaplanner.org/blog/archive.html[our blog archive].
-** Garbage Collector: ParallelGC (the default in Java 8) can be potentially between 5% and 35% faster than G1GC (the default in Java 9). Unlike web servers, OptaPlanner needs a GC focused on throughput, not latency. Use `-XX:+UseParallelGC` to turn on ParallelGC.
+** Garbage Collector: ParallelGC can be potentially between 5% and 35% faster than G1GC (the default). Unlike web servers, OptaPlanner needs a GC focused on throughput, not latency. Use `-XX:+UseParallelGC` to turn on ParallelGC.
 * Logging can have a severe impact on performance.
 ** Debug logging `org.drools` can reduce performance by a factor of 7.
 ** Debug logging `org.optaplanner` can be between 0% and 15% slower than info logging. Trace logging can be between 5% and 70% slower than info logging.

@@ -6,7 +6,7 @@ OptaPlanner is _open source_ software, released under http://www.apache.org/lice
 This license is very liberal and allows reuse for commercial purposes.
 Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
 
-OptaPlanner is 100% pure Java^TM^ and runs on any JVM 8 or higher.
+OptaPlanner is 100% pure Java^TM^ and runs on Java 11 or higher.
 It <<integration,integrates very easily>> with other Java^TM^ technologies.
 OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
 

@@ -10,7 +10,7 @@
 
 Constraint streams are a Functional Programming form of incremental score calculation in plain Java that is easy to
 read, write and debug.
-The API should feel familiar if you're familiar with Java 8 Streams or SQL.
+The API should feel familiar if you're familiar with Java Streams or SQL.
 
 // TODO Remove when PLANNER-1709 is fixed. https://issues.redhat.com/browse/PLANNER-1709
 [WARNING]
@@ -22,7 +22,7 @@ For the ConstraintStreams API, <<explainingTheScore,Constraint justifications>> 
 [[constraintStreamsIntroduction]]
 == Introduction
 
-Using Java 8's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
+Using Java's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
 that uses a functional approach:
 
 [source,java,options="nowrap"]
@@ -531,7 +531,7 @@ The following example finds a computer which runs the most power-demanding proce
 ====
 `Comparator` and `Comparable` implementations used with `min(...)` and `max(...)` constraint collectors are expected to
 be consistent with `equals(...)`.
-See https://docs.oracle.com/javase/8/docs/api/java/lang/Comparable.html[Javadoc for `Comparable`] to learn more.
+See https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Comparable.html[Javadoc for `Comparable`] to learn more.
 ====
 
 

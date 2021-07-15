@@ -33,8 +33,8 @@ that deliver a near-optimal solution in a reasonable amount of time.
 
 == What you'll need
 
-* https://www.oracle.com/java/technologies/javase-downloads.html[JDK 8 or later]
-* https://maven.apache.org/download.cgi[Maven 3.2+] or https://gradle.org/install/[Gradle4+]
+* https://adoptopenjdk.net/[JDK 11 or later]
+* https://maven.apache.org/download.cgi[Maven 3.6+] or https://gradle.org/install/[Gradle4+]
 * An IDE, such as https://www.jetbrains.com/idea[IntelliJ IDEA], VSCode or Eclipse
 
 == The build file and the dependencies
@@ -69,7 +69,7 @@ If you choose Maven, your `pom.xml` file has the following content:
     <description>A Spring Boot OptaPlanner example to generate a school timetable.</description>
 
     <properties>
-        <java.version>1.8</java.version>
+        <java.version>11</java.version>
     </properties>
 
     <dependencies>
@@ -131,7 +131,7 @@ plugins {
 
 group = "com.example"
 version = "0.1.0-SNAPSHOT"
-sourceCompatibility = "1.8"
+sourceCompatibility = "11"
 
 repositories {
     mavenCentral()
@@ -456,7 +456,7 @@ all lessons are re-evaluated to calculate the new score.
 
 Instead, create a `src/main/java/com/example/solver/TimeTableConstraintProvider.java` class
 to perform incremental score calculation.
-It uses OptaPlanner's ConstraintStream API which is inspired by Java 8 Streams and SQL:
+It uses OptaPlanner's ConstraintStream API which is inspired by Java Streams and SQL:
 
 ====
 [source,java]
