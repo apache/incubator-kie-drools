@@ -24,10 +24,8 @@ import org.acme.travels.Traveller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.integrationtests.UnitOfWorkTestEventListener;
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ContextConfiguration;
 
 import io.restassured.http.ContentType;
 
@@ -41,7 +39,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 class BasicRestTest extends BaseRestTest {
 
     @Autowired

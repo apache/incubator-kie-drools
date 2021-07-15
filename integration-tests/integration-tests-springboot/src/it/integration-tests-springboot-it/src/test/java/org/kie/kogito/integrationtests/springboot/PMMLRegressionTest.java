@@ -18,10 +18,8 @@ package org.kie.kogito.integrationtests.springboot;
 import java.util.Collections;
 import java.util.Map;
 
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.test.context.ContextConfiguration;
 
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -43,7 +41,6 @@ import static org.kie.kogito.integrationtests.springboot.CommonPMMLTestUtils.tes
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = InfinispanSpringBootTestResource.Conditional.class)
 class PMMLRegressionTest extends BaseRestTest {
 
     private static final String BASE_PATH = "/LinReg/";

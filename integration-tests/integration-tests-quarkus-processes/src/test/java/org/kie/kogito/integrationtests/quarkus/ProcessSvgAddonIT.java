@@ -24,7 +24,6 @@ import java.nio.file.Paths;
 
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.integrationtests.quarkus.utils.DataIndexWiremock;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
@@ -35,7 +34,6 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 @QuarkusTestResource(DataIndexWiremock.class)
 public class ProcessSvgAddonIT {
 

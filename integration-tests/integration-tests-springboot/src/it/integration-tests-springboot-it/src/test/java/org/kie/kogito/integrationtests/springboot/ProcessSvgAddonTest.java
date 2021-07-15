@@ -23,7 +23,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.kie.kogito.integrationtests.springboot.utils.DataIndexWireMockSpringBootTestResource;
-import org.kie.kogito.testcontainers.springboot.InfinispanSpringBootTestResource;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,7 +35,7 @@ import static org.hamcrest.Matchers.equalTo;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
-@ContextConfiguration(initializers = { DataIndexWireMockSpringBootTestResource.class, InfinispanSpringBootTestResource.Conditional.class})
+@ContextConfiguration(initializers = DataIndexWireMockSpringBootTestResource.class)
 public class ProcessSvgAddonTest extends BaseRestTest{
 
     public static String readFileContent(String file) throws URISyntaxException, IOException {

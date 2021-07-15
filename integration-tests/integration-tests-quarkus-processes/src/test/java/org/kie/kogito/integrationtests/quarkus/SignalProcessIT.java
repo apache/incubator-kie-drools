@@ -17,9 +17,7 @@
 package org.kie.kogito.integrationtests.quarkus;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -31,7 +29,6 @@ import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.hamcrest.Matchers.nullValue;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 class SignalProcessIT {
 
     static {

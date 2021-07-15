@@ -16,9 +16,7 @@
 package org.kie.kogito.integrationtests.quarkus;
 
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.testcontainers.quarkus.InfinispanQuarkusTestResource;
 
-import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -26,7 +24,6 @@ import io.restassured.http.ContentType;
 import static io.restassured.RestAssured.given;
 
 @QuarkusTest
-@QuarkusTestResource(InfinispanQuarkusTestResource.Conditional.class)
 class LinkIT {
 
     static {
