@@ -183,7 +183,7 @@
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
     <version.org.slf4j>1.7.30</version.org.slf4j>
-    <version.org.springframework.boot>2.4.3</version.org.springframework.boot>
+    <version.org.springframework.boot>2.3.10.RELEASE</version.org.springframework.boot>
     <version.org.springdoc>1.5.9</version.org.springdoc>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
     <version.io.vertx>4.1.0</version.io.vertx>
