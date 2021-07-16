@@ -15,13 +15,6 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.infinispan</groupId>
-                <artifactId>infinispan-bom</artifactId>
-                <version>${version.org.infinispan}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-bom</artifactId>
                 <version>${project.version}</version>
@@ -63,18 +56,6 @@
             <groupId>org.kie.kogito</groupId>
             <artifactId>kogito-addons-springboot-process-svg</artifactId>
             <version>${project.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.infinispan</groupId>
-            <artifactId>infinispan-spring-boot-starter-remote</artifactId>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.infinispan</groupId>
-                    <artifactId>infinispan-server-testdriver-junit5</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
 
         <dependency>
