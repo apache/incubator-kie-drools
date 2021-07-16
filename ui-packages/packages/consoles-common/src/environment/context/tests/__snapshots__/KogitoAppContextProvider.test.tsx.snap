@@ -5,10 +5,8 @@ exports[`KogitoAppContextProvider tests Snapshot testing 1`] = `
   userContext={
     TestUserContext {
       "user": DefaultUser {
-        "groups": Array [
-          "employees",
-        ],
-        "id": "john",
+        "groups": Array [],
+        "id": "Dev User",
       },
     }
   }
@@ -18,10 +16,8 @@ exports[`KogitoAppContextProvider tests Snapshot testing 1`] = `
       AppContextImpl {
         "userContext": TestUserContext {
           "user": DefaultUser {
-            "groups": Array [
-              "employees",
-            ],
-            "id": "john",
+            "groups": Array [],
+            "id": "Dev User",
           },
         },
       }

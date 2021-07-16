@@ -26,6 +26,8 @@ The application is now runnable using:
 java -jar target/management-console-8.0.0-SNAPSHOT-runner.jar
 ```
 
+> Note: management-console requires keycloak server to be initialied for authentication.
+
 ## Creating a native executable
 
 You can create a native executable using: 
@@ -99,15 +101,20 @@ Initially the process instance list loads all the active instances available.To 
 #### Bulk Process Actions
 ![Multiselect](./docs/multiselect.gif "Multiselect")
 
-  The multi select is used to select multiple process instances while performing bulk [process-management](#process-management) actions.The multi select checkbox by default selects all the parent and child process instances(if loaded). It also has drop-down actions to select none (removes all selections), select only parent process instances, select all the process instances (both parent and child). The multi-select works in correlation with the **Aborted** **selected** button which is present in the top-right corner.This is a part of the [bulk operations](#bulk-operations) performed in the list.
+  The multi select is used to select multiple process instances while performing bulk [process-management](#process-management) actions.The multi select checkbox by default selects all the parent and child process instances(if loaded). It also has drop-down actions to select none (removes all selections), select only parent process instances, select all the process instances (both parent and child). The multi-select works in correlation with the set of buttons present as a part of the toolbar. The buttons present are - **Abort selected**, **Retry selected** and **Skip selected**. This is a part of the [bulk operations](#bulk-operations) performed in the list.
 
   ![Bulkoperations](./docs/bulkoperations.gif "Bulkoperations")
   
-  The process instance list allows the user to select multiple process instances and perform bulk process management operations.It consist of *Abort selected*.The user can select individual process instances by selecting the checkbox present in the list or use the [multi select checkbox](#multi-select-checkbox) to select the process instances.Then clicking on the *Abort selected* will open a box to show the instances being aborted and the instances being skipped(An instance which is already in *Completed* or *Aborted* cannot be Aborted again, hence the instances are skipped).
+  The process instance list allows the user to select multiple process instances and perform bulk process management operations.It consist of *Abort selected*, *Retry selected* and *Skip selected*.The user can select individual process instances by selecting the checkbox present in the list or use the [multi select checkbox](#multi-select-checkbox) to select the process instances. 
+  
+  - Clicking on the *Abort selected* will open a box to show the instances being aborted and the instances being skipped(An instance which is already in *Completed* or *Aborted* cannot be Aborted again, hence the instances are skipped).
+  - Clicking on the *Retry selected* or *Skip selected* will open a box to show the instances being retriggered or skipped respectively. These actions can be performed on instances which are in *Error* state only. Other instances(in different states), if selected will appear under the skipped list.
+  
+  For all the bulk actions, if any of the instance goes throws an error while execution, they appear under the error list of the box.
 
 In addition to these , there is a **reload** button(a sync-icon), to reload the list and a **Reset to default** button which resets all the filters to its original state(Active status and no business key filter).
 
-**Note :** all the filters are applied only to the parent process instances.
+> **Note :** all the filters are applied only to the parent process instances.
 
 #### Process list
 
@@ -185,53 +192,25 @@ In addition to these , there is a **reload** button(a sync-icon), to reload the 
   #### Process variables
   The process variables shows the domain data in *JSON* format.
 
-## Domain Explorer
+  ### Process Diagram
+  The process diagram panel contains the BPMN process diagram, which the users you to view the current progress of the process.
 
-Domain Explorer allows you to inspect domain related data and process instances based on domains that are available.
+  ![Process Diagram](./docs/processdiagram.png?raw=true "ProcessDiagram")
 
-You can navigate to Domain Explorer by clicking "**Domain Explorer**" tab available on the sidebar, which will take you landing page of
-domain explorer and there you can see a list of available Domains.
+  ### Jobs Panel
+  The Jobs panel shows the list of jobs(timer) and we can execute operations on the jobs using this panel. The available operations are - *View details*, *Reschedule* and *Cancel*.
 
-![Domain Explorer](./docs/DELandingpage.png "Domain Explorer")
+  ![Jobs Panel](./docs/jobspanel.png?raw=true "JobsPanel")
 
-Selecting a domain on the landing page will direct you to a dashboard, where you can view all domain related data and list of processes associated with it.
+  ### Node Trigger Panel
+  The nodes of a process can be tirggered manually using this panel. It consist of a dropdown, which shows the list of triggerable nodes. Once the required node is selected, click on *Trigger* button to trigger the node.
 
+  ![Node Trigger](./docs/nodetrigger.png?raw=true "NodeTrigger")
 
-### Column Picker
-
-Domain Explorer allows you to select the domain attributes that you wish to see on the result table.
-
-This column picker is a multi select dropdown that contains the available domain attributes, that allows you to select any number of options available in the dropdown, there are few options that are selected by default which can be changed of your choice. The options available in the dropdown follows a certain nested pattern, displayed the entire graph of attributes available in the specific domain.
-
-eg: "**hotel/address**" denotes address attribute of hotel.
-
-After selecting/deselecting options from the dropdown, clicking on "**Apply columns**" would get you domain data on the table.
-
-![Column Picker](./docs/pickColumns.gif "Column Picker")
-
-### Refresh option
-
-There can be a possibilites of,
-* change in state of processes, while performing operations like skip, retry or abort
-* New process instance being added.
-
-In order to check the current state of processes or current list of processes available on the domain you can always do a refresh of the table by clicking icon placed next to Apply columns button. This will get you current and updated content to the table.
-
-
-### Dashboard
-
-The table on the Domain Explorer will provide you information about the specific domain data and list of processes associated with it.
-
-To check the list of processes, you may have to expand each row of the table by clicking on the **carret** icon available on each row.
-
-![Dashboard](./docs/expandRow.gif "Dashboard")
-
-### Navigate to process details
-
-To get to know more about a process, you can always click on any process instance to direct to process details page and there you can see details about the process as well as the timeline and process variables.
-
-![navigate](./docs/navigate.gif "navigate")
-
+  ### Milestones Panel
+  The milestones panel show the list of milestones present and their current states.
+  
+  ![Milestones](./docs/milestones.png?raw=true "Milestones")
 
 ## Enabling Keycloak security
 
@@ -247,6 +226,14 @@ You should be able to access your Keycloak Server at [localhost:8280/auth](http:
 and verify keycloak server is running properly: log in as the admin user to access the Keycloak Administration Console. 
 Username should be admin and password admin.
 
+The following are the users available in keycloak
+
+| Login         | Password   | Roles               |
+| ------------- | ---------- | ------------------- |
+|    admin      |   admin    | *admin*, *managers* |
+|    alice      |   alice    | *user*              |
+|    jdoe       |   jdoe     | *managers*          |
+
 To change any of this client configuration access to http://localhost:8280/auth/admin/master/console/#/realms/kogito.
 
 ### Starting Kogito Management Console in dev mode
@@ -255,48 +242,5 @@ Start the management console at port 8380, (the keycloak client 'kogito-console-
 and enabling auth:
 
 ```
-mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dquarkus.profile=keycloak
+mvn clean compile quarkus:dev -Dquarkus.http.port=8380
 ```
-
-## Enabling Test User System
-
-Management Console and Task Console include a Test User System to be used only for testing purposes. It provides a set of
-predefined users, ability to switch users and ability to add new users (stored in-memory).
-
-It's possible to enable it by adding the parameter `kogito.test.user-system.enabled=true`, for example:
-
-```
-mvn clean compile quarkus:dev -Dquarkus.http.port=8380 -Dkogito.test.user-system.enabled=true
-```
-
-> _**NOTE**_: The Test User System won't be available when starting the application with `keycloak` profile.
-
-### Switching to a different user
-
-The Test User System provides a set of predefined users that can be used:
-
-|   User   |       Groups      |  
-|----------|-------------------|
-|   john   |     employees     |
-|   mary   |      managers     |
-|   poul   | interns, managers |
-
-Open the available users list by clicking on the top right **User Avatar**, then click on any of the
-users to switch to that user.
-
-![Showing available test users](./docs/testusersystem-menu.png "Showing available test users")
-
-### Adding new test users
-
-To register new users to the Test User System just click on the top right **User Avatar** and click **+ Add new User**
-to open the **New Test User** modal.
-
-![Showing available test users](./docs/testusersystem-menu-add.png "Showing available test users")
-
-When the **New Test User** form appears, fill the **User Id** field with the new user id and the **Groups** with a comma-separated
-list of groups you want the user to belong and press **Add** to proceed register the user. 
-
-![Add new test user modal](./docs/testusersystem-add-user.png "Add new test user modal")
-
-> _**NOTE**_: The users stored in Test User System are stored in-memory, refreshing the screen will restore the user system
->to its original state. 

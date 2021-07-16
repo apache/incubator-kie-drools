@@ -1,6 +1,7 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
@@ -14,6 +15,9 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].bundle.css'
+    }),
+    new webpack.EnvironmentPlugin({
+      KOGITO_ENV_MODE: 'PROD'
     })
   ],
   module: {
@@ -54,7 +58,7 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/process-list/dist/envelope/components/styles.css'
-            ),
+          ),
           path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'
           ),

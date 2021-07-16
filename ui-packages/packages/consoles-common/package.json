@@ -29,7 +29,8 @@
     "codegen": "graphql-codegen"
   },
   "dependencies": {
-    "@kogito-apps/components-common": "^1.0.0"
+    "@kogito-apps/components-common": "^1.0.0",
+    "keycloak-js": "^13.0.1"
   },
   "devDependencies": {
     "@kogito-apps/ouia-tools": "^1.0.0",

@@ -27,9 +27,15 @@ import {
   getToken,
   isAuthEnabled,
   UserContext,
-  ServerUnavailablePage
+  ServerUnavailablePage,
+  KeycloakUnavailablePage,
+  updateKeycloakToken
 } from '@kogito-apps/consoles-common';
 import { TaskConsole, TaskConsoleRoutes } from './components/console';
+
+const onLoadFailure = () => {
+  ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById('root'));
+};
 
 const appRender = (ctx: UserContext) => {
   const httpLink = new HttpLink({
@@ -54,15 +60,26 @@ const appRender = (ctx: UserContext) => {
   });
 
   const setGQLContext = setContext((_, { headers }) => {
-    if (isAuthEnabled()) {
-      const token = getToken();
+    if (!isAuthEnabled()) {
       return {
-        headers: {
-          ...headers,
-          authorization: token ? `Bearer ${token}` : ''
-        }
+        headers
       };
     }
+    return new Promise((resolve, reject) => {
+      updateKeycloakToken()
+        .then(() => {
+          const token = getToken();
+          resolve({
+            headers: {
+              ...headers,
+              authorization: token ? `Bearer ${token}` : ''
+            }
+          });
+        })
+        .catch(() => {
+          reject();
+        });
+    });
   });
 
   const cache = new InMemoryCache();
@@ -79,4 +96,7 @@ const appRender = (ctx: UserContext) => {
   );
 };
 
-appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx));
+appRenderWithAxiosInterceptorConfig(
+  (ctx: UserContext) => appRender(ctx),
+  onLoadFailure
+);

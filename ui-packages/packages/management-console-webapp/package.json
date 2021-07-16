@@ -76,7 +76,8 @@
     ],
     "moduleNameMapper": {
       "\\.(scss|sass|css)$": "identity-obj-proxy"
-    }
+    },
+    "testPathIgnorePatterns": ["./src/index.tsx"]
   },
   "lint-staged": {
     "*.{ts,tsx}": [

@@ -25,3 +25,4 @@ export { default as PageNotFound } from './src/components/pages/PageNotFound/Pag
 export { default as NoData } from './src/components/pages/NoData/NoData';
 export { default as PageTitle } from './src/components/layout/PageTitle/PageTitle';
 export { default as PageSectionHeader } from './src/components/layout/PageSectionHeader/PageSectionHeader';
+export { default as KeycloakUnavailablePage } from './src/components/pages/KeycloakUnavailablePage/KeycloakUnavailablePage';

@@ -30,7 +30,9 @@ const newContext = (authEnabled: boolean): KogitoAppContext.AppContext => {
     ? new KeycloakUserContext({
         userName: 'jdoe',
         roles: ['user', 'manager'],
-        token: 'token'
+        token: 'token',
+        tokenMinValidity: 30,
+        logout: () => Keycloak.handleLogout()
       })
     : new TestUserContext();
 

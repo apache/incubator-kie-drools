@@ -59,7 +59,7 @@ export class DefaultUser implements User {
   }
 }
 
-export const ANONYMOUS_USER = new DefaultUser('john', ['employees']);
+export const ANONYMOUS_USER = new DefaultUser('Dev User', []);
 
 export const supportsLogout = (userContext: UserContext): boolean => {
   return 'logout' in userContext;

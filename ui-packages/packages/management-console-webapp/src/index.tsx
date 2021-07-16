@@ -27,18 +27,22 @@ import {
   getToken,
   isAuthEnabled,
   UserContext,
-  ServerUnavailablePage
+  ServerUnavailablePage,
+  KeycloakUnavailablePage,
+  updateKeycloakToken
 } from '@kogito-apps/consoles-common';
 import ManagementConsole from './components/console/ManagementConsole/ManagementConsole';
 import ManagementConsoleRoutes from './components/console/ManagementConsoleRoutes/ManagementConsoleRoutes';
 
-const appRender = (ctx: UserContext) => {
-  const httpLink = new HttpLink({
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    uri: window.DATA_INDEX_ENDPOINT || process.env.KOGITO_DATAINDEX_HTTP_URL
-  });
+const onLoadFailure = (): void => {
+  ReactDOM.render(<KeycloakUnavailablePage />, document.getElementById('root'));
+};
 
+const appRender = async (ctx: UserContext) => {
+  const httpLink = new HttpLink({
+    uri:
+      window['DATA_INDEX_ENDPOINT'] || process.env['KOGITO_DATAINDEX_HTTP_URL']
+  });
   const fallbackUI = onError(({ networkError }: any) => {
     if (networkError && networkError.stack === 'TypeError: Failed to fetch') {
       // eslint-disable-next-line react/no-render-return-value
@@ -55,15 +59,26 @@ const appRender = (ctx: UserContext) => {
   });
 
   const setGQLContext = setContext((_, { headers }) => {
-    if (isAuthEnabled()) {
-      const token = getToken();
+    if (!isAuthEnabled()) {
       return {
-        headers: {
-          ...headers,
-          authorization: token ? `Bearer ${token}` : ''
-        }
+        headers
       };
     }
+    return new Promise((resolve, reject) => {
+      updateKeycloakToken()
+        .then(() => {
+          const token = getToken();
+          resolve({
+            headers: {
+              ...headers,
+              authorization: token ? `Bearer ${token}` : ''
+            }
+          });
+        })
+        .catch(() => {
+          reject();
+        });
+    });
   });
 
   const cache = new InMemoryCache();
@@ -71,7 +86,6 @@ const appRender = (ctx: UserContext) => {
     cache,
     link: setGQLContext.concat(fallbackUI.concat(httpLink))
   });
-
   ReactDOM.render(
     <ManagementConsole apolloClient={client} userContext={ctx}>
       <ManagementConsoleRoutes />
@@ -80,4 +94,7 @@ const appRender = (ctx: UserContext) => {
   );
 };
 
-appRenderWithAxiosInterceptorConfig((ctx: UserContext) => appRender(ctx));
+appRenderWithAxiosInterceptorConfig(
+  (ctx: UserContext) => appRender(ctx),
+  onLoadFailure
+);

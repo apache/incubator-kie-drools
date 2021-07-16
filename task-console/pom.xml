@@ -14,14 +14,10 @@
   <name>Kogito Apps :: Task Console</name>
 
   <properties>
-    <path.to.frontend.app>../ui-packages/packages/task-console</path.to.frontend.app>
+    <path.to.frontend.app>../ui-packages/packages/task-console-webapp</path.to.frontend.app>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>security-commons</artifactId>
-    </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-vertx-web</artifactId>

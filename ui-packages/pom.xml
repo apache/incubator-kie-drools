@@ -36,7 +36,7 @@
       ${path.to.packages}/task-inbox/src,
       ${path.to.packages}/trusty/src,
     </sonar.sources>
-    <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx,**/graphql/types.tsx,**/graphql/graphql.schema.json</sonar.exclusions>
+    <sonar.exclusions>**/__mocks__/**,**/mocks/**,**/tests/utils/**,**/*.stories.tsx,**/graphql/types.tsx,**/graphql/graphql.schema.json,**/index.tsx</sonar.exclusions>
     <sonar.test.inclusions>**/*test.ts,**/*test.tsx</sonar.test.inclusions>
     <sonar.javascript.lcov.reportPaths>
       ${path.to.packages}/common/coverage/lcov.info,

@@ -23,11 +23,13 @@ const handleLogout = jest.spyOn(Keycloak, 'handleLogout');
 const keycloakInfo = {
   userName: 'jdoe',
   roles: ['user', 'manager'],
-  token: 'token'
+  token: 'token',
+  tokenMinValidity: 30,
+  logout: () => Keycloak.handleLogout()
 };
 
-const prepareMock = (keyCloakEnabled: boolean) => {
-  isAuthEnabled.mockReturnValue(keyCloakEnabled);
+const prepareMock = (keycloakEnabled: boolean) => {
+  isAuthEnabled.mockReturnValue(keycloakEnabled);
   handleLogout.mockReturnValue();
 };
 
@@ -51,18 +53,5 @@ describe('KeycloakUserSystem tests', () => {
     userSystem.logout();
 
     expect(handleLogout.mock.calls).toHaveLength(1);
-  });
-
-  it('KeycloakUserSystem testing without auth', () => {
-    prepareMock(false);
-
-    expect(() => {
-      const userSystem: KeycloakUserContext = new KeycloakUserContext(
-        keycloakInfo
-      );
-      userSystem.getCurrentUser();
-    }).toThrowError(
-      'Cannot create KeycloakUserSystem: Keycloak auth not enabled!'
-    );
   });
 });

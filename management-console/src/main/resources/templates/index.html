@@ -8,9 +8,13 @@
     <link rel="icon" href="/favicon.ico" type="image/ico" />
   </head>
   <script>
-    window.DATA_INDEX_ENDPOINT = '{config:property('kogito.dataindex.http.url') or 'http://localhost:8180'}/graphql';
-    window.KOGITO_AUTH_ENABLED = {config:property('quarkus.oidc.tenant-enabled') or false};
-    window.TEST_USER_SYSTEM_ENABLED = {config:property('kogito.test.user-system.enabled') or false};
+    window.DATA_INDEX_ENDPOINT = '{config:property('kogito.dataindex.http.url') or 'http://localhost:8180/graphql'}';
+    window.KOGITO_CONSOLES_KEYCLOAK_URL = '{config:property('kogito.consoles.keycloak.config.url') or 'http://localhost:8280'}';
+    window.KOGITO_CONSOLES_KEYCLOAK_REALM = '{config:property('kogito.consoles.keycloak.config.realm') or 'kogito'}';
+    window.KOGITO_CONSOLES_KEYCLOAK_CLIENT_ID = '{config:property('kogito.consoles.keycloak.config.client-id') or 'kogito-console-quarkus'}';
+    window.KOGITO_CONSOLES_KEYCLOAK_HEALTH_CHECK_URL = '{config:property('kogito.consoles.keycloak.config.health-check-url') or 'http://localhost:8280/auth/realms/kogito/.well-known/openid-configuration'}';
+    window.KOGITO_CONSOLES_KEYCLOAK_DISABLE_HEALTH_CHECK={config:property('kogito.consoles.keycloak.config.disable-health-check') or false};
+    window.KOGITO_CONSOLES_KEYCLOAK_UPDATE_TOKEN_VALIDITY={config:property('kogito.consoles.keycloak.config.update-token-validity') or 30};
   </script>
   <body class="pf-m-redhat-font">
     <noscript>Enabling JavaScript is required to run this app.</noscript>

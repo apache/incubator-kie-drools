@@ -94,42 +94,6 @@ const checkTaskNameFilters = (userTaskInstance, names) => {
   return false;
 };
 
-const checkTaskAssignment = (userTaskInstance, assignments) => {
-  const actualOwnerClause = assignments.or[0];
-  if (actualOwnerClause.actualOwner.equal === userTaskInstance.actualOwner) {
-    return true;
-  }
-  if (userTaskInstance.actualOwner === null) {
-    const excludedUsersClause = assignments.or[1].and[1].not;
-
-    if (
-      userTaskInstance.excludedUsers &&
-      userTaskInstance.excludedUsers.includes(
-        excludedUsersClause.excludedUsers.contains
-      )
-    ) {
-      return false;
-    }
-
-    const potentialUsersClause = assignments.or[1].and[2].or[0];
-    if (
-      userTaskInstance.potentialUsers.includes(
-        potentialUsersClause.potentialUsers.contains
-      )
-    ) {
-      return true;
-    }
-    const potentialGroupsClause = assignments.or[1].and[2].or[1];
-    if (
-      potentialGroupsClause.potentialGroups.containsAny.some(clauseGroup =>
-        userTaskInstance.potentialGroups.includes(clauseGroup)
-      )
-    ) {
-      return true;
-    }
-  }
-};
-
 // Provide resolver functions for your schema fields
 const resolvers = {
   Query: {
@@ -138,10 +102,6 @@ const resolvers = {
         console.log('args', args);
 
         if (args['where'].and) {
-          // if filter available
-          if (!checkTaskAssignment(datum, args['where'].and[0])) {
-            return false;
-          }
           if (args['where'].and[1].and.length === 2) {
             // if filter by state and taskNames
             return (
@@ -166,8 +126,7 @@ const resolvers = {
             return false;
           }
         } else if (args['where'].or) {
-          // if no filters
-          return checkTaskAssignment(datum, args['where']);
+          return true;
         } else if (args['where'].id && args['where'].id.equal) {
           // mock to return single id
           return datum.id === args['where'].id.equal;
