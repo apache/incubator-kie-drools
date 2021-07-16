@@ -22,23 +22,23 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
-        implements Sequence<ValueType_, DifferenceType_> {
+class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>>
+        implements Sequence<Value_, Difference_> {
 
-    private final ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree;
-    private ValueType_ firstItem;
-    private ValueType_ lastItem;
+    private final ConsecutiveSetTree<Value_, ?, Difference_> sourceTree;
+    private Value_ firstItem;
+    private Value_ lastItem;
 
     // Memorized calculations
-    private DifferenceType_ length;
-    private NavigableSet<ValueType_> items;
+    private Difference_ length;
+    private NavigableSet<Value_> items;
 
-    protected SequenceImpl(ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree, ValueType_ item) {
+    protected SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree, Value_ item) {
         this(sourceTree, item, item);
     }
 
-    protected SequenceImpl(ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree,
-            ValueType_ firstItem, ValueType_ lastItem) {
+    protected SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree,
+            Value_ firstItem, Value_ lastItem) {
         this.sourceTree = sourceTree;
         this.firstItem = firstItem;
         this.lastItem = lastItem;
@@ -47,17 +47,17 @@ class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType
     }
 
     @Override
-    public ValueType_ getFirstItem() {
+    public Value_ getFirstItem() {
         return firstItem;
     }
 
     @Override
-    public ValueType_ getLastItem() {
+    public Value_ getLastItem() {
         return lastItem;
     }
 
     @Override
-    public NavigableSet<ValueType_> getItems() {
+    public NavigableSet<Value_> getItems() {
         if (items == null) {
             return items = sourceTree.getItemSet()
                     .subSet(firstItem, true, lastItem, true);
@@ -71,7 +71,7 @@ class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType
     }
 
     @Override
-    public DifferenceType_ getLength() {
+    public Difference_ getLength() {
         if (length == null) {
             // memoize length for later calls
             // (assignment returns the right hand side)
@@ -80,12 +80,12 @@ class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType
         return length;
     }
 
-    protected void setStart(ValueType_ item) {
+    protected void setStart(Value_ item) {
         firstItem = item;
         invalidate();
     }
 
-    protected void setEnd(ValueType_ item) {
+    protected void setEnd(Value_ item) {
         lastItem = item;
         invalidate();
     }
@@ -97,9 +97,9 @@ class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType
         items = null;
     }
 
-    protected SequenceImpl<ValueType_, DifferenceType_> split(ValueType_ fromElement) {
-        ValueType_ newSequenceStart = sourceTree.getItemSet().higher(fromElement);
-        ValueType_ newSequenceEnd = lastItem;
+    protected SequenceImpl<Value_, Difference_> split(Value_ fromElement) {
+        Value_ newSequenceStart = sourceTree.getItemSet().higher(fromElement);
+        Value_ newSequenceEnd = lastItem;
 
         lastItem = sourceTree.getItemSet().lower(fromElement);
         invalidate();
@@ -107,7 +107,7 @@ class SequenceImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType
     }
 
     // This Sequence is ALWAYS before other Sequence
-    protected void merge(SequenceImpl<ValueType_, DifferenceType_> other) {
+    protected void merge(SequenceImpl<Value_, Difference_> other) {
         lastItem = other.lastItem;
         invalidate();
     }

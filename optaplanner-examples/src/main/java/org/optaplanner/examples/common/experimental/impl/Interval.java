@@ -18,35 +18,41 @@ package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.function.Function;
 
-public class Interval<IntervalValue_, PointValue_ extends Comparable<PointValue_>> {
-    final IntervalValue_ value;
-    final IntervalSplitPoint<IntervalValue_, PointValue_> startSplitPoint;
-    final IntervalSplitPoint<IntervalValue_, PointValue_> endSplitPoint;
+public class Interval<Interval_, Point_ extends Comparable<Point_>> {
+    final Interval_ value;
+    final IntervalSplitPoint<Interval_, Point_> startSplitPoint;
+    final IntervalSplitPoint<Interval_, Point_> endSplitPoint;
 
-    public Interval(IntervalValue_ value, Function<IntervalValue_, PointValue_> startMapping,
-            Function<IntervalValue_, PointValue_> endMapping) {
+    public Interval(Interval_ value, Function<Interval_, Point_> startMapping,
+            Function<Interval_, Point_> endMapping) {
         this.value = value;
-        this.startSplitPoint = new IntervalSplitPoint<>(startMapping.apply(value));
-        this.endSplitPoint = new IntervalSplitPoint<>(endMapping.apply(value));
+        Point_ start = startMapping.apply(value);
+        Point_ end = endMapping.apply(value);
+        this.startSplitPoint = new IntervalSplitPoint<>(start);
+        if (start == end) {
+            this.endSplitPoint = this.startSplitPoint;
+        } else {
+            this.endSplitPoint = new IntervalSplitPoint<>(end);
+        }
     }
 
-    public IntervalValue_ getValue() {
+    public Interval_ getValue() {
         return value;
     }
 
-    public PointValue_ getStart() {
+    public Point_ getStart() {
         return startSplitPoint.splitPoint;
     }
 
-    public PointValue_ getEnd() {
+    public Point_ getEnd() {
         return endSplitPoint.splitPoint;
     }
 
-    public IntervalSplitPoint<IntervalValue_, PointValue_> getStartSplitPoint() {
+    public IntervalSplitPoint<Interval_, Point_> getStartSplitPoint() {
         return startSplitPoint;
     }
 
-    public IntervalSplitPoint<IntervalValue_, PointValue_> getEndSplitPoint() {
+    public IntervalSplitPoint<Interval_, Point_> getEndSplitPoint() {
         return endSplitPoint;
     }
 

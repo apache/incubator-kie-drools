@@ -17,23 +17,22 @@
 package org.optaplanner.examples.common.experimental.api;
 
 /**
- * A Break is a gap between two consecutive values. For instance,
- * the list [1,2,4,5,6,10] has a break of length 2 between 2 and 4,
- * as well as a break of length 4 between 6 and 10.
+ * An IntervalBreak is a gap between two consecutive interval clusters. For instance,
+ * the list [(1,3),(2,4),(3,5),(7,8)] has a break of length 2 between 5 and 7.
  *
- * @param <Value_> The type of value in the sequence
+ * @param <Interval_> The type of value in the sequence
  * @param <Difference_> The type of difference between values in the sequence
  */
-public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
+public interface IntervalBreak<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
     /**
-     * @return never null, the sequence leading directly into this
+     * @return never null, the interval cluster leading directly into this
      */
-    Sequence<Value_, Difference_> getPreviousSequence();
+    IntervalCluster<Interval_, Point_, Difference_> getPreviousIntervalCluster();
 
     /**
-     * @return never null, the sequence immediately following this
+     * @return never null, the interval cluster immediately following this
      */
-    Sequence<Value_, Difference_> getNextSequence();
+    IntervalCluster<Interval_, Point_, Difference_> getNextIntervalCluster();
 
     /**
      * Return the end of the sequence before this break. For the
@@ -41,8 +40,8 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
      * 
      * @return never null, the item this break is directly after
      */
-    default Value_ getPreviousSequenceEnd() {
-        return getPreviousSequence().getLastItem();
+    default Point_ getPreviousIntervalClusterEnd() {
+        return getPreviousIntervalCluster().getEnd();
     };
 
     /**
@@ -51,13 +50,13 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
      * 
      * @return never null, the item this break is directly before
      */
-    default Value_ getNextSequenceStart() {
-        return getNextSequence().getFirstItem();
+    default Point_ getNextIntervalClusterStart() {
+        return getNextIntervalCluster().getStart();
     }
 
     /**
      * Return the length of the break, which is the difference
-     * between {@link #getNextSequenceStart()} and {@link #getPreviousSequenceEnd()}. For the
+     * between {@link #getNextIntervalClusterStart()} and {@link #getPreviousIntervalClusterEnd()}. For the
      * break between 6 and 10, this will return 4.
      * 
      * @return never null, the length of this break

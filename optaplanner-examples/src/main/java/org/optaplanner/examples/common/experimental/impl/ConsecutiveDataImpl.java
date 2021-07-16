@@ -23,27 +23,27 @@ import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-class ConsecutiveDataImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>> implements
-        ConsecutiveInfo<ValueType_, DifferenceType_> {
-    private final ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree;
+class ConsecutiveDataImpl<Value_, Difference_ extends Comparable<Difference_>> implements
+        ConsecutiveInfo<Value_, Difference_> {
+    private final ConsecutiveSetTree<Value_, ?, Difference_> sourceTree;
 
-    protected ConsecutiveDataImpl(ConsecutiveSetTree<ValueType_, ?, DifferenceType_> sourceTree) {
+    protected ConsecutiveDataImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree) {
         this.sourceTree = sourceTree;
     }
 
     @Override
-    public Iterable<Sequence<ValueType_, DifferenceType_>> getConsecutiveSequences() {
+    public Iterable<Sequence<Value_, Difference_>> getConsecutiveSequences() {
         return (Iterable) sourceTree.getConsecutiveSequences();
     }
 
     @Override
-    public Iterable<Break<ValueType_, DifferenceType_>> getBreaks() {
+    public Iterable<Break<Value_, Difference_>> getBreaks() {
         return (Iterable) sourceTree.getBreaks();
     }
 
     public String toString() {
-        Stream.Builder<Sequence<ValueType_, DifferenceType_>> streamBuilder = Stream.builder();
-        for (Sequence<ValueType_, DifferenceType_> sequence : getConsecutiveSequences()) {
+        Stream.Builder<Sequence<Value_, Difference_>> streamBuilder = Stream.builder();
+        for (Sequence<Value_, Difference_> sequence : getConsecutiveSequences()) {
             streamBuilder.add(sequence);
         }
 

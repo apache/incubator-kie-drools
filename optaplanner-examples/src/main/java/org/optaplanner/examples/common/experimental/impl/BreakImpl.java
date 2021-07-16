@@ -19,43 +19,43 @@ package org.optaplanner.examples.common.experimental.impl;
 import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-class BreakImpl<ValueType_, DifferenceType_ extends Comparable<DifferenceType_>>
-        implements Break<ValueType_, DifferenceType_> {
-    private Sequence<ValueType_, DifferenceType_> previousSequence;
-    private Sequence<ValueType_, DifferenceType_> nextSequence;
-    private DifferenceType_ length;
+class BreakImpl<Value_, Difference_ extends Comparable<Difference_>>
+        implements Break<Value_, Difference_> {
+    private Sequence<Value_, Difference_> previousSequence;
+    private Sequence<Value_, Difference_> nextSequence;
+    private Difference_ length;
 
-    public BreakImpl(Sequence<ValueType_, DifferenceType_> previousSequence, Sequence<ValueType_, DifferenceType_> nextSequence,
-            DifferenceType_ length) {
+    public BreakImpl(Sequence<Value_, Difference_> previousSequence, Sequence<Value_, Difference_> nextSequence,
+            Difference_ length) {
         this.previousSequence = previousSequence;
         this.nextSequence = nextSequence;
         this.length = length;
     }
 
     @Override
-    public Sequence<ValueType_, DifferenceType_> getPreviousSequence() {
+    public Sequence<Value_, Difference_> getPreviousSequence() {
         return previousSequence;
     }
 
     @Override
-    public Sequence<ValueType_, DifferenceType_> getNextSequence() {
+    public Sequence<Value_, Difference_> getNextSequence() {
         return nextSequence;
     }
 
     @Override
-    public DifferenceType_ getLength() {
+    public Difference_ getLength() {
         return length;
     }
 
-    public void setPreviousSequence(Sequence<ValueType_, DifferenceType_> previousSequence) {
+    public void setPreviousSequence(Sequence<Value_, Difference_> previousSequence) {
         this.previousSequence = previousSequence;
     }
 
-    public void setNextSequence(Sequence<ValueType_, DifferenceType_> nextSequence) {
+    public void setNextSequence(Sequence<Value_, Difference_> nextSequence) {
         this.nextSequence = nextSequence;
     }
 
-    public void setLength(DifferenceType_ length) {
+    public void setLength(Difference_ length) {
         this.length = length;
     }
 
