@@ -28,13 +28,13 @@
       "kind": "STRUCTURE",
       "name": "Violation",
       "typeRef": "tViolation",
-      "isFixed": false,
+      "fixed": false,
       "components": [
         {
           "kind": "UNIT",
           "name": "Type",
           "typeRef": "string",
-          "isFixed": false,
+          "fixed": false,
           "components": null,
           "domain": {
             "type": "CATEGORICAL",
@@ -48,7 +48,7 @@
           "kind": "UNIT",
           "name": "Actual Speed",
           "typeRef": "number",
-          "isFixed": false,
+          "fixed": false,
           "components": null,
           "domain": {
             "type": "RANGE",
@@ -60,7 +60,7 @@
           "kind": "UNIT",
           "name": "Speed Limit",
           "typeRef": "number",
-          "isFixed": false,
+          "fixed": false,
           "components": null,
           "domain": {
             "type": "RANGE",

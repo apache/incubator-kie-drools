@@ -16,13 +16,13 @@
   "searchDomains": [
     {
       "kind":"UNIT",
-      "isFixed": true,
+      "fixed": true,
       "name": "age",
       "typeRef": "number"
     },
     {
       "kind":"UNIT",
-      "isFixed": false,
+      "fixed": false,
       "name": "income",
       "typeRef": "number",
       "domain": {
@@ -33,7 +33,7 @@
     },
     {
       "kind":"UNIT",
-      "isFixed": false,
+      "fixed": false,
       "name": "taxCode",
       "typeRef": "string",
       "domain": {

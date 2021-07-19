@@ -25,11 +25,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CounterfactualSearchDomainUnitDto extends CounterfactualSearchDomainDto {
 
-    public static final String IS_FIXED_FIELD = "isFixed";
+    public static final String FIXED_FIELD = "fixed";
     public static final String DOMAIN_FIELD = "domain";
 
-    @JsonProperty(IS_FIXED_FIELD)
-    @NotNull(message = "isFixed must be provided.")
+    @JsonProperty(FIXED_FIELD)
+    @NotNull(message = "fixed must be provided.")
     private Boolean isFixed;
 
     @JsonProperty(DOMAIN_FIELD)

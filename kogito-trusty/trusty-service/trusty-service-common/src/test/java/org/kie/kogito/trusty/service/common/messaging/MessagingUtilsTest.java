@@ -159,7 +159,7 @@ class MessagingUtilsTest {
                 "      \"typeRef\": \"boolean\",\n" +
                 "      \"components\": null,\n" +
                 "      \"value\": false,\n" +
-                "      \"isFixed\": false\n" +
+                "      \"fixed\": false\n" +
                 "    }";
         ObjectMapper mapper = new ObjectMapper();
         CounterfactualSearchDomain searchDomain = mapper.readValue(request, CounterfactualSearchDomain.class);

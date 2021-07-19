@@ -27,10 +27,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CounterfactualSearchDomain extends TypedVariable<CounterfactualSearchDomain> {
 
-    public static final String IS_FIXED = "isFixed";
+    public static final String FIXED = "fixed";
     public static final String DOMAIN = "domain";
 
-    @JsonProperty(IS_FIXED)
+    @JsonProperty(FIXED)
     private Boolean isFixed;
 
     @JsonProperty(DOMAIN)

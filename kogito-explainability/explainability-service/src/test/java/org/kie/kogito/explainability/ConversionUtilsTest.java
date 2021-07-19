@@ -24,6 +24,8 @@ import java.util.Optional;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.explainability.api.CounterfactualDomainCategoricalDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainDto;
+import org.kie.kogito.explainability.api.CounterfactualDomainFixedDto;
 import org.kie.kogito.explainability.api.CounterfactualDomainRangeDto;
 import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
 import org.kie.kogito.explainability.model.Feature;
@@ -31,6 +33,7 @@ import org.kie.kogito.explainability.model.Output;
 import org.kie.kogito.explainability.model.Type;
 import org.kie.kogito.explainability.model.Value;
 import org.kie.kogito.explainability.model.domain.CategoricalFeatureDomain;
+import org.kie.kogito.explainability.model.domain.EmptyFeatureDomain;
 import org.kie.kogito.explainability.model.domain.FeatureDomain;
 import org.kie.kogito.explainability.model.domain.NumericalFeatureDomain;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
@@ -311,6 +314,34 @@ class ConversionUtilsTest {
         assertTrue(categoricalFeatureDomain.getCategories().containsAll(List.of("White", "Black")));
         assertNull(categoricalFeatureDomain.getLowerBound());
         assertNull(categoricalFeatureDomain.getUpperBound());
+    }
+
+    @Test
+    void testToFeatureDomain_UnitFixedNumber() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("numberOfFingers",
+                new CounterfactualSearchDomainUnitDto("integer",
+                        true,
+                        new CounterfactualDomainFixedDto()));
+        assertTrue(featureDomain instanceof EmptyFeatureDomain);
+    }
+
+    @Test
+    void testToFeatureDomain_UnitFixed() {
+        FeatureDomain featureDomain = ConversionUtils.toFeatureDomain("zebraStripes",
+                new CounterfactualSearchDomainUnitDto("string",
+                        true,
+                        new CounterfactualDomainFixedDto()));
+        assertTrue(featureDomain instanceof EmptyFeatureDomain);
+    }
+
+    @Test
+    void testToFeatureDomain_UnitNull() {
+        assertThrows(IllegalArgumentException.class, () -> ConversionUtils.toFeatureDomain("numberOfFingers",
+                new CounterfactualSearchDomainUnitDto("integer",
+                        true,
+                        new CounterfactualDomainDto() {
+                            //New (unsupported) domain type
+                        })));
     }
 
 }
