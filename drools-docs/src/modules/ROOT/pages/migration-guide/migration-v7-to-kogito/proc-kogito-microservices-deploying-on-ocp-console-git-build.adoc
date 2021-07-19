@@ -1,7 +1,7 @@
 [id="proc-kogito-microservices-deploying-on-ocp-console-git-build_{context}"]
 = Deploying {KOGITO} microservices on OpenShift using Git source build and OpenShift web console
 
-The Red Hat Process Automation Manager {KOGITO} Operator uses the following custom resources to deploy domain-specific microservices (the microservices that you develop):
+The RHPAM Kogito Operator uses the following custom resources to deploy domain-specific microservices (the microservices that you develop):
 
 * `KogitoBuild` builds an application using the Git URL or other sources and produces a runtime image.
 * `KogitoRuntime` starts the runtime image and configures it as per your requirements.
@@ -14,12 +14,12 @@ If you are developing or testing your {KOGITO} microservice locally, you can use
 ====
 
 .Prerequisites
-* The Red Hat Process Automation Manager {KOGITO} Operator is installed.
+* The RHPAM Kogito Operator is installed.
 * The application with your {KOGITO} microservices is in a Git repository that is reachable from your OpenShift environment.
 * You have access to the OpenShift web console with the necessary permissions to create and edit `KogitoBuild` and `KogitoRuntime`.
-* (Quarkus only) The `pom.xml` file of your project contains the following dependency for the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension]. This extension enables the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes] that are required for Quarkus-based projects on OpenShift.
+* ({QUARKUS} only) The `pom.xml` file of your project contains the following dependency for the `quarkus-smallrye-health` extension. This extension enables the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes] that are required for {QUARKUS} projects on OpenShift.
 +
-.SmallRye Health dependency for Quarkus applications on OpenShift
+.SmallRye Health dependency for {QUARKUS} applications on OpenShift
 [source,xml]
 ----
 <dependency>
@@ -36,7 +36,7 @@ If you are developing or testing your {KOGITO} microservice locally, you can use
 --
 At a minimum, define the application configurations shown in the following example YAML file:
 
-.Example YAML definition for a Quarkus application with {KOGITO} build
+.Example YAML definition for a {QUARKUS} application with {KOGITO} build
 [source,yaml,subs="attributes+"]
 ----
 apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this service
@@ -88,7 +88,7 @@ Your application is listed in the *{KOGITO}Builds* page. You can select the appl
 --
 At a minimum, define the application configurations shown in the following example YAML file:
 
-.Example YAML definition for a Quarkus application with {KOGITO} microservices
+.Example YAML definition for a {QUARKUS} application with {KOGITO} microservices
 [source,yaml,subs="attributes+"]
 ----
 apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this microservice

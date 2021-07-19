@@ -8,11 +8,11 @@ The operator uses the following custom resources to deploy domain-specific micro
 * `KogitoRuntime` starts the runtime image and configures it as per your requirements.
 
 .Prerequisites
-* The Red Hat Process Automation Manager {KOGITO} Operator is installed.
+* The RHPAM Kogito Operator is installed.
 * You have access to the OpenShift web console with the necessary permissions to create and edit `KogitoRuntime`.
-* (Quarkus only) The `pom.xml` file of your project contains the following dependency for the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension]. This extension enables the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes] that are required for Quarkus-based projects on OpenShift.
+* ({QUARKUS} only) The `pom.xml` file of your project contains the following dependency for the `quarkus-smallrye-health` extension. This extension enables the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes] that are required for {QUARKUS} projects on OpenShift.
 +
-.SmallRye Health dependency for Quarkus applications on OpenShift
+.SmallRye Health dependency for {QUARKUS} applications on OpenShift
 [source,xml]
 ----
 <dependency>
@@ -26,7 +26,7 @@ The operator uses the following custom resources to deploy domain-specific micro
 . Create `Containerfile` in the project root folder with the following content:
 +
 --
-.Example `Containerfile` for a Quarkus application
+.Example `Containerfile` for a {QUARKUS} application
 [source]
 ----
 FROM registry.redhat.io/rhpam-7/rhpam-kogito-runtime-jvm-rhel8:7.11.0
@@ -83,7 +83,7 @@ podman push <final-image-name>
 --
 At a minimum, define the application configurations shown in the following example YAML file:
 
-.Example YAML definition for a Quarkus application with {KOGITO} microservices
+.Example YAML definition for a {QUARKUS} application with {KOGITO} microservices
 [source,yaml,subs="attributes+"]
 ----
 apiVersion: rhpam.kiegroup.org/v1 # {KOGITO} API for this microservice

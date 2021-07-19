@@ -8,7 +8,7 @@ Before you can begin developing {KOGITO} microservices, you need to create a Mav
 . Enter the following command to generate a project within a defined folder:
 +
 --
-.On Quarkus
+.On {QUARKUS}
 [source,subs="attributes+"]
 ----
 $ mvn archetype:generate \
@@ -47,17 +47,17 @@ If you want to enable PMML execution for your project, add the following depende
 </dependency>
 ----
 
-On Quarkus, if you plan to run your application on OpenShift, you must also import the https://quarkus.io/guides/microprofile-health[Quarkus `smallrye-health` extension] for the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes], as shown in the following example:
+On {QUARKUS}, if you plan to run your application on OpenShift, you must also import the `smallrye-health` extension for the https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-startup-probes[liveness and readiness probes], as shown in the following example:
 
-.SmallRye Health extension for Quarkus applications on OpenShift
+.SmallRye Health extension for {QUARKUS} applications on OpenShift
 [source]
 ----
 $ mvn quarkus:add-extension -Dextensions="smallrye-health"
 ----
 
-This command generates the following dependency in the `pom.xml` file of your {PRODUCT} project on Quarkus:
+This command generates the following dependency in the `pom.xml` file of your {PRODUCT} project on {QUARKUS}:
 
-.SmallRye Heath dependency for Quarkus applications on OpenShift
+.SmallRye Health dependency for {QUARKUS} applications on OpenShift
 [source,xml]
 ----
 <dependency>
