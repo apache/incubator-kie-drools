@@ -27,18 +27,20 @@ public class BusinessKnowledgeModelNodeImpl
 
     private BusinessKnowledgeModel bkm;
     private DMNExpressionEvaluator evaluator;
+    private DMNType                type;
     private DMNType                resultType;
 
     public BusinessKnowledgeModelNodeImpl() {
     }
 
     public BusinessKnowledgeModelNodeImpl(BusinessKnowledgeModel bkm) {
-        this( bkm, null );
+        this(bkm, null, null);
     }
 
-    public BusinessKnowledgeModelNodeImpl(BusinessKnowledgeModel bkm, DMNType resultType) {
+    public BusinessKnowledgeModelNodeImpl(BusinessKnowledgeModel bkm, DMNType type, DMNType resultType) {
         super( bkm );
         this.bkm = bkm;
+        this.type = type;
         this.resultType = resultType;
     }
 
@@ -68,8 +70,12 @@ public class BusinessKnowledgeModelNodeImpl
         this.resultType = resultType;
     }
 
+    public void setType(DMNType type) {
+        this.type = type;
+    }
+
     @Override
     public DMNType getType() {
-        return getResultType();
+        return this.type;
     }
 }

@@ -67,7 +67,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     protected LeftTupleSinkNode          nextTupleSinkNode;
     
     protected From                       from;
-    protected Class<?>                   resultClass;
 
     protected boolean                    tupleMemoryEnabled;
 
@@ -94,7 +93,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         this.betaConstraints.init(context, getType());
         this.tupleMemoryEnabled = tupleMemoryEnabled;
         this.from = from;
-        resultClass = this.from.getResultClass();
 
         initMasks(context, tupleSource);
 
@@ -109,7 +107,6 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
         betaConstraints = (BetaConstraints) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
         from = (From) in.readObject();
-        resultClass = from.getResultClass();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -214,7 +211,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     }
 
     public Class< ? > getResultClass() {
-        return resultClass;
+        return from.getResultClass();
     }
 
     public void networkUpdated(UpdateContext updateContext) {
@@ -232,7 +229,7 @@ public class FromNode<T extends FromNode.FromMemory> extends LeftTupleSource
     public InternalFactHandle createFactHandle( InternalWorkingMemory workingMemory, Object object ) {
         if ( objectTypeConf == null ) {
             // use default entry point and object class. Notice that at this point object is assignable to resultClass
-            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), resultClass, workingMemory.getKnowledgeBase() );
+            objectTypeConf = new ClassObjectTypeConf( workingMemory.getEntryPoint(), getResultClass(), workingMemory.getKnowledgeBase() );
         }
 
         return workingMemory.getFactHandleFactory().newFactHandle(object, objectTypeConf, workingMemory, null );
