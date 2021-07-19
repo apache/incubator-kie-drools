@@ -42,20 +42,27 @@ import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.TERM_FREQUENCY;
 
 public class KiePMMLTextIndexTest {
 
-    private static final String TERM = "brown fox";
-    private static final String TEXT = "The quick browny fox 234 -. jumps over the lazy dog with another Brown Fox. " +
+    private static final String TERM_0 = "brown fox";
+    private static final String TEXT_0 = "The quick browny fox 234 -. jumps over the lazy dog with another Brown Fox." +
+            " " +
             "The brown fox runs away and to be with " +
             "another  ; : brown-foxy.";
-    private static final String NOT_NORMALIZED_TEXT = "The quick blacky fox 234 -. jumps over the lazy dog with trotother Brown Fox. " +
+    private static final String NOT_NORMALIZED_TEXT_0 = "The quick blacky fox 234 -. jumps over the lazy dog with " +
+            "trotother Brown Fox. " +
             "The brown fox runs away and to be with " +
             "another  ; : again.";
+
+    private static final String TERM_1 = "ui_good";
+
+    private static final String NOT_NORMALIZED_TEXT_1 = "Testing the app for a few days convinced me the interfaces " +
+            "are excellent!";
     private static final String FIELD_NAME = "FIELD_NAME";
 
     @Test
-    public void evaluateNoTextIndexNormalizations() {
+    public void evaluateNoTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
-        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM);
-        List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT));
+        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
+        List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT_0));
         ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
                                                         Collections.emptyList(), kiePMMLNameValues);
 
@@ -75,16 +82,18 @@ public class KiePMMLTextIndexTest {
                     .withMaxLevenshteinDistance(2)
                     .withLocalTermWeights(localTermWeights)
                     .withIsCaseSensitive(true)
+                    .withWordSeparatorCharacterRE("\\s+")
                     .build();
             assertEquals(expected, kiePMMLTextIndex.evaluate(processingDTO));
         });
     }
 
     @Test
-    public void evaluateTextIndexNormalizations() {
+    public void evaluateTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
-        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM);
-        List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, NOT_NORMALIZED_TEXT));
+        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
+        List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
+                                                                                                  NOT_NORMALIZED_TEXT_0));
         ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
                                                         Collections.emptyList(), kiePMMLNameValues);
 
@@ -111,6 +120,96 @@ public class KiePMMLTextIndexTest {
     }
 
     @Test
+    public void evaluateTextIndex1Normalizations() {
+        // <TextIndexNormalization inField="string" outField="stem" regexField="regex">
+        //        <InlineTable>
+        //          <row>
+        //            <string>interfaces?</string>
+        //            <stem>interface</stem>
+        //            <regex>true</regex>
+        //          </row>
+        //          <row>
+        //            <string>is|are|seem(ed|s?)|were</string>
+        //            <stem>be</stem>
+        //            <regex>true</regex>
+        //          </row>
+        //          <row>
+        //            <string>user friendl(y|iness)</string>
+        //            <stem>user_friendly</stem>
+        //            <regex>true</regex>
+        //          </row>
+        //        </InlineTable>
+        //      </TextIndexNormalization>
+        Map<String, Object> columnValues = new HashMap<>();
+        columnValues.put("string", "interfaces?");
+        columnValues.put("stem", "interface");
+        columnValues.put("regex", true);
+        KiePMMLRow row0_0 = new KiePMMLRow(columnValues);
+        columnValues = new HashMap<>();
+        columnValues.put("string", "is|are|seem(ed|s?)|were");
+        columnValues.put("stem", "be");
+        columnValues.put("regex", true);
+        KiePMMLRow row0_1 = new KiePMMLRow(columnValues);
+        columnValues = new HashMap<>();
+        columnValues.put("string", "user friendl(y|iness)");
+        columnValues.put("stem", "user_friendly");
+        columnValues.put("regex", true);
+        KiePMMLRow row0_2 = new KiePMMLRow(columnValues);
+        KiePMMLInlineTable inlineTable0 = new KiePMMLInlineTable("inlineTable0", Collections.emptyList(),
+                                                                 Arrays.asList(row0_0, row0_1, row0_2));
+        KiePMMLTextIndexNormalization indexNormalization0 = KiePMMLTextIndexNormalization.builder(
+                "indexNormalization0", Collections.emptyList())
+                .withInField("string")
+                .withOutField("stem")
+                .withRegexField("regex")
+                .withKiePMMLInlineTable(inlineTable0)
+                .build();
+
+        // <TextIndexNormalization inField="re" outField="feature" regexField="regex">
+        //        <InlineTable>
+        //          <row>
+        //            <re>interface be (user_friendly|well designed|excellent)</re>
+        //            <feature>ui_good</feature>
+        //            <regex>true</regex>
+        //          </row>
+        //        </InlineTable>
+        //      </TextIndexNormalization>
+        columnValues = new HashMap<>();
+        columnValues.put("re", "interface be (user_friendly|well designed|excellent)");
+        columnValues.put("feature", "ui_good");
+        columnValues.put("regex", true);
+        KiePMMLRow row1_0 = new KiePMMLRow(columnValues);
+        KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
+                                                                 Collections.singletonList(row1_0));
+        KiePMMLTextIndexNormalization indexNormalization1 = KiePMMLTextIndexNormalization.builder(
+                "indexNormalization1", Collections.emptyList())
+                .withInField("re")
+                .withOutField("feature")
+                .withRegexField("regex")
+                .withKiePMMLInlineTable(inlineTable1)
+                .build();
+
+        // <FieldRef field="term"/>
+        KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef("term", Collections.emptyList(), null);
+
+        KiePMMLTextIndex kiePMMLTextIndex = KiePMMLTextIndex.builder("reviewText", Collections.emptyList(),
+                                                                     kiePMMLFieldRef)
+                .withMaxLevenshteinDistance(2)
+                .withLocalTermWeights(BINARY)
+                .withIsCaseSensitive(false)
+                .withTextIndexNormalizations(Arrays.asList(indexNormalization0, indexNormalization1))
+                .build();
+
+        List<KiePMMLNameValue> kiePMMLNameValues = Arrays.asList(new KiePMMLNameValue("term",
+                                                                                                  TERM_1),
+                                                                 new KiePMMLNameValue("reviewText",
+                                                                                      NOT_NORMALIZED_TEXT_1));
+        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
+                                                        Collections.emptyList(), kiePMMLNameValues);
+        assertEquals(1.0, kiePMMLTextIndex.evaluate(processingDTO));
+    }
+
+    @Test
     public void evaluateRawTokenize() {
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(2);
         double frequency = 3.0;
@@ -126,8 +225,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(true,
                                                                                                           true,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "\\s+",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -144,8 +243,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(false,
                                                                                                           true,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "\\s+",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -163,8 +262,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(false,
                                                                                                           true,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "[\\s\\-]",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -187,8 +286,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(true,
                                                                                                           false,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "\\s+",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -205,8 +304,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(false,
                                                                                                           false,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "\\s+",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -224,8 +323,8 @@ public class KiePMMLTextIndexTest {
         expectedResults.forEach((localTermWeights, expected) -> assertEquals(expected,
                                                                              KiePMMLTextIndex.evaluateRaw(false,
                                                                                                           false,
-                                                                                                          TERM,
-                                                                                                          TEXT,
+                                                                                                          TERM_0,
+                                                                                                          TEXT_0,
                                                                                                           "[\\s\\-]",
                                                                                                           localTermWeights,
                                                                                                           COUNT_HITS.ALL_HITS,
@@ -256,8 +355,8 @@ public class KiePMMLTextIndexTest {
     public void evaluateLevenshteinDistanceAllHits() {
         String wordSeparatorCharacterRE = "\\s+"; // brown-foxy does not match
         Pattern pattern = Pattern.compile(wordSeparatorCharacterRE);
-        List<String> terms = KiePMMLTextIndex.splitText(TERM, pattern);
-        List<String> texts = KiePMMLTextIndex.splitText(TEXT, pattern);
+        List<String> terms = KiePMMLTextIndex.splitText(TERM_0, pattern);
+        List<String> texts = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(0);
         assertEquals(1, KiePMMLTextIndex.evaluateLevenshteinDistanceAllHits(levenshteinDistance, terms, texts));
         levenshteinDistance = new LevenshteinDistance(1);
@@ -267,8 +366,8 @@ public class KiePMMLTextIndexTest {
         //---
         wordSeparatorCharacterRE = "[\\s\\-]"; // brown-foxy match
         pattern = Pattern.compile(wordSeparatorCharacterRE);
-        terms = KiePMMLTextIndex.splitText(TERM, pattern);
-        texts = KiePMMLTextIndex.splitText(TEXT, pattern);
+        terms = KiePMMLTextIndex.splitText(TERM_0, pattern);
+        texts = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         levenshteinDistance = new LevenshteinDistance(0);
         assertEquals(1, KiePMMLTextIndex.evaluateLevenshteinDistanceAllHits(levenshteinDistance, terms, texts));
         levenshteinDistance = new LevenshteinDistance(1);
@@ -282,7 +381,7 @@ public class KiePMMLTextIndexTest {
         String wordSeparatorCharacterRE = "\\s+"; // brown-foxy does not match
         Pattern pattern = Pattern.compile(wordSeparatorCharacterRE);
         List<String> terms = KiePMMLTextIndex.splitText("The", pattern);
-        List<String> texts = KiePMMLTextIndex.splitText(TEXT, pattern);
+        List<String> texts = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         LevenshteinDistance levenshteinDistance = new LevenshteinDistance(0);
         assertEquals(2, KiePMMLTextIndex.evaluateLevenshteinDistanceBestHits(levenshteinDistance, terms, texts));
         levenshteinDistance = new LevenshteinDistance(1);
@@ -293,7 +392,7 @@ public class KiePMMLTextIndexTest {
         wordSeparatorCharacterRE = "[\\s\\-]"; // brown-foxy match
         pattern = Pattern.compile(wordSeparatorCharacterRE);
         terms = KiePMMLTextIndex.splitText("The", pattern);
-        texts = KiePMMLTextIndex.splitText(TEXT, pattern);
+        texts = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         levenshteinDistance = new LevenshteinDistance(0);
         assertEquals(2, KiePMMLTextIndex.evaluateLevenshteinDistanceBestHits(levenshteinDistance, terms, texts));
         levenshteinDistance = new LevenshteinDistance(1);
@@ -333,14 +432,14 @@ public class KiePMMLTextIndexTest {
         final Pattern unwantedPattern = Pattern.compile("[^a-zA-Z0-9 ]");
         final Pattern wantedPattern = Pattern.compile("[a-zA-Z0-9]");
         Pattern pattern = Pattern.compile("\\s+");
-        List<String> retrieved = KiePMMLTextIndex.splitText(TEXT, pattern);
+        List<String> retrieved = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         assertEquals(25, retrieved.size());
         retrieved.forEach(txt -> {
             assertFalse(unwantedPattern.matcher(txt).find());
             assertTrue(wantedPattern.matcher(txt).find());
         });
         pattern = Pattern.compile("[\\s\\-]");
-        retrieved = KiePMMLTextIndex.splitText(TEXT, pattern);
+        retrieved = KiePMMLTextIndex.splitText(TEXT_0, pattern);
         assertEquals(26, retrieved.size());
         retrieved.forEach(txt -> {
             assertFalse(unwantedPattern.matcher(txt).find());
@@ -359,8 +458,10 @@ public class KiePMMLTextIndexTest {
         columnValues1.put("stem", "an");
         columnValues1.put("regex", true);
         KiePMMLRow row1 = new KiePMMLRow(columnValues1);
-        KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(), Arrays.asList(row0, row1));
-        KiePMMLTextIndexNormalization indexNormalization1 = KiePMMLTextIndexNormalization.builder("indexNormalization1", Collections.emptyList())
+        KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
+                                                                 Arrays.asList(row0, row1));
+        KiePMMLTextIndexNormalization indexNormalization1 = KiePMMLTextIndexNormalization.builder(
+                "indexNormalization1", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable1)
                 .withRecursive(true)
                 .build();
@@ -369,8 +470,10 @@ public class KiePMMLTextIndexTest {
         columnValues2.put("stem", "brown-foxy");
         columnValues2.put("regex", true);
         KiePMMLRow row2 = new KiePMMLRow(columnValues2);
-        KiePMMLInlineTable inlineTable2 = new KiePMMLInlineTable("inlineTable2", Collections.emptyList(), Collections.singletonList(row2));
-        KiePMMLTextIndexNormalization indexNormalization2 = KiePMMLTextIndexNormalization.builder("indexNormalization2", Collections.emptyList())
+        KiePMMLInlineTable inlineTable2 = new KiePMMLInlineTable("inlineTable2", Collections.emptyList(),
+                                                                 Collections.singletonList(row2));
+        KiePMMLTextIndexNormalization indexNormalization2 = KiePMMLTextIndexNormalization.builder(
+                "indexNormalization2", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable2)
                 .withRecursive(true)
                 .build();

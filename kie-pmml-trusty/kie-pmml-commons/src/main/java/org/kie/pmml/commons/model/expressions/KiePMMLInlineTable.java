@@ -44,7 +44,14 @@ public class KiePMMLInlineTable extends AbstractKiePMMLComponent {
                 .map(Optional::get);
     }
 
-    public void replace(final AtomicReference<String> text, final String inField, final String outField, final String regexField) {
-        rows.forEach(row -> row.replace(text, inField, outField, regexField));
+    public void replace(final AtomicReference<String> text,
+                        final String inField,
+                        final String outField,
+                        final String regexField,
+                        final boolean isCaseSensitive,
+                        final int maxLevenshteinDistance,
+                        final boolean tokenize,
+                        final String wordSeparatorCharacterRE) {
+        rows.forEach(row -> row.replace(text, inField, outField, regexField, isCaseSensitive, maxLevenshteinDistance, tokenize, wordSeparatorCharacterRE));
     }
 }

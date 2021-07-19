@@ -221,6 +221,55 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "(), \"continuous\", Arrays.asList" +
                                                                          "(APPLY_FUNCTION_0), " +
                                                                          "APPLY_FUNCTION_Expression);\n" +
+                                                                         "    KiePMMLParameterField " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_0 = " +
+                                                                         "KiePMMLParameterField.builder" +
+                                                                         "(\"reviewText\", Collections.emptyList())" +
+                                                                         ".withDataType(null).withOpType(null)" +
+                                                                         ".withDisplayName(null).build();\n" +
+                                                                         "    KiePMMLParameterField " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_1 = " +
+                                                                         "KiePMMLParameterField.builder(\"term\", " +
+                                                                         "Collections.emptyList()).withDataType(null)" +
+                                                                         ".withOpType(null).withDisplayName(null)" +
+                                                                         ".build();\n" +
+                                                                         "    KiePMMLFieldRef " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_Expression = new KiePMMLFieldRef(\"term\", Collections.emptyList(), null);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_0_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"interfaces?\" }, { \"stem\", \"interface\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_0 = new KiePMMLRow(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_0_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_1_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"is|are|seem(ed|s?)|were\" }, { \"stem\", \"be\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_1 = new KiePMMLRow(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_1_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_2_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"string\", \"user friendl(y|iness)\" }, { \"stem\", \"user_friendly\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_2 = new KiePMMLRow(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_2_columnValues);\n" +
+                                                                         "    KiePMMLInlineTable " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable = new KiePMMLInlineTable(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable\", Collections.emptyList(), Arrays.asList(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_0, TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_1, TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable_2));\n" +
+                                                                         "    KiePMMLTextIndexNormalization " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0 = KiePMMLTextIndexNormalization.builder(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0\", Collections.emptyList()).withInField(\"string\").withOutField(\"stem\").withKiePMMLInlineTable(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0_InlineTable).withRegexField(\"regex\").withRecursive(false).withIsCaseSensitive(false).withMaxLevenshteinDistance(null).withWordSeparatorCharacterRE(null).withTokenize(false).build();\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable_0_columnValues = Stream.of(new Object[][] { { \"regex\", \"true\" }, { \"re\", \"interface be (user_friendly|well designed|excellent)\" }, { \"feature\", \"ui_good\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable_0 = new KiePMMLRow(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable_0_columnValues);\n" +
+                                                                         "    KiePMMLInlineTable " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable = new KiePMMLInlineTable(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable\", Collections.emptyList(), Arrays.asList(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable_0));\n" +
+                                                                         "    KiePMMLTextIndexNormalization " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1 = KiePMMLTextIndexNormalization.builder(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1\", Collections.emptyList()).withInField(\"re\").withOutField(\"feature\").withKiePMMLInlineTable(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable).withRegexField(\"regex\").withRecursive(false).withIsCaseSensitive(false).withMaxLevenshteinDistance(null).withWordSeparatorCharacterRE(null).withTokenize(false).build();\n" +
+                                                                         "    KiePMMLTextIndex " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression = KiePMMLTextIndex.builder(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression\", Collections.emptyList(), TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_Expression).withLocalTermWeights(org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.BINARY).withIsCaseSensitive(false).withMaxLevenshteinDistance(0).withCountHits(org.kie.pmml.api.enums.COUNT_HITS.ALL_HITS).withWordSeparatorCharacterRE(\"\\\\s+\").withTokenize(true).withTextIndexNormalizations(Arrays.asList(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0, TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1)).build();\n" +
+                                                                         "    KiePMMLDefineFunction " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION = new " +
+                                                                         "KiePMMLDefineFunction" +
+                                                                         "(\"TEXT_INDEX_NORMALIZATION_FUNCTION\", " +
+                                                                         "Collections.emptyList(), \"continuous\", " +
+                                                                         "Arrays.asList" +
+                                                                         "(TEXT_INDEX_NORMALIZATION_FUNCTION_0, " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_1), " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression);\n" +
                                                                          "    KiePMMLConstant " +
                                                                          "transformationDictionaryDerivedField_0_0 = " +
                                                                          "new KiePMMLConstant" +
@@ -356,7 +405,8 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "(\"transformationDictionary\", Collections" +
                                                                          ".emptyList()).withDefineFunctions(Arrays" +
                                                                          ".asList(CONSTANT_FUNCTION, " +
-                                                                         "FIELDREF_FUNCTION, APPLY_FUNCTION))" +
+                                                                         "FIELDREF_FUNCTION, APPLY_FUNCTION, " +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION))" +
                                                                          ".withDerivedFields(Arrays.asList" +
                                                                          "(transformationDictionaryDerivedField_0, " +
                                                                          "transformationDictionaryDerivedField_1, " +
@@ -369,6 +419,7 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    return transformationDictionary;\n" +
                                                                          "}");
         MethodDeclaration retrieved = classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
+        assertEquals(expected.toString(), retrieved.toString());
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
                                                        ".KiePMMLLocalTransformations createLocalTransformations() {\n" +

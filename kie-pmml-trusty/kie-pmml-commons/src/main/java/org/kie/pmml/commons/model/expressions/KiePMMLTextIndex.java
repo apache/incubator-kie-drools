@@ -184,7 +184,7 @@ public class KiePMMLTextIndex extends AbstractKiePMMLComponent implements KiePMM
         String text = (String) getFromPossibleSources(name, processingDTO).orElseThrow(() -> new KiePMMLException("No text to scan in " + this));
         if (textIndexNormalizations != null) {
             for (KiePMMLTextIndexNormalization textIndexNormalization : textIndexNormalizations) {
-                text = textIndexNormalization.replace(text);
+                text = textIndexNormalization.replace(text, isCaseSensitive, maxLevenshteinDistance, false, DEFAULT_TOKENIZER);
             }
         }
         return evaluateRaw(isCaseSensitive,

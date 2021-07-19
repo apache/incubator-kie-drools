@@ -23,6 +23,7 @@ import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.MapValues;
 import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.TextIndex;
 
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
@@ -31,6 +32,7 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFact
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLMapValuesFactory.getMapValuesVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTextIndexFactory.getTextIndexVariableDeclaration;
 
 /**
  * Facade for actual implementations
@@ -58,6 +60,8 @@ public class KiePMMLExpressionFactory {
             return getNormContinuousVariableDeclaration(variableName, (NormContinuous) expression);
         } else if (expression instanceof NormDiscrete) {
             return getNormDiscreteVariableDeclaration(variableName, (NormDiscrete) expression);
+        } else if (expression instanceof TextIndex) {
+            return getTextIndexVariableDeclaration(variableName, (TextIndex) expression);
         } else {
             throw new IllegalArgumentException(String.format(EXPRESSION_NOT_MANAGED, expression.getClass()));
         }

@@ -24,6 +24,7 @@ import java.util.Map;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
+import static org.kie.pmml.commons.model.expressions.KiePMMLTextIndex.DEFAULT_TOKENIZER;
 
 public class KiePMMLTextIndexNormalizationTest {
 
@@ -37,9 +38,10 @@ public class KiePMMLTextIndexNormalizationTest {
         KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Collections.singletonList(row));
         KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
+                .withIsCaseSensitive(false)
                 .build();
         String text = "interfacea";
-        String retrieved = indexNormalization.replace(text);
+        String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
         assertEquals("fooa", retrieved);
 
         //---
@@ -49,9 +51,10 @@ public class KiePMMLTextIndexNormalizationTest {
         inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Collections.singletonList(row));
         indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
+                .withIsCaseSensitive(false)
                 .build();
         text = "Why they seem so ?";
-        retrieved = indexNormalization.replace(text);
+        retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
         assertEquals( "Why they be so ?", retrieved);
     }
 
@@ -70,9 +73,10 @@ public class KiePMMLTextIndexNormalizationTest {
         KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Arrays.asList(row1, row2));
         KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
+                .withIsCaseSensitive(false)
                 .build();
         String text = "Why the interfacea seem so ?";
-        String retrieved = indexNormalization.replace(text);
+        String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
         assertEquals("Why the fooa be so ?", retrieved);
     }
 
@@ -96,10 +100,11 @@ public class KiePMMLTextIndexNormalizationTest {
         KiePMMLInlineTable inlineTable = new KiePMMLInlineTable("inlineTable", Collections.emptyList(), Arrays.asList(row0, row1, row2));
         KiePMMLTextIndexNormalization indexNormalization = KiePMMLTextIndexNormalization.builder("indexNormalization", Collections.emptyList())
                 .withKiePMMLInlineTable(inlineTable)
+                .withIsCaseSensitive(false)
                 .withRecursive(true)
                 .build();
         String text = "Why they interfaceems so ?";
-        String retrieved = indexNormalization.replace(text);
+        String retrieved = indexNormalization.replace(text, true, 0, false, DEFAULT_TOKENIZER);
         assertEquals("Why they final so ?", retrieved);
     }
 }

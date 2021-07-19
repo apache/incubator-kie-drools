@@ -35,10 +35,10 @@ public class KiePMMLTextIndexNormalization extends AbstractKiePMMLComponent {
     private String outField = "stem";
     private String regexField = "regex";
     private boolean recursive = false;
-    private boolean isCaseSensitive = false;
-    private int maxLevenshteinDistance = 0;
-    private String wordSeparatorCharacterRE = DEFAULT_TOKENIZER;
-    private boolean tokenize = true;
+    private Boolean isCaseSensitive = null;
+    private Integer maxLevenshteinDistance = null;
+    private String wordSeparatorCharacterRE = null;
+    private Boolean tokenize = null;
 
 
     private KiePMMLTextIndexNormalization(String name, List<KiePMMLExtension> extensions) {
@@ -49,16 +49,24 @@ public class KiePMMLTextIndexNormalization extends AbstractKiePMMLComponent {
         return new Builder(name, extensions);
     }
 
-    public String replace(final String text) {
+    public String replace(final String text,
+                          final boolean isCaseSensitiveParam,
+                          final int maxLevenshteinDistanceParam,
+                          final boolean tokenizeParam,
+                          final String wordSeparatorCharacterREParam) {
         Optional<String> retrieved = Optional.empty();
         if (inlineTable != null) {
             AtomicReference<String> toEdit = new AtomicReference<>(text);
-            inlineTable.replace(toEdit, inField, outField, regexField);
+            boolean isCaseSensitiveToUse = isCaseSensitive == null ? isCaseSensitiveParam :  isCaseSensitive;
+            int maxLevenshteinDistanceToUse = maxLevenshteinDistance == null ? maxLevenshteinDistanceParam : maxLevenshteinDistance;
+            boolean tokenizeToUse = tokenize == null ? tokenizeParam :  tokenize;
+            String wordSeparatorCharacterREToUse = wordSeparatorCharacterRE == null ? wordSeparatorCharacterREParam : wordSeparatorCharacterRE;
+            inlineTable.replace(toEdit, inField, outField, regexField, isCaseSensitiveToUse, maxLevenshteinDistanceToUse, tokenizeToUse, wordSeparatorCharacterREToUse);
             boolean replaced = !text.equals(toEdit.get());
             if (recursive) {
                 while (replaced) {
                     String original = toEdit.get();
-                    inlineTable.replace(toEdit, inField, outField, regexField);
+                    inlineTable.replace(toEdit, inField, outField, regexField, isCaseSensitiveToUse, maxLevenshteinDistanceToUse, tokenizeToUse, wordSeparatorCharacterREToUse);
                     replaced = !original.equals(toEdit.get());
                 }
             }
@@ -106,13 +114,17 @@ public class KiePMMLTextIndexNormalization extends AbstractKiePMMLComponent {
             return this;
         }
 
-        public Builder withIsCaseSensitive(boolean isCaseSensitive) {
-            toBuild.isCaseSensitive = isCaseSensitive;
+        public Builder withIsCaseSensitive(Boolean isCaseSensitive) {
+            if (isCaseSensitive != null) {
+                toBuild.isCaseSensitive = isCaseSensitive;
+            }
             return this;
         }
 
-        public Builder withMaxLevenshteinDistance(int maxLevenshteinDistance) {
-            toBuild.maxLevenshteinDistance = maxLevenshteinDistance;
+        public Builder withMaxLevenshteinDistance(Integer maxLevenshteinDistance) {
+            if (maxLevenshteinDistance != null) {
+                toBuild.maxLevenshteinDistance = maxLevenshteinDistance;
+            }
             return this;
         }
 
@@ -123,8 +135,10 @@ public class KiePMMLTextIndexNormalization extends AbstractKiePMMLComponent {
             return this;
         }
 
-        public Builder withTokenize(boolean tokenize) {
-            toBuild.tokenize = tokenize;
+        public Builder withTokenize(Boolean tokenize) {
+            if (tokenize != null) {
+                toBuild.tokenize = tokenize;
+            }
             return this;
         }
     }
