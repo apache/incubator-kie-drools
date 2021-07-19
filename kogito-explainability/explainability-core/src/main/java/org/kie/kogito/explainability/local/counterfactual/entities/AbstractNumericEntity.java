@@ -51,12 +51,12 @@ public abstract class AbstractNumericEntity<T extends Number> extends AbstractEn
 
     @Override
     public String toString() {
-        return originalValue.getClass().getName() + "Feature{"
+        return originalValue.getClass().getName() + "Entity{"
                 + "value="
                 + proposedValue
-                + ", intRangeMinimum="
+                + ", rangeMinimum="
                 + rangeMinimum
-                + ", intRangeMaximum="
+                + ", rangeMaximum="
                 + rangeMaximum
                 + ", id='"
                 + featureName

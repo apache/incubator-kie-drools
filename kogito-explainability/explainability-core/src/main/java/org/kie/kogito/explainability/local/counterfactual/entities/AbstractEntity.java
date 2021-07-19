@@ -55,7 +55,7 @@ public abstract class AbstractEntity<T> implements CounterfactualEntity {
 
     @Override
     public String toString() {
-        return originalValue.getClass().getName() + "Feature{"
+        return originalValue.getClass().getName() + "Entity{"
                 + "value="
                 + proposedValue
                 + ", id='"
