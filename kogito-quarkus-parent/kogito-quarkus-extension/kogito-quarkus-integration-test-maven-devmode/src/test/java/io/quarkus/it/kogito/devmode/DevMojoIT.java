@@ -50,6 +50,15 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
     private static final String MAVEN_REPO_LOCAL = System.getProperty(PROPERTY_MAVEN_REPO_LOCAL);
     private static final String MAVEN_SETTINGS = System.getProperty(PROPERTY_MAVEN_SETTINGS);
 
+    private static final long INIT_POLL_DELAY = 1;
+    private static final TimeUnit INIT_POLL_DELAY_UNIT = TimeUnit.SECONDS;
+    private static final long INIT_POLL_TIMEOUT = 3;
+    private static final TimeUnit INIT_POLL_TIMEOUT_UNIT = TimeUnit.MINUTES;
+    private static final long RELOAD_POLL_DELAY = INIT_POLL_DELAY;
+    private static final TimeUnit RELOAD_POLL_DELAY_UNIT = INIT_POLL_DELAY_UNIT;
+    private static final long RELOAD_POLL_TIMEOUT = 25;
+    private static final TimeUnit RELOAD_POLL_TIMEOUT_UNIT = TimeUnit.SECONDS;
+
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
@@ -57,8 +66,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
     private String getRestResponse(String url) throws Exception {
         AtomicReference<String> resp = new AtomicReference<>();
         // retry on exceptions for connection refused, connection errors, etc. which will occur until the Kogito Quarkus maven project is fully built and running
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(1, TimeUnit.MINUTES).until(() -> {
+        await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> {
                     try {
                         String content = DevModeTestUtils.get("http://localhost:" + HTTP_TEST_PORT + url);
                         resp.set(content);
@@ -127,8 +136,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(1, TimeUnit.MINUTES).until(() -> getRestResponse("/control").contains("Hello, v1"));
+        await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
 
         System.out.println("Starting bpmn process");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -150,8 +159,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         File source = new File(testDir, "src/main/resources/simple.bpmn2");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
 
         System.out.println("Starting bpmn process");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -172,8 +181,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         System.out.println("Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
 
         System.out.println("Starting bpmn process");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -201,8 +210,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(1, TimeUnit.MINUTES).until(() -> getRestResponse("/control").contains("Hello, v1"));
+        await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
 
         System.out.println("Evaluate DMN");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -223,8 +232,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         File source = new File(testDir, "src/main/resources/hello.dmn");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
 
         System.out.println("Evaluate DMN");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -244,8 +253,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         System.out.println("Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
 
         System.out.println("Evaluate DMN");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -272,8 +281,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         final File controlSource = new File(testDir, "src/main/java/control/RestControl.java");
 
         // await Quarkus
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(1, TimeUnit.MINUTES).until(() -> getRestResponse("/control").contains("Hello, v1"));
+        await().pollDelay(INIT_POLL_DELAY, INIT_POLL_DELAY_UNIT)
+                .atMost(INIT_POLL_TIMEOUT, INIT_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Hello, v1"));
 
         System.out.println("Evaluate DRL");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -294,8 +303,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         File source = new File(testDir, "src/main/resources/acme/rules.drl");
         filter(source, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
         filter(controlSource, Collections.singletonMap("\"Hello, \"+", "\"Ciao, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Ciao, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Ciao, v1"));
 
         System.out.println("Evaluate DRL");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
@@ -315,8 +324,8 @@ public class DevMojoIT extends RunAndCheckMojoTestBase {
         System.out.println("Beginning Change #2");
         filter(source, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
         filter(controlSource, Collections.singletonMap("\"Ciao, \"+", "\"Bonjour, \"+"));
-        await().pollDelay(1, TimeUnit.SECONDS)
-                .atMost(25, TimeUnit.SECONDS).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
+        await().pollDelay(RELOAD_POLL_DELAY, RELOAD_POLL_DELAY_UNIT)
+                .atMost(RELOAD_POLL_TIMEOUT, RELOAD_POLL_TIMEOUT_UNIT).until(() -> getRestResponse("/control").contains("Bonjour, v1"));
 
         System.out.println("Evaluate DRL");
         given().baseUri("http://localhost:" + HTTP_TEST_PORT)
