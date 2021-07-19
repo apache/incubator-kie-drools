@@ -35,6 +35,7 @@
         <container.image.data-index-service-mongodb>org.kie.kogito/data-index-service-mongodb:${project.version}</container.image.data-index-service-mongodb>
         <container.image.trusty-service-infinispan>org.kie.kogito/trusty-service-infinispan:${project.version}</container.image.trusty-service-infinispan>
         <container.image.trusty-service>org.kie.kogito/trusty-service:${project.version}</container.image.trusty-service>
+        <container.image.task-assigning-service>org.kie.kogito/task-assigning-service:${project.version}</container.image.task-assigning-service>
 
         <!-- OptaPlanner version -->
         <version.org.optaplanner>8.10.0-SNAPSHOT</version.org.optaplanner>
@@ -96,6 +97,7 @@
                             <container.image.jobs-service>${container.image.jobs-service}</container.image.jobs-service>
                             <container.image.explainability-service-messaging>${container.image.explainability-service-messaging}</container.image.explainability-service-messaging>
                             <container.image.trusty-service-infinispan>${container.image.trusty-service-infinispan}</container.image.trusty-service-infinispan>
+                            <container.image.task-assigning-service>${container.image.task-assigning-service}</container.image.task-assigning-service>
                             <quarkus.http.test-port>${tests.quarkus.http.port}</quarkus.http.test-port>
                         </systemPropertyVariables>
                         <classesDirectory>${project.build.outputDirectory}</classesDirectory>

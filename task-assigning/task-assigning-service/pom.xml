@@ -82,6 +82,11 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>task-assigning-user-service-properties</artifactId>
     </dependency>
+    <!-- Build container image -->
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-container-image-jib</artifactId>
+    </dependency>
 
     <!-- test dependencies -->
     <dependency>
