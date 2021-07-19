@@ -7,7 +7,7 @@ No builds are running::
 If you do not see any builds running nor any resources created in the relevant namespace, enter the following commands to retrieve running pods and to view the operator log for the pod:
 +
 --
-.View {KOGITO} Operator log for a specified pod
+.View RHPAM Kogito Operator log for a specified pod
 [source,subs="attributes+,+quotes"]
 ----
 // Retrieves running pods
@@ -16,7 +16,7 @@ $ oc get pods
 NAME                                     READY   STATUS      RESTARTS   AGE
 kogito-operator-6d7b6d4466-9ng8t   1/1     Running     0          26m
 
-// Opens {KOGITO} Operator log for the pod
+// Opens RHPAM Kogito Operator log for the pod
 $ oc logs -f kogito-operator-6d7b6d4466-9ng8t
 ----
 --

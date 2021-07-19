@@ -1,9 +1,9 @@
 [id="proc-kogito-microservice-running-app_{context}"]
 = Running a {KOGITO} microservice
 
-After you design the business decisions for your {KOGITO} microservice, you can run your Quarkus or Spring Boot application in one of the following modes:
+After you design the business decisions for your {KOGITO} microservice, you can run your {QUARKUS} or Spring Boot application in one of the following modes:
 
-* *Development mode*: For local testing. On Quarkus, development mode also offers live reload of your decisions in your running applications for advanced debugging.
+* *Development mode*: For local testing. On {QUARKUS}, development mode also offers live reload of your decisions in your running applications for advanced debugging.
 * *JVM mode*: For compatibility with a Java virtual machine (JVM).
 
 .Procedure
@@ -12,7 +12,7 @@ In a command terminal, navigate to the project that contains your {KOGITO} micro
 * For development mode:
 +
 --
-.On Quarkus
+.On {QUARKUS}
 [source]
 ----
 $ mvn clean compile quarkus:dev
@@ -27,7 +27,7 @@ $ mvn clean compile spring-boot:run
 * For JVM mode:
 +
 --
-.On Quarkus and Spring Boot
+.On {QUARKUS} and Spring Boot
 [source]
 ----
 $ mvn clean package
