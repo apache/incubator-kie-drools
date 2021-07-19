@@ -15,7 +15,6 @@
     "cypress:run": "lerna run cypress:run --",
     "cypress:run-management-console": "cypress run --project ./packages/management-console",
     "cypress:run-management-console-webapp": "cypress run --project ./packages/management-console-webapp",
-    "cypress:run-task-console": "cypress run --project ./packages/task-console",
     "cypress:run-task-console-webapp": "cypress run --project ./packages/task-console-webapp",
     "locktt": "locktt"
   },
@@ -30,7 +29,6 @@
     "@kogito-tooling/envelope": "^0.8.6",
     "@kogito-tooling/envelope-bus": "^0.8.6",
     "@kogito-apps/management-console": "file:packages/management-console",
-    "@kogito-apps/task-console": "file:packages/task-console",
     "@patternfly/react-core": "4.84.4",
     "@patternfly/react-icons": "4.7.22",
     "@patternfly/react-styles": "4.7.22",

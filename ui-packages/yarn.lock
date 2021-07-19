@@ -1836,15 +1836,6 @@
     react-json-view "1.19.1"
     react-moment "0.9.7"
 
-"@kogito-apps/task-console@file:packages/task-console":
-  version "1.0.0"
-  dependencies:
-    "@kogito-apps/common" "1.0.0"
-    ajv "6.12.2"
-    uniforms "3.0.0"
-    uniforms-bridge-json-schema "3.0.0"
-    uniforms-patternfly "4.1.2"
-
 "@kogito-tooling/backend@0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@kogito-tooling/backend/-/backend-0.10.0.tgz#f5e67866e380b9e2de3ad6266b02fb4ecb761a9c"

@@ -30,7 +30,6 @@
       ${path.to.packages}/process-list/src,
       ${path.to.packages}/task-console-shared/src,
       ${path.to.packages}/task-console-webapp/src,
-      ${path.to.packages}/task-console/src,
       ${path.to.packages}/task-details/src,
       ${path.to.packages}/task-form/src,
       ${path.to.packages}/task-inbox/src,
@@ -51,7 +50,6 @@
       ${path.to.packages}/process-list/coverage/lcov.info,
       ${path.to.packages}/task-console-shared/coverage/lcov.info,
       ${path.to.packages}/task-console-webapp/coverage/lcov.info,
-      ${path.to.packages}/task-console/coverage/lcov.info,
       ${path.to.packages}/task-details/coverage/lcov.info,
       ${path.to.packages}/task-form/coverage/lcov.info,
       ${path.to.packages}/task-inbox/coverage/lcov.info,
@@ -72,9 +70,6 @@
             </fileset>
             <fileset>
               <directory>packages/management-console/node_modules</directory>
-            </fileset>
-            <fileset>
-              <directory>packages/task-console/node_modules</directory>
             </fileset>
             <fileset>
               <directory>packages/trusty/node_modules</directory>
