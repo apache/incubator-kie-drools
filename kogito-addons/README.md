@@ -1,17 +1,22 @@
 # Kogito Add-Ons
 
-In this package you will find the modules responsible to extend the Kogito Core capabilities. They are responsible to
+In this package you will find the base Addons modules that extend the Kogito Core capabilities. They are responsible to
 give persistence, monitoring, messaging, and many other features on top of a plain Kogito service.
 
 ## Modules organization
 
-At the root of this project you will find three sub-modules:
+At the root of this project you will find:
 
-1. `common` - contains the core features for a specific add-on, not tied to a particular runtime
-2. `quarkus` - contains the add-ons for the Quarkus Runtime. If your Kogito project is built with Quarkus, use the
-   dependencies listed in this sub-module
-3. `springboot` - contains the add-ons for SpringBoot. These dependencies are meant to use only with Kogito projects
-   built with SpringBoot
+1. `common` - contains the core features for a specific add-on. They are not meant to be used in user's final projects,
+   but as main libraries for runtimes implementations
+2. `deprecated` - about to be deprecated modules in future versions
+
+The addons for Quarkus/SpringBoot you will find in their own modules in the root of this repository:
+
+1. [`quarkus/addons`](../quarkus/addons) - contains the add-ons for Quarkus. If your Kogito project is built with
+   Quarkus, use the dependencies listed in this sub-module
+2. [`springboot/addons`](../springboot/addons) - contains the add-ons for SpringBoot. These dependencies are meant to
+   use only with Kogito projects built with SpringBoot
 
 Inside each of these modules, you will find the add-ons organized by its capabilities.
 
@@ -70,11 +75,12 @@ knowledge of the Kogito engine internals. Then follow these steps:
    complex scenario for your new add-on. See [`cloudevents`](common/cloudevents) as an example.
 2. Do not use any dependencies from Quarkus or SpringBoot in `common` module. Your add-on must only have code to support
    your capability. New dependencies must be added to the [kogito-build](../kogito-build/kogito-build-parent) BOM.
-3. Create the same capability under the runtime you wish to add support (either `quarkus` or `springboot`). Make sure
-   that your capability imports either `quarkus-bom` or `springboot-dependencies` BOMs. You can choose to give support
-   to only one of them, just make it clear why and discuss this decision with the community.
-4. If your capability can have multiple implementations, add at least one flavor under `{runtime}/{capability}` module.
-   See [`monitoring`](quarkus/monitoring) as an example
+3. Create the same capability under the `addons` module in the runtime module you wish to add support (
+   either [`quarkus`](../quarkus/addons) or [`springboot`](../springboot/addons)). Make sure that your capability
+   imports either `quarkus-bom` or `springboot-dependencies` BOMs. You can choose to give support to only one of them,
+   just make it clear why and discuss this decision with the community.
+4. If your capability can have multiple implementations, add at least one flavor under `{runtime}/addons/{capability}`
+   module. See [`monitoring`](../quarkus/addons/monitoring) as an example
 5. Document each top-level module with a `README.md` and make it clear what your add-on is capable to do
 6. Create an example of usage in the [`kogito-examples`](https://github.com/kiegroup/kogito-examples) repository
 
@@ -84,7 +90,8 @@ Sometimes, a capability requires a specific implementation. For example, `persis
 persistence technologies that can their specific details. Each implementation can be handled differently based on the
 runtimes supported by Kogito:
 
-1. Start with the runtime you wish to add the implementation. Create a new sub-module under `{runtime}/{capability}`
+1. Start with the runtime you wish to add the implementation. Create a new sub-module
+   under `{runtime}/addons/{capability}`
 2. Try to code with the runtime in mind and leverage their libraries. For Quarkus, see
    the [Quarkus Guides](https://quarkus.io/guides/) page to figure how to interact with the given technology. SpringBoot
    also has a comprehensive list of [guides](https://spring.io/guides)

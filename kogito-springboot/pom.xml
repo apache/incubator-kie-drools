@@ -26,11 +26,12 @@
     <relativePath>../kogito-build/kogito-build-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>kogito-springboot</artifactId>
+  <artifactId>springboot</artifactId>
   <name>Kogito :: SpringBoot</name>
   <packaging>pom</packaging>
   <modules>
     <module>kogito-springboot-starter</module>
+    <module>addons</module>
   </modules>
 
   <dependencyManagement>

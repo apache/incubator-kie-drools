@@ -124,9 +124,9 @@
     <module>drools</module>
     <module>jbpm</module>
     <module>kogito-codegen-modules</module>
-    <module>kogito-springboot</module>
+    <module>springboot</module>
     <module>kogito-maven-plugin</module>
-    <module>kogito-quarkus-parent</module>
+    <module>quarkus</module>
     <module>archetypes</module>
     <module>grafana-api</module>
     <module>addons</module>
