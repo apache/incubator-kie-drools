@@ -19,22 +19,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.drools.core.base.EvaluatorWrapper;
-import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.constraint.ConditionEvaluator;
 import org.drools.core.spi.Tuple;
+import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;
 import org.mvel2.ast.ASTNode;
 import org.mvel2.ast.And;
-import org.mvel2.ast.BinaryOperation;
 import org.mvel2.ast.BooleanNode;
 import org.mvel2.ast.Contains;
 import org.mvel2.ast.LineLabel;
+import org.mvel2.ast.LiteralNode;
 import org.mvel2.ast.Negation;
 import org.mvel2.ast.Or;
 import org.mvel2.ast.Substatement;
@@ -177,7 +177,10 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         if (node instanceof Contains) {
             return ((Contains)node).getFirstStatement().getAccessor() != null;
         }
-        return node instanceof BinaryOperation ? ((BooleanNode) node).getLeft().getAccessor() != null : node.getAccessor() != null;
+        if (node instanceof BooleanNode) {
+            return isEvaluated(((BooleanNode) node).getLeft()) && isEvaluated(((BooleanNode) node).getRight());
+        }
+        return node.getAccessor() != null || node instanceof LiteralNode;
     }
 
     private static ASTNode getRootNode(Serializable executableStatement) {
