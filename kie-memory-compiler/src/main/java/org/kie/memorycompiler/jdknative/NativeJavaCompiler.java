@@ -78,6 +78,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {
                 jFileManager.setLocation( StandardLocation.CLASS_PATH, pSettings.getClasspathLocations() );
+                jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target" + File.separator + "classes")) );
             } catch (IOException e) {
                 // ignore if cannot set the classpath
             }
