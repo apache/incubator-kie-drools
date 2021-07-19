@@ -225,8 +225,10 @@ Advanced configuration:
         ...
         <nearbySelection>...</nearbySelection>
       </secondaryEntitySelector>
-      <variableNameInclude>room</variableNameInclude>
-      <variableNameInclude>...</variableNameInclude>
+      <variableNameIncludes>
+        <variableNameInclude>room</variableNameInclude>
+        <variableNameInclude>...</variableNameInclude>
+      </variableNameIncludes>
     </swapMoveSelector>
 ----
 
@@ -324,8 +326,10 @@ Advanced configuration:
         </entitySelector>
         ...
       </secondaryPillarSelector>
-      <variableNameInclude>employee</variableNameInclude>
-      <variableNameInclude>...</variableNameInclude>
+      <variableNameIncludes>
+        <variableNameInclude>employee</variableNameInclude>
+        <variableNameInclude>...</variableNameInclude>
+      </variableNameIncludes>
     </pillarSwapMoveSelector>
 ----
 
