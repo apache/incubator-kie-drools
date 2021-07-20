@@ -24,6 +24,6 @@ public class BankingExample2 {
     }
     
     private static Integer wrap(int i) {
-        return new Integer(i);
+        return Integer.valueOf(i);
     }
 }

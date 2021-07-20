@@ -34,6 +34,7 @@ import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.api.EvaluatorResult.ResultType;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.impl.DMNDecisionResultImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
@@ -81,7 +82,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
         }
         boolean typeCheck = ((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(result.getModel());
         if (typeCheck) {
-            Object c = DMNRuntimeImpl.coerceUsingType(ctx,
+            Object c = DMNRuntimeImpl.coerceUsingType(decisionIDs.size() == 1 ? ctx.values().iterator().next() : ctx,
                                                       dsNode.getResultType(),
                                                       typeCheck,
                                                       (rx, tx) -> MsgUtil.reportMessage(LOG,
@@ -96,7 +97,7 @@ public class DMNDecisionServiceEvaluator implements DMNExpressionEvaluator {
                                                                                         MsgUtil.clipString(rx.toString(), 50)));
             if (c == null) {
                 ctx.clear();
-                decisionResults.clear();
+                decisionResults.forEach(it -> ((DMNDecisionResultImpl) it).setResult(null));
             }
         }
         for (DMNDecisionResult dr : decisionResults) {

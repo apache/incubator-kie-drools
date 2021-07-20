@@ -36,6 +36,7 @@ import org.drools.core.common.EqualityKey;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalRuleFlowGroup;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
 import org.drools.core.common.LogicalDependency;
 import org.drools.core.common.NamedEntryPoint;
@@ -385,12 +386,8 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
     
     public InternalFactHandle getFactHandle(InternalFactHandle handle) {
-        Object object = handle.getObject();
-        handle = getFactHandleFromWM( object );
-        if ( handle == null ) {
-            throw new RuntimeException( "Update error: handle not found for object: " + object + ". Is it in the working memory?" );
-        }
-        return handle;
+        InternalFactHandle handleFromWM = getFactHandleFromWM( handle.getObject() );
+        return handleFromWM != null ? handleFromWM : handle;
     }
     
     public void update(final FactHandle handle,
@@ -510,16 +507,17 @@ public class DefaultKnowledgeHelper<T extends ModedAssertion<T>>
     }
 
     private InternalFactHandle getFactHandleFromWM(final Object object) {
-        InternalFactHandle handle = null;
-        // entry point null means it is a generated fact, not a regular inserted fact
-        // NOTE: it would probably be a good idea to create a specific attribute for that
-            for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
-                handle = (InternalFactHandle) ep.getFactHandle( object );
-                if( handle != null ) {
-                    break;
-                }
+        return getFactHandleFromWM(workingMemory, object);
+    }
+
+    public static InternalFactHandle getFactHandleFromWM(InternalWorkingMemory workingMemory, final Object object) {
+        for ( EntryPoint ep : workingMemory.getEntryPoints() ) {
+            InternalFactHandle handle = (InternalFactHandle) ep.getFactHandle( object );
+            if( handle != null ) {
+                return handle;
             }
-        return handle;
+        }
+        return null;
     }
     
     @SuppressWarnings("unchecked")

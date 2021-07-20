@@ -103,7 +103,7 @@ public class PropertiesSheetListener implements DataListener {
         if ( emptyCellValue( value ) ) {
             return;
         }
-        final Integer rowInt = new Integer( row );
+        final Integer rowInt = Integer.valueOf( row );
         if ( this._rowProperties.containsKey( rowInt ) ) {
             final String[] keyValue = (String[]) this._rowProperties.get( rowInt );
             if ( PropertiesSheetListener.EMPTY_STRING.equals( keyValue[1] ) ) {

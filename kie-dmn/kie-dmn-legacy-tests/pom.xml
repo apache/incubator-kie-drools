@@ -3,9 +3,11 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.57.0-SNAPSHOT</version>
+    <version>7.58.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-legacy-tests</artifactId>
+  
+  <name>KIE :: Decision Model Notation :: Legacy tests (previous DMN versions)</name>
   
   <dependencyManagement>
     <dependencies>

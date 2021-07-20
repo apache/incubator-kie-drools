@@ -70,7 +70,7 @@ public class DTSheetListener implements DataListener {
             return;
         }
         if (columns < dt.getInput().size() + dt.getOutput().size()) {
-            throw new RuntimeException("In row " + rowNumber + " only total of cells is: " + columns);
+            throw new XLS2DMNException("In row " + rowNumber + " only total of cells is: " + columns);
         }
         curRule = new TDecisionRule();
         dt.getRule().add(curRule);
@@ -112,7 +112,7 @@ public class DTSheetListener implements DataListener {
 
     private void valueCheck(int row, int column, String value) {
         if (value == null || value.isEmpty()) {
-            throw new RuntimeException(headerInfo.toString() + row + " " + column);
+            throw new XLS2DMNException("Unexpected empty value in " + headerInfo.toString() + " at row " + row + " at column " + column);
         }
     }
     
