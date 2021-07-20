@@ -70,7 +70,7 @@ public class KiePMMLRow implements Serializable {
                         final boolean tokenize,
                         final String wordSeparatorCharacterRE) {
         boolean isRegex =
-                regexField != null && columnValues.containsKey(regexField) && (boolean) columnValues.get(regexField);
+                regexField != null && columnValues.containsKey(regexField) &&  Boolean.parseBoolean((String)columnValues.get(regexField));
         String replaced = isRegex ? regexReplace(text.get(), (String) columnValues.get(outField), (String) columnValues.get(inField))
                 : replace(text.get(), (String) columnValues.get(outField), (String)  columnValues.get(inField), isCaseSensitive, maxLevenshteinDistance, tokenize, wordSeparatorCharacterRE);
         text.set(replaced);

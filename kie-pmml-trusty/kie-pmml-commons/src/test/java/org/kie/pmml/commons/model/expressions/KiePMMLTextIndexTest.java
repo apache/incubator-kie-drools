@@ -143,17 +143,17 @@ public class KiePMMLTextIndexTest {
         Map<String, Object> columnValues = new HashMap<>();
         columnValues.put("string", "interfaces?");
         columnValues.put("stem", "interface");
-        columnValues.put("regex", true);
+        columnValues.put("regex", "true");
         KiePMMLRow row0_0 = new KiePMMLRow(columnValues);
         columnValues = new HashMap<>();
         columnValues.put("string", "is|are|seem(ed|s?)|were");
         columnValues.put("stem", "be");
-        columnValues.put("regex", true);
+        columnValues.put("regex", "true");
         KiePMMLRow row0_1 = new KiePMMLRow(columnValues);
         columnValues = new HashMap<>();
         columnValues.put("string", "user friendl(y|iness)");
         columnValues.put("stem", "user_friendly");
-        columnValues.put("regex", true);
+        columnValues.put("regex", "true");
         KiePMMLRow row0_2 = new KiePMMLRow(columnValues);
         KiePMMLInlineTable inlineTable0 = new KiePMMLInlineTable("inlineTable0", Collections.emptyList(),
                                                                  Arrays.asList(row0_0, row0_1, row0_2));
@@ -177,7 +177,7 @@ public class KiePMMLTextIndexTest {
         columnValues = new HashMap<>();
         columnValues.put("re", "interface be (user_friendly|well designed|excellent)");
         columnValues.put("feature", "ui_good");
-        columnValues.put("regex", true);
+        columnValues.put("regex", "true");
         KiePMMLRow row1_0 = new KiePMMLRow(columnValues);
         KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
                                                                  Collections.singletonList(row1_0));
@@ -451,12 +451,12 @@ public class KiePMMLTextIndexTest {
         Map<String, Object> columnValues0 = new HashMap<>();
         columnValues0.put("string", "blacky");
         columnValues0.put("stem", "browny");
-        columnValues0.put("regex", false);
+        columnValues0.put("regex", "false");
         KiePMMLRow row0 = new KiePMMLRow(columnValues0);
         Map<String, Object> columnValues1 = new HashMap<>();
         columnValues1.put("string", "trot?");
         columnValues1.put("stem", "an");
-        columnValues1.put("regex", true);
+        columnValues1.put("regex", "true");
         KiePMMLRow row1 = new KiePMMLRow(columnValues1);
         KiePMMLInlineTable inlineTable1 = new KiePMMLInlineTable("inlineTable1", Collections.emptyList(),
                                                                  Arrays.asList(row0, row1));
@@ -468,7 +468,7 @@ public class KiePMMLTextIndexTest {
         Map<String, Object> columnValues2 = new HashMap<>();
         columnValues2.put("string", "again|is|are|seem(ed|s?)|were?");
         columnValues2.put("stem", "brown-foxy");
-        columnValues2.put("regex", true);
+        columnValues2.put("regex", "true");
         KiePMMLRow row2 = new KiePMMLRow(columnValues2);
         KiePMMLInlineTable inlineTable2 = new KiePMMLInlineTable("inlineTable2", Collections.emptyList(),
                                                                  Collections.singletonList(row2));

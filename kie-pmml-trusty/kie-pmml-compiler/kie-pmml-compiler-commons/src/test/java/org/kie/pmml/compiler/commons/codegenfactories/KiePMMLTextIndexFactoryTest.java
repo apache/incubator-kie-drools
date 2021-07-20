@@ -138,7 +138,7 @@ public class KiePMMLTextIndexFactoryTest {
                                                                               ".withTokenize(false).build();\n" +
                                                                               "    KiePMMLTextIndex %1$s = " +
                                                                               "KiePMMLTextIndex.builder" +
-                                                                              "(\"%1$s\", Collections" +
+                                                                              "(\"%2$s\", Collections" +
                                                                               ".emptyList(), %1$s_Expression)" +
                                                                               ".withLocalTermWeights(org.kie.pmml.api" +
                                                                               ".enums.LOCAL_TERM_WEIGHTS.BINARY)" +
@@ -151,7 +151,7 @@ public class KiePMMLTextIndexFactoryTest {
                                                                               ".withTextIndexNormalizations(Arrays" +
                                                                               ".asList(%1$s_0, " +
                                                                               "%1$s_1)).build();\n" +
-                                                                              "}", variableName));
+                                                                              "}", variableName, TEXTINDEX.getTextField().getValue()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Arrays.class, Collections.class, Collectors.class, KiePMMLFieldRef.class, KiePMMLInlineTable.class, KiePMMLTextIndex.class, KiePMMLTextIndexNormalization.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);

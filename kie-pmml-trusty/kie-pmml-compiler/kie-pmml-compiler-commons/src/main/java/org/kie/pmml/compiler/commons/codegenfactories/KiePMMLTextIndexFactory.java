@@ -95,7 +95,7 @@ public class KiePMMLTextIndexFactory {
                 TEXTINDEX, toReturn)))
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
-        final StringLiteralExpr nameExpr = new StringLiteralExpr(variableName);
+        final StringLiteralExpr nameExpr = new StringLiteralExpr(textIndex.getTextField().getValue());
         final NameExpr expressionExpr = new NameExpr(expressionVariableName);
         builder.setArgument(0, nameExpr);
         builder.setArgument(2, expressionExpr);

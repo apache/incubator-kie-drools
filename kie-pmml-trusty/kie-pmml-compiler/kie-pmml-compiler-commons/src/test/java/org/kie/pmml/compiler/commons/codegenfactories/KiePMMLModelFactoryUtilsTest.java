@@ -260,7 +260,7 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLTextIndexNormalization " +
                                                                          "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1 = KiePMMLTextIndexNormalization.builder(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1\", Collections.emptyList()).withInField(\"re\").withOutField(\"feature\").withKiePMMLInlineTable(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1_InlineTable).withRegexField(\"regex\").withRecursive(false).withIsCaseSensitive(false).withMaxLevenshteinDistance(null).withWordSeparatorCharacterRE(null).withTokenize(false).build();\n" +
                                                                          "    KiePMMLTextIndex " +
-                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression = KiePMMLTextIndex.builder(\"TEXT_INDEX_NORMALIZATION_FUNCTION_Expression\", Collections.emptyList(), TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_Expression).withLocalTermWeights(org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.BINARY).withIsCaseSensitive(false).withMaxLevenshteinDistance(0).withCountHits(org.kie.pmml.api.enums.COUNT_HITS.ALL_HITS).withWordSeparatorCharacterRE(\"\\\\s+\").withTokenize(true).withTextIndexNormalizations(Arrays.asList(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0, TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1)).build();\n" +
+                                                                         "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression = KiePMMLTextIndex.builder(\"reviewText\", Collections.emptyList(), TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_Expression).withLocalTermWeights(org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.BINARY).withIsCaseSensitive(false).withMaxLevenshteinDistance(0).withCountHits(org.kie.pmml.api.enums.COUNT_HITS.ALL_HITS).withWordSeparatorCharacterRE(\"\\\\s+\").withTokenize(true).withTextIndexNormalizations(Arrays.asList(TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_0, TEXT_INDEX_NORMALIZATION_FUNCTION_Expression_1)).build();\n" +
                                                                          "    KiePMMLDefineFunction " +
                                                                          "TEXT_INDEX_NORMALIZATION_FUNCTION = new " +
                                                                          "KiePMMLDefineFunction" +
@@ -419,7 +419,6 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    return transformationDictionary;\n" +
                                                                          "}");
         MethodDeclaration retrieved = classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
-        assertEquals(expected.toString(), retrieved.toString());
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
                                                        ".KiePMMLLocalTransformations createLocalTransformations() {\n" +
