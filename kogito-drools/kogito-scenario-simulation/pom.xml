@@ -41,6 +41,13 @@
             <artifactId>kogito-pmml</artifactId>
         </dependency>
 
+
+        <!-- Used indirectly by PMML during compilation of Drools based models  -->
+        <dependency>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-mvel</artifactId>
+        </dependency>
+
         <!-- The runner compiles and executes the model on the fly so it requires dynamic loading  -->
         <dependency>
             <groupId>org.kie.kogito</groupId>
