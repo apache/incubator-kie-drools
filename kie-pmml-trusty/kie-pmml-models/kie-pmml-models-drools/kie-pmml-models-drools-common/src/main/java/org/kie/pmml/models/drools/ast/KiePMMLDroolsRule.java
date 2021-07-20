@@ -273,7 +273,7 @@ public class KiePMMLDroolsRule {
         /**
          * @param name
          * @param statusToSet
-//         * @param outputFields
+         * @param outputFields
          */
         public Builder(String name, String statusToSet, List<OutputField> outputFields) {
             this.toBuild = new KiePMMLDroolsRule(name, statusToSet, outputFields);
