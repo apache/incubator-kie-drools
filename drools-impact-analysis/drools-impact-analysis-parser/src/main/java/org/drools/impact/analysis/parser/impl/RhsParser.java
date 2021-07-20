@@ -14,7 +14,9 @@
 
 package org.drools.impact.analysis.parser.impl;
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -33,6 +35,7 @@ import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
 import org.drools.impact.analysis.model.right.InsertAction;
 import org.drools.impact.analysis.model.right.InsertedProperty;
+import org.drools.impact.analysis.model.right.ModifiedMapProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
 import org.drools.modelcompiler.builder.generator.Consequence;
@@ -40,6 +43,8 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.core.util.StringUtils.ucFirst;
+import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
+import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.isLiteral;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalType;
@@ -188,11 +193,39 @@ public class RhsParser {
                 if (setterExpr != null && setterExpr.getArgument( 0 ).isLiteralExpr()) {
                     value = literalToValue( setterExpr.getArgument( 0 ).asLiteralExpr() );
                 }
-                action.addModifiedProperty( new ModifiedProperty(property, value) );
+
+                Method accessor = ClassUtils.getAccessor(modifiedClass, property);
+                if (accessor != null && Map.class.isAssignableFrom(accessor.getReturnType())) {
+                    String mapName = property;
+                    List<MethodCallExpr> mapPutExprs = consequenceExpr.findAll(MethodCallExpr.class).stream()
+                                                                      .filter(m -> isMapPutExpr(m, modifiedId, accessor.getName()))
+                                                                      .collect(Collectors.toList());
+                    mapPutExprs.stream().forEach(expr -> {
+                        String mapKey = getLiteralString(expr.getArgument(0));
+                        Object mapValue = getLiteralValue(expr.getArgument(1));
+                        action.addModifiedProperty(new ModifiedMapProperty(mapName, mapKey, mapValue));
+                    });
+
+                } else {
+                    action.addModifiedProperty(new ModifiedProperty(property, value));
+                }
             }
         }
 
         return action;
+    }
+
+    private boolean isMapPutExpr(MethodCallExpr mce, String modifiedId, String accessorName) {
+        if (!mce.getName().asString().equals("put")) {
+            return false;
+        }
+        return mce.getScope()
+                  .filter(Expression::isMethodCallExpr)
+                  .map(Expression::asMethodCallExpr)
+                  .filter(scopeMce -> scopeMce.getName().asString().equals(accessorName))
+                  .flatMap(scopeMce -> scopeMce.getScope())
+                  .filter(parentScope -> parentScope.toString().equals(modifiedId) || parentScope.toString().equals("(" + modifiedId + ")"))
+                  .isPresent();
     }
 
     private ConsequenceAction.Type decodeAction(String name) {

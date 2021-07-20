@@ -25,10 +25,12 @@ import org.drools.impact.analysis.model.Package;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.left.Constraint;
 import org.drools.impact.analysis.model.left.LeftHandSide;
+import org.drools.impact.analysis.model.left.MapConstraint;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.impact.analysis.model.right.ConsequenceAction;
 import org.drools.impact.analysis.model.right.InsertAction;
 import org.drools.impact.analysis.model.right.InsertedProperty;
+import org.drools.impact.analysis.model.right.ModifiedMapProperty;
 import org.drools.impact.analysis.model.right.ModifiedProperty;
 import org.drools.impact.analysis.model.right.ModifyAction;
 import org.drools.impact.analysis.model.right.RightHandSide;
@@ -207,6 +209,13 @@ public class ModelToGraphConverter {
                                                           .filter(pattern -> pattern.getPatternClass() == modifiedClass)
                                                           .flatMap(pattern -> pattern.getConstraints().stream())
                                                           .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
+                                                          .filter(constraint -> {
+                                                              if (constraint instanceof MapConstraint) {
+                                                                  return doesAssertSameKey((MapConstraint) constraint, modifiedProperty);
+                                                              } else {
+                                                                  return true;
+                                                              }
+                                                          })
                                                           .collect(Collectors.toList());
                 ReactivityType combinedLinkType = ReactivityType.UNKNOWN;
                 if (constraints.size() == 0) {
@@ -234,6 +243,20 @@ public class ModelToGraphConverter {
                 Node target = graphAnalysis.getNode(fqdn(pkgName, reactedRule.getRule().getName()));
                 linkNodesIfExpected(source, target, combinedLinkType);
             }
+        }
+    }
+
+    private boolean doesAssertSameKey(MapConstraint constraint, ModifiedProperty modifiedProperty) {
+        if (modifiedProperty instanceof ModifiedMapProperty) {
+            String constraintMapKey = constraint.getKey();
+            String modifiedMapKey = ((ModifiedMapProperty) modifiedProperty).getKey();
+            if (constraintMapKey != null && constraintMapKey.equals(modifiedMapKey)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
         }
     }
 
