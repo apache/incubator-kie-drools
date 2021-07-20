@@ -36,6 +36,20 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
     private static final Logger LOGGER = LoggerFactory.getLogger(LimeStabilityScoreCalculator.class);
     private static final BigDecimal TWO = BigDecimal.valueOf(2d);
     private static final BigDecimal ZERO = BigDecimal.valueOf(0);
+    private static final int NUM_RUNS = 5;
+
+    private final BigDecimal negativeWeight;
+    private final BigDecimal positiveWeight;
+
+    public LimeStabilityScoreCalculator(BigDecimal negativeWeight, BigDecimal positiveWeight) {
+        this.negativeWeight = negativeWeight;
+        this.positiveWeight = positiveWeight;
+    }
+
+    public LimeStabilityScoreCalculator() {
+        this.negativeWeight = BigDecimal.valueOf(0.5);
+        this.positiveWeight = BigDecimal.valueOf(0.5);
+    }
 
     @Override
     public SimpleBigDecimalScore calculateScore(LimeConfigSolution solution) {
@@ -55,9 +69,9 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
         for (Prediction prediction : predictions) {
             try {
                 LocalSaliencyStability stability = ExplainabilityMetrics.getLocalSaliencyStability(solution.getModel(),
-                        prediction, limeExplainer, TWO.intValue(), 5);
+                        prediction, limeExplainer, TWO.intValue(), NUM_RUNS);
                 for (String decision : stability.getDecisions()) {
-                    BigDecimal decisionMarginalScore = getDecisionMarginalScore(TWO, stability, decision);
+                    BigDecimal decisionMarginalScore = getDecisionMarginalScore(stability, decision);
                     stabilityScore = stabilityScore.add(decisionMarginalScore);
                     succeededEvaluations++;
                 }
@@ -76,19 +90,17 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
         return stabilityScore;
     }
 
-    private BigDecimal getDecisionMarginalScore(BigDecimal topK, LocalSaliencyStability stability, String decision) {
+    private BigDecimal getDecisionMarginalScore(LocalSaliencyStability stability, String decision) {
         BigDecimal positiveStabilityScore = ZERO;
         BigDecimal negativeStabilityScore = ZERO;
-        for (int i = 1; i <= topK.intValue(); i++) {
+        for (int i = 1; i <= LimeStabilityScoreCalculator.TWO.intValue(); i++) {
             positiveStabilityScore = positiveStabilityScore.add(BigDecimal.valueOf(stability.getPositiveStabilityScore(decision, i)));
             negativeStabilityScore = negativeStabilityScore.add(BigDecimal.valueOf(stability.getNegativeStabilityScore(decision, i)));
         }
-        positiveStabilityScore = positiveStabilityScore.divide(topK, RoundingMode.CEILING);
-        negativeStabilityScore = negativeStabilityScore.divide(topK, RoundingMode.CEILING);
-        // TODO: FAI-495 - differentiate (or weight) between positive and negative
-        return positiveStabilityScore.add(negativeStabilityScore)
-                .divide(TWO.multiply(BigDecimal.valueOf(stability.getDecisions().size())),
-                        RoundingMode.CEILING);
+        positiveStabilityScore = positiveStabilityScore.divide(LimeStabilityScoreCalculator.TWO, RoundingMode.CEILING);
+        negativeStabilityScore = negativeStabilityScore.divide(LimeStabilityScoreCalculator.TWO, RoundingMode.CEILING);
+        return (positiveStabilityScore.multiply(positiveWeight)).add(negativeStabilityScore.multiply(negativeWeight))
+                .divide(BigDecimal.valueOf(stability.getDecisions().size()), RoundingMode.CEILING);
     }
 
 }

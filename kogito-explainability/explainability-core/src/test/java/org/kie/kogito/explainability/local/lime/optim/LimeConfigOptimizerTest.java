@@ -114,6 +114,36 @@ class LimeConfigOptimizerTest {
         assertThrows(AssertionError.class, () -> assertConfigOptimized(limeConfigOptimizer));
     }
 
+    @Test
+    void testWeightedStabilityOptimization() throws Exception {
+        LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer().withWeightedStability(0.5, 0.5);
+        assertConfigOptimized(limeConfigOptimizer);
+
+        limeConfigOptimizer = new LimeConfigOptimizer().withWeightedStability(0.3, 0.7);
+        assertConfigOptimized(limeConfigOptimizer);
+
+        limeConfigOptimizer = new LimeConfigOptimizer().withWeightedStability(0.7, 0.3);
+        assertConfigOptimized(limeConfigOptimizer);
+
+        limeConfigOptimizer = new LimeConfigOptimizer().withWeightedStability(1, 0);
+        assertConfigOptimized(limeConfigOptimizer);
+
+        limeConfigOptimizer = new LimeConfigOptimizer().withWeightedStability(0, 1);
+        assertConfigOptimized(limeConfigOptimizer);
+    }
+
+    @Test
+    void testWeightedStabilityWrongParamsOptimization() {
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.8, 0.7));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.1, 0.7));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.1, 1.1));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(2.1, 0.1));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(-0.1, 0.9));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.1, -0.9));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.1, 0.99));
+        assertThrows(IllegalArgumentException.class, () -> new LimeConfigOptimizer().withWeightedStability(0.009, 0.99));
+    }
+
     private void assertConfigOptimized(LimeConfigOptimizer limeConfigOptimizer) throws InterruptedException, java.util.concurrent.ExecutionException {
         PredictionProvider model = TestUtils.getSumSkipModel(1);
         Random random = new Random();

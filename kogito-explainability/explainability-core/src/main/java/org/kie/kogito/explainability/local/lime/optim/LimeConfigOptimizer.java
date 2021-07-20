@@ -94,6 +94,22 @@ public class LimeConfigOptimizer {
         return this;
     }
 
+    public LimeConfigOptimizer withWeightedStability(double negative, double positive) {
+        if (negative < 0 || negative > 1) {
+            throw new IllegalArgumentException("negative weight must be between 0 and 1");
+        }
+        if (positive < 0 || positive > 1) {
+            throw new IllegalArgumentException("positive weight must be between 0 and 1");
+        }
+        if (Math.abs(1.0 - negative - positive) > 1e-3) {
+            throw new IllegalArgumentException("negative and positive weights must sum up to 1");
+        }
+
+        this.scoreCalculator = new LimeStabilityScoreCalculator(BigDecimal.valueOf(negative),
+                BigDecimal.valueOf(positive));
+        return this;
+    }
+
     public LimeConfig optimize(LimeConfig config, List<Prediction> predictions, PredictionProvider model) {
         List<LimeConfigEntity> entities = new ArrayList<>();
         if (samplingEntities) {
