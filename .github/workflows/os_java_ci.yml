@@ -67,7 +67,7 @@ jobs:
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain ${{ matrix.java-version }}
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.6.2
+        uses: kiegroup/github-action-build-chain@v2.6.4
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
@@ -124,7 +124,7 @@ jobs:
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
       - name: Build Chain 16
         id: build-chain
-        uses: kiegroup/github-action-build-chain@v2.6.2
+        uses: kiegroup/github-action-build-chain@v2.6.4
         with:
           definition-file: https://raw.githubusercontent.com/${GROUP}/kogito-pipelines/${BRANCH}/.ci/pull-request-config.yaml
           starting-project: kiegroup/optaplanner
