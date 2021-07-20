@@ -38,8 +38,6 @@ public class ShapDataCarrier {
     private int numVarying;
     private HashMap<Integer, Integer> masksUsed;
 
-    private ShapConfig shapConfig;
-
     // data statistics ======================================================
     public int getRows() {
         return rows;
@@ -98,14 +96,6 @@ public class ShapDataCarrier {
 
     public void setNumSamples(Integer numSamples) {
         this.numSamples = numSamples;
-    }
-
-    public void setConfig(ShapConfig shapConfig) {
-        this.shapConfig = shapConfig;
-    }
-
-    public ShapConfig getConfig() {
-        return shapConfig;
     }
 
     // runtime accumulators ==========================================================

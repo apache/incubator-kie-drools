@@ -150,13 +150,14 @@ class ShapKernelExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get(5, TimeUnit.SECONDS);
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
         // evaluate if the explanations match the expected value
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         for (int i = 0; i < toExplain.size(); i++) {
             //explanations shape: outputSize x nfeatures
-            double[][] explanations = new ShapKernelExplainer().explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            double[][] explanations = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
             for (int j = 0; j < explanations.length; j++) {
                 assertArrayEquals(expected[i][j], explanations[j], 1e-6);
             }
@@ -167,7 +168,7 @@ class ShapKernelExplainerTest {
      * given a specific model, config, background, explanations, ske, and expected shap values,
      * test that the computed shape values match expected shap values
      */
-    private void shapTestCase(PredictionProvider model, ShapConfig skConfig, ShapKernelExplainer ske,
+    private void shapTestCase(PredictionProvider model, ShapKernelExplainer ske,
             double[][] toExplainRaw, double[][][] expected)
             throws InterruptedException, TimeoutException, ExecutionException {
 
@@ -179,7 +180,7 @@ class ShapKernelExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get(5, TimeUnit.SECONDS);
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
         // evaluate if the explanations match the expected value
@@ -291,12 +292,13 @@ class ShapKernelExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
         // evaluate if the explanations match the expected value
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         for (int i = 0; i < toExplain.size(); i++) {
-            double[][] explanations = new ShapKernelExplainer().explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            double[][] explanations = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
             for (int j = 0; j < explanations.length; j++) {
                 assertArrayEquals(expected[i][j], explanations[j], 1e-2);
             }
@@ -331,11 +333,12 @@ class ShapKernelExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
-        // evaluate if the explanations match the expected value{
-        CompletableFuture<double[][]> explanationsCF = new ShapKernelExplainer().explainAsync(predictions.get(0), model);
+        // evaluate if the explanations match the expected value
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
+        CompletableFuture<double[][]> explanationsCF = ske.explainAsync(predictions.get(0), model);
 
         ExecutorService executor = ForkJoinPool.commonPool();
         executor.submit(() -> {
@@ -370,12 +373,12 @@ class ShapKernelExplainerTest {
                 .get(5, TimeUnit.SECONDS);
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
         // make sure we get an illegal argument exception because our background is bigger than the point to be explained
         Prediction p = predictions.get(0);
-        ShapKernelExplainer ske = new ShapKernelExplainer();
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         assertThrows(IllegalArgumentException.class, () -> ske.explainAsync(p, model));
     }
 
@@ -406,13 +409,13 @@ class ShapKernelExplainerTest {
                 .get(5, TimeUnit.SECONDS);
         List<Prediction> predictions = new ArrayList<>();
         for (int i = 0; i < predictionOutputs.size(); i++) {
-            predictions.add(new ShapPrediction(toExplain.get(i), predictionOutputs.get(i), skConfig));
+            predictions.add(new SimplePrediction(toExplain.get(i), predictionOutputs.get(i)));
         }
 
         // make sure we get an illegal argument exception; our prediction to explain has a different shape t
         // than the background predictions will
         Prediction p = predictions.get(0);
-        ShapKernelExplainer ske = new ShapKernelExplainer();
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         assertThrows(ExecutionException.class, () -> ske.explainAsync(p, modelForShap).get());
     }
 
@@ -420,8 +423,6 @@ class ShapKernelExplainerTest {
     @Test
     void testStateless() throws InterruptedException, TimeoutException, ExecutionException {
         PredictionProvider model = TestUtils.getSumSkipModel(1);
-        ShapKernelExplainer ske = new ShapKernelExplainer();
-
         ShapConfig skConfig1 = testConfig
                 .withBackground(createPIFromMatrix(backgroundNoVariance))
                 .withNSamples(100)
@@ -433,10 +434,14 @@ class ShapKernelExplainerTest {
                 .withNSamples(100)
                 .withPC(pc)
                 .build();
+        ShapKernelExplainer ske = new ShapKernelExplainer(skConfig1);
         for (int i = 0; i < 10; i++) {
-            shapTestCase(model, skConfig1, ske, toExplainOneVariance, oneVarianceOneOutputSHAP);
-            shapTestCase(model, skConfig2, ske, toExplainRaw, multiVarianceOneOutputSHAP);
-            shapTestCase(model, skConfig3, ske, toExplainLogit, logitSHAP);
+            shapTestCase(model, ske, toExplainOneVariance, oneVarianceOneOutputSHAP);
+            ske.setConfig(skConfig2);
+            shapTestCase(model, ske, toExplainRaw, multiVarianceOneOutputSHAP);
+            ske.setConfig(skConfig3);
+            shapTestCase(model, ske, toExplainLogit, logitSHAP);
+            ske.setConfig(skConfig1);
         }
     }
 }
