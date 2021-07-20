@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -38,6 +39,6 @@ public class DecimalFunction
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "scale", "cannot be null"));
         }
         
-        return FEELFnResult.ofResult( n.setScale( scale.intValue(), BigDecimal.ROUND_HALF_EVEN ) );
+        return FEELFnResult.ofResult( n.setScale( scale.intValue(), RoundingMode.HALF_EVEN ) );
     }
 }

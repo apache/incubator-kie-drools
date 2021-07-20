@@ -1,0 +1,71 @@
+<dmn:definitions xmlns:dmn="http://www.omg.org/spec/DMN/20180521/MODEL/" xmlns="https://kiegroup.org/dmn/_EEE7FA5B-AF9C-4937-8870-D612D4D8D860" xmlns:feel="http://www.omg.org/spec/DMN/20180521/FEEL/" xmlns:kie="http://www.drools.org/kie/dmn/1.2" xmlns:dmndi="http://www.omg.org/spec/DMN/20180521/DMNDI/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="_8F699B3E-D01D-402F-A2F7-6546940D1BF0" name="new-file" typeLanguage="http://www.omg.org/spec/DMN/20180521/FEEL/" namespace="https://kiegroup.org/dmn/_EEE7FA5B-AF9C-4937-8870-D612D4D8D860">
+  <dmn:extensionElements/>
+  <dmn:itemDefinition id="_40D6C276-62B4-418C-A72D-1F415E23E9E7" name="fhirT1" isCollection="false">
+    <dmn:itemComponent id="_A691AF96-21D7-48CA-8AF3-CF8C68DFBE4D" name="name" isCollection="false">
+      <dmn:typeRef>string</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_B7F886B2-9C32-40BA-A2A2-64053D168011" name="patient age" isCollection="false">
+      <dmn:typeRef>fhirAge</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_43C04256-0890-4267-B2C8-DE7D8871F263" name="fhirAge" isCollection="false">
+    <dmn:itemComponent id="_47D34607-065C-4010-87EB-57C6089F3F34" name="age" isCollection="false">
+      <dmn:typeRef>number</dmn:typeRef>
+    </dmn:itemComponent>
+    <dmn:itemComponent id="_A385BBD8-5089-4E00-90B9-50C72F6843BD" name="extension" isCollection="false">
+      <dmn:typeRef>fhirExtension</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:itemDefinition id="_FEBCB8D7-6DCF-493C-8044-94622FEC8C5D" name="fhirExtension" isCollection="false">
+    <dmn:itemComponent id="_E91537E0-51A4-4657-A3DA-C2E11CF04E3F" name="valueAge" isCollection="false">
+      <dmn:typeRef>fhirAge</dmn:typeRef>
+    </dmn:itemComponent>
+  </dmn:itemDefinition>
+  <dmn:inputData id="_1CFBED19-3BB8-4621-A474-BBAB30F3650D" name="in1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_ABC7D220-7098-41CB-A269-36509B9554E1" name="in1" typeRef="fhirT1"/>
+  </dmn:inputData>
+  <dmn:decision id="_B8288996-A2BA-4255-A289-85005671466E" name="Decision-1">
+    <dmn:extensionElements/>
+    <dmn:variable id="_3A111F03-6EFE-4F3A-85CB-507522F74E7A" name="Decision-1" typeRef="Any"/>
+    <dmn:informationRequirement id="_9B83B5EB-3C47-4264-9F6B-08093FB10EC6">
+      <dmn:requiredInput href="#_1CFBED19-3BB8-4621-A474-BBAB30F3650D"/>
+    </dmn:informationRequirement>
+    <dmn:literalExpression id="_2412397B-0690-479C-8586-96E8674579C8">
+      <dmn:text>"named "+ in1.name + " age " + string(in1.patient age.age) + " ext age " + string(in1.patient age.extension.valueAge.age)</dmn:text>
+    </dmn:literalExpression>
+  </dmn:decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="_D70BBC79-DBD3-42AC-B04C-D6857A346FB1" name="DRG">
+      <di:extension>
+        <kie:ComponentsWidthsExtension>
+          <kie:ComponentWidths dmnElementRef="_2412397B-0690-479C-8586-96E8674579C8">
+            <kie:width>850</kie:width>
+          </kie:ComponentWidths>
+        </kie:ComponentsWidthsExtension>
+      </di:extension>
+      <dmndi:DMNShape id="dmnshape-drg-_1CFBED19-3BB8-4621-A474-BBAB30F3650D" dmnElementRef="_1CFBED19-3BB8-4621-A474-BBAB30F3650D" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="228" y="233" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape id="dmnshape-drg-_B8288996-A2BA-4255-A289-85005671466E" dmnElementRef="_B8288996-A2BA-4255-A289-85005671466E" isCollapsed="false">
+        <dmndi:DMNStyle>
+          <dmndi:FillColor red="255" green="255" blue="255"/>
+          <dmndi:StrokeColor red="0" green="0" blue="0"/>
+          <dmndi:FontColor red="0" green="0" blue="0"/>
+        </dmndi:DMNStyle>
+        <dc:Bounds x="408" y="233" width="100" height="50"/>
+        <dmndi:DMNLabel/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge id="dmnedge-drg-_9B83B5EB-3C47-4264-9F6B-08093FB10EC6-AUTO-SOURCE-AUTO-TARGET" dmnElementRef="_9B83B5EB-3C47-4264-9F6B-08093FB10EC6">
+        <di:waypoint x="328" y="258"/>
+        <di:waypoint x="408" y="258"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

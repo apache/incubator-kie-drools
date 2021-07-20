@@ -79,6 +79,12 @@ public class Person extends AbstractReactiveObject {
         this.age = age;
     }
 
+    public Person(String name, int age, BigDecimal money) {
+        this.name = name;
+        this.age = age;
+        this.money = money;
+    }
+
     public Person(String name, int age, Address address) {
         this.name = name;
         this.age = age;

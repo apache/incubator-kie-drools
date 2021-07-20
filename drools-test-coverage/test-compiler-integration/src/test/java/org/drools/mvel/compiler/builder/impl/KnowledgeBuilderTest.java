@@ -87,7 +87,7 @@ import org.drools.core.test.model.DroolsTestCase;
 import org.drools.core.util.LinkedList;
 import org.drools.core.util.LinkedListNode;
 import org.drools.ecj.EclipseJavaCompiler;
-import org.drools.mvel.CompositeObjectSinkAdapterTest;
+import org.drools.mvel.MockBetaNode;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Primitives;
 import org.drools.mvel.compiler.StockTick;
@@ -196,7 +196,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), rule,rule.getLhs(), 0,new BuildContext(kBase) )  );
         final Activation activation = new MockActivation( rule,
                                                           0,
                                                           rule.getLhs(),
@@ -279,7 +279,7 @@ public class KnowledgeBuilderTest extends DroolsTestCase {
                                  map );
 
         final LeftTupleImpl tuple = new MockTuple( new HashMap() );
-        tuple.setLeftTupleSink( new RuleTerminalNode(1, new CompositeObjectSinkAdapterTest.MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase) )  );
+        tuple.setLeftTupleSink( new RuleTerminalNode(1, new MockBetaNode(), newRule,newRule.getLhs(), 0, new BuildContext(kBase) )  );
         final Activation activation = new MockActivation( newRule,
                                                           0,
                                                           newRule.getLhs(),

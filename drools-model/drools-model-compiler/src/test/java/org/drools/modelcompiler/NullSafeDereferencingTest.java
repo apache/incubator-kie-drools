@@ -16,9 +16,11 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
@@ -171,7 +173,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        ksession.insert(new Person("John1", 41, null));
+        ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
         ksession.fireAllRules();
 
@@ -215,7 +217,7 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        ksession.insert(new Person("John1", 41, null));
+        ksession.insert(new Person("John1", 41, (Address) null));
         ksession.insert(new Person("John2", 42, new Address("Milan")));
         ksession.fireAllRules();
 
@@ -244,5 +246,29 @@ public class NullSafeDereferencingTest extends BaseModelTest {
         List<Result> results = getObjectsIntoList(ksession, Result.class);
         assertEquals(1, results.size());
         assertEquals("John2", results.get(0).getValue());
+    }
+
+    @Test
+    public void testNullSafeDereferncingWithOrHalfBinary() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R\n" +
+                     "when\n" +
+                     "  $p : Person( name == \"John\" || == address!.city )\n" +
+                     "then\n" +
+                     "  result.add($p.getName());\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 24, new Address("ABC")));
+        ksession.insert(new Person("Paul", 22, (Address) null));
+        ksession.insert(new Person("George", 21, new Address("George")));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactlyInAnyOrder("John", "George");
     }
 }

@@ -49,7 +49,7 @@ public class DoubleFieldImpl
     }
 
     public Serializable getValue() {
-        return new Double( this.value );
+        return Double.valueOf( this.value );
     }
 
     public String toString() {

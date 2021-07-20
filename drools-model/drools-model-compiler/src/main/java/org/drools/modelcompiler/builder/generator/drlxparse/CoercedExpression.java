@@ -46,6 +46,7 @@ import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
@@ -81,10 +82,11 @@ public class CoercedExpression {
     }
 
     public CoercedExpressionResult coerce() {
-        final TypedExpression coercedRight;
 
         final Class<?> leftClass = left.getRawClass();
+        final Class<?> nonPrimitiveLeftClass = toNonPrimitiveType(leftClass);
         final Class<?> rightClass = right.getRawClass();
+        final Class<?> nonPrimitiveRightClass = toNonPrimitiveType(rightClass);
 
         boolean sameClass = leftClass == rightClass;
         boolean isUnificationExpression = left instanceof UnificationTypedExpression || right instanceof UnificationTypedExpression;
@@ -97,12 +99,16 @@ public class CoercedExpression {
             throw new CoercedExpressionException(new InvalidExpressionErrorResult("Comparison operation requires compatible types. Found " + leftClass + " and " + rightClass));
         }
 
-        final Expression rightExpression = right.getExpression();
+        if ((nonPrimitiveLeftClass == Integer.class || nonPrimitiveLeftClass == Long.class) && nonPrimitiveRightClass == Double.class) {
+            return new CoercedExpressionResult(new TypedExpression( new CastExpr( PrimitiveType.doubleType(), left.getExpression()), double.class ), right, false);
+        }
 
         final boolean leftIsPrimitive = leftClass.isPrimitive() || Number.class.isAssignableFrom( leftClass );
         final boolean canCoerceLiteralNumberExpr = canCoerceLiteralNumberExpr(leftClass);
 
         boolean rightAsStaticField = false;
+        final Expression rightExpression = right.getExpression();
+        final TypedExpression coercedRight;
 
         if (leftIsPrimitive && canCoerceLiteralNumberExpr && rightExpression instanceof LiteralStringValueExpr) {
             final Expression coercedLiteralNumberExprToType = coerceLiteralNumberExprToType((LiteralStringValueExpr) right.getExpression(), leftClass);
@@ -132,7 +138,7 @@ public class CoercedExpression {
         }
 
         final TypedExpression coercedLeft;
-        if (toNonPrimitiveType(leftClass) == Character.class && shouldCoerceBToString(right, left)) {
+        if (nonPrimitiveLeftClass == Character.class && shouldCoerceBToString(right, left)) {
             coercedLeft = coerceToString(left);
         } else {
             coercedLeft = left;
@@ -180,6 +186,8 @@ public class CoercedExpression {
             coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(expression)));
         } else if (typedExpression.getType() == Object.class) {
             coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(expression, "toString"));
+        } else if (expression instanceof NameExpr) {
+                coercedExpression = typedExpression.cloneWithNewExpression(new CastExpr(toClassOrInterfaceType(String.class), expression));
         } else {
             coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(expression.toString()));
         }

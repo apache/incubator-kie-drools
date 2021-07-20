@@ -74,7 +74,7 @@ public class LongCell implements Cell {
     }
 
     public void setValue(String v) {
-        value = new Long(v);
+        value = Long.valueOf(v);
     }
 
     public boolean isEmpty() {

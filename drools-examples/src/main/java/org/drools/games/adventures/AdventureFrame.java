@@ -856,7 +856,7 @@ public class AdventureFrame extends JFrame {
         JInternalFrame internalFrame = pane.createInternalFrame( contentPane,
                                                                  "xxx title" );
         internalFrame.setVisible( true );
-        pane.show();
+        pane.setVisible(true);
         internalFrame.addInternalFrameListener( new InternalFrameListener() {
 
             public void internalFrameOpened(InternalFrameEvent e) {

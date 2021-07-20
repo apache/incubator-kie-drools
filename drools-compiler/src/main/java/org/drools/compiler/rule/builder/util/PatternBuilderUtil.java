@@ -14,6 +14,9 @@
 
 package org.drools.compiler.rule.builder.util;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import org.drools.compiler.lang.descr.LiteralRestrictionDescr;
 import org.drools.core.base.ValueType;
 import org.drools.core.spi.FieldValue;
@@ -28,15 +31,31 @@ public class PatternBuilderUtil {
             return "null";
         }
 
-        long lvalue = getTimestampFromDate( value );
         if (vtype == ValueType.DATE_TYPE) {
-            return " new java.util.Date(" + lvalue + ")";
+            return " new java.util.Date(" + getTimestampFromDate( value ) + ")";
         }
         if (vtype == ValueType.LOCAL_DATE_TYPE) {
-            return " java.time.Instant.ofEpochMilli(" + lvalue + ").atZone(java.time.ZoneId.systemDefault()).toLocalDate()";
+            if (value instanceof LocalDate) {
+                return " java.time.LocalDate.parse(\"" + value + "\")";
+            }
+            if (value instanceof LocalDateTime) {
+                String dateValue = value.toString();
+                int timePos = dateValue.indexOf('T');
+                if (timePos > 0) {
+                    dateValue = dateValue.substring(0, timePos);
+                }
+                return " java.time.LocalDate.parse(\"" + dateValue + "\")";
+            }
+            return " java.time.Instant.ofEpochMilli(" + getTimestampFromDate( value ) + ").atZone(java.time.ZoneId.systemDefault()).toLocalDate()";
         }
         if (vtype == ValueType.LOCAL_TIME_TYPE) {
-            return " java.time.Instant.ofEpochMilli(" + lvalue + ").atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()";
+            if (value instanceof LocalDate) {
+                return " java.time.LocalDateTime.parse(\"" + value + "T00:00:00\")";
+            }
+            if (value instanceof LocalDateTime) {
+                return " java.time.LocalDateTime.parse(\"" + value + "\")";
+            }
+            return " java.time.Instant.ofEpochMilli(" + getTimestampFromDate( value ) + ").atZone(java.time.ZoneId.systemDefault()).toLocalDateTime()";
         }
 
         throw new IllegalArgumentException( "Unsupported type " + vtype );

@@ -39,6 +39,7 @@ import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.ToysStore;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -139,6 +140,37 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
+
+    @Test @Ignore
+    public void testModifyWithFrom() {
+        // DROOLS-6486
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "\n" +
+                "rule R when\n" +
+                " Man( $wife : wife )\n" +
+                " $child: Child( age > 10 ) from $wife.children\n" +
+                "then\n" +
+                "  modify( $child ) { setName($child.getName() + \"x\") };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( charlie ); // object has to be in the session in order to be modified, but it's retrieved with a FromNode
+        ksession.fireAllRules();
+
+        assertEquals("Charlesx", charlie.getName());
     }
 
     public static Integer getLength(String ignoredParameter, String s, Integer offset) {
