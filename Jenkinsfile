@@ -52,7 +52,9 @@ pipeline {
                     mvnCmd = getMavenCommand('kogito-runtimes', true, true)
                     if (isNormalPRCheck()) {
                         mvnCmd.withProperty('validate-formatting')
-                            .withProfiles(['run-code-coverage'])
+                        if (isSonarCloudEnabled()) {
+                            mvnCmd.withProfiles(['run-code-coverage'])
+                        }
                     }
                     mvnCmd.run('clean install')
                 }
@@ -67,7 +69,7 @@ pipeline {
         }
         stage('Analyze Runtimes by SonarCloud') {
             when {
-                expression { isNormalPRCheck() }
+                expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }
             steps {
                 script {
@@ -168,6 +170,10 @@ String getUpstreamTriggerProject() {
 
 boolean isNormalPRCheck() {
     return !(isDownstreamJob() || getQuarkusBranch() || isNative())
+}
+
+boolean isSonarCloudEnabled() {
+    return env['ENABLE_SONARCLOUD'] && env['ENABLE_SONARCLOUD'].toBoolean()
 }
 
 Integer getTimeoutValue() {
