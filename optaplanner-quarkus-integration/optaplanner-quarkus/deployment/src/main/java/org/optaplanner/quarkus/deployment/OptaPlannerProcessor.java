@@ -18,6 +18,7 @@ package org.optaplanner.quarkus.deployment;
 
 import static io.quarkus.deployment.annotations.ExecutionTime.STATIC_INIT;
 
+import java.io.StringWriter;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -54,10 +55,12 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
 import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
+import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
 import org.optaplanner.quarkus.gizmo.OptaPlannerGizmoBeanFactory;
 
 import io.quarkus.arc.deployment.AdditionalBeanBuildItem;
@@ -67,6 +70,7 @@ import io.quarkus.arc.deployment.SyntheticBeanBuildItem;
 import io.quarkus.arc.deployment.UnremovableBeanBuildItem;
 import io.quarkus.deployment.Capabilities;
 import io.quarkus.deployment.GeneratedClassGizmoAdaptor;
+import io.quarkus.deployment.IsDevelopment;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.annotations.Record;
@@ -79,6 +83,7 @@ import io.quarkus.deployment.builditem.IndexDependencyBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyBuildItem;
 import io.quarkus.deployment.pkg.steps.NativeBuild;
 import io.quarkus.deployment.recording.RecorderContext;
+import io.quarkus.devconsole.spi.DevConsoleRuntimeTemplateInfoBuildItem;
 import io.quarkus.gizmo.ClassOutput;
 import io.quarkus.gizmo.MethodDescriptor;
 import io.quarkus.gizmo.ResultHandle;
@@ -120,9 +125,24 @@ class OptaPlannerProcessor {
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerGizmoBeanFactory.class));
     }
 
+    @BuildStep(onlyIf = IsDevelopment.class)
+    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildStep solverConfigBuildStep) {
+        SolverConfig solverConfig = solverConfigBuildStep.getSolverConfig();
+        if (solverConfig != null) {
+            StringWriter effectiveSolverConfigWriter = new StringWriter();
+            SolverConfigIO solverConfigIO = new SolverConfigIO();
+            solverConfigIO.write(solverConfig, effectiveSolverConfigWriter);
+            return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
+                    new OptaPlannerDevUIPropertiesSupplier(effectiveSolverConfigWriter.toString()));
+        } else {
+            return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
+                    new OptaPlannerDevUIPropertiesSupplier());
+        }
+    }
+
     @BuildStep
     @Record(STATIC_INIT)
-    void recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    SolverConfigBuildStep recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
             CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
@@ -142,7 +162,7 @@ class OptaPlannerProcessor {
                     + " the Jandex index by using the jandex-maven-plugin in that dependency, or by adding"
                     + "application.properties entries (quarkus.index-dependency.<name>.group-id"
                     + " and quarkus.index-dependency.<name>.artifact-id).");
-            return;
+            return new SolverConfigBuildStep(null);
         }
 
         // Quarkus extensions must always use getContextClassLoader()
@@ -211,6 +231,7 @@ class OptaPlannerProcessor {
 
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerRuntimeConfig.class));
+        return new SolverConfigBuildStep(solverConfig);
     }
 
     private void generateConstraintVerifier(SolverConfig solverConfig,
