@@ -44,6 +44,9 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
     private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -98,6 +101,8 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("occupation", occupation);
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
@@ -146,5 +151,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
                 throw new Exception("Unexpected categoricalX " + categoricalX);
         }
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 }
