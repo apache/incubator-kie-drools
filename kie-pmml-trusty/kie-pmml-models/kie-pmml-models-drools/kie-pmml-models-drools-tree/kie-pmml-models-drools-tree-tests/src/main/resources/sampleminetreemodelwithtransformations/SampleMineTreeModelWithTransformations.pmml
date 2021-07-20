@@ -12,6 +12,7 @@
       <Value value="umbrella" />
       <Value value="nothing" />
     </DataField>
+    <DataField name="text_input" optype="categorical" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -39,6 +40,41 @@
         <FieldRef field="humidity_fake"/>
       </Apply>
     </DefineFunction>
+    <DefineFunction name="TEXT_INDEX_NORMALIZATION_FUNCTION" optype="continuous">
+      <ParameterField name="reviewText"/>
+      <ParameterField name="term"/>
+      <TextIndex textField="reviewText" localTermWeights="binary" isCaseSensitive="false">
+        <TextIndexNormalization inField="string" outField="stem" regexField="regex">
+          <InlineTable>
+            <row>
+              <string>interfaces?</string>
+              <stem>interface</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>is|are|seem(ed|s?)|were</string>
+              <stem>be</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>user friendl(y|iness)</string>
+              <stem>user_friendly</stem>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <TextIndexNormalization inField="re" outField="feature" regexField="regex">
+          <InlineTable>
+            <row>
+              <re>interface be (user_friendly|well designed|excellent)</re>
+              <feature>ui_good</feature>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <FieldRef field="term"/>
+      </TextIndex>
+    </DefineFunction>
     <DerivedField name="der_temperature" optype="continuous" dataType="double">
       <FieldRef field="temperature"/>
     </DerivedField>
@@ -63,6 +99,7 @@
     <MiningSchema>
       <MiningField name="temperature"  usageType="active" />
       <MiningField name="humidity"  usageType="active" />
+      <MiningField name="text_input" invalidValueTreatment="asIs"/>
       <MiningField name="decision" usageType="predicted" />
     </MiningSchema>
     <Output>
@@ -107,6 +144,12 @@
             </row>
           </InlineTable>
         </MapValues>
+      </OutputField>
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+          <FieldRef field="text_input"/>
+          <Constant>ui_good</Constant>
+        </Apply>
       </OutputField>
     </Output>
     <Node score="nothing" id="1">
