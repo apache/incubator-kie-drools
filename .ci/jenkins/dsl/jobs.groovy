@@ -29,6 +29,11 @@ Map getMultijobPRConfig() {
                 repository: 'kogito-examples',
                 dependsOn: 'optaplanner',
             ]
+        ],
+        extraEnv : [
+            // Sonarcloud analysis only on main branch
+            // As we have only Community edition
+            ENABLE_SONARCLOUD: Utils.isMainBranch(this)
         ]
     ]
 }

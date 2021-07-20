@@ -70,7 +70,7 @@ pipeline {
                 script {
                     mvnCmd = getMavenCommand(optaplannerRepo, true, true)
                         .withProperty('full')
-                    if (isNormalPRCheck()) {
+                    if (isNormalPRCheck() && isSonarCloudEnabled()) {
                         mvnCmd.withProfiles(['run-code-coverage'])
                     }
                     mvnCmd.run('clean install')
@@ -79,7 +79,7 @@ pipeline {
         }
         stage('Analyze OptaPlanner by SonarCloud') {
             when {
-                expression { isNormalPRCheck() }
+                expression { isNormalPRCheck() && isSonarCloudEnabled() }
             }
             steps {
                 script {
@@ -207,6 +207,10 @@ String getUpstreamTriggerProject() {
 
 boolean isNormalPRCheck() {
     return !(isDownstreamJob() || getQuarkusBranch() || isNative())
+}
+
+boolean isSonarCloudEnabled() {
+    return env['ENABLE_SONARCLOUD'] && env['ENABLE_SONARCLOUD'].toBoolean()
 }
 
 boolean isUpstreamKogitoProject() {
