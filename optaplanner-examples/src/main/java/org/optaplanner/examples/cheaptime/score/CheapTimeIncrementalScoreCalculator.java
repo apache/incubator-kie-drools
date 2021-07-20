@@ -19,6 +19,7 @@ package org.optaplanner.examples.cheaptime.score;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -31,7 +32,7 @@ import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.impl.score.constraint.DefaultConstraintMatchTotal;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
+import org.optaplanner.examples.cheaptime.domain.Period;
 import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -41,7 +42,7 @@ public class CheapTimeIncrementalScoreCalculator
         implements ConstraintMatchAwareIncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore>,
         IncrementalScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
 
-    protected static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";
+    public static final String CONSTRAINT_PACKAGE = "org.optaplanner.examples.cheaptime.solver";
 
     private CheapTimeSolution cheapTimeSolution;
 
@@ -74,18 +75,18 @@ public class CheapTimeIncrementalScoreCalculator
         resourceListSize = solution.getResourceList().size();
         globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
-        List<PeriodPowerPrice> periodPowerPriceList = solution.getPeriodPowerPriceList();
+        List<Period> periodList = solution.getPeriodList();
         machineToMachinePeriodListMap = new MachinePeriodPart[machineList.size()][];
         for (Machine machine : machineList) {
             MachinePeriodPart[] machinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
             for (int period = 0; period < globalPeriodRangeTo; period++) {
-                machinePeriodList[period] = new MachinePeriodPart(machine, periodPowerPriceList.get(period));
+                machinePeriodList[period] = new MachinePeriodPart(machine, periodList.get(period));
             }
             machineToMachinePeriodListMap[machine.getIndex()] = machinePeriodList;
         }
         unassignedMachinePeriodList = new MachinePeriodPart[globalPeriodRangeTo];
         for (int period = 0; period < globalPeriodRangeTo; period++) {
-            unassignedMachinePeriodList[period] = new MachinePeriodPart(null, periodPowerPriceList.get(period));
+            unassignedMachinePeriodList[period] = new MachinePeriodPart(null, periodList.get(period));
         }
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             // Do not do modifyMachine(taskAssignment, null, taskAssignment.getMachine());
@@ -274,7 +275,7 @@ public class CheapTimeIncrementalScoreCalculator
             machinePeriod.retractTaskAssignment(taskAssignment);
             if (retractTaskCost) {
                 mediumScore += CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
-                        machinePeriod.periodPowerPriceMicros);
+                        machinePeriod.powerPriceMicros);
             }
             // SpinUp vs idle
             if (machinePeriod.status.isActive()) {
@@ -353,7 +354,7 @@ public class CheapTimeIncrementalScoreCalculator
             machinePeriod.insertTaskAssignment(taskAssignment);
             if (insertTaskCost) {
                 mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(powerConsumptionMicros,
-                        machinePeriod.periodPowerPriceMicros);
+                        machinePeriod.powerPriceMicros);
             }
             // SpinUp vs idle
             if (machinePeriod.status == MachinePeriodStatus.SPIN_UP_AND_ACTIVE && i != startPeriod) {
@@ -410,18 +411,16 @@ public class CheapTimeIncrementalScoreCalculator
     private class MachinePeriodPart {
 
         private final Machine machine;
-        private final int period;
-        private final long periodPowerPriceMicros;
+        private final long powerPriceMicros;
         private final long machineCostMicros;
 
         private int taskCount;
         private MachinePeriodStatus status;
         private int[] resourceAvailableList; // List<> replaced by array[] for performance
 
-        private MachinePeriodPart(Machine machine, PeriodPowerPrice periodPowerPrice) {
+        private MachinePeriodPart(Machine machine, Period period) {
             this.machine = machine;
-            this.period = periodPowerPrice.getPeriod();
-            this.periodPowerPriceMicros = periodPowerPrice.getPowerPriceMicros();
+            this.powerPriceMicros = period.getPowerPriceMicros();
             taskCount = 0;
             status = MachinePeriodStatus.OFF;
             if (machine != null) {
@@ -430,7 +429,7 @@ public class CheapTimeIncrementalScoreCalculator
                     resourceAvailableList[i] = machine.getMachineCapacityList().get(i).getCapacity();
                 }
                 machineCostMicros = CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                        periodPowerPriceMicros);
+                        powerPriceMicros);
             } else {
                 machineCostMicros = Long.MIN_VALUE;
             }
@@ -583,7 +582,7 @@ public class CheapTimeIncrementalScoreCalculator
         }
         // Individual taskConsumption isn't tracked for performance
         taskConsumptionMatchTotal.addConstraintMatch(
-                Arrays.asList(),
+                Collections.emptyList(),
                 HardMediumSoftLongScore.of(0, taskConsumptionWeight, 0));
         // Individual taskStartPeriod isn't tracked for performance
         // but we mimic it
@@ -591,7 +590,7 @@ public class CheapTimeIncrementalScoreCalculator
             Integer startPeriod = taskAssignment.getStartPeriod();
             if (startPeriod != null) {
                 minimizeTaskStartPeriodMatchTotal.addConstraintMatch(
-                        Arrays.asList(taskAssignment),
+                        Collections.singletonList(taskAssignment),
                         HardMediumSoftLongScore.of(0, 0, -startPeriod));
             }
 

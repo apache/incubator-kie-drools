@@ -130,10 +130,6 @@ public class IntervalSplitPoint<Interval_, Point_ extends Comparable<Point_>>
 
     @Override
     public String toString() {
-        return "IntervalSplitPoint{" +
-                "splitPoint=" + splitPoint +
-                ", intervalsStartingAtSplitPointSet=" + intervalsStartingAtSplitPointSet +
-                ", intervalsEndingAtSplitPointSet=" + intervalsEndingAtSplitPointSet +
-                '}';
+        return splitPoint.toString();
     }
 }

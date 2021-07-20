@@ -1,5 +1,5 @@
 /*
- * Copyright 2014 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,18 +20,20 @@ import org.optaplanner.examples.common.domain.AbstractPersistable;
 
 import com.thoughtworks.xstream.annotations.XStreamAlias;
 
-@XStreamAlias("CtPeriodPowerPrice")
-public class PeriodPowerPrice extends AbstractPersistable {
+@XStreamAlias("CtPeriod")
+public class Period extends AbstractPersistable {
 
-    private int period;
+    private final int index;
     private long powerPriceMicros;
 
-    public int getPeriod() {
-        return period;
+    public Period(int id, long powerPriceMicros) {
+        super(id);
+        this.index = id;
+        this.powerPriceMicros = powerPriceMicros;
     }
 
-    public void setPeriod(int period) {
-        this.period = period;
+    public int getIndex() {
+        return index;
     }
 
     public long getPowerPriceMicros() {
@@ -41,9 +43,5 @@ public class PeriodPowerPrice extends AbstractPersistable {
     public void setPowerPriceMicros(long powerPriceMicros) {
         this.powerPriceMicros = powerPriceMicros;
     }
-
-    // ************************************************************************
-    // Complex methods
-    // ************************************************************************
 
 }

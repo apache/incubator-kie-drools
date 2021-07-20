@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,35 +24,20 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
+import org.optaplanner.examples.cheaptime.domain.Period;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator;
+import org.optaplanner.examples.cheaptime.optional.score.MachinePeriodPart;
 import org.optaplanner.examples.cheaptime.optional.score.drools.IdleCost;
-import org.optaplanner.examples.cheaptime.optional.score.drools.PeriodWrapper;
-import org.optaplanner.examples.cheaptime.optional.score.drools.MachinePeriodPart;
 
 global HardMediumSoftLongScoreHolder scoreHolder;
-
-// Setup
-rule "period"
-    salience 3
-    when
-        CheapTimeSolution($globalPeriodRangeFrom : globalPeriodRangeFrom, $globalPeriodRangeTo : globalPeriodRangeTo)
-    then
-        for (int i = $globalPeriodRangeFrom; i < $globalPeriodRangeTo; i++) {
-            insert(new PeriodWrapper(i));
-        }
-end
 
 // Introduce MachinePeriodPart to score efficiently
 rule "machinePeriodPart"
     salience 2
     when
-        CheapTimeSolution($resourceList : resourceList)
-        PeriodWrapper($period : period);
+        Period($period : index)
         $machine : Machine()
         $taskAssignmentList : ArrayList() from collect (
             TaskAssignment(
@@ -61,7 +46,7 @@ rule "machinePeriodPart"
                 endPeriod > $period)
         )
     then
-        insertLogical(new MachinePeriodPart($machine, $period, $resourceList.size(), $taskAssignmentList));
+        insertLogical(new MachinePeriodPart($machine, $period, $taskAssignmentList));
 end
 
 // ############################################################################
@@ -69,14 +54,14 @@ end
 // ############################################################################
 
 // Start time limits: each task must start between its earliest start and latest start limit.
-rule "startTimeLimitsFrom"
+rule "Task starts too early"
     when
         $taskAssignment : TaskAssignment($task : task, $startPeriod : startPeriod < $task.startPeriodRangeFrom)
     then
         scoreHolder.addHardConstraintMatch(kcontext, $startPeriod - $task.getStartPeriodRangeFrom());
 end
 
-rule "startTimeLimitsTo"
+rule "Task starts too late"
     when
         $taskAssignment : TaskAssignment($task : task, $startPeriod : startPeriod >= $task.startPeriodRangeTo)
     then
@@ -84,7 +69,7 @@ rule "startTimeLimitsTo"
 end
 
 // Maximum capacity: the maximum capacity for each resource for each machine must not be exceeded.
-rule "maximumCapacity" // resourceInShortTotal is calculated in MachinePeriodPart constructor
+rule "Maximum resource capacity" // resourceInShortTotal is calculated in MachinePeriodPart constructor
     when
         MachinePeriodPart($resourceInShortTotal : resourceInShortTotal < 0)
     then
@@ -116,45 +101,42 @@ rule "calculateIdleCost"
             $lastActivePeriod : max($activePeriod)
         )
         $idlePeriodPowerPriceList : ArrayList() from collect (
-            PeriodPowerPrice(
-                period > (Integer) $lastActivePeriod,
-                period < $period)
+            Period(
+                index > (Integer) $lastActivePeriod,
+                index < $period)
         )
     then
         long idleCost = 0;
         for (Object obj : $idlePeriodPowerPriceList) {
-            PeriodPowerPrice idlePeriodPowerPrice = (PeriodPowerPrice)obj;
-            idleCost += CheapTimeCostCalculator.multiplyTwoMicros($machine.getPowerConsumptionMicros(), idlePeriodPowerPrice.getPowerPriceMicros());
+            Period idlePeriod = (Period)obj;
+            idleCost += CheapTimeCostCalculator.multiplyTwoMicros($machine.getPowerConsumptionMicros(), idlePeriod.getPowerPriceMicros());
         }
         insertLogical(new IdleCost($machine, $period, idleCost));
 end
 
-rule "machinePowerCostActive"
+rule "Active machine power cost"
     when
         MachinePeriodPart($machine : machine, $period : period, active == true)
-        $periodPowerPrice : PeriodPowerPrice(period == $period)
+        Period(index == $period, $price: powerPriceMicros)
     then
         scoreHolder.addMediumConstraintMatch(kcontext,
-            - CheapTimeCostCalculator.multiplyTwoMicros($machine.getPowerConsumptionMicros(), $periodPowerPrice.getPowerPriceMicros()));
+            - CheapTimeCostCalculator.multiplyTwoMicros($machine.getPowerConsumptionMicros(), $price));
 end
 
-rule "machinePowerCostOffToActive"
+rule "Machine idle costs"
     when
         MachinePeriodPart($machine : machine, $period : period, active == true)
-        IdleCost(machine == $machine, activePeriodAfterIdle == $period, $idleCost : cost >= $machine.spinUpDownCostMicros)
+        IdleCost(machine == $machine, activePeriodAfterIdle == $period, $idleCost : cost)
     then
-        scoreHolder.addMediumConstraintMatch(kcontext, - $machine.getSpinUpDownCostMicros());
+        if ($idleCost >= $machine.getSpinUpDownCostMicros()) {
+            // Shutting down and restarting the machine is cheaper than keeping it idle.
+            scoreHolder.addMediumConstraintMatch(kcontext, - $machine.getSpinUpDownCostMicros());
+        } else {
+            scoreHolder.addMediumConstraintMatch(kcontext, - $idleCost);
+        }
 end
 
-rule "machinePowerCostIdleToActive"
-    when
-        MachinePeriodPart($machine : machine, $period : period, active == true)
-        IdleCost(machine == $machine, activePeriodAfterIdle == $period, $idleCost : cost < $machine.spinUpDownCostMicros)
-    then
-        scoreHolder.addMediumConstraintMatch(kcontext, - $idleCost);
-end
-
-rule "firstBoot"
+rule "Active machine spin up and down cost"
     when
         MachinePeriodPart($machine : machine, $period : period, active == true)
         not MachinePeriodPart(machine == $machine, period < $period, active == true);
@@ -163,14 +145,13 @@ rule "firstBoot"
 end
 
 // Task power cost: Each task consumes power too, which infers a power cost (depending on the power price during its time).
-rule "taskPowerCost"
+rule "Task power cost"
     when
-        PeriodWrapper($period : period)
+        Period($period: index, $price: powerPriceMicros)
         TaskAssignment(startPeriod <= $period, endPeriod > $period, $task : task)
-        $periodPowerPrice : PeriodPowerPrice(period == $period)
     then
         scoreHolder.addMediumConstraintMatch(kcontext,
-            - CheapTimeCostCalculator.multiplyTwoMicros($task.getPowerConsumptionMicros(), $periodPowerPrice.getPowerPriceMicros()));
+            - CheapTimeCostCalculator.multiplyTwoMicros($task.getPowerConsumptionMicros(), $price));
 end
 
 // ############################################################################
@@ -178,7 +159,7 @@ end
 // ############################################################################
 
 // Start early: prefer starting a task sooner rather than later.
-rule "startEarly"
+rule "Prefer early task start"
     when
         TaskAssignment($startPeriod : startPeriod != null)
     then

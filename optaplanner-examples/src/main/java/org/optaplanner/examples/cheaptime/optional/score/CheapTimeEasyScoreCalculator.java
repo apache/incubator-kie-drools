@@ -17,6 +17,7 @@
 package org.optaplanner.examples.cheaptime.optional.score;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,10 +26,8 @@ import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftL
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
-import org.optaplanner.examples.cheaptime.domain.Task;
+import org.optaplanner.examples.cheaptime.domain.Period;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
-import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 import org.optaplanner.examples.cheaptime.score.CheapTimeCostCalculator;
 
 public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTimeSolution, HardMediumSoftLongScore> {
@@ -39,20 +38,19 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             throw new IllegalStateException("The globalPeriodRangeFrom (" + solution.getGlobalPeriodRangeFrom()
                     + ") should be 0.");
         }
-        int resourceListSize = solution.getResourceList().size();
         int globalPeriodRangeTo = solution.getGlobalPeriodRangeTo();
         List<Machine> machineList = solution.getMachineList();
         Map<Machine, List<MachinePeriodPart>> machinePeriodListMap = new LinkedHashMap<>(machineList.size());
         for (Machine machine : machineList) {
             List<MachinePeriodPart> machinePeriodList = new ArrayList<>(globalPeriodRangeTo);
             for (int period = 0; period < globalPeriodRangeTo; period++) {
-                machinePeriodList.add(new MachinePeriodPart(machine, period, resourceListSize));
+                machinePeriodList.add(new MachinePeriodPart(machine, period, Collections.emptyList()));
             }
             machinePeriodListMap.put(machine, machinePeriodList);
         }
         long mediumScore = 0L;
         long softScore = 0L;
-        List<PeriodPowerPrice> periodPowerPriceList = solution.getPeriodPowerPriceList();
+        List<Period> periodList = solution.getPeriodList();
         for (TaskAssignment taskAssignment : solution.getTaskAssignmentList()) {
             Machine machine = taskAssignment.getMachine();
             Integer startPeriod = taskAssignment.getStartPeriod();
@@ -62,10 +60,10 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                 for (int period = startPeriod; period < endPeriod; period++) {
                     MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
                     machinePeriodPart.addTaskAssignment(taskAssignment);
-                    PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
+                    Period powerPrice = periodList.get(period);
                     mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(
                             taskAssignment.getTask().getPowerConsumptionMicros(),
-                            periodPowerPrice.getPowerPriceMicros());
+                            powerPrice.getPowerPriceMicros());
                 }
                 softScore -= startPeriod;
             }
@@ -76,9 +74,8 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
             List<MachinePeriodPart> machinePeriodList = entry.getValue();
             MachinePeriodStatus previousStatus = MachinePeriodStatus.OFF;
             long idleCostMicros = 0L;
-            for (int period = 0; period < globalPeriodRangeTo; period++) {
-                PeriodPowerPrice periodPowerPrice = periodPowerPriceList.get(period);
-                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period);
+            for (Period period : solution.getPeriodList()) {
+                MachinePeriodPart machinePeriodPart = machinePeriodList.get(period.getIndex());
                 boolean active = machinePeriodPart.isActive();
                 if (active) {
                     if (previousStatus == MachinePeriodStatus.OFF) {
@@ -89,14 +86,14 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
                         mediumScore -= idleCostMicros;
                         idleCostMicros = 0L;
                     }
-                    hardScore += machinePeriodPart.getHardScore();
+                    hardScore += machinePeriodPart.getResourceInShortTotal();
                     mediumScore -= CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                            periodPowerPrice.getPowerPriceMicros());
+                            period.getPowerPriceMicros());
                     previousStatus = MachinePeriodStatus.ACTIVE;
                 } else {
                     if (previousStatus != MachinePeriodStatus.OFF) {
                         idleCostMicros += CheapTimeCostCalculator.multiplyTwoMicros(machine.getPowerConsumptionMicros(),
-                                periodPowerPrice.getPowerPriceMicros());
+                                period.getPowerPriceMicros());
                         if (idleCostMicros > machine.getSpinUpDownCostMicros()) {
                             idleCostMicros = 0L;
                             previousStatus = MachinePeriodStatus.OFF;
@@ -114,50 +111,6 @@ public class CheapTimeEasyScoreCalculator implements EasyScoreCalculator<CheapTi
         OFF,
         IDLE,
         ACTIVE;
-    }
-
-    private static final class MachinePeriodPart {
-
-        private final Machine machine;
-        private final int period;
-
-        private boolean active;
-        private List<Integer> resourceAvailableList;
-
-        private MachinePeriodPart(Machine machine, int period, int resourceListSize) {
-            this.machine = machine;
-            this.period = period;
-            active = false;
-            resourceAvailableList = new ArrayList<>(resourceListSize);
-            for (int i = 0; i < resourceListSize; i++) {
-                resourceAvailableList.add(machine.getMachineCapacityList().get(i).getCapacity());
-            }
-        }
-
-        public boolean isActive() {
-            return active;
-        }
-
-        public void addTaskAssignment(TaskAssignment taskAssignment) {
-            active = true;
-            Task task = taskAssignment.getTask();
-            for (int i = 0; i < resourceAvailableList.size(); i++) {
-                int resourceAvailable = resourceAvailableList.get(i);
-                TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
-                resourceAvailableList.set(i, resourceAvailable - taskRequirement.getResourceUsage());
-            }
-        }
-
-        public long getHardScore() {
-            long hardScore = 0L;
-            for (int resourceAvailable : resourceAvailableList) {
-                if (resourceAvailable < 0) {
-                    hardScore += resourceAvailable;
-                }
-            }
-            return hardScore;
-        }
-
     }
 
 }

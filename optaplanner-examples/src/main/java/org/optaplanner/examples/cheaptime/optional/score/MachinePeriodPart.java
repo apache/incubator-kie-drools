@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.optional.score.drools;
+package org.optaplanner.examples.cheaptime.optional.score;
 
 import static java.util.Comparator.comparing;
 
@@ -24,11 +24,12 @@ import java.util.List;
 import java.util.Objects;
 
 import org.optaplanner.examples.cheaptime.domain.Machine;
+import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
 import org.optaplanner.examples.cheaptime.domain.TaskRequirement;
 
-public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
+public final class MachinePeriodPart implements Comparable<MachinePeriodPart> {
 
     private static final Comparator<MachinePeriodPart> COMPARATOR = comparing(
             (MachinePeriodPart machinePeriodPart) -> machinePeriodPart.machine.getIndex())
@@ -43,35 +44,36 @@ public class MachinePeriodPart implements Comparable<MachinePeriodPart> {
     private int[] resourceAvailableList;
     private int resourceInShortTotal;
 
-    public MachinePeriodPart(Machine machine, int period, int resourceListSize, List<TaskAssignment> taskAssignmentList) {
+    public MachinePeriodPart(Machine machine, int period, List<TaskAssignment> taskAssignmentList) {
         this.machine = machine;
         this.period = period;
 
         active = false;
 
-        resourceAvailableList = new int[resourceListSize];
-        for (int i = 0; i < resourceListSize; i++) {
-            resourceAvailableList[i] = machine.getMachineCapacityList().get(i).getCapacity();
-        }
+        resourceAvailableList = machine.getMachineCapacityList()
+                .stream()
+                .mapToInt(MachineCapacity::getCapacity)
+                .toArray();
 
         for (TaskAssignment taskAssignment : taskAssignmentList) {
             addTaskAssignment(taskAssignment);
         }
-
-        resourceInShortTotal = 0;
-        for (int resourceAvailable : resourceAvailableList) {
-            if (resourceAvailable < 0) {
-                resourceInShortTotal += resourceAvailable;
-            }
-        }
     }
 
-    private void addTaskAssignment(TaskAssignment taskAssignment) {
+    public void addTaskAssignment(TaskAssignment taskAssignment) {
         active = true;
         Task task = taskAssignment.getTask();
         for (int i = 0; i < resourceAvailableList.length; i++) {
             TaskRequirement taskRequirement = task.getTaskRequirementList().get(i);
+            int currentResourceAvailable = resourceAvailableList[i];
+            if (currentResourceAvailable < 0) {
+                resourceInShortTotal -= currentResourceAvailable;
+            }
             resourceAvailableList[i] -= taskRequirement.getResourceUsage();
+            int resourceAvailable = resourceAvailableList[i];
+            if (resourceAvailable < 0) {
+                resourceInShortTotal += resourceAvailable;
+            }
         }
     }
 

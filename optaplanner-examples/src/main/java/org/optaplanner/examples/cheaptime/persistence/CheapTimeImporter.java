@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ import org.optaplanner.examples.cheaptime.app.CheapTimeApp;
 import org.optaplanner.examples.cheaptime.domain.CheapTimeSolution;
 import org.optaplanner.examples.cheaptime.domain.Machine;
 import org.optaplanner.examples.cheaptime.domain.MachineCapacity;
-import org.optaplanner.examples.cheaptime.domain.PeriodPowerPrice;
+import org.optaplanner.examples.cheaptime.domain.Period;
 import org.optaplanner.examples.cheaptime.domain.Resource;
 import org.optaplanner.examples.cheaptime.domain.Task;
 import org.optaplanner.examples.cheaptime.domain.TaskAssignment;
@@ -142,10 +142,10 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
             solution.setTimeResolutionInMinutes(timeResolutionInMinutes);
             solution.setGlobalPeriodRangeFrom(0);
             solution.setGlobalPeriodRangeTo(((24 * 60) / timeResolutionInMinutes));
+            readForecastFile(); // Creates all the periods that are required later.
             readResourceList();
             readMachineList();
             readTaskList();
-            readForecastFile();
             createTaskAssignmentList();
 
             BigInteger possibleSolutionSize = BigInteger.ONE;
@@ -203,7 +203,6 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                     MachineCapacity machineCapacity = new MachineCapacity();
                     machineCapacity.setId(machineCapacityId);
                     machineCapacityId++;
-                    machineCapacity.setMachine(machine);
                     machineCapacity.setResource(solution.getResourceList().get(j));
                     machineCapacity.setCapacity(Integer.parseInt(capacityLineTokens[j]));
                     machineCapacityList.add(machineCapacity);
@@ -213,13 +212,11 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 machineList.add(machine);
             }
             solution.setMachineList(machineList);
-            solution.setMachineCapacityList(machineCapacityList);
         }
 
         private void readTaskList() throws IOException {
             int taskListSize = readIntegerValue();
             List<Task> taskList = new ArrayList<>(taskListSize);
-            List<TaskRequirement> taskRequirementList = new ArrayList<>(taskListSize * resourceListSize);
             long taskRequirementId = 0L;
             for (int i = 0; i < taskListSize; i++) {
                 String[] taskLineTokens = splitBySpacesOrTabs(readStringValue(), 5);
@@ -258,17 +255,14 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                     TaskRequirement taskRequirement = new TaskRequirement();
                     taskRequirement.setId(taskRequirementId);
                     taskRequirementId++;
-                    taskRequirement.setTask(task);
                     taskRequirement.setResource(solution.getResourceList().get(j));
                     taskRequirement.setResourceUsage(Integer.parseInt(usageLineTokens[j]));
-                    taskRequirementList.add(taskRequirement);
                     taskRequirementListOfTask.add(taskRequirement);
                 }
                 task.setTaskRequirementList(taskRequirementListOfTask);
                 taskList.add(task);
             }
             solution.setTaskList(taskList);
-            solution.setTaskRequirementList(taskRequirementList);
         }
 
         private void readForecastFile() {
@@ -305,24 +299,21 @@ public class CheapTimeImporter extends AbstractTxtSolutionImporter<CheapTimeSolu
                 long periodDurationPerHour = CheapTimeCostCalculator.divideTwoMicros(
                         CheapTimeCostCalculator.toMicroCost(1440),
                         CheapTimeCostCalculator.toMicroCost(periodListSize * 60L));
-                List<PeriodPowerPrice> periodPowerPriceList = new ArrayList<>(periodListSize);
+                List<Period> periodList = new ArrayList<>(periodListSize);
                 for (int i = 0; i < periodListSize; i++) {
                     String[] lineTokens = splitBySpacesOrTabs(readStringValue(), 2);
-                    PeriodPowerPrice periodPowerPrice = new PeriodPowerPrice();
-                    int period = Integer.parseInt(lineTokens[0]);
-                    if (periodPowerPriceList.size() != period) {
-                        throw new IllegalStateException("The forecast period (" + period
+                    int periodId = Integer.parseInt(lineTokens[0]);
+                    if (periodList.size() != periodId) {
+                        throw new IllegalStateException("The forecast period (" + periodId
                                 + ") does not increment normally and gets a different list index ("
-                                + periodPowerPriceList.size() + ").");
+                                + periodList.size() + ").");
                     }
-                    periodPowerPrice.setId((long) period);
-                    periodPowerPrice.setPeriod(period);
                     long hourlyPowerPriceMicros = CheapTimeCostCalculator.parseMicroCost(lineTokens[1]);
-                    periodPowerPrice.setPowerPriceMicros(
+                    Period period = new Period(periodId,
                             CheapTimeCostCalculator.multiplyTwoMicros(hourlyPowerPriceMicros, periodDurationPerHour));
-                    periodPowerPriceList.add(periodPowerPrice);
+                    periodList.add(period);
                 }
-                solution.setPeriodPowerPriceList(periodPowerPriceList);
+                solution.setPeriodList(periodList);
                 return null; // Hack so the code can reuse read methods from TxtInputBuilder
             }
 

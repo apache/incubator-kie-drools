@@ -25,6 +25,15 @@ public class Resource extends AbstractPersistable {
 
     private int index;
 
+    public Resource() {
+
+    }
+
+    public Resource(int index) {
+        super(index);
+        this.index = index;
+    }
+
     public int getIndex() {
         return index;
     }

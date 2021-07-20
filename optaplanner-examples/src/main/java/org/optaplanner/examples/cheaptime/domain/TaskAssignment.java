@@ -36,6 +36,17 @@ public class TaskAssignment extends AbstractPersistable {
     private Machine machine;
     private Integer startPeriod;
 
+    public TaskAssignment() {
+
+    }
+
+    public TaskAssignment(Task task, Machine machine, Period start) {
+        super(task.getId());
+        this.task = task;
+        this.machine = machine;
+        this.startPeriod = start.getIndex();
+    }
+
     public Task getTask() {
         return task;
     }

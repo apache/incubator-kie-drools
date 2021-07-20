@@ -16,7 +16,9 @@
 
 package org.optaplanner.examples.cheaptime.domain;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
@@ -32,6 +34,19 @@ public class Machine extends AbstractPersistable {
 
     // Order is equal to resourceList so Resource.getIndex() can be used for the index
     private List<MachineCapacity> machineCapacityList;
+
+    public Machine() {
+
+    }
+
+    public Machine(int index, long powerConsumptionMicros, long spinUpDownCostMicros, MachineCapacity... machineCapacities) {
+        super(index);
+        this.index = index;
+        this.powerConsumptionMicros = powerConsumptionMicros;
+        this.spinUpDownCostMicros = spinUpDownCostMicros;
+        this.machineCapacityList = Arrays.stream(machineCapacities)
+                .collect(Collectors.toList());
+    }
 
     public int getIndex() {
         return index;
@@ -65,8 +80,8 @@ public class Machine extends AbstractPersistable {
         this.machineCapacityList = machineCapacityList;
     }
 
-    public MachineCapacity getMachineCapacity(Resource resource) {
-        return machineCapacityList.get(resource.getIndex());
+    public int getCapacity(Resource resource) {
+        return machineCapacityList.get(resource.getIndex()).getCapacity();
     }
 
     // ************************************************************************
