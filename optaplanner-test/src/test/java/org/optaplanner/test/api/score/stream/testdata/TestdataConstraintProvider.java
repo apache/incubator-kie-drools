@@ -16,6 +16,8 @@
 
 package org.optaplanner.test.api.score.stream.testdata;
 
+import java.util.Objects;
+
 import org.optaplanner.core.api.score.buildin.simple.SimpleScore;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintFactory;
@@ -30,6 +32,7 @@ public class TestdataConstraintProvider implements ConstraintProvider {
         return new Constraint[] {
                 penalizeEveryEntity(constraintFactory),
                 rewardEveryEntity(constraintFactory),
+                impactEveryEntity(constraintFactory),
                 differentStringEntityHaveDifferentValues(constraintFactory),
         };
     }
@@ -42,6 +45,12 @@ public class TestdataConstraintProvider implements ConstraintProvider {
     public Constraint rewardEveryEntity(ConstraintFactory constraintFactory) {
         return constraintFactory.from(TestdataEntity.class)
                 .reward("Reward every entity", SimpleScore.ONE);
+    }
+
+    public Constraint impactEveryEntity(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(TestdataEntity.class)
+                .impact("Impact every entity", SimpleScore.ONE,
+                        entity -> Objects.equals(entity.getCode(), "A") ? 1 : -1);
     }
 
     public Constraint differentStringEntityHaveDifferentValues(ConstraintFactory constraintFactory) {

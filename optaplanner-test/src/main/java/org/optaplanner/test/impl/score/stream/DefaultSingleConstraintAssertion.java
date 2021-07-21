@@ -118,17 +118,31 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
 
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = deduceImpact();
+        long longImpact = impact.longValue(); // Impact is always int or long, so this is safe.
         AbstractConstraint<Solution_, ?> constraint =
                 (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
-        boolean sameMatchWeighTotal = matchWeightTotal.equals(impact)
-                // Auto-cast an int matchWeightTotal to a long.
-                || (matchWeightTotal instanceof Integer && Long.valueOf(matchWeightTotal.longValue()).equals(impact));
-        if (scoreImpactType == constraint.getScoreImpactType() && sameMatchWeighTotal) {
+        ScoreImpactType actualScoreImpactType = constraint.getScoreImpactType();
+        if (actualScoreImpactType == ScoreImpactType.MIXED) {
+            // Impact means we need to check for expected impact type and actual impact match.
+            switch (scoreImpactType) {
+                case REWARD:
+                    if (matchWeightTotal.longValue() == -longImpact) {
+                        return;
+                    }
+                    break;
+                case PENALTY:
+                    if (matchWeightTotal.longValue() == longImpact) {
+                        return;
+                    }
+                    break;
+            }
+        } else if (actualScoreImpactType == scoreImpactType && matchWeightTotal.longValue() == longImpact) {
+            // Reward and positive or penalty and negative means all is OK.
             return;
         }
         String constraintId = constraint.getConstraintId();
-        String assertionMessage = buildAssertionErrorMessage(scoreImpactType, matchWeightTotal,
-                constraint.getScoreImpactType(), impact, constraintId, message);
+        String assertionMessage = buildAssertionErrorMessage(scoreImpactType, matchWeightTotal, actualScoreImpactType,
+                impact, constraintId, message);
         throw new AssertionError(assertionMessage);
     }
 
@@ -191,11 +205,28 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         }
         AbstractConstraint<Solution_, ?> constraint =
                 (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
-        if (constraint.getScoreImpactType() != scoreImpactType) {
+        ScoreImpactType actualImpactType = constraint.getScoreImpactType();
+
+        if (actualImpactType != scoreImpactType && actualImpactType != ScoreImpactType.MIXED) {
             return 0;
         }
+        Score_ zeroScore = scoreDirectorFactory.getScoreDefinition().getZeroScore();
         return constraintMatchTotalCollection.stream()
-                .mapToLong(constraintMatchTotal -> constraintMatchTotal.getConstraintMatchSet().size())
+                .mapToLong(constraintMatchTotal -> {
+                    if (actualImpactType == ScoreImpactType.MIXED) {
+                        boolean isImpactPositive = constraintMatchTotal.getScore().compareTo(zeroScore) > 0;
+                        boolean isImpactNegative = constraintMatchTotal.getScore().compareTo(zeroScore) < 0;
+                        if (isImpactPositive && scoreImpactType == ScoreImpactType.PENALTY) {
+                            return constraintMatchTotal.getConstraintMatchSet().size();
+                        } else if (isImpactNegative && scoreImpactType == ScoreImpactType.REWARD) {
+                            return constraintMatchTotal.getConstraintMatchSet().size();
+                        } else {
+                            return 0;
+                        }
+                    } else {
+                        return constraintMatchTotal.getConstraintMatchSet().size();
+                    }
+                })
                 .sum();
     }
 
