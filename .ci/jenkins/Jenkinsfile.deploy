@@ -314,7 +314,7 @@ void updateQuickstartsVersions(){
 
 void gradleVersionsUpdate(String repo, String newVersion) {
     dir(repo) {
-        sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
+        sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
     }
 }
 
