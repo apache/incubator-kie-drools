@@ -54,7 +54,7 @@ public class ListAccessExprT implements TypedExpression {
                             } else if (Map.class.isAssignableFrom(rawType)) {
                                 return parameterizedType.getActualTypeArguments()[1];
                             } else {
-                                return null;
+                                throw new IllegalStateException("ListAccessExprT is not applicable to " + rawType);
                             }
                         });
     }
