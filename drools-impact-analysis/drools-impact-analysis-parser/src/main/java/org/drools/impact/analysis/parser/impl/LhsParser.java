@@ -100,7 +100,7 @@ public class LhsParser {
         DrlxParseResult drlxParseResult = constraintParser.drlxParse( pattern.getPatternClass(), patternDescr.getIdentifier(), constraintExpression, false);
         if (drlxParseResult.isSuccess()) {
             SingleDrlxParseSuccess result = ( SingleDrlxParseSuccess ) drlxParseResult;
-            if (result.getReactOnProperties().size() > 0) {
+            if (!result.getReactOnProperties().isEmpty()) {
                 result.getReactOnProperties().forEach( pattern::addReactOn );
             } else {
                 pattern.setClassReactive( true );

@@ -31,7 +31,11 @@ public class ImpactAnalysisHelper {
 
     // will be deprecated
     public ImpactAnalysisHelper(boolean positiveOnly) {
-        this.linkFilter = LinkFilter.POSITIVE;
+        if (positiveOnly) {
+            this.linkFilter = LinkFilter.POSITIVE;
+        } else {
+            this.linkFilter = LinkFilter.ALL;
+        }
     }
 
     public ImpactAnalysisHelper(LinkFilter linkFilter) {
@@ -60,7 +64,7 @@ public class ImpactAnalysisHelper {
      */
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
 
-        Collection<Node> impactedNodes = new HashSet<Node>();
+        Collection<Node> impactedNodes = new HashSet<>();
         collectImpactedNodes(changedNode, impactedNodes);
         changedNode.setStatus(Status.CHANGED);
 

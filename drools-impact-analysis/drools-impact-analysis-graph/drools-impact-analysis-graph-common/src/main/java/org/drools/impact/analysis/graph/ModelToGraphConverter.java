@@ -47,7 +47,11 @@ public class ModelToGraphConverter {
 
     // will be deprecated
     public ModelToGraphConverter(boolean positiveOnly) {
-        this.linkFilter = LinkFilter.POSITIVE;
+        if (positiveOnly) {
+            this.linkFilter = LinkFilter.POSITIVE;
+        } else {
+            this.linkFilter = LinkFilter.ALL;
+        }
     }
 
     public ModelToGraphConverter(LinkFilter linkFilter) {
@@ -75,7 +79,7 @@ public class ModelToGraphConverter {
                     if (pattern.isClassReactive()) {
                         // Pattern which cannot analyze reactivity (e.g. Person(blackBoxMethod())) so reacts to all properties
                         graphAnalysis.addClassReactiveRule(patternClass, rule, pattern.isPositive());
-                    } else if (reactOnFields.size() == 0) {
+                    } else if (reactOnFields.isEmpty()) {
                         // Pattern without constraint (e.g. Person()) so doesn't react to properties (only react to  insert/delete)
                         graphAnalysis.addInsertReactiveRule(patternClass, rule, pattern.isPositive());
                     } else {
@@ -121,7 +125,7 @@ public class ModelToGraphConverter {
         Class<?> insertedClass = action.getActionClass();
         if (!graphAnalysis.isRegisteredClass(insertedClass)) {
             // Not likely happen but not invalid
-            logger.warn("Not found " + insertedClass + " in reactiveMap");
+            logger.warn("Not found {} in reactiveMap", insertedClass);
             return;
         }
 
@@ -138,7 +142,7 @@ public class ModelToGraphConverter {
                                                           .filter(constraint -> constraint.getProperty() != null && constraint.getProperty().equals(property))
                                                           .collect(Collectors.toList());
                     ReactivityType combinedLinkType = ReactivityType.UNKNOWN;
-                    if (constraints.size() == 0) {
+                    if (constraints.isEmpty()) {
                         // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
                         combinedLinkType = ReactivityType.UNKNOWN;
                     } else {
@@ -198,7 +202,7 @@ public class ModelToGraphConverter {
         Class<?> modifiedClass = action.getActionClass();
         if (!graphAnalysis.isRegisteredClass(modifiedClass)) {
             // Not likely happen but not invalid
-            logger.warn("Not found " + modifiedClass + " in reactiveMap");
+            logger.warn("Not found {} in reactiveMap", modifiedClass);
             return;
         }
         List<ModifiedProperty> modifiedProperties = action.getModifiedProperties();
@@ -218,7 +222,7 @@ public class ModelToGraphConverter {
                                                           })
                                                           .collect(Collectors.toList());
                 ReactivityType combinedLinkType = ReactivityType.UNKNOWN;
-                if (constraints.size() == 0) {
+                if (constraints.isEmpty()) {
                     // This rule is reactive to the property but cannot find its constraint (e.g. [age > $a] non-literal constraint). It means UNKNOWN impact
                     combinedLinkType = ReactivityType.UNKNOWN;
                 } else {
@@ -250,11 +254,7 @@ public class ModelToGraphConverter {
         if (modifiedProperty instanceof ModifiedMapProperty) {
             String constraintMapKey = constraint.getKey();
             String modifiedMapKey = ((ModifiedMapProperty) modifiedProperty).getKey();
-            if (constraintMapKey != null && constraintMapKey.equals(modifiedMapKey)) {
-                return true;
-            } else {
-                return false;
-            }
+            return constraintMapKey != null && constraintMapKey.equals(modifiedMapKey);
         } else {
             return false;
         }
