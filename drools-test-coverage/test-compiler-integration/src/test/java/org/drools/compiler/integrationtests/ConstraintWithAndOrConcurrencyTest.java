@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -78,71 +79,78 @@ public class ConstraintWithAndOrConcurrencyTest {
 
         List<Exception> exceptions = new ArrayList<>();
 
-        for (int i = 0; i < LOOP; i++) {
-            final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval");
 
-            // 1st run
-            KieSession kSession1 = kieBase.newKieSession();
-            Bus bus1 = new Bus("red", 30);
-            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "BBB")); // match the 1st condition -> short circuit
-            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-            kSession1.insert(bus1);
-            kSession1.fireAllRules();
-            kSession1.dispose();
+        try {
+            for (int i = 0; i < LOOP; i++) {
+                final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
 
-            // 2nd run
-            KieSession kSession2 = kieBase.newKieSession();
-            Bus bus2 = new Bus("red", 30);
-            bus2.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "00")); // not match the 1st condition, not match the 2nd condition -> short circuit
-            bus2.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-            kSession2.insert(bus2);
-            kSession2.fireAllRules();
-            kSession2.dispose();
+                // 1st run
+                KieSession kSession1 = kieBase.newKieSession();
+                Bus bus1 = new Bus("red", 30);
+                bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "BBB")); // match the 1st condition -> short circuit
+                bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                kSession1.insert(bus1);
+                kSession1.fireAllRules();
+                kSession1.dispose();
 
-            ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-            CountDownLatch latch = new CountDownLatch(THREADS);
-            for (int j = 0; j < REQUESTS; j++) {
-                executor.execute(new Runnable() {
+                // 2nd run
+                KieSession kSession2 = kieBase.newKieSession();
+                Bus bus2 = new Bus("red", 30);
+                bus2.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "00")); // not match the 1st condition, not match the 2nd condition -> short circuit
+                bus2.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                kSession2.insert(bus2);
+                kSession2.fireAllRules();
+                kSession2.dispose();
 
-                    public void run() {
-                        KieSession kSession = kieBase.newKieSession();
+                ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+                CountDownLatch latch = new CountDownLatch(THREADS);
+                for (int j = 0; j < REQUESTS; j++) {
+                    executor.execute(new Runnable() {
 
-                        Bus bus1 = new Bus("red", 30);
-                        bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "10")); // not match the 1st condition, match the 2nd & 3rd condition
-                        bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-                        kSession.insert(bus1);
+                        public void run() {
+                            KieSession kSession = kieBase.newKieSession();
 
-                        try {
-                            latch.countDown();
-                            latch.await();
-                        } catch (InterruptedException e) {
-                            // ignore
+                            Bus bus1 = new Bus("red", 30);
+                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "10")); // not match the 1st condition, match the 2nd & 3rd condition
+                            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                            kSession.insert(bus1);
+
+                            try {
+                                latch.countDown();
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                // ignore
+                            }
+
+                            try {
+                                kSession.fireAllRules();
+                            } catch (Exception e) {
+                                exceptions.add(e);
+                            } finally {
+                                kSession.dispose();
+                            }
                         }
+                    });
+                }
 
-                        try {
-                            kSession.fireAllRules();
-                        } catch (Exception e) {
-                            exceptions.add(e);
-                        } finally {
-                            kSession.dispose();
-                        }
-                    }
-                });
+                executor.shutdown();
+                try {
+                    executor.awaitTermination(10, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
 
-            executor.shutdown();
-            try {
-                executor.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // ignore
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
-        }
 
-        if (!exceptions.isEmpty()) {
-            exceptions.get(0).printStackTrace();
-        }
+            assertEquals(0, exceptions.size());
 
-        assertEquals(0, exceptions.size());
+        } finally {
+            System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
+        }
     }
 
     public static class Bus {

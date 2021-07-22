@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Album;
 import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Bus;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -75,72 +76,79 @@ public class ConsequenceConcurrencyWithAndOrTest {
 
         List<Exception> exceptions = new ArrayList<>();
 
-        KieBase kieBase = null;
-        if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
-            kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
-        }
+        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval");
 
-        for (int i = 0; i < LOOP; i++) {
-            if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+        try {
+            KieBase kieBase = null;
+            if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
                 kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
             }
 
-            // 1st run
-            KieSession kSession1 = kieBase.newKieSession();
-            List<Boolean> result = new ArrayList<>();
-            kSession1.setGlobal("result", result);
-            Bus bus1 = new Bus("red", 30);
-            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "BBB")); // match the 1st condition -> short circuit
-            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-            kSession1.insert(bus1);
-            kSession1.fireAllRules();
-            kSession1.dispose();
+            for (int i = 0; i < LOOP; i++) {
+                if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+                    kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+                }
 
-            ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-            CountDownLatch latch = new CountDownLatch(THREADS);
-            for (int j = 0; j < REQUESTS; j++) {
-                KieBase finalKieBase = kieBase;
-                executor.execute(new Runnable() {
+                // 1st run
+                KieSession kSession1 = kieBase.newKieSession();
+                List<Boolean> result = new ArrayList<>();
+                kSession1.setGlobal("result", result);
+                Bus bus1 = new Bus("red", 30);
+                bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "BBB")); // match the 1st condition -> short circuit
+                bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                kSession1.insert(bus1);
+                kSession1.fireAllRules();
+                kSession1.dispose();
 
-                    public void run() {
-                        KieSession kSession = finalKieBase.newKieSession();
-                        List<Boolean> result = new ArrayList<>();
-                        kSession.setGlobal("result", result);
+                ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+                CountDownLatch latch = new CountDownLatch(THREADS);
+                for (int j = 0; j < REQUESTS; j++) {
+                    KieBase finalKieBase = kieBase;
+                    executor.execute(new Runnable() {
 
-                        Bus bus1 = new Bus("red", 30);
-                        bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY")); // doesn't match the 1st condition -> evaluate the 2nd condition (not match)
-                        bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-                        kSession.insert(bus1);
+                        public void run() {
+                            KieSession kSession = finalKieBase.newKieSession();
+                            List<Boolean> result = new ArrayList<>();
+                            kSession.setGlobal("result", result);
 
-                        try {
-                            latch.countDown();
-                            latch.await();
-                        } catch (InterruptedException e) {
-                            // ignore
+                            Bus bus1 = new Bus("red", 30);
+                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY")); // doesn't match the 1st condition -> evaluate the 2nd condition (not match)
+                            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                            kSession.insert(bus1);
+
+                            try {
+                                latch.countDown();
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                // ignore
+                            }
+
+                            try {
+                                kSession.fireAllRules();
+                            } catch (Exception e) {
+                                exceptions.add(e);
+                            } finally {
+                                kSession.dispose();
+                            }
                         }
+                    });
+                }
 
-                        try {
-                            kSession.fireAllRules();
-                        } catch (Exception e) {
-                            exceptions.add(e);
-                        } finally {
-                            kSession.dispose();
-                        }
-                    }
-                });
+                executor.shutdown();
+                try {
+                    executor.awaitTermination(300, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
+            }
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
 
-            executor.shutdown();
-            try {
-                executor.awaitTermination(300, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // ignore
-            }
-        }
-        if (!exceptions.isEmpty()) {
-            exceptions.get(0).printStackTrace();
-        }
+            assertEquals(0, exceptions.size());
 
-        assertEquals(0, exceptions.size());
+        } finally {
+            System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
+        }
     }
 }

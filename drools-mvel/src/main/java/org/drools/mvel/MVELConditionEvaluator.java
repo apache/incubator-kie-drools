@@ -49,7 +49,6 @@ import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.util.ASTLinkedList;
 
 import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
-import static org.drools.mvel.expr.MvelEvaluator.EvaluatorType.SYNCHRONIZED_TILL_EVALUATED;
 import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConditionEvaluator implements ConditionEvaluator {
@@ -91,7 +90,7 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         this.compilationUnit = compilationUnit;
         this.parserConfiguration = parserConfiguration;
         this.executableStatement = executableStatement;
-        this.evaluator = createMvelEvaluator(SYNCHRONIZED_TILL_EVALUATED, executableStatement );
+        this.evaluator = createMvelEvaluator( executableStatement );
     }
 
     public boolean evaluate(InternalFactHandle handle, InternalWorkingMemory workingMemory, Tuple tuple) {
@@ -162,7 +161,7 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         if (!isEvaluated(node)) {
             ASTNode next = node.nextASTNode;
             node.nextASTNode = null;
-            evaluate( createMvelEvaluator(SYNCHRONIZED_TILL_EVALUATED, asCompiledExpression(node) ), handle, workingMemory, tuple);
+            evaluate( createMvelEvaluator(asCompiledExpression(node) ), handle, workingMemory, tuple);
             node.nextASTNode = next;
         }
     }

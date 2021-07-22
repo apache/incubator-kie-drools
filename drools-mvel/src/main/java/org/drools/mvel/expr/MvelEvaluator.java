@@ -31,16 +31,27 @@ import static org.drools.mvel.MVELConditionEvaluator.isFullyEvaluated;
 
 public class MvelEvaluator<T> {
 
-    private static final boolean THREAD_UNSAFE = Boolean.valueOf( System.getProperty("drools.mvel.thread.unsafe") );
+    public static final String THREAD_SAFETY_PROPERTY = "drools.mvel.thread.safety";
 
-    private static final EvaluatorType DEFAULT_EVALUATOR_TYPE = EvaluatorType.SYNCHRONIZED_TILL_EVALUATED;
+    private static final EvaluatorType DEFAULT_EVALUATOR_TYPE = EvaluatorType.THREAD_UNSAFE;
+
+    private static final EvaluatorType EVALUATOR_TYPE = EvaluatorType.decode( System.getProperty(THREAD_SAFETY_PROPERTY, DEFAULT_EVALUATOR_TYPE.id) );
 
     private static final Logger logger = LoggerFactory.getLogger(MvelEvaluator.class);
 
     protected final Serializable expr;
 
     public enum EvaluatorType {
-        THREAD_UNSAFE, THREAD_SAFE_ON_FIRST_EVAL, SYNCHRONIZED_TILL_EVALUATED, FULLY_SYNCHRONIZED;
+        THREAD_UNSAFE("unsafe"),
+        THREAD_SAFE_ON_FIRST_EVAL("safe_on_first"),
+        SYNCHRONIZED_TILL_EVALUATED("synced_till_eval"),
+        FULLY_SYNCHRONIZED("fully_synced");
+
+        private final String id;
+
+        EvaluatorType(String id) {
+            this.id = id;
+        }
 
         public <T> MvelEvaluator<T> createMvelEvaluator(Serializable expr) {
             switch (this) {
@@ -51,6 +62,15 @@ public class MvelEvaluator<T> {
             }
             throw new UnsupportedOperationException();
         }
+
+        static EvaluatorType decode(String id) {
+            for (EvaluatorType evaluatorType : EvaluatorType.class.getEnumConstants()) {
+                if (evaluatorType.id.equalsIgnoreCase(id)) {
+                    return evaluatorType;
+                }
+            }
+            throw new UnsupportedOperationException("Unknown evaluator type: " + id);
+        }
     }
 
     private MvelEvaluator(Serializable expr) {
@@ -58,11 +78,7 @@ public class MvelEvaluator<T> {
     }
 
     public static <T> MvelEvaluator<T> createMvelEvaluator(Serializable expr) {
-        return createMvelEvaluator(DEFAULT_EVALUATOR_TYPE, expr);
-    }
-
-    public static <T> MvelEvaluator<T> createMvelEvaluator(EvaluatorType evaluatorType, Serializable expr) {
-        return THREAD_UNSAFE ? EvaluatorType.THREAD_UNSAFE.createMvelEvaluator(expr) : evaluatorType.createMvelEvaluator(expr);
+        return EVALUATOR_TYPE.createMvelEvaluator(expr);
     }
 
     public T evaluate(Object ctx) {
