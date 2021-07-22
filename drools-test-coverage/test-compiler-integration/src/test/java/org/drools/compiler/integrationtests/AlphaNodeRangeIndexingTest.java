@@ -54,8 +54,6 @@ import org.kie.internal.conf.AlphaRangeIndexThresholdOption;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
 public class AlphaNodeRangeIndexingTest {
@@ -1091,10 +1089,9 @@ public class AlphaNodeRangeIndexingTest {
 
         final KieBase kbase;
 
-        if (kieBaseTestConfiguration.isExecutableModel()) {
             kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
             final KieSession ksession = kbase.newKieSession();
-            assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable in exec-model
+            assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable
 
             ksession.insert(new Person("John", 18));
             int fired = ksession.fireAllRules();
@@ -1103,16 +1100,6 @@ public class AlphaNodeRangeIndexingTest {
             ksession.insert(new Person("Paul", 60));
             fired = ksession.fireAllRules();
             assertEquals(2, fired);
-
-        } else {
-            // Once DROOLS-6418 is fixed, this test will not throw IllegalStateException
-            try {
-                kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
-                fail("Should throw IllegalStateException");
-            } catch (IllegalStateException ise) {
-                assertTrue(ise.getMessage().contains("Index conflict"));
-            }
-        }
     }
 
     @Test
@@ -1135,28 +1122,17 @@ public class AlphaNodeRangeIndexingTest {
 
         final KieBase kbase;
 
-        if (kieBaseTestConfiguration.isExecutableModel()) {
-            kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
-            final KieSession ksession = kbase.newKieSession();
-            assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable in exec-model
+        kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
+        final KieSession ksession = kbase.newKieSession();
+        assertSinks(kbase, Person.class, 4, 4, 0, 3); // "age < StaticUtil.getThirty()" is not range indexable
 
-            ksession.insert(new Person("John", 18));
-            int fired = ksession.fireAllRules();
-            assertEquals(4, fired);
+        ksession.insert(new Person("John", 18));
+        int fired = ksession.fireAllRules();
+        assertEquals(4, fired);
 
-            ksession.insert(new Person("Paul", 60));
-            fired = ksession.fireAllRules();
-            assertEquals(2, fired);
-
-        } else {
-            // Once DROOLS-6418 is fixed, this test will not throw IllegalStateException
-            try {
-                kbase = createKieBaseWithRangeIndexThresholdValue(drl, 3);
-                fail("Should throw IllegalStateException");
-            } catch (IllegalStateException ise) {
-                assertTrue(ise.getMessage().contains("Index conflict"));
-            }
-        }
+        ksession.insert(new Person("Paul", 60));
+        fired = ksession.fireAllRules();
+        assertEquals(2, fired);
     }
 
     public static class StaticUtil {

@@ -87,6 +87,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLAC
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createConstraintCompiler;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.stripEnclosedExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
@@ -257,6 +258,34 @@ public class ConstraintParser {
         for (Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
             combo = new BinaryExpr( e, combo, BinaryExpr.Operator.AND );
         }
+        return combo;
+    }
+
+    private Expression combineExpressions(List<Expression> leftPrefixExpresssions, List<Expression> rightPrefixExpresssions, Expression combo) {
+        Expression inner = combo;
+        if (combo.isEnclosedExpr()) {
+            EnclosedExpr enclosedExpr = combo.asEnclosedExpr();
+            inner = stripEnclosedExpr(enclosedExpr);
+        }
+
+        BinaryExpr binaryExpr;
+        if (inner.isBinaryExpr()) {
+            binaryExpr = inner.asBinaryExpr();
+        } else {
+            throw new RuntimeException(combo + " is not nor contains BinaryExpr");
+        }
+
+        Expression left = binaryExpr.getLeft();
+        for (Expression prefixExpression : leftPrefixExpresssions) {
+            left = new BinaryExpr(prefixExpression, left, BinaryExpr.Operator.AND);
+        }
+        binaryExpr.setLeft(left);
+
+        Expression right = binaryExpr.getRight();
+        for (Expression prefixExpression : rightPrefixExpresssions) {
+            right = new BinaryExpr(prefixExpression, right, BinaryExpr.Operator.AND);
+        }
+        binaryExpr.setRight(right);
         return combo;
     }
 
@@ -451,6 +480,13 @@ public class ConstraintParser {
         TypedExpression left = optLeft.get();
         List<String> usedDeclarationsOnLeft = hasBind ? new ArrayList<>( expressionTyperContext.getUsedDeclarations() ) : null;
 
+        List<Expression> leftPrefixExpresssions = new ArrayList<>();
+        if (isLogicalOperator(operator)) {
+            leftPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
+            expressionTyperContext.getPrefixExpresssions().clear();
+        }
+
+        List<Expression> rightPrefixExpresssions = new ArrayList<>();
         TypedExpression right;
         if (constraint.isNameClashingUnification()) {
             String name = constraint.getUnificationField();
@@ -463,8 +499,11 @@ public class ConstraintParser {
                 return new DrlxParseFail( new ParseExpressionErrorResult( drlxExpr ) );
             }
             right = optRight.get();
+            if (isLogicalOperator(operator)) {
+                rightPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
+                expressionTyperContext.getPrefixExpresssions().clear();
+            }
         }
-
 
         boolean equalityExpr = operator == EQUALS || operator == NOT_EQUALS;
 
@@ -500,7 +539,11 @@ public class ConstraintParser {
             right = specialComparisonResult.coercedRight;
         }
 
-        combo = combineExpressions( leftTypedExpressionResult, combo );
+        if (isLogicalOperator(operator)) {
+            combo = combineExpressions( leftPrefixExpresssions, rightPrefixExpresssions, combo );
+        } else {
+            combo = combineExpressions( leftTypedExpressionResult, combo );
+        }
 
         boolean isBetaConstraint = right.getExpression() != null && hasNonGlobalDeclaration( expressionTyperContext );
         if (isEnclosed) {

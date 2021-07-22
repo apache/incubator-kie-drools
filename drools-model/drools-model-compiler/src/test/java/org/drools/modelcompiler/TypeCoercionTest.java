@@ -551,4 +551,34 @@ public class TypeCoercionTest extends BaseModelTest {
 
         assertEquals(0, ksession.fireAllRules());
     }
+
+    @Test
+    public void testPrimitiveDoubleToIntCoercion() {
+        // DROOLS-6491
+        checkDoubleToIntCoercion(true);
+        checkDoubleToIntCoercion(false);
+    }
+
+    private void checkDoubleToIntCoercion(boolean boxed) {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name, age" + (boxed ? "Boxed" : "") + " < 40.5 )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(new Person("Mario", 40));
+        ksession.insert(new Person("Mario2", 41));
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("Mario", list.get(0));
+    }
 }

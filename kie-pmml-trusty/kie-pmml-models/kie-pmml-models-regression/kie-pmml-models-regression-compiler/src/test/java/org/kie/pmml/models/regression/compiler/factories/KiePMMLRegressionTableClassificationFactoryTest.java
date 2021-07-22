@@ -175,44 +175,6 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
        });
     }
 
-//    @Test
-//    public void populateOutputFieldsMapWithProbability() {
-//        final List<OutputField> outputFields = IntStream.range(0, 2)
-//                .mapToObj(index -> getOutputField("KOF-PROB-" + index, ResultFeature.PROBABILITY, "PROB-" + index))
-//                .collect(Collectors.toList());
-//        final MethodDeclaration methodDeclaration =
-//                modelTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-//        final BlockStmt body = methodDeclaration.getBody().get();
-//        KiePMMLRegressionTableClassificationFactory.populateOutputFieldsMapWithProbability(body, outputFields);
-//        NodeList<Statement> retrieved = body.getStatements();
-//        assertEquals(outputFields.size(), retrieved.size());
-//        retrieved.forEach(statement -> {
-//            assertTrue(statement instanceof ExpressionStmt);
-//            assertTrue(((ExpressionStmt) statement).getExpression() instanceof MethodCallExpr);
-//            MethodCallExpr methodCallExpr = (MethodCallExpr) ((ExpressionStmt) statement).getExpression();
-//            assertEquals("outputFieldsMap", methodCallExpr.getScope().get().asNameExpr().toString());
-//            assertEquals("put", methodCallExpr.getName().asString());
-//            assertTrue(methodCallExpr.getArguments().get(1) instanceof MethodCallExpr);
-//            MethodCallExpr nestedMethodCallExpr = (MethodCallExpr) methodCallExpr.getArguments().get(1);
-//            assertEquals("probabilityMap", nestedMethodCallExpr.getScope().get().asNameExpr().toString());
-//            assertEquals("get", nestedMethodCallExpr.getName().asString());
-//        });
-//        List<MethodCallExpr> methodCallExprs = retrieved.stream()
-//                .map(statement -> (MethodCallExpr) ((ExpressionStmt) statement).getExpression())
-//                .collect(Collectors.toList());
-//        outputFields.forEach(outputField -> assertTrue(methodCallExprs.stream()
-//                                                               .anyMatch(methodCallExpr -> {
-//                                                                   StringLiteralExpr stringLiteralExpr =
-//                                                                           (StringLiteralExpr) methodCallExpr.getArguments().get(0);
-//                                                                   MethodCallExpr nestedMethodCallExpr =
-//                                                                           (MethodCallExpr) methodCallExpr.getArguments().get(1);
-//                                                                   StringLiteralExpr nestedStringLiteralExpr =
-//                                                                           (StringLiteralExpr) nestedMethodCallExpr.getArguments().get(0);
-//                                                                   return outputField.getName().equals(stringLiteralExpr.getValue())
-//                                                                           && outputField.getTargetField().get().equals(nestedStringLiteralExpr.getValue());
-//                                                               })));
-//    }
-
     @Test
     public void populateGetProbabilityMapMethodSupported() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {

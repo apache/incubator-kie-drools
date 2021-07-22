@@ -12,10 +12,10 @@ import org.drools.mvel.model.Cheese;
 public class ConstraintTestUtil {
 
     public static AlphaNodeFieldConstraint createCheeseTypeEqualsConstraint(ClassFieldAccessorStore store, String rightvalue, boolean useLambdaConstraint) {
+        final ClassFieldReader extractor = store.getReader(Cheese.class, "type");
         if (useLambdaConstraint) {
-            return LambdaConstraintTestUtil.createCheeseTypeEqualsConstraint(rightvalue);
+            return LambdaConstraintTestUtil.createCheeseTypeEqualsConstraint(rightvalue, extractor.getIndex());
         } else {
-            final ClassFieldReader extractor = store.getReader(Cheese.class, "type");
             final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
             return new MVELConstraintTestUtil("type == \"" + rightvalue + "\"", field, extractor);
         }
@@ -23,7 +23,7 @@ public class ConstraintTestUtil {
 
     public static AlphaNodeFieldConstraint createCheeseTypeEqualsConstraint(InternalReadAccessor extractor, String rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
-            return LambdaConstraintTestUtil.createCheeseTypeEqualsConstraint(rightvalue);
+            return LambdaConstraintTestUtil.createCheeseTypeEqualsConstraint(rightvalue, extractor.getIndex());
         } else {
             final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
             return new MVELConstraintTestUtil("type == \"" + rightvalue + "\"", field, extractor);
@@ -48,7 +48,7 @@ public class ConstraintTestUtil {
 
     public static AlphaNodeFieldConstraint createCheesePriceEqualsConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
-            return LambdaConstraintTestUtil.createCheesePriceEqualsConstraint(rightvalue);
+            return LambdaConstraintTestUtil.createCheesePriceEqualsConstraint(rightvalue, extractor.getIndex());
         } else {
             final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
             return new MVELConstraintTestUtil("price == " + rightvalue, field, extractor);
@@ -57,7 +57,7 @@ public class ConstraintTestUtil {
 
     public static AlphaNodeFieldConstraint createCheesePriceGreaterConstraint(InternalReadAccessor extractor, int rightvalue, boolean useLambdaConstraint) {
         if (useLambdaConstraint) {
-            return LambdaConstraintTestUtil.createCheesePriceGreaterConstraint(rightvalue);
+            return LambdaConstraintTestUtil.createCheesePriceGreaterConstraint(rightvalue, extractor.getIndex());
         } else {
             final FieldValue field = FieldFactory.getInstance().getFieldValue(rightvalue);
             return new MVELConstraintTestUtil("price > " + rightvalue, field, extractor);

@@ -17,6 +17,7 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent.Severity;
@@ -34,6 +35,6 @@ public class CeilingFunction
         if ( n == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "n", "cannot be null"));
         }
-        return FEELFnResult.ofResult( n.setScale( 0, BigDecimal.ROUND_CEILING ) );
+        return FEELFnResult.ofResult( n.setScale( 0, RoundingMode.CEILING ) );
     }
 }

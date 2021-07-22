@@ -25,12 +25,9 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.NormDiscrete;
 import org.junit.Test;
-import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
-import org.kie.pmml.commons.model.expressions.KiePMMLLinearNorm;
 import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 

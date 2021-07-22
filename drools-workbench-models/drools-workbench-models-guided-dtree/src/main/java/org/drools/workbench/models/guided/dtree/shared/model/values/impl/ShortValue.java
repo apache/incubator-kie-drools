@@ -37,9 +37,9 @@ public class ShortValue implements Value<Short> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Short(value));
+            setValue(Short.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Short("0"));
+            setValue(Short.valueOf("0"));
         }
     }
 

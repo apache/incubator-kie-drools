@@ -36,7 +36,7 @@ public class BooleanValue implements Value<Boolean> {
 
     @Override
     public void setValue(final String value) {
-        setValue(new Boolean(value));
+        setValue(Boolean.valueOf(value));
     }
 
     @Override

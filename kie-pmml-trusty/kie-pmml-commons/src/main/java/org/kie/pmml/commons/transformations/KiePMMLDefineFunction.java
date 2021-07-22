@@ -19,7 +19,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OP_TYPE;
@@ -75,11 +74,8 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
             }
         }
         for (KiePMMLNameValue kiePMMLNameValue : kiePMMLNameValues) {
-            processingDTO.getKiePMMLNameValues()
-                    .removeIf(kpm -> kpm.getName().equals(kiePMMLNameValue.getName()));
-            processingDTO.getKiePMMLNameValues().add(kiePMMLNameValue);
+            processingDTO.addKiePMMLNameValue(kiePMMLNameValue);
         }
-        processingDTO.getKiePMMLNameValues() .addAll(kiePMMLNameValues);
         return kiePMMLExpression.evaluate(processingDTO);
     }
 }
