@@ -17,6 +17,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSucce
 import org.drools.modelcompiler.util.EvaluationUtil;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.stripEnclosedExpr;
 
 public class ConstraintUtil {
 
@@ -72,15 +73,6 @@ public class ConstraintUtil {
             return drlx;
         }
         return drlxParseResult;
-    }
-
-    private static Expression stripEnclosedExpr(EnclosedExpr eExpr) {
-        Expression inner = eExpr.getInner();
-        if (inner instanceof EnclosedExpr) {
-            return stripEnclosedExpr((EnclosedExpr) inner);
-        } else {
-            return inner;
-        }
     }
 
     private static void processTopLevelExpression(SingleDrlxParseSuccess drlx, MethodCallExpr mcExpr) {

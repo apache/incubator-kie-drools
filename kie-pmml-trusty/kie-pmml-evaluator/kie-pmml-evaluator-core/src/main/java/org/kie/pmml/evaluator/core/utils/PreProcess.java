@@ -17,6 +17,7 @@ package org.kie.pmml.evaluator.core.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -98,7 +99,7 @@ public class PreProcess {
             Object derivedValue = derivedField.evaluate(processingDTO);
             if (derivedValue != null) {
                 requestData.addRequestParam(derivedField.getName(), derivedValue);
-                processingDTO.getKiePMMLNameValues().add(new KiePMMLNameValue(derivedField.getName(), derivedValue));
+                processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(derivedField.getName(), derivedValue));
             }
         }
     }

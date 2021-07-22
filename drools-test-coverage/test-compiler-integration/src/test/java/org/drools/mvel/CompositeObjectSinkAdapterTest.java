@@ -14,46 +14,28 @@
 
 package org.drools.mvel;
 
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
-import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
-import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ValueType;
 import org.drools.core.common.DisconnectedWorkingMemoryEntryPoint;
-import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.common.Memory;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
 import org.drools.core.reteoo.CompositeObjectSinkAdapter;
-import org.drools.core.reteoo.LeftTuple;
-import org.drools.core.reteoo.LeftTupleImpl;
-import org.drools.core.reteoo.LeftTupleSource;
-import org.drools.core.reteoo.ModifyPreviousTuples;
+import org.drools.core.reteoo.CompositeObjectSinkAdapter.HashKey;
 import org.drools.core.reteoo.ObjectSink;
-import org.drools.core.reteoo.ObjectSource;
-import org.drools.core.reteoo.ReteooBuilder;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
-import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.RuleRemovalContext;
-import org.drools.core.reteoo.Sink;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.rule.PredicateConstraint;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.spi.PropagationContext;
 import org.drools.mvel.model.Cheese;
 import org.drools.mvel.model.MockObjectSource;
 import org.junit.Before;
@@ -72,6 +54,8 @@ import static org.junit.Assert.fail;
 public class CompositeObjectSinkAdapterTest {
     private InternalKnowledgeBase        kBase;
     private BuildContext                 buildContext;
+	private CompositeObjectSinkAdapter ad;
+	private InternalReadAccessor extractor;
 
     ClassFieldAccessorStore store = new ClassFieldAccessorStore();
 
@@ -97,511 +81,300 @@ public class CompositeObjectSinkAdapterTest {
 
         this.buildContext = new BuildContext( kBase );
         this.buildContext.setRule(new RuleImpl("test"));
+        this.ad = new CompositeObjectSinkAdapter();
     }
 
-    public int    la;
-    public int    blah;
 
     @Test
-    public void testBeta() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
-                                                    new MockBetaNode( ),
-                                                    new MockObjectSource(),
-                                                    buildContext );
+    public void testAddBeta() {
+        final MockBetaNode beta = createBetaNode();
+        
         ad.addObjectSink( beta );
-        assertEquals( 1,
-                      ad.getSinks().length );
-        assertEquals( beta,
-                      ad.getSinks()[0] );
-
-        assertEquals( 1,
-                      ad.getOtherSinks().size() );
-        assertEquals( beta,
-                      ad.getOtherSinks().get(0) );
-
-        assertNull( ad.getHashableSinks() );
-        assertNull( ad.getHashedFieldIndexes() );
-        assertNull( ad.getHashedSinkMap() );
-
-        ad.removeObjectSink( beta );
-        assertNull( ad.getOtherSinks() );
-        assertEquals( 0,
-                      ad.getSinks().length );
-    }
-
-    @Test
-    public void testAlphaWithPredicate() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            new PredicateConstraint( null,
-                                                                     null ),
-                                            null,
-                                            buildContext );
-        ad.addObjectSink( al );
-
-        assertEquals( 1,
-                      ad.getSinks().length );
-        assertEquals( 1,
-                      ad.getOtherSinks().size() );
-        assertEquals( al,
-                      ad.getOtherSinks().get(0) );
-
-        ad.removeObjectSink( al );
-        assertEquals( 0,
-                      ad.getSinks().length );
-        assertNull( ad.getOtherSinks() );
-
-    }
-
-    @Test
-    public void testSingleAlpha() {
-
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-
-        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
-
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            lit,
-                                            new MockObjectSource( 0 ),
-                                            buildContext );
-
-        ad.addObjectSink( al );
-
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getHashedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
-
-        ad.removeObjectSink( al );
-        assertNull( ad.getOtherSinks() );
-        assertNull( ad.getHashableSinks() );
-
-    }
-
-    @Test
-    public void testDoubleAlphaWithBeta() {
-
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-
-        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
-
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            lit,
-                                            new MockObjectSource( 0 ),
-                                            buildContext );
-
-        ad.addObjectSink( al );
-
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getHashedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
-
-        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "cheddar", useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             lit2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        ad.addObjectSink( al2 );
-
-        assertNull( ad.getOtherSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
-        assertEquals( al2,
-                      ad.getSinks()[1] );
-
-        //add a beta, just for good measure, make sure it leaves others alone
-        final MockBetaNode beta = new MockBetaNode( buildContext.getNextId(),
-                                                    new MockBetaNode( ),
-                                                    new MockObjectSource(),
-                                                    buildContext );
-        ad.addObjectSink( beta );
-        assertNotNull( ad.getOtherSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-
-        assertEquals( 1,
-                      ad.getOtherSinks().size() );
-        assertEquals( beta,
-                      ad.getOtherSinks().get(0) );
-
-        ad.removeObjectSink( beta );
-        assertNull( ad.getOtherSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-
-    }
-
-    @Test
-    public void testTripleAlpha() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "type" );
-
-        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
-
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            lit,
-                                            new MockObjectSource( buildContext.getNextId() ),
-                                            buildContext );
-
-        ad.addObjectSink( al );
-
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getHashedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
-
-        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "cheddar", useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             lit2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        ad.addObjectSink( al2 );
-
-        assertNull( ad.getHashedSinkMap() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-
-        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stinky", useLambdaConstraint);
-
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             lit3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-        ad.addObjectSink( al3 );
-
-        //this should now be nicely hashed.
-        assertNotNull( ad.getHashedSinkMap() );
-        assertNull( ad.getHashableSinks() );
-
-        //now remove one, check the hashing is undone
-        ad.removeObjectSink( al2 );
-        assertNotNull( ad.getHashableSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-        assertNull( ad.getHashedSinkMap() );
-
-    }
-
-    @Test
-    public void testTripleAlphaCharacterConstraint() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "charType" );
-
-        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 65, useLambdaConstraint);
-
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            lit,
-                                            new MockObjectSource( buildContext.getNextId() ),
-                                            buildContext );
-
-        ad.addObjectSink( al );
-
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getHashedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
-
-        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 66, useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             lit2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        ad.addObjectSink( al2 );
-
-        assertNull( ad.getHashedSinkMap() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-
-        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, 67, useLambdaConstraint);
-
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             lit3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-        ad.addObjectSink( al3 );
-
-        //this should now be nicely hashed.
-        assertNotNull( ad.getHashedSinkMap() );
-        assertNull( ad.getHashableSinks() );
-
-        // test propagation
-        Cheese cheese = new Cheese();
-        cheese.setCharType( 'B' );
-        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
-
-        // should find this
-        hashKey.setValue( extractor.getIndex(),
-                          cheese,
-                          extractor );
-        ObjectSink sink = (ObjectSink) ad.getHashedSinkMap().get( hashKey );
-        assertSame( al2,
-                    sink );
-
-        // should not find this one
-        cheese.setCharType( 'X' );
-        hashKey.setValue( extractor.getIndex(),
-                          cheese,
-                          extractor );
-        sink = (ObjectSink) ad.getHashedSinkMap().get( hashKey );
-        assertNull( sink );
-
-        //now remove one, check the hashing is undone
-        ad.removeObjectSink( al2 );
-        assertNotNull( ad.getHashableSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-        assertNull( ad.getHashedSinkMap() );
+        
+        sinksAre(beta);
+        otherSinksAre(beta);
+        hashableSinksAreEmpty();
+        hashedFieldIndexesAreEmpty();
+        hashedSinkMapIsEmpty();
     }
     
     @Test
-    public void testTripleAlphaObjectCharacterConstraint() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "charObjectType" );
+    public void testAddBetaRemoveBeta() {
+        final MockBetaNode beta = createBetaNode();
+        ad.addObjectSink( beta );
 
-        AlphaNodeFieldConstraint lit = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 65, useLambdaConstraint);
+        ad.removeObjectSink( beta );
+        
+        sinksAreEmpty();
+        otherSinksAreEmpty();
+    }
 
-        final AlphaNode al = new AlphaNode( buildContext.getNextId(),
-                                            lit,
-                                            new MockObjectSource( buildContext.getNextId() ),
-                                            buildContext );
 
+    @Test
+    public void testAddOneAlphaNotHashable() {
+        final AlphaNode al = createAlphaNode(new PredicateConstraint( null, null ));
         ad.addObjectSink( al );
 
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getHashedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getHashableSinks().size() );
-        assertEquals( al,
-                      ad.getSinks()[0] );
+        sinksAre(al);
+        otherSinksAre(al);
+    }
+    
+    @Test
+    public void testAddOneAlphaNotHashableRemoveOneAlpha() {
+        final AlphaNode al = createAlphaNode(new PredicateConstraint( null, null ));
+        ad.addObjectSink( al );
 
-        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 66, useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             lit2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        ad.addObjectSink( al2 );
-
-        assertNull( ad.getHashedSinkMap() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-
-        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, 67, useLambdaConstraint);
-
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             lit3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-        ad.addObjectSink( al3 );
-
-        //this should now be nicely hashed.
-        assertNotNull( ad.getHashedSinkMap() );
-        assertNull( ad.getHashableSinks() );
-
-        // test propagation
-        Cheese cheese = new Cheese();
-        cheese.setCharObjectType( 'B' );
-        CompositeObjectSinkAdapter.HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
-
-        // should find this
-        hashKey.setValue( extractor.getIndex(),
-                          cheese,
-                          extractor );
-        ObjectSink sink = (ObjectSink) ad.getHashedSinkMap().get( hashKey );
-        assertSame( al2,
-                    sink );
-
-        // should not find this one
-        cheese.setCharObjectType( 'X' );
-        hashKey.setValue( extractor.getIndex(),
-                          cheese,
-                          extractor );
-        sink = (ObjectSink) ad.getHashedSinkMap().get( hashKey );
-        assertNull( sink );
-
-        //now remove one, check the hashing is undone
-        ad.removeObjectSink( al2 );
-        assertNotNull( ad.getHashableSinks() );
-        assertEquals( 2,
-                      ad.getHashableSinks().size() );
-        assertNull( ad.getHashedSinkMap() );
+        ad.removeObjectSink( al );
+        
+        sinksAreEmpty();
+        otherSinksAreEmpty();
     }
 
     @Test
-    public void testRangeIndex() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter(3, 3);
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "price" );
+    public void testAddOneAlpha() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
 
-        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 10, useLambdaConstraint);
+        ad.addObjectSink( al );
 
-        final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
-                                            constraint,
-                                            new MockObjectSource( buildContext.getNextId() ),
-                                            buildContext );
+        sinksAre(al);
+        otherSinksAreEmpty();
+        hashedFieldIndexesAre(extractor.getIndex());
+        hashableSinksAre(al);
+    }
+    
+    @Test
+    public void testAddOneAlphaRemoveOneAlpha() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+ 
+        ad.removeObjectSink( al );
+        
+        otherSinksAreEmpty();
+        hashableSinksAreEmpty();
+    }
+    
+    @Test
+    public void testAddTwoAlphas() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+
+        ad.addObjectSink( al2 );
+
+        sinksAre(al, al2);
+        otherSinksAreEmpty();
+        hashableSinksAre(al, al2);
+    }
+    
+    @Test
+    public void testAddTwoAlphasAddOneBeta() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        ad.addObjectSink( al2 );
+        final BetaNode beta = createBetaNode();
+        
+        ad.addObjectSink( beta );
+        
+        otherSinksAre(beta);
+        hashableSinksAre(al, al2);
+    }
+    
+    @Test
+    public void testAddTwoAlphasAddOneBetaRemoveOneBeta() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        ad.addObjectSink( al2 );
+        final BetaNode beta = createBetaNode();
+        ad.addObjectSink( beta );
+
+        ad.removeObjectSink( beta );
+        
+        otherSinksAreEmpty();
+        hashableSinksAre(al, al2);
+    }
+
+    @Test
+    public void testAddThreeAlphas() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("stinky"));
+
+        ad.addObjectSink( al3 );
+
+        //this should now be nicely hashed.
+        hashableSinksAreEmpty();
+        hashedSinkMapIs(al, al2, al3);
+    }
+    
+    @Test
+    public void testAddThreeAlphasRemoveOneAlpha() {
+        extractor = store.getReader( Cheese.class, "type" );
+        final AlphaNode al = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("cheddar"));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("stinky"));
+        ad.addObjectSink( al3 );
+
+        ad.removeObjectSink( al2 );
+        
+        hashableSinksAre(al, al3);
+        hashedSinkMapIsEmpty();
+    }
+    
+
+    @Test
+    public void testTripleAlphaCharacterConstraint() {
+        extractor = store.getReader( Cheese.class, "charType" );
+        final AlphaNode al = createAlphaNode(cheeseCharTypeEqualsTo(65));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseCharTypeEqualsTo(66));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheeseCharTypeEqualsTo(67));
+        ad.addObjectSink( al3 );
+
+        assertSame( al2, ad.getHashedSinkMap().get(keyForCheeseCharType('B')));
+        assertNull( ad.getHashedSinkMap().get(keyForCheeseCharType('X')));
+    }
+
+ 
+    @Test
+    public void testTripleAlphaObjectCharacterConstraint() {
+    	extractor = store.getReader( Cheese.class, "charObjectType" );
+        final AlphaNode al = createAlphaNode(cheeseCharObjectTypeEqualsTo(65));
+        ad.addObjectSink( al );
+        final AlphaNode al2 = createAlphaNode(cheeseCharObjectTypeEqualsTo(66));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheeseCharObjectTypeEqualsTo(67));
+        ad.addObjectSink( al3 );
+
+        assertSame( al2, ad.getHashedSinkMap().get(keyForCheeseCharObjectType('B')));
+        assertNull( ad.getHashedSinkMap().get(keyForCheeseCharObjectType('X')));
+    }
+
+    @Test
+    public void testAddOneAlphaForRanges() {
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
 
         ad.addObjectSink( al1 );
 
-        assertNull( ad.getOtherSinks() );
+        sinksAre(al1);
+        otherSinksAreEmpty();
         assertNotNull( ad.getRangeIndexedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getRangeIndexableSinks().size() );
-        assertEquals( al1,
-                      ad.getSinks()[0] );
-
-        AlphaNodeFieldConstraint constraint2 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 20, useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             constraint2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
+        rangeIndexableSinksAre(al1);
+    }
+ 
+    
+    @Test
+    public void testTwoAlphasForRanges() {
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        ad.addObjectSink( al1 );
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
 
         ad.addObjectSink( al2 );
 
         assertNull( ad.getRangeIndexMap() );
-        assertEquals( 2,
-                      ad.getRangeIndexableSinks().size() );
+        rangeIndexableSinksAre(al1, al2);
+    }
 
-        AlphaNodeFieldConstraint constraint3 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
 
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             constraint3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
+    @Test
+    public void testThreeAlphasForRanges() {
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        ad.addObjectSink( al1 );
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+
         ad.addObjectSink( al3 );
 
         //this should now be nicely indexed.
         assertNotNull( ad.getRangeIndexMap() );
-        assertNull( ad.getRangeIndexableSinks() );
+        rangeIndexableSinksIsEmpty();
+    }    
+    
+    
+    @Test
+    public void testAddThreeAlphasRemoveOneAlphaForRanges() {
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        ad.addObjectSink( al1 );
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        ad.addObjectSink( al3 );
+
+        ad.removeObjectSink( al2 );
+        
+        rangeIndexableSinksAre(al1, al3);
+        assertNull( ad.getRangeIndexMap() );
+    }
+    
+    
+    @Test
+    public void testAddThreeAlphasVerifyRangeQuery() {
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
+        ad.addObjectSink( al1 );
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
+        ad.addObjectSink( al2 );
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
+        ad.addObjectSink( al3 );
 
         // test propagation
+        CompositeObjectSinkAdapter.FieldIndex fieldIndex = ad.getRangeIndexedFieldIndexes().get(0);
+
         Cheese cheese = new Cheese();
         cheese.setPrice(25);
-        CompositeObjectSinkAdapter.FieldIndex fieldIndex = ad.getRangeIndexedFieldIndexes().get(0);
 
         Collection<AlphaNode> matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
         assertEquals(2, matchingAlphaNodes.size());
         assertTrue(matchingAlphaNodes.contains(al1));
         assertTrue(matchingAlphaNodes.contains(al2));
 
-
         // should not find this one
         cheese.setPrice(5);
 
         matchingAlphaNodes = ad.getRangeIndexMap().get(fieldIndex).getMatchingAlphaNodes(cheese);
         assertTrue(matchingAlphaNodes.isEmpty());
-
-        //now remove one, check the hashing is undone
-        ad.removeObjectSink( al2 );
-        assertNotNull( ad.getRangeIndexableSinks() );
-        assertEquals( 2,
-                      ad.getRangeIndexableSinks().size() );
-        assertNull( ad.getRangeIndexMap() );
     }
+
+    
 
     @Test(expected = IllegalStateException.class)
     public void testRangeIndexConflictKey() {
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter(3, 3);
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "price" );
-
-        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 10, useLambdaConstraint);
-
-        final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
-                                            constraint,
-                                            new MockObjectSource( buildContext.getNextId() ),
-                                            buildContext );
-
+        extractor = store.getReader( Cheese.class, "price" );
+        final AlphaNode al1 = createAlphaNode(cheesePriceGreaterThan(10));
         ad.addObjectSink( al1 );
-
-        assertNull( ad.getOtherSinks() );
-        assertNotNull( ad.getRangeIndexedFieldIndexes() );
-        assertEquals( 1,
-                      ad.getRangeIndexableSinks().size() );
-        assertEquals( al1,
-                      ad.getSinks()[0] );
-
-        AlphaNodeFieldConstraint constraint2 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 20, useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             constraint2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
+        final AlphaNode al2 = createAlphaNode(cheesePriceGreaterThan(20));
         ad.addObjectSink( al2 );
-
-        assertNull( ad.getRangeIndexMap() );
-        assertEquals( 2,
-                      ad.getRangeIndexableSinks().size() );
-
-        AlphaNodeFieldConstraint constraint3 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
-
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             constraint3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
+        final AlphaNode al3 = createAlphaNode(cheesePriceGreaterThan(30));
         ad.addObjectSink( al3 );
-
-        // This unit test can reproduce the issue by the equivalent AlphaNodes. In actual build, al3 and al4 will be shared
-        AlphaNodeFieldConstraint constraint4 = ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, 30, useLambdaConstraint);
-
-        final AlphaNode al4 = new AlphaNode( buildContext.getNextId(),
-                                             constraint4,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
+        final AlphaNode al4 = createAlphaNode(cheesePriceGreaterThan(30));
 
         ad.addObjectSink( al4 ); // throws IllegalStateException
     }
 
     @Test
     public void testPropagationWithNullValue() {
+        extractor = store.getReader( Cheese.class, "type" );
 
-        final CompositeObjectSinkAdapter ad = new CompositeObjectSinkAdapter();
-        InternalReadAccessor extractor = store.getReader( Cheese.class,
-                                                          "type" );
-
-        AlphaNodeFieldConstraint lit1 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "stilton", useLambdaConstraint);
-
-        final AlphaNode al1 = new AlphaNode( buildContext.getNextId(),
-                                             lit1,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        AlphaNodeFieldConstraint lit2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "brie", useLambdaConstraint);
-
-        final AlphaNode al2 = new AlphaNode( buildContext.getNextId(),
-                                             lit2,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
-
-        AlphaNodeFieldConstraint lit3 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(new MockExtractor(), "muzzarela", useLambdaConstraint);
-
-        final AlphaNode al3 = new AlphaNode( buildContext.getNextId(),
-                                             lit3,
-                                             new MockObjectSource( buildContext.getNextId() ),
-                                             buildContext );
+        final AlphaNode al1 = createAlphaNode(cheeseTypeEqualsTo("stilton"));
+        final AlphaNode al2 = createAlphaNode(cheeseTypeEqualsTo("brie"));
+        final AlphaNode al3 = createAlphaNode(cheeseTypeEqualsTo("muzzarela"));
 
         ad.addObjectSink( al1 );
         ad.addObjectSink( al2 );
@@ -621,266 +394,124 @@ public class CompositeObjectSinkAdapterTest {
 
     }
 
-    public static class MockExtractor
-        implements
-        InternalReadAccessor {
+	private AlphaNodeFieldConstraint cheeseTypeEqualsTo(String value) {
+		return ConstraintTestUtil.createCheeseTypeEqualsConstraint(extractor, value, useLambdaConstraint);
+	}
+    
+	private AlphaNodeFieldConstraint cheeseCharTypeEqualsTo(int value) {
+		return ConstraintTestUtil.createCheeseCharTypeEqualsConstraint(extractor, value, useLambdaConstraint);
+	}
+	
+	private AlphaNodeFieldConstraint cheeseCharObjectTypeEqualsTo(int value) {
+		return ConstraintTestUtil.createCheeseCharObjectTypeEqualsConstraint(extractor, value, useLambdaConstraint);
+	}
+	
+	private AlphaNodeFieldConstraint cheesePriceGreaterThan(int value) {
+		return ConstraintTestUtil.createCheesePriceGreaterConstraint(extractor, value, useLambdaConstraint);
+	}
 
-        public void readExternal(ObjectInput in) throws IOException,
-                                                ClassNotFoundException {
-        }
+	private AlphaNode createAlphaNode(AlphaNodeFieldConstraint lit) {
+		return new AlphaNode( buildContext.getNextId(),
+                                            lit,
+                                            new MockObjectSource( buildContext.getNextId() ),
+                                            buildContext );
+	}
+   
 
-        public void writeExternal(ObjectOutput out) throws IOException {
-        }
+	private MockBetaNode createBetaNode() {
+		return new MockBetaNode( buildContext.getNextId(),
+                                                    new MockBetaNode( ),
+                                                    new MockObjectSource(),
+                                                    buildContext );
+	}
+	
 
-        public int getIndex() {
-            return 0;
-        }
+	private HashKey keyForCheeseCharType(char c) {
+        Cheese cheese = new Cheese();
+        cheese.setCharType( c );
+		HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
+		hashKey.setValue( extractor.getIndex(),
+                cheese,
+                extractor );
+		return hashKey;
+	}
+	
+	private HashKey keyForCheeseCharObjectType(char c) {
+        Cheese cheese = new Cheese();
+        cheese.setCharObjectType( c );
+		HashKey hashKey = new CompositeObjectSinkAdapter.HashKey();
+		hashKey.setValue( extractor.getIndex(),
+                cheese,
+                extractor );
+		return hashKey;
+	}
+	
+	private void sinksAre(ObjectSink... objectSinks) {
+		assertEquals(objectSinks.length, ad.getSinks().length);
+		for (int i = 0; i < objectSinks.length; i++) {
+			assertEquals(objectSinks[i], ad.getSinks()[i]);
+		}
+	}
+	
+	private void sinksAreEmpty() {
+		assertEquals(0, ad.getSinks().length);
+	}
+	
+	private void otherSinksAre(ObjectSink... objectSinks) {
+		assertEquals(objectSinks.length, ad.getOtherSinks().size());
+		for (int i = 0; i < objectSinks.length; i++) {
+			assertEquals(objectSinks[i], ad.getOtherSinks().get(i));
+		}
+	}
 
-        public boolean getBooleanValue(InternalWorkingMemory workingMemory,
-                                       final Object object) {
-            return false;
-        }
+	private void otherSinksAreEmpty() {
+		assertNull(ad.getOtherSinks());
+	}
+	
+	private void hashableSinksAre(ObjectSink... objectSinks) {
+		assertEquals(objectSinks.length, ad.getHashableSinks().size());
+		for (int i = 0; i < objectSinks.length; i++) {
+			assertTrue(ad.getHashableSinks().contains(objectSinks[i]));
+		}
+	}
+	
+	private void rangeIndexableSinksAre(ObjectSink... rangeIndexableSinks) {
+		assertEquals(rangeIndexableSinks.length, ad.getRangeIndexableSinks().size());
+		for (int i = 0; i < rangeIndexableSinks.length; i++) {
+			assertTrue(ad.getRangeIndexableSinks().contains(rangeIndexableSinks[i]));
+		}
+	}
+	
+	private void rangeIndexableSinksIsEmpty(ObjectSink... rangeIndexableSinks) {
+		assertNull(ad.getRangeIndexableSinks());
+		
+	}
 
-        public byte getByteValue(InternalWorkingMemory workingMemory,
-                                 final Object object) {
-            return 0;
-        }
+	private void hashedFieldIndexesAre(Integer... fieldIndexes) {
+		assertEquals(fieldIndexes.length, ad.getHashedFieldIndexes().size());
+		List<Integer> hashedFieldIndexes = Arrays.asList(fieldIndexes);
+		for (int i = 0; i < fieldIndexes.length; i++) {
+			assertTrue(hashedFieldIndexes.contains(ad.getHashedFieldIndexes().get(i).getIndex()));
+		}
+	}
+	
+	private void hashedFieldIndexesAreEmpty() {
+		assertNull(ad.getHashedFieldIndexes());
+	}
+	
 
-        public char getCharValue(InternalWorkingMemory workingMemory,
-                                 final Object object) {
-            return 0;
-        }
-
-        public double getDoubleValue(InternalWorkingMemory workingMemory,
-                                     final Object object) {
-            return 0;
-        }
-
-        public Class getExtractToClass() {
-            return null;
-        }
-
-        public String getExtractToClassName() {
-            return null;
-        }
-
-        public float getFloatValue(InternalWorkingMemory workingMemory,
-                                   final Object object) {
-            return 0;
-        }
-
-        public int getIntValue(InternalWorkingMemory workingMemory,
-                               final Object object) {
-            return 0;
-        }
-
-        public long getLongValue(InternalWorkingMemory workingMemory,
-                                 final Object object) {
-            return 0;
-        }
-
-        public Method getNativeReadMethod() {
-            return null;
-        }
-
-        public String getNativeReadMethodName() {
-            return null;
-        }
-
-        public short getShortValue(InternalWorkingMemory workingMemory,
-                                   final Object object) {
-            return 0;
-        }
-
-        public Object getValue(InternalWorkingMemory workingMemory,
-                               final Object object) {
-            return null;
-        }
-
-        public boolean isNullValue(final Object object,
-                                   InternalWorkingMemory workingMemory) {
-            return false;
-        }
-
-        public ValueType getValueType() {
-            return ValueType.STRING_TYPE;
-        }
-
-        public int getHashCode(InternalWorkingMemory workingMemory,
-                               final Object object) {
-            return 0;
-        }
-
-        public boolean isGlobal() {
-            return false;
-        }
-
-        public boolean isNullValue(InternalWorkingMemory workingMemory,
-                                   Object object) {
-            return false;
-        }
-
-        public boolean getBooleanValue(Object object) {
-            return false;
-        }
-
-        public byte getByteValue(Object object) {
-            return 0;
-        }
-
-        public char getCharValue(Object object) {
-            return 0;
-        }
-
-        public double getDoubleValue(Object object) {
-            return 0;
-        }
-
-        public float getFloatValue(Object object) {
-            return 0;
-        }
-
-        public int getHashCode(Object object) {
-            return 0;
-        }
-
-        public int getIntValue(Object object) {
-            return 0;
-        }
-
-        public long getLongValue(Object object) {
-            return 0;
-        }
-
-        public short getShortValue(Object object) {
-            return 0;
-        }
-
-        public Object getValue(Object object) {
-            return null;
-        }
-
-        public boolean isNullValue(Object object) {
-            return false;
-        }
-
-        public boolean isSelfReference() {
-            return false;
-        }
-
-        public BigDecimal getBigDecimalValue(InternalWorkingMemory workingMemory,
-                                             Object object) {
-            return null;
-        }
-
-        public BigInteger getBigIntegerValue(InternalWorkingMemory workingMemory,
-                                             Object object) {
-            return null;
-        }
-
-        public BigDecimal getBigDecimalValue(Object object) {
-            return null;
-        }
-
-        public BigInteger getBigIntegerValue(Object object) {
-            return null;
-        }
-
-    }
-
-    public static class MockBetaNode extends BetaNode {
-        
-        public MockBetaNode() {
-            
-        }
-
-        @Override
-        protected boolean doRemove( RuleRemovalContext context, ReteooBuilder builder) {
-            return true;
-        }
-
-        MockBetaNode(final int id,
-                     final LeftTupleSource leftInput,
-                     final ObjectSource rightInput,
-                     BuildContext buildContext) {
-            super( id,
-                   leftInput,
-                   rightInput,
-                   EmptyBetaConstraints.getInstance(),
-                   buildContext );
-        }        
-
-        MockBetaNode(final int id,
-                     final LeftTupleSource leftInput,
-                     final ObjectSource rightInput) {
-            super( id,
-                   leftInput,
-                   rightInput,
-                   EmptyBetaConstraints.getInstance(),
-                   null );
-        }
-
-        public void assertObject(final InternalFactHandle factHandle,
-                                 final PropagationContext pctx,
-                                 final InternalWorkingMemory workingMemory) {
-        }
-
-        @Override
-        public void modifyObject( InternalFactHandle factHandle, ModifyPreviousTuples modifyPreviousTuples, PropagationContext context, InternalWorkingMemory workingMemory) {
-        }
-
-        public void retractRightTuple(final RightTuple rightTuple,
-                                      final PropagationContext context,
-                                      final InternalWorkingMemory workingMemory) {
-        }
-
-        public short getType() {
-            return 0;
-        }
-
-        public void modifyRightTuple(RightTuple rightTuple,
-                                     PropagationContext context,
-                                     InternalWorkingMemory workingMemory) {
-        }
-
-        public LeftTuple createLeftTuple( InternalFactHandle factHandle,
-                                          boolean leftTupleMemoryEnabled) {
-            return new LeftTupleImpl(factHandle, this, leftTupleMemoryEnabled );
-        }    
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         Sink sink,
-                                         PropagationContext pctx, boolean leftTupleMemoryEnabled) {
-            return new LeftTupleImpl(leftTuple,sink, pctx, leftTupleMemoryEnabled );
-        }
-
-        public LeftTuple createLeftTuple(final InternalFactHandle factHandle,
-                                         final LeftTuple leftTuple,
-                                         final Sink sink) {
-            return new LeftTupleImpl(factHandle,leftTuple, sink );
-        }
-
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         Sink sink) {
-            return new LeftTupleImpl(leftTuple, rightTuple, sink );
-        }   
-        
-        public LeftTuple createLeftTuple(LeftTuple leftTuple,
-                                         RightTuple rightTuple,
-                                         LeftTuple currentLeftChild,
-                                         LeftTuple currentRightChild,
-                                         Sink sink,
-                                         boolean leftTupleMemoryEnabled) {
-            return new LeftTupleImpl(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled );        
-        }
-        public Memory createMemory(RuleBaseConfiguration config, InternalWorkingMemory wm) {
-            return super.createMemory( config, wm);
-        }
-
-        @Override
-        public LeftTuple createPeer(LeftTuple original) {
-            return null;
-        }                
-    }
+	private void hashableSinksAreEmpty() {
+		assertNull(ad.getHashableSinks());
+	}
+	
+	private void hashedSinkMapIs(AlphaNode... nodes) {
+		assertEquals(nodes.length, ad.getHashedSinkMap().size());
+		for (int i = 0; i < nodes.length; i++) {
+			assertTrue(ad.getHashedSinkMap().containsValue(nodes[i]));
+		}
+	}
+	
+	private void hashedSinkMapIsEmpty() {
+		assertNull(ad.getHashedSinkMap());
+	}
 }

@@ -25,9 +25,9 @@ import org.junit.Test;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.v1_1.TItemDefinition;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 
@@ -39,14 +39,18 @@ public class ItemDefinitionDependenciesTest {
         final ItemDefinition res = new TItemDefinition();
         res.setName(name);
         for ( final ItemDefinition ic : components ) {
-            final ItemDefinition c = new TItemDefinition();
-            c.setName("_" + name + "-" + ic.getName());
-            c.setTypeRef(new QName(TEST_NS, ic.getName()));
-            res.getItemComponent().add(c);
+            addComponent(res, ic.getName());
         }
         return res;
     }
     
+    private void addComponent(ItemDefinition i, String componentName) {
+        final ItemDefinition c = new TItemDefinition();
+        c.setName("_" + i.getName() + "-" + componentName);
+        c.setTypeRef(new QName(TEST_NS, componentName));
+        i.getItemComponent().add(c);
+    }
+
     private List<ItemDefinition> orderingStrategy(final List<ItemDefinition> ins) {
         return new ItemDefinitionDependenciesSorter(TEST_NS).sort(ins);
     }
@@ -206,5 +210,22 @@ public class ItemDefinitionDependenciesTest {
         assertTrue("Index of _TypeDecisionB1 < _TypeDecisionB2_x", orderedList.indexOf(_TypeDecisionB1) < orderedList.indexOf(_TypeDecisionB2_x));
         assertTrue("Index of _TypeDecisionB2_x < _TypeDecisionB3", orderedList.indexOf(_TypeDecisionB2_x) < orderedList.indexOf(_TypeDecisionB3));
         assertTrue("Index of _TypeDecisionB3 < _TypeDecisionC1", orderedList.indexOf(_TypeDecisionB3) < orderedList.indexOf(_TypeDecisionC1));
+    }
+
+    @Test
+    public void testCircular3() {
+        final ItemDefinition fhirAge = build("fhirAge");
+        addComponent(fhirAge, "fhirExtension");
+
+        final ItemDefinition fhirExtension = build("fhirExtension", fhirAge);
+
+        final ItemDefinition fhirT1 = build("fhirT1", fhirAge);
+
+        final List<ItemDefinition> originalList = Arrays.asList(fhirT1, fhirAge, fhirExtension);
+
+        final List<ItemDefinition> orderedList = orderingStrategy(originalList);
+
+        assertThat(orderedList.subList(0, 2), containsInAnyOrder(fhirAge, fhirExtension));
+        assertThat(orderedList.subList(2, 3), contains(fhirT1));
     }
 }

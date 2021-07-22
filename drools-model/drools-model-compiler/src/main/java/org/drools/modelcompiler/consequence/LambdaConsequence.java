@@ -36,10 +36,10 @@ public class LambdaConsequence implements Consequence {
 
     // Enable the optimization to extract from the activation tuple the arguments to be passed to this
     // consequence in linear time by traversing the tuple only once.
-    private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION = true;
+    private static final boolean ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION = true;
 
     private final org.drools.model.Consequence consequence;
-    private boolean              enabledTupleOptimization;
+    private final boolean        enabledTupleOptimization;
     private Declaration[]        requiredDeclarations;
 
     private TupleFactSupplier[] factSuppliers;
@@ -50,7 +50,7 @@ public class LambdaConsequence implements Consequence {
 
     public LambdaConsequence( org.drools.model.Consequence consequence, boolean enabledTupleOptimization) {
         this.consequence = consequence;
-        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIVAL_OPTIMIZATION & enabledTupleOptimization;
+        this.enabledTupleOptimization = ENABLE_LINEARIZED_ARGUMENTS_RETRIEVAL_OPTIMIZATION & enabledTupleOptimization;
     }
 
     @Override
@@ -282,7 +282,7 @@ public class LambdaConsequence implements Consequence {
         @Override
         public int compareTo( TupleFactSupplier o ) {
             // Sorted from the one extracting a fact from the bottom of the tuple to the one reading from its top
-            // In this way the whole tuple can be traversed only once to retrive all facts
+            // In this way the whole tuple can be traversed only once to retrieve all facts
             return o.declarationTupleIndex - declarationTupleIndex;
         }
     }

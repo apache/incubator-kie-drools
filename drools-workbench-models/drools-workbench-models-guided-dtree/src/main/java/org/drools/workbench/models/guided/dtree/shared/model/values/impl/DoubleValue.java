@@ -37,9 +37,9 @@ public class DoubleValue implements Value<Double> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Double(value));
+            setValue(Double.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Double(0));
+            setValue(Double.valueOf(0));
         }
     }
 

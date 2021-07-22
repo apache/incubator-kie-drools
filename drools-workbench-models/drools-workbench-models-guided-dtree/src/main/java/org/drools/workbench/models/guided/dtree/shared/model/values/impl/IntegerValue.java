@@ -37,9 +37,9 @@ public class IntegerValue implements Value<Integer> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Integer(value));
+            setValue(Integer.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Integer(0));
+            setValue(Integer.valueOf(0));
         }
     }
 

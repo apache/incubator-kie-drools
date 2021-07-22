@@ -1,0 +1,43 @@
+<PMML xmlns="http://www.dmg.org/PMML-4_2" version="4.2">
+    <Header/>
+    <DataDictionary numberOfFields="2">
+        <DataField name="Dimension1" optype="continuous" dataType="double"/>
+        <DataField name="Dimension2" optype="continuous" dataType="double"/>
+    </DataDictionary>
+    <ClusteringModel modelName="multipleClusterSameClassModel" functionName="clustering"
+        modelClass="centerBased" numberOfClusters="5">
+        <MiningSchema>
+            <MiningField name="Dimension1" invalidValueTreatment="returnInvalid"/>
+            <MiningField name="Dimension2" invalidValueTreatment="returnInvalid"/>
+        </MiningSchema>
+        <Output>
+            <OutputField name="predictedValue" feature="predictedValue" dataType="string" optype="categorical"/>
+            <OutputField name="predictedDisplayValue" feature="predictedDisplayValue" dataType="string" optype="categorical"/>
+            <OutputField name="clusterAffinity_1" feature="clusterAffinity" value="1" dataType="double"/>
+            <OutputField name="clusterAffinity_2" feature="clusterAffinity" value="2" dataType="double"/>
+            <OutputField name="clusterAffinity_3" feature="clusterAffinity" value="3" dataType="double"/>
+            <OutputField name="clusterAffinity_4" feature="clusterAffinity" value="4" dataType="double"/>
+            <OutputField name="clusterAffinity_5" feature="clusterAffinity" value="5" dataType="double"/>
+        </Output>
+        <ComparisonMeasure kind="distance">
+            <squaredEuclidean/>
+        </ComparisonMeasure>
+        <ClusteringField field="Dimension1" compareFunction="absDiff"/>
+        <ClusteringField field="Dimension2" compareFunction="absDiff"/>
+        <Cluster name="classA" size="52">
+            <Array n="2" type="real">0 0</Array>
+        </Cluster>
+        <Cluster name="classB" size="48">
+            <Array n="2" type="real">1 1</Array>
+        </Cluster>
+        <Cluster name="classA" size="12">
+            <Array n="2" type="real">-1 -1</Array>
+        </Cluster>
+        <Cluster name="classB" size="24">
+            <Array n="2" type="real">5 5</Array>
+        </Cluster>
+        <Cluster name="classC" size="17">
+            <Array n="2" type="real">-3 5</Array>
+        </Cluster>
+    </ClusteringModel>
+</PMML>

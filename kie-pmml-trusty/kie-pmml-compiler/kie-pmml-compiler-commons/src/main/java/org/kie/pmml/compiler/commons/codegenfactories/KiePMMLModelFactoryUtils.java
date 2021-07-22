@@ -27,7 +27,6 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
@@ -60,14 +59,16 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldFactory.getOutputFieldVariableDeclaration;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransformationsFactory.LOCAL_TRANSFORMATIONS;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldFactory.getOutputFieldVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransformationsFactory.LOCAL_TRANSFORMATIONS;
-import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
 
 /**
  * Class to provide shared, helper methods to be invoked by model-specific
@@ -149,40 +150,6 @@ public class KiePMMLModelFactoryUtils {
         returnStmt.setExpression(methodCallExpr);
         body.addStatement(returnStmt);
     }
-
-//    /**
-//     * Populate the <b>kiePMMLOutputFields</b> <code>List&lt;KiePMMLOutputField&gt;</code>
-//     * @param body
-//     * @param outputFields
-//     */
-//    public static void addKiePMMLOutputFieldsPopulation(final BlockStmt body, final List<KiePMMLOutputField> outputFields) {
-//        for (KiePMMLOutputField outputField : outputFields) {
-//            NodeList<Expression> expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getName()),
-//                                                                 new NameExpr("Collections.emptyList()"));
-//            MethodCallExpr builder = new MethodCallExpr(new NameExpr("KiePMMLOutputField"), "builder", expressions);
-//            if (outputField.getRank() != null) {
-//                expressions = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-//                builder = new MethodCallExpr(builder, "withRank", expressions);
-//            }
-//            if (outputField.getValue() != null) {
-//                expressions = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-//                builder = new MethodCallExpr(builder, "withValue", expressions);
-//            }
-//            String targetField = outputField.getTargetField().orElse(null);
-//            if (targetField != null) {
-//                expressions = NodeList.nodeList(new StringLiteralExpr(targetField));
-//                builder = new MethodCallExpr(builder, "withTargetField", expressions);
-//            }
-//            if (outputField.getResultFeature() != null) {
-//                expressions =
-//                        NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-//                builder = new MethodCallExpr(builder, "withResultFeature", expressions);
-//            }
-//            Expression newOutputField = new MethodCallExpr(builder, "build");
-//            expressions = NodeList.nodeList(newOutputField);
-//            body.addStatement(new MethodCallExpr(new NameExpr("kiePMMLOutputFields"), "add", expressions));
-//        }
-//    }
 
     /**
      * Add <b>common</b> and <b>local</b> transformations management inside the given

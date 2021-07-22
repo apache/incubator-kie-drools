@@ -23,6 +23,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class IntegerFunction
         extends BaseFEELFunction {
@@ -35,6 +36,6 @@ public class IntegerFunction
         if ( number == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "number", "cannot be null"));
         }
-        return FEELFnResult.ofResult( number.setScale( 0, BigDecimal.ROUND_DOWN ) );
+        return FEELFnResult.ofResult( number.setScale( 0, RoundingMode.DOWN ) );
     }
 }

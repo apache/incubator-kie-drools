@@ -14,7 +14,7 @@
     </DataField>
   </DataDictionary>
   <TransformationDictionary>
-    <DefineFunction name="discretize_function" optype="categorical" dataType="string">
+     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
       <ParameterField name="eval_temperature"/>
       <Discretize field="eval_temperature" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
         <DiscretizeBin binValue="abc">

@@ -52,7 +52,7 @@ public class DataUtilities {
 
         //Row numbers are numerical
         if ( oldRow[ 0 ] instanceof String ) {
-            DTCellValue52 rowDcv = new DTCellValue52( new Integer( (String) oldRow[ 0 ] ) );
+            DTCellValue52 rowDcv = new DTCellValue52( Integer.valueOf( (String) oldRow[ 0 ] ) );
             row.add( rowDcv );
         } else if ( oldRow[ 0 ] instanceof Number ) {
             DTCellValue52 rowDcv = new DTCellValue52( ( (Number) oldRow[ 0 ] ).intValue() );

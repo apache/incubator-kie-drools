@@ -14,6 +14,11 @@
 
 package org.drools.impact.analysis.parser.impl;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+import java.util.Optional;
+
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -21,9 +26,11 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import org.drools.compiler.lang.descr.NotDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
+import org.drools.core.util.ClassUtils;
 import org.drools.impact.analysis.model.Rule;
 import org.drools.impact.analysis.model.left.Constraint;
 import org.drools.impact.analysis.model.left.LeftHandSide;
+import org.drools.impact.analysis.model.left.MapConstraint;
 import org.drools.impact.analysis.model.left.Pattern;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.PackageModel;
@@ -34,6 +41,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseResult;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 
+import static org.drools.impact.analysis.parser.impl.ParserUtil.getLiteralString;
 import static org.drools.impact.analysis.parser.impl.ParserUtil.literalToValue;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 
@@ -92,16 +100,16 @@ public class LhsParser {
         DrlxParseResult drlxParseResult = constraintParser.drlxParse( pattern.getPatternClass(), patternDescr.getIdentifier(), constraintExpression, false);
         if (drlxParseResult.isSuccess()) {
             SingleDrlxParseSuccess result = ( SingleDrlxParseSuccess ) drlxParseResult;
-            if (result.getReactOnProperties().size() > 0) {
+            if (!result.getReactOnProperties().isEmpty()) {
                 result.getReactOnProperties().forEach( pattern::addReactOn );
             } else {
                 pattern.setClassReactive( true );
             }
             if (result.getRight() != null) {
                 Constraint constraint = new Constraint();
-                parseExpressionInConstraint( constraint, result.getLeft() );
+                constraint = parseExpressionInConstraint( constraint, result.getLeft() );
                 boolean valueOnLeft = constraint.getValue() != null;
-                parseExpressionInConstraint( constraint, result.getRight() );
+                constraint = parseExpressionInConstraint( constraint, result.getRight() );
                 if ( constraint.getValue() != null) {
                     // the constraint is relevant for impact analysis only if it checks a fixed value
                     constraint.setType( decode(result.getDecodeConstraintType(), valueOnLeft ) );
@@ -111,14 +119,42 @@ public class LhsParser {
         }
     }
 
-    private void parseExpressionInConstraint( Constraint constraint, TypedExpression expr ) {
-        if (expr.getExpression() instanceof MethodCallExpr && isThisExpression( (( MethodCallExpr ) expr.getExpression()).getScope().orElse( null ) )) {
-            constraint.setProperty( expr.getFieldName() );
+    private Constraint parseExpressionInConstraint( Constraint constraint, TypedExpression expr ) {
+        if (expr.getExpression() instanceof MethodCallExpr) {
+            if (isThisExpression( (( MethodCallExpr ) expr.getExpression()).getScope().orElse( null ) )) {
+                constraint.setProperty( expr.getFieldName() );
+            } else {
+                constraint = processMapProperty(constraint, expr);
+            }
         } else if (expr.getExpression().isLiteralExpr()) {
             constraint.setValue( literalToValue( expr.getExpression().asLiteralExpr() ) );
         } else if (expr.getExpression().isNameExpr() && expr.getExpression().asNameExpr().getNameAsString().equals("_this")) {
             constraint.setProperty("this");
         }
+        return constraint;
+    }
+
+    private Constraint processMapProperty(Constraint constraint, TypedExpression expr) {
+        MethodCallExpr mce = expr.getExpression().asMethodCallExpr();
+        Optional<Expression> scope = mce.getScope();
+        if (scope.isPresent() && scope.get().isMethodCallExpr()) {
+            MethodCallExpr scopeMce = scope.get().asMethodCallExpr();
+            String prop = ClassUtils.getter2property(scopeMce.getName().asString());
+            Optional<Class<?>> origType = expr.getOriginalPatternType();
+            if (prop != null && origType.isPresent()) {
+                Method accessor = ClassUtils.getAccessor(origType.get(), prop);
+                if (accessor != null && Map.class.isAssignableFrom(accessor.getReturnType()) && mce.getName().asString().equals("get")) {
+                    String key = getLiteralString(mce.getArgument(0));
+                    if (key != null) {
+                        MapConstraint mapConstraint = new MapConstraint(constraint);
+                        mapConstraint.setProperty(prop); // map name
+                        mapConstraint.setKey(key);
+                        constraint = mapConstraint;
+                    }
+                }
+            }
+        }
+        return constraint;
     }
 
     private static Constraint.Type decode( Index.ConstraintType constraintType, boolean isInverted) {

@@ -58,6 +58,7 @@ public class KiePMMLNormDiscreteFactoryTest {
                                                                               "\"%s\", " +
                                                                               "%s);\n" +
                                                                               "}", variableName, fieldName, fieldValue, mapMissingTo));
+        assertEquals(expected.toString(), retrieved.toString());
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLNormDiscrete.class);
         commonValidateCompilationWithImports(retrieved, imports);

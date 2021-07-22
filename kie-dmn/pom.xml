@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.57.0-SNAPSHOT</version>
+    <version>7.58.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -58,6 +58,17 @@
       </activation>
       <modules>
         <module>kie-dmn-feel-gwt-showcase</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+            <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-dmn-xls2dmn-cli</module>
       </modules>
     </profile>
   </profiles>

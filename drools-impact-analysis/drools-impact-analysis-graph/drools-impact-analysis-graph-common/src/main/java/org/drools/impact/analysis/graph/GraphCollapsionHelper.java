@@ -33,7 +33,11 @@ public class GraphCollapsionHelper {
 
     // will be deprecated
     public GraphCollapsionHelper(boolean positiveOnly) {
-        this.linkFilter = LinkFilter.POSITIVE;
+        if (positiveOnly) {
+            this.linkFilter = LinkFilter.POSITIVE;
+        } else {
+            this.linkFilter = LinkFilter.ALL;
+        }
     }
 
     public GraphCollapsionHelper(LinkFilter linkFilter) {
