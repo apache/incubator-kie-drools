@@ -33,14 +33,14 @@ public enum AGGREGATE_FUNCTIONS {
 
     COUNT("count", null),
     SUM("sum", BUILTIN_FUNCTIONS.SUM),
-    AVG("average", BUILTIN_FUNCTIONS.AVG),
+    AVERAGE("average", BUILTIN_FUNCTIONS.AVG),
     MIN("min", BUILTIN_FUNCTIONS.MIN),
     MAX("max", BUILTIN_FUNCTIONS.MAX),
     MULTISET("multiset", null);
 
     private final String name;
     private final BUILTIN_FUNCTIONS builtinFunctions;
-    static final ObjectMapper JSONIZER  = new ObjectMapper();
+    public static final ObjectMapper JSONIZER  = new ObjectMapper();
 
 
     AGGREGATE_FUNCTIONS(String name, BUILTIN_FUNCTIONS builtinFunctions) {
@@ -59,13 +59,17 @@ public enum AGGREGATE_FUNCTIONS {
         return name;
     }
 
+    public boolean requiresNumbers() {
+        return builtinFunctions != null;
+    }
+
     public Object getValue(final Object[] inputData, final String[] groupBy) {
         try {
             switch (this) {
                 case COUNT:
                     return count(inputData, groupBy);
                 case SUM:
-                case AVG:
+                case AVERAGE:
                 case MIN:
                 case MAX:
                     return builtinFunctions.getValue(inputData);
