@@ -43,7 +43,6 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
     private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
     private static final String OUT_TEXTAGGREGATION = "out_textAggregation";
 
-
     private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
             "excellent!";
     private static final String TRANSACTION = "1 2 3 4";
