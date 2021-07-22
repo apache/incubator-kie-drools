@@ -321,7 +321,7 @@ public class Consequence {
 
         Map<String, Type> rhsBodyDeclarations = new HashMap<>();
         for (VariableDeclarator variableDeclarator : rhs.findAll(VariableDeclarator.class)) {
-            variableDeclarator.getInitializer().ifPresent( init -> rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType()));
+            rhsBodyDeclarations.put(variableDeclarator.getNameAsString(), variableDeclarator.getType());
         }
 
         for (MethodCallExpr methodCallExpr : methodCallExprs) {
