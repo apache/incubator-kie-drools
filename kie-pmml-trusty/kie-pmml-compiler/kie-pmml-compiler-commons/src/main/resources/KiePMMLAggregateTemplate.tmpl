@@ -1,0 +1,17 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLAggregate;
+
+public class KiePMMLAggregateTemplate {
+
+
+    private KiePMMLAggregate getKiePMMLAggregate() {
+        KiePMMLAggregate aggregate = KiePMMLAggregate.builder(name, Collections.emptyList(), function)
+                        .withGroupField(groupField)
+                        .withSqlWhere(sqlWhere)
+                        .build();
+    }
+
+}
