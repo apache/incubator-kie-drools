@@ -52,8 +52,22 @@ public class PostProcess {
     public static void postProcess(final PMML4Result toReturn, final KiePMMLModel model, final ProcessingDTO processingDTO) {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
-        toReturn.getResultVariables().forEach((key, value) -> processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
+        populateProcessingDTO(toReturn, model,  processingDTO);
         populateOutputFields(toReturn, processingDTO,  model);
+    }
+
+    static void populateProcessingDTO(final PMML4Result pmml4Result, final KiePMMLModel model, final ProcessingDTO toPopulate) {
+        pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
+        final Map<String, Double> sortedByValue
+                = model.getOutputFieldsMap().entrySet()
+                .stream()
+                .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
+                .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
+                .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
+                                          LinkedHashMap::new));
+        final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
+        toPopulate.addOrderedReasonCodes(orderedReasonCodes);
     }
 
     /**
@@ -126,16 +140,6 @@ public class PostProcess {
         }
         List<KiePMMLOutputField> reasonCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.REASON_CODE);
         if (reasonCodeOutputFields != null) {
-            final Map<String, Double> sortedByValue
-                    = model.getOutputFieldsMap().entrySet()
-                    .stream()
-                    .filter(entry -> entry.getValue() instanceof Double && (Double) entry.getValue() > 0)
-                    .map((Function<Map.Entry<String, Object>, Map.Entry<String, Double>>) entry -> new AbstractMap.SimpleEntry<>(entry.getKey(), (Double) entry.getValue()))
-                    .sorted(Map.Entry.<String, Double>comparingByValue().reversed())
-                    .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1,
-                                              LinkedHashMap::new));
-            final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
-            processingDTO.addOrderedReasonCodes(orderedReasonCodes);
             reasonCodeOutputFields
                     .forEach(outputField -> populateReasonCodeOutputField(outputField,
                                                                           toUpdate,
