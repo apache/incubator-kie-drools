@@ -25,7 +25,7 @@
     "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
     "build:prod": "yarn lint && webpack --config webpack.prod.js",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "rimraf coverage && yarn test --coverage",
     "test:watch": "jest --watch",
     "lint": "eslint './src/**/*.ts{,x}'",
     "mock-server": "json-server --watch api-mock/db.js --routes api-mock/routes.json --port 1336 --delay 1000 --id executionId --middlewares api-mock/filterSingular.js",
@@ -55,6 +55,7 @@
       "tsx",
       "js"
     ],
+    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
     "globals": {
       "ts-jest": {
         "isolatedModules": true

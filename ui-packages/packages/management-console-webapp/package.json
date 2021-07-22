@@ -15,7 +15,7 @@
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "rimraf coverage && yarn test --coverage",
     "dev:restServer": "nodemon ./server/restServer.js",
     "dev:server": "nodemon ./server/app.js",
     "dev": "concurrently 'yarn  start' 'yarn run dev:server'",
@@ -54,6 +54,7 @@
       "./src/apis/index.ts",
       "./src/pages/index.ts"
     ],
+    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
     "moduleFileExtensions": [
       "ts",
       "tsx",

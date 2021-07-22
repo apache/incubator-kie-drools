@@ -22,7 +22,7 @@
     "test:report": "yarn test --ci --reporters=jest-junit",
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
     "update-snapshot": "jest --updateSnapshot",
-    "test:coverage": "yarn test --coverage",
+    "test:coverage": "rimraf coverage && yarn test --coverage",
     "lint": "eslint './src/**/*.ts{,x}'",
     "format": "prettier --config ../../.prettierrc --check --write './src/**/*.{tsx,ts,js}'",
     "clean": "rimraf dist"
@@ -52,6 +52,7 @@
       "dist/",
       "mocks/"
     ],
+    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
     ],
