@@ -5,6 +5,8 @@
     <DataField name="input2" optype="continuous" dataType="double"/>
     <DataField name="score" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="transaction" optype="categorical" dataType="string"/>
+    <DataField name="item" optype="categorical" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -83,12 +85,17 @@
         <LinearNorm orig="6.8" norm="6.7"/>
       </NormContinuous>
     </DerivedField>
+    <DerivedField name="textAggregation" dataType="double" optype="continuous">
+      <Aggregate field="item" function="sum" groupField="transaction"/>
+    </DerivedField>
   </TransformationDictionary>
   <Scorecard modelName="SimpleScorecardWithTransformations" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
     <MiningSchema>
       <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
+      <MiningField name="transaction" usageType="active"/>
+      <MiningField name="item" usageType="active"/>
       <MiningField name="score" usageType="target"/>
     </MiningSchema>
     <Output>
@@ -137,6 +144,9 @@
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>
+      </OutputField>
+      <OutputField name="out_textAggregation" dataType="double" optype="continuous" feature="transformedValue">
+        <FieldRef field="textAggregation"/>
       </OutputField>
     </Output>
     <Characteristics>
