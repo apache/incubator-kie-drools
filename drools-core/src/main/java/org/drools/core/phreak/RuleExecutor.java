@@ -91,9 +91,16 @@ public class RuleExecutor {
         reEvaluateNetwork( agenda );
 
         if ( wm.getSessionConfiguration().isDirectFiring() ) {
+            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
+            RuleImpl rule = rtn.getRule();
             int directFirings = tupleList.size();
+
             for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
-                innerFireActivation( wm, agenda, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                if (cancelAndContinue(wm, rtn, rule, tuple, filter)) {
+                    directFirings--;
+                } else {
+                    innerFireActivation( wm, agenda, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                }
                 removeLeftTuple( tuple );
             }
             ruleAgendaItem.remove();
@@ -144,7 +151,7 @@ public class RuleExecutor {
 
                 AgendaItem item = (AgendaItem) tuple;
                 if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, wm, rtn)) {
-                    // only relevant for seralization, to not refire Matches already fired
+                    // only relevant for serialization, to not refire Matches already fired
                     continue;
                 }
 
@@ -157,7 +164,7 @@ public class RuleExecutor {
 
                 agenda.flushPropagations();
 
-                int salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
+                int salience = ruleAgendaItem.getSalience(); // dynamic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
                     ruleAgendaItem.dequeue();
                     ruleAgendaItem.setSalience(queue.peek().getSalience());
