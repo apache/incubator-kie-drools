@@ -16,5 +16,6 @@
     <module>data-index-service-infinispan</module>
     <module>data-index-service-mongodb</module>
     <module>data-index-service-postgresql</module>
+    <module>data-index-service-inmemory</module>
   </modules>
 </project>

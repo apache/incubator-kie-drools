@@ -19,5 +19,6 @@
         <module>jobs-service-infinispan</module>
         <module>jobs-service-postgresql</module>
         <module>jobs-service-mongodb</module>
+        <module>jobs-service-inmemory</module>
     </modules>
 </project>

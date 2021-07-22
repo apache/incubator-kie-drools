@@ -23,6 +23,7 @@ import java.util.concurrent.TimeUnit;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.jobs.api.Job;
 import org.kie.kogito.jobs.api.JobBuilder;
@@ -65,6 +66,11 @@ public abstract class BaseJobResourceIT {
 
     @Inject
     private VertxTimerServiceScheduler timer;
+
+    @AfterEach
+    void tearDown() {
+        scheduler.setForceExecuteExpiredJobs(false);
+    }
 
     @Test
     void create() throws Exception {
