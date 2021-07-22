@@ -145,6 +145,5 @@ public class ClusterWithTransformationsTest extends AbstractPMMLTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXTAGGREGATION)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXTAGGREGATION)).isEqualTo(EXPECTED_AGGREGATE);
-
     }
 }
