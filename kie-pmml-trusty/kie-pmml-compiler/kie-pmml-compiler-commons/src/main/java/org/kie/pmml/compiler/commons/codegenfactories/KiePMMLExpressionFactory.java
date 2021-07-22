@@ -16,6 +16,7 @@
 package org.kie.pmml.compiler.commons.codegenfactories;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
+import org.dmg.pmml.Aggregate;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
 import org.dmg.pmml.Discretize;
@@ -25,6 +26,7 @@ import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 import org.dmg.pmml.TextIndex;
 
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLAggregateFactory.getAggregateVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration;
@@ -46,7 +48,9 @@ public class KiePMMLExpressionFactory {
     }
 
     public static BlockStmt getKiePMMLExpression(final String variableName, final org.dmg.pmml.Expression expression) {
-        if (expression instanceof Apply) {
+        if (expression instanceof Aggregate) {
+            return getAggregateVariableDeclaration(variableName, (Aggregate) expression);
+        } else if (expression instanceof Apply) {
             return getApplyVariableDeclaration(variableName, (Apply) expression);
         } else if (expression instanceof Constant) {
             return getConstantVariableDeclaration(variableName, (Constant) expression);
