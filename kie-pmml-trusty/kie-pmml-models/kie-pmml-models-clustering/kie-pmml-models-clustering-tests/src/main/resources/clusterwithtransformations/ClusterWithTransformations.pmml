@@ -21,6 +21,8 @@
     </DataField>
     <DataField name="class" optype="categorical" dataType="string"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="transaction" optype="categorical" dataType="string"/>
+    <DataField name="item" optype="categorical" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -81,6 +83,9 @@
         <LinearNorm orig="6.8" norm="6.7"/>
       </NormContinuous>
     </DerivedField>
+    <DerivedField name="textAggregation" dataType="double" optype="continuous">
+      <Aggregate field="item" function="sum" groupField="transaction"/>
+    </DerivedField>
   </TransformationDictionary>
   <ClusteringModel modelName="ClusterWithTransformations" functionName="clustering" modelClass="centerBased" numberOfClusters="4">
     <MiningSchema>
@@ -89,6 +94,8 @@
       <MiningField name="petal_length" invalidValueTreatment="asIs"/>
       <MiningField name="petal_width" invalidValueTreatment="asIs"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
+      <MiningField name="transaction" usageType="active"/>
+      <MiningField name="item" usageType="active"/>
       <MiningField name="class" usageType="predicted"/>
     </MiningSchema>
     <Output>
@@ -136,6 +143,9 @@
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>
+      </OutputField>
+      <OutputField name="out_textAggregation" dataType="double" optype="continuous" feature="transformedValue">
+        <FieldRef field="textAggregation"/>
       </OutputField>
     </Output>
     <ComparisonMeasure kind="distance">
