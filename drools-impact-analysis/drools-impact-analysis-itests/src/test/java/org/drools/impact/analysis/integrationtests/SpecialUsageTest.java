@@ -50,16 +50,77 @@ public class SpecialUsageTest extends AbstractGraphTest {
                      "rule R2 when\n" +
                      "  $c : ControlFact(mapData[\"Key1\"] == \"Value1\")\n" +
                      "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $c : ControlFact(mapData[\"Key1\"] != \"Value1\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R4 when\n" +
+                     "  $c : ControlFact(mapData[\"Key2\"] == \"Value1\")\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R5 when\n" +
+                     "  $c : ControlFact(mapData[\"Key1\"] == \"Value2\")\n" +
+                     "then\n" +
                      "end\n";
 
         runRule(str, new ControlFact());
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
+        System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R5", ReactivityType.NEGATIVE);
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testModifyMapInt() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + ControlFact.class.getCanonicalName() + ";" +
+                     "dialect \"mvel\"" +
+                     "rule R1 when\n" +
+                     "  $c : ControlFact()\n" +
+                     "then\n" +
+                     "  $c.mapDataInt[\"Key1\"] = 100;" +
+                     "  modify ($c) {mapDataInt = $c.mapDataInt};" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $c : ControlFact(mapDataInt[\"Key1\"] == 100)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $c : ControlFact(mapDataInt[\"Key1\"] != 100)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R4 when\n" +
+                     "  $c : ControlFact(mapDataInt[\"Key2\"] == 100)\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R5 when\n" +
+                     "  $c : ControlFact(mapDataInt[\"Key1\"] == 200)\n" +
+                     "then\n" +
+                     "end\n";
+
+        runRule(str, new ControlFact());
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+        System.out.println(analysisModel);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R3", ReactivityType.NEGATIVE);
+        assertLink(graph, "mypkg.R1", "mypkg.R4", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R5", ReactivityType.NEGATIVE);
 
         generatePng(graph);
     }

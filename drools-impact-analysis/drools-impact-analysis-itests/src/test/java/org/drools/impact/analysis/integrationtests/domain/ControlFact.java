@@ -24,6 +24,7 @@ public class ControlFact {
     private String orderId;
     private String keyword;
     private Map<String, String> mapData = new HashMap<>();
+    private Map<String, Integer> mapDataInt = new HashMap<>();
 
     public ControlFact() {}
 
@@ -58,6 +59,14 @@ public class ControlFact {
 
     public void setMapData(Map<String, String> mapData) {
         this.mapData = mapData;
+    }
+
+    public Map<String, Integer> getMapDataInt() {
+        return mapDataInt;
+    }
+
+    public void setMapDataInt(Map<String, Integer> mapDataInt) {
+        this.mapDataInt = mapDataInt;
     }
 
 }
