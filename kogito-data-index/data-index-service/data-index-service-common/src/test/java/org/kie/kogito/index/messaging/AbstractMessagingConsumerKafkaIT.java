@@ -37,7 +37,7 @@ import static org.kie.kogito.index.TestUtils.readFileContent;
 
 public abstract class AbstractMessagingConsumerKafkaIT {
 
-    Duration timeout = Duration.ofSeconds(5);
+    Duration timeout = Duration.ofSeconds(30);
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY, defaultValue = "localhost:9092")
     public String kafkaBootstrapServers;

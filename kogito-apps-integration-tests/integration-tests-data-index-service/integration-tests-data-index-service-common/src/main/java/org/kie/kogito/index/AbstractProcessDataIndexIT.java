@@ -32,7 +32,7 @@ import static org.hamcrest.CoreMatchers.notNullValue;
 
 public abstract class AbstractProcessDataIndexIT {
 
-    private static Duration TIMEOUT = Duration.ofSeconds(5);
+    private static Duration TIMEOUT = Duration.ofSeconds(30);
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();

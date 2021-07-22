@@ -89,7 +89,7 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractIndexingServiceIT.class);
 
-    Duration timeout = Duration.ofSeconds(5);
+    Duration timeout = Duration.ofSeconds(30);
 
     @Inject
     public DataIndexStorageService cacheService;
