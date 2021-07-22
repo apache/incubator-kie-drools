@@ -41,6 +41,13 @@ public class MixedMiningTest extends AbstractPMMLTest {
     private static final String OUT_RESIDENCESTATE = "out_residenceState";
     private static final String OUT_FUN_OCCUPATION_REFERRED = "out_fun_occupation_referred";
     private static final String CONSTANT_OCCUPATION = "CONSTANT_OCCUPATION";
+    private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
+
     private static PMMLRuntime pmmlRuntime;
 
     private String categoricalX;
@@ -86,7 +93,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
     }
 
     @Test
-    public void testMixedMining() {
+    public void testMixedMining() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("categoricalX", categoricalX);
         inputData.put("categoricalY", categoricalY);
@@ -94,6 +101,8 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("occupation", occupation);
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
@@ -106,5 +115,43 @@ public class MixedMiningTest extends AbstractPMMLTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_RESIDENCESTATE)).isEqualTo(residenceState);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_FUN_OCCUPATION_REFERRED)).isEqualTo(CONSTANT_OCCUPATION);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isNotNull();
+        if (occupation.equals("SKYDIVER")) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (age > 4.2 && age < 30.5) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (age >= 114 && age < 250) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (categoricalX) {
+            case "red":
+                expected = "der";
+                break;
+            case "green":
+                expected = "neerg";
+                break;
+            case "blue":
+                expected = "eulb";
+                break;
+            case "orange":
+                expected = "egnaro";
+                break;
+            case "yellow":
+                expected = "wolley";
+                break;
+            default:
+                throw new Exception("Unexpected categoricalX " + categoricalX);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 }
