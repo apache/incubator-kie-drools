@@ -38,11 +38,14 @@ import org.mvel2.ast.LiteralNode;
 import org.mvel2.ast.Negation;
 import org.mvel2.ast.Or;
 import org.mvel2.ast.Substatement;
+import org.mvel2.compiler.Accessor;
+import org.mvel2.compiler.AccessorNode;
 import org.mvel2.compiler.CompiledExpression;
 import org.mvel2.compiler.ExecutableAccessor;
 import org.mvel2.compiler.ExecutableLiteral;
 import org.mvel2.compiler.ExecutableStatement;
 import org.mvel2.integration.VariableResolverFactory;
+import org.mvel2.optimizers.impl.refl.nodes.MethodAccessor;
 import org.mvel2.util.ASTLinkedList;
 
 import static org.drools.core.rule.constraint.EvaluatorHelper.valuesAsMap;
@@ -174,13 +177,35 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
 
     private static boolean isEvaluated(ASTNode node) {
         node = unwrapSubstatement(node);
+        if (node == null) {
+            return true;
+        }
+
         if (node instanceof Contains) {
             return ((Contains)node).getFirstStatement().getAccessor() != null;
         }
+
         if (node instanceof BooleanNode) {
             return isEvaluated(((BooleanNode) node).getLeft()) && isEvaluated(((BooleanNode) node).getRight());
         }
-        return node.getAccessor() != null || node instanceof LiteralNode;
+
+        Accessor accessor = node.getAccessor();
+        if (accessor == null) {
+            return node instanceof LiteralNode;
+        }
+
+        if (accessor instanceof AccessorNode) {
+            AccessorNode nextNode = ((AccessorNode) accessor).getNextNode();
+            if (nextNode instanceof MethodAccessor) {
+                for (ExecutableStatement param : ((MethodAccessor) nextNode).getParms()) {
+                    if (!isFullyEvaluated(param)) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     private static ASTNode getRootNode(Serializable executableStatement) {

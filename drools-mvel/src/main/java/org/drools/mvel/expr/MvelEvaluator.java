@@ -33,7 +33,7 @@ public class MvelEvaluator<T> {
 
     private static final boolean THREAD_UNSAFE = Boolean.valueOf( System.getProperty("drools.mvel.thread.unsafe") );
 
-    private static final EvaluatorType DEFAULT_EVALUATOR_TYPE = EvaluatorType.THREAD_SAFE_ON_FIRST_EVAL;
+    private static final EvaluatorType DEFAULT_EVALUATOR_TYPE = EvaluatorType.SYNCHRONIZED_TILL_EVALUATED;
 
     private static final Logger logger = LoggerFactory.getLogger(MvelEvaluator.class);
 
