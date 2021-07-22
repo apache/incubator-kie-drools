@@ -47,8 +47,15 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
     private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
     private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String OUT_TEXTAGGREGATION = "out_textAggregation";
+
     private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
             "excellent!";
+    private static final String TRANSACTION = "1 2 3 4";
+    private static final String ITEM = "1 1 1 2 2 3 4 4 5 6 7";
+    private static final double EXPECTED_AGGREGATE = Arrays.stream(ITEM.split(" "))
+            .mapToInt(Integer::valueOf)
+            .sum();
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -82,6 +89,8 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
         inputData.put("text_input", TEXT_INPUT);
+        inputData.put("transaction", TRANSACTION);
+        inputData.put("item", ITEM);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
@@ -122,5 +131,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXTAGGREGATION)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXTAGGREGATION)).isEqualTo(EXPECTED_AGGREGATE);
     }
 }
