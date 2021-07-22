@@ -33,6 +33,8 @@
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
     <DataField name="overallScore" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="transaction" optype="categorical" dataType="string"/>
+    <DataField name="item" optype="categorical" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -129,6 +131,9 @@
         </InlineTable>
       </MapValues>
     </DerivedField>
+    <DerivedField name="textAggregation" dataType="double" optype="continuous">
+      <Aggregate field="item" function="sum" groupField="transaction"/>
+    </DerivedField>
   </TransformationDictionary>
   <MiningModel functionName="regression" modelName="MixedMining">
     <MiningSchema>
@@ -139,6 +144,8 @@
       <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
+      <MiningField name="transaction" usageType="active"/>
+      <MiningField name="item" usageType="active"/>
       <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
@@ -175,6 +182,9 @@
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>
+      </OutputField>
+      <OutputField name="out_textAggregation" dataType="double" optype="continuous" feature="transformedValue">
+        <FieldRef field="textAggregation"/>
       </OutputField>
     </Output>
     <Targets>
