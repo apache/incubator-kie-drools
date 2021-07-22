@@ -16,7 +16,6 @@
 
 package org.kie.pmml.api.enums;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,21 +23,17 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.api.enums.AGGREGATE_FUNCTIONS.JSONIZER;
 
 public class AGGREGATE_FUNCTIONSTest {
 
     private static Map<String, List<Object>> GROUPED_MAP;
 
     @BeforeClass
-    public static void setup() throws JsonProcessingException {
+    public static void setup() {
         String[] groupBy = {"GROUP-0", "GROUP-1", "GROUP-2"};
         GROUPED_MAP = new HashMap<>();
         for (String group : groupBy) {
@@ -47,75 +42,11 @@ public class AGGREGATE_FUNCTIONSTest {
             GROUPED_MAP.put(group, toPut);
         }
     }
-    
 
     @Test
-    public void countNoGroupBy() throws JsonProcessingException {
+    public void count()  {
         Object[] inputData = IntStream.range(0, 4).boxed().toArray(Integer[]::new);
-        assertEquals(inputData.length, AGGREGATE_FUNCTIONS.count(inputData, null));
-        String[] groupBy = new String[0];
-        assertEquals(inputData.length, AGGREGATE_FUNCTIONS.count(inputData, groupBy));
-    }
-
-    @Test
-    public void countGroupBy() throws JsonProcessingException {
-        Map<String, List<Object>> grouped = GROUPED_MAP;
-        String[] groupBy = grouped.keySet().toArray(new String[0]);
-        Object[] inputData = grouped.values().stream().flatMap(Collection::stream).toArray(Object[]::new);
-        Object retrieved = AGGREGATE_FUNCTIONS.count(inputData, groupBy);
-        assertNotNull(retrieved);
-        assertTrue(retrieved instanceof String);
-        Map<String, Integer> retrievedMap = (Map) JSONIZER.readValue((String) retrieved, Map.class);
-        for (String group : groupBy) {
-            assertEquals(grouped.get(group).size(), (int) retrievedMap.get(group));
-        }
-    }
-
-    @Test
-    public void multisetNoGroupBy() throws JsonProcessingException {
-        Object[] inputData = IntStream.range(0, 4).boxed().toArray(Integer[]::new);
-        String retrieved = AGGREGATE_FUNCTIONS.multiset(inputData, null);
-        assertNotNull(retrieved);
-        Map<String, List<Object>> retrievedMap = (Map) JSONIZER.readValue(retrieved, Map.class);
-        assertEquals(1, retrievedMap.size());
-        List<Object> retrievedList = retrievedMap.get("_null_");
-        assertEquals(inputData.length, retrievedList.size());
-        for(Object inputItem : inputData) {
-            assertTrue(retrievedList.contains(inputItem));
-        }
-    }
-
-    @Test
-    public void multisetGroupBy() throws JsonProcessingException {
-        Map<String, List<Object>> grouped = GROUPED_MAP;
-        String[] groupBy = grouped.keySet().toArray(new String[0]);
-        Object[] inputData = grouped.values().stream().flatMap(Collection::stream).toArray(Object[]::new);
-        String retrieved = AGGREGATE_FUNCTIONS.multiset(inputData, groupBy);
-        assertNotNull(retrieved);
-        System.out.println(retrieved);
-        Map<String, List<Object>> retrievedMap = (Map) JSONIZER.readValue(retrieved, Map.class);
-        System.out.println(retrievedMap);
-        assertEquals(grouped.size(), retrievedMap.size());
-        grouped.forEach((group, groupedList) -> {
-            assertTrue(retrievedMap.containsKey(group));
-            List<Object> retrievedList = retrievedMap.get(group);
-            assertEquals(groupedList.size(), retrievedList.size());
-            groupedList.forEach(groupedItem -> assertTrue(retrievedList.contains(groupedItem)));
-        });
-    }
-
-    @Test
-    public void getJsonStringFromMap() throws JsonProcessingException {
-        Map<String, List<Object>> grouped = GROUPED_MAP;
-        String retrieved = AGGREGATE_FUNCTIONS.getJsonStringFromMap(grouped);
-        Map<String, List<Object>> retrievedMap = (Map) JSONIZER.readValue(retrieved, Map.class);
-        assertEquals(grouped.size(), retrievedMap.size());
-        grouped.forEach((group, groupedList) -> {
-            assertTrue(retrievedMap.containsKey(group));
-            List<Object> retrievedList = retrievedMap.get(group);
-            assertEquals(groupedList.size(), retrievedList.size());
-            groupedList.forEach(groupedItem -> assertTrue(retrievedList.contains(groupedItem)));
-        });
+        assertEquals(inputData.length, AGGREGATE_FUNCTIONS.count(inputData));
     }
 
 
