@@ -21,6 +21,7 @@ import static org.apache.commons.lang3.ObjectUtils.defaultIfNull;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -30,6 +31,8 @@ import org.drools.core.io.impl.ClassPathResource;
 import org.drools.core.io.impl.FileSystemResource;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBase;
+import org.kie.api.KieBaseConfiguration;
+import org.kie.api.KieServices;
 import org.kie.api.conf.KieBaseMutabilityOption;
 import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.utils.KieHelper;
@@ -309,7 +312,9 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                         kieHelper.addResource(new FileSystemResource(scoreDrlFile));
                     }
                 }
-                kieBase = kieHelper.build(ExecutableModelProject.class, KieBaseMutabilityOption.DISABLED);
+                KieBaseConfiguration kieBaseConfiguration = buildKieBaseConfiguration(KieServices.get());
+                kieBaseConfiguration.setOption(KieBaseMutabilityOption.DISABLED); // Performance improvement.
+                kieBase = kieHelper.build(ExecutableModelProject.class, kieBaseConfiguration);
             }
 
             if (config.isDroolsAlphaNetworkCompilationEnabled()) {
@@ -324,6 +329,16 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         } catch (Exception ex) {
             throw new IllegalStateException("There is an error in a scoreDrl or scoreDrlFile.", ex);
         }
+    }
+
+    private KieBaseConfiguration buildKieBaseConfiguration(KieServices kieServices) {
+        KieBaseConfiguration kieBaseConfiguration = kieServices.newKieBaseConfiguration();
+        if (config.getKieBaseConfigurationProperties() != null) {
+            for (Map.Entry<String, String> entry : config.getKieBaseConfigurationProperties().entrySet()) {
+                kieBaseConfiguration.setProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        return kieBaseConfiguration;
     }
 
 }
