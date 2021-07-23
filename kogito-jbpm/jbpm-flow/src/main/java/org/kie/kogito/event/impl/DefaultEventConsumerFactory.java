@@ -15,19 +15,21 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import org.kie.kogito.Model;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
 
 public class DefaultEventConsumerFactory implements EventConsumerFactory {
 
     @Override
-    public <M extends Model, D> EventConsumer<M> get(Function<D, M> function, boolean cloudEvents) {
+    public <M extends Model, D> EventConsumer<M> get(ProcessService processService, ExecutorService executorService, Function<D, M> function, boolean cloudEvents) {
         return cloudEvents
-                ? new CloudEventConsumer<>(function)
-                : new DataEventConsumer<>(function);
+                ? new CloudEventConsumer<>(processService, executorService, function)
+                : new DataEventConsumer<>(processService, executorService, function);
     }
 
 }

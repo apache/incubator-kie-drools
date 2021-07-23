@@ -30,8 +30,6 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 
-import static org.kie.kogito.codegen.core.CodegenUtils.interpolateTypes;
-
 public class MessageProducerGenerator {
 
     protected static final String EVENT_DATA_VAR = "eventData";
@@ -94,6 +92,7 @@ public class MessageProducerGenerator {
 
         template.findAll(ClassOrInterfaceType.class).forEach(cls -> CodegenUtils.interpolateTypes(cls, trigger.getDataType()));
         template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+        template.findAll(StringLiteralExpr.class).forEach(str -> str.setString(str.asString().replace("$ClassName$", resourceClazzName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataEventType$", messageDataEventClassName)));
         template.findAll(ClassOrInterfaceType.class).forEach(t -> t.setName(t.getNameAsString().replace("$DataType$", trigger.getDataType())));
         template.findAll(StringLiteralExpr.class).forEach(s -> s.setString(s.getValue().replace("$channel$", trigger.getName())));

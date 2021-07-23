@@ -130,4 +130,18 @@ public abstract class AbstractProcessDataEvent<T> extends AbstractDataEvent<T> {
     public String getKogitoStartFromNode() {
         return this.kogitoStartFromNode;
     }
+
+    @Override
+    public String toString() {
+        return "AbstractProcessDataEvent [kogitoParentProcessinstanceId=" + kogitoParentProcessinstanceId +
+                ", kogitoProcessinstanceState=" + kogitoProcessinstanceState + ", kogitoReferenceId=" +
+                kogitoReferenceId + ", kogitoStartFromNode=" + kogitoStartFromNode + ", getSource()=" + getSource() +
+                ", getSpecVersion()=" + getSpecVersion() + ", getId()=" + getId() + ", getType()=" + getType() +
+                ", getTime()=" + getTime() + ", getData()=" + getData() + ", getKogitoProcessinstanceId()=" +
+                getKogitoProcessinstanceId() + ", getKogitoRootProcessinstanceId()=" +
+                getKogitoRootProcessinstanceId() + ", getKogitoProcessId()=" + getKogitoProcessId() +
+                ", getKogitoRootProcessId()=" + getKogitoRootProcessId() + ", getKogitoAddons()=" + getKogitoAddons() +
+                "]";
+    }
+
 }

@@ -13,23 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.integrationtests;
+package org.kie.kogito.services.event.impl;
 
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionStage;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.ws.rs.Path;
-import javax.ws.rs.core.Response;
+import org.kie.kogito.event.ChannelResolver;
 
-import org.kie.kogito.addon.cloudevents.quarkus.http.AbstractQuarkusCloudEventResource;
+public class DefaultChannelResolver implements ChannelResolver {
 
-import io.cloudevents.CloudEvent;
-
-@Path("/")
-public class QuarkusCloudEventResource extends AbstractQuarkusCloudEventResource {
+    protected Set<String> inputChannels = new HashSet<>();
+    protected Set<String> outputChannels = new HashSet<>();
 
     @Override
-    public CompletionStage<Response> cloudEventListener(CloudEvent event) {
-        return CompletableFuture.completedFuture(Response.ok(this.serialize(event)).build());
+    public Set<String> getOutputChannels() {
+        return outputChannels;
     }
+
+    @Override
+    public Set<String> getInputChannels() {
+        return inputChannels;
+    }
+
+    protected static final void addChannel(Set<String> channels, String channelName) {
+        channels.add(channelName);
+    }
+
 }

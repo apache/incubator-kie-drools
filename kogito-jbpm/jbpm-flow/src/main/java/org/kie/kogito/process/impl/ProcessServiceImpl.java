@@ -67,6 +67,25 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     @Override
+    public <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process,
+            T model,
+            String startFromNodeId,
+            String trigger,
+            String kogitoReferenceId) {
+
+        return UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
+            ProcessInstance<T> pi = process.createInstance(model);
+            if (startFromNodeId != null) {
+                pi.startFrom(startFromNodeId, kogitoReferenceId);
+            } else {
+                pi.start(trigger, kogitoReferenceId);
+            }
+            return pi;
+        });
+
+    }
+
+    @Override
     public <T extends MappableToModel<R>, R> List<R> getProcessInstanceOutput(Process<T> process) {
         return process.instances().values().stream()
                 .map(ProcessInstance::variables)
@@ -406,4 +425,5 @@ public class ProcessServiceImpl implements ProcessService {
                 Policies.of(user, groups),
                 JsonSchemaUtil.load(Thread.currentThread().getContextClassLoader(), process.id(), taskName));
     }
+
 }

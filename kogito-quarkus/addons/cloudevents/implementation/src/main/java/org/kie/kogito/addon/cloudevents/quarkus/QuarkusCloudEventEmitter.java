@@ -34,6 +34,8 @@ import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * the quarkus implementation just delegates to a real emitter,
@@ -44,6 +46,8 @@ import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 public class QuarkusCloudEventEmitter implements EventEmitter {
 
     private MessageDecorator messageDecorator;
+
+    private static final Logger logger = LoggerFactory.getLogger(QuarkusCloudEventEmitter.class);
 
     @Inject
     @Channel(KogitoEventStreams.OUTGOING)
@@ -64,6 +68,7 @@ public class QuarkusCloudEventEmitter implements EventEmitter {
 
     @Override
     public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
+        logger.debug("publishing event {} for type {}", e, type);
         final Message<String> message = this.messageDecorator.decorate(marshaller.marshall(
                 configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
         emitter.send(message);

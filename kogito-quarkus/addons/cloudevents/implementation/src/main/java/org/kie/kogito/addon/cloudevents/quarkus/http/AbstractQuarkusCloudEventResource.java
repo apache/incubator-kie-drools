@@ -16,6 +16,8 @@
 package org.kie.kogito.addon.cloudevents.quarkus.http;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -25,12 +27,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventPublisher;
+import org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventReceiver;
 import org.kie.kogito.cloudevents.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
@@ -48,48 +49,45 @@ public abstract class AbstractQuarkusCloudEventResource {
     @Inject
     ObjectMapper objectMapper;
     @Inject
-    QuarkusCloudEventPublisher publisher;
+    QuarkusCloudEventReceiver publisher;
 
     @PostConstruct
     public void setup() {
         objectMapper.registerModule(JsonFormat.getCloudEventJacksonModule());
     }
 
-    @POST()
+    @POST
     @Consumes(MediaType.WILDCARD)
     @Produces(MediaType.APPLICATION_JSON)
-    public javax.ws.rs.core.Response cloudEventListener(CloudEvent event) {
-        try {
-            publisher.produce(this.serialize(event));
-            return Response.ok().build();
-        } catch (Exception ex) {
-            return Responses.errorProcessingCloudEvent(ex);
-        }
+    public CompletionStage<Response> cloudEventListener(CloudEvent event) {
+        return CompletableFuture.completedFuture(serialize(event))
+                .thenCompose(publisher::produce)
+                .thenApply(r -> Response.ok().type(MediaType.APPLICATION_JSON).build());
     }
 
-    protected String serialize(CloudEvent event) throws JsonProcessingException, CloudEventInvalidDataException {
-        LOGGER.debug("CloudEvent to publish: {}", Printer.beautify(event));
-        if (!isSupportedContentType(event)) {
-            LOGGER.warn("Content-Type of the received CloudEvent '{}' is not supported. Content-type is {}. Assuming application/json.", event.getType(), event.getDataContentType());
-            // We rebuild the CloudEvent with a supported format, so we can serialize correctly our content.
-            // We assume the data is in JSON format.
-            // This happens when a client sends the data in an arbitrary format without informing the Content-Type, instead of rejecting the request, we try to serialize it using JSON.
-            // If it's not a valid JSON, we throw the exception to be correctly handled by the controller (4xx error)
-            checkEventDataIsValidJSON(event);
-            final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON).build();
-            final String newDecodedEvent = objectMapper.writeValueAsString(newEvent);
-            LOGGER.debug("Decoded event {}", newDecodedEvent);
-            return newDecodedEvent;
-        } else {
-            return objectMapper.writeValueAsString(event);
+    protected String serialize(CloudEvent event) {
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug("CloudEvent to publish: {}", Printer.beautify(event));
         }
-    }
-
-    private void checkEventDataIsValidJSON(CloudEvent event) throws CloudEventInvalidDataException {
         try {
-            objectMapper.readTree(event.getData());
-        } catch (IOException e) {
-            throw new CloudEventInvalidDataException(event, e);
+            if (!isSupportedContentType(event)) {
+                LOGGER.warn(
+                        "Content-Type of the received CloudEvent '{}' is not supported. Content-type is {}. Assuming application/json.",
+                        event.getType(), event.getDataContentType());
+                // We rebuild the CloudEvent with a supported format, so we can serialize correctly our content.
+                // We assume the data is in JSON format.
+                // This happens when a client sends the data in an arbitrary format without informing the Content-Type, instead of rejecting the request, we try to serialize it using JSON.
+                // If it's not a valid JSON, we throw the exception to be correctly handled by the controller (4xx error)
+                objectMapper.readTree(event.getData());
+                final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON).build();
+                final String newDecodedEvent = objectMapper.writeValueAsString(newEvent);
+                LOGGER.debug("Decoded event {}", newDecodedEvent);
+                return newDecodedEvent;
+            } else {
+                return objectMapper.writeValueAsString(event);
+            }
+        } catch (IOException | IllegalArgumentException ex) {
+            throw new CloudEventResourceException(event, ex);
         }
     }
 
@@ -100,7 +98,7 @@ public abstract class AbstractQuarkusCloudEventResource {
      * @return true if the given content-type is not supported
      */
     private boolean isSupportedContentType(CloudEvent event) {
-        return event.getDataContentType() != null && MediaType.APPLICATION_JSON_TYPE.isCompatible(MediaType.valueOf(event.getDataContentType()));
+        return MediaType.APPLICATION_JSON_TYPE.isCompatible(MediaType.valueOf(event.getDataContentType()));
     }
 
 }

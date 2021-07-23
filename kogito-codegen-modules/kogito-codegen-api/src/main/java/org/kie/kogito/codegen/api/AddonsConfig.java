@@ -24,6 +24,7 @@ public class AddonsConfig {
             .withPrometheusMonitoring(false)
             .withCloudEvents(false)
             .withExplainability(false)
+            .withMultiChannel(false)
             .build();
 
     private final boolean usePersistence;
@@ -33,9 +34,10 @@ public class AddonsConfig {
     private final boolean useCloudEvents;
     private final boolean useExplainability;
     private final boolean useProcessSVG;
+    private final boolean useMultiChannel;
 
     private AddonsConfig(boolean usePersistence, boolean useTracing, boolean useMonitoring, boolean usePrometheusMonitoring, boolean useCloudEvents,
-            boolean useExplainability, boolean useProcessSVG) {
+            boolean useExplainability, boolean useProcessSVG, boolean useMultiChannel) {
         this.usePersistence = usePersistence;
         this.useTracing = useTracing;
         this.useMonitoring = useMonitoring;
@@ -43,6 +45,7 @@ public class AddonsConfig {
         this.useCloudEvents = useCloudEvents;
         this.useExplainability = useExplainability;
         this.useProcessSVG = useProcessSVG;
+        this.useMultiChannel = useMultiChannel;
     }
 
     public static AddonsConfigBuilder builder() {
@@ -77,6 +80,10 @@ public class AddonsConfig {
         return useProcessSVG;
     }
 
+    public boolean useMultiChannel() {
+        return useMultiChannel;
+    }
+
     @Override
     public String toString() {
         return "AddonsConfig{" +
@@ -87,6 +94,7 @@ public class AddonsConfig {
                 ", useCloudEvents=" + useCloudEvents +
                 ", useExplainability=" + useExplainability +
                 ", useProcessSVG=" + useProcessSVG +
+                ", useMultiChannel=" + useMultiChannel +
                 '}';
     }
 
@@ -99,6 +107,7 @@ public class AddonsConfig {
         private boolean useCloudEvents;
         private boolean useExplainability;
         private boolean useProcessSVG;
+        private boolean useMultiChannel;
 
         private AddonsConfigBuilder() {
         }
@@ -138,8 +147,13 @@ public class AddonsConfig {
             return this;
         }
 
+        public AddonsConfigBuilder withMultiChannel(boolean useMultiChannel) {
+            this.useMultiChannel = useMultiChannel;
+            return this;
+        }
+
         public AddonsConfig build() {
-            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability, useProcessSVG);
+            return new AddonsConfig(usePersistence, useTracing, useMonitoring, usePrometheusMonitoring, useCloudEvents, useExplainability, useProcessSVG, useMultiChannel);
         }
     }
 }

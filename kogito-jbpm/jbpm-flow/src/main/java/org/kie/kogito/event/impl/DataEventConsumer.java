@@ -15,14 +15,16 @@
  */
 package org.kie.kogito.event.impl;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
 import java.util.function.Function;
 
 import org.kie.kogito.Application;
 import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
-import org.kie.kogito.process.ProcessInstance;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.EventConsumer;
-import org.kie.kogito.services.uow.UnitOfWorkExecutor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,21 +34,19 @@ public class DataEventConsumer<D, M extends Model> implements EventConsumer<M> {
 
     private Function<D, M> function;
 
-    public DataEventConsumer(Function<D, M> function) {
+    private ProcessService processService;
+
+    private ExecutorService executorService;
+
+    public DataEventConsumer(ProcessService processService, ExecutorService executorService, Function<D, M> function) {
+        this.processService = processService;
+        this.executorService = executorService;
         this.function = function;
     }
 
     @Override
-    public void consume(Application application, Process<M> process, Object eventData, String trigger) {
-        M model = function.apply((D) eventData);
-        UnitOfWorkExecutor.executeInUnitOfWork(application.unitOfWorkManager(), () -> {
-            logger.debug(
-                    "Received message without reference id, staring new process instance with trigger '{}'",
-                    trigger);
-            ProcessInstance<M> pi = process.createInstance(model);
-            pi.start(trigger, null);
-            return null;
-        });
+    public CompletionStage<Void> consume(Application application, Process<M> process, Object eventData, String trigger) {
+        return CompletableFuture.runAsync(() -> processService.createProcessInstance(process, function.apply((D) eventData), null, trigger, null), executorService);
     }
 
 }

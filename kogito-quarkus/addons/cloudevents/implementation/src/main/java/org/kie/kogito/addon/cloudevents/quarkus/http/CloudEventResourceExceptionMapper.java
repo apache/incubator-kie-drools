@@ -15,20 +15,17 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.http;
 
-import io.cloudevents.CloudEvent;
+import javax.enterprise.context.Dependent;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-public class CloudEventInvalidDataException extends Exception {
+@Provider
+@Dependent
+public class CloudEventResourceExceptionMapper implements ExceptionMapper<CloudEventResourceException> {
 
-    private static final String MESSAGE_FORMAT = "CloudEvent '%s' data is not a valid JSON.";
-    private final CloudEvent event;
-
-    public CloudEventInvalidDataException(final CloudEvent event, final Throwable cause) {
-        super(String.format(MESSAGE_FORMAT, event.getType()), cause);
-        this.event = event;
+    @Override
+    public Response toResponse(final CloudEventResourceException exception) {
+        return Responses.errorProcessingCloudEvent(exception);
     }
-
-    public CloudEvent getEvent() {
-        return event;
-    }
-
 }

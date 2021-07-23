@@ -15,12 +15,13 @@
  */
 package org.kie.kogito.services.event;
 
+import java.util.concurrent.CompletionStage;
+
 import org.kie.kogito.Application;
-import org.kie.kogito.Model;
 import org.kie.kogito.process.Process;
 
-public interface EventConsumer<T extends Model> {
+public interface EventConsumer<M> {
 
-    void consume(Application application, Process<T> process, Object payload, String trigger);
+    CompletionStage<?> consume(Application application, Process<M> process, Object payload, String trigger);
 
 }

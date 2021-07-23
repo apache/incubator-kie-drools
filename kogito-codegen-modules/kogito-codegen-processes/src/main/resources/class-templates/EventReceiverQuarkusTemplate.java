@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package $Package$;
 
-public class KogitoEventStreams {
-    public static final String INCOMING = "kogito_incoming_stream";
-    public static final String OUTGOING = "kogito_outgoing_stream";
-    public static final String PUBLISHER = "kogito_event_publisher";
-    public static final String WORKER_THREAD = "kogito-event-worker";
+import javax.inject.Named;
+import javax.enterprise.context.ApplicationScoped;
+
+import org.kie.kogito.addon.cloudevents.quarkus.AbstractQuarkusCloudEventReceiver;
+
+@ApplicationScoped
+@Named("$Trigger$Trigger")
+public class $Trigger$EventReceiver extends AbstractQuarkusCloudEventReceiver {
+
 }

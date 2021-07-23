@@ -29,6 +29,7 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecorator;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecoratorFactory;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.ChannelResolver;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
@@ -69,8 +70,8 @@ public class QuarkusMultiCloudEventEmitter implements EventEmitter, ChannelRegis
         messageDecorator = MessageDecoratorFactory.newInstance(configBean.useCloudEvents());
     }
 
-    private EmitterConfiguration emitterConf(String name) {
-        return new EmitterConfiguration(name, false, null, null);
+    private EmitterConfiguration emitterConf(String channel) {
+        return new EmitterConfiguration(channel, false, null, null);
     }
 
     @Override
@@ -88,6 +89,6 @@ public class QuarkusMultiCloudEventEmitter implements EventEmitter, ChannelRegis
 
     @Override
     public void initialize() {
-        channelResolver.getOuputChannels().stream().map(this::emitterConf).forEach(mediatorManager::addEmitter);
+        channelResolver.getOutputChannels().stream().map(this::emitterConf).forEach(mediatorManager::addEmitter);
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,13 @@
  */
 package org.kie.kogito.addon.cloudevents.quarkus.http;
 
-import javax.ws.rs.core.Response;
+import io.cloudevents.CloudEvent;
 
-import org.junit.jupiter.api.Test;
+public class CloudEventResourceException extends RuntimeException {
 
-import static org.assertj.core.api.Assertions.assertThat;
+    private static final long serialVersionUID = 1L;
 
-class ResponsesTest {
-
-    @Test
-    void errorProcessingCloudEvent() {
-        final Response response = Responses.errorProcessingCloudEvent(new IllegalArgumentException("Fail!"));
-        assertThat(response).isNotNull();
-        assertThat(response.getStatus()).isEqualTo(Response.Status.BAD_REQUEST.getStatusCode());
-        assertThat(response.getEntity()).isInstanceOf(ResponseError.class);
+    public CloudEventResourceException(CloudEvent event, Exception ex) {
+        super(String.format("CloudEvent '%s' data is not a valid JSON.", event.getType()), ex);
     }
 }

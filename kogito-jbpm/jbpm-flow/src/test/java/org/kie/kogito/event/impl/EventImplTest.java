@@ -18,7 +18,10 @@ package org.kie.kogito.event.impl;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +31,7 @@ import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.process.Process;
 import org.kie.kogito.process.ProcessInstance;
 import org.kie.kogito.process.ProcessInstances;
-import org.kie.kogito.process.Signal;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.kie.kogito.services.event.EventConsumer;
 import org.kie.kogito.services.event.EventConsumerFactory;
@@ -41,8 +44,8 @@ import org.mockito.Mockito;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.timeout;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -53,6 +56,7 @@ public class EventImplTest {
 
         private String dummyField;
 
+        @SuppressWarnings("unused")
         public DummyEvent() {
         }
 
@@ -60,6 +64,7 @@ public class EventImplTest {
             this.dummyField = dummyField;
         }
 
+        @SuppressWarnings("unused")
         public String getDummyField() {
             return dummyField;
         }
@@ -114,9 +119,13 @@ public class EventImplTest {
     }
 
     private Process<DummyModel> process;
+
+    private Application application;
+    private ProcessService processService;
+    private ExecutorService executor;
+
     private ProcessInstance<DummyModel> processInstance;
     private ProcessInstances<DummyModel> processInstances;
-    private Application application;
 
     @BeforeEach
     void setup() {
@@ -130,39 +139,53 @@ public class EventImplTest {
         processInstance = mock(ProcessInstance.class);
 
         when(process.instances()).thenReturn(processInstances);
-        when(processInstances.findById(anyString())).thenReturn(Optional.of(processInstance));
+        when(processInstances.findById(Mockito.anyString())).thenReturn(Optional.of(processInstance));
         when(process.createInstance(Mockito.any(DummyModel.class))).thenReturn(processInstance);
+        processService = mock(ProcessService.class);
+        executor = Executors.newSingleThreadExecutor();
+    }
 
+    @AfterEach
+    void close() {
+        executor.shutdown();
     }
 
     @Test
     void testSigCloudEvent() {
-        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, DummyModel::new, true);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe"), "1"), trigger);
-        ArgumentCaptor<Signal> signal = ArgumentCaptor.forClass(Signal.class);
-        verify(processInstance, times(1)).send(signal.capture());
-        assertEquals("1", signal.getValue().referenceId());
-        assertTrue(signal.getValue().payload() instanceof DummyEvent);
-        assertEquals("pepe", ((DummyEvent) signal.getValue().payload()).getDummyField());
+        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
+        verify(processService, times(1)).signalProcessInstance(Mockito.any(Process.class), processInstanceId.capture(), Mockito.any(DummyEvent.class), signal.capture());
+        assertEquals("Message-" + trigger, signal.getValue());
+        assertEquals("1", processInstanceId.getValue());
     }
 
     @Test
     void testCloudEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(DummyModel::new, true);
+                factory.get(processService, executor, DummyModel::new, true);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyCloudEvent(new DummyEvent("pepe")), trigger);
-        verify(processInstance, times(1)).start(trigger, "1");
+        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
+        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(),
+                processInstanceId.capture());
+        assertEquals(trigger, signal.getValue());
+        assertEquals("1", processInstanceId.getValue());
     }
 
     @Test
     void testDataEvent() {
         EventConsumer<DummyModel> consumer =
-                factory.get(DummyModel::new, false);
+                factory.get(processService, executor, DummyModel::new, false);
         final String trigger = "dummyTopic";
         consumer.consume(application, process, new DummyEvent("pepe"), trigger);
-        verify(processInstance, times(1)).start(trigger, null);
+        ArgumentCaptor<String> signal = ArgumentCaptor.forClass(String.class);
+        ArgumentCaptor<String> processInstanceId = ArgumentCaptor.forClass(String.class);
+        verify(processService, timeout(1500L).times(1)).createProcessInstance(Mockito.any(Process.class), Mockito.any(DummyModel.class), Mockito.isNull(), signal.capture(), Mockito.isNull());
+        assertEquals(trigger, signal.getValue());
     }
 
     @Test
@@ -182,7 +205,7 @@ public class EventImplTest {
 
     @Test
     void testEventPayloadException() {
-        EventConsumer<DummyModel> consumer = factory.get(DummyModel::new, true);
+        EventConsumer<DummyModel> consumer = factory.get(processService, executor, DummyModel::new, true);
         final String trigger = "dummyTopic";
         final String payload = "{ a = b }";
         assertThrows(ClassCastException.class, () -> consumer.consume(application, process, payload, trigger));

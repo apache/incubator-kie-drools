@@ -15,38 +15,72 @@
  */
 package $Package$;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+import java.util.concurrent.ExecutorService;
+
+import javax.inject.Inject;
+
+import io.quarkus.runtime.annotations.RegisterForReflection;
+
+import org.eclipse.microprofile.config.inject.ConfigProperty;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.event.EventConverter;
+import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.event.KogitoEventExecutor;
 import org.kie.kogito.event.impl.DefaultEventConsumerFactory;
 import org.kie.kogito.process.Process;
+import org.kie.kogito.process.ProcessService;
 import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
-import org.kie.kogito.event.EventReceiver;
+import org.kie.kogito.services.event.impl.JsonStringToObject;
+
+
+
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 @io.quarkus.runtime.Startup
+@RegisterForReflection
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
 
-    @javax.inject.Inject
+    @Inject
     Application application;
 
-    @javax.inject.Inject
-    @javax.inject.Named("$ProcessName$") Process<$Type$> process;
+    @Inject
+    EventConverter<String> eventConverter;
 
-    @javax.inject.Inject
+    @Inject
+    @javax.inject.Named("$ProcessName$")
+    Process<$Type$> process;
+
+    @Inject
     ConfigBean configBean;
 
-    @javax.inject.Inject
+    @Inject
     EventReceiver eventReceiver;
+
+    @Inject
+    @javax.inject.Named(KogitoEventExecutor.BEAN_NAME)
+    ExecutorService executorService;
+
+    @Inject
+    ProcessService processService;
 
     @javax.annotation.PostConstruct
     void init() {
         init(application,
-             process,
-             "$Trigger$",
-             new DefaultEventConsumerFactory(),
-             eventReceiver,
-             $DataType$.class,
-             $DataEventType$.class,
-             configBean.useCloudEvents());
+                process,
+                "$Trigger$",
+                new DefaultEventConsumerFactory(),
+                eventReceiver,
+                $DataType$.class,
+                $DataEventType$.class,
+                configBean.useCloudEvents(),
+                processService,
+                executorService,
+                eventConverter);
 
     }
 

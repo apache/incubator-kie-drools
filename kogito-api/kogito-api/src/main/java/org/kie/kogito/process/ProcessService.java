@@ -34,6 +34,11 @@ public interface ProcessService {
             T model,
             String startFromNodeId);
 
+    <T extends Model> ProcessInstance<T> createProcessInstance(Process<T> process, T model,
+            String startFromNodeId,
+            String trigger,
+            String kogitoReferenceId);
+
     <T extends MappableToModel<R>, R> List<R> getProcessInstanceOutput(Process<T> process);
 
     <T extends MappableToModel<R>, R> Optional<R> findById(Process<T> process, String id);

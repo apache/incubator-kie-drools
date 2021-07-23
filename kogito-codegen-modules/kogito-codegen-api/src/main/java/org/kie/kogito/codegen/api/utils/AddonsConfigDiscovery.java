@@ -32,6 +32,7 @@ public class AddonsConfigDiscovery {
     public static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
     public static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
     public static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter";
+    public static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventReceiver";
     public static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
     public static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
     public static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
@@ -55,6 +56,7 @@ public class AddonsConfigDiscovery {
         boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_CLOUD_EVENTS) || classAvailabilityResolver.test(SPRING_CLOUD_EVENTS);
         boolean useExplainability = classAvailabilityResolver.test(QUARKUS_EXPLAINABILITY) || classAvailabilityResolver.test(SPRING_EXPLAINABILITY);
         boolean useProcessSVG = classAvailabilityResolver.test(QUARKUS_PROCESS_SVG) || classAvailabilityResolver.test(SPRING_PROCESS_SVG);
+        boolean useMultiChannel = classAvailabilityResolver.test(QUARKUS_MULTI_CLOUD_EVENTS);
 
         AddonsConfig addonsConfig = AddonsConfig.builder()
                 .withPersistence(usePersistence)
@@ -64,6 +66,7 @@ public class AddonsConfigDiscovery {
                 .withCloudEvents(useCloudEvents)
                 .withExplainability(useExplainability)
                 .withProcessSVG(useProcessSVG)
+                .withMultiChannel(useMultiChannel)
                 .build();
 
         LOGGER.info("Performed addonsConfig discovery, found: {}", addonsConfig);

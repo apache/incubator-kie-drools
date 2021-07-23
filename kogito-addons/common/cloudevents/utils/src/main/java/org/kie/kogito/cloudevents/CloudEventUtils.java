@@ -176,7 +176,7 @@ public class CloudEventUtils {
     }
 
     // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic
-    static class Mapper {
+    public static class Mapper {
 
         private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
 

@@ -18,13 +18,12 @@ package org.kie.kogito.services.event.impl;
 import java.util.Optional;
 
 import org.kie.kogito.event.EventEmitter;
-import org.kie.kogito.event.OutputTriggerAware;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.services.event.AbstractProcessDataEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEvent<D>> implements OutputTriggerAware {
+public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEvent<D>> {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractMessageProducer.class);
 
@@ -56,11 +55,6 @@ public abstract class AbstractMessageProducer<D, T extends AbstractProcessDataEv
                     logger.error("An error was caught while process " + pi.getProcessId() + " produced message " + eventData, ex);
                     return null;
                 });
-    }
-
-    @Override
-    public String getOutputTrigger() {
-        return trigger;
     }
 
     protected abstract T dataEventTypeConstructor(D e, KogitoProcessInstance pi, String trigger);

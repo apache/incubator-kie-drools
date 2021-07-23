@@ -13,12 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package $Package$;
 
-/**
- * Indicates that a class is providing an output trigger.
- * This is used to resolve all classes providing output triggers for a particular process
- */
-public interface OutputTriggerAware {
-    String getOutputTrigger();
+import javax.enterprise.context.ApplicationScoped;
+import javax.annotation.PostConstruct;
+
+import org.kie.kogito.services.event.impl.DefaultChannelResolver;
+
+@ApplicationScoped
+public class ChannelResolver extends DefaultChannelResolver {
+
+    @PostConstruct
+    void populateChannels() {
+
+    }
 }

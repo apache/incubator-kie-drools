@@ -16,52 +16,35 @@
 
 package org.kie.kogito.integrationtests.springboot;
 
-import java.time.Duration;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import java.time.Duration;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.event.KogitoEventStreams;
+import org.kie.kogito.event.ChannelType;
+import org.kie.kogito.event.Topic;
 import org.kie.kogito.testcontainers.springboot.KafkaSpringBootTestResource;
-import org.reactivestreams.Publisher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import reactor.core.publisher.Flux;
+
+
 
 import static io.restassured.RestAssured.given;
 import static org.awaitility.Awaitility.await;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.assertj.core.api.Assertions.assertThat;
+
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 @ContextConfiguration(initializers =  { KafkaSpringBootTestResource.class })
 public class PingPongMessageTest extends BaseRestTest {
 
-    @Autowired
-    @Qualifier(KogitoEventStreams.PUBLISHER)
-    Publisher<String> publisher;
-
     @Test
     void testPingPongBetweenProcessInstances() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1);
-        Flux.from(publisher)
-                .map(x -> {
-                    try {
-                        return (Map<String, String>) new ObjectMapper().readValue(x, Map.class);
-                    } catch (JsonProcessingException e) {
-                        throw new Error(e);
-                    }
-                })
-                .filter(m -> "hello world".equals(m.get("data")) &&
-                        m.getOrDefault("source", "").startsWith("/process/pong_message/"))
-                .subscribe(x -> latch.countDown());
-
         String pId = given().body("{ \"message\": \"hello\" }")
                 .contentType(ContentType.JSON)
                 .when()
@@ -94,9 +77,6 @@ public class PingPongMessageTest extends BaseRestTest {
                 .get("/ping_message/{pId}", pId)
                 .then()
                 .statusCode(404);
-
-        latch.await(10, TimeUnit.SECONDS);
-
     }
 
 
@@ -132,5 +112,12 @@ public class PingPongMessageTest extends BaseRestTest {
                 .get("/pong_message/{pId}", pId)
                 .then()
                 .statusCode(404);
+    }
+    
+    @Test
+    void verifyTopicsInformation() {
+        final List<Topic> topics = Arrays.asList(given().get("/messaging/topics").as(Topic[].class));
+        assertThat(topics).isNotEmpty();
+        assertThat(topics.stream().anyMatch(t -> t.getType() == ChannelType.INCOMING && t.getName().equals("pingpong"))).isTrue();
     }
 }

@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus;
+package $Package$;
 
-import java.util.Collection;
+import org.kie.kogito.services.event.impl.DefaultChannelResolver;
 
-public interface ChannelResolver {
-
-    Collection<String> getOuputChannels();
-
-    Collection<String> getInputChannels();
+public class ChannelResolver extends DefaultChannelResolver {
+    
+    public ChannelResolver () {
+        populateChannels();
+    }
+    
+    private void populateChannels() {
+        
+    }
 }

@@ -13,12 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.event;
+package $Package$;
 
-/**
- * Indicates that a class is providing a input trigger.
- * This is used to resolve all classes providing input triggers for a particular process
- */
-public interface InputTriggerAware {
-    String getInputTrigger();
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.kie.kogito.services.event.impl.DefaultChannelResolver;
+import javax.annotation.PostConstruct;
+
+@Component
+public class ChannelResolver extends DefaultChannelResolver {
+
+    @PostConstruct
+    void populateChannels() {}
 }
