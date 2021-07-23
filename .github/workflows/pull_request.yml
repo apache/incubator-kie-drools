@@ -1,7 +1,12 @@
 name: Build Chain
 
-on: [pull_request]
-
+on:
+  pull_request:
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '*.md'
+      - '*.txt'
 jobs:
   build-chain:
     concurrency:
