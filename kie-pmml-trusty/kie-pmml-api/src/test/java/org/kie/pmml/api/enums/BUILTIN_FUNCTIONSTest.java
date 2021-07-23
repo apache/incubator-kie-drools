@@ -24,6 +24,18 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.supportedArithmeticFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctionsTest.unsupportedArithmeticFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctionsTest.supportedBooleanFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctionsTest.unsupportedBooleanFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DateFunctionsTest.supportedDateFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DateFunctionsTest.unsupportedDateFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DistributionFunctionsTest.supportedDistributionFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DistributionFunctionsTest.unsupportedDistributionFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.MathematicalFunctionsTest.supportedMathematicalFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.MathematicalFunctionsTest.unsupportedMathematicalFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.StringFunctionsTest.supportedStringFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.StringFunctionsTest.unsupportedStringFunctions;
 
 public class BUILTIN_FUNCTIONSTest {
 
@@ -32,78 +44,20 @@ public class BUILTIN_FUNCTIONSTest {
 
     static {
         supportedBuiltinFunctions = new ArrayList<>();
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.AVG);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LOWERCASE);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MAX);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MEDIAN);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MIN);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MINUS);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MULTI);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DIVISION);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.PLUS);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.PRODUCT);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SUM);
-        supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.UPPERCASE);
+        supportedArithmeticFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        supportedBooleanFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        supportedDateFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        supportedDistributionFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        supportedMathematicalFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        supportedStringFunctions.forEach(fun -> supportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
 
         unsupportedBuiltinFunctions = new ArrayList<>();
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LOG10);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SQRT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ABS);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.EXP);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.POW);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.THRESHOLD);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.FLOOR);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.CEIL);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ROUND);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MODULO);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_MISSING);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_NOT_MISSING);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_VALID);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_NOT_VALID);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.EQUAL);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.NOT_EQUAL);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LESS_THAN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LESS_OR_EQUAL);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.GREATER_THAN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.GREATER_OR_EQUAL);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.AND);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.OR);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.NOT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_IN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IS_NOT_IN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.IF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.STRING_LENGTH);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SUBSTRING);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.TRIM_BLANKS);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.CONCAT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.REPLACE);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.MATCHES);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.FORMAT_NUMBER);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.FORMAT_DATE_TIME);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DATE_DAYS_SINCE_YEAR);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DATE_SECONDS_SINCE_YEAR);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.DATE_SECONDS_SINCE_MIDNIGHT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.NORMAL_CDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.NORMAL_PDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.STD_NORMAL_CDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.STD_NORMAL_PDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ERF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.NORMAL_IDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.STD_NORMAL_IDF);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.EXPM1);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.HYPOT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.LN1P);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.RINT);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SIN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ASIN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.SINH);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.COS);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ACOS);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.COSH);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.TAN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.ATAN);
-        unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.TANH);
+        unsupportedArithmeticFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        unsupportedBooleanFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        unsupportedDateFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        unsupportedDistributionFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        unsupportedMathematicalFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
+        unsupportedStringFunctions.forEach(fun -> unsupportedBuiltinFunctions.add(BUILTIN_FUNCTIONS.byName(fun.getName())));
     }
 
     @Test

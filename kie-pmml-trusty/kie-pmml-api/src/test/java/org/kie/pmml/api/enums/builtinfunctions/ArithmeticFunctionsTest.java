@@ -28,8 +28,8 @@ import static org.junit.Assert.fail;
 
 public class ArithmeticFunctionsTest {
 
-    private final static List<ArithmeticFunctions> supportedArithmeticFunctions;
-    private final static List<ArithmeticFunctions> unsupportedArithmeticFunctions;
+    public final static List<ArithmeticFunctions> supportedArithmeticFunctions;
+    public final static List<ArithmeticFunctions> unsupportedArithmeticFunctions;
 
     static {
         supportedArithmeticFunctions = new ArrayList<>();
@@ -43,19 +43,19 @@ public class ArithmeticFunctionsTest {
         supportedArithmeticFunctions.add(ArithmeticFunctions.PLUS);
         supportedArithmeticFunctions.add(ArithmeticFunctions.PRODUCT);
         supportedArithmeticFunctions.add(ArithmeticFunctions.SUM);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.LOG10);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.LN);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.SQRT);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.ABS);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.EXP);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.POW);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.THRESHOLD);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.FLOOR);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.CEIL);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.ROUND);
+        supportedArithmeticFunctions.add(ArithmeticFunctions.MODULO);
 
         unsupportedArithmeticFunctions = new ArrayList<>();
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.LOG10);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.LN);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.SQRT);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.ABS);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.EXP);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.POW);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.THRESHOLD);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.FLOOR);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.CEIL);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.ROUND);
-        unsupportedArithmeticFunctions.add(ArithmeticFunctions.MODULO);
     }
 
     @Test
@@ -256,6 +256,164 @@ public class ArithmeticFunctionsTest {
     public void getSumValueWrongTypeInput() {
         final Object[] input = {"A", 34};
         ArithmeticFunctions.SUM.getValue(input);
+    }
+
+    @Test
+    public void getLog10ValueCorrectInput() {
+        Object[] input = {35};
+        Object retrieved = ArithmeticFunctions.LOG10.getValue(input);
+        assertEquals(1.5440680443503, (double)retrieved, 0.00000001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLog10ValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.LOG10.getValue(input);
+    }
+
+    @Test
+    public void getLnValueCorrectInput() {
+        Object[] input = {35};
+        Object retrieved = ArithmeticFunctions.LN.getValue(input);
+        assertEquals(3.5553480614894, (double)retrieved, 0.00000001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getLnValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.LN.getValue(input);
+    }
+
+    @Test
+    public void getSqrtValueCorrectInput() {
+        Object[] input = {81};
+        Object retrieved = ArithmeticFunctions.SQRT.getValue(input);
+        assertEquals(9, (double)retrieved, 0.00000001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getSqrtValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.SQRT.getValue(input);
+    }
+
+    @Test
+    public void getAbsValueCorrectInput() {
+        Object[] input = {-3.5553480614894};
+        Object retrieved = ArithmeticFunctions.ABS.getValue(input);
+        assertEquals(3.5553480614894, (double)retrieved, 0.00000001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getAbsValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.ABS.getValue(input);
+    }
+
+    @Test
+    public void getExpValueCorrectInput() {
+        Object[] input = {-3.5553480614894};
+        Object retrieved = ArithmeticFunctions.EXP.getValue(input);
+        assertEquals(0.0285714285714, (double)retrieved, 0.00000001);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getExpValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.EXP.getValue(input);
+    }
+
+    @Test
+    public void getPowValueCorrectInput() {
+        Object[] input = {3, 4};
+        Object retrieved = ArithmeticFunctions.POW.getValue(input);
+        assertEquals(81.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getPowValueWrongTypeInput() {
+        final Object[] input = {"A", 32};
+        ArithmeticFunctions.POW.getValue(input);
+    }
+
+    @Test
+    public void getThresholdValueCorrectInput() {
+        Object[] input1 = {5, 4};
+        Object retrieved = ArithmeticFunctions.THRESHOLD.getValue(input1);
+        assertEquals(1.0, retrieved);
+        Object[] input2 = {5, 5};
+        retrieved = ArithmeticFunctions.THRESHOLD.getValue(input2);
+        assertEquals(0.0, retrieved);
+        Object[] input3 = {4, 5};
+        retrieved = ArithmeticFunctions.THRESHOLD.getValue(input3);
+        assertEquals(0.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getThresholdValueWrongTypeInput() {
+        final Object[] input = {"A", 32};
+        ArithmeticFunctions.THRESHOLD.getValue(input);
+    }
+
+    @Test
+    public void getFloorValueCorrectInput() {
+        Object[] input1 = {-3.5553480614894};
+        Object retrieved = ArithmeticFunctions.FLOOR.getValue(input1);
+        assertEquals(-4.0, retrieved);
+        Object[] input2 = {3.5553480614894};
+        retrieved = ArithmeticFunctions.FLOOR.getValue(input2);
+        assertEquals(3.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getFloorValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.FLOOR.getValue(input);
+    }
+
+    @Test
+    public void getCeilValueCorrectInput() {
+        Object[] input1 = {-3.5553480614894};
+        Object retrieved = ArithmeticFunctions.CEIL.getValue(input1);
+        assertEquals(-3.0, retrieved);
+        Object[] input2 = {3.5553480614894};
+        retrieved = ArithmeticFunctions.CEIL.getValue(input2);
+        assertEquals(4.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getCeilValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.CEIL.getValue(input);
+    }
+
+    @Test
+    public void getRoundValueCorrectInput() {
+        Object[] input1 = {3.3553480614894};
+        Object retrieved = ArithmeticFunctions.ROUND.getValue(input1);
+        assertEquals(3.0, retrieved);
+        Object[] input2 = {3.5553480614894};
+        retrieved = ArithmeticFunctions.ROUND.getValue(input2);
+        assertEquals(4.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getRoundValueWrongTypeInput() {
+        final Object[] input = {"A"};
+        ArithmeticFunctions.ROUND.getValue(input);
+    }
+
+    @Test
+    public void getModuloValueCorrectInput() {
+        Object[] input = {35, 8};
+        Object retrieved = ArithmeticFunctions.MODULO.getValue(input);
+        assertEquals(3.0, retrieved);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void getModuloValueWrongTypeInput() {
+        final Object[] input = {"A", 35};
+        ArithmeticFunctions.MODULO.getValue(input);
     }
 
 }

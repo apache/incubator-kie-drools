@@ -27,8 +27,8 @@ import static org.junit.Assert.fail;
 
 public class MathematicalFunctionsTest {
 
-    private final static List<MathematicalFunctions> supportedMathematicalFunctions;
-    private final static List<MathematicalFunctions> unsupportedMathematicalFunctions;
+    public final static List<MathematicalFunctions> supportedMathematicalFunctions;
+    public final static List<MathematicalFunctions> unsupportedMathematicalFunctions;
 
     static {
         supportedMathematicalFunctions = new ArrayList<>();

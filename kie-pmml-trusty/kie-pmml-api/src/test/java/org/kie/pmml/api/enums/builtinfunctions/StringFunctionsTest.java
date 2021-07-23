@@ -28,8 +28,8 @@ import static org.junit.Assert.fail;
 
 public class StringFunctionsTest {
 
-    private final static List<StringFunctions> supportedStringFunctions;
-    private final static List<StringFunctions> unsupportedStringFunctions;
+    public final static List<StringFunctions> supportedStringFunctions;
+    public final static List<StringFunctions> unsupportedStringFunctions;
 
     static {
         supportedStringFunctions = new ArrayList<>();

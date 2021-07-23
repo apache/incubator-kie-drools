@@ -51,7 +51,6 @@ public enum ArithmeticFunctions {
     ROUND("round"),
     MODULO("modulo");
 
-
     private final String name;
 
     ArithmeticFunctions(String name) {
@@ -96,15 +95,37 @@ public enum ArithmeticFunctions {
                 return product(inputData);
             case SUM:
                 return sum(inputData);
+            case LOG10:
+                return log10(inputData);
+            case LN:
+                return ln(inputData);
+            case SQRT:
+                return sqrt(inputData);
+            case ABS:
+                return abs(inputData);
+            case EXP:
+                return exp(inputData);
+            case POW:
+                return pow(inputData);
+            case THRESHOLD:
+                return threshold(inputData);
+            case FLOOR:
+                return floor(inputData);
+            case CEIL:
+                return ceil(inputData);
+            case ROUND:
+                return round(inputData);
+            case MODULO:
+                return modulo(inputData);
             default:
-                throw new KiePMMLException("Unmanaged BUILTIN_FUNCTIONS " + this);
+                throw new KiePMMLException("Unmanaged ArithmeticFunctions " + this);
         }
     }
 
     private double avg(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .average()
                 .orElseThrow(() -> new IllegalArgumentException("Failed to find average value"));
     }
@@ -119,7 +140,7 @@ public enum ArithmeticFunctions {
     private double max(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .max()
                 .orElseThrow(() -> new KieEnumException("Failed to find maximum value"));
     }
@@ -127,10 +148,10 @@ public enum ArithmeticFunctions {
     private double median(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         DoubleStream sortedValues = Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .sorted();
         OptionalDouble toReturn = inputData.length % 2 == 0 ?
-                sortedValues.skip(inputData.length / 2 - (long)1).limit(2).average() :
+                sortedValues.skip(inputData.length / 2 - (long) 1).limit(2).average() :
                 sortedValues.skip(inputData.length / 2).findFirst();
         return toReturn.orElseThrow(() -> new KieEnumException("Failed to find median value"));
     }
@@ -138,7 +159,7 @@ public enum ArithmeticFunctions {
     private double min(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .min()
                 .orElseThrow(() -> new KieEnumException("Failed to find minimum value"));
     }
@@ -167,15 +188,75 @@ public enum ArithmeticFunctions {
     private double product(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .reduce(1, (a, b) -> a * b);
     }
 
     private double sum(final Object[] inputData) {
         checkNumbers(inputData, inputData.length);
         return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
+                .mapToDouble(num -> ((Number) num).doubleValue())
                 .sum();
     }
 
+    private double log10(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.log10(((Number) inputData[0]).doubleValue());
+    }
+
+    private double ln(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.log(((Number) inputData[0]).doubleValue());
+    }
+
+    private double sqrt(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.sqrt(((Number) inputData[0]).doubleValue());
+    }
+
+    private double abs(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.abs(((Number) inputData[0]).doubleValue());
+    }
+
+    private double exp(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.exp(((Number) inputData[0]).doubleValue());
+    }
+
+    private double pow(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return Math.pow(a, b);
+    }
+
+    private double threshold(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a > b ? 1 : 0;
+    }
+
+    private double floor(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.floor(((Number) inputData[0]).doubleValue());
+    }
+
+    private double ceil(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.ceil(((Number) inputData[0]).doubleValue());
+    }
+
+    private double round(final Object[] inputData) {
+        checkNumbers(inputData, 1);
+        return Math.round(((Number) inputData[0]).doubleValue());
+    }
+
+    private double modulo(final Object[] inputData) {
+        checkNumbers(inputData, 2);
+        double a = ((Number) inputData[0]).doubleValue();
+        double b = ((Number) inputData[1]).doubleValue();
+        return a % b;
+    }
 }

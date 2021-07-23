@@ -27,8 +27,8 @@ import static org.junit.Assert.fail;
 
 public class DistributionFunctionsTest {
 
-    private final static List<DistributionFunctions> supportedDistributionFunctions;
-    private final static List<DistributionFunctions> unsupportedDistributionFunctions;
+    public final static List<DistributionFunctions> supportedDistributionFunctions;
+    public final static List<DistributionFunctions> unsupportedDistributionFunctions;
 
     static {
         supportedDistributionFunctions = new ArrayList<>();

@@ -27,8 +27,8 @@ import static org.junit.Assert.fail;
 
 public class DateFunctionsTest {
 
-    private final static List<DateFunctions> supportedDateFunctions;
-    private final static List<DateFunctions> unsupportedDateFunctions;
+    public final static List<DateFunctions> supportedDateFunctions;
+    public final static List<DateFunctions> unsupportedDateFunctions;
 
     static {
         supportedDateFunctions = new ArrayList<>();

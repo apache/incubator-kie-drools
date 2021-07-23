@@ -27,8 +27,8 @@ import static org.junit.Assert.fail;
 
 public class BooleanFunctionsTest {
 
-    private final static List<BooleanFunctions> supportedBooleanFunctions;
-    private final static List<BooleanFunctions> unsupportedBooleanFunctions;
+    public final static List<BooleanFunctions> supportedBooleanFunctions;
+    public final static List<BooleanFunctions> unsupportedBooleanFunctions;
 
     static {
         supportedBooleanFunctions = new ArrayList<>();
