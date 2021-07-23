@@ -61,7 +61,7 @@ public class CodegenMessageStartEventTest {
                 .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventResource.java"))
                 .collect(Collectors.toList());
 
-        if (context.hasREST()) {
+        if (context.hasRESTForGenerator(codeGenerator)) {
             assertThat(resources.size()).isEqualTo(1);
 
             CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));
@@ -92,7 +92,7 @@ public class CodegenMessageStartEventTest {
                 .filter(generatedFile -> generatedFile.relativePath().endsWith("org/kie/kogito/test/MessageStartEventResource.java"))
                 .collect(Collectors.toList());
 
-        if (context.hasREST()) {
+        if (context.hasRESTForGenerator(codeGenerator)) {
             assertThat(resources.size()).isEqualTo(1);
 
             CompilationUnit parsedResource = StaticJavaParser.parse(new String(resources.get(0).contents()));

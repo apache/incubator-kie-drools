@@ -55,11 +55,11 @@ class SampleCodegenTest {
                 CollectedResourcesTestUtils.toCollectedResource("/sampleFile1.txt"),
                 CollectedResourcesTestUtils.toCollectedResource("/sampleFile2.txt"));
 
-        SampleCodegen codegen = SampleCodegen.ofCollectedResources(context, resources);
+        SampleCodegen codeGenerator = SampleCodegen.ofCollectedResources(context, resources);
 
-        Collection<GeneratedFile> generatedFiles = codegen.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
 
-        if (contextBuilder.build().hasREST()) {
+        if (contextBuilder.build().hasRESTForGenerator(codeGenerator)) {
             assertThat(generatedFiles).hasSize(1);
             List<GeneratedFile> generatedRests = generatedFiles.stream().filter(gf -> gf.type() == REST_TYPE).collect(Collectors.toList());
             assertThat(generatedRests).hasSize(1);

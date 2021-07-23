@@ -405,7 +405,7 @@ public class ProcessCodegen extends AbstractGenerator {
             }
         }
 
-        if (context().hasREST()) {
+        if (context().hasRESTForGenerator(this)) {
             for (ProcessResourceGenerator resourceGenerator : rgs) {
                 storeFile(REST_TYPE, resourceGenerator.generatedFilePath(),
                         resourceGenerator.generate());
@@ -445,7 +445,7 @@ public class ProcessCodegen extends AbstractGenerator {
         }
 
         // Generic CloudEvents HTTP Endpoint will be handled by https://issues.redhat.com/browse/KOGITO-2956
-        if (context().getAddonsConfig().useCloudEvents() && context().hasREST() && QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context().name())) {
+        if (context().getAddonsConfig().useCloudEvents() && context().hasRESTGloballyAvailable() && QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context().name())) {
             final CloudEventsResourceGenerator ceGenerator =
                     new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());
@@ -455,7 +455,7 @@ public class ProcessCodegen extends AbstractGenerator {
             svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
         }
 
-        if (context().hasREST()) {
+        if (context().hasRESTForGenerator(this)) {
             final CloudEventMetaFactoryGenerator topicsGenerator =
                     new CloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());

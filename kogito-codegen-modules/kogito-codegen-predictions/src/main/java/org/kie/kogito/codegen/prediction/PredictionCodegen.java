@@ -171,7 +171,7 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     private void generateModelRESTFiles(List<GeneratedFile> files, KiePMMLModel model) {
-        if (!context().hasREST() || (model instanceof KiePMMLFactoryModel)) {
+        if (!context().hasRESTForGenerator(this) || (model instanceof KiePMMLFactoryModel)) {
             return;
         }
 

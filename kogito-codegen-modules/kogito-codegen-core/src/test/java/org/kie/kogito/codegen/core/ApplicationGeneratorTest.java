@@ -113,21 +113,48 @@ public class ApplicationGeneratorTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
-    public void filterRestIfDisabled(KogitoBuildContext.Builder contextBuilder) {
+    public void disableRestGenerationOfSpecificGenerator(KogitoBuildContext.Builder contextBuilder) {
         final KogitoBuildContext context = contextBuilder.build();
         final ApplicationGenerator appGenerator = new ApplicationGenerator(context);
-        final MockGenerator restGenerator = new MockGenerator(context, true, true);
+        final MockGenerator restGenerator = new MockGenerator(context, true);
 
         assertThat(appGenerator.registerGeneratorIfEnabled(restGenerator))
                 .isNotEmpty();
         assertThat(appGenerator.getGenerators()).hasSize(1);
 
-        if (context.hasREST()) {
+        if (context.hasRESTForGenerator(restGenerator)) {
             // disable REST
-            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            context.setApplicationProperty(KogitoBuildContext.generateRESTConfigurationKeyForResource(restGenerator.name()), "false");
             assertThat(appGenerator.generateComponents()).isEmpty();
 
             // enable REST
+            context.setApplicationProperty(KogitoBuildContext.generateRESTConfigurationKeyForResource(restGenerator.name()), "true");
+            assertThat(appGenerator.generateComponents())
+                    .isNotEmpty()
+                    .hasSize(1)
+                    .matches(files -> files.stream().anyMatch(gf -> REST_TYPE.equals(gf.type())));
+        } else {
+            assertThat(appGenerator.generateComponents()).isEmpty();
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void disableGlobalRestGeneration(KogitoBuildContext.Builder contextBuilder) {
+        final KogitoBuildContext context = contextBuilder.build();
+        final ApplicationGenerator appGenerator = new ApplicationGenerator(context);
+        final MockGenerator restGenerator = new MockGenerator(context, true);
+
+        assertThat(appGenerator.registerGeneratorIfEnabled(restGenerator))
+                .isNotEmpty();
+        assertThat(appGenerator.getGenerators()).hasSize(1);
+
+        if (context.hasRESTForGenerator(restGenerator)) {
+            // globally disable REST
+            context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "false");
+            assertThat(appGenerator.generateComponents()).isEmpty();
+
+            // globally enable REST
             context.setApplicationProperty(KogitoBuildContext.KOGITO_GENERATE_REST, "true");
             assertThat(appGenerator.generateComponents())
                     .isNotEmpty()
@@ -187,16 +214,12 @@ public class ApplicationGeneratorTest {
     static class MockGenerator extends AbstractGenerator {
 
         private final boolean enabled;
-        private final boolean produceREST;
+        private final KogitoBuildContext context;
 
         protected MockGenerator(KogitoBuildContext context, boolean enabled) {
-            this(context, enabled, false);
-        }
-
-        protected MockGenerator(KogitoBuildContext context, boolean enabled, boolean produceREST) {
             super(context, "mockGenerator");
+            this.context = context;
             this.enabled = enabled;
-            this.produceREST = produceREST;
         }
 
         @Override
@@ -206,7 +229,7 @@ public class ApplicationGeneratorTest {
 
         @Override
         public Collection<GeneratedFile> generate() {
-            if (produceREST) {
+            if (context.hasRESTForGenerator(this)) {
                 return Collections.singleton(new GeneratedFile(REST_TYPE, "my/path", ""));
             } else {
                 return Collections.emptyList();

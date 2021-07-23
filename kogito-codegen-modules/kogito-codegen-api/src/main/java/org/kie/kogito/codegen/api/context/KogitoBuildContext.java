@@ -24,6 +24,7 @@ import java.util.function.Predicate;
 
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.AddonsConfig;
+import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.di.DependencyInjectionAnnotator;
 import org.kie.kogito.codegen.api.rest.RestAnnotator;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
@@ -36,6 +37,10 @@ public interface KogitoBuildContext {
     String DEFAULT_PACKAGE_NAME = "org.kie.kogito.app";
     String KOGITO_GENERATE_REST = "kogito.generate.rest";
     String KOGITO_GENERATE_DI = "kogito.generate.di";
+
+    static String generateRESTConfigurationKeyForResource(String generatorType) {
+        return String.format("%s.%s", KOGITO_GENERATE_REST, generatorType);
+    }
 
     boolean hasClassAvailable(String fqcn);
 
@@ -70,11 +75,23 @@ public interface KogitoBuildContext {
     void setRestAnnotator(RestAnnotator restAnnotator);
 
     /**
-     * Method to check if REST is available and enabled.
+     * Method to check if REST available and enabled for a specific resource
+     * This is platform/classpath specific (e.g. Quarkus)
+     * It can also be explicitly disabled i.e. for "decisions"
+     *
+     * kogito.generate.rest.decisions = false
+     */
+    default boolean hasRESTForGenerator(Generator generator) {
+        return hasRESTGloballyAvailable() &&
+                "true".equalsIgnoreCase(getApplicationProperty(generateRESTConfigurationKeyForResource(generator.name())).orElse("true"));
+    }
+
+    /**
+     * Method to check if global REST generation is available and enabled.
      * This is platform/classpath specific (e.g. Quarkus) but it can also be explicitly disabled using
      * kogito.generate.rest property
      */
-    default boolean hasREST() {
+    default boolean hasRESTGloballyAvailable() {
         return getRestAnnotator() != null &&
                 "true".equalsIgnoreCase(getApplicationProperty(KOGITO_GENERATE_REST).orElse("true"));
     }

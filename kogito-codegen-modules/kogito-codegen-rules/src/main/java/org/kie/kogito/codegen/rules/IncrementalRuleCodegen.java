@@ -354,7 +354,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             return Optional.empty();
         }
 
-        if (context().hasREST()) {
+        if (context().hasRESTForGenerator(this)) {
             if (context().getAddonsConfig().usePrometheusMonitoring()) {
                 String dashboardName = GrafanaConfigurationWriter.buildDashboardName(context().getGAV(), query.getEndpointName());
                 String dashboard = GrafanaConfigurationWriter.generateOperationalDashboard(
