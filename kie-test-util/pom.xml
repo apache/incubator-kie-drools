@@ -32,13 +32,13 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.transaction</groupId>
-      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+      <groupId>jakarta.transaction</groupId>
+      <artifactId>jakarta.transaction-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.jboss.narayana.jta</groupId>

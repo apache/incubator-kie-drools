@@ -75,8 +75,8 @@
     </dependency>
 
     <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
     </dependency>
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
@@ -87,8 +87,8 @@
       <artifactId>jaxb-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.activation</groupId>
-      <artifactId>activation</artifactId>
+      <groupId>jakarta.activation</groupId>
+      <artifactId>jakarta.activation-api</artifactId>
     </dependency>
 
     <!-- xstream -->
@@ -184,9 +184,9 @@
         <configuration>
           <artifactItems>
             <artifactItem>
-              <groupId>com.sun.activation</groupId>
-              <artifactId>javax.activation</artifactId>
-              <version>1.2.0</version>
+              <groupId>jakarta.activation</groupId>
+              <artifactId>jakarta.activation-api</artifactId>
+              <version>1.2.2</version>
               <type>jar</type>
               <overWrite>false</overWrite>
               <outputDirectory>${project.basedir}/target/lib</outputDirectory>
@@ -208,9 +208,9 @@
               <outputDirectory>${project.basedir}/target/lib</outputDirectory>
             </artifactItem>
             <artifactItem>
-              <groupId>javax.xml.bind</groupId>
-              <artifactId>jaxb-api</artifactId>
-              <version>2.3.1</version>
+              <groupId>jakarta.xml.bind</groupId>
+              <artifactId>jakarta.xml.bind-api</artifactId>
+              <version>2.3.3</version>
               <type>jar</type>
               <overWrite>false</overWrite>
               <outputDirectory>${project.basedir}/target/lib</outputDirectory>

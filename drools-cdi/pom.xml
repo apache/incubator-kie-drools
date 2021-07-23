@@ -98,32 +98,15 @@
     </dependency>
 
     <dependency>
-      <groupId>javax.enterprise</groupId>
-      <artifactId>cdi-api</artifactId>
+      <groupId>jakarta.enterprise</groupId>
+      <artifactId>jakarta.enterprise.cdi-api</artifactId>
       <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
-      <exclusions>
-        <exclusion>
-          <groupId>javax.el</groupId>
-          <artifactId>javax.el-api</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>javax.interceptor</groupId>
-          <artifactId>javax.interceptor-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency><!-- It works in any CDI container, but the weld CDI container is used for testing -->
       <groupId>org.jboss.weld.se</groupId>
       <artifactId>weld-se-core</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <!-- collides with javax.inject:javax.inject:jar:1:compile -->
-        <exclusion>
-          <groupId>jakarta.enterprise</groupId>
-          <artifactId>jakarta.enterprise.cdi-api</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
     <dependency>
