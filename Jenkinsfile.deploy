@@ -28,6 +28,8 @@ pipeline {
     environment {
         // Static env is defined into .jenkins/dsl/jobs.groovy file
 
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
         // Keep here for visitibility
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
@@ -200,6 +202,9 @@ pipeline {
                 archiveArtifacts(artifacts: 'deployment.properties')
             }
         }
+        unsuccessful {
+            sendNotification()
+        }
         cleanup {
             script {
                 util.cleanNode('docker')
@@ -229,6 +234,16 @@ void commitAndCreatePR() {
     githubscm.commitChanges(commitMsg, { githubscm.findAndStageNotIgnoredFiles('pom.xml') })
     githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
     deployProperties["${getRepoName()}.pr.link"] = githubscm.createPR(commitMsg, prBody, getBuildBranch(), getBotAuthorCredsID())
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        emailext body: "**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+             subject: "[${getBuildBranch()}] Kogito Runtimes",
+             to: env.KOGITO_CI_EMAIL_TO
+    } else {
+        echo 'No notification sent per configuration'
+    }
 }
 
 boolean isSpecificArtifactsUpload() {

@@ -28,6 +28,8 @@ pipeline {
     environment {
         // Static env is defined into .jenkins/dsl/jobs.groovy file
 
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
     }
 
@@ -93,11 +95,24 @@ pipeline {
         }
     }
     post {
+        unsuccessful {
+            sendNotification()
+        }
         cleanup {
             script {
                 util.cleanNode('docker')
             }
         }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        emailext body: "**Promote job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+             subject: "[${getBuildBranch()}] Kogito Runtimes",
+             to: env.KOGITO_CI_EMAIL_TO
+    } else {
+        echo 'No notification sent per configuration'
     }
 }
 
