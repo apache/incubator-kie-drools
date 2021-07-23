@@ -26,7 +26,6 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.Lock;
 
@@ -609,7 +608,7 @@ public class ClassAwareObjectStore implements Externalizable, ObjectStore {
         public FactHandleMap() { }
 
         public FactHandleMap(boolean identity) {
-            facts = new ConcurrentHashMap<>(identity ? new IdentityHashMap<>() : new HashMap<>());
+            facts = identity ? new IdentityHashMap<>() : new HashMap<>();
         }
 
         @Override
