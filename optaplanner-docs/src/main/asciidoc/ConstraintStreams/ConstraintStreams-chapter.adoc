@@ -334,13 +334,19 @@ The following functions are required for filtering constraint streams of differe
 === Joining
 
 Joining is a way to increase <<constraintStreamsCardinality,stream cardinality>> and it is similar to the inner join
-operation in SQL. As the following figure illustrates, a join creates a cartesian product of the streams being joined:
+operation in SQL. As the following figure illustrates,
+a `join()` creates a cartesian product of the streams being joined:
 
 image::ConstraintStreams/constraintStreamJoinWithoutJoiners.png[align="center"]
 
-Doing this is inefficient because the resulting stream might contain constraint matches that are of no interest to your
-constraint.
-Use `Joiner` to restrict your joins only to the matches you are actually interested in, as shown in this example:
+Doing this is inefficient if the resulting stream contains a lot of constraint matches
+that need to be filtered out immediately.
+
+Instead, use a `Joiner` condition to restrict the joined matches only to those that are interesting:
+
+image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
+
+For example:
 
 [source,java,options="nowrap"]
 ----
@@ -358,18 +364,17 @@ Use `Joiner` to restrict your joins only to the matches you are actually interes
     }
 ----
 
-The following figure illustrates the behavior:
+Through the `Joiners` class, the following `Joiner` conditions are supported to join two streams,
+pairing a match from each side:
 
-image::ConstraintStreams/constraintStreamJoinWithJoiners.png[align="center"]
+- `equal()`: the paired matches have a property that are `equals()`. This relies on `hashCode()`.
+- `greaterThan()`, `greaterThanOrEqual()`, `lessThan()` and `lessThanOrEqual()`:
+the paired matches have a `Comparable` property following the prescribed ordering.
+- `overlapping()`: the paired matches have two properties (a _start_ and an _end_ property) of the same `Comparable` type
+that both represent an interval which overlap.
 
-The following `Joiner` types are supported:
-
-- `equal` for joining constraint matches where they `equals()` one another.
-- `greaterThan`, `greaterThanOrEqual`, `lessThan` and `lessThanOrEqual` for joining `Comparable` constraint matches per
-the prescribed ordering.
-
-For a full list of all supported `Joiner` implementations and their various overloads, refer to the
-`org.optaplanner.core.api.score.stream.Joiners` class.
+All `Joiners` methods have an overloaded method to use the same property of the same class on both stream sides.
+For example, calling `equal(Shift::getEmployee)` is the same as calling `equal(Shift::getEmployee, Shift::getEmployee)`.
 
 [NOTE]
 ====
