@@ -16,12 +16,22 @@
 package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.OptionalDouble;
-import java.util.stream.DoubleStream;
 
+import org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctions;
+import org.kie.pmml.api.enums.builtinfunctions.BooleanFunctions;
+import org.kie.pmml.api.enums.builtinfunctions.DateFunctions;
+import org.kie.pmml.api.enums.builtinfunctions.DistributionFunctions;
+import org.kie.pmml.api.enums.builtinfunctions.MathematicalFunctions;
+import org.kie.pmml.api.enums.builtinfunctions.StringFunctions;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+
+import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctions.isArithmeticFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctions.isBooleanFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DateFunctions.isDateFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.DistributionFunctions.isDistributionFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.MathematicalFunctions.isMathematicalFunctions;
+import static org.kie.pmml.api.enums.builtinfunctions.StringFunctions.isStringFunctions;
 
 /**
  * @see <a http://dmg.org/pmml/v4-4-1/BuiltinFunctions.html>Built-in functions</a>
@@ -122,147 +132,47 @@ public enum BUILTIN_FUNCTIONS {
     }
 
     public Object getValue(final Object[] inputData) {
-        switch (this) {
-            case AVG:
-                return avg(inputData);
-            case LOWERCASE:
-                return lowercase(inputData);
-            case MAX:
-                return max(inputData);
-            case MEDIAN:
-                return median(inputData);
-            case MIN:
-                return min(inputData);
-            case MINUS:
-                return minus(inputData);
-            case MULTI:
-                return multi(inputData);
-            case DIVISION:
-                return division(inputData);
-            case PLUS:
-                return plus(inputData);
-            case PRODUCT:
-                return product(inputData);
-            case SUM:
-                return sum(inputData);
-            case UPPERCASE:
-                return uppercase(inputData);
-            default:
-                throw new KiePMMLException("Unmanaged BUILTIN_FUNCTIONS " + this);
+        if (isArithmeticFunctions(this.name)) {
+            return ArithmeticFunctions.byName(name).getValue(inputData);
+        } else if (isBooleanFunctions(this.name)) {
+            return BooleanFunctions.byName(name).getValue(inputData);
+        } else if (isDateFunctions(this.name)) {
+            return DateFunctions.byName(name).getValue(inputData);
+        } else if (isDistributionFunctions(this.name)) {
+            return DistributionFunctions.byName(name).getValue(inputData);
+        } else if (isMathematicalFunctions(this.name)) {
+            return MathematicalFunctions.byName(name).getValue(inputData);
+        } else if (isStringFunctions(this.name)) {
+            return StringFunctions.byName(name).getValue(inputData);
+        } else {
+            throw new KiePMMLException("Unmanaged BUILTIN_FUNCTIONS " + this);
         }
     }
 
-    private double avg(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .average()
-                .orElseThrow(() -> new IllegalArgumentException("Failed to find average value"));
-    }
-
-    private double division(final Object[] inputData) {
-        checkNumbers(inputData, 2);
-        double a = ((Number) inputData[0]).doubleValue();
-        double b = ((Number) inputData[1]).doubleValue();
-        return a / b;
-    }
-
-    private String lowercase(final Object[] inputData) {
-        checkStrings(inputData, 1);
-        return ((String) inputData[0]).toLowerCase();
-    }
-
-    private double max(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .max()
-                .orElseThrow(() -> new KieEnumException("Failed to find maximum value"));
-    }
-
-    private double median(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        DoubleStream sortedValues = Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .sorted();
-        OptionalDouble toReturn = inputData.length % 2 == 0 ?
-                sortedValues.skip(inputData.length / 2 - (long)1).limit(2).average() :
-                sortedValues.skip(inputData.length / 2).findFirst();
-        return toReturn.orElseThrow(() -> new KieEnumException("Failed to find median value"));
-    }
-
-    private double min(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .min()
-                .orElseThrow(() -> new KieEnumException("Failed to find minimum value"));
-    }
-
-    private double minus(final Object[] inputData) {
-        checkNumbers(inputData, 2);
-        double a = ((Number) inputData[0]).doubleValue();
-        double b = ((Number) inputData[1]).doubleValue();
-        return a - b;
-    }
-
-    private double multi(final Object[] inputData) {
-        checkNumbers(inputData, 2);
-        double a = ((Number) inputData[0]).doubleValue();
-        double b = ((Number) inputData[1]).doubleValue();
-        return a * b;
-    }
-
-    private double plus(final Object[] inputData) {
-        checkNumbers(inputData, 2);
-        double a = ((Number) inputData[0]).doubleValue();
-        double b = ((Number) inputData[1]).doubleValue();
-        return a + b;
-    }
-
-    private double product(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .reduce(1, (a, b) -> a * b);
-    }
-
-    private double sum(final Object[] inputData) {
-        checkNumbers(inputData, inputData.length);
-        return Arrays.stream(inputData)
-                .mapToDouble(num -> ((Number)num).doubleValue())
-                .sum();
-    }
-
-    private String uppercase(final Object[] inputData) {
-        checkStrings(inputData, 1);
-        return ((String) inputData[0]).toUpperCase();
-    }
-
-    private void checkNumbers(final Object[] inputData, final int expectedSize) {
+    public static void checkNumbers(final Object[] inputData, final int expectedSize) {
         checkLength(inputData, expectedSize);
         for (Object object : inputData) {
             if (!(object instanceof Number)) {
-                throw new IllegalArgumentException("Expected only Numbers for " + this);
+                throw new IllegalArgumentException("Expected only Numbers");
             }
         }
     }
 
-    private void checkStrings(final Object[] inputData, final int expectedSize) {
+    public static void checkStrings(final Object[] inputData, final int expectedSize) {
         checkLength(inputData, expectedSize);
         for (Object object : inputData) {
             if (!(object instanceof String)) {
-                throw new IllegalArgumentException("Expected only String for " + this);
+                throw new IllegalArgumentException("Expected only String");
             }
         }
     }
 
-    private void checkLength(final Object[] inputData, final int expectedSize) {
+    public static void checkLength(final Object[] inputData, final int expectedSize) {
         if (inputData.length < 1) {
-            throw new IllegalArgumentException(String.format("Expected at least one parameter %s ", this));
+            throw new IllegalArgumentException("Expected at least one parameter");
         }
         if (inputData.length != expectedSize) {
-            throw new IllegalArgumentException(String.format("Expected %s parameters %s ", expectedSize, this));
+            throw new IllegalArgumentException(String.format("Expected %s parameters ", expectedSize));
         }
     }
 }
