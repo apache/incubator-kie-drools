@@ -56,12 +56,11 @@ pipeline {
                         assert getProjectVersion()
                         assert getKogitoVersion()
 
-                        if(isRelease()) {
+                        if (isRelease()) {
                             // Verify if on right release branch
                             assert getBuildBranch() == util.getReleaseBranchFromVersion(getProjectVersion())
                         }
                     }
-
                 }
             }
             post {
@@ -177,9 +176,9 @@ pipeline {
             }
             steps {
                 script {
-                    runMavenDeploy(getOptaplannerMavenCommand(), params.SKIP_TESTS)
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), params.SKIP_TESTS)
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), params.SKIP_TESTS)
+                    runMavenDeploy(getOptaplannerMavenCommand())
+                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
+                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
                 }
             }
         }
@@ -189,9 +188,9 @@ pipeline {
             }
             steps {
                 script {
-                    runMavenDeploy(getOptaplannerMavenCommand(), params.SKIP_TESTS, optaplannerRepository)
-                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), params.SKIP_TESTS, vehicleRoutingRepository)
-                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), params.SKIP_TESTS, employeeRosteringRepository)
+                    runMavenDeploy(getOptaplannerMavenCommand(), optaplannerRepository)
+                    runMavenDeploy(getOptawebVehicleRoutingMavenCommand(), vehicleRoutingRepository)
+                    runMavenDeploy(getOptawebEmployeeRosteringMavenCommand(), employeeRosteringRepository)
                 }
             }
         }
@@ -271,7 +270,7 @@ pipeline {
     }
 }
 
-void buildOptaweb(MavenCommand optawebCommand){
+void buildOptaweb(MavenCommand optawebCommand) {
     MavenCommand buildCommand = optawebCommand
     if (!skipIntegrationTests()) {
         buildCommand = buildCommand.withProfiles(getIntegrationTestProfiles())
@@ -281,16 +280,16 @@ void buildOptaweb(MavenCommand optawebCommand){
 
 void archiveCypressArtifacts() {
     if (!skipIntegrationTests()) {
-        archiveArtifacts(artifacts: "**/cypress/screenshots/**,**/cypress/videos/**", fingerprint: false, allowEmptyArchive: true)
+        archiveArtifacts(artifacts: '**/cypress/screenshots/**,**/cypress/videos/**', fingerprint: false, allowEmptyArchive: true)
     }
 }
 
-List getIntegrationTestProfiles(){
+List getIntegrationTestProfiles() {
     return params.SKIP_INTEGRATION_TESTS ? [] : ['integration-tests']
 }
 
-void updateQuickstartsVersions(){
-    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), "version.org.optaplanner", getProjectVersion())
+void updateQuickstartsVersions() {
+    maven.mvnSetVersionProperty(getOptaplannerQuickstartsMavenCommand(), 'version.org.optaplanner', getProjectVersion())
     maven.mvnVersionsUpdateParentAndChildModules(getOptaplannerQuickstartsMavenCommand(), getProjectVersion(), !isRelease())
     gradleVersionsUpdate(quickstartsRepository, getProjectVersion())
 
@@ -302,8 +301,8 @@ void updateQuickstartsVersions(){
                     'cat', returnStdout: true)
         }
     }
-    if(isCreatePr()){
-        dir(quickstartsRepository){
+    if (isCreatePr()) {
+        dir(quickstartsRepository) {
             assert !sh (script:
                     'grep -Rn "SNAPSHOT" --include={pom.xml,build.gradle} | ' +
                     'grep -v -e "${getProjectVersion()}" | ' +
@@ -421,16 +420,16 @@ void mavenCleanInstallOptaPlannerParents() {
         .run('clean install')
 }
 
-void runMavenDeploy(MavenCommand mvnCmd, boolean skipTests = true, String localDeploymentId = '') {
+void runMavenDeploy(MavenCommand mvnCmd, String localDeploymentId = '') {
     mvnCmd = mvnCmd.clone()
 
-    if(localDeploymentId) {
+    if (localDeploymentId) {
         mvnCmd.withLocalDeployFolder(getLocalDeploymentFolder(localDeploymentId))
     } else if (env.MAVEN_DEPLOY_REPOSITORY) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(skipTests).run('clean deploy')
+    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 String getMavenRepoZipUrl() {
@@ -479,12 +478,12 @@ boolean isCreatePr() {
     return params.CREATE_PR
 }
 
-boolean skipUnitTests(){
-    return params.SKIP_TESTS;
+boolean skipUnitTests() {
+    return params.SKIP_TESTS
 }
 
-boolean skipIntegrationTests(){
-    return params.SKIP_INTEGRATION_TESTS;
+boolean skipIntegrationTests() {
+    return params.SKIP_INTEGRATION_TESTS
 }
 
 String getGitAuthor() {
@@ -522,6 +521,6 @@ void setDeployPropertyIfNeeded(String key, def value) {
     }
 }
 
-String getQuickStartsBranch(){
+String getQuickStartsBranch() {
     return params.QUICKSTARTS_BUILD_BRANCH_NAME
 }
