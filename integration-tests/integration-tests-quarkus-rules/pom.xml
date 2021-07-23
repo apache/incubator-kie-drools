@@ -9,14 +9,13 @@
   </parent>
   <artifactId>integration-tests-quarkus-rules</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Rules</name>
-  
+
   <dependencyManagement>
     <dependencies>
-      <!-- MUST keep this IN THIS FILE until Quarkus BOM defines Kogito dependencies -->
       <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-bom</artifactId>
+        <version>${project.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

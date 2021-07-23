@@ -11,7 +11,7 @@
 
   <artifactId>kogito-cloudevents-spring-boot-addon</artifactId>
   <packaging>jar</packaging>
-  <name>Kogito :: Add-Ons :: Deprecated :: CloudEvents SpringBoot</name>
+  <name>Kogito :: Add-Ons :: Deprecated :: CloudEvents Spring Boot</name>
   <description>This library is deprecated, please use kogito-addons-springboot-cloudevents instead</description>
 
   <dependencies>

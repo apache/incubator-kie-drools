@@ -10,20 +10,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-springboot-rest-exception-handler</artifactId>
-  <name>Kogito :: Rest Exception Handler:: SpringBoot</name>
+  <name>Kogito :: Rest Exception Handler:: Spring Boot</name>
   <description>Kogito exception handling for Spring Boot</description>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

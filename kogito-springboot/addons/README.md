@@ -1,6 +1,6 @@
-# Kogito SpringBoot Addons
+# Kogito Spring Boot Addons
 
-In this module you will find all the addons supported by the community for SpringBoot Kogito projects:
+In this module you will find all the addons supported by the community for Spring Boot Kogito projects:
 
 <!-- TODO: KOGITO-5300 add "since" column with the information of the first version this addon was introduced -->
 <!-- TODO: KOGITO-5300 add link to each doc -->

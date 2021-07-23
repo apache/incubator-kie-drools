@@ -11,12 +11,12 @@ At the root of this project you will find:
    but as main libraries for runtimes implementations
 2. `deprecated` - about to be deprecated modules in future versions
 
-The addons for Quarkus/SpringBoot you will find in their own modules in the root of this repository:
+The addons for Quarkus/Spring Boot you will find in their own modules in the root of this repository:
 
 1. [`quarkus/addons`](../quarkus/addons) - contains the add-ons for Quarkus. If your Kogito project is built with
    Quarkus, use the dependencies listed in this sub-module
-2. [`springboot/addons`](../springboot/addons) - contains the add-ons for SpringBoot. These dependencies are meant to
-   use only with Kogito projects built with SpringBoot
+2. [`springboot/addons`](../springboot/addons) - contains the add-ons for Spring Boot. These dependencies are meant to
+   use only with Kogito projects built with Spring Boot
 
 Inside each of these modules, you will find the add-ons organized by its capabilities.
 
@@ -59,7 +59,7 @@ In general, the add-on name is composed like `kogito-addons-{runtime}-{capabilit
   the capability. It's more a way to differentiate the implementations.
 
 The core add-ons don't have a `runtime` prefix either because they are the bases for the implementation by a runtime, or
-it is a generic implementation that can work either on Quarkus or SpringBoot. Please, check the documentation of the
+it is a generic implementation that can work either on Quarkus or Spring Boot. Please, check the documentation of the
 add-on to find out.
 
 ## Creating a new Kogito Add-on
@@ -73,7 +73,7 @@ knowledge of the Kogito engine internals. Then follow these steps:
 
 1. Create a new sub-module under `common` with a meaningful name. This module can be a parent module if you foresee a
    complex scenario for your new add-on. See [`cloudevents`](common/cloudevents) as an example.
-2. Do not use any dependencies from Quarkus or SpringBoot in `common` module. Your add-on must only have code to support
+2. Do not use any dependencies from Quarkus or Spring Boot in `common` module. Your add-on must only have code to support
    your capability. New dependencies must be added to the [kogito-build](../kogito-build/kogito-build-parent) BOM.
 3. Create the same capability under the `addons` module in the runtime module you wish to add support (
    either [`quarkus`](../quarkus/addons) or [`springboot`](../springboot/addons)). Make sure that your capability
@@ -93,7 +93,7 @@ runtimes supported by Kogito:
 1. Start with the runtime you wish to add the implementation. Create a new sub-module
    under `{runtime}/addons/{capability}`
 2. Try to code with the runtime in mind and leverage their libraries. For Quarkus, see
-   the [Quarkus Guides](https://quarkus.io/guides/) page to figure how to interact with the given technology. SpringBoot
+   the [Quarkus Guides](https://quarkus.io/guides/) page to figure how to interact with the given technology. Spring Boot
    also has a comprehensive list of [guides](https://spring.io/guides)
 3. Document the implementation with a `README.md` and make it clear how to use it
 4. Create an example of usage in the [`kogito-examples`](https://github.com/kiegroup/kogito-examples) repository

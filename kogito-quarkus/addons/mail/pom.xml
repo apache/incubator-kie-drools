@@ -11,17 +11,6 @@
   <artifactId>kogito-addons-quarkus-mail</artifactId>
   <name>Kogito :: Add-Ons :: E-Mail :: Quarkus Addon</name>
   <description>E-Mail addon for for Quarkus</description>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

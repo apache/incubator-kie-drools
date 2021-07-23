@@ -12,18 +12,6 @@
   <artifactId>kogito-addons-quarkus-tracing-decision</artifactId>
   <name>Kogito :: Add-Ons :: Tracing :: Quarkus Addon</name>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

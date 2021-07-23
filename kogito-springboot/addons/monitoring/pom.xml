@@ -10,8 +10,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-springboot-monitoring-parent</artifactId>
-  <name>Kogito :: Add-Ons :: SpringBoot :: Monitoring :: Parent</name>
-  <description>Kogito Monitoring Addons for SpringBoot</description>
+  <name>Kogito :: Add-Ons :: Spring Boot :: Monitoring :: Parent</name>
+  <description>Kogito Monitoring Addons for Spring Boot</description>
   <packaging>pom</packaging>
 
   <modules>

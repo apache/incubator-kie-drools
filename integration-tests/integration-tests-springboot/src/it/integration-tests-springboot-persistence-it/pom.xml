@@ -5,11 +5,10 @@
   <groupId>org.kie.kogito</groupId>
   <artifactId>integration-tests-springboot-persistence-it</artifactId>
   <version>@project.version@</version>
-  <name>Kogito :: Integration Tests :: SpringBoot :: Processes :: Persistence :: Parent</name>
+  <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: Parent</name>
   <packaging>pom</packaging>
 
   <properties>
-    <version.org.springframework.boot>@version.org.springframework.boot@</version.org.springframework.boot>
     <project.version>@project.version@</project.version>
     <version.org.infinispan>@version.org.infinispan@</version.org.infinispan>
     <version.org.springframework.boot>@version.org.springframework.boot@</version.org.springframework.boot>
@@ -31,15 +30,8 @@
     <dependencies>
       <dependency>
         <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-bom</artifactId>
+        <artifactId>kogito-springboot-bom</artifactId>
         <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>

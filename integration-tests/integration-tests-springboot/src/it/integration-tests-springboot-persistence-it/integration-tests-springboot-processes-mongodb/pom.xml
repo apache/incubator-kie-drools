@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>integration-tests-springboot-processes-mongodb</artifactId>
-  <name>Kogito :: Integration Tests :: SpringBoot :: Processes :: Persistence :: MongoDB</name>
+  <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: MongoDB</name>
 
   <dependencies>
     <dependency>

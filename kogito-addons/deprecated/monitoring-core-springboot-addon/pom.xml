@@ -11,7 +11,7 @@
 
   <artifactId>monitoring-core-springboot-addon</artifactId>
   <packaging>jar</packaging>
-  <name>Kogito :: Add-Ons :: Deprecated :: Monitoring Core SpringBoot</name>
+  <name>Kogito :: Add-Ons :: Deprecated :: Monitoring Core Spring Boot</name>
   <description>This library is deprecated, please use kogito-addons-springboot-monitoring-core instead</description>
 
   <dependencies>

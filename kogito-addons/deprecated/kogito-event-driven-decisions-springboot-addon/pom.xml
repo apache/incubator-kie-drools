@@ -11,7 +11,7 @@
 
   <artifactId>kogito-event-driven-decisions-springboot-addon</artifactId>
   <packaging>jar</packaging>
-  <name>Kogito :: Add-Ons :: Deprecated :: Event Driven Decisions SpringBoot</name>
+  <name>Kogito :: Add-Ons :: Deprecated :: Event Driven Decisions Spring Boot</name>
   <description>This library is deprecated, please use kogito-addons-springboot-events-decisions instead</description>
 
   <dependencies>

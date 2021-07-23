@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>monitoring-prometheus-springboot-addon</artifactId>
-  <name>Kogito :: Add-Ons :: Deprecated :: Monitoring Prometheus SpringBoot</name>
+  <name>Kogito :: Add-Ons :: Deprecated :: Monitoring Prometheus Spring Boot</name>
   <description>This library is deprecated, please use kogito-addons-springboot-monitoring-prometheus instead</description>
 
   <dependencies>

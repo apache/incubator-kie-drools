@@ -10,18 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-springboot-explainability</artifactId>
-  <name>Kogito :: Add-Ons :: Explainability :: SpringBoot Addon</name>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <name>Kogito :: Add-Ons :: Explainability :: Spring Boot Addon</name>
 
   <dependencies>
     <dependency>

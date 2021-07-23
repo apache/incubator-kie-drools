@@ -8,18 +8,11 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-addons-springboot-process-svg</artifactId>
-  <name>Kogito :: Add-Ons :: Process SVG :: SpringBoot Addon</name>
+  <name>Kogito :: Add-Ons :: Process SVG :: Spring Boot Addon</name>
   <description>Springboot Addon to interact with Process SVG Service</description>
 
   <dependencyManagement>
     <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
       <dependency>
         <groupId>org.keycloak.bom</groupId>
         <artifactId>keycloak-adapter-bom</artifactId>

@@ -13,17 +13,6 @@
   <name>Kogito :: Add-Ons :: Monitoring Prometheus Quarkus</name>
 
   <description>Prometheus monitoring for Quarkus</description>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

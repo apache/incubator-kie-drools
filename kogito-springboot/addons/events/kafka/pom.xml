@@ -9,19 +9,7 @@
   </parent>
   <artifactId>kogito-addons-springboot-events-kafka</artifactId>
   <name>Kogito :: Add-Ons :: Events :: SprintBoot :: Kafka</name>
-  <description>Kogito Events based on SpringBoot Add-On</description>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
+  <description>Kogito Events based on Spring Boot Add-On</description>
 
   <dependencies>
     <dependency>

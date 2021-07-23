@@ -11,17 +11,6 @@
   <artifactId>kogito-addons-quarkus-task-management</artifactId>
   <name>Kogito :: Add-Ons :: Task Management :: Quarkus Addon</name>
   <description>Management of process instances for Quarkus</description>
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>

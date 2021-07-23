@@ -28,18 +28,6 @@
   <artifactId>kogito-addons-quarkus-persistence-kafka</artifactId>
   <name>Kogito :: Add-Ons :: Persistence :: Kafka Streams</name>
   <description>Kafka Streams based persistence for Kogito</description>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>io.quarkus</groupId>
-        <artifactId>quarkus-bom</artifactId>
-        <version>${version.io.quarkus}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
   
   <dependencies>
     <dependency>

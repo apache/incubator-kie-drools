@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>integration-tests-springboot-processes-persistence-common</artifactId>
-  <name>Kogito :: Integration Tests :: SpringBoot :: Processes :: Persistence :: Common</name>
+  <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: Common</name>
 
   <dependencies>
     <dependency>

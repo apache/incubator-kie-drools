@@ -58,7 +58,7 @@ Classes and namespaces remains the same, you won't need to make any change in yo
 | Task Notification       | task-notification-quarkus-addon | kogito-addons-quarkus-task-notification | 
 | Tracing Decision        | tracing-decision-quarkus-addon | kogito-addons-quarkus-tracing-decision | 
 
-#### SpringBoot Add-ons
+#### Spring Boot Add-ons
 
 | Add-On Description  | Old Artifact ID | New Artifact ID |
 |---------------------|-----------------|-----------------|

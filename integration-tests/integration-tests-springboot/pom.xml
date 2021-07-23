@@ -6,7 +6,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>integration-tests-springboot</artifactId>
-  <name>Kogito :: Integration Tests :: SpringBoot</name>
+  <name>Kogito :: Integration Tests :: Spring Boot</name>
 
   <dependencies>
     <!-- All the dependency of this module are here just to make Maven reactor aware that invoker tests need them -->
@@ -17,9 +17,16 @@
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
+    <!-- why we need Quarkus BOM here? Well, kogito-test-utils depends on it and Maven needs to make it available in localRepo -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-quarkus-bom</artifactId>
+      <version>${project.version}</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-springboot-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>

@@ -9,8 +9,8 @@
   </parent>
   <artifactId>kogito-springboot-dm-archetype</artifactId>
   <packaging>maven-archetype</packaging>
-  <name>Kogito DM :: Maven Archetypes :: SpringBoot</name>
-  <description>Kogito DM based on SpringBoot runtime Archetype</description>
+  <name>Kogito DM :: Maven Archetypes :: Spring Boot</name>
+  <description>Kogito DM based on Spring Boot runtime Archetype</description>
 
   <dependencies>
     <!-- this is used implicitly required by archetype integration test so let's make Maven aware of it -->

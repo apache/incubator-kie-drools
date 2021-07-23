@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>integration-tests-springboot-processes-jdbc</artifactId>
-  <name>Kogito :: Integration Tests :: SpringBoot :: Processes :: Persistence :: JDBC</name>
+  <name>Kogito :: Integration Tests :: Spring Boot :: Processes :: Persistence :: JDBC</name>
 
   <dependencies>
     <dependency>

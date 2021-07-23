@@ -10,20 +10,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-springboot-mail</artifactId>
-  <name>Kogito :: Add-Ons :: E-Mail :: SpringBoot Addon</name>
+  <name>Kogito :: Add-Ons :: E-Mail :: Spring Boot Addon</name>
   <description>Sending e-mail on Springboot</description>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-dependencies</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
