@@ -131,7 +131,7 @@ pipeline {
             }
             steps {
                 script {
-                    runMavenDeploy(params.SKIP_TESTS)
+                    runMavenDeploy()
                 }
             }
         }
@@ -141,7 +141,7 @@ pipeline {
             }
             steps {
                 script {
-                    runMavenDeploy(params.SKIP_TESTS, true)
+                    runMavenDeploy(true)
                 }
             }
         }
@@ -309,7 +309,7 @@ MavenCommand getMavenCommand(String directory = '') {
                 .withProperty('full')
 }
 
-void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
+void runMavenDeploy(boolean localDeployment = false) {
     mvnCmd = getMavenCommand()
 
     if(localDeployment) {
@@ -318,7 +318,7 @@ void runMavenDeploy(boolean skipTests = true, boolean localDeployment = false) {
         mvnCmd.withDeployRepository(env.MAVEN_DEPLOY_REPOSITORY)
     }
 
-    mvnCmd.skipTests(skipTests).run('clean deploy')
+    mvnCmd.skipTests(true).run('clean deploy')
 }
 
 String getMavenRepoZipUrl() {
