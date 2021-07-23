@@ -8,4 +8,8 @@ public class CompiledExpression {
 
         this.ex = ex;
     }
+
+    public String getEx() {
+        return ex;
+    }
 }
