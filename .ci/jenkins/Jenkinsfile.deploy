@@ -33,6 +33,8 @@ pipeline {
     environment {
         // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
 
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
 
         BOT_BRANCH_HASH = "${util.generateHash(10)}"
@@ -261,12 +263,25 @@ pipeline {
                 archiveArtifacts(artifacts: env.PROPERTIES_FILE_NAME)
             }
         }
+        unsuccessful {
+            sendNotification()
+        }
         cleanup {
             script {
                 // Clean also docker in case of usage of testcontainers lib
                 util.cleanNode('docker')
             }
         }
+    }
+}
+
+void sendNotification() {
+    if (params.SEND_NOTIFICATION) {
+        emailext body: "**Deploy job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+             subject: "[${getBuildBranch()}] Optaplanner",
+             to: env.KOGITO_CI_EMAIL_TO
+    } else {
+        echo 'No notification sent per configuration'
     }
 }
 
