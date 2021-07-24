@@ -17,10 +17,15 @@
 package org.kie.api.internal.utils;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.JarURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -30,17 +35,34 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.function.Consumer;
+import java.util.jar.JarEntry;
+import java.util.jar.JarFile;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ServiceDiscoveryImpl {
-    private static final Logger log = LoggerFactory.getLogger( ServiceDiscoveryImpl.class );
 
+    // keep this in alphabetical order
+    private static final String[] KIE_MODULES = new String[] {
+            "", // This is to reserve the path META-INF/kie/kie.conf for user specific customizations
+            "drools-alphanetwork-compiler", "drools-beliefs", "drools-compiler", "drools-core", "drools-decisiontables",
+            "drools-metric", "drools-model-compiler", "drools-mvel", "drools-persistence-jpa", "drools-ruleunit",
+            "drools-scorecards", "drools-serialization-protobuf", "drools-traits", "drools-workbench-models-guided-dtable",
+            "drools-workbench-models-guided-scorecard", "drools-workbench-models-guided-template",
+            "jbpm-bpmn2", "jbpm-case-mgmt-cmmn", "jbpm-flow", "jbpm-flow-builder", "jbpm-human-task-jpa",
+            "kie-ci", "kie-dmn-core", "kie-dmn-jpmml", "kie-internal", "kie-pmml", "kie-pmml-evaluator-assembler",
+            "kie-pmml-evaluator-core", "kie-server-services-jbpm-cluster"
+    };
+
+    private static final Logger log = LoggerFactory.getLogger(ServiceDiscoveryImpl.class);
+
+    private static final String CONF_FILE_FOLDER = "META-INF/kie";
     private static final String CONF_FILE_NAME = "kie.conf";
 
-    private static final String CONF_FILE_PATH =  "META-INF/" + CONF_FILE_NAME;
+    public static final String LEGACY_CONF_FILE = "META-INF/kie.conf";
 
     ServiceDiscoveryImpl() {}
 
@@ -66,7 +88,7 @@ public class ServiceDiscoveryImpl {
         if (!sealed) {
             cachedServices.computeIfAbsent(serviceName, n -> new ArrayList<>()).add(object);
         } else {
-            throw new IllegalStateException("Unable to add service '" + serviceName + "'. Services cannot be added once the ServiceDiscoverys is sealed");
+            throw new IllegalStateException("Unable to add service '" + serviceName + "'. Services cannot be added once the ServiceDiscovery is sealed");
         }
     }
 
@@ -79,8 +101,8 @@ public class ServiceDiscoveryImpl {
     public synchronized Map<String, List<Object>> getServices() {
         if (!sealed) {
             getKieConfs().ifPresent( kieConfs -> {
-                while (kieConfs.resources.hasMoreElements()) {
-                    registerConfs( kieConfs.classLoader, kieConfs.resources.nextElement() );
+                for (URL kieConfUrl : kieConfs.resources) {
+                    registerConfs( kieConfs.classLoader, kieConfUrl );
                 }
             } );
 
@@ -187,8 +209,8 @@ public class ServiceDiscoveryImpl {
             return null;
         }
         try {
-            Enumeration<URL> resources = cl.getResources( CONF_FILE_PATH );
-            return resources.hasMoreElements() ? new KieConfs( cl, resources ) : null;
+            Collection<URL> resources = findKieConfUrls( cl );
+            return resources.isEmpty() ? null : new KieConfs( cl, resources );
         } catch (IOException e) {
             return null;
         }
@@ -196,9 +218,9 @@ public class ServiceDiscoveryImpl {
 
     private static class KieConfs {
         private final ClassLoader classLoader;
-        private final Enumeration<URL> resources;
+        private final Collection<URL> resources;
 
-        private KieConfs( ClassLoader classLoader, Enumeration<URL> confResources ) {
+        private KieConfs( ClassLoader classLoader, Collection<URL> confResources ) {
             this.classLoader = classLoader;
             this.resources = confResources;
         }
@@ -236,5 +258,89 @@ public class ServiceDiscoveryImpl {
             }
             return map.entrySet();
         }
+    }
+
+    private static Collection<URL> findKieConfUrls(ClassLoader cl) throws IOException {
+        List<URL> kieConfsUrls = new ArrayList<>();
+
+        Enumeration<URL> metaInfs = cl.getResources(CONF_FILE_FOLDER);
+        while (metaInfs.hasMoreElements()) {
+            URL metaInf = metaInfs.nextElement();
+            if (metaInf.getProtocol().startsWith("vfs")) {
+                // the kie.conf discovery mechanism doesn't work under JBoss vfs
+                kieConfsUrls.clear();
+                break;
+            }
+
+            URLConnection con = metaInf.openConnection();
+            if (con instanceof JarURLConnection) {
+                collectKieConfsInJar(kieConfsUrls, metaInf, (JarURLConnection) con);
+            } else {
+                collectKieConfsInFile(kieConfsUrls, new File(metaInf.getFile()));
+            }
+        }
+
+        if (kieConfsUrls.isEmpty()) {
+            // no kie-conf found so fallback to the hardcoded lookup
+            kieConfsUrls = getKieConfsFromKnownModules(cl).collect(Collectors.toList());
+        } else {
+            // check if all discovered kie.conf file are in known modules
+            List<String> notRegisteredModules = kieConfsUrls.stream().map(ServiceDiscoveryImpl::getModuleName)
+                    .filter(module -> Arrays.binarySearch(KIE_MODULES, module) < 0)
+                    .collect(Collectors.toList());
+            if (!notRegisteredModules.isEmpty()) {
+                throw new IllegalStateException("kie.conf file discovered for modules " + notRegisteredModules +
+                        " but not listed among the known modules. This will not work under OSGi or JBoss vfs.");
+            }
+        }
+
+        // also check the legacy META-INF/kie.conf for backward compatibility
+        Enumeration<URL> kieConfEnum = cl.getResources(LEGACY_CONF_FILE);
+        while (kieConfEnum.hasMoreElements()) {
+            kieConfsUrls.add(kieConfEnum.nextElement());
+        }
+
+        if (log.isDebugEnabled()) {
+            log.debug("Discovered kie.conf files: " + kieConfsUrls);
+        }
+
+        return kieConfsUrls;
+    }
+
+    public static Stream<URL> getKieConfsFromKnownModules(ClassLoader cl) {
+        return Stream.of(KIE_MODULES)
+                .map(module -> cl.getResource(CONF_FILE_FOLDER + "/" + module + (module.length() > 0 ? "/" : "") + CONF_FILE_NAME))
+                .filter(Objects::nonNull);
+    }
+
+    private static void collectKieConfsInJar(List<URL> kieConfsUrls, URL metaInf, JarURLConnection con) throws IOException {
+        JarURLConnection jarCon = con;
+        JarFile jarFile = jarCon.getJarFile();
+        Enumeration<JarEntry> entries = jarFile.entries();
+        while (entries.hasMoreElements()) {
+            JarEntry entry = entries.nextElement();
+            if (entry.getName().endsWith(CONF_FILE_NAME)) {
+                String metaInfString = metaInf.toString();
+                kieConfsUrls.add(new URL(metaInfString.substring(0, metaInfString.length() - CONF_FILE_FOLDER.length()) + entry.getName()));
+            }
+        }
+    }
+
+    private static void collectKieConfsInFile(List<URL> kieConfsUrls, File file) throws IOException {
+        if (file.isDirectory()) {
+            for (File child : file.listFiles()) {
+                collectKieConfsInFile(kieConfsUrls, child);
+            }
+        } else {
+            if (file.toString().endsWith(CONF_FILE_NAME)) {
+                kieConfsUrls.add(file.toURI().toURL());
+            }
+        }
+    }
+
+    private static String getModuleName(URL url) {
+        String s = url.toString();
+        int moduleStart = s.indexOf(CONF_FILE_FOLDER) + CONF_FILE_FOLDER.length() + 1;
+        return s.substring(moduleStart, s.length() - (CONF_FILE_NAME.length()+1));
     }
 }
