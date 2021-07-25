@@ -41,11 +41,11 @@ exports[`AboutModal component tests snapshot testing 1`] = `
         component="dd"
       >
         <a
-          href="https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE"
+          href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE"
           rel="noreferrer"
           target="_blank"
         >
-          https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE
+          https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE
         </a>
       </TextListItem>
       <TextListItem

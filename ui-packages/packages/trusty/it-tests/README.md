@@ -98,7 +98,7 @@ You can perform previous steps by [this Bash script](docker-compose/start_docker
 
 #### User interaction
 
-Send REST Request which starts this [DMN asset](https://kiegroup.github.io/kogito-online/?file=https://raw.githubusercontent.com/kiegroup/kogito-apps/master/apps-integration-tests/integration-tests-trusty-service/integration-tests-trusty-service-common/src/main/resources/TrafficViolation.dmn#/editor/dmn):
+Send REST Request which starts this [DMN asset](https://kiegroup.github.io/kogito-online/?file=https://raw.githubusercontent.com/kiegroup/kogito-apps/main/apps-integration-tests/integration-tests-trusty-service/integration-tests-trusty-service-common/src/main/resources/TrafficViolation.dmn#/editor/dmn):
 ```
 curl -H "Content-Type: application/json" -X POST -d "{\"Driver\":
 {\"State\":\"aa\",\"City\":\"bb\",\"Age\":25,\"Points\":13}

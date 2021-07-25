@@ -80,4 +80,4 @@ As a consequence, the dependencies of the explainability service are Kafka and t
 
 ## An example project
 
-A sample end to end project is provided [here](https://github.com/kiegroup/kogito-examples/tree/master/dmn-tracing-quarkus).
+A sample end to end project is provided [here](https://github.com/kiegroup/kogito-examples/tree/main/dmn-tracing-quarkus).

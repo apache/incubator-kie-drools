@@ -62,11 +62,11 @@ const AboutModalBox: React.FC<IOwnProps & OUIAProps> = ({
           <TextListItem component="dt">License information: </TextListItem>
           <TextListItem component="dd">
             <a
-              href="https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE"
+              href="https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE"
               target="_blank"
               rel="noreferrer"
             >
-              https://github.com/kiegroup/kogito-runtimes/blob/master/LICENSE
+              https://github.com/kiegroup/kogito-runtimes/blob/main/LICENSE
             </a>
           </TextListItem>
           <TextListItem component="dt">Report a bug: </TextListItem>
