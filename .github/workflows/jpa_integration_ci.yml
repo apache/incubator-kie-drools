@@ -5,10 +5,10 @@ name: OptaPlanner Persistence JPA CI
 on:
   push:
     branches:
-      - master
+      - main
   pull_request:
     branches:
-      - master
+      - main
 
 defaults:
   run:

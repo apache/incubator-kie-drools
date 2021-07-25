@@ -6,7 +6,7 @@ branch=$1
 author=$2
 
 if [ -z $branch ]; then
-  branch='master'
+  branch='main'
 fi
 
 if [ -z $author ]; then

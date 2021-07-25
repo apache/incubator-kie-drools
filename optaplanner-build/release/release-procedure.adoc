@@ -25,11 +25,11 @@ the `stable` branch and must point to the released final version of OptaPlanner.
 * https://www.optaplanner.org/learn/documentation.html[Documentation] available via a link on the optaplanner-website
 
 === OptaPlanner Website
-The website contains https://github.com/kiegroup/optaplanner-website/blob/master/_config/pom.yml[links]
+The website contains https://github.com/kiegroup/optaplanner-website/blob/main/_config/pom.yml[links]
 to the Distribution Zip files and documentation (see above). To update the documentation, and the Distribution Zip,
 upload them to the `filemgmt.jboss.org` and then, open a PR changing the links.
 
-For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/master/build/release/upload_distribution.sh[script]
+For the OptaPlanner project, there is a https://github.com/kiegroup/optaplanner/blob/main/build/release/upload_distribution.sh[script]
 uploading the documentation and the Distribution Zip. The release pipeline calls the script and updates also
 the links on the website. For the Optawebs, the upload has to be done manually at this moment.
 
@@ -38,11 +38,11 @@ the links on the website. For the Optawebs, the upload has to be done manually a
 === Project Version
 
 The project uses https://semver.org/[semantic versioning] with a `.Final` suffix  for stable releases.
-After a feature release MAJOR.MINOR.0.Final, the version on the `master` branch upgrades to MAJOR.MINOR+1.0-SNAPSHOT.
+After a feature release MAJOR.MINOR.0.Final, the version on the `main` branch upgrades to MAJOR.MINOR+1.0-SNAPSHOT.
 The next feature release is MAJOR.MINOR+1.0.Final.
 
 As an example, the first version released by this procedure is going to be 8.0.0.Final. After the release,
-the `master` branch upgrades to 8.1.0-SNAPSHOT. The next release is 8.1.0.Final.
+the `masmainter` branch upgrades to 8.1.0-SNAPSHOT. The next release is 8.1.0.Final.
 
 === Release Branches
 
@@ -71,7 +71,7 @@ Make sure you agree with this person on setting the correct OptaPlanner version 
 === 3. Upgrade versions to the next snapshot
 *_This step is yet to be automated._*
 
-After the pipeline finishes, upgrade the version on the `master` branch of OptaPlanner to the next minor snapshot version,
+After the pipeline finishes, upgrade the version on the `main` branch of OptaPlanner to the next minor snapshot version,
 e.g. 8.0.0.Final -> 8.1.0-SNAPSHOT. Upgrade also the version of Kogito by editing
 the value of the property `version.org.kie.kogito` in the `optaplanner-build-parent`.
 
@@ -95,7 +95,7 @@ The `kogito-release-pipeline` is a Jenkins pipeline that covers releases of the 
 together. As both projects consist of several Github repositories, the top-level `kogito-release-pipeline` orchestrates
 multiple pipelines that operate on the project, or the repository level.
 
-Please refer to the https://github.com/kiegroup/kogito-pipelines/blob/master/docs/nightly_and_release.md[Kogito release pipeline documentation]
+Please refer to the https://github.com/kiegroup/kogito-pipelines/blob/main/docs/nightly_and_release.md[Kogito release pipeline documentation]
 for more details.
 
 === Actions covered by the Kogito release pipeline

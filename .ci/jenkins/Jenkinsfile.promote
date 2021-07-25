@@ -195,11 +195,11 @@ pipeline {
                         sh "cp $optaplannerRoot/optaplanner-benchmark/target/classes/benchmark.xsd content/xsd/benchmark/benchmark-8.xsd"
 
                         // Add changed files, commit, open and merge PR
-                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add content/xsd/\\*.xsd data/pom.yml' }, prBranchName, 'master')
+                        prLink = commitAndCreatePR("Release OptaPlanner ${getProjectVersion()}", { sh 'git add content/xsd/\\*.xsd data/pom.yml' }, prBranchName, 'main')
                     }
                     dir(websiteRepository) {
-                        checkoutRepo(websiteRepository, 'master')
-                        mergeAndPush(prLink, 'master')
+                        checkoutRepo(websiteRepository, 'main')
+                        mergeAndPush(prLink, 'main')
                     }
                 }
             }
@@ -501,7 +501,7 @@ String commitAndCreatePR(String commitMsg) {
 }
 
 String createWebsitePrBranch(String websiteRepository) {
-    checkoutRepo(websiteRepository, 'master') // there is no other branch
+    checkoutRepo(websiteRepository, 'main') // there is no other branch
     githubscm.forkRepo(getBotAuthorCredsID())
     String prBranchName = "${getProjectVersion().toLowerCase()}-${env.BOT_BRANCH_HASH}"
     githubscm.createBranch(prBranchName)

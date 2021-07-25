@@ -146,7 +146,7 @@ Check the maven repository `pom.xml` files to determine the minimal dependency s
 
 Build and run the examples from source.
 
-. Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/master[the zipball]):
+. Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/main[the zipball]):
 +
 [source,sh,options="nowrap"]
 ----

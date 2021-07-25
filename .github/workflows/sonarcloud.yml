@@ -1,10 +1,10 @@
-# Runs the SonarCloud analysis of the optaplanner master branch after a PR is merged.
+# Runs the SonarCloud analysis of the optaplanner main branch after a PR is merged.
 name: OptaPlanner SonarCloud Analysis
 
 on:
   push:
     branches:
-      - master
+      - main
 
 defaults:
   run:

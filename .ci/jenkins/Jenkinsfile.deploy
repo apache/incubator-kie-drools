@@ -362,7 +362,7 @@ void checkoutQuickstarts(String dirName=quickstartsRepository) {
 
 String getFallbackBranch(String repo) {
     def repositoryScm = githubscm.getRepositoryScm(repo, 'kiegroup', params.PR_TARGET_BRANCH)
-    return repositoryScm ? params.PR_TARGET_BRANCH : 'master'
+    return repositoryScm ? params.PR_TARGET_BRANCH : 'main'
 }
 
 void prepareForPR(String repo) {
