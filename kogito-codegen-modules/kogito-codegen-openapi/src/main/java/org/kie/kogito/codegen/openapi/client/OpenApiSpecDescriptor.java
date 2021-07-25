@@ -29,7 +29,7 @@ import java.util.Set;
  * Represents an OpenAPISpec resource defined in the given file.
  * For example, for Serverless Workflows, this resource file can be found in the Function definitions.
  *
- * @see <a href="https://github.com/serverlessworkflow/specification/blob/master/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service Invocations</a>
+ * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service Invocations</a>
  */
 public class OpenApiSpecDescriptor {
 

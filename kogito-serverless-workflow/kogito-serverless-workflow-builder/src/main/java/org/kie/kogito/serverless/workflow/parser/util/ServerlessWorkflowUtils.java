@@ -191,7 +191,7 @@ public class ServerlessWorkflowUtils {
     }
 
     /**
-     * @see <a href="https://github.com/serverlessworkflow/specification/blob/master/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
+     * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
      *      Invocations</a>
      * @param function to extract the OpenApi URI
      * @return the OpenApi URI if found, or an empty string if not
@@ -204,7 +204,7 @@ public class ServerlessWorkflowUtils {
     }
 
     /**
-     * @see <a href="https://github.com/serverlessworkflow/specification/blob/master/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
+     * @see <a href="https://github.com/serverlessworkflow/specification/blob/main/specification.md#Using-Functions-For-RESTful-Service-Invocations">Using Functions For RESTful Service
      *      Invocations</a>
      * @param function to extract the OpenApi operationId
      * @return the OpenApi operationId if found, otherwise an empty string

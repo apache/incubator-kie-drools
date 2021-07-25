@@ -27,7 +27,7 @@ import com.oracle.svm.core.annotate.TargetClass;
  * This avoids clients to add <code>--allow-incomplete-classpath</code> option on their build configuration.
  * <p/>
  * Cloned from
- * <a href="https://github.com/quarkusio/quarkus/blob/master/extensions/kubernetes-client/runtime/src/main/java/io/quarkus/kubernetes/client/runtime/graal/CertUtilsSubstitutions.java">Quarkus
+ * <a href="https://github.com/quarkusio/quarkus/blob/main/extensions/kubernetes-client/runtime/src/main/java/io/quarkus/kubernetes/client/runtime/graal/CertUtilsSubstitutions.java">Quarkus
  * Kubernetes Extension</a> to not add Quarkus dependencies to this project
  */
 @TargetClass(className = "io.fabric8.kubernetes.client.internal.CertUtils")

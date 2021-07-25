@@ -18,9 +18,9 @@ Kogito uses [JIRA to manage and report issues](https://issues.redhat.com/project
 
 If you believe you found a bug, please indicate a way to reproduce it, what you are seeing and what you would expect to see. Don't forget to indicate your Kogito, Java, Maven, Quarkus/Spring, GraalVM version. 
 
-### Checking an issue is fixed in master
+### Checking an issue is fixed in main
 
-Sometimes a bug has been fixed in the `master` branch of Kogito and you want to confirm it is fixed for your own application. Testing the `master` branch is easy and you have two options:
+Sometimes a bug has been fixed in the `main` branch of Kogito and you want to confirm it is fixed for your own application. Testing the `main` branch is easy and you have two options:
 
 * either use the snapshots we publish daily on https://repository.jboss.org/nexus/content/repositories/snapshots/
 * or build Kogito all by yourself
@@ -54,7 +54,7 @@ Copyright headers format is enforced during build time. In order to automaticall
 mvn com.mycila:license-maven-plugin:format
 ```
 
-Make sure you have configured your IDE according to the [project codestyle](https://github.com/kiegroup/kogito-runtimes/tree/master/kogito-build/kogito-ide-config).
+Make sure you have configured your IDE according to the [project codestyle](https://github.com/kiegroup/kogito-runtimes/tree/main/kogito-build/kogito-ide-config).
 
 ### Requirements for Dependencies
 
@@ -95,7 +95,7 @@ Any dependency used in any KIE project must fulfill these hard requirements:
       Maven or Gradle are acceptable as build systems.
 
 Any dependency used in any KOGITO projects should fulfill these soft requirements:
-- **Edit dependencies** in **[kogito-build-parent](https://github.com/kiegroup/kogito-runtimes/blob/master/kogito-build/kogito-build-parent/pom.xml)**.
+- **Edit dependencies** in **[kogito-build-parent](https://github.com/kiegroup/kogito-runtimes/blob/main/kogito-build/kogito-build-parent/pom.xml)**.
     - Dependencies in subprojects should avoid overwriting the dependency versions of kogito-build-parent if there is no special case or need for that.
 
 - Only use dependencies with **an active community**.

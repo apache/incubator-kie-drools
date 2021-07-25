@@ -205,7 +205,7 @@ void checkoutRepo(String repoName, String dirName=repoName) {
 
 void checkoutDroolsRepo() {
     dir('drools') {
-        checkout(githubscm.resolveRepository('drools', 'kiegroup', 'master', false))
+        checkout(githubscm.resolveRepository('drools', 'kiegroup', 'main', false))
     }
 }
 

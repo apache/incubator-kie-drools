@@ -9,7 +9,7 @@ if [ -z $author ]; then
 fi
 
 if [ -z $branch ]; then
-  branch='master'
+  branch='main'
 fi
 
 git clone --single-branch --branch $branch https://github.com/${author}/jenkins-pipeline-shared-libraries.git $TEMP_DIR

@@ -17,7 +17,7 @@ Each extension has a common structure:
 the user has to use
 - `kogito-quarkus-*-deployment`: compile side of the extension
 - `kogito-quarkus-*-integration-test`: this module is intended to contain one or more integration tests
-  for the extension. **NOTE**: full integration test coverage should be implemented in the [`integration-tests`](https://github.com/kiegroup/kogito-runtimes/tree/master/integration-tests)
+  for the extension. **NOTE**: full integration test coverage should be implemented in the [`integration-tests`](https://github.com/kiegroup/kogito-runtimes/tree/main/integration-tests)
   module while this module is intended to perform a quick sanity check. They are executed by `quarkus-platform` pipelines 
   to make sure the extension works after the inclusion in the platform.
 - `kogito-quarkus-*-integration-test-hot-reload` (optional): if the extension supports hot reload feature, it module contains

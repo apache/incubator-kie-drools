@@ -34,7 +34,7 @@ public class IstioServiceDiscovery extends BaseServiceDiscovery {
     /**
      * Key field for service endpoint on KNative Serving 0.7+
      * 
-     * @see <a href="https://github.com/knative/serving/blob/master/docs/spec/spec.md#service">KNative Serving Service spec</a>
+     * @see <a href="https://github.com/knative/serving/blob/main/docs/spec/spec.md#service">KNative Serving Service spec</a>
      */
     private static final String KEY_URL = "url";
     private static final String PROTOCOL_REGEX = "^(http:\\/\\/www\\.|https:\\/\\/www\\.|http:\\/\\/|https:\\/\\/)";
