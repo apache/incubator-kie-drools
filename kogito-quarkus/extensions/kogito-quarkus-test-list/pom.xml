@@ -47,7 +47,7 @@
               <testJarsPath>${test.list.file.location}</testJarsPath>
               <fileSets>
                 <fileSet>
-                  <directory>${basedir}/../../integration-tests</directory>
+                  <directory>${project.root.dir}/integration-tests/</directory>
                   <includes>
                     <include>*quarkus*/pom.xml</include>
                     <include>integration-tests-quarkus-processes-persistence/*/pom.xml</include>
@@ -61,7 +61,7 @@
                   </excludes>
                 </fileSet>
                 <fileSet>
-                  <directory>${basedir}/../</directory>
+                  <directory>${project.root.dir}/quarkus/extensions/</directory>
                   <includes>
                     <include>kogito-quarkus-decisions-extension/*-integration-test*/pom.xml</include>
                     <include>kogito-quarkus-extension/*-integration-test*/pom.xml</include>
