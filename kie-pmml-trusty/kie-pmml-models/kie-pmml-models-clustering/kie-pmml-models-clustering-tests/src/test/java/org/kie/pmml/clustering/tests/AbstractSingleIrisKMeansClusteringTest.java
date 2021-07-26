@@ -15,6 +15,7 @@ public abstract class AbstractSingleIrisKMeansClusteringTest extends AbstractPMM
     private static final String TARGET_FIELD = "class";
     private static final String OUT_NORMCONTINUOUS_FIELD = "out_normcontinuous_field";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
 
     protected static PMMLRuntime pmmlRuntime;
 
@@ -53,6 +54,14 @@ public abstract class AbstractSingleIrisKMeansClusteringTest extends AbstractPMM
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(1.0);
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (sepalLength > 4.7 && sepalLength < 5.2) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (sepalLength >= 5.6 && sepalLength < 5.9) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
     }
 }
