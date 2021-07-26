@@ -17,7 +17,6 @@ package org.drools.compiler.integrationtests;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -42,7 +41,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
-public class MVELDateClassFieldReaderConcurrencyTest {
+public class ConsequenceConcurrencyWithAndOrTest {
 
     private static int LOOP = 500;
 
@@ -51,7 +50,7 @@ public class MVELDateClassFieldReaderConcurrencyTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public MVELDateClassFieldReaderConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public ConsequenceConcurrencyWithAndOrTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -61,18 +60,19 @@ public class MVELDateClassFieldReaderConcurrencyTest {
     }
 
     @Test(timeout = 300000)
-    public void testMVELDateClassFieldReaderConcurrency() {
+    public void testConsequenceConcurrency() {
         final String drl =
                 "package com.example.reproducer\n" +
-                           "import " + Bus.class.getCanonicalName() + ";\n" +
-                           "import java.util.Date;\n" +
-                           "dialect \"mvel\"\n" +
-                           "rule R1\n" +
-                           "    when\n" +
-                           "        $d : Date()\n" +
-                           "        $bus1 : Bus( new Date(name.concat(karaoke.dvd[\"POWER PLANT\"].artist).length) == $d )\n" +
-                           "    then\n" +
-                           "end\n";
+                        "import " + Bus.class.getCanonicalName() + ";\n" +
+                        "import static " + ConstraintWithAndOrConcurrencyTest.class.getCanonicalName() + ".TOSTRING;\n" +
+                        "dialect \"mvel\"\n" +
+                        "global java.util.List result;\n" +
+                        "rule \"rule_mt_1a\"\n" +
+                        "    when\n" +
+                        "        $bus : Bus( $title: \"POWER PLANT\" )\n" +
+                        "    then\n" +
+                        "        result.add(TOSTRING($bus.karaoke.dvd[$title].artist) == \"BBB\" || TOSTRING($bus.karaoke.dvd[$title].artist) >= \"01\" && TOSTRING($bus.karaoke.dvd[$title].artist) <= \"39\");\n" +
+                        "end";
 
         List<Exception> exceptions = new ArrayList<>();
 
@@ -83,10 +83,23 @@ public class MVELDateClassFieldReaderConcurrencyTest {
             if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
                 kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
             }
+
             for (int i = 0; i < LOOP; i++) {
                 if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
                     kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
                 }
+
+                // 1st run
+                KieSession kSession1 = kieBase.newKieSession();
+                List<Boolean> result = new ArrayList<>();
+                kSession1.setGlobal("result", result);
+                Bus bus1 = new Bus("red", 30);
+                bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "BBB")); // match the 1st condition -> short circuit
+                bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                kSession1.insert(bus1);
+                kSession1.fireAllRules();
+                kSession1.dispose();
+
                 ExecutorService executor = Executors.newFixedThreadPool(THREADS);
                 CountDownLatch latch = new CountDownLatch(THREADS);
                 for (int j = 0; j < REQUESTS; j++) {
@@ -95,12 +108,13 @@ public class MVELDateClassFieldReaderConcurrencyTest {
 
                         public void run() {
                             KieSession kSession = finalKieBase.newKieSession();
+                            List<Boolean> result = new ArrayList<>();
+                            kSession.setGlobal("result", result);
 
                             Bus bus1 = new Bus("red", 30);
-                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
+                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY")); // doesn't match the 1st condition -> evaluate the 2nd condition (not match)
                             bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
                             kSession.insert(bus1);
-                            kSession.insert(new Date());
 
                             try {
                                 latch.countDown();
@@ -112,9 +126,6 @@ public class MVELDateClassFieldReaderConcurrencyTest {
                             try {
                                 kSession.fireAllRules();
                             } catch (Exception e) {
-                                if (exceptions.isEmpty()) {
-                                    e.printStackTrace();
-                                }
                                 exceptions.add(e);
                             } finally {
                                 kSession.dispose();
@@ -125,10 +136,13 @@ public class MVELDateClassFieldReaderConcurrencyTest {
 
                 executor.shutdown();
                 try {
-                    executor.awaitTermination(10, TimeUnit.SECONDS);
+                    executor.awaitTermination(300, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     // ignore
                 }
+            }
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
 
             assertEquals(0, exceptions.size());

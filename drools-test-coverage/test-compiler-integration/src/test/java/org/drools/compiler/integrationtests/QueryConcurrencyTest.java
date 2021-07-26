@@ -15,17 +15,18 @@
 
 package org.drools.compiler.integrationtests;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Album;
-import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Bus;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
-public class MVELDateClassFieldReaderConcurrencyTest {
+public class QueryConcurrencyTest {
 
     private static int LOOP = 500;
 
@@ -51,7 +52,7 @@ public class MVELDateClassFieldReaderConcurrencyTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public MVELDateClassFieldReaderConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public QueryConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -61,18 +62,23 @@ public class MVELDateClassFieldReaderConcurrencyTest {
     }
 
     @Test(timeout = 300000)
-    public void testMVELDateClassFieldReaderConcurrency() {
+    public void testConstraintConcurrency() {
         final String drl =
                 "package com.example.reproducer\n" +
-                           "import " + Bus.class.getCanonicalName() + ";\n" +
-                           "import java.util.Date;\n" +
-                           "dialect \"mvel\"\n" +
-                           "rule R1\n" +
-                           "    when\n" +
-                           "        $d : Date()\n" +
-                           "        $bus1 : Bus( new Date(name.concat(karaoke.dvd[\"POWER PLANT\"].artist).length) == $d )\n" +
-                           "    then\n" +
-                           "end\n";
+                        "import " + Bus.class.getCanonicalName() + ";\n" +
+                        "import static " + QueryConcurrencyTest.class.getCanonicalName() + ".TOSTRING;\n" +
+                        "dialect \"mvel\"\n" +
+                        "query checkLength(String $s, int $l)\n" +
+                        "    $s := String( length == $l )\n" +
+                        "end\n" +
+                        "rule \"rule_mt_1a\"\n" +
+                        "    when\n" +
+                        "        $bus : Bus( $check: \"GAMMA RAY\",\n" +
+                        "                    $title: \"POWER PLANT\")\n" +
+                        "        checkLength(TOSTRING($bus.karaoke.dvd[$title].artist), 9;)\n" +
+                        "    then\n" +
+
+                        "end";
 
         List<Exception> exceptions = new ArrayList<>();
 
@@ -100,7 +106,7 @@ public class MVELDateClassFieldReaderConcurrencyTest {
                             bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
                             bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
                             kSession.insert(bus1);
-                            kSession.insert(new Date());
+                            kSession.insert("GAMMA RAY");
 
                             try {
                                 latch.countDown();
@@ -112,9 +118,6 @@ public class MVELDateClassFieldReaderConcurrencyTest {
                             try {
                                 kSession.fireAllRules();
                             } catch (Exception e) {
-                                if (exceptions.isEmpty()) {
-                                    e.printStackTrace();
-                                }
                                 exceptions.add(e);
                             } finally {
                                 kSession.dispose();
@@ -125,10 +128,14 @@ public class MVELDateClassFieldReaderConcurrencyTest {
 
                 executor.shutdown();
                 try {
-                    executor.awaitTermination(10, TimeUnit.SECONDS);
+                    executor.awaitTermination(1000000, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     // ignore
                 }
+            }
+
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
 
             assertEquals(0, exceptions.size());
@@ -136,5 +143,94 @@ public class MVELDateClassFieldReaderConcurrencyTest {
         } finally {
             System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
         }
+    }
+
+    public static class Bus {
+
+        private String name;
+        private int capacity;
+        private BigDecimal weight;
+        private Karaoke karaoke = new Karaoke();
+
+        public Bus(String name, int capacity) {
+            this.name = name;
+            this.capacity = capacity;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public int getPerson() {
+            return capacity;
+        }
+
+        public void setCapacity(int capacity) {
+            this.capacity = capacity;
+        }
+
+        public BigDecimal getWeight() {
+            return weight;
+        }
+
+        public void setWeight(BigDecimal weight) {
+            this.weight = weight;
+        }
+
+        public Karaoke getKaraoke() {
+            return karaoke;
+        }
+    }
+
+    public static class Karaoke {
+
+        private Map<String, Album> dvd = new HashMap<>();
+
+        public Map<String, Album> getDvd() {
+            return dvd;
+        }
+
+        public void fix() {
+            dvd = Collections.unmodifiableMap(dvd);
+        }
+    }
+
+    public static class Album {
+
+        private String title;
+        private String artist;
+
+        public Album(String title, String artist) {
+            this.title = title;
+            this.artist = artist;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getArtist() {
+            return artist;
+        }
+
+        public void setArtist(String artist) {
+            this.artist = artist;
+        }
+    }
+
+    public static String TOSTRING(String s) {
+        return s == null ? "null" : s;
+    }
+
+    public static String TOSTRING(Object o) {
+        return o == null ? "null" : o.toString();
     }
 }

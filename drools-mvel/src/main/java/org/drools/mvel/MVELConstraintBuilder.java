@@ -17,7 +17,6 @@ package org.drools.mvel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,6 +73,7 @@ import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
 import org.drools.mvel.expr.MVELObjectExpression;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.ConversionHandler;
@@ -95,9 +95,9 @@ import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalize
 import static org.drools.compiler.rule.builder.util.PatternBuilderUtil.normalizeStringOperator;
 import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
-import static org.drools.core.util.StringUtils.extractFirstIdentifier;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConstraintBuilder implements ConstraintBuilder {
 
@@ -820,7 +820,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         private ParserContext parserContext;
 
         private transient Class<?> argumentClass;
-        private transient Serializable mvelExpr;
+        private transient MvelEvaluator<Object> evaluator;
 
         public Expression() { }
 
@@ -832,23 +832,23 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         private void init() {
-            Map<String, Class> inputs = new HashMap<String, Class>();
+            Map<String, Class> inputs = new HashMap<>();
             for (Declaration d : declarations) {
                 inputs.put(d.getBindingName(), d.getDeclarationClass());
             }
             parserContext.setInputs(inputs);
 
             this.argumentClass = MVEL.analyze( expression, parserContext );
-            this.mvelExpr = MVEL.compileExpression( expression, parserContext );
+            this.evaluator = createMvelEvaluator(MVEL.compileExpression( expression, parserContext ));
         }
 
         @Override
         public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
-            Map<String, Object> vars = new HashMap<String, Object>();
+            Map<String, Object> vars = new HashMap<>();
             for (Declaration d : declarations) {
                 vars.put(d.getBindingName(), QueryArgument.evaluateDeclaration( wm, leftTuple, d ));
             }
-            return MVELSafeHelper.getEvaluator().executeExpression( this.mvelExpr, vars );
+            return evaluator.evaluate( null, vars );
         }
 
         @Override
