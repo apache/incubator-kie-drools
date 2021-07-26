@@ -45,33 +45,6 @@
                 <dependencySourceInclude>org.optaplanner:optaplanner-test</dependencySourceInclude>
                 <!-- TODO apparently optaplanner-examples gets included too somehow? -->
               </dependencySourceIncludes>
-              <additionalDependencies>
-                <additionalDependency>
-                  <groupId>io.quarkus.gizmo</groupId>
-                  <artifactId>gizmo</artifactId>
-                  <version>${version.io.quarkus.gizmo}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.kie.kogito</groupId>
-                  <artifactId>kogito-legacy-api</artifactId>
-                  <version>${version.org.kie.kogito}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.ow2.asm</groupId>
-                  <artifactId>asm</artifactId>
-                  <version>${version.org.ow2.asm}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.jboss</groupId>
-                  <artifactId>jandex</artifactId>
-                  <version>${version.org.jboss.jandex}</version>
-                </additionalDependency>
-                <additionalDependency>
-                  <groupId>org.hibernate</groupId>
-                  <artifactId>hibernate-core</artifactId>
-                  <version>${version.org.hibernate}</version>
-                </additionalDependency>
-              </additionalDependencies>
             </configuration>
           </execution>
         </executions>
@@ -197,6 +170,28 @@
       <groupId>org.optaplanner</groupId>
       <artifactId>optaplanner-docs</artifactId>
       <type>zip</type>
+    </dependency>
+
+    <!-- Javadoc dependencies -->
+    <dependency>
+      <groupId>io.quarkus.gizmo</groupId>
+      <artifactId>gizmo</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-legacy-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jandex</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.hibernate</groupId>
+      <artifactId>hibernate-core</artifactId>
     </dependency>
   </dependencies>
 

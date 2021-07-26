@@ -35,6 +35,13 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-test-util</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <!-- TODO: remove once the kie-test-util switches to jakarta.transaction:jakarta.transaction-api. -->
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- External dependencies -->
     <!-- Logging -->
@@ -45,8 +52,8 @@
     </dependency>
     <!-- JPA -->
     <dependency>
-      <groupId>javax.persistence</groupId>
-      <artifactId>javax.persistence-api</artifactId>
+      <groupId>jakarta.persistence</groupId>
+      <artifactId>jakarta.persistence-api</artifactId>
     </dependency>
     <!-- Hibernate -->
     <dependency>
@@ -63,14 +70,18 @@
           <groupId>javax.xml.bind</groupId>
           <artifactId>jaxb-api</artifactId>
         </exclusion>
+        <!-- TODO: remove once the hibernate-core switches to jakarta.transaction:jakarta.transaction-api. -->
+        <exclusion>
+          <groupId>org.jboss.spec.javax.transaction</groupId>
+          <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+        </exclusion>
       </exclusions>
       <!-- Used at compile time by *ScoreHibernateType -->
       <optional>true</optional>
     </dependency>
     <dependency>
-      <!-- Replacement for 'org.apache.geronimo.specs:geronimo-jta_1.1_spec' which is excluded from Hibernate deps. -->
-      <groupId>org.jboss.spec.javax.transaction</groupId>
-      <artifactId>jboss-transaction-api_1.2_spec</artifactId>
+      <groupId>jakarta.transaction</groupId>
+      <artifactId>jakarta.transaction-api</artifactId>
       <scope>runtime</scope>
       <optional>true</optional>
     </dependency>
@@ -84,11 +95,6 @@
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-engine</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.hibernate</groupId>
-      <artifactId>hibernate-entitymanager</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
