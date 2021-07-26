@@ -195,7 +195,7 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
 
         if (accessor instanceof AccessorNode) {
             AccessorNode nextNode = ((AccessorNode) accessor).getNextNode();
-            if (nextNode instanceof MethodAccessor) {
+            if (nextNode instanceof MethodAccessor && ((MethodAccessor) nextNode).getParms() != null) {
                 for (ExecutableStatement param : ((MethodAccessor) nextNode).getParms()) {
                     if (!isFullyEvaluated(param)) {
                         return false;
