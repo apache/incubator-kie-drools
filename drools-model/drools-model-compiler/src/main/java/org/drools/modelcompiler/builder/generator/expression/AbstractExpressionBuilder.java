@@ -130,19 +130,13 @@ public abstract class AbstractExpressionBuilder {
         if (expression instanceof CastExpr) {
             CastExpr ce = (CastExpr) expression;
             return findLeftmostExpression(ce.getExpression());
-        } else if (expression instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
-            if(!methodCallExpr.getArguments().isEmpty()) {
-                return findLeftmostExpression(methodCallExpr.getArguments().iterator().next());
-            } else {
-                return expression;
-            }
-        } else if (expression instanceof FieldAccessExpr) {
-            return expression;
-        } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        }
+        if (expression instanceof MethodCallExpr || expression instanceof FieldAccessExpr) {
             return expression;
         }
+
+        context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        return expression;
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Expression expr ) {
