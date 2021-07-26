@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
+package org.kie.kogito.addon.cloudevents.quarkus;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.kie.kogito.services.event.impl.DefaultChannelResolver;
-import javax.annotation.PostConstruct;
+import java.util.HashSet;
+import java.util.Set;
 
-@Component
-public class ChannelResolver extends DefaultChannelResolver {
+public class DefaultChannelResolver implements ChannelResolver {
 
-    @PostConstruct
-    void populateChannels() {}
+    protected Set<ChannelInfo> inputChannels = new HashSet<>();
+    protected Set<String> outputChannels = new HashSet<>();
+
+    @Override
+    public Set<String> getOutputChannels() {
+        return outputChannels;
+    }
+
+    @Override
+    public Set<ChannelInfo> getInputChannels() {
+        return inputChannels;
+    }
 }

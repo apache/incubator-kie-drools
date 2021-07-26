@@ -21,7 +21,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.kie.kogito.addon.cloudevents.quarkus.AbstractQuarkusCloudEventReceiver;
 
 @ApplicationScoped
-@Named("$Trigger$Trigger")
+@Named("$BeanName$")
 public class $Trigger$EventReceiver extends AbstractQuarkusCloudEventReceiver {
 
 }

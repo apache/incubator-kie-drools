@@ -30,7 +30,6 @@ import javax.inject.Inject;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment.Strategy;
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.event.ChannelResolver;
 
 import io.smallrye.reactive.messaging.ChannelRegistar;
 import io.smallrye.reactive.messaging.DefaultMediatorConfiguration;
@@ -50,15 +49,15 @@ public class QuarkusMultiCloudEventReceiver implements ChannelRegistar {
     @Inject
     private ChannelResolver channelResolver;
 
-    MediatorConfiguration mediatorConf(String channel) {
-        Bean<?> bean = beanManager.getBeans(channel + "Trigger").iterator().next();
+    MediatorConfiguration mediatorConf(ChannelInfo channel) {
+        Bean<?> bean = beanManager.getBeans(channel.getBeanName()).iterator().next();
         return new DefaultMediatorConfiguration(
                 getMethod(bean),
                 bean) {
 
             @Override
             public List<String> getIncoming() {
-                return Collections.singletonList(channel);
+                return Collections.singletonList(channel.getChannelName());
             }
 
             @Override

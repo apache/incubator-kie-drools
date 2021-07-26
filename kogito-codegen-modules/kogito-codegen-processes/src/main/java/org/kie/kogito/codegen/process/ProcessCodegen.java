@@ -283,7 +283,10 @@ public class ProcessCodegen extends AbstractGenerator {
         ProcessToExecModelGenerator execModelGenerator =
                 new ProcessToExecModelGenerator(context().getClassLoader());
 
-        ChannelResolverGenerator channelGenerator = new ChannelResolverGenerator(context());
+        ChannelResolverGenerator channelGenerator = null;
+        if (context().getAddonsConfig().useMultiChannel()) {
+            channelGenerator = new ChannelResolverGenerator(context());
+        }
 
         // collect all process descriptors (exec model)
         for (KogitoWorkflowProcess workFlowProcess : processes.values()) {
@@ -344,7 +347,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-
+                        String eventListenerName = '_' + trigger.getName() + "_trigger";
                         MessageDataEventGenerator msgDataEventGenerator =
                                 new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);
@@ -355,10 +358,11 @@ public class ProcessCodegen extends AbstractGenerator {
                                 execModelGen.className(),
                                 applicationCanonicalName(),
                                 msgDataEventGenerator.className(),
-                                trigger));
-                        channelGenerator.addInputChannel(trigger.getName());
-                        if (context().getAddonsConfig().useMultiChannel()) {
-                            eventReceiverGenerators.computeIfAbsent(trigger.getName(), t -> new EventReceiverGenerator(context(), trigger));
+                                trigger,
+                                eventListenerName));
+                        if (channelGenerator != null) {
+                            channelGenerator.addInputChannel(eventListenerName, trigger.getName());
+                            eventReceiverGenerators.computeIfAbsent(trigger.getName(), t -> new EventReceiverGenerator(context(), eventListenerName, trigger));
                         }
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
 
@@ -372,7 +376,9 @@ public class ProcessCodegen extends AbstractGenerator {
                                 execModelGen.className(),
                                 msgDataEventGenerator.className(),
                                 trigger));
-                        channelGenerator.addOutputChannel(trigger.getName());
+                        if (channelGenerator != null) {
+                            channelGenerator.addOutputChannel(trigger.getName());
+                        }
                     }
                 }
             }
@@ -383,10 +389,11 @@ public class ProcessCodegen extends AbstractGenerator {
             pis.add(pi);
         }
 
-        storeFile(MODEL_TYPE, channelGenerator.generateFilePath(), channelGenerator.generate());
-
-        for (EventReceiverGenerator eventRecGenerator : eventReceiverGenerators.values()) {
-            storeFile(MODEL_TYPE, eventRecGenerator.generateFilePath(), eventRecGenerator.generate());
+        if (channelGenerator != null) {
+            storeFile(MODEL_TYPE, channelGenerator.generateFilePath(), channelGenerator.generate());
+            for (EventReceiverGenerator eventRecGenerator : eventReceiverGenerators.values()) {
+                storeFile(MODEL_TYPE, eventRecGenerator.generateFilePath(), eventRecGenerator.generate());
+            }
         }
 
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {

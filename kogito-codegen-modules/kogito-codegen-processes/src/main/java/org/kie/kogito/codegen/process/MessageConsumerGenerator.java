@@ -54,6 +54,7 @@ public class MessageConsumerGenerator {
     private final String appCanonicalName;
     private final String messageDataEventClassName;
     private final TriggerMetaData trigger;
+    private final String eventListenerName;
 
     public MessageConsumerGenerator(
             KogitoBuildContext context,
@@ -62,7 +63,8 @@ public class MessageConsumerGenerator {
             String processfqcn,
             String appCanonicalName,
             String messageDataEventClassName,
-            TriggerMetaData trigger) {
+            TriggerMetaData trigger,
+            String eventListenerName) {
         this.context = context;
         this.process = process;
         this.trigger = trigger;
@@ -75,6 +77,7 @@ public class MessageConsumerGenerator {
         this.processClazzName = processfqcn;
         this.appCanonicalName = appCanonicalName;
         this.messageDataEventClassName = messageDataEventClassName;
+        this.eventListenerName = eventListenerName;
 
         this.generator = TemplatedGenerator.builder()
                 .withTargetTypeName(resourceClazzName)
@@ -118,7 +121,7 @@ public class MessageConsumerGenerator {
         }
         if (context.getAddonsConfig().useMultiChannel()) {
             template.findAll(FieldDeclaration.class, fd -> fd.getVariable(0).getNameAsString().equals("eventReceiver"))
-                    .forEach(fd -> fd.addAndGetAnnotation("javax.inject.Named").addPair("value", new StringLiteralExpr(trigger.getName() + "Trigger")));
+                    .forEach(fd -> fd.addAndGetAnnotation("javax.inject.Named").addPair("value", new StringLiteralExpr(eventListenerName)));
         }
         template.getMembers().sort(new BodyDeclarationComparator());
         return clazz.toString();

@@ -29,7 +29,7 @@ public class EventReceiverGenerator {
     private TemplatedGenerator template;
     private CompilationUnit generator;
 
-    public EventReceiverGenerator(KogitoBuildContext context, TriggerMetaData trigger) {
+    public EventReceiverGenerator(KogitoBuildContext context, String eventListenerName, TriggerMetaData trigger) {
         String className = trigger.getName().replace(" ", "_") + "EventReceiver";
         template = TemplatedGenerator.builder()
                 .withTargetTypeName(className)
@@ -38,7 +38,7 @@ public class EventReceiverGenerator {
         ClassOrInterfaceDeclaration clazz = generator.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new InvalidTemplateException(template, "Cannot find class declaration"));
         clazz.setName(className);
         clazz.findAll(StringLiteralExpr.class)
-                .forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+                .forEach(str -> str.setString(str.asString().replace("$BeanName$", eventListenerName)));
     }
 
     public String generate() {
@@ -48,5 +48,4 @@ public class EventReceiverGenerator {
     public String generateFilePath() {
         return template.generatedFilePath();
     }
-
 }

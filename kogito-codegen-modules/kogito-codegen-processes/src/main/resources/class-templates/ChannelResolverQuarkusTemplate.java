@@ -18,7 +18,7 @@ package $Package$;
 import javax.enterprise.context.ApplicationScoped;
 import javax.annotation.PostConstruct;
 
-import org.kie.kogito.services.event.impl.DefaultChannelResolver;
+import org.kie.kogito.addon.cloudevents.quarkus.DefaultChannelResolver;
 
 @ApplicationScoped
 public class ChannelResolver extends DefaultChannelResolver {

@@ -29,7 +29,6 @@ import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecorator;
 import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecoratorFactory;
 import org.kie.kogito.conf.ConfigBean;
-import org.kie.kogito.event.ChannelResolver;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
