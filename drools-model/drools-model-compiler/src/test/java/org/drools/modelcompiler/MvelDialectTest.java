@@ -29,7 +29,6 @@ import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.builder.Message;
 import org.kie.api.builder.Results;
@@ -1323,5 +1322,130 @@ public class MvelDialectTest extends BaseModelTest {
         int rulesFired = ksession.fireAllRules();
         assertEquals( 3, rulesFired);
         assertThat(results).containsExactly("John");
+    }
+
+    @Test
+    public void testMVELMapRHSGetAndAssign() {
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule \"rule_mt_1a\"\n" +
+                     "    when\n" +
+                     "        $p : Person($age : age)\n" +
+                     "    then\n" +
+                     "        Integer i = $p.items[$age];\n" +
+                     "        result.add(i);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person person = new Person("John", 20);
+        person.getItems().put(20, 100);
+        ksession.insert(person);
+        ksession.fireAllRules();
+        assertThat(result).containsExactly(100);
+    }
+
+    @Test
+    public void testRHSMapGetAsParam() {
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1\n" +
+                     "    when\n" +
+                     "        $p : Person($name : name)\n" +
+                     "    then\n" +
+                     "        result.add($p.itemsString[$name]);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person person = new Person("John");
+        person.getItemsString().put("John", "OK");
+        ksession.insert(person);
+        ksession.fireAllRules();
+        assertThat(result).containsExactly("OK");
+    }
+
+    @Test
+    public void testRHSMapNestedProperty() {
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1\n" +
+                     "    when\n" +
+                     "        $p : Person( $name: name )\n" +
+                     "    then\n" +
+                     "        result.add($p.childrenMap[$name].age);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person parent = new Person("John", 30);
+        Person child = new Person("John", 5);
+        parent.getChildrenMap().put("John", child);
+
+        ksession.insert(parent);
+        ksession.fireAllRules();
+        assertThat(result).containsExactly(5);
+    }
+
+    @Test
+    public void testRHSListNestedProperty() {
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1\n" +
+                     "    when\n" +
+                     "        $p : Person( $age: age )\n" +
+                     "    then\n" +
+                     "        result.add($p.addresses[$age].city);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person john = new Person("John", 0);
+        Address address = new Address("London");
+        john.getAddresses().add(address);
+
+        ksession.insert(john);
+        ksession.fireAllRules();
+        assertThat(result).containsExactly("London");
+    }
+
+    @Test
+    public void testRHSMapMethod() {
+        String str = "package com.example.reproducer\n" +
+                     "import " + Person.class.getCanonicalName() + ";\n" +
+                     "dialect \"mvel\"\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1\n" +
+                     "    when\n" +
+                     "        $p : Person( $name: name )\n" +
+                     "    then\n" +
+                     "        result.add($p.itemsString.size);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person person = new Person("John");
+        person.getItemsString().put("John", "OK");
+        ksession.insert(person);
+        ksession.fireAllRules();
+        assertThat(result).containsExactly(1);
     }
 }

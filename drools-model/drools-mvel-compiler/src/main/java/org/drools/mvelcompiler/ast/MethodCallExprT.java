@@ -17,7 +17,6 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -90,11 +89,13 @@ public class MethodCallExprT implements TypedExpression {
         }
 
         if(optionalActualType.isPresent() && a.getType().isPresent()) {
-            Class<?> argumentType = (Class<?>) a.getType().get();
-            Class<?> actualType = optionalActualType.get();
-
-            if(argumentType != actualType) {
-                return new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualType, (Expression) a.toJavaExpression());
+            Type argumentTypeOrig = a.getType().get();
+            if (argumentTypeOrig instanceof Class) {
+                Class<?> argumentType = (Class<?>) argumentTypeOrig;
+                Class<?> actualType = optionalActualType.get();
+                if(argumentType != actualType) {
+                    return new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualType, (Expression) a.toJavaExpression());
+                }
             }
         }
 

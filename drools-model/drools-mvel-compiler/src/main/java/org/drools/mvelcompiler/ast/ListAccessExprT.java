@@ -16,7 +16,10 @@
 
 package org.drools.mvelcompiler.ast;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
@@ -39,6 +42,21 @@ public class ListAccessExprT implements TypedExpression {
     @Override
     public Optional<Type> getType() {
         return Optional.of(type);
+    }
+
+    public Optional<Type> getElementType() {
+        return getType().filter(ParameterizedType.class::isInstance)
+                        .map(ParameterizedType.class::cast)
+                        .map(parameterizedType -> {
+                            Class<?> rawType = (Class<?>) parameterizedType.getRawType();
+                            if (List.class.isAssignableFrom(rawType)) {
+                                return parameterizedType.getActualTypeArguments()[0];
+                            } else if (Map.class.isAssignableFrom(rawType)) {
+                                return parameterizedType.getActualTypeArguments()[1];
+                            } else {
+                                throw new IllegalStateException("ListAccessExprT is not applicable to " + rawType);
+                            }
+                        });
     }
 
     @Override

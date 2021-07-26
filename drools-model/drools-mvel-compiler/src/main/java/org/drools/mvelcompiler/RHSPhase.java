@@ -21,10 +21,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.VariableDeclarator;
@@ -46,7 +44,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import org.drools.core.util.ClassUtils;
-import org.drools.core.util.MethodUtils;
 import org.drools.core.util.MethodUtils.NullType;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
 import org.drools.mvel.parser.ast.expr.DrlNameExpr;
@@ -61,22 +58,18 @@ import org.drools.mvelcompiler.ast.FieldToAccessorTExpr;
 import org.drools.mvelcompiler.ast.IntegerLiteralExpressionT;
 import org.drools.mvelcompiler.ast.ListAccessExprT;
 import org.drools.mvelcompiler.ast.LongLiteralExpressionT;
-import org.drools.mvelcompiler.ast.MethodCallExprT;
 import org.drools.mvelcompiler.ast.ObjectCreationExpressionT;
 import org.drools.mvelcompiler.ast.SimpleNameTExpr;
 import org.drools.mvelcompiler.ast.StringLiteralExpressionT;
 import org.drools.mvelcompiler.ast.TypedExpression;
 import org.drools.mvelcompiler.ast.UnalteredTypedExpression;
 import org.drools.mvelcompiler.context.Declaration;
-import org.drools.mvelcompiler.context.DeclaredFunction;
 import org.drools.mvelcompiler.context.MvelCompilerContext;
 import org.drools.mvelcompiler.util.TypeUtils;
 
 import static java.util.Arrays.asList;
 import static java.util.Optional.ofNullable;
-
 import static org.drools.core.util.ClassUtils.getAccessor;
-import static org.drools.core.util.StreamUtils.optionalToStream;
 import static org.drools.mvelcompiler.ast.BigDecimalArithmeticExprT.toBigDecimalMethod;
 import static org.drools.mvelcompiler.util.OptionalUtils.map2;
 import static org.drools.mvelcompiler.util.TypeUtils.classFromType;
@@ -182,12 +175,16 @@ public class RHSPhase implements DrlGenericVisitor<TypedExpression, RHSPhase.Con
 
     private Optional<TypedExpression> asPropertyAccessor(SimpleName n, Context arg) {
         Optional<TypedExpression> lastTypedExpression = arg.scope;
-        Optional<Type> scopeType = arg.getScopeType();
+
+        Optional<Type> scopeType = lastTypedExpression.filter(ListAccessExprT.class::isInstance)
+                                                      .map(ListAccessExprT.class::cast)
+                                                      .map(expr -> expr.getElementType())
+                                                      .orElse(arg.getScopeType());
+
         Optional<Method> optAccessor = scopeType.flatMap(t -> ofNullable(getAccessor(classFromType(t), n.asString())));
 
         return map2(lastTypedExpression, optAccessor, FieldToAccessorTExpr::new);
     }
-
 
     private Optional<TypedExpression> asPropertyAccessorOfRootPattern(SimpleName n) {
         Optional<Class<?>> scopeType = mvelCompilerContext.getRootPattern();
