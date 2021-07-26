@@ -172,7 +172,7 @@ void setupDeployJob(String jobFolder, KogitoJobType jobType) {
             booleanParam('SEND_NOTIFICATION', false, 'In case you want the pipeline to send a notification on CI channel for this run.')
 
             //Build branch name for quickstarts
-            stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', isMainBranch() ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
+            stringParam('QUICKSTARTS_BUILD_BRANCH_NAME', Utils.isMainBranch(this) ? 'development' : "${GIT_BRANCH}", 'Base branch for quickstarts. Set if you are not on a multibranch pipeline.')
         }
 
         environmentVariables {
