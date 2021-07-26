@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.optaplanner.core.api.score.director.ScoreDirector;
+import org.optaplanner.core.impl.heuristic.move.AbstractMove;
 
 /**
  * A subList out of a single chain.
@@ -72,11 +73,7 @@ public class SubChain {
     }
 
     public <Solution_> SubChain rebase(ScoreDirector<Solution_> destinationScoreDirector) {
-        List<Object> rebasedEntityList = new ArrayList<>(entityList.size());
-        for (Object entity : entityList) {
-            rebasedEntityList.add(destinationScoreDirector.lookUpWorkingObject(entity));
-        }
-        return new SubChain(rebasedEntityList);
+        return new SubChain(AbstractMove.rebaseList(entityList, destinationScoreDirector));
     }
 
     @Override

@@ -18,8 +18,10 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.director.ScoreDirector;
@@ -82,13 +84,30 @@ public class SubChainSwapMove<Solution_> extends AbstractMove<Solution_> {
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
+        return !containsAnyOf(rightSubChain, leftSubChain);
+    }
+
+    static boolean containsAnyOf(SubChain rightSubChain, SubChain leftSubChain) {
+        int leftSubChainSize = leftSubChain.getSize();
+        if (leftSubChainSize == 0) {
+            return false;
+        } else if (leftSubChainSize == 1) { // No optimization possible.
+            return rightSubChain.getEntityList().contains(leftSubChain.getFirstEntity());
+        }
+        /*
+         * In order to find an entity in another subchain, we need to do contains() on a List.
+         * List.contains() is O(n), the performance gets worse with increasing size.
+         * Subchains here can easily have hundreds, thousands of elements.
+         * As Set.contains() is O(1), independent of set size, copying the list outperforms the lookup by a lot.
+         * Therefore this code converts the List lookup to HashSet lookup, in situations with repeat lookup.
+         */
+        Set<Object> rightSubChainEntityFastLookupSet = new HashSet<>(rightSubChain.getEntityList());
         for (Object leftEntity : leftSubChain.getEntityList()) {
-            if (rightSubChain.getEntityList().contains(leftEntity)) {
-                return false;
+            if (rightSubChainEntityFastLookupSet.contains(leftEntity)) {
+                return true;
             }
         }
-        // Because leftFirstEntity and rightFirstEntity are unequal, chained guarantees their values are unequal too.
-        return true;
+        return false;
     }
 
     @Override

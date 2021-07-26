@@ -78,13 +78,8 @@ public class SubChainReversingSwapMove<Solution_> extends AbstractMove<Solution_
 
     @Override
     public boolean isMoveDoable(ScoreDirector<Solution_> scoreDirector) {
-        for (Object leftEntity : leftSubChain.getEntityList()) {
-            if (rightSubChain.getEntityList().contains(leftEntity)) {
-                return false;
-            }
-        }
         // Because leftFirstEntity and rightFirstEntity are unequal, chained guarantees their values are unequal too.
-        return true;
+        return !SubChainSwapMove.containsAnyOf(rightSubChain, leftSubChain);
     }
 
     @Override
