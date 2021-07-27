@@ -20,11 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class ArithmeticFunctionsTest {
 
@@ -56,34 +53,6 @@ public class ArithmeticFunctionsTest {
         supportedArithmeticFunctions.add(ArithmeticFunctions.MODULO);
 
         unsupportedArithmeticFunctions = new ArrayList<>();
-    }
-
-    @Test
-    public void getSupportedValueEmptyInput() {
-        final Object[] input = {};
-        supportedArithmeticFunctions.forEach(arithmeticFunction -> {
-            try {
-                arithmeticFunction.getValue(input);
-                fail("Expecting IllegalArgumentException");
-            } catch (Exception e) {
-                assertTrue(e instanceof IllegalArgumentException);
-            }
-        });
-
-    }
-
-    @Test
-    public void getUnsupportedValue() {
-        final Object[] input = {35, 12};
-        unsupportedArithmeticFunctions.forEach(arithmeticFunction -> {
-            try {
-                arithmeticFunction.getValue(input);
-                fail("Expecting KiePMMLException");
-            } catch (Exception e) {
-                assertTrue(e instanceof KiePMMLException);
-            }
-        });
-
     }
 
     @Test

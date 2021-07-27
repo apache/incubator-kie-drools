@@ -16,6 +16,7 @@
 package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctions;
 import org.kie.pmml.api.enums.builtinfunctions.BooleanFunctions;
@@ -25,6 +26,7 @@ import org.kie.pmml.api.enums.builtinfunctions.MathematicalFunctions;
 import org.kie.pmml.api.enums.builtinfunctions.StringFunctions;
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
 
 import static org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctions.isArithmeticFunctions;
 import static org.kie.pmml.api.enums.builtinfunctions.BooleanFunctions.isBooleanFunctions;
@@ -120,6 +122,10 @@ public enum BUILTIN_FUNCTIONS {
                 .anyMatch(value -> name.equals(value.name));
     }
 
+    public static boolean isBUILTIN_FUNCTIONS_VALIDATION(String name) {
+        return BooleanFunctions.isBooleanFunctionsValidation(name);
+    }
+
     public static BUILTIN_FUNCTIONS byName(String name) {
         return Arrays.stream(BUILTIN_FUNCTIONS.values())
                 .filter(value -> name.equals(value.name))
@@ -131,11 +137,11 @@ public enum BUILTIN_FUNCTIONS {
         return name;
     }
 
-    public Object getValue(final Object[] inputData) {
+    public Object getValue(final Object[] inputData, final MiningField referredByFieldRef) {
         if (isArithmeticFunctions(this.name)) {
             return ArithmeticFunctions.byName(name).getValue(inputData);
         } else if (isBooleanFunctions(this.name)) {
-            return BooleanFunctions.byName(name).getValue(inputData);
+            return BooleanFunctions.byName(name).getValue(inputData, referredByFieldRef);
         } else if (isDateFunctions(this.name)) {
             return DateFunctions.byName(name).getValue(inputData);
         } else if (isDistributionFunctions(this.name)) {
@@ -167,12 +173,36 @@ public enum BUILTIN_FUNCTIONS {
         }
     }
 
+    public static void checkBooleans(final Object[] inputData, final int expectedSize) {
+        checkLength(inputData, expectedSize);
+        for (Object object : inputData) {
+            if (!(object instanceof Boolean)) {
+                throw new IllegalArgumentException("Expected only Booleans");
+            }
+        }
+    }
+
     public static void checkLength(final Object[] inputData, final int expectedSize) {
         if (inputData.length < 1) {
             throw new IllegalArgumentException("Expected at least one parameter");
         }
         if (inputData.length != expectedSize) {
             throw new IllegalArgumentException(String.format("Expected %s parameters ", expectedSize));
+        }
+    }
+
+    public static void checkMinimumLength(final Object[] inputData, final int minimumLength) {
+        if (inputData.length < minimumLength) {
+            throw new IllegalArgumentException(String.format("Expected at least %s parameters ", minimumLength));
+        }
+    }
+
+    public static void checkRangeLength(final Object[] inputData, final int minimumLength, final int maximumLength) {
+        if (inputData.length < minimumLength) {
+            throw new IllegalArgumentException(String.format("Expected at least %s parameters ", minimumLength));
+        }
+        if (inputData.length > maximumLength) {
+            throw new IllegalArgumentException(String.format("Expected at most %s parameters ", maximumLength));
         }
     }
 }

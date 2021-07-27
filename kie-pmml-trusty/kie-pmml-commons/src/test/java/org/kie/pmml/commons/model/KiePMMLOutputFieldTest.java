@@ -85,13 +85,13 @@ public class KiePMMLOutputFieldTest {
                 .build();
         final List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 3).mapToObj(i -> new KiePMMLNameValue(
                 "val-" + i, i)).collect(Collectors.toList());
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
+                                                       kiePMMLNameValues, Collections.emptyList());
         assertNull(kiePMMLOutputField.evaluate(processingDTO));
         final Object variableValue = 243.94;
         kiePMMLNameValues.add(new KiePMMLNameValue(variableName, variableValue));
-        processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                          kiePMMLNameValues);
+        processingDTO = getProcessingDTO(Collections.emptyList(),
+                                         kiePMMLNameValues, Collections.emptyList());
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(variableValue, retrieved);
@@ -106,13 +106,11 @@ public class KiePMMLOutputFieldTest {
         final List<String> reasonCodes = IntStream.range(0, 3).mapToObj(i ->
                                                                                 "reasonCode-" + i)
                 .collect(Collectors.toList());
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), Collections.emptyList(), reasonCodes);
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
         assertNull(kiePMMLOutputField.evaluate(processingDTO));
         final String variableValue = "reasonCode-3";
         reasonCodes.add(variableValue);
-        processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                          Collections.emptyList(), reasonCodes);
+        processingDTO = getProcessingDTO(Collections.emptyList(), Collections.emptyList(), reasonCodes);
         Object retrieved = kiePMMLOutputField.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(variableValue, retrieved);
@@ -128,8 +126,8 @@ public class KiePMMLOutputFieldTest {
                 .withKiePMMLExpression(kiePMMLConstant1)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>(),
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         assertEquals(value1, retrieved);
     }
@@ -144,9 +142,9 @@ public class KiePMMLOutputFieldTest {
                 .withKiePMMLExpression(kiePMMLFieldRef)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(),
-                                                        Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
+                                                       Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)),
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         assertEquals(value1, retrieved);
     }
@@ -168,8 +166,8 @@ public class KiePMMLOutputFieldTest {
                 .withKiePMMLExpression(kiePMMLApply)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), getKiePMMLNameValues());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues(),
+                                                       Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
@@ -192,8 +190,7 @@ public class KiePMMLOutputFieldTest {
                 .withKiePMMLExpression(kiePMMLApply)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        getOutputFields(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(getOutputFields(), new ArrayList<>(), Collections.emptyList());
         Object retrieved = outputField.evaluate(processingDTO);
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
@@ -221,5 +218,11 @@ public class KiePMMLOutputFieldTest {
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
                 .build();
         return Arrays.asList(outputField1, outputField2);
+    }
+
+    private ProcessingDTO getProcessingDTO(List<KiePMMLOutputField> outputFields,
+                                           List<KiePMMLNameValue> kiePMMLNameValues, List<String> reasonCodes) {
+        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), outputFields,
+                                 Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), reasonCodes);
     }
 }

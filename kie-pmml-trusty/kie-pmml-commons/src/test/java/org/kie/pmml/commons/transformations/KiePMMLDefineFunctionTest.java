@@ -19,13 +19,16 @@ package org.kie.pmml.commons.transformations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
 
@@ -48,8 +51,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                Arrays.asList(parameterField1,
                                                                                              parameterField2),
                                                                                null);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         defineFunction.evaluate(processingDTO, null);
     }
 
@@ -65,8 +67,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                Arrays.asList(parameterField1,
                                                                                              parameterField2),
                                                                                null);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         defineFunction.evaluate(processingDTO, Collections.emptyList());
     }
 
@@ -80,8 +81,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                OP_TYPE.CONTINUOUS.getName(),
                                                                                Collections.emptyList(),
                                                                                kiePMMLConstant1);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = defineFunction.evaluate(processingDTO, Collections.emptyList());
         assertEquals(value1, retrieved);
     }
@@ -97,8 +97,7 @@ public class KiePMMLDefineFunctionTest {
                                                                                OP_TYPE.CONTINUOUS.getName(),
                                                                                Collections.singletonList(KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build()),
                                                                                kiePMMLFieldRef);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(new ArrayList<>());
         Object retrieved = defineFunction.evaluate(processingDTO, Collections.singletonList(value1));
         assertEquals(value1, retrieved);
     }
@@ -127,10 +126,14 @@ public class KiePMMLDefineFunctionTest {
                                                                                Arrays.asList(parameterField1,
                                                                                              parameterField2),
                                                                                kiePMMLApply);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(new ArrayList<>());
         Object retrieved = defineFunction.evaluate(processingDTO, Arrays.asList(value1, value2));
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
+    }
+
+    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
+        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
+                                 Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), Collections.emptyList());
     }
 }

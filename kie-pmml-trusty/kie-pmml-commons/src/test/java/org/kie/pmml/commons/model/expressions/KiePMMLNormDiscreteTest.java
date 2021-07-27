@@ -17,10 +17,13 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +36,7 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = 1.0;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(mapMissingTo, retrieved);
@@ -45,7 +48,7 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, fieldValue)));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(1.0, retrieved);
@@ -57,7 +60,7 @@ public class KiePMMLNormDiscreteTest {
         String fieldValue = "fieldValue";
         Number mapMissingTo = null;
         KiePMMLNormDiscrete kiePMMLNormContinuous = getKiePMMLNormDiscrete(fieldName, fieldValue, mapMissingTo);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.singletonList(new KiePMMLNameValue(fieldName, "anotherValue")));
         Object retrieved = kiePMMLNormContinuous.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(0.0, retrieved);
@@ -67,5 +70,9 @@ public class KiePMMLNormDiscreteTest {
                                                        String value,
                                                        Number mapMissingTo) {
         return new KiePMMLNormDiscrete(name, Collections.emptyList(), value, mapMissingTo);
+    }
+
+    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
+        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
     }
 }
