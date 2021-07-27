@@ -56,9 +56,7 @@ if (Utils.isMainBranch(this)) {
     // Old PR checks.
     // To be removed once supported release branches (<= 1.7.x) are no more there.
     setupPrJob()
-    // Disabled until Quarkus 2.2 is out
-    // Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
-    // setupQuarkusLTSPrJob()
+    setupQuarkusLTSPrJob()
     setupNativePrJob()
     // End of old PR checks
 
@@ -72,18 +70,13 @@ if (Utils.isMainBranch(this)) {
 // PR checks
 setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
-// Disabled until Quarkus 2.2 is out
-// Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
-// setupMultijobPrLTSChecks()
+setupMultijobPrLTSChecks()
 
 // Nightly jobs
 if (Utils.isMainBranch(this)) {
     setupDroolsJob(nightlyBranchFolder)
 
     setupQuarkusJob(nightlyBranchFolder, 'main')
-    // Disabled until Quarkus 2.2 is out
-    // Follow-up issue: https://issues.redhat.com/browse/KOGITO-5487
-    // setupQuarkusJob(nightlyBranchFolder, "${QUARKUS_LTS_VERSION}")
 }
 setupNativeJob(nightlyBranchFolder)
 setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
@@ -95,6 +88,9 @@ if (!Utils.isMainBranch(this)) {
     setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
 }
 
+if (Utils.isLTSBranch(this)) {
+    setupQuarkusJob(nightlyBranchFolder, Utils.getQuarkusLTSVersion(this))
+}
 /////////////////////////////////////////////////////////////////
 // Methods
 /////////////////////////////////////////////////////////////////
