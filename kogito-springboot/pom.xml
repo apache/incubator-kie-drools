@@ -30,8 +30,8 @@
   <name>Kogito :: Spring Boot</name>
   <packaging>pom</packaging>
   <modules>
-    <module>kogito-springboot-starter</module>
     <module>addons</module>
     <module>bom</module>
+    <module>starters</module>
   </modules>
 </project>

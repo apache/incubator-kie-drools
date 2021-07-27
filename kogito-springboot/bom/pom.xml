@@ -10,6 +10,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-springboot-bom</artifactId>
+  <name>Kogito :: Spring Boot :: BOM</name>
+  <description>Spring Boot descriptor for Kogito libraries and projects based on Spring runtime.</description>
   <packaging>pom</packaging>
 
   <dependencyManagement>
