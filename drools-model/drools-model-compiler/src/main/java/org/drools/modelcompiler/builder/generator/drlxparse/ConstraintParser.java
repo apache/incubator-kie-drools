@@ -143,7 +143,7 @@ public class ConstraintParser {
         }
         singleResult.setExprBinding( bindId );
         Type exprType = singleResult.getExprType();
-        if(isBooleanBoxedUnboxed(exprType)) {
+        if (isBooleanBoxedUnboxed(exprType)) {
             singleResult.setIsPredicate(singleResult.getRight() != null);
         }
     }
