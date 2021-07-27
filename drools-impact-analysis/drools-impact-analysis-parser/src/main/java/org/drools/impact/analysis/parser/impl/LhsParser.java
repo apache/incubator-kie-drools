@@ -107,24 +107,26 @@ public class LhsParser {
             }
             if (result.getRight() != null) {
                 Constraint constraint = new Constraint();
-                constraint = parseExpressionInConstraint( constraint, result.getLeft() );
+                constraint = parseExpressionInConstraint( context, constraint, result.getLeft() );
                 boolean valueOnLeft = constraint.getValue() != null;
-                constraint = parseExpressionInConstraint( constraint, result.getRight() );
+                constraint = parseExpressionInConstraint( context, constraint, result.getRight() );
                 if ( constraint.getValue() != null) {
                     // the constraint is relevant for impact analysis only if it checks a fixed value
                     constraint.setType( decode(result.getDecodeConstraintType(), valueOnLeft ) );
                     pattern.addConstraint( constraint );
                 }
+            } else if (result.getExprBinding() != null && result.getExpr() != null && result.getExpr().isLiteralExpr()) {
+                ((ImpactAnalysisRuleContext)context).getBindVariableLiteralMap().put(result.getExprBinding(), ParserUtil.literalToValue(result.getExpr().asLiteralExpr()));
             }
         }
     }
 
-    private Constraint parseExpressionInConstraint( Constraint constraint, TypedExpression expr ) {
+    private Constraint parseExpressionInConstraint( RuleContext context, Constraint constraint, TypedExpression expr ) {
         if (expr.getExpression() instanceof MethodCallExpr) {
             if (isThisExpression( (( MethodCallExpr ) expr.getExpression()).getScope().orElse( null ) )) {
                 constraint.setProperty( expr.getFieldName() );
             } else {
-                constraint = processMapProperty(constraint, expr);
+                constraint = processMapProperty(context, constraint, expr);
             }
         } else if (expr.getExpression().isLiteralExpr()) {
             constraint.setValue( literalToValue( expr.getExpression().asLiteralExpr() ) );
@@ -134,7 +136,7 @@ public class LhsParser {
         return constraint;
     }
 
-    private Constraint processMapProperty(Constraint constraint, TypedExpression expr) {
+    private Constraint processMapProperty(RuleContext context, Constraint constraint, TypedExpression expr) {
         MethodCallExpr mce = expr.getExpression().asMethodCallExpr();
         Optional<Expression> scope = mce.getScope();
         if (scope.isPresent() && scope.get().isMethodCallExpr()) {
@@ -144,7 +146,7 @@ public class LhsParser {
             if (prop != null && origType.isPresent()) {
                 Method accessor = ClassUtils.getAccessor(origType.get(), prop);
                 if (accessor != null && Map.class.isAssignableFrom(accessor.getReturnType()) && mce.getName().asString().equals("get")) {
-                    String key = getLiteralString(mce.getArgument(0));
+                    String key = getLiteralString(context, mce.getArgument(0));
                     if (key != null) {
                         MapConstraint mapConstraint = new MapConstraint(constraint);
                         mapConstraint.setProperty(prop); // map name
