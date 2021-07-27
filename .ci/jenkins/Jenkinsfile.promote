@@ -555,8 +555,7 @@ void runMavenDeploy(MavenCommand mvnCmd) {
 }
 
 void removeJbossNexusFromMavenAndGradle() {
-    sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml"
-    sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml"
+    sh "find . -name pom.xml -print0 | xargs -0 sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\'"
     sh "find . -name build.gradle -print0 | xargs -0 sed -i \':a;N;\$!ba;s/\\n *maven {[^{}]*mavenContent " +
             "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\'"
 
@@ -656,7 +655,7 @@ def forcePushProtectedBranch(String repo, String protectedBranch) {
 }
 
 void gradleVersionsUpdate(String newVersion) {
-    sh "sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' */build.gradle"
+    sh "find . -name build.gradle -exec sed -i -E 's/def optaplannerVersion = \"[^\"\\s]+\"/def optaplannerVersion = \"${newVersion}\"/' {} \\;"
 }
 
 void updateQuickstartsVersions(String newVersion) {
