@@ -646,10 +646,11 @@ def setAllowForcePushes(String repo, String protectedBranch, String enabled, Str
 def forcePushProtectedBranch(String repo, String protectedBranch) {
     enableForcePushes(repo, protectedBranch)
     withCredentials([usernamePassword(credentialsId: getGitAuthorCredsID(), usernameVariable: 'GIT_USERNAME', passwordVariable: 'GIT_PASSWORD')]) {
-        sh '''
-        git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
-        git push origin ${protectedBranch} --force
-        '''
+        // Please leave the double-quote here. They are mandatory for the shell command to work correctly.
+        sh """
+            git config --local credential.helper \"!f() { echo username=\\$GIT_USERNAME; echo password=\\$GIT_PASSWORD; }; f\"
+            git push origin ${protectedBranch} --force
+        """
     }
     disableForcePushes(repo, protectedBranch)
 }
