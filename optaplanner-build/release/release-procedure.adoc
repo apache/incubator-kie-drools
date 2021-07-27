@@ -42,7 +42,7 @@ After a feature release MAJOR.MINOR.0.Final, the version on the `main` branch up
 The next feature release is MAJOR.MINOR+1.0.Final.
 
 As an example, the first version released by this procedure is going to be 8.0.0.Final. After the release,
-the `masmainter` branch upgrades to 8.1.0-SNAPSHOT. The next release is 8.1.0.Final.
+the `main` branch upgrades to 8.1.0-SNAPSHOT. The next release is 8.1.0.Final.
 
 === Release Branches
 
