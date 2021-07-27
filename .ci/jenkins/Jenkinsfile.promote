@@ -557,8 +557,8 @@ void runMavenDeploy(MavenCommand mvnCmd) {
 void removeJbossNexusFromMavenAndGradle() {
     sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' */pom.xml"
     sh "sed -i \':a;N;\$!ba;s/\\n *<repositories>.*<\\/repositories>//g\' pom.xml"
-    sh "sed -i \':a;N;\$!ba;s/\\n *maven {[^{}]*mavenContent " +
-            "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\' */build.gradle"
+    sh "find . -name build.gradle -print0 | xargs -0 sed -i \':a;N;\$!ba;s/\\n *maven {[^{}]*mavenContent " +
+            "{[^{}]*snapshotsOnly[^{}]*}[^{}]*}//g\'"
 
     assert !sh (script:
             'grep -Rn "repository.jboss.org" --include={pom.xml,build.gradle} | ' +
