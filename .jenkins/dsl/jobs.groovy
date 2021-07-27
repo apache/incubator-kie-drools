@@ -4,7 +4,9 @@ import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
 def getDefaultJobParams() {
-    return KogitoJobTemplate.getDefaultJobParams(this, 'kogito-runtimes')
+    def jobParams = KogitoJobTemplate.getDefaultJobParams(this, 'kogito-runtimes')
+    jobParams.pr.excluded_regions.add('docsimg/.*')
+    return jobParams
 }
 
 def getJobParams(String jobName, String jobFolder, String jenkinsfileName, String jobDescription = '') {
