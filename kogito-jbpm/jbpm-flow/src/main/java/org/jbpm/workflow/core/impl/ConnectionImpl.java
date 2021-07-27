@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.jbpm.workflow.core.Connection;
 import org.jbpm.workflow.core.Node;
+import org.kie.kogito.process.validation.ValidationException;
 
 /**
  * Default implementation of a connection.
@@ -75,8 +76,12 @@ public class ConnectionImpl implements Connection, Serializable {
     }
 
     public void connect() {
-        ((Node) this.from).addOutgoingConnection(fromType, this);
-        ((Node) this.to).addIncomingConnection(toType, this);
+        try {
+            ((Node) this.from).addOutgoingConnection(fromType, this);
+            ((Node) this.to).addIncomingConnection(toType, this);
+        } catch (Exception exception) {
+            throw new ValidationException(null, exception.getMessage());
+        }
     }
 
     public synchronized void terminate() {

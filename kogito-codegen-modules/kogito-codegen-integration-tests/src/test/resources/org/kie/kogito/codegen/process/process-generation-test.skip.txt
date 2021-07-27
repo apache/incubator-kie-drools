@@ -1,9 +1,7 @@
 cases/ScriptRoleAssignmentCase.bpmn2
 cases/UserTaskWithStageCase.bpmn2
 cases/UserTaskWithStageCaseAutoStart.bpmn2
-invalid/invalid-process-id.bpmn2
-invalid/duplicated-process-id-1.bpmn2
-invalid/duplicated-process-id-2.bpmn2
+invalid/
 messageevent/EventNodeMalformed.bpmn2
 ruletask/BusinessRuleTaskMalformed.bpmn2
 ruletask/ExampleGenerated.bpmn

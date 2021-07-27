@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -78,7 +78,7 @@ public class AssociationHandler extends BaseAbstractHandler implements Handler {
                 }
             }
             if (!acceptableDirection) {
-                throw new IllegalArgumentException("Unknown direction '" + direction + "' used in Association " + association.getId());
+                throw new ProcessParsingValidationException("Unknown direction '" + direction + "' used in Association " + association.getId());
             }
         }
         association.setDirection(direction);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -339,7 +339,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                 xmlDump.append("/>" + EOL);
             }
         } else {
-            throw new IllegalArgumentException(
+            throw new ProcessParsingValidationException(
                     "Unknown action " + action);
         }
     }
@@ -531,7 +531,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
             }
         }
         if (error == null) {
-            throw new IllegalArgumentException("Could not find error with errorCode " + errorCode);
+            throw new ProcessParsingValidationException("Could not find error with errorCode " + errorCode);
         }
         return error.getId();
     }
@@ -564,7 +564,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                     waitForCompletion = Boolean.parseBoolean(waitForCompletionString);
                 }
                 if (!waitForCompletion) {
-                    throw new IllegalArgumentException("Asynchronous compensation [" + nodeId + ", " + node.getName()
+                    throw new ProcessParsingValidationException("Asynchronous compensation [" + nodeId + ", " + node.getName()
                             + "] is not yet supported!");
                 }
 
@@ -595,7 +595,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         if (signal != null) {
             signalName = signal.getName();
             if (signalName == null) {
-                throw new IllegalArgumentException("Signal definition must have a name attribute");
+                throw new ProcessParsingValidationException("Signal definition must have a name attribute");
             }
         }
 

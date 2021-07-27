@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashSet;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
+import org.jbpm.bpmn2.xml.ProcessParsingValidationException;
 import org.jbpm.bpmn2.xml.di.BPMNEdgeHandler.ConnectionInfo;
 import org.jbpm.bpmn2.xml.di.BPMNPlaneHandler.ProcessInfo;
 import org.w3c.dom.Element;
@@ -92,7 +93,7 @@ public class BPMNShapeHandler extends BaseAbstractHandler implements Handler {
                     nodeInfo.setWidth(widthValue);
                     nodeInfo.setHeight(heightValue);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid bounds for node " + nodeInfo.getNodeRef(), e);
+                    throw new ProcessParsingValidationException("Invalid bounds for node " + nodeInfo.getNodeRef());
                 }
             }
             xmlNode = xmlNode.getNextSibling();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -245,11 +245,11 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
                         .getData()).getMetaData("Messages");
                 if (messages == null) {
-                    throw new IllegalArgumentException("No messages found");
+                    throw new ProcessParsingValidationException("No messages found");
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException(
+                    throw new ProcessParsingValidationException(
                             "Could not find message " + messageRef);
                 }
                 String variable = (String) actionNode.getMetaData(MAPPING_VARIABLE_KEY);
@@ -285,12 +285,12 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser
                             .getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
-                        throw new IllegalArgumentException(
+                        throw new ProcessParsingValidationException(
                                 "No escalations found");
                     }
                     Escalation escalation = escalations.get(escalationRef);
                     if (escalation == null) {
-                        throw new IllegalArgumentException(
+                        throw new ProcessParsingValidationException(
                                 "Could not find escalation " + escalationRef);
                     }
                     String faultName = escalation.getEscalationCode();
@@ -299,7 +299,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
                     DroolsConsequenceAction action = createJavaAction(new HandleEscalationAction(faultName, variable));
                     actionNode.setAction(action);
                 } else {
-                    throw new IllegalArgumentException("General escalation is not yet supported");
+                    throw new ProcessParsingValidationException("General escalation is not yet supported");
                 }
             }
             xmlNode = xmlNode.getNextSibling();
@@ -325,7 +325,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
                 DataTransformer transformer = transformerRegistry.find(lang);
                 if (transformer == null) {
-                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                    throw new ProcessParsingValidationException("No transformer registered for language " + lang);
                 }
                 transformation = new Transformation(lang, expression, dataInputs.get(target));
                 actionNode.setMetaData(TRANSFORMATION_KEY, transformation);
@@ -370,8 +370,7 @@ public class IntermediateThrowEventHandler extends AbstractNodeHandler {
 
     @Override
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
-        throw new IllegalArgumentException(
-                "Writing out should be handled by action node handler");
+        throw new IllegalArgumentException("Writing out should be handled by action node handler");
     }
 
 }

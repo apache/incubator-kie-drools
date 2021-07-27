@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,7 +102,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
             if (node instanceof WorkItemNode && "Service Task".equals(((WorkItemNode) node).getMetaData("Type"))) {
                 WorkItemNode workItemNode = (WorkItemNode) node;
                 if (interfaces == null) {
-                    throw new IllegalArgumentException("No interfaces found");
+                    throw new ProcessParsingValidationException("No interfaces found");
                 }
                 String operationRef = (String) workItemNode.getMetaData("OperationRef");
                 String implementation = (String) workItemNode.getMetaData("Implementation");
@@ -114,7 +114,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
                     }
                 }
                 if (operation == null) {
-                    throw new IllegalArgumentException("Could not find operation " + operationRef);
+                    throw new ProcessParsingValidationException("Could not find operation " + operationRef);
                 }
                 // avoid overriding parameters set by data input associations
                 if (workItemNode.getWork().getParameter("Interface") == null) {

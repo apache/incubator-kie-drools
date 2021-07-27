@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,7 @@ public class EventNodeHandler extends AbstractNodeHandler {
                 xmlDump.append("      <messageEventDefinition messageRef=\"" + type + "\"/>" + EOL);
                 endNode("boundaryEvent", xmlDump);
             } else {
-                throw new IllegalArgumentException("Unknown boundary event type: \"" + type + "\"");
+                throw new ProcessParsingValidationException("Unknown boundary event type: \"" + type + "\"");
             }
         }
     }

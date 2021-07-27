@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -184,7 +184,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
 
                 DataTransformer transformer = transformerRegistry.find(lang);
                 if (transformer == null) {
-                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                    throw new ProcessParsingValidationException("No transformer registered for language " + lang);
                 }
                 transformation = new Transformation(lang, expression);
 
@@ -235,7 +235,7 @@ public class CallActivityHandler extends AbstractNodeHandler {
             String expression = subNode.getTextContent();
             DataTransformer transformer = transformerRegistry.find(lang);
             if (transformer == null) {
-                throw new IllegalArgumentException("No transformer registered for language " + lang);
+                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
             }
             transformation = new Transformation(lang, expression, from);
             subNode = subNode.getNextSibling();

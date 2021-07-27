@@ -104,6 +104,6 @@ public class DynamicNode extends CompositeContextNode {
     }
 
     public boolean hasCompletionCondition() {
-        return completionPredicate != null;
+        return (completionPredicate != null || (completionCondition != null && !completionCondition.isEmpty()));
     }
 }

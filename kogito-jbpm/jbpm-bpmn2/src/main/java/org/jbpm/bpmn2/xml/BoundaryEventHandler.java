@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -145,11 +145,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
-                        throw new IllegalArgumentException("No escalations found");
+                        throw new ProcessParsingValidationException("No escalations found");
                     }
                     Escalation escalation = escalations.get(escalationRef);
                     if (escalation == null) {
-                        throw new IllegalArgumentException("Could not find escalation " + escalationRef);
+                        throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
                     List<EventFilter> eventFilters = new ArrayList<EventFilter>();
                     EventTypeFilter eventFilter = new EventTypeFilter();
@@ -188,7 +188,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 if (errorRef != null && errorRef.trim().length() > 0) {
                     List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
                     if (errors == null) {
-                        throw new IllegalArgumentException("No errors found");
+                        throw new ProcessParsingValidationException("No errors found");
                     }
                     Error error = null;
                     for (Error listError : errors) {
@@ -197,7 +197,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                         }
                     }
                     if (error == null) {
-                        throw new IllegalArgumentException("Could not find error " + errorRef);
+                        throw new ProcessParsingValidationException("Could not find error " + errorRef);
                     }
                     String type = error.getErrorCode();
                     boolean hasErrorCode = true;
@@ -425,11 +425,11 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser
                         .getData()).getMetaData("Messages");
                 if (messages == null) {
-                    throw new IllegalArgumentException("No messages found");
+                    throw new ProcessParsingValidationException("No messages found");
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                    throw new ProcessParsingValidationException("Could not find message " + messageRef);
                 }
                 eventNode.setMetaData("MessageType", message.getType());
                 eventNode.setMetaData("TriggerType", "ConsumeMessage");
@@ -460,7 +460,7 @@ public class BoundaryEventHandler extends AbstractNodeHandler {
             String expression = subNode.getTextContent();
             DataTransformer transformer = transformerRegistry.find(lang);
             if (transformer == null) {
-                throw new IllegalArgumentException("No transformer registered for language " + lang);
+                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
             }
             transformation = new Transformation(lang, expression, dataOutputs.get(from));
             eventNode.setMetaData("Transformation", transformation);

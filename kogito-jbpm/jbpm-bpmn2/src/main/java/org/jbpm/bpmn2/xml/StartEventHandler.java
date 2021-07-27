@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,11 +131,11 @@ public class StartEventHandler extends AbstractNodeHandler {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
                 if (messages == null) {
-                    throw new IllegalArgumentException("No messages found");
+                    throw new ProcessParsingValidationException("No messages found");
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                    throw new ProcessParsingValidationException("Could not find message " + messageRef);
                 }
                 startNode.setMetaData(MESSAGE_TYPE, message.getType());
                 startNode.setMetaData(TRIGGER_TYPE, TriggerMetaData.TriggerType.ConsumeMessage.name());
@@ -155,7 +155,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (errorRef != null && errorRef.trim().length() > 0) {
                     List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
                     if (errors == null) {
-                        throw new IllegalArgumentException("No errors found");
+                        throw new ProcessParsingValidationException("No errors found");
                     }
                     Error error = null;
                     for (Error listError : errors) {
@@ -164,7 +164,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                         }
                     }
                     if (error == null) {
-                        throw new IllegalArgumentException("Could not find error " + errorRef);
+                        throw new ProcessParsingValidationException("Could not find error " + errorRef);
                     }
                     startNode.setMetaData("FaultCode", error.getErrorCode());
                     startNode.setMetaData(MESSAGE_TYPE, error.getErrorCode());
@@ -178,11 +178,11 @@ public class StartEventHandler extends AbstractNodeHandler {
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
-                        throw new IllegalArgumentException("No escalations found");
+                        throw new ProcessParsingValidationException("No escalations found");
                     }
                     Escalation escalation = escalations.get(escalationRef);
                     if (escalation == null) {
-                        throw new IllegalArgumentException("Could not find escalation " + escalationRef);
+                        throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
 
                     addTriggerWithInMappings(startNode, "Escalation-" + escalation.getEscalationCode());
@@ -212,17 +212,17 @@ public class StartEventHandler extends AbstractNodeHandler {
         // sourceRef
         org.w3c.dom.Node subNode = xmlNode.getFirstChild();
         if (!"sourceRef".equals(subNode.getNodeName())) {
-            throw new IllegalArgumentException("No sourceRef found in dataOutputAssociation in startEvent");
+            throw new ProcessParsingValidationException("No sourceRef found in dataOutputAssociation in startEvent");
         }
         String source = subNode.getTextContent();
         if (dataOutputs.get(source) == null) {
-            throw new IllegalArgumentException("No dataOutput could be found for the dataOutputAssociation.");
+            throw new ProcessParsingValidationException("No dataOutput could be found for the dataOutputAssociation.");
         }
 
         // targetRef
         subNode = subNode.getNextSibling();
         if (!"targetRef".equals(subNode.getNodeName())) {
-            throw new IllegalArgumentException("No targetRef found in dataOutputAssociation in startEvent");
+            throw new ProcessParsingValidationException("No targetRef found in dataOutputAssociation in startEvent");
         }
         String target = subNode.getTextContent();
         startNode.setMetaData(TRIGGER_MAPPING, target);
@@ -234,7 +234,7 @@ public class StartEventHandler extends AbstractNodeHandler {
             String expression = subNode.getTextContent();
             DataTransformer transformer = transformerRegistry.find(lang);
             if (transformer == null) {
-                throw new IllegalArgumentException("No transformer registered for language " + lang);
+                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
             }
             transformation = new Transformation(lang, expression, dataOutputs.get(source));
             startNode.setMetaData("Transformation", transformation);
@@ -273,7 +273,7 @@ public class StartEventHandler extends AbstractNodeHandler {
         List<Trigger> triggers = startNode.getTriggers();
         if (triggers != null) {
             if (triggers.size() > 1) {
-                throw new IllegalArgumentException("Multiple start triggers not supported");
+                throw new ProcessParsingValidationException("Multiple start triggers not supported");
             }
 
             Trigger trigger = triggers.get(0);
@@ -322,7 +322,7 @@ public class StartEventHandler extends AbstractNodeHandler {
                     xmlDump.append("      <signalEventDefinition signalRef=\"" + type + "\" />" + EOL);
                 }
             } else {
-                throw new IllegalArgumentException("Unsupported trigger type " + trigger);
+                throw new ProcessParsingValidationException("Unsupported trigger type " + trigger);
             }
 
             if (startNode.getTimer() != null) {

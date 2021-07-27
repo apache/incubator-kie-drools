@@ -13,11 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.workflow.instance.impl;
+package org.jbpm.bpmn2.xml;
 
-import java.util.function.UnaryOperator;
+import java.util.Arrays;
 
-/* Added to make it easier to search for ParamResolver function implementations, 
- * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
-public interface WorkItemHandlerParamResolver extends UnaryOperator<Object> {
+import org.kie.kogito.process.validation.ValidationException;
+
+public class ProcessParsingValidationException extends ValidationException {
+
+    //TODO: inject processId or fileName to identify the the process
+    public ProcessParsingValidationException(String message) {
+        super(null, Arrays.asList(() -> message));
+    }
+
+    public ProcessParsingValidationException(String processId, String message) {
+        super(processId, Arrays.asList(() -> message));
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,8 +35,7 @@ public class ExclusiveGatewayHandler extends AbstractNodeHandler {
             split.setMetaData("Default", isDefault);
             return split;
         } else {
-            throw new IllegalArgumentException(
-                    "Unknown gateway direction: " + type);
+            throw new ProcessParsingValidationException("Unknown gateway direction: " + type);
         }
     }
 

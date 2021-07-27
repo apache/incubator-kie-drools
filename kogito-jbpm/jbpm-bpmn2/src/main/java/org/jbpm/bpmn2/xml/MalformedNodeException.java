@@ -17,7 +17,7 @@ package org.jbpm.bpmn2.xml;
 
 import java.text.MessageFormat;
 
-public class MalformedNodeException extends IllegalArgumentException {
+public class MalformedNodeException extends ProcessParsingValidationException {
 
     public MalformedNodeException(String id, String name, String reason) {
         super(MessageFormat.format(

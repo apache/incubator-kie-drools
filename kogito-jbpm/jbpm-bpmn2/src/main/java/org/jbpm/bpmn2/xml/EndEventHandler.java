@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -182,11 +182,11 @@ public class EndEventHandler extends AbstractNodeHandler {
                 String messageRef = ((Element) xmlNode).getAttribute("messageRef");
                 Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
                 if (messages == null) {
-                    throw new IllegalArgumentException("No messages found");
+                    throw new ProcessParsingValidationException("No messages found");
                 }
                 Message message = messages.get(messageRef);
                 if (message == null) {
-                    throw new IllegalArgumentException("Could not find message " + messageRef);
+                    throw new ProcessParsingValidationException("Could not find message " + messageRef);
                 }
                 String variable = (String) endNode.getMetaData("MappingVariable");
                 endNode.setMetaData(Metadata.MESSAGE_TYPE, message.getType());
@@ -259,7 +259,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                 if (errorRef != null && errorRef.trim().length() > 0) {
                     List<Error> errors = (List<Error>) ((ProcessBuildData) parser.getData()).getMetaData("Errors");
                     if (errors == null) {
-                        throw new IllegalArgumentException("No errors found");
+                        throw new ProcessParsingValidationException("No errors found");
                     }
                     Error error = null;
                     for (Error listError : errors) {
@@ -269,7 +269,7 @@ public class EndEventHandler extends AbstractNodeHandler {
                         }
                     }
                     if (error == null) {
-                        throw new IllegalArgumentException("Could not find error " + errorRef);
+                        throw new ProcessParsingValidationException("Could not find error " + errorRef);
                     }
                     faultNode.setFaultName(error.getErrorCode());
                     faultNode.setTerminateParent(true);
@@ -293,17 +293,17 @@ public class EndEventHandler extends AbstractNodeHandler {
                 if (escalationRef != null && escalationRef.trim().length() > 0) {
                     Map<String, Escalation> escalations = (Map<String, Escalation>) ((ProcessBuildData) parser.getData()).getMetaData(ProcessHandler.ESCALATIONS);
                     if (escalations == null) {
-                        throw new IllegalArgumentException("No escalations found");
+                        throw new ProcessParsingValidationException("No escalations found");
                     }
                     Escalation escalation = escalations.get(escalationRef);
                     if (escalation == null) {
-                        throw new IllegalArgumentException("Could not find escalation " + escalationRef);
+                        throw new ProcessParsingValidationException("Could not find escalation " + escalationRef);
                     }
                     faultNode.setFaultName(escalation.getEscalationCode());
                 } else {
                     // BPMN2 spec, p. 83: end event's with <escalationEventDefintions>
                     // are _required_ to reference a specific escalation(-code).
-                    throw new IllegalArgumentException("End events throwing an escalation must throw *specific* escalations (and not general ones).");
+                    throw new ProcessParsingValidationException("End events throwing an escalation must throw *specific* escalations (and not general ones).");
                 }
             }
             xmlNode = xmlNode.getNextSibling();

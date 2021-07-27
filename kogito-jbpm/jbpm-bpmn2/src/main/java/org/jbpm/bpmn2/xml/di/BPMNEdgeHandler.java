@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import java.util.HashSet;
 import org.drools.core.xml.BaseAbstractHandler;
 import org.drools.core.xml.ExtensibleXmlParser;
 import org.drools.core.xml.Handler;
+import org.jbpm.bpmn2.xml.ProcessParsingValidationException;
 import org.jbpm.bpmn2.xml.di.BPMNPlaneHandler.ProcessInfo;
 import org.jbpm.bpmn2.xml.di.BPMNShapeHandler.NodeInfo;
 import org.w3c.dom.Element;
@@ -80,7 +81,7 @@ public class BPMNEdgeHandler extends BaseAbstractHandler implements Handler {
                         bendpoints += ";";
                     }
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid bendpoint value", e);
+                    throw new ProcessParsingValidationException("Invalid bendpoint value");
                 }
             }
             xmlNode = xmlNode.getNextSibling();

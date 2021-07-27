@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -147,7 +147,7 @@ public class EndNodeHandler extends AbstractNodeHandler {
                         xmlDump.append("      <compensateEventDefinition " + activityRef + "/>" + EOL);
                         endNode("endEvent", xmlDump);
                     } else {
-                        throw new IllegalArgumentException("Unknown action " + s);
+                        throw new ProcessParsingValidationException("Unknown action " + s);
                     }
                 }
             } else {

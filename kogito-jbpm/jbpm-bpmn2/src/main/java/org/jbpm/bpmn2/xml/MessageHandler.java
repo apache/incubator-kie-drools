@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -67,11 +67,11 @@ public class MessageHandler extends BaseAbstractHandler implements Handler {
 
         Map<String, ItemDefinition> itemDefinitions = (Map<String, ItemDefinition>) ((ProcessBuildData) parser.getData()).getMetaData("ItemDefinitions");
         if (itemDefinitions == null) {
-            throw new IllegalArgumentException("No item definitions found");
+            throw new ProcessParsingValidationException("No item definitions found");
         }
         ItemDefinition itemDefinition = itemDefinitions.get(itemRef);
         if (itemDefinition == null) {
-            throw new IllegalArgumentException("Could not find itemDefinition " + itemRef);
+            throw new ProcessParsingValidationException("Could not find itemDefinition " + itemRef);
         }
 
         ProcessBuildData buildData = (ProcessBuildData) parser.getData();

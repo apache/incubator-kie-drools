@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -279,7 +279,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                     .flatMap(Collection::stream), process);
         }
         if (errors.length() > 0) {
-            throw new IllegalArgumentException(errors.toString());
+            throw new ProcessParsingValidationException(errors.toString());
         }
 
     }
@@ -326,7 +326,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
         }
         if (node == null) {
-            throw new IllegalArgumentException(errorMsg);
+            throw new ProcessParsingValidationException(errorMsg);
         }
         return node;
     }
@@ -348,7 +348,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                             if ("Compensation".equals(((EventTypeFilter) eventFilter).getType())) {
                                 // While this isn't explicitly stated in the spec,
                                 // BPMN Method & Style, 2nd Ed. (Silver), states this on P. 131
-                                throw new IllegalArgumentException(
+                                throw new ProcessParsingValidationException(
                                         "A Compensation Boundary Event can only be *associated* with a compensation activity via an Association, not via a Sequence Flow element.");
                             }
                         }
@@ -394,7 +394,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
 
                         // 
                         if (!(attachedNode instanceof StateBasedNode) && !type.equals("Compensation")) {
-                            throw new IllegalArgumentException("Boundary events are supported only on StateBasedNode, found node: "
+                            throw new ProcessParsingValidationException("Boundary events are supported only on StateBasedNode, found node: "
                                     + attachedNode.getClass().getName() + " [" + attachedNode.getMetaData().get("UniqueId") + "]");
                         }
 
@@ -618,14 +618,14 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                         targetNodeImpl.setMetaData(isForCompensation, true);
                         logger.warn("Setting {} attribute to true for node {}", isForCompensation, targetRef);
                     } else if (!Boolean.parseBoolean(compensationObject.toString())) {
-                        throw new IllegalArgumentException(isForCompensation + " attribute [" + compensationObject + "] should be true for Compensation Activity [" + targetRef + "]");
+                        throw new ProcessParsingValidationException(isForCompensation + " attribute [" + compensationObject + "] should be true for Compensation Activity [" + targetRef + "]");
                     }
 
                     // put Compensation Handler in CompensationHandlerNode
                     NodeContainer sourceParent = sourceNode.getParentContainer();
                     NodeContainer targetParent = targetNode.getParentContainer();
                     if (!sourceParent.equals(targetParent)) {
-                        throw new IllegalArgumentException("Compensation Associations may not cross (sub-)process boundaries,");
+                        throw new ProcessParsingValidationException("Compensation Associations may not cross (sub-)process boundaries,");
                     }
 
                     // connect boundary event to compensation activity
@@ -663,7 +663,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         // check that 
         // - event node is boundary event node
         if (!(source instanceof BoundaryEventNode)) {
-            throw new IllegalArgumentException("(Compensation) activities may only be associated with Boundary Event Nodes (not with" +
+            throw new ProcessParsingValidationException("(Compensation) activities may only be associated with Boundary Event Nodes (not with" +
                     source.getClass().getSimpleName() + " nodes [node " + ((String) source.getMetaData().get("UniqueId")) + "].");
         }
         BoundaryEventNode eventNode = (BoundaryEventNode) source;
@@ -683,7 +683,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         }
 
         if (!compensationCheckPassed) {
-            throw new IllegalArgumentException("An Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("An Event [" + ((String) eventNode.getMetaData("UniqueId"))
                     + "] linked from an association [" + association.getId()
                     + "] must be a (Boundary) Compensation Event.");
         }
@@ -709,7 +709,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
         }
         if (attachedToNode == null) {
-            throw new IllegalArgumentException("Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
                     + "] is not attached to a node [" + attachedToId + "] that can be found.");
         }
         if (!(attachedToNode instanceof RuleSetNode
@@ -718,7 +718,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                 || attachedToNode instanceof HumanTaskNode
                 || attachedToNode instanceof CompositeNode
                 || attachedToNode instanceof SubProcessNode)) {
-            throw new IllegalArgumentException("Compensation Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
+            throw new ProcessParsingValidationException("Compensation Boundary Event [" + ((String) eventNode.getMetaData("UniqueId"))
                     + "] must be attached to a task or sub-process.");
         }
 
@@ -734,7 +734,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
         }
         if (!compensationCheckPassed) {
-            throw new IllegalArgumentException("An Activity ["
+            throw new ProcessParsingValidationException("An Activity ["
                     + ((String) ((NodeImpl) target).getMetaData("UniqueId")) +
                     "] associated with a Boundary Compensation Event must be a Task or a (non-Event) Sub-Process");
         }
@@ -759,7 +759,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             }
         }
         if (!compensationCheckPassed) {
-            throw new IllegalArgumentException("A Compensation Activity ["
+            throw new ProcessParsingValidationException("A Compensation Activity ["
                     + ((String) targetNode.getMetaData("UniqueId"))
                     + "] may not have any outgoing connection ["
                     + (String) outgoingConnection.getMetaData("UniqueId") + "]");
@@ -866,7 +866,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
                                             if (subProcess instanceof RuleFlowProcess) {
                                                 // If jBPM deletes the process (instance) as soon as the process completes..
                                                 // ..how do you expect to signal compensation on the completed process (instance)?!?
-                                                throw new IllegalArgumentException("Compensation Event Sub-Processes at the process level are not supported.");
+                                                throw new ProcessParsingValidationException("Compensation Event Sub-Processes at the process level are not supported.");
                                             }
                                             if (subProcess instanceof Node) {
                                                 parentSubProcess = ((KogitoNode) subProcess).getParentContainer();
@@ -901,7 +901,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
             } else if (node instanceof EventNode) {
                 final EventNode eventNode = (EventNode) node;
                 if (!(eventNode instanceof BoundaryEventNode) && eventNode.getDefaultIncomingConnections().size() == 0) {
-                    throw new IllegalArgumentException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
+                    throw new ProcessParsingValidationException("Event node '" + node.getName() + "' [" + node.getId() + "] has no incoming connection");
                 }
             }
         }
@@ -997,7 +997,7 @@ public class ProcessHandler extends BaseAbstractHandler implements Handler {
         CompensationHandler handler = new CompensationHandler();
         handler.setNode(node);
         if (scope.getExceptionHandler(compensationHandlerId) != null) {
-            throw new IllegalArgumentException(
+            throw new ProcessParsingValidationException(
                     "More than one compensation handler per node (" + compensationHandlerId + ")" + " is not supported!");
         }
         scope.setExceptionHandler(compensationHandlerId, handler);

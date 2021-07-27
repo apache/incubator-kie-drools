@@ -26,6 +26,7 @@ import org.jbpm.process.core.context.exception.ExceptionScope;
 import org.jbpm.process.core.context.swimlane.SwimlaneContext;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.event.EventFilter;
+import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.workflow.core.impl.NodeContainerImpl;
 import org.jbpm.workflow.core.impl.WorkflowProcessImpl;
 import org.jbpm.workflow.core.node.ConstraintTrigger;
@@ -36,6 +37,7 @@ import org.jbpm.workflow.core.node.StartNode;
 import org.jbpm.workflow.core.node.Trigger;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.NodeContainer;
+import org.kie.kogito.process.validation.ValidationException;
 
 public class RuleFlowProcess extends WorkflowProcessImpl {
 
@@ -166,8 +168,7 @@ public class RuleFlowProcess extends WorkflowProcessImpl {
             if ((node instanceof StartNode) && (startNode != null && startNode.getTriggers() == null && startNode.getTimer() == null)) {
                 // ignore start nodes that are event based
                 if ((((StartNode) node).getTriggers() == null || ((StartNode) node).getTriggers().isEmpty()) && ((StartNode) node).getTimer() == null) {
-                    throw new IllegalArgumentException(
-                            "A RuleFlowProcess cannot have more than one start node!");
+                    throw new ValidationException(getId(), new ProcessValidationErrorImpl(RuleFlowProcess.this, "A process cannot have more than one start node!"));
                 }
             }
         }

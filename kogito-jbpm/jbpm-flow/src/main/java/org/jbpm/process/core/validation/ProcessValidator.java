@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,12 @@
  */
 package org.jbpm.process.core.validation;
 
+import java.util.Arrays;
+import java.util.Optional;
+
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.kie.kogito.process.validation.ValidationException;
 
 /**
  * A validator for validating a RuleFlow process.
@@ -30,4 +34,10 @@ public interface ProcessValidator {
 
     boolean compilationSupported();
 
+    default void validate(Process process) throws ValidationException {
+        final ProcessValidationError[] errors = validateProcess(process);
+        Optional.ofNullable(errors)
+                .filter(e -> e.length == 0)
+                .orElseThrow(() -> new ValidationException(process.getId(), Arrays.asList(errors)));
+    }
 }

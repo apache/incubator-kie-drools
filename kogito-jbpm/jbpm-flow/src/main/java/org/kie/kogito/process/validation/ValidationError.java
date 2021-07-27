@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.workflow.instance.impl;
+package org.kie.kogito.process.validation;
 
-import java.util.function.UnaryOperator;
+import java.io.Serializable;
 
-/* Added to make it easier to search for ParamResolver function implementations, 
- * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
-public interface WorkItemHandlerParamResolver extends UnaryOperator<Object> {
+public interface ValidationError extends Serializable {
+
+    String getMessage();
+
 }

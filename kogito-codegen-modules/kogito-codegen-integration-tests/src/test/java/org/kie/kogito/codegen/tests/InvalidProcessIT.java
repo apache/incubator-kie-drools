@@ -36,4 +36,36 @@ public class InvalidProcessIT extends AbstractCodegenIT {
                 () -> generateCodeProcessesOnly("invalid/duplicated-process-id-1.bpmn2", "invalid/duplicated-process-id-2.bpmn2"),
                 "Duplicated process with id duplicated found in the project, please review .bpmn files");
     }
+
+    //Process Validations Tests
+
+    @Test
+    public void testInvalidProcessParsingMorethanOneStart() throws Exception {
+        assertThrows(ProcessCodegenException.class,
+                () -> generateCodeProcessesOnly("invalid/parsing-more-than-one-start.bpmn2"));
+    }
+
+    @Test
+    public void testInvalidProcessValidatorNoStart() throws Exception {
+        assertThrows(ProcessCodegenException.class,
+                () -> generateCodeProcessesOnly("invalid/validator-no-start.bpmn2"));
+    }
+
+    @Test
+    public void testInvalidProcessParsingValidatorMultiEnd() throws Exception {
+        assertThrows(ProcessCodegenException.class,
+                () -> generateCodeProcessesOnly("invalid/parsing-multi-connection-end.bpmn2"));
+    }
+
+    @Test
+    public void testInvalidProcessValidatorNoEnd() throws Exception {
+        assertThrows(ProcessCodegenException.class,
+                () -> generateCodeProcessesOnly("invalid/validator-no-end.bpmn2"));
+    }
+
+    @Test
+    public void testInvalidProcessParsingServiceTaskNoImpl() throws Exception {
+        assertThrows(ProcessCodegenException.class,
+                () -> generateCodeProcessesOnly("invalid/parsing-service-task-no-impl.bpmn2"));
+    }
 }

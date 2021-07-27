@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -192,7 +192,7 @@ public class TaskHandler extends AbstractNodeHandler {
 
                 DataTransformer transformer = transformerRegistry.find(lang);
                 if (transformer == null) {
-                    throw new IllegalArgumentException("No transformer registered for language " + lang);
+                    throw new ProcessParsingValidationException("No transformer registered for language " + lang);
                 }
                 transformation = new Transformation(lang, expression);
                 //    			transformation.setCompiledExpression(transformer.compile(expression));
@@ -270,7 +270,7 @@ public class TaskHandler extends AbstractNodeHandler {
             String expression = subNode.getTextContent();
             DataTransformer transformer = transformerRegistry.find(lang);
             if (transformer == null) {
-                throw new IllegalArgumentException("No transformer registered for language " + lang);
+                throw new ProcessParsingValidationException("No transformer registered for language " + lang);
             }
             transformation = new Transformation(lang, expression);
             //			transformation.setCompiledExpression(transformer.compile(expression));
@@ -294,8 +294,7 @@ public class TaskHandler extends AbstractNodeHandler {
 
     @Override
     public void writeNode(Node node, StringBuilder xmlDump, int metaDataType) {
-        throw new IllegalArgumentException(
-                "Writing out should be handled by the WorkItemNodeHandler");
+        throw new IllegalArgumentException("Writing out should be handled by the WorkItemNodeHandler");
     }
 
     public Object end(final String uri, final String localName,

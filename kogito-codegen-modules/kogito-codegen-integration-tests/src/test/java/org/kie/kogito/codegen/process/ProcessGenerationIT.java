@@ -115,7 +115,7 @@ public class ProcessGenerationIT extends AbstractCodegenIT {
                         || ProcessCodegen.SUPPORTED_SW_EXTENSIONS.keySet().stream().anyMatch(ext -> path.getFileName().toString().endsWith(ext)))))
                 .map(BASE_PATH::relativize)
                 .map(Path::toString)
-                .filter(p -> !ignoredFiles.contains(p));
+                .filter(p -> ignoredFiles.stream().noneMatch(ignored -> p.contains(ignored)));
     }
 
     @ParameterizedTest

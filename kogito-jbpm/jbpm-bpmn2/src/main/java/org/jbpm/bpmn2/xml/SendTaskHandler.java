@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,11 +45,11 @@ public class SendTaskHandler extends TaskHandler {
         String messageRef = element.getAttribute("messageRef");
         Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
         if (messages == null) {
-            throw new IllegalArgumentException("No messages found");
+            throw new ProcessParsingValidationException("No messages found");
         }
         Message message = messages.get(messageRef);
         if (message == null) {
-            throw new IllegalArgumentException("Could not find message " + messageRef);
+            throw new ProcessParsingValidationException("Could not find message " + messageRef);
         }
         workItemNode.getWork().setParameter("MessageType", message.getType());
     }

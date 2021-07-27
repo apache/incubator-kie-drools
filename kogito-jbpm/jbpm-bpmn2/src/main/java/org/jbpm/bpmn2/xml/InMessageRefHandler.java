@@ -1,5 +1,5 @@
 /*
- * Copyright 2010 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,7 +57,7 @@ public class InMessageRefHandler extends BaseAbstractHandler implements Handler 
         String messageId = element.getTextContent();
         Map<String, Message> messages = (Map<String, Message>) ((ProcessBuildData) parser.getData()).getMetaData("Messages");
         if (messages == null) {
-            throw new IllegalArgumentException("No messages found");
+            throw new ProcessParsingValidationException("No messages found");
         }
         Operation operation = (Operation) parser.getParent();
         Message message = messages.get(messageId);
