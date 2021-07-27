@@ -17,14 +17,15 @@
 package org.kie.kogito.taskassigning.service.messaging;
 
 import java.time.ZonedDateTime;
-import java.util.concurrent.CompletableFuture;
 
-import org.eclipse.microprofile.context.ManagedExecutor;
+import javax.enterprise.event.Event;
+
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.taskassigning.service.TaskAssigningException;
+import org.kie.kogito.taskassigning.service.TaskAssigningService;
 import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.mockito.ArgumentCaptor;
@@ -36,6 +37,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.taskassigning.service.TestUtil.parseZonedDateTime;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -46,19 +48,16 @@ class ReactiveMessagingEventConsumerTest {
     private static final ZonedDateTime LAST_MODIFICATION_DATE = parseZonedDateTime("2021-03-11T15:00:00.001Z");
 
     @Mock
-    private ManagedExecutor managedExecutor;
-
-    @Mock
-    private CompletableFuture<Void> future;
-
-    @Captor
-    private ArgumentCaptor<Runnable> runAsyncCaptor;
+    private Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent;
 
     @Mock
     private Message<UserTaskEvent> message;
 
     @Captor
     private ArgumentCaptor<TaskDataEvent> taskDataEventCaptor;
+
+    @Captor
+    private ArgumentCaptor<TaskAssigningService.FailFastRequestEvent> failFastRequestEventCaptor;
 
     @Captor
     private ArgumentCaptor<TaskAssigningException> exceptionCaptor;
@@ -71,7 +70,7 @@ class ReactiveMessagingEventConsumerTest {
     @BeforeEach
     void setUp() {
         taskAssigningServiceEventConsumer = mock(TaskAssigningServiceEventConsumer.class);
-        consumer = new ReactiveMessagingEventConsumer(taskAssigningServiceEventConsumer, managedExecutor);
+        consumer = new ReactiveMessagingEventConsumer(taskAssigningServiceEventConsumer, failFastRequestEvent);
         UserTaskEvent event = new UserTaskEvent();
         event.setTaskId(TASK_ID);
         event.setLastUpdate(LAST_MODIFICATION_DATE);
@@ -80,10 +79,7 @@ class ReactiveMessagingEventConsumerTest {
 
     @Test
     void onUserTaskEvent() {
-        doReturn(future).when(managedExecutor).runAsync(any());
         consumer.onUserTaskEvent(message);
-        verify(managedExecutor).runAsync(runAsyncCaptor.capture());
-        runAsyncCaptor.getValue().run();
         verify(taskAssigningServiceEventConsumer).accept(taskDataEventCaptor.capture());
         assertThat(taskDataEventCaptor.getValue().getTaskId()).isEqualTo(TASK_ID);
         assertThat(taskDataEventCaptor.getValue().getEventTime()).isEqualTo(LAST_MODIFICATION_DATE);
@@ -99,5 +95,21 @@ class ReactiveMessagingEventConsumerTest {
                 .isInstanceOf(TaskAssigningException.class)
                 .hasMessageStartingWith("Task assigning service is in fail fast mode");
 
+    }
+
+    @Test
+    void onUserTaskEventFailure() {
+        String error = "Generic invented error";
+        String expectedErrorMessage = "An error was produced during a UserTaskEvent event processing: " + error;
+        doThrow(new RuntimeException(error)).when(taskAssigningServiceEventConsumer).accept(any());
+        consumer.onUserTaskEvent(message);
+        verify(message).nack(exceptionCaptor.capture());
+        assertThat(exceptionCaptor.getValue())
+                .hasMessage(expectedErrorMessage);
+        verify(failFastRequestEvent).fire(failFastRequestEventCaptor.capture());
+        assertThat(failFastRequestEventCaptor.getValue().getCause())
+                .isNotNull()
+                .isInstanceOf(TaskAssigningException.class)
+                .hasMessage(expectedErrorMessage);
     }
 }

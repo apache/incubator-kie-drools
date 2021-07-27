@@ -20,13 +20,14 @@ import java.util.concurrent.CompletionStage;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Event;
 import javax.inject.Inject;
 
-import org.eclipse.microprofile.context.ManagedExecutor;
 import org.eclipse.microprofile.reactive.messaging.Acknowledgment;
 import org.eclipse.microprofile.reactive.messaging.Incoming;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.taskassigning.service.TaskAssigningException;
+import org.kie.kogito.taskassigning.service.TaskAssigningService;
 import org.kie.kogito.taskassigning.service.event.TaskAssigningServiceEventConsumer;
 import org.kie.kogito.taskassigning.service.event.TaskDataEvent;
 import org.kie.kogito.taskassigning.service.util.TaskUtil;
@@ -42,29 +43,36 @@ public class ReactiveMessagingEventConsumer {
 
     private final TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
 
-    private final ManagedExecutor managedExecutor;
-
     private final AtomicBoolean failFast = new AtomicBoolean();
+
+    private final Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent;
 
     @Inject
     public ReactiveMessagingEventConsumer(TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer,
-            ManagedExecutor managedExecutor) {
+            Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent) {
         this.taskAssigningServiceEventConsumer = taskAssigningServiceEventConsumer;
-        this.managedExecutor = managedExecutor;
+        this.failFastRequestEvent = failFastRequestEvent;
     }
 
     @Incoming(KOGITO_USERTASKINSTANCES_EVENTS)
     @Acknowledgment(Acknowledgment.Strategy.MANUAL)
     public CompletionStage<Void> onUserTaskEvent(Message<UserTaskEvent> message) {
-        if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug("UserTaskEvent received: {}", message.getPayload());
+        if (LOGGER.isTraceEnabled()) {
+            LOGGER.trace("UserTaskEvent received: {}", message.getPayload());
         }
         if (failFast.get()) {
             return message.nack(new TaskAssigningException("Task assigning service is in fail fast mode" +
                     " and is not able to accept messages"));
         } else {
-            managedExecutor.runAsync(() -> handleEvent(message.getPayload()));
-            return message.ack();
+            try {
+                handleEvent(message.getPayload());
+                return message.ack();
+            } catch (Exception e) {
+                final String msg = String.format("An error was produced during a UserTaskEvent event processing: %s", e.getMessage());
+                TaskAssigningException error = new TaskAssigningException(msg, e);
+                failFastRequestEvent.fire(new TaskAssigningService.FailFastRequestEvent(error));
+                return message.nack(error);
+            }
         }
     }
 

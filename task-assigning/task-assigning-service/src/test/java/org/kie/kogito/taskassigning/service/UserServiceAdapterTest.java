@@ -55,9 +55,6 @@ class UserServiceAdapterTest {
     private static final Duration SYNC_INTERVAL = Duration.parse("PT2H");
 
     @Mock
-    private TaskAssigningService service;
-
-    @Mock
     private TaskAssigningConfig config;
 
     @Mock
@@ -72,6 +69,9 @@ class UserServiceAdapterTest {
     @Mock
     private Event<UserServiceAdapter.StartExecution> startExecutionEvent;
 
+    @Mock
+    private Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent;
+
     private UserServiceAdapter adapter;
 
     @Captor
@@ -84,13 +84,13 @@ class UserServiceAdapterTest {
     private ArgumentCaptor<UserDataEvent> eventCaptor;
 
     @Captor
-    private ArgumentCaptor<Exception> failureCaptor;
+    private ArgumentCaptor<TaskAssigningService.FailFastRequestEvent> failFastRequestEventCaptor;
 
     @BeforeEach
     void setUp() {
         lenient().doReturn(SYNC_INTERVAL).when(config).getUserServiceSyncInterval();
-        adapter = spy(new UserServiceAdapter(service, config, taskAssigningServiceEventConsumer,
-                managedExecutor, userServiceConnector, startExecutionEvent));
+        adapter = spy(new UserServiceAdapter(config, taskAssigningServiceEventConsumer,
+                managedExecutor, userServiceConnector, startExecutionEvent, failFastRequestEvent));
     }
 
     @Test
@@ -141,8 +141,8 @@ class UserServiceAdapterTest {
 
         verify(adapter, times(1)).scheduleExecution(nextStartTimeCaptor.capture(), any());
         verify(taskAssigningServiceEventConsumer, never()).accept(eventCaptor.capture());
-        verify(service).failFast(failureCaptor.capture());
-        assertThat(failureCaptor.getValue())
+        verify(failFastRequestEvent).fire(failFastRequestEventCaptor.capture());
+        assertThat(failFastRequestEventCaptor.getValue().getCause())
                 .isNotNull()
                 .hasMessageContaining("An error was produced during users information synchronization, error: %s", serviceFailure);
     }
@@ -157,8 +157,8 @@ class UserServiceAdapterTest {
                 .maxQueued(1)
                 .build();
 
-        UserServiceAdapter realAdapter = new UserServiceAdapter(service, config, taskAssigningServiceEventConsumer,
-                realManagedExecutor, userServiceConnector, startExecutionEvent);
+        UserServiceAdapter realAdapter = new UserServiceAdapter(config, taskAssigningServiceEventConsumer,
+                realManagedExecutor, userServiceConnector, startExecutionEvent, failFastRequestEvent);
         realAdapter.scheduleExecution(Duration.parse("PT1S"), () -> {
             wasExecuted.set(true);
             countDownLatch.countDown();

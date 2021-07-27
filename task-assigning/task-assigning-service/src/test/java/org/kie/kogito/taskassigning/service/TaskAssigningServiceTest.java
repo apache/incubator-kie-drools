@@ -770,8 +770,21 @@ class TaskAssigningServiceTest {
     @Test
     void failFast() throws Exception {
         prepareStart();
-        String error = "unexpected error was produced";
-        taskAssigningService.failFast(new RuntimeException(error));
+        RuntimeException error = new RuntimeException("unexpected error was produced");
+        taskAssigningService.failFast(error);
+        verifyFailFast(error);
+    }
+
+    @Test
+    void failFastObserver() throws Exception {
+        prepareStart();
+        RuntimeException error = new RuntimeException("fail fast request error");
+        taskAssigningService.onFailFast(new TaskAssigningService.FailFastRequestEvent(error));
+        verify(taskAssigningService).failFast(error);
+        verifyFailFast(error);
+    }
+
+    private void verifyFailFast(Throwable error) {
         verify(solverExecutor).destroy();
         verify(planningExecutor).destroy();
         verify(userServiceAdapter).destroy();
@@ -779,7 +792,7 @@ class TaskAssigningServiceTest {
         ServiceStatusInfo statusInfo = context.getStatusInfo();
         assertThat(statusInfo).isNotNull();
         assertThat(statusInfo.getStatus()).isEqualTo(ServiceStatus.ERROR);
-        assertThat(statusInfo.getStatusMessage().getValue()).contains(error);
+        assertThat(statusInfo.getStatusMessage().getValue()).contains(error.getMessage());
     }
 
     @Test

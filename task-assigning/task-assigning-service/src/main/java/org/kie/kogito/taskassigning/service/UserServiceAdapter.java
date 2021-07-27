@@ -48,8 +48,6 @@ public class UserServiceAdapter {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(UserServiceAdapter.class);
 
-    private final TaskAssigningService service;
-
     private final TaskAssigningConfig config;
 
     private final TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer;
@@ -60,24 +58,26 @@ public class UserServiceAdapter {
 
     private final Event<StartExecution> startExecutionEvent;
 
+    private final Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent;
+
     private final AtomicBoolean destroyed = new AtomicBoolean();
 
     static class StartExecution {
     }
 
     @Inject
-    public UserServiceAdapter(TaskAssigningService service,
-            TaskAssigningConfig config,
+    public UserServiceAdapter(TaskAssigningConfig config,
             TaskAssigningServiceEventConsumer taskAssigningServiceEventConsumer,
             ManagedExecutor managedExecutor,
             UserServiceConnector userServiceConnector,
-            Event<StartExecution> startExecutionEvent) {
-        this.service = service;
+            Event<StartExecution> startExecutionEvent,
+            Event<TaskAssigningService.FailFastRequestEvent> failFastRequestEvent) {
         this.config = config;
         this.taskAssigningServiceEventConsumer = taskAssigningServiceEventConsumer;
         this.managedExecutor = managedExecutor;
         this.userServiceConnector = userServiceConnector;
         this.startExecutionEvent = startExecutionEvent;
+        this.failFastRequestEvent = failFastRequestEvent;
     }
 
     public void start() {
@@ -127,7 +127,7 @@ public class UserServiceAdapter {
     }
 
     private void onQueryFailure(Throwable throwable) {
-        service.failFast(throwable);
+        failFastRequestEvent.fire(new TaskAssigningService.FailFastRequestEvent(throwable));
     }
 
     private boolean syncIsEnabled() {
