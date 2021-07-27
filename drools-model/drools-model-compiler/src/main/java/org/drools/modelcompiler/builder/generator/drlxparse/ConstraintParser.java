@@ -143,7 +143,7 @@ public class ConstraintParser {
         }
         singleResult.setExprBinding( bindId );
         Type exprType = singleResult.getExprType();
-        if(isBooleanBoxedUnboxed(exprType)) {
+        if (isBooleanBoxedUnboxed(exprType)) {
             singleResult.setIsPredicate(singleResult.getRight() != null);
         }
     }
@@ -462,10 +462,9 @@ public class ConstraintParser {
                     completeHalfExpr( (( PointFreeExpr ) binaryExpr.getLeft()).getLeft(), ( HalfPointFreeExpr ) binaryExpr.getRight()) :
                     binaryExpr.getRight();
             DrlxParseResult rightResult = getDrlxParseResult(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
-            if (leftResult.isSuccess() && rightResult.isSuccess() && ( (( DrlxParseSuccess ) leftResult).isTemporal() || (( DrlxParseSuccess ) rightResult).isTemporal() ) ) {
-                return new MultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult );
-            }
-            return leftResult.combineWith( rightResult, operator );
+            return isMultipleResult(leftResult, operator, rightResult) ?
+                    new MultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
+                    leftResult.combineWith( rightResult, operator );
         }
 
         final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
@@ -567,6 +566,13 @@ public class ConstraintParser {
                 .setBetaConstraint(isBetaConstraint)
                 .setRequiresSplit( requiresSplit )
                 .setIsPredicate(isPredicateBooleanExpression(binaryExpr));
+    }
+
+    private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {
+        return leftResult.isSuccess() && rightResult.isSuccess() && (
+                (operator == AND && (((DrlxParseSuccess) leftResult).getExprBinding() != null || ((DrlxParseSuccess) rightResult).getExprBinding() != null)) ||
+                ((DrlxParseSuccess) leftResult).isTemporal() || ((DrlxParseSuccess) rightResult).isTemporal()
+        );
     }
 
     private boolean isPredicateBooleanExpression(BinaryExpr expr) {
