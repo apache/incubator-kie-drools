@@ -1458,4 +1458,47 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieBuilder kbuilder = createKieBuilder(str);
         assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
     }
+
+    @Test
+    public void testSetterWithoutGetter() {
+        // DROOLS-6523
+        final String str =
+                "import " + ClassWithValue.class.getCanonicalName() + ";\n" +
+                "rule R1 no-loop when\n" +
+                "        $cwv : ClassWithValue()\n" +
+                "    then\n" +
+                "        $cwv.setDoubleValue(ClassWithValue.DOUBLE_VALUE);\n" +
+                "        update($cwv);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ClassWithValue cwv = new ClassWithValue();
+        ksession.insert(cwv);
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+        assertEquals(1, cwv.getDoubleValues().size());
+    }
+
+    public class ClassWithValue {
+
+        public static final double DOUBLE_VALUE = 5.5;
+
+        private List<Double> doubleValues = new ArrayList<>();
+
+        public List<Double> getDoubleValues() {
+            return doubleValues;
+        }
+
+        public void setDoubleValue(double doubleValue) {
+
+            this.doubleValues.clear();
+            this.doubleValues.add(doubleValue);
+        }
+
+        public void addDoubleValue(double doubleValue) {
+            this.doubleValues.add(doubleValue);
+        }
+    }
 }
