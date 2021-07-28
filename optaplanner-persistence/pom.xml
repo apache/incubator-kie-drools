@@ -32,4 +32,16 @@
     <module>optaplanner-persistence-jsonb</module>
   </modules>
 
+  <!-- TODO: Move to optaplanner-build-parent once https://github.com/quarkusio/quarkus-platform-bom-generator/issues/64 is solved.  -->
+  <dependencyManagement>
+    <dependencies>
+      <!-- TODO Dependencies that should maybe be removed/replaced in 8 https://issues.redhat.com/browse/PLANNER-2262 -->
+      <dependency>
+        <groupId>org.eclipse.persistence</groupId>
+        <artifactId>org.eclipse.persistence.moxy</artifactId>
+        <version>2.7.6</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
 </project>
