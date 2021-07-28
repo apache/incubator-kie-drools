@@ -46,6 +46,7 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
 import org.drools.mvel.parser.ast.expr.HalfPointFreeExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
 import org.drools.mvel.parser.ast.expr.OOPathChunk;
 import org.drools.mvel.parser.ast.expr.OOPathExpr;
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
@@ -479,6 +480,74 @@ public class DroolsMvelParserTest {
 
         BinaryExpr third = (BinaryExpr) comboExprRight.getLeft();
         assertEquals("value", toString(third.getLeft()));
+        assertEquals("3", toString(third.getRight()));
+        assertEquals(Operator.GREATER, third.getOperator());
+
+        HalfBinaryExpr forth = (HalfBinaryExpr) comboExprRight.getRight();
+        assertEquals("4", toString(forth.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, forth.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesisComplexOnField() {
+        String expr = "value.length ((> 1 && < 2) || (> 3 && < 4))";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.OR, comboExpr.getOperator());
+
+        BinaryExpr comboExprLeft = ( (BinaryExpr) comboExpr.getLeft() );
+        assertEquals(Operator.AND, comboExprLeft.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExprLeft.getLeft();
+        assertTrue(first.getLeft() instanceof FieldAccessExpr);
+        assertEquals("value.length", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExprLeft.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+
+        BinaryExpr comboExprRight = ( (BinaryExpr) comboExpr.getRight() );
+        assertEquals(Operator.AND, comboExprRight.getOperator());
+
+        BinaryExpr third = (BinaryExpr) comboExprRight.getLeft();
+        assertEquals("value.length", toString(third.getLeft()));
+        assertEquals("3", toString(third.getRight()));
+        assertEquals(Operator.GREATER, third.getOperator());
+
+        HalfBinaryExpr forth = (HalfBinaryExpr) comboExprRight.getRight();
+        assertEquals("4", toString(forth.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, forth.getOperator());
+    }
+
+    @Test
+    public void testAndWithImplicitParameterAndParenthesisComplexOnNullSafeField() {
+        String expr = "value!.length ((> 1 && < 2) || (> 3 && < 4))";
+        Expression expression = parseExpression( parser, expr ).getExpr();
+
+        BinaryExpr comboExpr = ( (BinaryExpr) expression );
+        assertEquals(Operator.OR, comboExpr.getOperator());
+
+        BinaryExpr comboExprLeft = ( (BinaryExpr) comboExpr.getLeft() );
+        assertEquals(Operator.AND, comboExprLeft.getOperator());
+
+        BinaryExpr first = (BinaryExpr) comboExprLeft.getLeft();
+        assertTrue(first.getLeft() instanceof NullSafeFieldAccessExpr);
+        assertEquals("value!.length", toString(first.getLeft()));
+        assertEquals("1", toString(first.getRight()));
+        assertEquals(Operator.GREATER, first.getOperator());
+
+        HalfBinaryExpr second = (HalfBinaryExpr) comboExprLeft.getRight();
+        assertEquals("2", toString(second.getRight()));
+        assertEquals(HalfBinaryExpr.Operator.LESS, second.getOperator());
+
+        BinaryExpr comboExprRight = ( (BinaryExpr) comboExpr.getRight() );
+        assertEquals(Operator.AND, comboExprRight.getOperator());
+
+        BinaryExpr third = (BinaryExpr) comboExprRight.getLeft();
+        assertEquals("value!.length", toString(third.getLeft()));
         assertEquals("3", toString(third.getRight()));
         assertEquals(Operator.GREATER, third.getOperator());
 

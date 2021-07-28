@@ -2006,7 +2006,7 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
 	  	[ args = Arguments() {hasArgs=true;} ]
 	  	{
 			if (hasArgs) {
-	  			ret = new MethodCallExpr(range(scope, token()), scope, typeArgs.list, name, args);
+	  			ret = parseMethodExprOrHalfBinary(range(scope, token()), scope, typeArgs.list, name, args, false);
 			} else {
 	  			ret = new FieldAccessExpr(range(scope, token()), scope, typeArgs.list, name);
 			}
@@ -2043,9 +2043,9 @@ Expression PrimarySuffixWithoutSuper(Expression scope):
         [ args = Arguments() {hasArgs=true;} ]
         {
             if (hasArgs) {
-                ret = new NullSafeMethodCallExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name, args);
+                ret = parseMethodExprOrHalfBinary(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name, args, true);
             } else {
-                ret =  new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
+                ret = new NullSafeFieldAccessExpr(range(scope.getTokenRange().get().getBegin(), token()), scope, typeArgs.list, name);
             }
         }
         )
