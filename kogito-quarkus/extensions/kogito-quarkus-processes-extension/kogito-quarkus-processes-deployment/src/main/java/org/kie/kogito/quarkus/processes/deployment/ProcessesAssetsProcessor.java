@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -123,14 +124,14 @@ public class ProcessesAssetsProcessor {
         // configure the application generator
         KogitoBuildContext context = kogitoBuildContext(root.getPaths(), aggregatedIndex, curateOutcomeBuildItem.getEffectiveModel().getAppArtifact());
 
-        Collection<GeneratedFile> generatedFiles = generatePersistenceInfo(
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>(generatePersistenceInfo(
                 context,
                 aggregatedIndex,
                 generatedBeans,
                 resource,
                 reflectiveClass,
                 runTimeConfiguration,
-                liveReload.isLiveReload());
+                liveReload.isLiveReload()));
 
         Map<String, byte[]> classes = new HashMap<>();
         for (KogitoGeneratedClassesBuildItem generatedKogitoClass : generatedKogitoClasses) {
@@ -170,9 +171,7 @@ public class ProcessesAssetsProcessor {
         compileGeneratedSources(context, dependencies, persistenceGeneratedFiles, useDebugSymbols)
                 .forEach(generatedBeans::produce);
 
-        return persistenceGeneratedFiles.stream()
-                .filter(x -> x.category().equals(GeneratedFileType.Category.RESOURCE))
-                .collect(toList());
+        return persistenceGeneratedFiles;
     }
 
     private Collection<GeneratedFile> getGeneratedPersistenceFiles(IndexView index,
