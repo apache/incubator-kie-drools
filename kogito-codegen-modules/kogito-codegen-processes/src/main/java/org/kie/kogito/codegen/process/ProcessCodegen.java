@@ -398,8 +398,7 @@ public class ProcessCodegen extends AbstractGenerator {
                                 msgDataEventGenerator.className(),
                                 trigger,
                                 eventListenerName));
-                        if (channelGenerator != null) {
-                            channelGenerator.addInputChannel(eventListenerName, trigger.getName());
+                        if (context().getAddonsConfig().useMultiChannel()) {
                             eventReceiverGenerators.computeIfAbsent(trigger.getName(), t -> new EventReceiverGenerator(context(), eventListenerName, trigger));
                         }
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {

@@ -16,12 +16,21 @@
 package $Package$;
 
 import javax.inject.Named;
+
+import java.util.concurrent.CompletionStage;
+
 import javax.enterprise.context.ApplicationScoped;
 
+import org.eclipse.microprofile.reactive.messaging.Incoming;
+import org.eclipse.microprofile.reactive.messaging.Message;
 import org.kie.kogito.addon.cloudevents.quarkus.AbstractQuarkusCloudEventReceiver;
 
 @ApplicationScoped
 @Named("$BeanName$")
 public class $Trigger$EventReceiver extends AbstractQuarkusCloudEventReceiver {
-
+    
+    @Incoming("$Trigger$")
+    public CompletionStage<?> onEvent(Message<String> message) {
+        return produce(message);
+    }
 }

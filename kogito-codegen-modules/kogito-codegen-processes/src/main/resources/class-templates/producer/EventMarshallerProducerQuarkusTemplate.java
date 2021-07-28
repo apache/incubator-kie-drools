@@ -17,16 +17,22 @@ package $Package$;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Inject;
 
 
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 @ApplicationScoped
 public class EventMarshallerProducer {
 
+    @Inject
+    ObjectMapper mapper;
+    
     @Produces
     public EventMarshaller eventMarshaller(){
-        return new DefaultEventMarshaller();
+        return new DefaultEventMarshaller(mapper);
     }
 }

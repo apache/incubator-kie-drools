@@ -32,15 +32,11 @@ public class DefaultEventMarshaller implements EventMarshaller {
     private final ObjectMapper mapper;
 
     public DefaultEventMarshaller() {
-        this(null);
+        this(new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault())));
     }
 
     public DefaultEventMarshaller(ObjectMapper mapper) {
-        if (mapper == null) {
-            this.mapper = new ObjectMapper().setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
-        } else {
-            this.mapper = mapper;
-        }
+        this.mapper = mapper;
     }
 
     @Override

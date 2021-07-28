@@ -39,6 +39,8 @@ public class EventReceiverGenerator {
         clazz.setName(className);
         clazz.findAll(StringLiteralExpr.class)
                 .forEach(str -> str.setString(str.asString().replace("$BeanName$", eventListenerName)));
+        clazz.findAll(StringLiteralExpr.class)
+                .forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
     }
 
     public String generate() {

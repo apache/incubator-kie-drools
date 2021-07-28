@@ -20,16 +20,10 @@ import java.util.Set;
 
 public class DefaultChannelResolver implements ChannelResolver {
 
-    protected Set<ChannelInfo> inputChannels = new HashSet<>();
     protected Set<String> outputChannels = new HashSet<>();
 
     @Override
     public Set<String> getOutputChannels() {
         return outputChannels;
-    }
-
-    @Override
-    public Set<ChannelInfo> getInputChannels() {
-        return inputChannels;
     }
 }

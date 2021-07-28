@@ -20,16 +20,12 @@ import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 
 public class ChannelResolverGenerator {
 
@@ -47,11 +43,6 @@ public class ChannelResolverGenerator {
     public void addOutputChannel(String channelName) {
         body.addStatement(new MethodCallExpr(new NameExpr("outputChannels"), "add").addArgument(new StringLiteralExpr(channelName)));
 
-    }
-
-    public void addInputChannel(String beanName, String channelName) {
-        body.addStatement(new MethodCallExpr(new NameExpr("inputChannels"), "add").addArgument(new ObjectCreationExpr(null,
-                parseClassOrInterfaceType("org.kie.kogito.addon.cloudevents.quarkus.ChannelInfo"), NodeList.nodeList(new StringLiteralExpr(beanName), new StringLiteralExpr(channelName)))));
     }
 
     public String generate() {

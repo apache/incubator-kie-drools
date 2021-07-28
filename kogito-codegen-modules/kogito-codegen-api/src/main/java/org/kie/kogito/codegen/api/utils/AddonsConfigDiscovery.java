@@ -32,7 +32,7 @@ public class AddonsConfigDiscovery {
     public static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
     public static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
     public static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter";
-    public static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventReceiver";
+    public static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventEmitter";
     public static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
     public static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
     public static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";

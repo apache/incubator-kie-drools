@@ -20,11 +20,18 @@ import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.springframework.beans.factory.annotation.Autowired;
+
 @Configuration
 public class EventMarshallerProducer {
+    
+    @Autowired
+    ObjectMapper mapper;
 
     @Bean
     public EventMarshaller eventMarshaller(){
-        return new DefaultEventMarshaller();
+        return new DefaultEventMarshaller(mapper);
     }
 }

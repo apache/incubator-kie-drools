@@ -20,6 +20,4 @@ import java.util.Set;
 public interface ChannelResolver {
 
     Set<String> getOutputChannels();
-
-    Set<ChannelInfo> getInputChannels();
 }
