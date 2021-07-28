@@ -16,7 +16,7 @@
 package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Date;
 
 import org.kie.pmml.api.enums.builtinfunctions.ArithmeticFunctions;
 import org.kie.pmml.api.enums.builtinfunctions.BooleanFunctions;
@@ -158,27 +158,58 @@ public enum BUILTIN_FUNCTIONS {
     public static void checkNumbers(final Object[] inputData, final int expectedSize) {
         checkLength(inputData, expectedSize);
         for (Object object : inputData) {
-            if (!(object instanceof Number)) {
-                throw new IllegalArgumentException("Expected only Numbers");
-            }
+            checkNumber(object);
+        }
+    }
+
+    public static void checkNumber(final Object object) {
+        if (!(object instanceof Number)) {
+            throw new IllegalArgumentException("Expected only Numbers");
+        }
+    }
+
+    public static void checkInteger(final Object object) {
+        if (!(object instanceof Integer)) {
+            throw new IllegalArgumentException("Expected only Integer");
         }
     }
 
     public static void checkStrings(final Object[] inputData, final int expectedSize) {
         checkLength(inputData, expectedSize);
         for (Object object : inputData) {
-            if (!(object instanceof String)) {
-                throw new IllegalArgumentException("Expected only String");
-            }
+            checkString(object);
+        }
+    }
+
+    public static void checkString(final Object object) {
+        if (!(object instanceof String)) {
+            throw new IllegalArgumentException("Expected only String");
         }
     }
 
     public static void checkBooleans(final Object[] inputData, final int expectedSize) {
         checkLength(inputData, expectedSize);
         for (Object object : inputData) {
-            if (!(object instanceof Boolean)) {
-                throw new IllegalArgumentException("Expected only Booleans");
-            }
+            checkBoolean(object);
+        }
+    }
+
+    public static void checkBoolean(final Object object) {
+        if (!(object instanceof Boolean)) {
+            throw new IllegalArgumentException("Expected only Booleans");
+        }
+    }
+
+    public static void checkDates(final Object[] inputData, final int expectedSize) {
+        checkLength(inputData, expectedSize);
+        for (Object object : inputData) {
+            checkDate(object);
+        }
+    }
+
+    public static void checkDate(final Object object) {
+        if (!(object instanceof Date)) {
+            throw new IllegalArgumentException("Expected only Dates");
         }
     }
 
