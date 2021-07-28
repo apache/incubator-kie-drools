@@ -264,11 +264,6 @@
         <artifactId>org.eclipse.persistence.moxy</artifactId>
         <version>2.7.6</version>
       </dependency>
-      <dependency>
-        <groupId>org.jboss.narayana.jta</groupId>
-        <artifactId>narayana-jta</artifactId>
-        <version>5.12.0.Final</version>
-      </dependency>
     </dependencies>
   </dependencyManagement>
 
