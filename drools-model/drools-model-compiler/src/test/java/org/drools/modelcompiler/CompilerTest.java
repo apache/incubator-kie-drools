@@ -2962,48 +2962,4 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("DEFAULT", list.get(0));
     }
-
-    @Test
-    public void testEnclosedBinding() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                     "global java.util.List result;\n" +
-                     "rule R when\n" +
-                     "  $p : Person( ($n : name == \"Mario\") )\n" +
-                     "then\n" +
-                     "  result.add($n);\n" +
-                     "end";
-
-        KieSession ksession = getKieSession(str);
-        List<String> result = new ArrayList<>();
-        ksession.setGlobal("result", result);
-
-        Person me = new Person("Mario", 40);
-        ksession.insert(me);
-        ksession.fireAllRules();
-
-        assertThat(result).containsExactly("Mario");
-    }
-
-    @Test
-    public void testComplexEnclosedBinding() {
-        String str =
-                "import " + Person.class.getCanonicalName() + ";" +
-                     "global java.util.List result;\n" +
-                     "rule R when\n" +
-                     "  $p : Person( ($n : name == \"Mario\") && (age > 20) )\n" +
-                     "then\n" +
-                     "  result.add($n);\n" +
-                     "end";
-
-        KieSession ksession = getKieSession(str);
-        List<Object> result = new ArrayList<>();
-        ksession.setGlobal("result", result);
-
-        Person me = new Person("Mario", 40);
-        ksession.insert(me);
-        ksession.fireAllRules();
-
-        assertThat(result).containsExactly("Mario");
-    }
 }

@@ -207,7 +207,6 @@ public abstract class PatternDSL implements DSLNode {
 
     void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {
         DrlxParseResult drlxParseResult = patternConstraintParseResult.getDrlxParseResult();
-        String expression = patternConstraintParseResult.getExpression();
 
         DrlxParseResult withBindingCheck = drlxParseResult.acceptWithReturnValue(new ParseResultVisitor<DrlxParseResult>() {
             @Override
@@ -233,7 +232,7 @@ public abstract class PatternDSL implements DSLNode {
                     @Override
                     public void onSuccess( DrlxParseSuccess drlxParseResult ) {
                         DSLNode constraint = drlxParseResult.isOOPath() ?
-                            new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, expression, drlxParseResult ) :
+                            new ConstraintOOPath( context, packageModel, pattern, patternType, patternConstraintParseResult, drlxParseResult ) :
                             createSimpleConstraint( drlxParseResult, pattern );
                         constraint.buildPattern();
                         registerUsedBindingInOr(drlxParseResult.getExprBinding());

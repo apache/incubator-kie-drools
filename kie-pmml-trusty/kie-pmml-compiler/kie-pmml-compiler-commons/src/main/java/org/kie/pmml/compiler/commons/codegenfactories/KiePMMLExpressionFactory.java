@@ -18,12 +18,14 @@ package org.kie.pmml.compiler.commons.codegenfactories;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Apply;
 import org.dmg.pmml.Constant;
+import org.dmg.pmml.Discretize;
 import org.dmg.pmml.FieldRef;
 import org.dmg.pmml.NormContinuous;
 import org.dmg.pmml.NormDiscrete;
 
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory.getApplyVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory.getConstantVariableDeclaration;
+import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldRefFactory.getFieldRefVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormContinuousFactory.getNormContinuousVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration;
@@ -44,6 +46,8 @@ public class KiePMMLExpressionFactory {
             return getApplyVariableDeclaration(variableName, (Apply) expression);
         } else if (expression instanceof Constant) {
             return getConstantVariableDeclaration(variableName, (Constant) expression);
+        } else if (expression instanceof Discretize) {
+            return getDiscretizeVariableDeclaration(variableName, (Discretize) expression);
         } else if (expression instanceof FieldRef) {
             return getFieldRefVariableDeclaration(variableName, (FieldRef) expression);
         } else if (expression instanceof NormContinuous) {

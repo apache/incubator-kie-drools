@@ -147,11 +147,7 @@ public class RhsParser {
             String methodName = expr.getNameAsString();
             String property = ClassUtils.setter2property(methodName);
             if (property != null) {
-                Object value = null;
-                Expression argument = expr.getArgument(0);
-                if (argument.isLiteralExpr()) {
-                    value = literalToValue(argument.asLiteralExpr());
-                }
+                Object value = getLiteralValue(context, expr.getArgument(0));
                 action.addInsertedProperty(new InsertedProperty(property, value));
             }
         }
@@ -190,8 +186,13 @@ public class RhsParser {
                         .findFirst().orElse( null );
 
                 Object value = null;
-                if (setterExpr != null && setterExpr.getArgument( 0 ).isLiteralExpr()) {
-                    value = literalToValue( setterExpr.getArgument( 0 ).asLiteralExpr() );
+                if (setterExpr != null) {
+                    Expression arg = setterExpr.getArgument( 0 );
+                    if (arg.isLiteralExpr()) {
+                        value = literalToValue( setterExpr.getArgument( 0 ).asLiteralExpr() );
+                    } else if (arg.isNameExpr()) {
+                        value = ((ImpactAnalysisRuleContext)context).getBindVariableLiteralMap().get(arg.asNameExpr().getName().asString());
+                    }
                 }
 
                 Method accessor = ClassUtils.getAccessor(modifiedClass, property);
@@ -201,8 +202,8 @@ public class RhsParser {
                                                                       .filter(m -> isMapPutExpr(m, modifiedId, accessor.getName()))
                                                                       .collect(Collectors.toList());
                     mapPutExprs.stream().forEach(expr -> {
-                        String mapKey = getLiteralString(expr.getArgument(0));
-                        Object mapValue = getLiteralValue(expr.getArgument(1));
+                        String mapKey = getLiteralString(context, expr.getArgument(0));
+                        Object mapValue = getLiteralValue(context, expr.getArgument(1));
                         action.addModifiedProperty(new ModifiedMapProperty(mapName, mapKey, mapValue));
                     });
 

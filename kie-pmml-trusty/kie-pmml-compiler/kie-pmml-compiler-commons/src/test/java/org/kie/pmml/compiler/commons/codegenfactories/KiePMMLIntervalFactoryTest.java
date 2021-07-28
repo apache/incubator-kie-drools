@@ -22,41 +22,41 @@ import java.util.List;
 
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.FieldName;
-import org.dmg.pmml.NormDiscrete;
+import org.dmg.pmml.Interval;
 import org.junit.Test;
-import org.kie.pmml.commons.model.expressions.KiePMMLNormDiscrete;
+import org.kie.pmml.api.enums.CLOSURE;
+import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
-public class KiePMMLNormDiscreteFactoryTest {
+public class KiePMMLIntervalFactoryTest {
 
     @Test
-    public void getNormDiscreteVariableDeclaration() {
+    public void getIntervalVariableDeclaration() {
         String variableName = "variableName";
-        String fieldName = "fieldName";
-        String fieldValue = "fieldValue";
-        double mapMissingTo = 45.32;
+        double leftMargin = 45.32;
 
-        NormDiscrete normDiscrete = new NormDiscrete();
-        normDiscrete.setField(FieldName.create(fieldName));
-        normDiscrete.setValue(fieldValue);
-        normDiscrete.setMapMissingTo(mapMissingTo);
+        Interval interval = new Interval();
+        interval.setLeftMargin(leftMargin);
+        interval.setRightMargin(null);
+        interval.setClosure(Interval.Closure.CLOSED_OPEN);
 
-        BlockStmt retrieved = KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration(variableName,
-                                                                                                normDiscrete);
+        BlockStmt retrieved = KiePMMLIntervalFactory.getIntervalVariableDeclaration(variableName,
+                                                                                    interval);
+        String closureString =
+                CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
+
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLNormDiscrete " +
+                                                                              "    KiePMMLInterval " +
                                                                               "%s = new " +
-                                                                              "KiePMMLNormDiscrete(\"%s\", " +
-                                                                              "Collections.emptyList(), " +
-                                                                              "\"%s\", " +
+                                                                              "KiePMMLInterval(%s, " +
+                                                                              "null, " +
                                                                               "%s);\n" +
-                                                                              "}", variableName, fieldName, fieldValue, mapMissingTo));
+                                                                              "}", variableName, leftMargin, closureString));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLNormDiscrete.class);
+        List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
