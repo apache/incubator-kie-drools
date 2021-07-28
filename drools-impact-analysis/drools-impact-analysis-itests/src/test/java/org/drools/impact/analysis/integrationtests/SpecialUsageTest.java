@@ -21,8 +21,10 @@ import java.math.BigDecimal;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.ReactivityType;
+import org.drools.impact.analysis.integrationtests.domain.Address;
 import org.drools.impact.analysis.integrationtests.domain.ControlFact;
 import org.drools.impact.analysis.integrationtests.domain.FunctionUtils;
+import org.drools.impact.analysis.integrationtests.domain.Person;
 import org.drools.impact.analysis.integrationtests.domain.ProductItem;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
@@ -216,6 +218,87 @@ public class SpecialUsageTest extends AbstractGraphTest {
         Graph graph = converter.toGraph(analysisModel);
 
         assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testBindVariableLiteralModify() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person($data : \"ABC\")\n" +
+                     "then\n" +
+                     "  modify($p) { setLikes( $data ) };" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(likes == \"ABC\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testBindVariableLiteralInsert() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + Address.class.getCanonicalName() + ";" +
+                     "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  Address(city == \"Tokyo\", $data : \"ABC\")\n" +
+                     "then\n" +
+                     "  Person person = new Person(\"John\");\n" +
+                     "  person.setLikes($data);\n" +
+                     "  insert(person);\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(likes == \"ABC\")\n" +
+                     "then\n" +
+                     "end\n";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
+
+        generatePng(graph);
+    }
+
+    @Test
+    public void testBindVariableLiteralModifyMap() {
+        String str =
+                "package mypkg;\n" +
+                     "import " + ControlFact.class.getCanonicalName() + ";" +
+                     "dialect \"mvel\"" +
+                     "rule R1\n" +
+                     "when\n" +
+                     "  $c : ControlFact( $value : \"Value1\" )\n" +
+                     "then\n" +
+                     "  $c.mapData[\"Key1\"] = $value;\n" +
+                     "  modify ($c) {mapData = $c.mapData};\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $c : ControlFact(mapData[\"Key1\"] == \"Value1\")\n" +
+                     "then\n" +
+                     "end";
+
+        AnalysisModel analysisModel = new ModelBuilder().build(str);
+
+        ModelToGraphConverter converter = new ModelToGraphConverter();
+        Graph graph = converter.toGraph(analysisModel);
+
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.POSITIVE);
 
         generatePng(graph);
     }
