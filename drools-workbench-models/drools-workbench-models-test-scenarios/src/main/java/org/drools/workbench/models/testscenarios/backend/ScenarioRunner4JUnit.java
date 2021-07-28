@@ -19,7 +19,6 @@ package org.drools.workbench.models.testscenarios.backend;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
@@ -123,8 +122,8 @@ public class ScenarioRunner4JUnit extends Runner {
                     }
 
                     // FLUSSSSSH!
-                    // DROOLS-6511 ConcurrentModificationException - fixed by using CopyOnWriteArrayList
-                    for (FactHandle factHandle : new CopyOnWriteArrayList<FactHandle>(ksession.getFactHandles())) {
+                    // DROOLS-6511 ConcurrentModificationException - fixed by using a new copy of FactHandle list
+                    for (FactHandle factHandle : new ArrayList<FactHandle>(ksession.getFactHandles())) {
                         ksession.delete(factHandle);
                     }
 
