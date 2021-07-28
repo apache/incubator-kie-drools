@@ -1501,4 +1501,47 @@ public class PropertyReactivityTest extends BaseModelTest {
             this.doubleValues.add(doubleValue);
         }
     }
+
+    @Test
+    public void testPropertyReactivityOn2Properties() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ), " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+        assertEquals(1, p.getId());
+    }
+
+    @Test
+    public void testPropertyReactivityOn2PropertiesWithWrongSeparator() {
+        // DROOLS-6480
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ); " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieBuilder kbuilder = createKieBuilder(str);
+        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
+    }
 }
