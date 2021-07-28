@@ -66,6 +66,33 @@
         <LinearNorm orig="6.8" norm="6.7"/>
       </NormContinuous>
     </DerivedField>
+    <DerivedField name="mapvalued_field" dataType="string" optype="categorical">
+      <MapValues outputColumn="out" dataType="string">
+        <FieldColumnPair field="categoricalX" column="reasoncode"/>
+        <InlineTable>
+          <row>
+            <reasoncode>red</reasoncode>
+            <out>der</out>
+          </row>
+          <row>
+            <reasoncode>green</reasoncode>
+            <out>neerg</out>
+          </row>
+          <row>
+            <reasoncode>blue</reasoncode>
+            <out>eulb</out>
+          </row>
+          <row>
+            <reasoncode>orange</reasoncode>
+            <out>egnaro</out>
+          </row>
+          <row>
+            <reasoncode>yellow</reasoncode>
+            <out>wolley</out>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DerivedField>
   </TransformationDictionary>
   <MiningModel functionName="regression" modelName="MixedMining">
     <MiningSchema>
@@ -102,6 +129,9 @@
         <Apply function="discretize_function" >
           <FieldRef field="age"/>
         </Apply>
+      </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <FieldRef field="mapvalued_field"/>
       </OutputField>
     </Output>
     <Targets>

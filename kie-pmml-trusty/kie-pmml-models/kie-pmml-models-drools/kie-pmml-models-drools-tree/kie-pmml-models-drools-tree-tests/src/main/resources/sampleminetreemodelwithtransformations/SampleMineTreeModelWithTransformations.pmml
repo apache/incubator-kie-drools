@@ -89,6 +89,25 @@
           <FieldRef field="temperature"/>
         </Apply>
       </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <MapValues outputColumn="out" dataType="string">
+          <FieldColumnPair field="decision" column="decision"/>
+          <InlineTable>
+            <row>
+              <decision>sunglasses</decision>
+              <out>sun</out>
+            </row>
+            <row>
+              <decision>umbrella</decision>
+              <out>rain</out>
+            </row>
+            <row>
+              <decision>nothing</decision>
+              <out>dunno</out>
+            </row>
+          </InlineTable>
+        </MapValues>
+      </OutputField>
     </Output>
     <Node score="nothing" id="1">
       <True />

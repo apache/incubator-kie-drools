@@ -53,6 +53,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
             "out_der_fun_salary_apply_fun_salary_fieldref";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
 
     private static final String CONSTANT = "constant";
     private static final String FUN_SALARY_CONSTANT = "FUN_SALARY_CONSTANT";
@@ -93,7 +94,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     }
 
     @Test
-    public void testLogisticRegressionIrisData() {
+    public void testLogisticRegressionIrisData() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
@@ -141,5 +142,18 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (car_location) {
+            case "carpark":
+                expected = "inside";
+                break;
+            case "street":
+                expected = "outside";
+                break;
+            default:
+                throw new Exception("Unexpected car_location " + car_location);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
     }
 }

@@ -80,6 +80,21 @@
           <FieldRef field="input1"/>
         </Apply>
       </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <MapValues outputColumn="out" dataType="string">
+          <FieldColumnPair field="Reason Code 1" column="reasoncode"/>
+          <InlineTable>
+            <row>
+              <reasoncode>Input1ReasonCode</reasoncode>
+              <out>RES-1</out>
+            </row>
+            <row>
+              <reasoncode>Input2ReasonCode</reasoncode>
+              <out>RES-2</out>
+            </row>
+          </InlineTable>
+        </MapValues>
+      </OutputField>
     </Output>
     <Characteristics>
       <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
