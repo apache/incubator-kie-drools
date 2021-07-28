@@ -42,12 +42,15 @@ import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.runner.model.ValueWrapper;
 import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNDecisionResult;
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
 
 import static org.drools.scenariosimulation.backend.runner.model.ValueWrapper.errorWithMessage;
+import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.FAILED;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus.SUCCEEDED;
+import static org.kie.dmn.api.core.DMNMessage.Severity.ERROR;
 
 public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
 
@@ -171,6 +174,7 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                                     ExpressionEvaluatorFactory expressionEvaluatorFactory,
                                     Map<String, Object> requestContext) {
         DMNResult dmnResult = (DMNResult) requestContext.get(DMNScenarioExecutableBuilder.DMN_RESULT);
+        List<DMNMessage> dmnMessages = dmnResult.getMessages();
 
         for (ScenarioExpect output : scenarioRunnerData.getExpects()) {
             FactIdentifier factIdentifier = output.getFactIdentifier();
@@ -189,7 +193,11 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                 ExpressionEvaluator expressionEvaluator = expressionEvaluatorFactory.getOrCreate(expectedResult);
 
                 ScenarioResult scenarioResult = fillResult(expectedResult,
-                                                           () -> getSingleFactValueResult(factMapping, expectedResult, decisionResult, expressionEvaluator),
+                                                           () -> getSingleFactValueResult(factMapping,
+                                                                                          expectedResult,
+                                                                                          decisionResult,
+                                                                                          dmnMessages,
+                                                                                          expressionEvaluator),
                                                            expressionEvaluator);
 
                 scenarioRunnerData.addResult(scenarioResult);
@@ -201,14 +209,16 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
     protected ValueWrapper getSingleFactValueResult(FactMapping factMapping,
                                                     FactMappingValue expectedResult,
                                                     DMNDecisionResult decisionResult,
+                                                    List<DMNMessage> failureMessages,
                                                     ExpressionEvaluator expressionEvaluator) {
         Object resultRaw = decisionResult.getResult();
         final DMNDecisionResult.DecisionEvaluationStatus evaluationStatus = decisionResult.getEvaluationStatus();
         if (!SUCCEEDED.equals(evaluationStatus)) {
-            return errorWithMessage("The decision " +
-                                                             decisionResult.getDecisionName() +
-                                                             " has not been successfully evaluated: " +
-                                                             evaluationStatus);
+            String failureReason = determineFailureMessage(evaluationStatus, failureMessages);
+            return errorWithMessage("The decision \"" +
+                                            decisionResult.getDecisionName() +
+                                            "\" has not been successfully evaluated: " +
+                                            failureReason);
         }
 
         List<ExpressionElement> elementsWithoutClass = factMapping.getExpressionElementsWithoutClass();
@@ -233,6 +243,16 @@ public class DMNScenarioRunnerHelper extends AbstractRunnerHelper {
                                 expectedResultRaw,
                                 resultRaw,
                                 resultClass);
+    }
+
+    private String determineFailureMessage(final DMNDecisionResult.DecisionEvaluationStatus evaluationStatus,
+                                           final List<DMNMessage> dmnMessages) {
+        return FAILED.equals(evaluationStatus) && (dmnMessages != null && !dmnMessages.isEmpty()) ?
+                dmnMessages.stream()
+                        .filter(dmnMessage -> ERROR.equals(dmnMessage.getSeverity()))
+                        .findFirst().map(DMNMessage::getMessage)
+                        .orElse(evaluationStatus.toString()) :
+                evaluationStatus.toString();
     }
 
     @SuppressWarnings("unchecked")
