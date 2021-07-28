@@ -16,14 +16,14 @@ message Address {
 /* @Indexed */
 message Deals {
     option java_package = "org.acme.deals";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.YES, store = Store.YES) */
     optional string id = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string name = 2;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string review = 3;
     optional Traveller traveller = 4;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional org.kie.kogito.index.model.KogitoMetadata metadata = 5;
 }
 

@@ -76,7 +76,7 @@ class ProtobufServiceTest {
         StartupEvent event = mock(StartupEvent.class);
         protobufService.onStart(event);
 
-        verify(schemaEvent, times(1)).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test", content, getValidEntityIndexDescriptors(true), null), SCHEMA_TYPE)));
+        verify(schemaEvent).fire(eq(new SchemaRegisteredEvent(new SchemaDescriptor("test", content, getValidEntityIndexDescriptors(true), null), SCHEMA_TYPE)));
         verify(protobufMonitorService).startMonitoring();
     }
 

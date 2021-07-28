@@ -770,7 +770,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "option kogito_model=\"traveller\";\n" +
                 "/* @Indexed */\n" +
                 "message travels {\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.NO, store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -783,7 +783,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "option kogito_model=\"travels\";\n" +
                 "/* @Indexed */\n" +
                 "message travels {\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.NO, store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -796,7 +796,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "option kogito_id=\"travels\";\n" +
                 "/* @Indexed */\n" +
                 "message travels {\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.NO, store = Store.YES) @SortableField */\n" +
                 "   optional string traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -808,7 +808,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
         return "package org.demo;\n" +
                 "/* @Indexed */\n" +
                 "message travels {\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.NO, store = Store.YES) @SortableField */\n" +
                 "   optional stringa traveller = 1;\n" +
                 "   optional string hotel = 2;\n" +
                 "   optional string flight = 3;\n" +
@@ -824,7 +824,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "/* @Indexed */\n" +
                 "message Game {\n" +
                 "   optional string player = 1;\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
                 "   optional string id = 2;\n" +
                 "   optional string name = 3;\n" +
                 "   optional org.kie.kogito.index.model.KogitoMetadata metadata = 4;\n" +
@@ -839,7 +839,7 @@ public abstract class AbstractDomainIndexingServiceIT extends AbstractIndexingSe
                 "option kogito_id=\"game\";\n" +
                 "/* @Indexed */\n" +
                 "message Game {\n" +
-                "   /* @Field(store = Store.YES) @SortableField */\n" +
+                "   /* @Field(index = Index.YES, store = Store.YES) @SortableField */\n" +
                 "   optional string id = 1;\n" +
                 "   optional string name = 2;\n" +
                 "   optional string company = 3;\n" +

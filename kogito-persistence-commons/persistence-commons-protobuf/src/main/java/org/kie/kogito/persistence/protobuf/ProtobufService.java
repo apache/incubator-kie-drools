@@ -46,7 +46,7 @@ import static java.lang.String.format;
 import static java.util.stream.Collectors.toMap;
 import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.INDEXED_ANNOTATION;
 import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.configureBuilder;
-import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.createEntityIndexeDescriptors;
+import static org.kie.kogito.persistence.protobuf.ProtoIndexParser.createEntityIndexDescriptors;
 
 @ApplicationScoped
 public class ProtobufService {
@@ -78,7 +78,7 @@ public class ProtobufService {
                 FileDescriptor desc = ctx.getFileDescriptors().get(name);
                 Map<String, EntityIndexDescriptor> entityIndexes = desc.getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor> getProcessedAnnotation(INDEXED_ANNOTATION))
                         .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
-                Map<String, EntityIndexDescriptor> entityIndexDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
+                Map<String, EntityIndexDescriptor> entityIndexDescriptors = createEntityIndexDescriptors(desc, entityIndexes);
 
                 schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(name, content, entityIndexDescriptors, null), SCHEMA_TYPE));
             } catch (ProtobufValidationException e) {
@@ -119,7 +119,7 @@ public class ProtobufService {
 
         Map<String, EntityIndexDescriptor> entityIndexes = desc.getMessageTypes().stream().map(t -> t.<EntityIndexDescriptor> getProcessedAnnotation(INDEXED_ANNOTATION))
                 .filter(Objects::nonNull).collect(toMap(EntityIndexDescriptor::getName, Function.identity()));
-        Map<String, EntityIndexDescriptor> entityIndexedDescriptors = createEntityIndexeDescriptors(desc, entityIndexes);
+        Map<String, EntityIndexDescriptor> entityIndexedDescriptors = createEntityIndexDescriptors(desc, entityIndexes);
 
         try {
             schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, entityIndexedDescriptors, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));

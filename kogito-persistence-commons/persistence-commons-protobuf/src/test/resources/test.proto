@@ -7,13 +7,13 @@ option kogito_id = "travels";
 /* @Indexed */
 message Flight {
     option java_package = "org.acme.travels.travels";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string flightNumber = 1;
 }
 /* @Indexed */
 message Hotel {
     option java_package = "org.acme.travels.travels";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string name = 1;
 
     optional string room = 2;
@@ -22,12 +22,12 @@ message Hotel {
 /* @Indexed */
 message Travels {
     option java_package = "org.acme.travels.travels";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional Flight flight = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional Hotel hotel = 2;
     /* @Field(store = Store.YES) */
     optional string id = 3;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string metadata = 4;
 }

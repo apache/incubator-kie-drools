@@ -35,6 +35,7 @@ import org.kie.kogito.persistence.api.schema.AttributeDescriptor;
 import org.kie.kogito.persistence.api.schema.EntityIndexDescriptor;
 import org.kie.kogito.persistence.api.schema.IndexDescriptor;
 
+import static java.util.Collections.emptyList;
 import static org.kie.kogito.persistence.protobuf.ProtobufService.DOMAIN_MODEL_PROTO_NAME;
 
 public class TestUtils {
@@ -93,27 +94,22 @@ public class TestUtils {
 
     static Map<String, EntityIndexDescriptor> getValidEntityIndexDescriptors(boolean includeUnindexedAttribute) {
         AttributeDescriptor flightNumber = new AttributeDescriptor("flightNumber", "string", true);
-        IndexDescriptor flightNumberIndex = new IndexDescriptor("flightNumber", List.of("flightNumber"));
         EntityIndexDescriptor flightEntityIndexDescriptor = new EntityIndexDescriptor("org.acme.travels.travels.Flight",
-                List.of(flightNumberIndex), List.of(flightNumber));
+                emptyList(), List.of(flightNumber));
 
         AttributeDescriptor hotelName = new AttributeDescriptor("name", "string", true);
         AttributeDescriptor hotelRoom = new AttributeDescriptor("room", "string", true);
-        IndexDescriptor hotelNameIndex = new IndexDescriptor("name", List.of("name"));
         EntityIndexDescriptor hotelEntityIndexDescriptor = new EntityIndexDescriptor("org.acme.travels.travels.Hotel",
-                List.of(hotelNameIndex),
+                emptyList(),
                 includeUnindexedAttribute ? List.of(hotelName, hotelRoom) : List.of(hotelName));
 
         AttributeDescriptor flight = new AttributeDescriptor("flight", "Flight", false);
         AttributeDescriptor hotel = new AttributeDescriptor("hotel", "Hotel", false);
         AttributeDescriptor id = new AttributeDescriptor("id", "string", true);
         AttributeDescriptor metadata = new AttributeDescriptor("metadata", "string", true);
-        IndexDescriptor flightIndex = new IndexDescriptor("flight", List.of("flight"));
-        IndexDescriptor hotelIndex = new IndexDescriptor("hotel", List.of("hotel"));
         IndexDescriptor idIndex = new IndexDescriptor("id", List.of("id"));
-        IndexDescriptor metadataIndex = new IndexDescriptor("metadata", List.of("metadata"));
         EntityIndexDescriptor travelEntityIndexDescriptor = new EntityIndexDescriptor("org.acme.travels.travels.Travels",
-                List.of(flightIndex, hotelIndex, idIndex, metadataIndex),
+                List.of(idIndex),
                 List.of(flight, hotel, id, metadata));
 
         Map<String, EntityIndexDescriptor> entityIndexDescriptorMap = new HashMap<>();

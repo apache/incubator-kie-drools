@@ -63,4 +63,13 @@ public class EntityIndexDescriptor {
     public int hashCode() {
         return Objects.hash(name, indexDescriptors, attributeDescriptors);
     }
+
+    @Override
+    public String toString() {
+        return "EntityIndexDescriptor{" +
+                "name='" + name + '\'' +
+                ", indexDescriptors=" + indexDescriptors +
+                ", attributeDescriptors=" + attributeDescriptors +
+                '}';
+    }
 }

@@ -112,7 +112,7 @@ class ProtoIndexParser implements AnnotationMetadataCreator<EntityIndexDescripto
         return new EntityIndexDescriptor(name, indexes, fields);
     }
 
-    static Map<String, EntityIndexDescriptor> createEntityIndexeDescriptors(FileDescriptor desc, Map<String, EntityIndexDescriptor> entityIndexes) {
+    static Map<String, EntityIndexDescriptor> createEntityIndexDescriptors(FileDescriptor desc, Map<String, EntityIndexDescriptor> entityIndexes) {
         desc.getMessageTypes().forEach(mDesc -> {
             String typeName = mDesc.getFullName();
             EntityIndexDescriptor entityIndex = entityIndexes.get(typeName);

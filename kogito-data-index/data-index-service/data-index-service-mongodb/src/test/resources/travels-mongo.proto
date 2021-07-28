@@ -53,15 +53,15 @@ message Travels {
 /* @Indexed */
 message Trip {
     option java_package = "org.acme.travels.travels";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional kogito.Date begin = 1;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string city = 2;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional string country = 3;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional kogito.Date end = 4;
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.NO, store = Store.YES) */
     optional bool visaRequired = 5;
 }
 

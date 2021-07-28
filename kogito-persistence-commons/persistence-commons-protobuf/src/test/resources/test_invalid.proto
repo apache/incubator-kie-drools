@@ -7,6 +7,6 @@ option kogito_id = "travels";
 /* @Indexed */
 message Travels {
     option java_package = "org.acme.travels.travels";
-    /* @Field(store = Store.YES) */
+    /* @Field(index = Index.YES, store = Store.YES) */
     optional string id = 1;
 }
