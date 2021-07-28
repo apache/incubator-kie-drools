@@ -31,10 +31,71 @@ import org.kie.kogito.codegen.data.PersonWithAddresses;
 import org.kie.kogito.codegen.data.PersonWithList;
 import org.kie.kogito.codegen.data.Question;
 import org.kie.kogito.codegen.data.QuestionWithAnnotatedEnum;
+import org.kie.kogito.codegen.data.Travels;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ReflectionProtoGeneratorTest {
+
+    @Test
+    void testTravelsProtoFile() {
+        ReflectionProtoGenerator generator = ReflectionProtoGenerator.builder()
+                .build(Collections.emptyList());
+
+        Proto proto = generator.generate("@Indexed", ProtoGenerator.INDEX_COMMENT, "org.kie.kogito.test", Travels.class);
+        assertThat(proto).isNotNull();
+
+        assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test");
+        assertThat(proto.getSyntax()).isEqualTo("proto2");
+        assertThat(proto.getMessages()).hasSize(2);
+
+        ProtoMessage person = proto.getMessages().get(0);
+        assertThat(person).isNotNull();
+        assertThat(person.getName()).isEqualTo("Person");
+        assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.test");
+        assertThat(person.getFields()).hasSize(4);
+
+        ProtoField field = person.getFields().get(0);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("adult");
+        assertThat(field.getType()).isEqualTo("bool");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+
+        field = person.getFields().get(1);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("age");
+        assertThat(field.getType()).isEqualTo("int32");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+
+        field = person.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("id");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+
+        field = person.getFields().get(3);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("name");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+
+        ProtoMessage travel = proto.getMessages().get(1);
+        assertThat(travel).isNotNull();
+        assertThat(travel.getName()).isEqualTo("Travels");
+        assertThat(travel.getJavaPackageOption()).isEqualTo("org.kie.kogito.test");
+        assertThat(travel.getFields()).hasSize(2);
+
+        field = travel.getFields().get(0);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("id");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.YES, store = Store.YES) @SortableField");
+    }
 
     @Test
     void testPersonProtoFile() {
@@ -53,7 +114,7 @@ class ReflectionProtoGeneratorTest {
         assertThat(person).isNotNull();
         assertThat(person.getName()).isEqualTo("Person");
         assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
-        assertThat(person.getFields()).hasSize(3);
+        assertThat(person.getFields()).hasSize(4);
 
         ProtoField field = person.getFields().get(0);
         assertThat(field).isNotNull();
@@ -68,6 +129,12 @@ class ReflectionProtoGeneratorTest {
         assertThat(field.getApplicability()).isEqualTo("optional");
 
         field = person.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("id");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+
+        field = person.getFields().get(3);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
@@ -301,28 +368,35 @@ class ReflectionProtoGeneratorTest {
         assertThat(person.getName()).isEqualTo("Person");
         assertThat(person.getComment()).isEqualTo("@Indexed");
         assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.test.persons");
-        assertThat(person.getFields()).hasSize(3);
+        assertThat(person.getFields()).hasSize(4);
 
         ProtoField field = person.getFields().get(0);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("adult");
         assertThat(field.getType()).isEqualTo("bool");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
 
         field = person.getFields().get(1);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("age");
         assertThat(field.getType()).isEqualTo("int32");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
 
         field = person.getFields().get(2);
+        assertThat(field).isNotNull();
+        assertThat(field.getName()).isEqualTo("id");
+        assertThat(field.getType()).isEqualTo("string");
+        assertThat(field.getApplicability()).isEqualTo("optional");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
+
+        field = person.getFields().get(3);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
     }
 
     @Test
@@ -349,21 +423,21 @@ class ReflectionProtoGeneratorTest {
         assertThat(field.getName()).isEqualTo("adult");
         assertThat(field.getType()).isEqualTo("bool");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
 
         field = person.getFields().get(1);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("age");
         assertThat(field.getType()).isEqualTo("int32");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField");
 
         field = person.getFields().get(2);
         assertThat(field).isNotNull();
         assertThat(field.getName()).isEqualTo("name");
         assertThat(field.getType()).isEqualTo("string");
         assertThat(field.getApplicability()).isEqualTo("optional");
-        assertThat(field.getComment()).isEqualTo("@Field(store = Store.YES) @SortableField\n @VariableInfo(tags=\"test\")");
+        assertThat(field.getComment()).isEqualTo("@Field(index = Index.NO, store = Store.YES) @SortableField\n @VariableInfo(tags=\"test\")");
     }
 
     @Test

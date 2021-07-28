@@ -21,6 +21,7 @@ import java.util.Objects;
 
 public class Person {
 
+    private String id;
     private String name;
     private int age;
     private boolean adult;
@@ -91,13 +92,12 @@ public class Person {
         this.addresses = addresses;
     }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "name='" + name + '\'' +
-                ", age=" + age +
-                ", adult=" + adult +
-                '}';
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override
@@ -117,5 +117,17 @@ public class Person {
     @Override
     public int hashCode() {
         return Objects.hash(name, age, adult);
+    }
+
+    @Override
+    public String toString() {
+        return "Person{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", age=" + age +
+                ", adult=" + adult +
+                ", ignoreMe='" + ignoreMe + '\'' +
+                ", addresses=" + addresses +
+                '}';
     }
 }

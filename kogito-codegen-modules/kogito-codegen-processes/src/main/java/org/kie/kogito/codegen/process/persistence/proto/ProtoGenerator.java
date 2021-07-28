@@ -25,7 +25,7 @@ import org.kie.kogito.codegen.api.GeneratedFileType;
 public interface ProtoGenerator {
 
     GeneratedFileType PROTO_TYPE = GeneratedFileType.of("PROTO", GeneratedFileType.Category.RESOURCE);
-    String INDEX_COMMENT = "@Field(store = Store.YES) @SortableField";
+    String INDEX_COMMENT = "@Field(index = Index.NO, store = Store.YES) @SortableField";
 
     Proto protoOfDataClasses(String packageName, String... headers);
 
