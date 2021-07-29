@@ -70,14 +70,24 @@ class ValidationContextTest {
 
     private ValidationError createError() {
         return new ValidationError() {
+
+            private String message = UUID.randomUUID().toString();
+
             @Override
             public String getMessage() {
-                return UUID.randomUUID().toString();
+                return message;
+            }
+
+            @Override
+            public int hashCode() {
+                // TODO to revisit hashCode and equals methods
+                return getMessage().hashCode();
             }
 
             @Override
             public boolean equals(Object obj) {
-                return getMessage().equals(obj);
+                // TODO to revisit hashCode and equals methods
+                return getMessage().equals(((ValidationError) obj).getMessage());
             }
         };
     }

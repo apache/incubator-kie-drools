@@ -49,7 +49,7 @@
     <container.image.infinispan>infinispan/server:${version.org.infinispan}</container.image.infinispan>
     <container.image.keycloak>jboss/keycloak:${version.org.keycloak}</container.image.keycloak>
     <container.image.kafka>confluentinc/cp-kafka:${version.org.confluent.kafka}</container.image.kafka>
-    <container.image.mongodb>mongo:${version.org.mongo}</container.image.mongodb>
+    <container.image.mongodb>mongo:${version.org.mongo-image}</container.image.mongodb>
 
     <maven.compiler.release>11</maven.compiler.release>
     <maven.compiler.source>11</maven.compiler.source>
@@ -126,10 +126,10 @@
     <version.org.jsonschema2pojo-maven-plugin>1.0.1</version.org.jsonschema2pojo-maven-plugin>
 
     <!-- this version property is used in plugins but also in dependencies too -->
-    <version.io.quarkus>2.0.1.Final</version.io.quarkus>
+    <version.io.quarkus>2.1.0.Final</version.io.quarkus>
 
     <!-- dependencies versions -->
-    <version.com.fasterxml.jackson>2.12.3</version.com.fasterxml.jackson>
+    <version.com.fasterxml.jackson>2.12.4</version.com.fasterxml.jackson>
     <version.com.github.haifengl.smile>1.5.2</version.com.github.haifengl.smile>
     <version.com.github.javaparser>3.13.10</version.com.github.javaparser>
     <version.com.github.java-json-tools>2.2.10</version.com.github.java-json-tools>
@@ -148,25 +148,25 @@
     <version.javax.xml.bind>2.3.1</version.javax.xml.bind>
 
     <version.io.cloudevents>2.0.0-milestone3</version.io.cloudevents>
-    <version.io.fabric8.kubernetes-client>5.4.1</version.io.fabric8.kubernetes-client>
-    <version.io.micrometer>1.7.0</version.io.micrometer>
+    <version.io.fabric8.kubernetes-client>5.6.0</version.io.fabric8.kubernetes-client>
+    <version.io.micrometer>1.7.2</version.io.micrometer>
     <version.io.serverlessworkflow>2.0.0.Final</version.io.serverlessworkflow>
     <version.io.smallrye-open-api-core>2.1.4</version.io.smallrye-open-api-core>
     <version.io.smallrye.reactive>2.9.0</version.io.smallrye.reactive>
-    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.7.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
+    <version.io.smallrye.reactive.mutiny-vertx-web-client>2.11.0</version.io.smallrye.reactive.mutiny-vertx-web-client>
     <version.io.swagger.core.v3>2.1.7</version.io.swagger.core.v3>
     <version.io.swagger.parser.v3>2.0.24</version.io.swagger.parser.v3>
 
     <version.org.apache.commons>3.12.0</version.org.apache.commons>
     <version.org.apache.xmlgraphics.batik>1.13</version.org.apache.xmlgraphics.batik>
-    <version.org.assertj>3.19.0</version.org.assertj>
+    <version.org.assertj>3.20.2</version.org.assertj>
     <version.org.graalvm.nativeimage>21.1.0</version.org.graalvm.nativeimage>
     <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
 
     <version.org.infinispan>12.1.4.Final</version.org.infinispan>
     <version.org.infinispan.protostream>4.4.1.Final</version.org.infinispan.protostream>
     <version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>2.0.1.Final</version.org.jboss.spec.javax.ws.rs.jboss-jaxrs-api_2.1_spec>
-    <version.org.jboss.resteasy>4.6.1.Final</version.org.jboss.resteasy>
+    <version.org.jboss.resteasy>4.7.0.Final</version.org.jboss.resteasy>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.junit.minor>7.2</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
     <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
@@ -176,9 +176,10 @@
     <version.org.junit.pioneer>1.0.0</version.org.junit.pioneer>
     <version.org.keycloak>14.0.0</version.org.keycloak>
     <version.org.confluent.kafka>5.4.3</version.org.confluent.kafka>
-    <version.org.mockito>3.10.0</version.org.mockito>
-    <version.org.mongo>4.2.3</version.org.mongo>
+    <version.org.mockito>3.11.2</version.org.mockito>
+    <version.org.mongo>4.3.0</version.org.mongo>
     <version.org.mongo.springboot>4.1.0</version.org.mongo.springboot> <!-- https://issues.redhat.com/browse/KOGITO-5031 -->
+    <version.org.mongo-image>4.2.3</version.org.mongo-image> <!-- Version 4.3.0 is not existing ... -->
     <version.org.mvel>2.4.12.Final</version.org.mvel>
     <version.org.reactivestreams>1.0.3</version.org.reactivestreams>
     <version.org.reflections>0.9.11</version.org.reflections>
@@ -186,7 +187,7 @@
     <version.org.springframework.boot>2.3.10.RELEASE</version.org.springframework.boot>
     <version.org.springdoc>1.5.9</version.org.springdoc>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
-    <version.io.vertx>4.1.0</version.io.vertx>
+    <version.io.vertx>4.1.2</version.io.vertx>
   </properties>
 
   <dependencyManagement>
