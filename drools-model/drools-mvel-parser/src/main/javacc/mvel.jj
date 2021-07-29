@@ -2676,9 +2676,9 @@ ModifyStatement ModifyStatement():
     (
         (
             <MODIFY><LPAREN> (modifyObject = UnaryExpressionNotPlusMinus())<RPAREN> <LBRACE>
-            (first = Statement()(<SEMICOLON>)?)* { begin=token(); all.add(first); }
+            (first = Statement()(<SEMICOLON>)?)? { begin=token(); all.add(first); }
             (
-                          (<COMMA>)*
+                          (<COMMA>)+
                           other = Statement() { all.add(other); }
             )*
             <RBRACE>
