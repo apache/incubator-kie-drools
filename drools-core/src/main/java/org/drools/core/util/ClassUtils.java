@@ -486,6 +486,10 @@ public final class ClassUtils {
                 .orElse( parameterType.isPrimitive() ? getSetter(clazz, field, convertFromPrimitiveType(parameterType)) : null );
     }
 
+    public static boolean isReadableProperty( Class clazz, String property ) {
+        return getFieldOrAccessor( clazz, property ) != null;
+    }
+
     public static Member getFieldOrAccessor( Class clazz, String property ) {
         for (Field f : clazz.getFields()) {
             if (property.equals(f.getName())) {
@@ -493,14 +497,14 @@ public final class ClassUtils {
                 break;
             }
         }
-        return getGetter(clazz, property);
+        return getGetterMethod(clazz, property);
     }
 
-    public static Method getGetter( Class clazz, String property ) {
+    public static Method getGetterMethod(Class clazz, String property ) {
         String simple = "get" + property;
         String simpleIsGet = "is" + property;
         String isGet = getIsGetter(property);
-        String getter = getGetter(property);
+        String getter = getGetterMethod(property);
 
         Method candidate = null;
 
@@ -522,7 +526,7 @@ public final class ClassUtils {
         return candidate;
     }
 
-    public static String getGetter(String s) {
+    public static String getGetterMethod(String s) {
         char[] c = s.toCharArray();
         char[] chars = new char[c.length + 3];
 

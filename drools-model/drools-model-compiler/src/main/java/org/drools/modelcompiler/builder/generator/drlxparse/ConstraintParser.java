@@ -519,6 +519,8 @@ public class ConstraintParser {
         Expression combo;
 
         boolean arithmeticExpr = asList(PLUS, MINUS, MULTIPLY, DIVIDE, REMAINDER).contains(operator);
+        boolean isBetaConstraint = right.getExpression() != null && hasNonGlobalDeclaration( expressionTyperContext );
+        boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
 
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
@@ -534,8 +536,8 @@ public class ConstraintParser {
             // This special comparisons
             SpecialComparisonResult specialComparisonResult = handleSpecialComparisonCases(expressionTyper, operator, left, right);
             combo = specialComparisonResult.expression;
-            left = specialComparisonResult.coercedLeft;
-            right = specialComparisonResult.coercedRight;
+            left = requiresSplit ? left : specialComparisonResult.coercedLeft;
+            right = requiresSplit ? right : specialComparisonResult.coercedRight;
         }
 
         if (isLogicalOperator(operator)) {
@@ -544,7 +546,6 @@ public class ConstraintParser {
             combo = combineExpressions( leftTypedExpressionResult, combo );
         }
 
-        boolean isBetaConstraint = right.getExpression() != null && hasNonGlobalDeclaration( expressionTyperContext );
         if (isEnclosed) {
             combo = new EnclosedExpr( combo );
         }
@@ -554,7 +555,6 @@ public class ConstraintParser {
             constraintType = Index.ConstraintType.FORALL_SELF_JOIN;
         }
 
-        boolean requiresSplit = operator == BinaryExpr.Operator.AND && binaryExpr.getRight() instanceof HalfBinaryExpr && !isBetaConstraint;
         return new SingleDrlxParseSuccess(patternType, bindingId, combo, isBooleanOperator( operator ) ? boolean.class : left.getType())
                 .setDecodeConstraintType( constraintType )
                 .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() )
@@ -675,7 +675,7 @@ public class ConstraintParser {
             Expression rewrittenLeft = handleSpecialComparisonCases(expressionTyper, left);
             Expression rewrittenRight = handleSpecialComparisonCases(expressionTyper, right);
             if (rewrittenLeft != null && rewrittenRight != null) {
-                return new SpecialComparisonResult(new EnclosedExpr(new BinaryExpr(rewrittenLeft, rewrittenRight, operator)), left, right);
+                return new SpecialComparisonResult(new BinaryExpr(rewrittenLeft, rewrittenRight, operator), left, right);
             }
         }
 
@@ -693,15 +693,13 @@ public class ConstraintParser {
     }
 
     private Expression handleSpecialComparisonCases(ExpressionTyper expressionTyper, TypedExpression typedExpression) {
-        if (typedExpression.getExpression() instanceof BinaryExpr) {
+        if (typedExpression.getExpression() instanceof BinaryExpr && isComparisonOperator(((BinaryExpr) typedExpression.getExpression()).getOperator())) {
             BinaryExpr binaryExpr = (BinaryExpr) typedExpression.getExpression();
-            if (!(binaryExpr.getLeft() instanceof MethodCallExpr) && !(binaryExpr.getRight() instanceof MethodCallExpr)) {
-                Optional<TypedExpression> leftTyped = expressionTyper.toTypedExpression(binaryExpr.getLeft()).getTypedExpression();
-                Optional<TypedExpression> rightTyped = expressionTyper.toTypedExpression(binaryExpr.getRight()).getTypedExpression();
-                if (leftTyped.isPresent() && rightTyped.isPresent()) {
-                    SpecialComparisonResult leftResult = handleSpecialComparisonCases(expressionTyper, binaryExpr.getOperator(), leftTyped.get(), rightTyped.get());
-                    return leftResult.expression;
-                }
+            Optional<TypedExpression> leftTyped = expressionTyper.toTypedExpression(binaryExpr.getLeft()).getTypedExpression();
+            Optional<TypedExpression> rightTyped = expressionTyper.toTypedExpression(binaryExpr.getRight()).getTypedExpression();
+            if (leftTyped.isPresent() && rightTyped.isPresent()) {
+                SpecialComparisonResult leftResult = handleSpecialComparisonCases(expressionTyper, binaryExpr.getOperator(), leftTyped.get(), rightTyped.get());
+                return leftResult.expression;
             }
         }
         return null;

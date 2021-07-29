@@ -25,9 +25,10 @@ import org.drools.core.spi.Tuple;
 import org.drools.core.time.TimeUtils;
 import org.drools.core.time.TimerExpression;
 import org.drools.core.time.impl.CronExpression;
+import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DateUtils;
 
-import static org.drools.core.util.ClassUtils.getGetter;
+import static org.drools.core.util.ClassUtils.getGetterMethod;
 
 public class TimerUtil {
 
@@ -135,7 +136,7 @@ public class TimerUtil {
 
         private FieldTimerExpression( Declaration declaration, String field ) {
             this.declaration = declaration;
-            method = getGetter( declaration.getDeclarationClass(), field );
+            method = ClassUtils.getGetterMethod( declaration.getDeclarationClass(), field );
         }
         @Override
 

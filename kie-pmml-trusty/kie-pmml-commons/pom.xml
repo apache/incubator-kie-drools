@@ -15,7 +15,6 @@
   <description>Common code for PMML module</description>
 
   <properties>
-    <version.common-text>1.9</version.common-text>
     <sonar.coverage.exclusions>**/exceptions/**.java,**/model/predicates/**.java</sonar.coverage.exclusions>
   </properties>
 
@@ -31,10 +30,6 @@
       <artifactId>slf4j-api</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-text</artifactId>
     </dependency>
@@ -45,15 +40,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.apache.commons</groupId>
-        <artifactId>commons-text</artifactId>
-        <version>${version.common-text}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>
