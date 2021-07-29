@@ -52,6 +52,12 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     private static final String OUT_DER_FUN_SALARY_APPLY_FUN_SALARY_FIELDREF =
             "out_der_fun_salary_apply_fun_salary_fieldref";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
+    private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
+
     private static final String CONSTANT = "constant";
     private static final String FUN_SALARY_CONSTANT = "FUN_SALARY_CONSTANT";
     private static final String STRING_CONSTANT = "987654321";
@@ -91,11 +97,13 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
     }
 
     @Test
-    public void testLogisticRegressionIrisData() {
+    public void testLogisticRegressionIrisData() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("age", age);
         inputData.put("salary", salary);
         inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
@@ -131,5 +139,28 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_NORMDISCRETE_FIELD)).isEqualTo(0.0);
         }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isNotNull();
+        if (age > 4.2 && age < 30.5) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("abc");
+        } else if (age >= 114 && age < 250) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (car_location) {
+            case "carpark":
+                expected = "inside";
+                break;
+            case "street":
+                expected = "outside";
+                break;
+            default:
+                throw new Exception("Unexpected car_location " + car_location);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 }

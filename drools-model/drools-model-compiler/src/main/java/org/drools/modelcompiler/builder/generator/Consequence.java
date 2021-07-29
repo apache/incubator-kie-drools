@@ -70,6 +70,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.util.stream.Collectors.toSet;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.isGetter;
+import static org.drools.core.util.ClassUtils.isReadableProperty;
 import static org.drools.core.util.ClassUtils.isSetter;
 import static org.drools.core.util.ClassUtils.setter2property;
 import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASSESS_METADATA_FILE_NAME;
@@ -449,7 +450,9 @@ public class Consequence {
                     continue;
                 }
                 if (propName != null) {
-                    modifiedProps.add(propName);
+                    if (isReadableProperty( updatedClass, propName )) {
+                        modifiedProps.add(propName);
+                    }
                 } else {
                     // if we were unable to detect the property the mask has to be all set, so avoid the rest of the cycle
                     return new HashSet<>();

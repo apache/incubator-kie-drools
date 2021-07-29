@@ -1458,4 +1458,90 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieBuilder kbuilder = createKieBuilder(str);
         assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
     }
+
+    @Test
+    public void testSetterWithoutGetter() {
+        // DROOLS-6523
+        final String str =
+                "import " + ClassWithValue.class.getCanonicalName() + ";\n" +
+                "rule R1 no-loop when\n" +
+                "        $cwv : ClassWithValue()\n" +
+                "    then\n" +
+                "        $cwv.setDoubleValue(ClassWithValue.DOUBLE_VALUE);\n" +
+                "        update($cwv);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ClassWithValue cwv = new ClassWithValue();
+        ksession.insert(cwv);
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+        assertEquals(1, cwv.getDoubleValues().size());
+    }
+
+    public class ClassWithValue {
+
+        public static final double DOUBLE_VALUE = 5.5;
+
+        private List<Double> doubleValues = new ArrayList<>();
+
+        public List<Double> getDoubleValues() {
+            return doubleValues;
+        }
+
+        public void setDoubleValue(double doubleValue) {
+
+            this.doubleValues.clear();
+            this.doubleValues.add(doubleValue);
+        }
+
+        public void addDoubleValue(double doubleValue) {
+            this.doubleValues.add(doubleValue);
+        }
+    }
+
+    @Test
+    public void testPropertyReactivityOn2Properties() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ), " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+        assertEquals(1, p.getId());
+    }
+
+    @Test
+    public void testPropertyReactivityOn2PropertiesWithWrongSeparator() {
+        // DROOLS-6480
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ); " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieBuilder kbuilder = createKieBuilder(str);
+        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
+    }
 }

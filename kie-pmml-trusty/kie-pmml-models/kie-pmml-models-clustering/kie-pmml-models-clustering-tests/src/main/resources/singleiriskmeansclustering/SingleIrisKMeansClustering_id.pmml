@@ -19,6 +19,17 @@
     <DataField name="class" optype="continuous" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
+    <DefineFunction name="discretize_function" optype="categorical" dataType="string">
+      <ParameterField name="eval_sepal_length"/>
+      <Discretize field="eval_sepal_length" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
+        <DiscretizeBin binValue="abc">
+          <Interval closure="openOpen" leftMargin="4.7" rightMargin="5.2"/>
+        </DiscretizeBin>
+        <DiscretizeBin binValue="def">
+          <Interval closure="closedOpen" leftMargin="5.6" rightMargin="5.9"/>
+        </DiscretizeBin>
+      </Discretize>
+    </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_class"/>
       <NormDiscrete field="eval_class" value="1" />
@@ -51,6 +62,34 @@
         <Apply function="norm_discrete_function" >
           <FieldRef field="out_class"/>
         </Apply>
+      </OutputField>
+      <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
+        <Apply function="discretize_function" >
+          <FieldRef field="sepal_length"/>
+        </Apply>
+      </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <MapValues outputColumn="out" dataType="integer">
+          <FieldColumnPair field="class" column="class"/>
+          <InlineTable>
+            <row>
+              <class>C_ONE</class>
+              <out>virginica</out>
+            </row>
+            <row>
+              <class>C_TWO</class>
+              <out>versicolor</out>
+            </row>
+            <row>
+              <class>C_THREE</class>
+              <out>setosa</out>
+            </row>
+            <row>
+              <class>C_FOUR</class>
+              <out>unknown</out>
+            </row>
+          </InlineTable>
+        </MapValues>
       </OutputField>
     </Output>
     <ComparisonMeasure kind="distance">

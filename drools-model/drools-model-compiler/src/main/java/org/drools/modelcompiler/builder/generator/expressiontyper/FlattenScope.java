@@ -25,6 +25,7 @@ import java.util.Optional;
 
 import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.expr.ArrayAccessExpr;
+import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
@@ -77,6 +78,8 @@ public class FlattenScope {
             ArrayAccessExpr arrayAccessExpr = (ArrayAccessExpr) expressionWithScope;
             res.addAll(flattenScope( typeResolver, arrayAccessExpr.getName()) );
             res.add(arrayAccessExpr);
+        } else if (expressionWithScope instanceof EnclosedExpr) {
+            res.addAll(flattenScope(typeResolver, ((EnclosedExpr) expressionWithScope).getInner()));
         } else {
             res.add(expressionWithScope);
         }

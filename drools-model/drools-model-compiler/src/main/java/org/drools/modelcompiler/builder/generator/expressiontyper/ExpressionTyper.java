@@ -774,9 +774,9 @@ public class ExpressionTyper {
         try {
             Type type = firstNode.getType();
             Class<?> typeClass = ruleContext.getTypeResolver().resolveType( type.toString() );
-            Optional<TypedExpressionCursor> result = processFirstNode( drlxExpr, childNodes, firstNode.getExpression(), isInLineCast, originalTypeCursor);
-            return result.map(te -> {
-                Expression exprWithInlineCast = addCastToExpression(type, te.expressionCursor, isInLineCast);
+            TypedExpressionResult typedExpressionResult = toTypedExpressionFromMethodCallOrField(firstNode.getExpression());
+            return typedExpressionResult.typedExpression.map(te -> {
+                Expression exprWithInlineCast = addCastToExpression(type, te.getExpression(), isInLineCast);
                 return new TypedExpressionCursor(exprWithInlineCast, typeClass);
             });
         } catch (ClassNotFoundException e) {
