@@ -16,10 +16,11 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
+import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.event.DMNRuntimeEventManager;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
@@ -28,13 +29,15 @@ import org.kie.dmn.core.api.EvaluatorResult;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.ast.DMNDTExpressionEvaluator;
 import org.kie.dmn.core.ast.EvaluatorResultImpl;
-import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNRuntimeEventManagerUtils;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
+import org.kie.dmn.core.util.Msg;
+import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.lang.impl.EvaluationContextImpl;
+import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,31 +45,55 @@ import static org.kie.dmn.core.ast.DMNDTExpressionEvaluator.processEvents;
 
 public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
 
-    private static Logger logger = LoggerFactory.getLogger( AlphaNetDMNExpressionEvaluator.class );
+    private static Logger logger = LoggerFactory.getLogger(AlphaNetDMNExpressionEvaluator.class);
 
     private final DMNCompiledAlphaNetwork compiledNetwork;
+    private final DMNFEELHelper feel;
+    private final String decisionTableName;
+    private final FeelDecisionTable feelDecisionTable;
+    private final DMNBaseNode node;
 
-    private DMNFEELHelper feel;
-    private String decisionTableName;
-    private DMNBaseNode node;
-
-    public AlphaNetDMNExpressionEvaluator( DMNCompiledAlphaNetwork compiledNetwork ) {
+    public AlphaNetDMNExpressionEvaluator(DMNCompiledAlphaNetwork compiledNetwork,
+                                          DMNFEELHelper feel,
+                                          String decisionTableName,
+                                          FeelDecisionTable feelDecisionTable,
+                                          DMNBaseNode node) {
+        this.feel = feel;
+        this.decisionTableName = decisionTableName;
+        this.feelDecisionTable = feelDecisionTable;
+        this.node = node;
         this.compiledNetwork = compiledNetwork;
     }
 
     @Override
-    public EvaluatorResult evaluate( DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {
-        List<FEELEvent> events = new ArrayList<>();
+    public EvaluatorResult evaluate(DMNRuntimeEventManager eventManager, DMNResult dmnResult) {
         DMNRuntimeEventManagerUtils.fireBeforeEvaluateDecisionTable(eventManager, node.getName(), decisionTableName, dmnResult);
 
-        EvaluationContext evalCtx = createEvaluationContext(events, eventManager, dmnResult);
+        ResultCollector resultCollector = compiledNetwork.getResultCollector();
+
+        EvaluationContext evalCtx = createEvaluationContext(resultCollector.getEvents(), eventManager, dmnResult);
         evalCtx.enterFrame();
 
         DMNDTExpressionEvaluator.EventResults eventResults = null;
         try {
-            Object result = compiledNetwork.evaluate(evalCtx);
 
-            eventResults = processEvents(events, eventManager, (DMNResultImpl) dmnResult, node);
+            Optional<InvalidInputEvent> potentialError = compiledNetwork.validate(evalCtx);
+            if (potentialError.isPresent()) {
+                InvalidInputEvent actualError = potentialError.get();
+                MsgUtil.reportMessage(logger,
+                                      DMNMessage.Severity.ERROR,
+                                      node.getSource(),
+                                      (DMNResultImpl) dmnResult,
+                                      null,
+                                      actualError,
+                                      Msg.FEEL_ERROR,
+                                      actualError.getMessage());
+                return new EvaluatorResultImpl(null, EvaluatorResult.ResultType.FAILURE);
+            }
+
+            Object result = compiledNetwork.evaluate(evalCtx, feelDecisionTable);
+
+            eventResults = processEvents(resultCollector.getEvents(), eventManager, (DMNResultImpl) dmnResult, node);
 
             return new EvaluatorResultImpl(result,
                                            eventResults.hasErrors ?
@@ -82,17 +109,10 @@ public class AlphaNetDMNExpressionEvaluator implements DMNExpressionEvaluator {
         }
     }
 
-    private EvaluationContext createEvaluationContext( List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {
-        EvaluationContextImpl ctx = feel.newEvaluationContext( Collections.singletonList( events::add ), Collections.emptyMap());
-        ctx.setPerformRuntimeTypeCheck((( DMNRuntimeImpl ) eventManager.getRuntime()).performRuntimeTypeCheck(( ( DMNResultImpl ) dmnResult).getModel()));
-        ctx.setValues( dmnResult.getContext().getAll() );
+    private EvaluationContext createEvaluationContext(List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResult dmnResult) {
+        EvaluationContextImpl ctx = feel.newEvaluationContext(Collections.singletonList(events::add), Collections.emptyMap());
+        ctx.setPerformRuntimeTypeCheck(((DMNRuntimeImpl) eventManager.getRuntime()).performRuntimeTypeCheck(((DMNResultImpl) dmnResult).getModel()));
+        ctx.setValues(dmnResult.getContext().getAll());
         return ctx;
-    }
-
-    public AlphaNetDMNExpressionEvaluator initParameters(DMNFEELHelper feel, DMNCompilerContext ctx, String decisionTableName, DMNBaseNode node) {
-        this.feel = feel;
-        this.decisionTableName = decisionTableName;
-        this.node = node;
-        return this;
     }
 }

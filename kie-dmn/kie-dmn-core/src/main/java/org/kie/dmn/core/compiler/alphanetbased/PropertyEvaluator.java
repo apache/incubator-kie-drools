@@ -16,18 +16,21 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
+import java.util.Arrays;
+
 import org.kie.dmn.feel.lang.EvaluationContext;
 
-public class TableContext {
+// A class used to evaluate a property name against a FEEL evaluation context
+public class PropertyEvaluator {
 
-    private final EvaluationContext evalCtx;
+    private final EvaluationContext evaluationContext;
     private final Object[] values;
 
-    public TableContext(EvaluationContext evalCtx, String... propertyNames) {
-        this.evalCtx = evalCtx;
+    public PropertyEvaluator(EvaluationContext evaluationContext, String... propertyNames) {
+        this.evaluationContext = evaluationContext;
         this.values = new Object[propertyNames.length];
         for (int i = 0; i < propertyNames.length; i++) {
-            values[i] = evalCtx.getValue(propertyNames[i]);
+            values[i] = evaluationContext.getValue(propertyNames[i]);
         }
     }
 
@@ -35,7 +38,14 @@ public class TableContext {
         return values[i];
     }
 
-    public EvaluationContext getEvalCtx() {
-        return evalCtx;
+    public EvaluationContext getEvaluationContext() {
+        return evaluationContext;
+    }
+
+    @Override
+    public String toString() {
+        return "PropertyEvaluator{" +
+                "values=" + Arrays.toString(values) +
+                '}';
     }
 }

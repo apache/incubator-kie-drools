@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +26,15 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.findMethodTemplate;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.parseJavaClassTemplateFromResources;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
 
+/**
+    Definition of the decision table after the first round of parsing
+    Produced by TableCellParser
+    Will generate code to evaluate Decision Table using a Compiled Alpha Network (ANC)
+ */
 public class TableCells {
 
     private final int numRows;
@@ -36,39 +42,57 @@ public class TableCells {
 
     TableCell[][] cells;
 
+    // Number of output columns is not written anywhere
+    // First time we parse output column we initialise the collection
+    private int numOutputColumns;
+    TableCell[][] outputCells = null;
+
+    ColumnDefinition[] columns;
+
+
     public TableCells(int numRows, int numColumns) {
         this.numRows = numRows;
         this.numColumns = numColumns;
         cells = new TableCell[numRows][numColumns];
+        columns = new ColumnDefinition[numColumns];
     }
 
-    public void add(TableCell unitTestField) {
-        unitTestField.addToCells(cells);
+    public void initialiseOutputColumnsCollection(int numOutputColumns) {
+        if(outputCells == null) {
+            outputCells = new TableCell[numRows][numOutputColumns];
+            this.numOutputColumns = numOutputColumns;
+        }
     }
 
-    public Map<String, String> createUnaryTestClasses() {
-        Map<String, String> allUnaryTests = new HashMap<>();
-        // I'm pretty sure we can abstract this iteration to avoid copying it
+    public void add(TableCell cell) {
+        cell.addToCells(cells);
+    }
+
+    public void addOutputCell(TableCell outputCell) {
+        outputCell.addToOutputCells(outputCells);
+    }
+
+    public Map<String, String> createFEELSourceClasses() {
+        Map<String, String> allGeneratedTestClasses = new HashMap<>();
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
             for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
-                cells[rowIndex][columnIndex].addUnaryTestClass(allUnaryTests);
+                cells[rowIndex][columnIndex].compileUnaryTestAndAddTo(allGeneratedTestClasses);
+            }
+
+            // Generate output cells
+            for (int columnIndex = 0; columnIndex < numOutputColumns; columnIndex++) {
+                outputCells[rowIndex][columnIndex].compiledFeelExpressionAndAddTo(allGeneratedTestClasses);
             }
         }
-        return allUnaryTests;
-    }
-
-    private CompilationUnit getAlphaClassTemplate() {
-        InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream("/org/kie/dmn/core/alphasupport/AlphaNodeCreationTemplate.java");
-        return StaticJavaParser.parse(resourceAsStream);
+        return allGeneratedTestClasses;
     }
 
     public void addAlphaNetworkNode(BlockStmt alphaNetworkStatements, GeneratedSources generatedSources) {
 
-        // I'm pretty sure we can abstract this iteration to avoid copying it
         for (int rowIndex = 0; rowIndex < numRows; rowIndex++) {
 
-            CompilationUnit alphaNetworkCreationCU = getAlphaClassTemplate();
+            CompilationUnit alphaNetworkCreationCU = parseJavaClassTemplateFromResources(this.getClass(),
+                                                                                         "/org/kie/dmn/core/alphasupport/AlphaNodeCreationTemplate.java");
             String methodName = String.format("AlphaNodeCreation%s", rowIndex);
 
             ClassOrInterfaceDeclaration alphaNodeCreationClass = alphaNetworkCreationCU.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(RuntimeException::new);
@@ -78,25 +102,63 @@ public class TableCells {
 
             ConstructorDeclaration constructorDeclaration = alphaNodeCreationClass.findFirst(ConstructorDeclaration.class).orElseThrow(RuntimeException::new);
 
-            MethodDeclaration testMethodDefinitionTemplate = alphaNodeCreationClass.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("testRxCx"))
-                    .orElseThrow(() -> new RuntimeException("Cannot find test method template"));
-            testMethodDefinitionTemplate.remove();
+            MethodDeclaration testMethodDefinitionTemplate = findMethodTemplate(alphaNodeCreationClass, "testRxCx");
 
+            BlockStmt creationStatements = constructorDeclaration.getBody();
+            String lastAlphaNodeName = "";
             for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
                 TableCell tableCell = cells[rowIndex][columnIndex];
-                tableCell.addNodeCreation(constructorDeclaration.getBody(), alphaNodeCreationClass, testMethodDefinitionTemplate);
+                lastAlphaNodeName = tableCell.addNodeCreation(creationStatements, alphaNodeCreationClass, testMethodDefinitionTemplate);
             }
 
-            String classNameWithPackage = TableCell.PACKAGE + "." + methodName;
+            MethodDeclaration outputMethodDefinitionTemplate = findMethodTemplate(alphaNodeCreationClass, "outputRxCx");
+            for (int outputColumnIndex = 0; outputColumnIndex < numOutputColumns; outputColumnIndex++) {
+                MethodDeclaration outputMethodDefinitionClone = outputMethodDefinitionTemplate.clone();
+                TableCell tableOutputCell = outputCells[rowIndex][outputColumnIndex];
+                tableOutputCell.addOutputNode(alphaNodeCreationClass, outputMethodDefinitionClone, creationStatements, lastAlphaNodeName);
+            }
+            outputMethodDefinitionTemplate.remove();
+
+
+            String classNameWithPackage = TableCell.ALPHANETWORK_STATIC_PACKAGE + "." + methodName;
             generatedSources.addNewSourceClass(classNameWithPackage, alphaNetworkCreationCU.toString());
 
             String newAlphaNetworkClass = String.format(
-                    "new %s(ctx)", classNameWithPackage
+                    "new %s(builderContext)", classNameWithPackage
             );
 
 
             alphaNetworkStatements.addStatement(StaticJavaParser.parseExpression(newAlphaNetworkClass));
 
         }
+    }
+
+    public void addColumnValidationStatements(BlockStmt validationStatements, GeneratedSources allGeneratedSources) {
+        for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
+
+            ColumnDefinition column = columns[columnIndex];
+            final Map<String, String> validatorGeneratedClasses = new HashMap<>();
+            column.compileUnaryTestAndAddTo(validatorGeneratedClasses);
+
+            if(validatorGeneratedClasses.size() > 0) {
+                CompilationUnit columnValidatorTemplate = parseJavaClassTemplateFromResources(this.getClass(),
+                                                                                              "/org/kie/dmn/core/alphasupport/ColumnValidatorTemplate.java");
+                columnValidatorTemplate.removeComment();
+
+                column.initColumnValidatorTemplateAddToClasses(columnValidatorTemplate, validatorGeneratedClasses);
+                allGeneratedSources.putAllGeneratedFEELTestClasses(validatorGeneratedClasses);
+
+                BlockStmt validationStatementsParent = (BlockStmt) validationStatements.getParentNode().orElseThrow(RuntimeException::new);
+                BlockStmt newValidationStatement = validationStatements.clone();
+                column.initValidationStatement(newValidationStatement);
+
+                // Last statement is `return null` so don't put this at the very end
+                validationStatementsParent.addStatement(validationStatementsParent.getStatements().size() - 1, newValidationStatement);
+            }
+        }
+    }
+
+    public void addColumnCell(int index, ColumnDefinition columnDefinition) {
+        columns[index] = columnDefinition;
     }
 }
