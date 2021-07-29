@@ -38,7 +38,6 @@ import static org.kie.kogito.jobs.service.repository.infinispan.InfinispanConfig
 @ApplicationScoped
 public class InfinispanConfiguration {
 
-    public static final String CACHE_TEMPLATE_XML = "META-INF/kogito-cache-default.xml";
     private AtomicBoolean initialized = new AtomicBoolean(Boolean.FALSE);
 
     /**
