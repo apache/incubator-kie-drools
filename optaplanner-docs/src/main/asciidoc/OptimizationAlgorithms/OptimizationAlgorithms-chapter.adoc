@@ -76,10 +76,17 @@ Do not assess quality on small data sets (unless production encounters only such
 [[architectureOverview]]
 == Architecture overview
 
-OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...) with score calculation by a rule engine (such as Drools Expert). This combination is very efficient, because:
+OptaPlanner is the first framework to combine optimization algorithms (metaheuristics, ...)
+with score calculation by a rule engine (such as Drools).
+This combination is very efficient, because:
 
-* A rule engine, such as Drools Expert, is *great for calculating the score* of a solution of a planning problem. It makes it easy and scalable to add additional soft or hard constraints such as, "a teacher should not teach more than seven hours a day". It does delta-based score calculation without any extra code. However it tends to be not suitable to actually find new solutions.
-* An optimization algorithm is *great at finding new improving solutions* for a planning problem, without necessarily brute-forcing every possibility. However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
+* A rule engine, such as Drools, is *great for calculating the score* of a solution of a planning problem.
+It makes it easy and scalable to add additional soft or hard constraints.
+It does <<incrementalScoreCalculation,incremental score calculation (deltas)>> without any extra code.
+However it tends to be not suitable to actually find new solutions.
+* An optimization algorithm is *great at finding new improving solutions* for a planning problem,
+without necessarily brute-forcing every possibility.
+However, it needs to know the score of a solution and offers no support in calculating that score efficiently.
 
 image::OptimizationAlgorithms/architectureOverview.png[align="center"]
 

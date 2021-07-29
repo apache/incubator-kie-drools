@@ -45,7 +45,7 @@ The implication of this is pretty dire: solving your problem is probably harder 
 * A Brute Force algorithm (even a smarter variant) will take too long.
 * A quick algorithm, for example in bin packing, __putting in the largest items first__, will return a solution that is far from optimal.
 
-By using advanced optimization algorithms, *OptaPlanner does find a good solution in reasonable time for such planning problems.*
+By using advanced optimization algorithms, *OptaPlanner does find a near-optimal solution in reasonable time for such planning problems.*
 
 
 [[aPlanningProblemHasConstraints]]
@@ -64,7 +64,7 @@ Some basic problems (such as <<nQueens,N queens>>) only have hard constraints.
 Some problems have three or more levels of constraints, for example hard, medium and soft constraints.
 
 These constraints define the _score calculation_ (AKA __fitness function__) of a planning problem.
-Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^ code or Drools rules**.
+Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^ code**.
 Such code is easy, flexible and scalable.
 
 
