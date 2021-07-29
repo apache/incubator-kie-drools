@@ -12,8 +12,20 @@
       <Value value="umbrella" />
       <Value value="nothing" />
     </DataField>
+    <DataField name="text_input" optype="categorical" dataType="string"/>
   </DataDictionary>
   <TransformationDictionary>
+    <DefineFunction name="discretize_function" optype="categorical" dataType="string">
+      <ParameterField name="eval_temperature"/>
+      <Discretize field="eval_temperature" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
+        <DiscretizeBin binValue="abc">
+          <Interval closure="openOpen" leftMargin="4.2" rightMargin="9.8"/>
+        </DiscretizeBin>
+        <DiscretizeBin binValue="def">
+          <Interval closure="closedOpen" leftMargin="15.4" rightMargin="32.1"/>
+        </DiscretizeBin>
+      </Discretize>
+    </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_decision"/>
       <NormDiscrete field="eval_decision" value="umbrella" />
@@ -27,6 +39,41 @@
       <Apply function="fun_humidity_fieldref">
         <FieldRef field="humidity_fake"/>
       </Apply>
+    </DefineFunction>
+    <DefineFunction name="TEXT_INDEX_NORMALIZATION_FUNCTION" optype="continuous">
+      <ParameterField name="reviewText"/>
+      <ParameterField name="term"/>
+      <TextIndex textField="reviewText" localTermWeights="binary" isCaseSensitive="false">
+        <TextIndexNormalization inField="string" outField="stem" regexField="regex">
+          <InlineTable>
+            <row>
+              <string>interfaces?</string>
+              <stem>interface</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>is|are|seem(ed|s?)|were</string>
+              <stem>be</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>user friendl(y|iness)</string>
+              <stem>user_friendly</stem>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <TextIndexNormalization inField="re" outField="feature" regexField="regex">
+          <InlineTable>
+            <row>
+              <re>interface be (user_friendly|well designed|excellent)</re>
+              <feature>ui_good</feature>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <FieldRef field="term"/>
+      </TextIndex>
     </DefineFunction>
     <DerivedField name="der_temperature" optype="continuous" dataType="double">
       <FieldRef field="temperature"/>
@@ -52,6 +99,7 @@
     <MiningSchema>
       <MiningField name="temperature"  usageType="active" />
       <MiningField name="humidity"  usageType="active" />
+      <MiningField name="text_input" invalidValueTreatment="asIs"/>
       <MiningField name="decision" usageType="predicted" />
     </MiningSchema>
     <Output>
@@ -71,6 +119,36 @@
       <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string" optype="categorical">
         <Apply function="norm_discrete_function" >
           <FieldRef field="decision"/>
+        </Apply>
+      </OutputField>
+      <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
+        <Apply function="discretize_function" >
+          <FieldRef field="temperature"/>
+        </Apply>
+      </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <MapValues outputColumn="out" dataType="string">
+          <FieldColumnPair field="decision" column="decision"/>
+          <InlineTable>
+            <row>
+              <decision>sunglasses</decision>
+              <out>sun</out>
+            </row>
+            <row>
+              <decision>umbrella</decision>
+              <out>rain</out>
+            </row>
+            <row>
+              <decision>nothing</decision>
+              <out>dunno</out>
+            </row>
+          </InlineTable>
+        </MapValues>
+      </OutputField>
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+          <FieldRef field="text_input"/>
+          <Constant>ui_good</Constant>
         </Apply>
       </OutputField>
     </Output>
