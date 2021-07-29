@@ -220,7 +220,7 @@ public class KogitoQuarkusResourceUtils {
         } else if (sourceName.endsWith(".class")) {
             sourceName = sourceName.substring(0, sourceName.length() - 6);
         }
-        return sourceName.replace('/', '.');
+        return sourceName.replace('/', '.').replace('\\', '.');
     }
 
     private static Path pathOf(String location, String end) {
