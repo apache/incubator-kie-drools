@@ -8,7 +8,7 @@ metadata:
   - "processes"
   - "rules"
   - "decisions"
+  - "DMN"
   guide: "https://quarkus.io/guides/kogito"
   categories:
   - "business-automation"
-  status: "preview"
