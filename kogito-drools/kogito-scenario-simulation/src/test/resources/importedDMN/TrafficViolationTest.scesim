@@ -1291,7 +1291,7 @@
   <settings>
     <dmnFilePath>src/test/resources/importedDMN/TrafficViolation.dmn</dmnFilePath>
     <type>DMN</type>
-    <dmnNamespace>https://github.com/kiegroup/drools/kie-dmn/_A4BCA8B8-CF08-433F-93B2-A2598F19ECFF</dmnNamespace>
+    <dmnNamespace>https://kiegroup.org/dmn/_F4681E8D-C4A7-4EEB-915D-3B23B5E0A547</dmnNamespace>
     <dmnName>Traffic Violation</dmnName>
     <skipFromBuild>false</skipFromBuild>
     <stateless>false</stateless>

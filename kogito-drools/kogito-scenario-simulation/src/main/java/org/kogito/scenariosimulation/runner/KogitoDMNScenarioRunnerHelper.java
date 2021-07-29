@@ -32,7 +32,6 @@ import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.backend.expression.ExpressionEvaluatorFactory;
 import org.drools.scenariosimulation.backend.runner.DMNScenarioRunnerHelper;
 import org.drools.scenariosimulation.backend.runner.ScenarioException;
-import org.drools.scenariosimulation.backend.runner.model.InstanceGiven;
 import org.drools.scenariosimulation.backend.runner.model.ScenarioRunnerData;
 import org.drools.scenariosimulation.backend.util.DMNSimulationUtils;
 import org.kie.api.KieBase;
@@ -67,8 +66,7 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
         DMNModel dmnModel = getDMNModel(dmnRuntime, settings);
         DMNContext dmnContext = dmnRuntime.newContext();
 
-        loadInputData(scenarioRunnerData.getBackgrounds(), dmnContext);
-        loadInputData(scenarioRunnerData.getGivens(), dmnContext);
+        defineInputValues(scenarioRunnerData.getBackgrounds(), scenarioRunnerData.getGivens()).forEach(dmnContext::set);
 
         DMNResult dmnResult = dmnRuntime.evaluateAll(dmnModel, dmnContext);
 
@@ -85,12 +83,6 @@ public class KogitoDMNScenarioRunnerHelper extends DMNScenarioRunnerHelper {
         } catch (Exception e) {
             // if filename is not available or it fails, try directly with namespace/name
             return dmnRuntime.getModel(settings.getDmnNamespace(), settings.getDmnName());
-        }
-    }
-
-    protected void loadInputData(List<InstanceGiven> dataToLoad, DMNContext dmnContext) {
-        for (InstanceGiven input : dataToLoad) {
-            dmnContext.set(input.getFactIdentifier().getName(), input.getValue());
         }
     }
 
