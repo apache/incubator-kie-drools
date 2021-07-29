@@ -19,6 +19,7 @@ package org.drools.modelcompiler.builder.generator.visitor.pattern;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -164,6 +165,7 @@ public abstract class PatternDSL implements DSLNode {
         }
 
         addImplicitCastExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResults);
+        addNullSafeExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResults);
 
         return patternConstraintParseResults;
     }
@@ -203,6 +205,30 @@ public abstract class PatternDSL implements DSLNode {
                 DrlxParseResult instanceOfExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, instanceOfExpression, false);
                 patternConstraintParseResults.add(0, new PatternConstraintParseResult(instanceOfExpression, patternIdentifier, instanceOfExpressionParsed));
             }
+        });
+    }
+
+    private void addNullSafeExpr(ConstraintParser constraintParser, String patternIdentifier, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        final List<Expression> nullSafeExpressions =
+                patternConstraintParseResults.stream()
+                                             .flatMap(r -> r.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<List<Expression>>() {
+
+                                                 @Override
+                                                 public List<Expression> onSuccess(DrlxParseSuccess t) {
+                                                     return t.getNullSafeExpressions();
+                                                 }
+
+                                                 @Override
+                                                 public List<Expression> onFail(DrlxParseFail failure) {
+                                                     return Collections.emptyList();
+                                                 }
+                                             }).stream())
+                                             .collect(Collectors.toList());
+
+        nullSafeExpressions.forEach(expr -> {
+            String nullSafeExpression = printConstraint(expr);
+            DrlxParseResult nullSafeExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, nullSafeExpression, false);
+            patternConstraintParseResults.add(0, new PatternConstraintParseResult(nullSafeExpression, patternIdentifier, nullSafeExpressionParsed));
         });
     }
 
