@@ -16,6 +16,7 @@ public abstract class AbstractSingleIrisKMeansClusteringTest extends AbstractPMM
     private static final String OUT_NORMCONTINUOUS_FIELD = "out_normcontinuous_field";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
 
     protected static PMMLRuntime pmmlRuntime;
 
@@ -36,7 +37,7 @@ public abstract class AbstractSingleIrisKMeansClusteringTest extends AbstractPMM
     }
 
     @Test
-    public void testLogisticRegressionIrisData() {
+    public void testLogisticRegressionIrisData() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("sepal_length", sepalLength);
         inputData.put("sepal_width", sepalWidth);
@@ -63,5 +64,28 @@ public abstract class AbstractSingleIrisKMeansClusteringTest extends AbstractPMM
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
         }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+        String expected;
+        switch (irisClass) {
+            case "1":
+            case "C_ONE":
+                expected = "virginica";
+                break;
+            case "2":
+            case "C_TWO":
+                expected = "versicolor";
+                break;
+            case "3":
+            case "C_THREE":
+                expected = "setosa";
+                break;
+            case "4":
+            case "C_FOUR":
+                expected = "unknown";
+                break;
+            default:
+                throw new Exception("Unexpected irisClass " + irisClass);
+        }
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
     }
 }

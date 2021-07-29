@@ -44,6 +44,10 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
     private static final String CONSTANT = "constant";
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
+    private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -78,10 +82,12 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
     }
 
     @Test
-    public void testSimpleScorecard() {
+    public void testSimpleScorecard() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
+        inputData.put("text_input", TEXT_INPUT);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
@@ -107,6 +113,25 @@ public class SimpleScorecardWithTransformationsTest extends AbstractPMMLTest {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("def");
         } else {
             Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DISCRETIZE_FIELD)).isEqualTo("defaultValue");
+        }
+        if (reasonCode1 == null) {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNull();
+        } else {
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isNotNull();
+            String expected;
+            switch (reasonCode1) {
+                case "Input1ReasonCode":
+                    expected = "RES-1";
+                    break;
+                case "Input2ReasonCode":
+                    expected = "RES-2";
+                    break;
+                default:
+                    throw new Exception("Unexpected reasonCode1 " + reasonCode1);
+            }
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+            Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
         }
     }
 }

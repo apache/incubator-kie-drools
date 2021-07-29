@@ -24,11 +24,15 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.ThisExpr;
+import com.github.javaparser.ast.type.Type;
 import org.drools.mvel.parser.ast.expr.HalfBinaryExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeFieldAccessExpr;
+import org.drools.mvel.parser.ast.expr.NullSafeMethodCallExpr;
 
 public class AstUtils {
 
@@ -46,30 +50,34 @@ public class AstUtils {
 
     public static Expression parseThisExprOrHalfBinary(TokenRange tokenRange, ThisExpr thisExpr, NodeList<Expression> args ) {
         return args.size() == 1 && isHalfBinaryArg( args.get( 0 ) ) ?
-                transformHalfBinaryArg( tokenRange, thisExpr, args.get( 0 )) :
+                transformHalfBinaryArg( tokenRange, null, thisExpr, args.get( 0 ), false) :
                 new MethodCallExpr(tokenRange, null, null, new SimpleName( "this" ), args);
     }
 
     public static Expression parseMethodExprOrHalfBinary( TokenRange tokenRange, SimpleName name, NodeList<Expression> args ) {
-        return args.size() == 1 && isHalfBinaryArg( args.get( 0 ) ) ?
-                transformHalfBinaryArg( tokenRange, new NameExpr( name ), args.get( 0 )) :
-                new MethodCallExpr(tokenRange, null, null, name, args);
+        return parseMethodExprOrHalfBinary(tokenRange, null, null, name, args, false);
     }
 
-    private static Expression transformHalfBinaryArg( TokenRange tokenRange, Expression name, Expression expr) {
+    public static Expression parseMethodExprOrHalfBinary(TokenRange tokenRange, Expression scope, NodeList<Type> typeArguments, SimpleName name, NodeList<Expression> args, boolean nullSafe ) {
+        return args.size() == 1 && isHalfBinaryArg( args.get( 0 ) ) ?
+                transformHalfBinaryArg( tokenRange, scope, new NameExpr( name ), args.get( 0 ), nullSafe) :
+                (nullSafe ? new NullSafeMethodCallExpr(tokenRange, scope, typeArguments, name, args) : new MethodCallExpr(tokenRange, scope, typeArguments, name, args));
+    }
+
+    private static Expression transformHalfBinaryArg(TokenRange tokenRange, Expression scope, Expression name, Expression expr, boolean nullSafe) {
         if (expr instanceof HalfBinaryExpr) {
-            BinaryExpr result = new BinaryExpr( tokenRange, name, (( HalfBinaryExpr ) expr).getRight(), (( HalfBinaryExpr ) expr).getOperator().toBinaryExprOperator() );
-            return result;
+            Expression left = scope == null ? name  : (nullSafe ? new NullSafeFieldAccessExpr(scope, null, name.asNameExpr().getName()) : new FieldAccessExpr(scope, null, name.asNameExpr().getName()));
+            return new BinaryExpr( tokenRange, left, (( HalfBinaryExpr ) expr).getRight(), (( HalfBinaryExpr ) expr).getOperator().toBinaryExprOperator() );
         }
         if (expr instanceof EnclosedExpr) {
-            return transformHalfBinaryArg( tokenRange, name, (( EnclosedExpr ) expr).getInner() );
+            return transformHalfBinaryArg( tokenRange, scope, name, (( EnclosedExpr ) expr).getInner(), nullSafe );
         }
         if (expr instanceof BinaryExpr) {
             BinaryExpr binary = (BinaryExpr) expr;
-            Expression rewrittenLeft = transformHalfBinaryArg( tokenRange, name, binary.getLeft() );
+            Expression rewrittenLeft = transformHalfBinaryArg( tokenRange, scope, name, binary.getLeft(), nullSafe );
             Expression rewrittenRight = binary.getRight() instanceof HalfBinaryExpr && !(binary.getLeft() instanceof EnclosedExpr) ?
                     binary.getRight() :
-                    transformHalfBinaryArg( tokenRange, name, binary.getRight() );
+                    transformHalfBinaryArg( tokenRange, scope, name, binary.getRight(), nullSafe );
             rewrittenRight.setParentNode( rewrittenLeft );
             return new BinaryExpr( tokenRange, rewrittenLeft, rewrittenRight, binary.getOperator() );
         }
