@@ -68,6 +68,29 @@
           <FieldRef field="sepal_length"/>
         </Apply>
       </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+          <MapValues outputColumn="out" dataType="integer">
+            <FieldColumnPair field="class" column="class"/>
+            <InlineTable>
+              <row>
+                <class>1</class>
+                <out>virginica</out>
+              </row>
+              <row>
+                <class>2</class>
+                <out>versicolor</out>
+              </row>
+              <row>
+                <class>3</class>
+                <out>setosa</out>
+              </row>
+              <row>
+                <class>4</class>
+                <out>unknown</out>
+              </row>
+            </InlineTable>
+          </MapValues>
+      </OutputField>
     </Output>
     <ComparisonMeasure kind="distance">
       <squaredEuclidean/>
