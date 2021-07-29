@@ -44,6 +44,9 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
     private static final String OUT_NORMDISCRETE_FIELD = "out_normdiscrete_field";
     private static final String OUT_DISCRETIZE_FIELD = "out_discretize_field";
     private static final String OUT_MAPVALUED_FIELD = "out_mapvalued_field";
+    private static final String OUT_TEXT_INDEX_NORMALIZATION_FIELD = "out_text_index_normalization_field";
+    private static final String TEXT_INPUT = "Testing the app for a few days convinced me the interfaces are " +
+            "excellent!";
 
     private static PMMLRuntime pmmlRuntime;
 
@@ -76,6 +79,8 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
+        inputData.put("text_input", TEXT_INPUT);
+
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
@@ -113,5 +118,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
                 throw new Exception("Unexpected expectedResult " + expectedResult);
         }
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
     }
 }

@@ -66,7 +66,7 @@ public class KiePMMLMapValues extends AbstractKiePMMLComponent implements KiePMM
         }
         Optional<Object> retrieved = Optional.empty();
         if (inlineTable != null) {
-            retrieved = inlineTable.evaluate(columnPairsMap, outputColumn);
+            retrieved = inlineTable.evaluate(columnPairsMap, outputColumn, null);
         }
         return retrieved.orElse(defaultValue);
     }
