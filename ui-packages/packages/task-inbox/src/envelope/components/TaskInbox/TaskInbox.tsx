@@ -48,6 +48,7 @@ export interface TaskInboxProps {
   driver: TaskInboxDriver;
   allTaskStates?: string[];
   activeTaskStates?: string[];
+  currentUser?: string;
 }
 
 const UserTaskLoadingComponent = (
@@ -65,6 +66,7 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
   driver,
   allTaskStates,
   activeTaskStates,
+  currentUser,
   ouiaId,
   ouiaSafe
 }) => {
@@ -208,6 +210,12 @@ const TaskInbox: React.FC<TaskInboxProps & OUIAProps> = ({
       initWithState(initialState);
     }
   }, [isEnvelopeConnectedToChannel]);
+
+  useEffect(() => {
+    if (isEnvelopeConnectedToChannel && currentUser.length > 0) {
+      initDefault();
+    }
+  }, [isEnvelopeConnectedToChannel, currentUser]);
 
   if (error) {
     return <ServerErrors error={error} variant={'large'} />;

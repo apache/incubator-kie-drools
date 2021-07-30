@@ -1,0 +1,94 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`WebApp - JobsManagementPage tests Snapshot test with default values 1`] = `
+<JobsManagementPage>
+  <PageSectionHeader
+    titleText="Jobs Management"
+  >
+    <PageSection
+      data-ouia-component-type="page-section-header"
+      data-ouia-safe={true}
+      variant="light"
+    >
+      <section
+        className="pf-c-page__main-section pf-m-light"
+        data-ouia-component-type="page-section-header"
+        data-ouia-safe={true}
+      >
+        <PageTitle
+          title="Jobs Management"
+        >
+          <Flex
+            data-ouia-component-type="page-title"
+            data-ouia-safe={true}
+          >
+            <div
+              className="pf-l-flex"
+              data-ouia-component-type="page-title"
+              data-ouia-safe={true}
+            >
+              <FlexItem
+                spacer={
+                  Object {
+                    "default": "spacerSm",
+                  }
+                }
+              >
+                <div
+                  className="pf-m-spacer-sm"
+                >
+                  <Title
+                    headingLevel="h1"
+                    size="4xl"
+                  >
+                    <h1
+                      className="pf-c-title pf-m-4xl"
+                    >
+                      Jobs Management
+                    </h1>
+                  </Title>
+                </div>
+              </FlexItem>
+            </div>
+          </Flex>
+        </PageTitle>
+      </section>
+    </PageSection>
+  </PageSectionHeader>
+  <PageSection
+    data-ouia-component-type="jobs-management-page-section"
+    data-ouia-safe={true}
+  >
+    <section
+      className="pf-c-page__main-section"
+      data-ouia-component-type="jobs-management-page-section"
+      data-ouia-safe={true}
+    >
+      <Card
+        className="Dev-ui__card-size"
+      >
+        <article
+          className="pf-c-card Dev-ui__card-size"
+          data-ouia-component-id="OUIA-Generated-Card-1"
+          data-ouia-component-type="PF4/Card"
+          data-ouia-safe={true}
+          id=""
+        >
+          <JobsManagementContainer>
+            <ForwardRef
+              data-ouia-component-type="jobs-management-container"
+              data-ouia-safe={true}
+              driver={null}
+              targetOrigin="*"
+            >
+              <ForwardRef>
+                <div />
+              </ForwardRef>
+            </ForwardRef>
+          </JobsManagementContainer>
+        </article>
+      </Card>
+    </section>
+  </PageSection>
+</JobsManagementPage>
+`;

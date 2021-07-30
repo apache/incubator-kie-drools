@@ -1,0 +1,90 @@
+{
+  "name": "@kogito-apps/runtime-tools-dev-ui-webapp",
+  "version": "1.0.0",
+  "main": "index.js",
+  "author": "",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiegroup/kogito-apps.git"
+  },
+  "scripts": {
+    "precommit": "lint-staged",
+    "build": "tsc -m commonjs --outDir ./dist && webpack --config webpack.prod.js",
+    "build:watch": "tsc -m commonjs --outDir ./dist -w && webpack --config webpack.dev.js --watch",
+    "build:prod": "yarn run clean && yarn run lint && yarn run build",
+    "start": "webpack-dev-server --hot --color --progress --info=true --config webpack.dev.js",
+    "test:report": "yarn test --ci --reporters=jest-junit",
+    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit",
+    "update-snapshot": "jest --updateSnapshot",
+    "test:coverage": "rimraf coverage && yarn test --coverage",
+    "dev:restServer": "nodemon ./server/restServer.js",
+    "dev:server": "nodemon ./server/app.js",
+    "dev": "concurrently 'yarn  start' 'yarn run dev:server'",
+    "dev-remote-dataindex": "yarn start --define process.env.KOGITO_DATAINDEX_HTTP_URL='\"http://localhost:8180/graphql\"'",
+    "lint": "eslint './{src,cypress}/**/*.ts{,x}'",
+    "format": "prettier --config ../../.prettierrc --check --write './{src,cypress}/**/*.{tsx,ts,js}'",
+    "build:bundle-profile": "webpack --config webpack.prod.js --profile --json > stats.json",
+    "bundle-profile:analyze": "yarn build:bundle-profile && webpack-bundle-analyzer ./stats.json",
+    "clean": "rimraf dist",
+    "codegen": "graphql-codegen",
+    "cypress:run": "cypress run",
+    "cypress:open": "cypress open",
+    "test:it": "start-server-and-test 'yarn dev' 9000 'yarn cypress:run'"
+  },
+  "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0",
+    "@kogito-apps/consoles-common": "^1.0.0",
+    "@kogito-apps/jobs-management": "^1.0.0",
+    "@kogito-apps/management-console-shared": "^1.0.0",
+    "@kogito-apps/ouia-tools": "^1.0.0",
+    "@kogito-apps/process-list": "^1.0.0",
+    "@kogito-apps/task-form": "^1.0.0",
+    "@kogito-apps/task-inbox": "^1.0.0"
+  },
+  "devDependencies": {
+    "core-js": "3.6.5"
+  },
+  "jest": {
+    "preset": "ts-jest/presets/js-with-ts",
+    "setupFiles": [
+      "../../config/Jest-config/test-shim.js",
+      "../../config/Jest-config/test-setup.js",
+      "core-js"
+    ],
+    "coveragePathIgnorePatterns": [
+      "./src/static",
+      "./tests/mocks/"
+    ],
+    "coverageReporters": [["lcov", { "projectRoot": "../../" }]],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js"
+    ],
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    },
+    "snapshotSerializers": [
+      "enzyme-to-json/serializer"
+    ],
+    "transform": {
+      "^.+\\.(ts|tsx)$": "ts-jest",
+      "\\.(jpg|jpeg|png|svg)$": "../../config/Jest-config/fileMocks.js"
+    },
+    "testMatch": [
+      "**/tests/*.(ts|tsx)"
+    ],
+    "moduleNameMapper": {
+      "\\.(scss|sass|css)$": "identity-obj-proxy"
+    }
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "yarn run format",
+      "yarn run lint"
+    ]
+  }
+}

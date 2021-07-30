@@ -24,6 +24,8 @@ import {
 } from '../api';
 import { ProcessListEnvelopeContext } from './ProcessListEnvelopeContext';
 export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
+  private capturedInitRequestYet = false;
+
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       ProcessListEnvelopeApi,
@@ -33,7 +35,15 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
     >
   ) {}
 
-  processList__init = (
+  private hasCapturedInitRequestYet() {
+    return this.capturedInitRequestYet;
+  }
+
+  private ackCapturedInitRequest() {
+    this.capturedInitRequestYet = true;
+  }
+
+  public processList__init = async (
     association: Association,
     initArgs: ProcessListInitArgs
   ): Promise<void> => {
@@ -41,7 +51,13 @@ export class ProcessListEnvelopeApiImpl implements ProcessListEnvelopeApi {
       association.origin,
       association.envelopeServerId
     );
+
+    if (this.hasCapturedInitRequestYet()) {
+      return;
+    }
+
+    this.ackCapturedInitRequest();
+
     this.args.view().initialize(initArgs.initialState);
-    return Promise.resolve();
   };
 }

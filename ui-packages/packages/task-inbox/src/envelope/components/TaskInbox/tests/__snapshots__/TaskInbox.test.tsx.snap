@@ -17,6 +17,7 @@ exports[`TaskInbox tests Envelope not connected 1`] = `
       "Skipped",
     ]
   }
+  currentUser="John"
   driver={
     TestTaskInboxDriver {
       "applyFilter": [MockFunction],
@@ -129,6 +130,7 @@ exports[`TaskInbox tests TaskInbox with LoadMore 1`] = `
       "Skipped",
     ]
   }
+  currentUser="John"
   driver={
     TestTaskInboxDriver {
       "applyFilter": [MockFunction],
@@ -143,8 +145,16 @@ exports[`TaskInbox tests TaskInbox with LoadMore 1`] = `
             0,
             10,
           ],
+          Array [
+            0,
+            10,
+          ],
         ],
         "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
           Object {
             "type": "return",
             "value": Promise {},
@@ -172,8 +182,31 @@ exports[`TaskInbox tests TaskInbox with LoadMore 1`] = `
               },
             },
           ],
+          Array [
+            Object {
+              "currentPage": Object {
+                "limit": 10,
+                "offset": 0,
+              },
+              "filters": Object {
+                "taskNames": Array [],
+                "taskStates": Array [
+                  "Ready",
+                  "Reserved",
+                ],
+              },
+              "sortBy": Object {
+                "direction": "desc",
+                "property": "lastUpdate",
+              },
+            },
+          ],
         ],
         "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
           Object {
             "type": "return",
             "value": Promise {},
@@ -945,6 +978,7 @@ exports[`TaskInbox tests TaskInbox with error 1`] = `
       "Skipped",
     ]
   }
+  currentUser="John"
   driver={
     TestTaskInboxDriver {
       "applyFilter": [MockFunction],
@@ -959,8 +993,16 @@ exports[`TaskInbox tests TaskInbox with error 1`] = `
             0,
             10,
           ],
+          Array [
+            0,
+            10,
+          ],
         ],
         "results": Array [
+          Object {
+            "type": "throw",
+            "value": [Error: error],
+          },
           Object {
             "type": "throw",
             "value": [Error: error],
@@ -988,8 +1030,31 @@ exports[`TaskInbox tests TaskInbox with error 1`] = `
               },
             },
           ],
+          Array [
+            Object {
+              "currentPage": Object {
+                "limit": 10,
+                "offset": 0,
+              },
+              "filters": Object {
+                "taskNames": Array [],
+                "taskStates": Array [
+                  "Ready",
+                  "Reserved",
+                ],
+              },
+              "sortBy": Object {
+                "direction": "desc",
+                "property": "lastUpdate",
+              },
+            },
+          ],
         ],
         "results": Array [
+          Object {
+            "type": "return",
+            "value": Promise {},
+          },
           Object {
             "type": "return",
             "value": Promise {},

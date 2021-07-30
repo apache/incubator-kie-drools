@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`RuntimeToolsDevUIEnvelopeView tests Snapshot 2`] = `
+<ForwardRef>
+  <RuntimeTools
+    dataIndex="http://localhost:4000"
+    navigate="test"
+    users={Array []}
+  />
+</ForwardRef>
+`;

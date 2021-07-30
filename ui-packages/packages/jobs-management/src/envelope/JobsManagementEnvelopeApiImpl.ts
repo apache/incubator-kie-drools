@@ -24,6 +24,7 @@ import {
 import { JobsManagementEnvelopeContext } from './JobsManagementEnvelopeContext';
 export class JobsManagementEnvelopeApiImpl
   implements JobsManagementEnvelopeApi {
+  private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       JobsManagementEnvelopeApi,
@@ -33,12 +34,25 @@ export class JobsManagementEnvelopeApiImpl
     >
   ) {}
 
-  jobsManagement__init = (association: Association): Promise<void> => {
+  private hasCapturedInitRequestYet() {
+    return this.capturedInitRequestYet;
+  }
+
+  private ackCapturedInitRequest() {
+    this.capturedInitRequestYet = true;
+  }
+
+  jobsManagement__init = async (association: Association): Promise<void> => {
     this.args.envelopeBusController.associate(
       association.origin,
       association.envelopeServerId
     );
+
+    if (this.hasCapturedInitRequestYet()) {
+      return;
+    }
+
+    this.ackCapturedInitRequest();
     this.args.view().initialize();
-    return Promise.resolve();
   };
 }

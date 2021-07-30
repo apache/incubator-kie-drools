@@ -25,6 +25,7 @@ import {
 import { ProcessDetailsEnvelopeContext } from './ProcessDetailsEnvelopeContext';
 export class ProcessDetailsEnvelopeApiImpl
   implements ProcessDetailsEnvelopeApi {
+  private capturedInitRequestYet = false;
   constructor(
     private readonly args: EnvelopeApiFactoryArgs<
       ProcessDetailsEnvelopeApi,
@@ -34,7 +35,15 @@ export class ProcessDetailsEnvelopeApiImpl
     >
   ) {}
 
-  processDetails__init = (
+  private hasCapturedInitRequestYet() {
+    return this.capturedInitRequestYet;
+  }
+
+  private ackCapturedInitRequest() {
+    this.capturedInitRequestYet = true;
+  }
+
+  processDetails__init = async (
     association: Association,
     initArgs: ProcessDetailsInitArgs
   ): Promise<void> => {
@@ -42,7 +51,11 @@ export class ProcessDetailsEnvelopeApiImpl
       association.origin,
       association.envelopeServerId
     );
+    if (this.hasCapturedInitRequestYet()) {
+      return;
+    }
+
+    this.ackCapturedInitRequest();
     this.args.view().initialize(initArgs.processInstance);
-    return Promise.resolve();
   };
 }

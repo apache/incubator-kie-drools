@@ -27,6 +27,7 @@ export interface TaskInboxEnvelopeApi {
     association: Association,
     initArgs: TaskInboxInitArgs
   ): Promise<void>;
+  taskInbox__notify(userName: string): Promise<void>;
 }
 
 export interface Association {

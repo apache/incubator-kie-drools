@@ -30,6 +30,7 @@
       packages/ouia-tools/coverage/lcov.info,
       packages/process-details/coverage/lcov.info,
       packages/process-list/coverage/lcov.info,
+      packages/runtime-tools-dev-ui-webapp/coverage/lcov.info,
       packages/task-console-shared/coverage/lcov.info,
       packages/task-console-webapp/coverage/lcov.info,
       packages/task-details/coverage/lcov.info,
@@ -67,6 +68,9 @@
             </fileset>
             <fileset>
               <directory>packages/process-details/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/runtime-tools-dev-ui-webapp/node_modules</directory>
             </fileset>
             <fileset>
               <directory>packages/management-console-webapp/node_modules</directory>

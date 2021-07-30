@@ -777,6 +777,18 @@
 
             <dependency>
                 <groupId>org.kie.kogito</groupId>
+                <artifactId>runtime-tools-quarkus-extension-deployment</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
+                <artifactId>runtime-tools-quarkus-extension</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- UI packages -->
+            <dependency>
+                <groupId>org.kie.kogito</groupId>
                 <artifactId>kogito-apps-ui-packages</artifactId>
                 <version>${project.version}</version>
                 <type>pom</type>

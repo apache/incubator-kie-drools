@@ -38,8 +38,8 @@
 }
 
 .kogito-process-details--milestones__nameText > blockquote {
-    padding: 0px;
-    border-left: 0px;
+    padding: 0px !important;
+    border-left: 0px !important;
 }
 
 .kogito-process-details--milestones__nameTextEllipses {

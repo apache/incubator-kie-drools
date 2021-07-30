@@ -164,6 +164,7 @@ exports[`TaskConsole tests Snapshot 1`] = `
                       />
                     }
                     pageNavOpen={false}
+                    withHeader={true}
                   >
                     <MockedComponent />
                   </PageLayout>

@@ -54,6 +54,7 @@ describe('TaskInboxEnvelopeApiImpl tests', () => {
         allTaskStates
       }
     );
+    envelopeApi.taskInbox__notify('John');
 
     expect(envelopeBusController.associate).toHaveBeenCalledWith(
       'origin',

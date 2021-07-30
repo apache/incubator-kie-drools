@@ -33,6 +33,7 @@ exports[`TaskInboxEnvelopeView tests Snapshot 2`] = `
         "Finished",
       ]
     }
+    currentUser=""
     driver={
       TaskInboxEnvelopeViewDriver {
         "channelApi": Object {

@@ -27,6 +27,7 @@ const props = {
   BrandSrc: '../../../../static/kogito.png',
   PageNav: <React.Fragment>page Navigation elements</React.Fragment>,
   BrandAltText: 'Kogito logo',
+  withHeader: true,
   BrandClick: jest.fn()
 };
 

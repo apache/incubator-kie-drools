@@ -27,7 +27,6 @@ import {
 import { EmbeddedTaskFormChannelApiImpl } from './EmbeddedTaskFormChannelApiImpl';
 import { init } from '../envelope';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
 
 export interface EmbeddedTaskFormProps {
   targetOrigin: string;
@@ -51,12 +50,8 @@ export const EmbeddedTaskForm = React.forwardRef<
         },
         container: container(),
         bus: {
-          postMessage<D, Type>(
-            message: EnvelopeBusMessage<D, Type>,
-            targetOrigin?: string,
-            transfer?: any
-          ) {
-            window.parent.postMessage(message, '*', transfer);
+          postMessage(message, targetOrigin, transfer) {
+            window.postMessage(message, '*', transfer);
           }
         }
       });

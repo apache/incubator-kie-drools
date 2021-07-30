@@ -16,7 +16,10 @@
 
 import { ProcessInstanceState } from '@kogito-apps/management-console-shared';
 export interface ProcessListEnvelopeApi {
-  processList__init(association: Association, initArgs: ProcessListInitArgs);
+  processList__init(
+    association: Association,
+    initArgs: ProcessListInitArgs
+  ): Promise<void>;
 }
 
 export interface ProcessInstanceFilter {

@@ -98,5 +98,6 @@ export const MockedTaskInboxEnvelopeViewApi = jest.fn<
   TaskInboxEnvelopeViewApi,
   []
 >(() => ({
-  initialize: jest.fn()
+  initialize: jest.fn(),
+  notify: jest.fn()
 }));

@@ -10,7 +10,7 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "lib": ["es6", "dom", "es2018.promise"],
+    "lib": ["es6", "dom", "es2018.promise", "es2019"],
     "noUnusedLocals": true
   },
   "exclude": ["node_modules"]

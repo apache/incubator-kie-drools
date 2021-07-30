@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, Ref } from 'react';
 import { EnvelopeServer } from '@kogito-tooling/envelope-bus/dist/channel';
 import { EmbeddedEnvelopeFactory } from '@kogito-tooling/envelope/dist/embedded';
 import {
@@ -27,7 +26,6 @@ import {
 import { TaskInboxChannelApiImpl } from './TaskInboxChannelApiImpl';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
 import { init } from '../envelope';
-import { EnvelopeBusMessage } from '@kogito-tooling/envelope-bus/dist/api';
 
 export interface Props {
   targetOrigin: string;
@@ -38,7 +36,7 @@ export interface Props {
 }
 
 export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
-  (props, forwardedRef) => {
+  (props, forwardedRef: Ref<TaskInboxApi>) => {
     const pollInit = useCallback(
       (
         envelopeServer: EnvelopeServer<
@@ -54,12 +52,8 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
           },
           container: container(),
           bus: {
-            postMessage<D, Type>(
-              message: EnvelopeBusMessage<D, Type>,
-              targetOrigin?: string,
-              transfer?: any
-            ) {
-              window.parent.postMessage(message, '*', transfer);
+            postMessage(message, targetOrigin, transfer) {
+              window.postMessage(message, '*', transfer);
             }
           }
         });
@@ -84,7 +78,10 @@ export const EmbeddedTaskInbox = React.forwardRef<TaskInboxApi, Props>(
           TaskInboxChannelApi,
           TaskInboxEnvelopeApi
         >
-      ): TaskInboxApi => ({}),
+      ): TaskInboxApi => ({
+        taskInbox__notify: userName =>
+          envelopeServer.envelopeApi.requests.taskInbox__notify(userName)
+      }),
       []
     );
 

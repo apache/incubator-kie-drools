@@ -34,11 +34,12 @@ import PageToolbar from '../PageToolbar/PageToolbar';
 
 interface IOwnProps {
   children: React.ReactNode;
-  BrandSrc: string;
+  BrandSrc?: string;
   PageNav: React.ReactNode;
   pageNavOpen?: boolean;
-  BrandAltText: string;
-  BrandClick: () => void;
+  BrandAltText?: string;
+  withHeader: boolean;
+  BrandClick?: () => void;
 }
 
 const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
@@ -46,6 +47,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   BrandSrc,
   PageNav,
   pageNavOpen,
+  withHeader,
   BrandAltText,
   BrandClick,
   ouiaId,
@@ -100,7 +102,7 @@ const PageLayout: React.FC<IOwnProps & OUIAProps> = ({
   return (
     <React.Fragment>
       <Page
-        header={Header}
+        header={withHeader ? Header : <></>}
         mainContainerId={pageId}
         sidebar={Sidebar}
         className="kogito-consoles-common--PageLayout"

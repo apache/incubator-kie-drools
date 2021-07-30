@@ -21,7 +21,7 @@
         <tests.quarkus.http.port>0</tests.quarkus.http.port>
 
         <version.frontend.plugin>1.9.1</version.frontend.plugin>
-        <version.node>v12.16.2</version.node>
+        <version.node>v12.20.0</version.node>
         <version.npm>6.10.3</version.npm>
         <version.yarn>v1.19.1</version.yarn>
 

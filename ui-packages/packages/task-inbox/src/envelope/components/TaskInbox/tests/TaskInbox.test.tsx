@@ -86,7 +86,8 @@ describe('TaskInbox tests', () => {
       isEnvelopeConnectedToChannel: true,
       driver: null,
       allTaskStates: getDefaultTaskStates(),
-      activeTaskStates: getDefaultActiveTaskStates()
+      activeTaskStates: getDefaultActiveTaskStates(),
+      currentUser: 'John'
     };
   });
 
@@ -216,20 +217,23 @@ describe('TaskInbox tests', () => {
 
     wrapper = wrapper.update();
 
-    expect(driver.setInitialState).not.toHaveBeenCalled();
+    expect(driver.setInitialState).toHaveBeenCalled();
     expect(driver.query).toHaveBeenCalledWith(0, 20);
 
     const toolbar = wrapper.find(TaskInboxToolbar);
     expect(toolbar.exists()).toBeTruthy();
-    expect(toolbar.props().activeFilter.taskStates).toHaveLength(1);
-    expect(toolbar.props().activeFilter.taskStates).toContain('Ready');
-    expect(toolbar.props().activeFilter.taskNames).toHaveLength(1);
-    expect(toolbar.props().activeFilter.taskNames).toContain('App');
+    expect(toolbar.props().activeFilter.taskStates).toHaveLength(2);
+    expect(toolbar.props().activeFilter.taskStates).toEqual([
+      'Ready',
+      'Reserved'
+    ]);
+    expect(toolbar.props().activeFilter.taskNames).toHaveLength(0);
+    expect(toolbar.props().activeFilter.taskNames).toEqual([]);
 
     const dataTable = wrapper.find(DataTable);
     expect(dataTable.exists()).toBeTruthy();
     expect(dataTable.props().isLoading).toBeFalsy();
-    expect(dataTable.props().data).toHaveLength(15);
+    expect(dataTable.props().data).toHaveLength(10);
 
     const loadMore = wrapper.find(LoadMore);
     expect(loadMore.exists()).toBeFalsy();
@@ -380,7 +384,7 @@ describe('TaskInbox tests', () => {
     expect(filter).toHaveProperty('taskNames', ['App', 'Conf']);
     expect(filter).toHaveProperty('taskStates', ['Completed']);
 
-    expect(driver.query).toHaveBeenCalledTimes(2);
+    expect(driver.query).toHaveBeenCalledTimes(3);
 
     const dataTable = wrapper.find(DataTable);
     expect(dataTable.exists()).toBeTruthy();

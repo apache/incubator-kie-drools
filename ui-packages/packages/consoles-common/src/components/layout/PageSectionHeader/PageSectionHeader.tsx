@@ -27,8 +27,8 @@ import * as H from 'history';
 type pathType = Pick<H.Location, 'pathname' | 'state'>;
 interface PageSectionHeaderProps {
   titleText: string;
-  breadcrumbText: string[];
-  breadcrumbPath: Array<pathType | string>;
+  breadcrumbText?: string[];
+  breadcrumbPath?: Array<pathType | string>;
 }
 const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = ({
   titleText,
@@ -61,7 +61,9 @@ const PageSectionHeader: React.FC<PageSectionHeaderProps & OUIAProps> = ({
       variant="light"
       {...componentOuiaProps(ouiaId, 'page-section-header', ouiaSafe)}
     >
-      <Breadcrumb>{renderBreadcrumb()}</Breadcrumb>
+      {breadcrumbText && breadcrumbPath && (
+        <Breadcrumb>{renderBreadcrumb()}</Breadcrumb>
+      )}
       <PageTitle title={titleText} />
     </PageSection>
   );

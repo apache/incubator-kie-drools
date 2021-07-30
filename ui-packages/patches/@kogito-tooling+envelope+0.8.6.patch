@@ -1,0 +1,788 @@
+diff --git a/node_modules/@kogito-tooling/envelope/dist/api/index.js b/node_modules/@kogito-tooling/envelope/dist/api/index.js
+index f0cb470..9c0a55c 100644
+--- a/node_modules/@kogito-tooling/envelope/dist/api/index.js
++++ b/node_modules/@kogito-tooling/envelope/dist/api/index.js
+@@ -1 +1,158 @@
+-module.exports=function(e){var t={};function r(n){if(t[n])return t[n].exports;var o=t[n]={i:n,l:!1,exports:{}};return e[n].call(o.exports,o,o.exports,r),o.l=!0,o.exports}return r.m=e,r.c=t,r.d=function(e,t,n){r.o(e,t)||Object.defineProperty(e,t,{enumerable:!0,get:n})},r.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},r.t=function(e,t){if(1&t&&(e=r(e)),8&t)return e;if(4&t&&"object"==typeof e&&e&&e.__esModule)return e;var n=Object.create(null);if(r.r(n),Object.defineProperty(n,"default",{enumerable:!0,value:e}),2&t&&"string"!=typeof e)for(var o in e)r.d(n,o,function(t){return e[t]}.bind(null,o));return n},r.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return r.d(t,"a",t),t},r.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},r.p="",r(r.s=0)}([function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),function(e){for(var r in e)t.hasOwnProperty(r)||(t[r]=e[r])}(r(1))},function(e,t,r){"use strict";Object.defineProperty(t,"__esModule",{value:!0}),function(e){e.DIV="div",e.IFRAME="iframe"}(t.ContainerType||(t.ContainerType={}))}]);
+\ No newline at end of file
++module.exports =
++/******/ (function(modules) { // webpackBootstrap
++/******/ 	// The module cache
++/******/ 	var installedModules = {};
++/******/
++/******/ 	// The require function
++/******/ 	function __webpack_require__(moduleId) {
++/******/
++/******/ 		// Check if module is in cache
++/******/ 		if(installedModules[moduleId]) {
++/******/ 			return installedModules[moduleId].exports;
++/******/ 		}
++/******/ 		// Create a new module (and put it into the cache)
++/******/ 		var module = installedModules[moduleId] = {
++/******/ 			i: moduleId,
++/******/ 			l: false,
++/******/ 			exports: {}
++/******/ 		};
++/******/
++/******/ 		// Execute the module function
++/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
++/******/
++/******/ 		// Flag the module as loaded
++/******/ 		module.l = true;
++/******/
++/******/ 		// Return the exports of the module
++/******/ 		return module.exports;
++/******/ 	}
++/******/
++/******/
++/******/ 	// expose the modules object (__webpack_modules__)
++/******/ 	__webpack_require__.m = modules;
++/******/
++/******/ 	// expose the module cache
++/******/ 	__webpack_require__.c = installedModules;
++/******/
++/******/ 	// define getter function for harmony exports
++/******/ 	__webpack_require__.d = function(exports, name, getter) {
++/******/ 		if(!__webpack_require__.o(exports, name)) {
++/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
++/******/ 		}
++/******/ 	};
++/******/
++/******/ 	// define __esModule on exports
++/******/ 	__webpack_require__.r = function(exports) {
++/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
++/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
++/******/ 		}
++/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
++/******/ 	};
++/******/
++/******/ 	// create a fake namespace object
++/******/ 	// mode & 1: value is a module id, require it
++/******/ 	// mode & 2: merge all properties of value into the ns
++/******/ 	// mode & 4: return value when already ns object
++/******/ 	// mode & 8|1: behave like require
++/******/ 	__webpack_require__.t = function(value, mode) {
++/******/ 		if(mode & 1) value = __webpack_require__(value);
++/******/ 		if(mode & 8) return value;
++/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
++/******/ 		var ns = Object.create(null);
++/******/ 		__webpack_require__.r(ns);
++/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
++/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
++/******/ 		return ns;
++/******/ 	};
++/******/
++/******/ 	// getDefaultExport function for compatibility with non-harmony modules
++/******/ 	__webpack_require__.n = function(module) {
++/******/ 		var getter = module && module.__esModule ?
++/******/ 			function getDefault() { return module['default']; } :
++/******/ 			function getModuleExports() { return module; };
++/******/ 		__webpack_require__.d(getter, 'a', getter);
++/******/ 		return getter;
++/******/ 	};
++/******/
++/******/ 	// Object.prototype.hasOwnProperty.call
++/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
++/******/
++/******/ 	// __webpack_public_path__
++/******/ 	__webpack_require__.p = "";
++/******/
++/******/
++/******/ 	// Load entry module and return exports
++/******/ 	return __webpack_require__(__webpack_require__.s = "./src/api/index.ts");
++/******/ })
++/************************************************************************/
++/******/ ({
++
++/***/ "./src/api/ContainerType.ts":
++/*!**********************************!*\
++  !*** ./src/api/ContainerType.ts ***!
++  \**********************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++Object.defineProperty(exports, "__esModule", { value: true });
++var ContainerType;
++(function (ContainerType) {
++    ContainerType["DIV"] = "div";
++    ContainerType["IFRAME"] = "iframe";
++})(ContainerType = exports.ContainerType || (exports.ContainerType = {}));
++
++
++/***/ }),
++
++/***/ "./src/api/index.ts":
++/*!**************************!*\
++  !*** ./src/api/index.ts ***!
++  \**************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++function __export(m) {
++    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
++}
++Object.defineProperty(exports, "__esModule", { value: true });
++__export(__webpack_require__(/*! ./ContainerType */ "./src/api/ContainerType.ts"));
++
++
++/***/ })
++
++/******/ });
++//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL2FwaS9Db250YWluZXJUeXBlLnRzIiwid2VicGFjazovLy8uL3NyYy9hcGkvaW5kZXgudHMiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6Ijs7UUFBQTtRQUNBOztRQUVBO1FBQ0E7O1FBRUE7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7O1FBRUE7UUFDQTs7UUFFQTtRQUNBOztRQUVBO1FBQ0E7UUFDQTs7O1FBR0E7UUFDQTs7UUFFQTtRQUNBOztRQUVBO1FBQ0E7UUFDQTtRQUNBLDBDQUEwQyxnQ0FBZ0M7UUFDMUU7UUFDQTs7UUFFQTtRQUNBO1FBQ0E7UUFDQSx3REFBd0Qsa0JBQWtCO1FBQzFFO1FBQ0EsaURBQWlELGNBQWM7UUFDL0Q7O1FBRUE7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBLHlDQUF5QyxpQ0FBaUM7UUFDMUUsZ0hBQWdILG1CQUFtQixFQUFFO1FBQ3JJO1FBQ0E7O1FBRUE7UUFDQTtRQUNBO1FBQ0EsMkJBQTJCLDBCQUEwQixFQUFFO1FBQ3ZELGlDQUFpQyxlQUFlO1FBQ2hEO1FBQ0E7UUFDQTs7UUFFQTtRQUNBLHNEQUFzRCwrREFBK0Q7O1FBRXJIO1FBQ0E7OztRQUdBO1FBQ0E7Ozs7Ozs7Ozs7Ozs7O0FDbEZBOzs7Ozs7Ozs7Ozs7OztHQWNHOztBQUVILElBQVksYUFFWDtBQUZELFdBQVksYUFBYTtJQUN2Qiw0QkFBVztJQUFFLGtDQUFpQjtBQUNoQyxDQUFDLEVBRlcsYUFBYSxHQUFiLHFCQUFhLEtBQWIscUJBQWEsUUFFeEI7Ozs7Ozs7Ozs7Ozs7O0FDbEJEOzs7Ozs7Ozs7Ozs7OztHQWNHOzs7OztBQUVILG1GQUErQiIsImZpbGUiOiJhcGkvaW5kZXguanMiLCJzb3VyY2VzQ29udGVudCI6WyIgXHQvLyBUaGUgbW9kdWxlIGNhY2hlXG4gXHR2YXIgaW5zdGFsbGVkTW9kdWxlcyA9IHt9O1xuXG4gXHQvLyBUaGUgcmVxdWlyZSBmdW5jdGlvblxuIFx0ZnVuY3Rpb24gX193ZWJwYWNrX3JlcXVpcmVfXyhtb2R1bGVJZCkge1xuXG4gXHRcdC8vIENoZWNrIGlmIG1vZHVsZSBpcyBpbiBjYWNoZVxuIFx0XHRpZihpbnN0YWxsZWRNb2R1bGVzW21vZHVsZUlkXSkge1xuIFx0XHRcdHJldHVybiBpbnN0YWxsZWRNb2R1bGVzW21vZHVsZUlkXS5leHBvcnRzO1xuIFx0XHR9XG4gXHRcdC8vIENyZWF0ZSBhIG5ldyBtb2R1bGUgKGFuZCBwdXQgaXQgaW50byB0aGUgY2FjaGUpXG4gXHRcdHZhciBtb2R1bGUgPSBpbnN0YWxsZWRNb2R1bGVzW21vZHVsZUlkXSA9IHtcbiBcdFx0XHRpOiBtb2R1bGVJZCxcbiBcdFx0XHRsOiBmYWxzZSxcbiBcdFx0XHRleHBvcnRzOiB7fVxuIFx0XHR9O1xuXG4gXHRcdC8vIEV4ZWN1dGUgdGhlIG1vZHVsZSBmdW5jdGlvblxuIFx0XHRtb2R1bGVzW21vZHVsZUlkXS5jYWxsKG1vZHVsZS5leHBvcnRzLCBtb2R1bGUsIG1vZHVsZS5leHBvcnRzLCBfX3dlYnBhY2tfcmVxdWlyZV9fKTtcblxuIFx0XHQvLyBGbGFnIHRoZSBtb2R1bGUgYXMgbG9hZGVkXG4gXHRcdG1vZHVsZS5sID0gdHJ1ZTtcblxuIFx0XHQvLyBSZXR1cm4gdGhlIGV4cG9ydHMgb2YgdGhlIG1vZHVsZVxuIFx0XHRyZXR1cm4gbW9kdWxlLmV4cG9ydHM7XG4gXHR9XG5cblxuIFx0Ly8gZXhwb3NlIHRoZSBtb2R1bGVzIG9iamVjdCAoX193ZWJwYWNrX21vZHVsZXNfXylcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubSA9IG1vZHVsZXM7XG5cbiBcdC8vIGV4cG9zZSB0aGUgbW9kdWxlIGNhY2hlXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLmMgPSBpbnN0YWxsZWRNb2R1bGVzO1xuXG4gXHQvLyBkZWZpbmUgZ2V0dGVyIGZ1bmN0aW9uIGZvciBoYXJtb255IGV4cG9ydHNcbiBcdF9fd2VicGFja19yZXF1aXJlX18uZCA9IGZ1bmN0aW9uKGV4cG9ydHMsIG5hbWUsIGdldHRlcikge1xuIFx0XHRpZighX193ZWJwYWNrX3JlcXVpcmVfXy5vKGV4cG9ydHMsIG5hbWUpKSB7XG4gXHRcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KGV4cG9ydHMsIG5hbWUsIHsgZW51bWVyYWJsZTogdHJ1ZSwgZ2V0OiBnZXR0ZXIgfSk7XG4gXHRcdH1cbiBcdH07XG5cbiBcdC8vIGRlZmluZSBfX2VzTW9kdWxlIG9uIGV4cG9ydHNcbiBcdF9fd2VicGFja19yZXF1aXJlX18uciA9IGZ1bmN0aW9uKGV4cG9ydHMpIHtcbiBcdFx0aWYodHlwZW9mIFN5bWJvbCAhPT0gJ3VuZGVmaW5lZCcgJiYgU3ltYm9sLnRvU3RyaW5nVGFnKSB7XG4gXHRcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KGV4cG9ydHMsIFN5bWJvbC50b1N0cmluZ1RhZywgeyB2YWx1ZTogJ01vZHVsZScgfSk7XG4gXHRcdH1cbiBcdFx0T2JqZWN0LmRlZmluZVByb3BlcnR5KGV4cG9ydHMsICdfX2VzTW9kdWxlJywgeyB2YWx1ZTogdHJ1ZSB9KTtcbiBcdH07XG5cbiBcdC8vIGNyZWF0ZSBhIGZha2UgbmFtZXNwYWNlIG9iamVjdFxuIFx0Ly8gbW9kZSAmIDE6IHZhbHVlIGlzIGEgbW9kdWxlIGlkLCByZXF1aXJlIGl0XG4gXHQvLyBtb2RlICYgMjogbWVyZ2UgYWxsIHByb3BlcnRpZXMgb2YgdmFsdWUgaW50byB0aGUgbnNcbiBcdC8vIG1vZGUgJiA0OiByZXR1cm4gdmFsdWUgd2hlbiBhbHJlYWR5IG5zIG9iamVjdFxuIFx0Ly8gbW9kZSAmIDh8MTogYmVoYXZlIGxpa2UgcmVxdWlyZVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy50ID0gZnVuY3Rpb24odmFsdWUsIG1vZGUpIHtcbiBcdFx0aWYobW9kZSAmIDEpIHZhbHVlID0gX193ZWJwYWNrX3JlcXVpcmVfXyh2YWx1ZSk7XG4gXHRcdGlmKG1vZGUgJiA4KSByZXR1cm4gdmFsdWU7XG4gXHRcdGlmKChtb2RlICYgNCkgJiYgdHlwZW9mIHZhbHVlID09PSAnb2JqZWN0JyAmJiB2YWx1ZSAmJiB2YWx1ZS5fX2VzTW9kdWxlKSByZXR1cm4gdmFsdWU7XG4gXHRcdHZhciBucyA9IE9iamVjdC5jcmVhdGUobnVsbCk7XG4gXHRcdF9fd2VicGFja19yZXF1aXJlX18ucihucyk7XG4gXHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShucywgJ2RlZmF1bHQnLCB7IGVudW1lcmFibGU6IHRydWUsIHZhbHVlOiB2YWx1ZSB9KTtcbiBcdFx0aWYobW9kZSAmIDIgJiYgdHlwZW9mIHZhbHVlICE9ICdzdHJpbmcnKSBmb3IodmFyIGtleSBpbiB2YWx1ZSkgX193ZWJwYWNrX3JlcXVpcmVfXy5kKG5zLCBrZXksIGZ1bmN0aW9uKGtleSkgeyByZXR1cm4gdmFsdWVba2V5XTsgfS5iaW5kKG51bGwsIGtleSkpO1xuIFx0XHRyZXR1cm4gbnM7XG4gXHR9O1xuXG4gXHQvLyBnZXREZWZhdWx0RXhwb3J0IGZ1bmN0aW9uIGZvciBjb21wYXRpYmlsaXR5IHdpdGggbm9uLWhhcm1vbnkgbW9kdWxlc1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5uID0gZnVuY3Rpb24obW9kdWxlKSB7XG4gXHRcdHZhciBnZXR0ZXIgPSBtb2R1bGUgJiYgbW9kdWxlLl9fZXNNb2R1bGUgP1xuIFx0XHRcdGZ1bmN0aW9uIGdldERlZmF1bHQoKSB7IHJldHVybiBtb2R1bGVbJ2RlZmF1bHQnXTsgfSA6XG4gXHRcdFx0ZnVuY3Rpb24gZ2V0TW9kdWxlRXhwb3J0cygpIHsgcmV0dXJuIG1vZHVsZTsgfTtcbiBcdFx0X193ZWJwYWNrX3JlcXVpcmVfXy5kKGdldHRlciwgJ2EnLCBnZXR0ZXIpO1xuIFx0XHRyZXR1cm4gZ2V0dGVyO1xuIFx0fTtcblxuIFx0Ly8gT2JqZWN0LnByb3RvdHlwZS5oYXNPd25Qcm9wZXJ0eS5jYWxsXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm8gPSBmdW5jdGlvbihvYmplY3QsIHByb3BlcnR5KSB7IHJldHVybiBPYmplY3QucHJvdG90eXBlLmhhc093blByb3BlcnR5LmNhbGwob2JqZWN0LCBwcm9wZXJ0eSk7IH07XG5cbiBcdC8vIF9fd2VicGFja19wdWJsaWNfcGF0aF9fXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnAgPSBcIlwiO1xuXG5cbiBcdC8vIExvYWQgZW50cnkgbW9kdWxlIGFuZCByZXR1cm4gZXhwb3J0c1xuIFx0cmV0dXJuIF9fd2VicGFja19yZXF1aXJlX18oX193ZWJwYWNrX3JlcXVpcmVfXy5zID0gXCIuL3NyYy9hcGkvaW5kZXgudHNcIik7XG4iLCIvKlxuICogQ29weXJpZ2h0IDIwMjEgUmVkIEhhdCwgSW5jLiBhbmQvb3IgaXRzIGFmZmlsaWF0ZXMuXG4gKlxuICogTGljZW5zZWQgdW5kZXIgdGhlIEFwYWNoZSBMaWNlbnNlLCBWZXJzaW9uIDIuMCAodGhlIFwiTGljZW5zZVwiKTtcbiAqIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS5cbiAqIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdFxuICpcbiAqICAgICAgICBodHRwOi8vd3d3LmFwYWNoZS5vcmcvbGljZW5zZXMvTElDRU5TRS0yLjBcbiAqXG4gKiBVbmxlc3MgcmVxdWlyZWQgYnkgYXBwbGljYWJsZSBsYXcgb3IgYWdyZWVkIHRvIGluIHdyaXRpbmcsIHNvZnR3YXJlXG4gKiBkaXN0cmlidXRlZCB1bmRlciB0aGUgTGljZW5zZSBpcyBkaXN0cmlidXRlZCBvbiBhbiBcIkFTIElTXCIgQkFTSVMsXG4gKiBXSVRIT1VUIFdBUlJBTlRJRVMgT1IgQ09ORElUSU9OUyBPRiBBTlkgS0lORCwgZWl0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC5cbiAqIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmRcbiAqIGxpbWl0YXRpb25zIHVuZGVyIHRoZSBMaWNlbnNlLlxuICovXG5cbmV4cG9ydCBlbnVtIENvbnRhaW5lclR5cGUge1xuICBESVYgPSBcImRpdlwiLCBJRlJBTUUgPSBcImlmcmFtZVwiXG59IiwiLypcbiAqIENvcHlyaWdodCAyMDIxIFJlZCBIYXQsIEluYy4gYW5kL29yIGl0cyBhZmZpbGlhdGVzLlxuICpcbiAqIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSBcIkxpY2Vuc2VcIik7XG4gKiB5b3UgbWF5IG5vdCB1c2UgdGhpcyBmaWxlIGV4Y2VwdCBpbiBjb21wbGlhbmNlIHdpdGggdGhlIExpY2Vuc2UuXG4gKiBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXRcbiAqXG4gKiAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wXG4gKlxuICogVW5sZXNzIHJlcXVpcmVkIGJ5IGFwcGxpY2FibGUgbGF3IG9yIGFncmVlZCB0byBpbiB3cml0aW5nLCBzb2Z0d2FyZVxuICogZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gXCJBUyBJU1wiIEJBU0lTLFxuICogV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuXG4gKiBTZWUgdGhlIExpY2Vuc2UgZm9yIHRoZSBzcGVjaWZpYyBsYW5ndWFnZSBnb3Zlcm5pbmcgcGVybWlzc2lvbnMgYW5kXG4gKiBsaW1pdGF0aW9ucyB1bmRlciB0aGUgTGljZW5zZS5cbiAqL1xuXG5leHBvcnQgKiBmcm9tIFwiLi9Db250YWluZXJUeXBlXCIiXSwic291cmNlUm9vdCI6IiJ9
+\ No newline at end of file
+diff --git a/node_modules/@kogito-tooling/envelope/dist/embedded/index.js b/node_modules/@kogito-tooling/envelope/dist/embedded/index.js
+index 522109d..c240d2d 100644
+--- a/node_modules/@kogito-tooling/envelope/dist/embedded/index.js
++++ b/node_modules/@kogito-tooling/envelope/dist/embedded/index.js
+@@ -1 +1,302 @@
+-module.exports=function(e){var n={};function t(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,t),o.l=!0,o.exports}return t.m=e,t.c=n,t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:r})},t.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},t.t=function(e,n){if(1&n&&(e=t(e)),8&n)return e;if(4&n&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(t.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var o in e)t.d(r,o,function(n){return e[n]}.bind(null,o));return r},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},t.p="",t(t.s=6)}([function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){for(var t in e)n.hasOwnProperty(t)||(n[t]=e[t])}(t(1))},function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){e.DIV="div",e.IFRAME="iframe"}(n.ContainerType||(n.ContainerType={}))},function(e,n){e.exports=require("react")},,,,function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){for(var t in e)n.hasOwnProperty(t)||(n[t]=e[t])}(t(7))},function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0});var r=t(8),o=t(2),i=t(2),u=t(9),c=t(0),f={display:"flex",flex:1,flexDirection:"column",width:"100%",height:"100%",border:"none",margin:0,padding:0,overflow:"hidden"};n.EmbeddedEnvelopeFactory=function(e){return o.forwardRef((function(n,t){var l=i.useRef(null),a=i.useRef(null),s=i.useMemo((function(){return{postMessage:function(n){var t,r;e.config.containerType===c.ContainerType.DIV?window.postMessage(n,"*"):null===(r=null===(t=l.current)||void 0===t?void 0:t.contentWindow)||void 0===r||r.postMessage(n,"*")}}}),[]),p=i.useMemo((function(){return new r.EnvelopeServer(s,e.origin,(function(n){return e.pollInit(n,(function(){return e.config.containerType===c.ContainerType.DIV?a.current:l.current}))}))}),[s,e.origin,e.pollInit]);return i.useImperativeHandle(t,(function(){return e.refDelegate(p)}),[e.refDelegate]),u.useConnectedEnvelopeServer(p,e.api),e.config.containerType===c.ContainerType.DIV?o.createElement("div",{ref:a}):o.createElement("iframe",{ref:l,src:e.config.envelopePath,style:f,title:"X"})}))}},function(e,n){e.exports=require("@kogito-tooling/envelope-bus/dist/channel")},function(e,n){e.exports=require("@kogito-tooling/envelope-bus/dist/hooks")}]);
+\ No newline at end of file
++module.exports =
++/******/ (function(modules) { // webpackBootstrap
++/******/ 	// The module cache
++/******/ 	var installedModules = {};
++/******/
++/******/ 	// The require function
++/******/ 	function __webpack_require__(moduleId) {
++/******/
++/******/ 		// Check if module is in cache
++/******/ 		if(installedModules[moduleId]) {
++/******/ 			return installedModules[moduleId].exports;
++/******/ 		}
++/******/ 		// Create a new module (and put it into the cache)
++/******/ 		var module = installedModules[moduleId] = {
++/******/ 			i: moduleId,
++/******/ 			l: false,
++/******/ 			exports: {}
++/******/ 		};
++/******/
++/******/ 		// Execute the module function
++/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
++/******/
++/******/ 		// Flag the module as loaded
++/******/ 		module.l = true;
++/******/
++/******/ 		// Return the exports of the module
++/******/ 		return module.exports;
++/******/ 	}
++/******/
++/******/
++/******/ 	// expose the modules object (__webpack_modules__)
++/******/ 	__webpack_require__.m = modules;
++/******/
++/******/ 	// expose the module cache
++/******/ 	__webpack_require__.c = installedModules;
++/******/
++/******/ 	// define getter function for harmony exports
++/******/ 	__webpack_require__.d = function(exports, name, getter) {
++/******/ 		if(!__webpack_require__.o(exports, name)) {
++/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
++/******/ 		}
++/******/ 	};
++/******/
++/******/ 	// define __esModule on exports
++/******/ 	__webpack_require__.r = function(exports) {
++/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
++/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
++/******/ 		}
++/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
++/******/ 	};
++/******/
++/******/ 	// create a fake namespace object
++/******/ 	// mode & 1: value is a module id, require it
++/******/ 	// mode & 2: merge all properties of value into the ns
++/******/ 	// mode & 4: return value when already ns object
++/******/ 	// mode & 8|1: behave like require
++/******/ 	__webpack_require__.t = function(value, mode) {
++/******/ 		if(mode & 1) value = __webpack_require__(value);
++/******/ 		if(mode & 8) return value;
++/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
++/******/ 		var ns = Object.create(null);
++/******/ 		__webpack_require__.r(ns);
++/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
++/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
++/******/ 		return ns;
++/******/ 	};
++/******/
++/******/ 	// getDefaultExport function for compatibility with non-harmony modules
++/******/ 	__webpack_require__.n = function(module) {
++/******/ 		var getter = module && module.__esModule ?
++/******/ 			function getDefault() { return module['default']; } :
++/******/ 			function getModuleExports() { return module; };
++/******/ 		__webpack_require__.d(getter, 'a', getter);
++/******/ 		return getter;
++/******/ 	};
++/******/
++/******/ 	// Object.prototype.hasOwnProperty.call
++/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
++/******/
++/******/ 	// __webpack_public_path__
++/******/ 	__webpack_require__.p = "";
++/******/
++/******/
++/******/ 	// Load entry module and return exports
++/******/ 	return __webpack_require__(__webpack_require__.s = "./src/embedded/index.ts");
++/******/ })
++/************************************************************************/
++/******/ ({
++
++/***/ "./src/api/ContainerType.ts":
++/*!**********************************!*\
++  !*** ./src/api/ContainerType.ts ***!
++  \**********************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++Object.defineProperty(exports, "__esModule", { value: true });
++var ContainerType;
++(function (ContainerType) {
++    ContainerType["DIV"] = "div";
++    ContainerType["IFRAME"] = "iframe";
++})(ContainerType = exports.ContainerType || (exports.ContainerType = {}));
++
++
++/***/ }),
++
++/***/ "./src/api/index.ts":
++/*!**************************!*\
++  !*** ./src/api/index.ts ***!
++  \**************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++function __export(m) {
++    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
++}
++Object.defineProperty(exports, "__esModule", { value: true });
++__export(__webpack_require__(/*! ./ContainerType */ "./src/api/ContainerType.ts"));
++
++
++/***/ }),
++
++/***/ "./src/embedded/EmbeddedEnvelopeFactory.tsx":
++/*!**************************************************!*\
++  !*** ./src/embedded/EmbeddedEnvelopeFactory.tsx ***!
++  \**************************************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++Object.defineProperty(exports, "__esModule", { value: true });
++var channel_1 = __webpack_require__(/*! @kogito-tooling/envelope-bus/dist/channel */ "@kogito-tooling/envelope-bus/dist/channel");
++var React = __webpack_require__(/*! react */ "react");
++var react_1 = __webpack_require__(/*! react */ "react");
++var hooks_1 = __webpack_require__(/*! @kogito-tooling/envelope-bus/dist/hooks */ "@kogito-tooling/envelope-bus/dist/hooks");
++var api_1 = __webpack_require__(/*! ../api */ "./src/api/index.ts");
++var containerStyles = {
++    display: "flex",
++    flex: 1,
++    flexDirection: "column",
++    width: "100%",
++    height: "100%",
++    border: "none",
++    margin: 0,
++    padding: 0,
++    overflow: "hidden"
++};
++function EmbeddedEnvelopeFactory(props) {
++    return React.forwardRef(function (_, forwardRef) {
++        var iframeRef = react_1.useRef(null);
++        var divRef = react_1.useRef(null);
++        var bus = react_1.useMemo(function () { return ({
++            postMessage: function (message) {
++                var _a, _b;
++                if (props.config.containerType === api_1.ContainerType.DIV) {
++                    window.postMessage(message, "*");
++                }
++                else {
++                    (_b = (_a = iframeRef.current) === null || _a === void 0 ? void 0 : _a.contentWindow) === null || _b === void 0 ? void 0 : _b.postMessage(message, "*");
++                }
++            }
++        }); }, []);
++        var envelopeServer = react_1.useMemo(function () {
++            return new channel_1.EnvelopeServer(bus, props.origin, function (self) {
++                return props.pollInit(self, function () {
++                    return props.config.containerType === api_1.ContainerType.DIV ? divRef.current : iframeRef.current;
++                });
++            }, props.config.containerType === api_1.ContainerType.DIV ? channel_1.EnvelopeServerType.LOCAL : channel_1.EnvelopeServerType.REMOTE);
++        }, [bus, props.origin, props.pollInit]);
++        react_1.useImperativeHandle(forwardRef, function () {
++            return props.refDelegate(envelopeServer);
++        }, [props.refDelegate]);
++        hooks_1.useConnectedEnvelopeServer(envelopeServer, props.api);
++        if (props.config.containerType === api_1.ContainerType.DIV) {
++            return React.createElement("div", { ref: divRef });
++        }
++        return React.createElement("iframe", { ref: iframeRef, src: props.config.envelopePath, style: containerStyles, title: "X" });
++    });
++}
++exports.EmbeddedEnvelopeFactory = EmbeddedEnvelopeFactory;
++
++
++/***/ }),
++
++/***/ "./src/embedded/index.ts":
++/*!*******************************!*\
++  !*** ./src/embedded/index.ts ***!
++  \*******************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++function __export(m) {
++    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
++}
++Object.defineProperty(exports, "__esModule", { value: true });
++__export(__webpack_require__(/*! ./EmbeddedEnvelopeFactory */ "./src/embedded/EmbeddedEnvelopeFactory.tsx"));
++
++
++/***/ }),
++
++/***/ "@kogito-tooling/envelope-bus/dist/channel":
++/*!************************************************************!*\
++  !*** external "@kogito-tooling/envelope-bus/dist/channel" ***!
++  \************************************************************/
++/*! no static exports found */
++/***/ (function(module, exports) {
++
++module.exports = require("@kogito-tooling/envelope-bus/dist/channel");
++
++/***/ }),
++
++/***/ "@kogito-tooling/envelope-bus/dist/hooks":
++/*!**********************************************************!*\
++  !*** external "@kogito-tooling/envelope-bus/dist/hooks" ***!
++  \**********************************************************/
++/*! no static exports found */
++/***/ (function(module, exports) {
++
++module.exports = require("@kogito-tooling/envelope-bus/dist/hooks");
++
++/***/ }),
++
++/***/ "react":
++/*!************************!*\
++  !*** external "react" ***!
++  \************************/
++/*! no static exports found */
++/***/ (function(module, exports) {
++
++module.exports = require("react");
++
++/***/ })
++
++/******/ });
++//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL2FwaS9Db250YWluZXJUeXBlLnRzIiwid2VicGFjazovLy8uL3NyYy9hcGkvaW5kZXgudHMiLCJ3ZWJwYWNrOi8vLy4vc3JjL2VtYmVkZGVkL0VtYmVkZGVkRW52ZWxvcGVGYWN0b3J5LnRzeCIsIndlYnBhY2s6Ly8vLi9zcmMvZW1iZWRkZWQvaW5kZXgudHMiLCJ3ZWJwYWNrOi8vL2V4dGVybmFsIFwiQGtvZ2l0by10b29saW5nL2VudmVsb3BlLWJ1cy9kaXN0L2NoYW5uZWxcIiIsIndlYnBhY2s6Ly8vZXh0ZXJuYWwgXCJAa29naXRvLXRvb2xpbmcvZW52ZWxvcGUtYnVzL2Rpc3QvaG9va3NcIiIsIndlYnBhY2s6Ly8vZXh0ZXJuYWwgXCJyZWFjdFwiIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O1FBQUE7UUFDQTs7UUFFQTtRQUNBOztRQUVBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBOztRQUVBO1FBQ0E7O1FBRUE7UUFDQTs7UUFFQTtRQUNBO1FBQ0E7OztRQUdBO1FBQ0E7O1FBRUE7UUFDQTs7UUFFQTtRQUNBO1FBQ0E7UUFDQSwwQ0FBMEMsZ0NBQWdDO1FBQzFFO1FBQ0E7O1FBRUE7UUFDQTtRQUNBO1FBQ0Esd0RBQXdELGtCQUFrQjtRQUMxRTtRQUNBLGlEQUFpRCxjQUFjO1FBQy9EOztRQUVBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQSx5Q0FBeUMsaUNBQWlDO1FBQzFFLGdIQUFnSCxtQkFBbUIsRUFBRTtRQUNySTtRQUNBOztRQUVBO1FBQ0E7UUFDQTtRQUNBLDJCQUEyQiwwQkFBMEIsRUFBRTtRQUN2RCxpQ0FBaUMsZUFBZTtRQUNoRDtRQUNBO1FBQ0E7O1FBRUE7UUFDQSxzREFBc0QsK0RBQStEOztRQUVySDtRQUNBOzs7UUFHQTtRQUNBOzs7Ozs7Ozs7Ozs7OztBQ2xGQTs7Ozs7Ozs7Ozs7Ozs7R0FjRzs7QUFFSCxJQUFZLGFBRVg7QUFGRCxXQUFZLGFBQWE7SUFDdkIsNEJBQVc7SUFBRSxrQ0FBaUI7QUFDaEMsQ0FBQyxFQUZXLGFBQWEsR0FBYixxQkFBYSxLQUFiLHFCQUFhLFFBRXhCOzs7Ozs7Ozs7Ozs7OztBQ2xCRDs7Ozs7Ozs7Ozs7Ozs7R0FjRzs7Ozs7QUFFSCxtRkFBK0I7Ozs7Ozs7Ozs7Ozs7O0FDaEIvQjs7Ozs7Ozs7Ozs7Ozs7R0FjRzs7QUFHSCxrSUFBK0Y7QUFDL0Ysc0RBQStCO0FBQy9CLHdEQUE2RDtBQUM3RCw0SEFBcUY7QUFFckYsb0VBQXVDO0FBRXZDLElBQU0sZUFBZSxHQUFtQjtJQUN0QyxPQUFPLEVBQUUsTUFBTTtJQUNmLElBQUksRUFBRSxDQUFDO0lBQ1AsYUFBYSxFQUFFLFFBQVE7SUFDdkIsS0FBSyxFQUFFLE1BQU07SUFDYixNQUFNLEVBQUUsTUFBTTtJQUNkLE1BQU0sRUFBRSxNQUFNO0lBQ2QsTUFBTSxFQUFFLENBQUM7SUFDVCxPQUFPLEVBQUUsQ0FBQztJQUNWLFFBQVEsRUFBRSxRQUFRO0NBQ25CLENBQUM7QUEwQkYsU0FBZ0IsdUJBQXVCLENBSXJDLEtBQTZDO0lBQzdDLE9BQU8sS0FBSyxDQUFDLFVBQVUsQ0FBQyxVQUFDLENBQUMsRUFBRSxVQUFVO1FBQ3BDLElBQU0sU0FBUyxHQUFHLGNBQU0sQ0FBb0IsSUFBSSxDQUFDLENBQUM7UUFDbEQsSUFBTSxNQUFNLEdBQUcsY0FBTSxDQUFpQixJQUFJLENBQUMsQ0FBQztRQUU1QyxJQUFNLEdBQUcsR0FBRyxlQUFPLENBQ2pCLGNBQU0sUUFBQztZQUNMLFdBQVcsRUFBWCxVQUFrQixPQUFpQzs7Z0JBQ2pELElBQUksS0FBSyxDQUFDLE1BQU0sQ0FBQyxhQUFhLEtBQUssbUJBQWEsQ0FBQyxHQUFHLEVBQUU7b0JBQ3BELE1BQU0sQ0FBQyxXQUFXLENBQUMsT0FBTyxFQUFFLEdBQUcsQ0FBQyxDQUFDO2lCQUNsQztxQkFBTTtvQkFDTCxxQkFBUyxDQUFDLE9BQU8sMENBQUUsYUFBYSwwQ0FBRSxXQUFXLENBQUMsT0FBTyxFQUFFLEdBQUcsRUFBRTtpQkFDN0Q7WUFDSCxDQUFDO1NBQ0YsQ0FBQyxFQVJJLENBUUosRUFDRixFQUFFLENBQ0gsQ0FBQztRQUVGLElBQU0sY0FBYyxHQUFHLGVBQU8sQ0FDNUI7WUFDRSxXQUFJLHdCQUFjLENBQTZCLEdBQUcsRUFBRSxLQUFLLENBQUMsTUFBTSxFQUFFLGNBQUk7Z0JBQ3BFLFlBQUssQ0FBQyxRQUFRLENBQUMsSUFBSSxFQUFFO29CQUNuQixZQUFLLENBQUMsTUFBTSxDQUFDLGFBQWEsS0FBSyxtQkFBYSxDQUFDLEdBQUcsQ0FBQyxDQUFDLENBQUMsTUFBTSxDQUFDLE9BQVEsQ0FBQyxDQUFDLENBQUMsU0FBUyxDQUFDLE9BQVE7Z0JBQXZGLENBQXVGLENBQ3hGO1lBRkQsQ0FFQyxFQUNELEtBQUssQ0FBQyxNQUFNLENBQUMsYUFBYSxLQUFLLG1CQUFhLENBQUMsR0FBRyxDQUFDLENBQUMsQ0FBQyw0QkFBa0IsQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLDRCQUFrQixDQUFDLE1BQU0sQ0FDeEc7UUFMRCxDQUtDLEVBQ0gsQ0FBQyxHQUFHLEVBQUUsS0FBSyxDQUFDLE1BQU0sRUFBRSxLQUFLLENBQUMsUUFBUSxDQUFDLENBQ3BDLENBQUM7UUFFRiwyQkFBbUIsQ0FDakIsVUFBVSxFQUNWO1lBQ0UsT0FBTyxLQUFLLENBQUMsV0FBVyxDQUFDLGNBQWMsQ0FBQyxDQUFDO1FBQzNDLENBQUMsRUFDRCxDQUFDLEtBQUssQ0FBQyxXQUFXLENBQUMsQ0FDcEIsQ0FBQztRQUVGLGtDQUEwQixDQUFlLGNBQWMsRUFBRSxLQUFLLENBQUMsR0FBRyxDQUFDLENBQUM7UUFFcEUsSUFBSSxLQUFLLENBQUMsTUFBTSxDQUFDLGFBQWEsS0FBSyxtQkFBYSxDQUFDLEdBQUcsRUFBRTtZQUNwRCxPQUFPLDZCQUFLLEdBQUcsRUFBRSxNQUFNLEdBQUksQ0FBQztTQUM3QjtRQUVELE9BQU8sZ0NBQVEsR0FBRyxFQUFFLFNBQVMsRUFBRSxHQUFHLEVBQUUsS0FBSyxDQUFDLE1BQU0sQ0FBQyxZQUFZLEVBQUUsS0FBSyxFQUFFLGVBQWUsRUFBRSxLQUFLLEVBQUMsR0FBRyxHQUFHLENBQUM7SUFDdEcsQ0FBQyxDQUFDLENBQUM7QUFDTCxDQUFDO0FBakRELDBEQWlEQzs7Ozs7Ozs7Ozs7Ozs7QUM3R0Q7Ozs7Ozs7Ozs7Ozs7O0dBY0c7Ozs7O0FBRUgsNkdBQTBDOzs7Ozs7Ozs7Ozs7QUNoQjFDLHNFOzs7Ozs7Ozs7OztBQ0FBLG9FOzs7Ozs7Ozs7OztBQ0FBLGtDIiwiZmlsZSI6ImVtYmVkZGVkL2luZGV4LmpzIiwic291cmNlc0NvbnRlbnQiOlsiIFx0Ly8gVGhlIG1vZHVsZSBjYWNoZVxuIFx0dmFyIGluc3RhbGxlZE1vZHVsZXMgPSB7fTtcblxuIFx0Ly8gVGhlIHJlcXVpcmUgZnVuY3Rpb25cbiBcdGZ1bmN0aW9uIF9fd2VicGFja19yZXF1aXJlX18obW9kdWxlSWQpIHtcblxuIFx0XHQvLyBDaGVjayBpZiBtb2R1bGUgaXMgaW4gY2FjaGVcbiBcdFx0aWYoaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0pIHtcbiBcdFx0XHRyZXR1cm4gaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0uZXhwb3J0cztcbiBcdFx0fVxuIFx0XHQvLyBDcmVhdGUgYSBuZXcgbW9kdWxlIChhbmQgcHV0IGl0IGludG8gdGhlIGNhY2hlKVxuIFx0XHR2YXIgbW9kdWxlID0gaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0gPSB7XG4gXHRcdFx0aTogbW9kdWxlSWQsXG4gXHRcdFx0bDogZmFsc2UsXG4gXHRcdFx0ZXhwb3J0czoge31cbiBcdFx0fTtcblxuIFx0XHQvLyBFeGVjdXRlIHRoZSBtb2R1bGUgZnVuY3Rpb25cbiBcdFx0bW9kdWxlc1ttb2R1bGVJZF0uY2FsbChtb2R1bGUuZXhwb3J0cywgbW9kdWxlLCBtb2R1bGUuZXhwb3J0cywgX193ZWJwYWNrX3JlcXVpcmVfXyk7XG5cbiBcdFx0Ly8gRmxhZyB0aGUgbW9kdWxlIGFzIGxvYWRlZFxuIFx0XHRtb2R1bGUubCA9IHRydWU7XG5cbiBcdFx0Ly8gUmV0dXJuIHRoZSBleHBvcnRzIG9mIHRoZSBtb2R1bGVcbiBcdFx0cmV0dXJuIG1vZHVsZS5leHBvcnRzO1xuIFx0fVxuXG5cbiBcdC8vIGV4cG9zZSB0aGUgbW9kdWxlcyBvYmplY3QgKF9fd2VicGFja19tb2R1bGVzX18pXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm0gPSBtb2R1bGVzO1xuXG4gXHQvLyBleHBvc2UgdGhlIG1vZHVsZSBjYWNoZVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5jID0gaW5zdGFsbGVkTW9kdWxlcztcblxuIFx0Ly8gZGVmaW5lIGdldHRlciBmdW5jdGlvbiBmb3IgaGFybW9ueSBleHBvcnRzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLmQgPSBmdW5jdGlvbihleHBvcnRzLCBuYW1lLCBnZXR0ZXIpIHtcbiBcdFx0aWYoIV9fd2VicGFja19yZXF1aXJlX18ubyhleHBvcnRzLCBuYW1lKSkge1xuIFx0XHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCBuYW1lLCB7IGVudW1lcmFibGU6IHRydWUsIGdldDogZ2V0dGVyIH0pO1xuIFx0XHR9XG4gXHR9O1xuXG4gXHQvLyBkZWZpbmUgX19lc01vZHVsZSBvbiBleHBvcnRzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnIgPSBmdW5jdGlvbihleHBvcnRzKSB7XG4gXHRcdGlmKHR5cGVvZiBTeW1ib2wgIT09ICd1bmRlZmluZWQnICYmIFN5bWJvbC50b1N0cmluZ1RhZykge1xuIFx0XHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCBTeW1ib2wudG9TdHJpbmdUYWcsIHsgdmFsdWU6ICdNb2R1bGUnIH0pO1xuIFx0XHR9XG4gXHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCAnX19lc01vZHVsZScsIHsgdmFsdWU6IHRydWUgfSk7XG4gXHR9O1xuXG4gXHQvLyBjcmVhdGUgYSBmYWtlIG5hbWVzcGFjZSBvYmplY3RcbiBcdC8vIG1vZGUgJiAxOiB2YWx1ZSBpcyBhIG1vZHVsZSBpZCwgcmVxdWlyZSBpdFxuIFx0Ly8gbW9kZSAmIDI6IG1lcmdlIGFsbCBwcm9wZXJ0aWVzIG9mIHZhbHVlIGludG8gdGhlIG5zXG4gXHQvLyBtb2RlICYgNDogcmV0dXJuIHZhbHVlIHdoZW4gYWxyZWFkeSBucyBvYmplY3RcbiBcdC8vIG1vZGUgJiA4fDE6IGJlaGF2ZSBsaWtlIHJlcXVpcmVcbiBcdF9fd2VicGFja19yZXF1aXJlX18udCA9IGZ1bmN0aW9uKHZhbHVlLCBtb2RlKSB7XG4gXHRcdGlmKG1vZGUgJiAxKSB2YWx1ZSA9IF9fd2VicGFja19yZXF1aXJlX18odmFsdWUpO1xuIFx0XHRpZihtb2RlICYgOCkgcmV0dXJuIHZhbHVlO1xuIFx0XHRpZigobW9kZSAmIDQpICYmIHR5cGVvZiB2YWx1ZSA9PT0gJ29iamVjdCcgJiYgdmFsdWUgJiYgdmFsdWUuX19lc01vZHVsZSkgcmV0dXJuIHZhbHVlO1xuIFx0XHR2YXIgbnMgPSBPYmplY3QuY3JlYXRlKG51bGwpO1xuIFx0XHRfX3dlYnBhY2tfcmVxdWlyZV9fLnIobnMpO1xuIFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkobnMsICdkZWZhdWx0JywgeyBlbnVtZXJhYmxlOiB0cnVlLCB2YWx1ZTogdmFsdWUgfSk7XG4gXHRcdGlmKG1vZGUgJiAyICYmIHR5cGVvZiB2YWx1ZSAhPSAnc3RyaW5nJykgZm9yKHZhciBrZXkgaW4gdmFsdWUpIF9fd2VicGFja19yZXF1aXJlX18uZChucywga2V5LCBmdW5jdGlvbihrZXkpIHsgcmV0dXJuIHZhbHVlW2tleV07IH0uYmluZChudWxsLCBrZXkpKTtcbiBcdFx0cmV0dXJuIG5zO1xuIFx0fTtcblxuIFx0Ly8gZ2V0RGVmYXVsdEV4cG9ydCBmdW5jdGlvbiBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG5vbi1oYXJtb255IG1vZHVsZXNcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubiA9IGZ1bmN0aW9uKG1vZHVsZSkge1xuIFx0XHR2YXIgZ2V0dGVyID0gbW9kdWxlICYmIG1vZHVsZS5fX2VzTW9kdWxlID9cbiBcdFx0XHRmdW5jdGlvbiBnZXREZWZhdWx0KCkgeyByZXR1cm4gbW9kdWxlWydkZWZhdWx0J107IH0gOlxuIFx0XHRcdGZ1bmN0aW9uIGdldE1vZHVsZUV4cG9ydHMoKSB7IHJldHVybiBtb2R1bGU7IH07XG4gXHRcdF9fd2VicGFja19yZXF1aXJlX18uZChnZXR0ZXIsICdhJywgZ2V0dGVyKTtcbiBcdFx0cmV0dXJuIGdldHRlcjtcbiBcdH07XG5cbiBcdC8vIE9iamVjdC5wcm90b3R5cGUuaGFzT3duUHJvcGVydHkuY2FsbFxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5vID0gZnVuY3Rpb24ob2JqZWN0LCBwcm9wZXJ0eSkgeyByZXR1cm4gT2JqZWN0LnByb3RvdHlwZS5oYXNPd25Qcm9wZXJ0eS5jYWxsKG9iamVjdCwgcHJvcGVydHkpOyB9O1xuXG4gXHQvLyBfX3dlYnBhY2tfcHVibGljX3BhdGhfX1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5wID0gXCJcIjtcblxuXG4gXHQvLyBMb2FkIGVudHJ5IG1vZHVsZSBhbmQgcmV0dXJuIGV4cG9ydHNcbiBcdHJldHVybiBfX3dlYnBhY2tfcmVxdWlyZV9fKF9fd2VicGFja19yZXF1aXJlX18ucyA9IFwiLi9zcmMvZW1iZWRkZWQvaW5kZXgudHNcIik7XG4iLCIvKlxuICogQ29weXJpZ2h0IDIwMjEgUmVkIEhhdCwgSW5jLiBhbmQvb3IgaXRzIGFmZmlsaWF0ZXMuXG4gKlxuICogTGljZW5zZWQgdW5kZXIgdGhlIEFwYWNoZSBMaWNlbnNlLCBWZXJzaW9uIDIuMCAodGhlIFwiTGljZW5zZVwiKTtcbiAqIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS5cbiAqIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdFxuICpcbiAqICAgICAgICBodHRwOi8vd3d3LmFwYWNoZS5vcmcvbGljZW5zZXMvTElDRU5TRS0yLjBcbiAqXG4gKiBVbmxlc3MgcmVxdWlyZWQgYnkgYXBwbGljYWJsZSBsYXcgb3IgYWdyZWVkIHRvIGluIHdyaXRpbmcsIHNvZnR3YXJlXG4gKiBkaXN0cmlidXRlZCB1bmRlciB0aGUgTGljZW5zZSBpcyBkaXN0cmlidXRlZCBvbiBhbiBcIkFTIElTXCIgQkFTSVMsXG4gKiBXSVRIT1VUIFdBUlJBTlRJRVMgT1IgQ09ORElUSU9OUyBPRiBBTlkgS0lORCwgZWl0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC5cbiAqIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmRcbiAqIGxpbWl0YXRpb25zIHVuZGVyIHRoZSBMaWNlbnNlLlxuICovXG5cbmV4cG9ydCBlbnVtIENvbnRhaW5lclR5cGUge1xuICBESVYgPSBcImRpdlwiLCBJRlJBTUUgPSBcImlmcmFtZVwiXG59IiwiLypcbiAqIENvcHlyaWdodCAyMDIxIFJlZCBIYXQsIEluYy4gYW5kL29yIGl0cyBhZmZpbGlhdGVzLlxuICpcbiAqIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSBcIkxpY2Vuc2VcIik7XG4gKiB5b3UgbWF5IG5vdCB1c2UgdGhpcyBmaWxlIGV4Y2VwdCBpbiBjb21wbGlhbmNlIHdpdGggdGhlIExpY2Vuc2UuXG4gKiBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXRcbiAqXG4gKiAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wXG4gKlxuICogVW5sZXNzIHJlcXVpcmVkIGJ5IGFwcGxpY2FibGUgbGF3IG9yIGFncmVlZCB0byBpbiB3cml0aW5nLCBzb2Z0d2FyZVxuICogZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gXCJBUyBJU1wiIEJBU0lTLFxuICogV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuXG4gKiBTZWUgdGhlIExpY2Vuc2UgZm9yIHRoZSBzcGVjaWZpYyBsYW5ndWFnZSBnb3Zlcm5pbmcgcGVybWlzc2lvbnMgYW5kXG4gKiBsaW1pdGF0aW9ucyB1bmRlciB0aGUgTGljZW5zZS5cbiAqL1xuXG5leHBvcnQgKiBmcm9tIFwiLi9Db250YWluZXJUeXBlXCIiLCIvKlxuICogQ29weXJpZ2h0IDIwMjAgUmVkIEhhdCwgSW5jLiBhbmQvb3IgaXRzIGFmZmlsaWF0ZXMuXG4gKlxuICogTGljZW5zZWQgdW5kZXIgdGhlIEFwYWNoZSBMaWNlbnNlLCBWZXJzaW9uIDIuMCAodGhlIFwiTGljZW5zZVwiKTtcbiAqIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS5cbiAqIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdFxuICpcbiAqICAgICAgICBodHRwOi8vd3d3LmFwYWNoZS5vcmcvbGljZW5zZXMvTElDRU5TRS0yLjBcbiAqXG4gKiBVbmxlc3MgcmVxdWlyZWQgYnkgYXBwbGljYWJsZSBsYXcgb3IgYWdyZWVkIHRvIGluIHdyaXRpbmcsIHNvZnR3YXJlXG4gKiBkaXN0cmlidXRlZCB1bmRlciB0aGUgTGljZW5zZSBpcyBkaXN0cmlidXRlZCBvbiBhbiBcIkFTIElTXCIgQkFTSVMsXG4gKiBXSVRIT1VUIFdBUlJBTlRJRVMgT1IgQ09ORElUSU9OUyBPRiBBTlkgS0lORCwgZWl0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC5cbiAqIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmRcbiAqIGxpbWl0YXRpb25zIHVuZGVyIHRoZSBMaWNlbnNlLlxuICovXG5cbmltcG9ydCB7IEFwaURlZmluaXRpb24sIEVudmVsb3BlQnVzTWVzc2FnZSB9IGZyb20gXCJAa29naXRvLXRvb2xpbmcvZW52ZWxvcGUtYnVzL2Rpc3QvYXBpXCI7XG5pbXBvcnQgeyBFbnZlbG9wZVNlcnZlciwgRW52ZWxvcGVTZXJ2ZXJUeXBlIH0gZnJvbSBcIkBrb2dpdG8tdG9vbGluZy9lbnZlbG9wZS1idXMvZGlzdC9jaGFubmVsXCI7XG5pbXBvcnQgKiBhcyBSZWFjdCBmcm9tIFwicmVhY3RcIjtcbmltcG9ydCB7IHVzZUltcGVyYXRpdmVIYW5kbGUsIHVzZU1lbW8sIHVzZVJlZiB9IGZyb20gXCJyZWFjdFwiO1xuaW1wb3J0IHsgdXNlQ29ubmVjdGVkRW52ZWxvcGVTZXJ2ZXIgfSBmcm9tIFwiQGtvZ2l0by10b29saW5nL2VudmVsb3BlLWJ1cy9kaXN0L2hvb2tzXCI7XG5pbXBvcnQgKiBhcyBDU1MgZnJvbSBcImNzc3R5cGVcIjtcbmltcG9ydCB7IENvbnRhaW5lclR5cGUgfSBmcm9tIFwiLi4vYXBpXCI7XG5cbmNvbnN0IGNvbnRhaW5lclN0eWxlczogQ1NTLlByb3BlcnRpZXMgPSB7XG4gIGRpc3BsYXk6IFwiZmxleFwiLFxuICBmbGV4OiAxLFxuICBmbGV4RGlyZWN0aW9uOiBcImNvbHVtblwiLFxuICB3aWR0aDogXCIxMDAlXCIsXG4gIGhlaWdodDogXCIxMDAlXCIsXG4gIGJvcmRlcjogXCJub25lXCIsXG4gIG1hcmdpbjogMCxcbiAgcGFkZGluZzogMCxcbiAgb3ZlcmZsb3c6IFwiaGlkZGVuXCJcbn07XG5cbmV4cG9ydCBpbnRlcmZhY2UgRW52ZWxvcGVEaXZDb25maWcge1xuICBjb250YWluZXJUeXBlOiBDb250YWluZXJUeXBlLkRJVjtcbn1cblxuZXhwb3J0IGludGVyZmFjZSBFbnZlbG9wZUlGcmFtZUNvbmZpZyB7XG4gIGNvbnRhaW5lclR5cGU6IENvbnRhaW5lclR5cGUuSUZSQU1FO1xuICBlbnZlbG9wZVBhdGg6IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBQcm9wczxcbiAgQXBpVG9Qcm92aWRlIGV4dGVuZHMgQXBpRGVmaW5pdGlvbjxBcGlUb1Byb3ZpZGU+LFxuICBBcGlUb0NvbnN1bWUgZXh0ZW5kcyBBcGlEZWZpbml0aW9uPEFwaVRvQ29uc3VtZT4sXG4gIFJlZlxuPiB7XG4gIHJlZkRlbGVnYXRlOiAoZW52ZWxvcGVTZXJ2ZXI6IEVudmVsb3BlU2VydmVyPEFwaVRvUHJvdmlkZSwgQXBpVG9Db25zdW1lPikgPT4gUmVmO1xuICBhcGk6IEFwaVRvUHJvdmlkZTtcbiAgb3JpZ2luOiBzdHJpbmc7XG4gIHBvbGxJbml0OiAoXG4gICAgZW52ZWxvcGVTZXJ2ZXI6IEVudmVsb3BlU2VydmVyPEFwaVRvUHJvdmlkZSwgQXBpVG9Db25zdW1lPixcbiAgICBjb250YWluZXI6ICgpID0+IEhUTUxEaXZFbGVtZW50IHwgSFRNTElGcmFtZUVsZW1lbnRcbiAgKSA9PiBQcm9taXNlPGFueT47XG4gIGNvbmZpZzogRW52ZWxvcGVEaXZDb25maWcgfCBFbnZlbG9wZUlGcmFtZUNvbmZpZztcbn1cblxuZXhwb3J0IGZ1bmN0aW9uIEVtYmVkZGVkRW52ZWxvcGVGYWN0b3J5PFxuICBBcGlUb1Byb3ZpZGUgZXh0ZW5kcyBBcGlEZWZpbml0aW9uPEFwaVRvUHJvdmlkZT4sXG4gIEFwaVRvQ29uc3VtZSBleHRlbmRzIEFwaURlZmluaXRpb248QXBpVG9Db25zdW1lPixcbiAgUmVmXG4+KHByb3BzOiBQcm9wczxBcGlUb1Byb3ZpZGUsIEFwaVRvQ29uc3VtZSwgUmVmPikge1xuICByZXR1cm4gUmVhY3QuZm9yd2FyZFJlZigoXywgZm9yd2FyZFJlZikgPT4ge1xuICAgIGNvbnN0IGlmcmFtZVJlZiA9IHVzZVJlZjxIVE1MSUZyYW1lRWxlbWVudD4obnVsbCk7XG4gICAgY29uc3QgZGl2UmVmID0gdXNlUmVmPEhUTUxEaXZFbGVtZW50PihudWxsKTtcblxuICAgIGNvbnN0IGJ1cyA9IHVzZU1lbW8oXG4gICAgICAoKSA9PiAoe1xuICAgICAgICBwb3N0TWVzc2FnZTxELCBUPihtZXNzYWdlOiBFbnZlbG9wZUJ1c01lc3NhZ2U8RCwgVD4pIHtcbiAgICAgICAgICBpZiAocHJvcHMuY29uZmlnLmNvbnRhaW5lclR5cGUgPT09IENvbnRhaW5lclR5cGUuRElWKSB7XG4gICAgICAgICAgICB3aW5kb3cucG9zdE1lc3NhZ2UobWVzc2FnZSwgXCIqXCIpO1xuICAgICAgICAgIH0gZWxzZSB7XG4gICAgICAgICAgICBpZnJhbWVSZWYuY3VycmVudD8uY29udGVudFdpbmRvdz8ucG9zdE1lc3NhZ2UobWVzc2FnZSwgXCIqXCIpO1xuICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgfSksXG4gICAgICBbXVxuICAgICk7XG5cbiAgICBjb25zdCBlbnZlbG9wZVNlcnZlciA9IHVzZU1lbW8oXG4gICAgICAoKSA9PlxuICAgICAgICBuZXcgRW52ZWxvcGVTZXJ2ZXI8QXBpVG9Qcm92aWRlLCBBcGlUb0NvbnN1bWU+KGJ1cywgcHJvcHMub3JpZ2luLCBzZWxmID0+XG4gICAgICAgICAgcHJvcHMucG9sbEluaXQoc2VsZiwgKCkgPT5cbiAgICAgICAgICAgIHByb3BzLmNvbmZpZy5jb250YWluZXJUeXBlID09PSBDb250YWluZXJUeXBlLkRJViA/IGRpdlJlZi5jdXJyZW50ISA6IGlmcmFtZVJlZi5jdXJyZW50IVxuICAgICAgICAgICksXG4gICAgICAgICAgcHJvcHMuY29uZmlnLmNvbnRhaW5lclR5cGUgPT09IENvbnRhaW5lclR5cGUuRElWID8gRW52ZWxvcGVTZXJ2ZXJUeXBlLkxPQ0FMIDogRW52ZWxvcGVTZXJ2ZXJUeXBlLlJFTU9URVxuICAgICAgICApLFxuICAgICAgW2J1cywgcHJvcHMub3JpZ2luLCBwcm9wcy5wb2xsSW5pdF1cbiAgICApO1xuXG4gICAgdXNlSW1wZXJhdGl2ZUhhbmRsZShcbiAgICAgIGZvcndhcmRSZWYsXG4gICAgICAoKSA9PiB7XG4gICAgICAgIHJldHVybiBwcm9wcy5yZWZEZWxlZ2F0ZShlbnZlbG9wZVNlcnZlcik7XG4gICAgICB9LFxuICAgICAgW3Byb3BzLnJlZkRlbGVnYXRlXVxuICAgICk7XG5cbiAgICB1c2VDb25uZWN0ZWRFbnZlbG9wZVNlcnZlcjxBcGlUb1Byb3ZpZGU+KGVudmVsb3BlU2VydmVyLCBwcm9wcy5hcGkpO1xuXG4gICAgaWYgKHByb3BzLmNvbmZpZy5jb250YWluZXJUeXBlID09PSBDb250YWluZXJUeXBlLkRJVikge1xuICAgICAgcmV0dXJuIDxkaXYgcmVmPXtkaXZSZWZ9IC8+O1xuICAgIH1cblxuICAgIHJldHVybiA8aWZyYW1lIHJlZj17aWZyYW1lUmVmfSBzcmM9e3Byb3BzLmNvbmZpZy5lbnZlbG9wZVBhdGh9IHN0eWxlPXtjb250YWluZXJTdHlsZXN9IHRpdGxlPVwiWFwiIC8+O1xuICB9KTtcbn1cbiIsIi8qXG4gKiBDb3B5cmlnaHQgMjAyMCBSZWQgSGF0LCBJbmMuIGFuZC9vciBpdHMgYWZmaWxpYXRlcy5cbiAqXG4gKiBMaWNlbnNlZCB1bmRlciB0aGUgQXBhY2hlIExpY2Vuc2UsIFZlcnNpb24gMi4wICh0aGUgXCJMaWNlbnNlXCIpO1xuICogeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLlxuICogWW91IG1heSBvYnRhaW4gYSBjb3B5IG9mIHRoZSBMaWNlbnNlIGF0XG4gKlxuICogICAgICAgIGh0dHA6Ly93d3cuYXBhY2hlLm9yZy9saWNlbnNlcy9MSUNFTlNFLTIuMFxuICpcbiAqIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmVcbiAqIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSBMaWNlbnNlIGlzIGRpc3RyaWJ1dGVkIG9uIGFuIFwiQVMgSVNcIiBCQVNJUyxcbiAqIFdJVEhPVVQgV0FSUkFOVElFUyBPUiBDT05ESVRJT05TIE9GIEFOWSBLSU5ELCBlaXRoZXIgZXhwcmVzcyBvciBpbXBsaWVkLlxuICogU2VlIHRoZSBMaWNlbnNlIGZvciB0aGUgc3BlY2lmaWMgbGFuZ3VhZ2UgZ292ZXJuaW5nIHBlcm1pc3Npb25zIGFuZFxuICogbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuXG4gKi9cblxuZXhwb3J0ICogZnJvbSBcIi4vRW1iZWRkZWRFbnZlbG9wZUZhY3RvcnlcIjtcbiIsIm1vZHVsZS5leHBvcnRzID0gcmVxdWlyZShcIkBrb2dpdG8tdG9vbGluZy9lbnZlbG9wZS1idXMvZGlzdC9jaGFubmVsXCIpOyIsIm1vZHVsZS5leHBvcnRzID0gcmVxdWlyZShcIkBrb2dpdG8tdG9vbGluZy9lbnZlbG9wZS1idXMvZGlzdC9ob29rc1wiKTsiLCJtb2R1bGUuZXhwb3J0cyA9IHJlcXVpcmUoXCJyZWFjdFwiKTsiXSwic291cmNlUm9vdCI6IiJ9
+\ No newline at end of file
+diff --git a/node_modules/@kogito-tooling/envelope/dist/index.js b/node_modules/@kogito-tooling/envelope/dist/index.js
+index d988430..0bfd7c0 100644
+--- a/node_modules/@kogito-tooling/envelope/dist/index.js
++++ b/node_modules/@kogito-tooling/envelope/dist/index.js
+@@ -1 +1,304 @@
+-module.exports=function(e){var n={};function t(r){if(n[r])return n[r].exports;var o=n[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,t),o.l=!0,o.exports}return t.m=e,t.c=n,t.d=function(e,n,r){t.o(e,n)||Object.defineProperty(e,n,{enumerable:!0,get:r})},t.r=function(e){"undefined"!=typeof Symbol&&Symbol.toStringTag&&Object.defineProperty(e,Symbol.toStringTag,{value:"Module"}),Object.defineProperty(e,"__esModule",{value:!0})},t.t=function(e,n){if(1&n&&(e=t(e)),8&n)return e;if(4&n&&"object"==typeof e&&e&&e.__esModule)return e;var r=Object.create(null);if(t.r(r),Object.defineProperty(r,"default",{enumerable:!0,value:e}),2&n&&"string"!=typeof e)for(var o in e)t.d(r,o,function(n){return e[n]}.bind(null,o));return r},t.n=function(e){var n=e&&e.__esModule?function(){return e.default}:function(){return e};return t.d(n,"a",n),n},t.o=function(e,n){return Object.prototype.hasOwnProperty.call(e,n)},t.p="",t(t.s=3)}([function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){for(var t in e)n.hasOwnProperty(t)||(n[t]=e[t])}(t(1))},function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){e.DIV="div",e.IFRAME="iframe"}(n.ContainerType||(n.ContainerType={}))},,function(e,n,t){"use strict";Object.defineProperty(n,"__esModule",{value:!0}),function(e){for(var t in e)n.hasOwnProperty(t)||(n[t]=e[t])}(t(4))},function(e,n,t){"use strict";var r=this&&this.__awaiter||function(e,n,t,r){return new(t||(t=Promise))((function(o,i){function u(e){try{a(r.next(e))}catch(e){i(e)}}function l(e){try{a(r.throw(e))}catch(e){i(e)}}function a(e){var n;e.done?o(e.value):(n=e.value,n instanceof t?n:new t((function(e){e(n)}))).then(u,l)}a((r=r.apply(e,n||[])).next())}))},o=this&&this.__generator||function(e,n){var t,r,o,i,u={label:0,sent:function(){if(1&o[0])throw o[1];return o[1]},trys:[],ops:[]};return i={next:l(0),throw:l(1),return:l(2)},"function"==typeof Symbol&&(i[Symbol.iterator]=function(){return this}),i;function l(i){return function(l){return function(i){if(t)throw new TypeError("Generator is already executing.");for(;u;)try{if(t=1,r&&(o=2&i[0]?r.return:i[0]?r.throw||((o=r.return)&&o.call(r),0):r.next)&&!(o=o.call(r,i[1])).done)return o;switch(r=0,o&&(i=[2&i[0],o.value]),i[0]){case 0:case 1:o=i;break;case 4:return u.label++,{value:i[1],done:!1};case 5:u.label++,r=i[1],i=[0];continue;case 7:i=u.ops.pop(),u.trys.pop();continue;default:if(!(o=u.trys,(o=o.length>0&&o[o.length-1])||6!==i[0]&&2!==i[0])){u=0;continue}if(3===i[0]&&(!o||i[1]>o[0]&&i[1]<o[3])){u.label=i[1];break}if(6===i[0]&&u.label<o[1]){u.label=o[1],o=i;break}if(o&&u.label<o[2]){u.label=o[2],u.ops.push(i);break}o[2]&&u.ops.pop(),u.trys.pop();continue}i=n.call(e,u)}catch(e){i=[6,e],r=0}finally{t=o=0}if(5&i[0])throw i[1];return{value:i[0]?i[1]:void 0,done:!0}}([i,l])}}};Object.defineProperty(n,"__esModule",{value:!0});var i=t(5),u=t(0),l=function(){function e(e,n,t){void 0===n&&(n={containerType:u.ContainerType.IFRAME}),void 0===t&&(t=new i.EnvelopeBusController(e,n.containerType===u.ContainerType.DIV?n.envelopeId:void 0)),this.envelopeBusController=t}return Object.defineProperty(e.prototype,"channelApi",{get:function(){return this.envelopeBusController.channelApi},enumerable:!0,configurable:!0}),e.prototype.start=function(e,n,t){return r(this,void 0,void 0,(function(){var r,i;return o(this,(function(o){switch(o.label){case 0:return[4,e()];case 1:return r=o.sent(),i=t.create({view:r,envelopeContext:n,envelopeBusController:this.envelopeBusController}),this.envelopeBusController.startListening(i),[2,this.envelopeBusController]}}))}))},e}();n.Envelope=l},function(e,n){e.exports=require("@kogito-tooling/envelope-bus/dist/envelope")}]);
+\ No newline at end of file
++module.exports =
++/******/ (function(modules) { // webpackBootstrap
++/******/ 	// The module cache
++/******/ 	var installedModules = {};
++/******/
++/******/ 	// The require function
++/******/ 	function __webpack_require__(moduleId) {
++/******/
++/******/ 		// Check if module is in cache
++/******/ 		if(installedModules[moduleId]) {
++/******/ 			return installedModules[moduleId].exports;
++/******/ 		}
++/******/ 		// Create a new module (and put it into the cache)
++/******/ 		var module = installedModules[moduleId] = {
++/******/ 			i: moduleId,
++/******/ 			l: false,
++/******/ 			exports: {}
++/******/ 		};
++/******/
++/******/ 		// Execute the module function
++/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
++/******/
++/******/ 		// Flag the module as loaded
++/******/ 		module.l = true;
++/******/
++/******/ 		// Return the exports of the module
++/******/ 		return module.exports;
++/******/ 	}
++/******/
++/******/
++/******/ 	// expose the modules object (__webpack_modules__)
++/******/ 	__webpack_require__.m = modules;
++/******/
++/******/ 	// expose the module cache
++/******/ 	__webpack_require__.c = installedModules;
++/******/
++/******/ 	// define getter function for harmony exports
++/******/ 	__webpack_require__.d = function(exports, name, getter) {
++/******/ 		if(!__webpack_require__.o(exports, name)) {
++/******/ 			Object.defineProperty(exports, name, { enumerable: true, get: getter });
++/******/ 		}
++/******/ 	};
++/******/
++/******/ 	// define __esModule on exports
++/******/ 	__webpack_require__.r = function(exports) {
++/******/ 		if(typeof Symbol !== 'undefined' && Symbol.toStringTag) {
++/******/ 			Object.defineProperty(exports, Symbol.toStringTag, { value: 'Module' });
++/******/ 		}
++/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
++/******/ 	};
++/******/
++/******/ 	// create a fake namespace object
++/******/ 	// mode & 1: value is a module id, require it
++/******/ 	// mode & 2: merge all properties of value into the ns
++/******/ 	// mode & 4: return value when already ns object
++/******/ 	// mode & 8|1: behave like require
++/******/ 	__webpack_require__.t = function(value, mode) {
++/******/ 		if(mode & 1) value = __webpack_require__(value);
++/******/ 		if(mode & 8) return value;
++/******/ 		if((mode & 4) && typeof value === 'object' && value && value.__esModule) return value;
++/******/ 		var ns = Object.create(null);
++/******/ 		__webpack_require__.r(ns);
++/******/ 		Object.defineProperty(ns, 'default', { enumerable: true, value: value });
++/******/ 		if(mode & 2 && typeof value != 'string') for(var key in value) __webpack_require__.d(ns, key, function(key) { return value[key]; }.bind(null, key));
++/******/ 		return ns;
++/******/ 	};
++/******/
++/******/ 	// getDefaultExport function for compatibility with non-harmony modules
++/******/ 	__webpack_require__.n = function(module) {
++/******/ 		var getter = module && module.__esModule ?
++/******/ 			function getDefault() { return module['default']; } :
++/******/ 			function getModuleExports() { return module; };
++/******/ 		__webpack_require__.d(getter, 'a', getter);
++/******/ 		return getter;
++/******/ 	};
++/******/
++/******/ 	// Object.prototype.hasOwnProperty.call
++/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
++/******/
++/******/ 	// __webpack_public_path__
++/******/ 	__webpack_require__.p = "";
++/******/
++/******/
++/******/ 	// Load entry module and return exports
++/******/ 	return __webpack_require__(__webpack_require__.s = "./src/index.ts");
++/******/ })
++/************************************************************************/
++/******/ ({
++
++/***/ "./src/Envelope.ts":
++/*!*************************!*\
++  !*** ./src/Envelope.ts ***!
++  \*************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
++    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
++    return new (P || (P = Promise))(function (resolve, reject) {
++        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
++        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
++        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
++        step((generator = generator.apply(thisArg, _arguments || [])).next());
++    });
++};
++var __generator = (this && this.__generator) || function (thisArg, body) {
++    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
++    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
++    function verb(n) { return function (v) { return step([n, v]); }; }
++    function step(op) {
++        if (f) throw new TypeError("Generator is already executing.");
++        while (_) try {
++            if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
++            if (y = 0, t) op = [op[0] & 2, t.value];
++            switch (op[0]) {
++                case 0: case 1: t = op; break;
++                case 4: _.label++; return { value: op[1], done: false };
++                case 5: _.label++; y = op[1]; op = [0]; continue;
++                case 7: op = _.ops.pop(); _.trys.pop(); continue;
++                default:
++                    if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) { _ = 0; continue; }
++                    if (op[0] === 3 && (!t || (op[1] > t[0] && op[1] < t[3]))) { _.label = op[1]; break; }
++                    if (op[0] === 6 && _.label < t[1]) { _.label = t[1]; t = op; break; }
++                    if (t && _.label < t[2]) { _.label = t[2]; _.ops.push(op); break; }
++                    if (t[2]) _.ops.pop();
++                    _.trys.pop(); continue;
++            }
++            op = body.call(thisArg, _);
++        } catch (e) { op = [6, e]; y = 0; } finally { f = t = 0; }
++        if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
++    }
++};
++Object.defineProperty(exports, "__esModule", { value: true });
++var envelope_1 = __webpack_require__(/*! @kogito-tooling/envelope-bus/dist/envelope */ "@kogito-tooling/envelope-bus/dist/envelope");
++var api_1 = __webpack_require__(/*! ./api */ "./src/api/index.ts");
++var Envelope = /** @class */ (function () {
++    function Envelope(bus, config, envelopeBusController) {
++        if (config === void 0) { config = { containerType: api_1.ContainerType.IFRAME }; }
++        if (envelopeBusController === void 0) { envelopeBusController = new envelope_1.EnvelopeBusController(bus, config.containerType === api_1.ContainerType.DIV ? config.envelopeId : undefined); }
++        this.envelopeBusController = envelopeBusController;
++    }
++    Object.defineProperty(Envelope.prototype, "channelApi", {
++        get: function () {
++            return this.envelopeBusController.channelApi;
++        },
++        enumerable: true,
++        configurable: true
++    });
++    Envelope.prototype.start = function (viewDelegate, context, apiFactory) {
++        return __awaiter(this, void 0, void 0, function () {
++            var view, api;
++            return __generator(this, function (_a) {
++                switch (_a.label) {
++                    case 0: return [4 /*yield*/, viewDelegate()];
++                    case 1:
++                        view = _a.sent();
++                        api = apiFactory.create({
++                            view: view,
++                            envelopeContext: context,
++                            envelopeBusController: this.envelopeBusController
++                        });
++                        this.envelopeBusController.startListening(api);
++                        return [2 /*return*/, this.envelopeBusController];
++                }
++            });
++        });
++    };
++    return Envelope;
++}());
++exports.Envelope = Envelope;
++
++
++/***/ }),
++
++/***/ "./src/api/ContainerType.ts":
++/*!**********************************!*\
++  !*** ./src/api/ContainerType.ts ***!
++  \**********************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++Object.defineProperty(exports, "__esModule", { value: true });
++var ContainerType;
++(function (ContainerType) {
++    ContainerType["DIV"] = "div";
++    ContainerType["IFRAME"] = "iframe";
++})(ContainerType = exports.ContainerType || (exports.ContainerType = {}));
++
++
++/***/ }),
++
++/***/ "./src/api/index.ts":
++/*!**************************!*\
++  !*** ./src/api/index.ts ***!
++  \**************************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++function __export(m) {
++    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
++}
++Object.defineProperty(exports, "__esModule", { value: true });
++__export(__webpack_require__(/*! ./ContainerType */ "./src/api/ContainerType.ts"));
++
++
++/***/ }),
++
++/***/ "./src/index.ts":
++/*!**********************!*\
++  !*** ./src/index.ts ***!
++  \**********************/
++/*! no static exports found */
++/***/ (function(module, exports, __webpack_require__) {
++
++"use strict";
++
++/*
++ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
++ *
++ * Licensed under the Apache License, Version 2.0 (the "License");
++ * you may not use this file except in compliance with the License.
++ * You may obtain a copy of the License at
++ *
++ *        http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing, software
++ * distributed under the License is distributed on an "AS IS" BASIS,
++ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++ * See the License for the specific language governing permissions and
++ * limitations under the License.
++ */
++function __export(m) {
++    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
++}
++Object.defineProperty(exports, "__esModule", { value: true });
++__export(__webpack_require__(/*! ./Envelope */ "./src/Envelope.ts"));
++
++
++/***/ }),
++
++/***/ "@kogito-tooling/envelope-bus/dist/envelope":
++/*!*************************************************************!*\
++  !*** external "@kogito-tooling/envelope-bus/dist/envelope" ***!
++  \*************************************************************/
++/*! no static exports found */
++/***/ (function(module, exports) {
++
++module.exports = require("@kogito-tooling/envelope-bus/dist/envelope");
++
++/***/ })
++
++/******/ });
++//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly8vd2VicGFjay9ib290c3RyYXAiLCJ3ZWJwYWNrOi8vLy4vc3JjL0VudmVsb3BlLnRzIiwid2VicGFjazovLy8uL3NyYy9hcGkvQ29udGFpbmVyVHlwZS50cyIsIndlYnBhY2s6Ly8vLi9zcmMvYXBpL2luZGV4LnRzIiwid2VicGFjazovLy8uL3NyYy9pbmRleC50cyIsIndlYnBhY2s6Ly8vZXh0ZXJuYWwgXCJAa29naXRvLXRvb2xpbmcvZW52ZWxvcGUtYnVzL2Rpc3QvZW52ZWxvcGVcIiJdLCJuYW1lcyI6W10sIm1hcHBpbmdzIjoiOztRQUFBO1FBQ0E7O1FBRUE7UUFDQTs7UUFFQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTs7UUFFQTtRQUNBOztRQUVBO1FBQ0E7O1FBRUE7UUFDQTtRQUNBOzs7UUFHQTtRQUNBOztRQUVBO1FBQ0E7O1FBRUE7UUFDQTtRQUNBO1FBQ0EsMENBQTBDLGdDQUFnQztRQUMxRTtRQUNBOztRQUVBO1FBQ0E7UUFDQTtRQUNBLHdEQUF3RCxrQkFBa0I7UUFDMUU7UUFDQSxpREFBaUQsY0FBYztRQUMvRDs7UUFFQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0E7UUFDQTtRQUNBO1FBQ0EseUNBQXlDLGlDQUFpQztRQUMxRSxnSEFBZ0gsbUJBQW1CLEVBQUU7UUFDckk7UUFDQTs7UUFFQTtRQUNBO1FBQ0E7UUFDQSwyQkFBMkIsMEJBQTBCLEVBQUU7UUFDdkQsaUNBQWlDLGVBQWU7UUFDaEQ7UUFDQTtRQUNBOztRQUVBO1FBQ0Esc0RBQXNELCtEQUErRDs7UUFFckg7UUFDQTs7O1FBR0E7UUFDQTs7Ozs7Ozs7Ozs7Ozs7QUNsRkE7Ozs7Ozs7Ozs7Ozs7O0dBY0c7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7Ozs7O0FBR0gscUlBQW1GO0FBRW5GLG1FQUFzQztBQVd0QztJQUlFLGtCQUNFLEdBQWdCLEVBQ2hCLE1BQTBGLEVBQ3pFLHFCQUU0RDtRQUg3RSxvQ0FBcUQsYUFBYSxFQUFFLG1CQUFhLENBQUMsTUFBTSxFQUFFO1FBQ3pFLG9FQUE0QixnQ0FBcUIsQ0FDaEUsR0FBRyxFQUNILE1BQU0sQ0FBQyxhQUFhLEtBQUssbUJBQWEsQ0FBQyxHQUFHLENBQUMsQ0FBQyxDQUFDLE1BQU0sQ0FBQyxVQUFVLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQztRQUY1RCwwQkFBcUIsR0FBckIscUJBQXFCLENBRXVDO0lBRS9FLENBQUM7SUFFRCxzQkFBVyxnQ0FBVTthQUFyQjtZQUNFLE9BQU8sSUFBSSxDQUFDLHFCQUFxQixDQUFDLFVBQVUsQ0FBQztRQUMvQyxDQUFDOzs7T0FBQTtJQUVZLHdCQUFLLEdBQWxCLFVBQ0UsWUFBMkMsRUFDM0MsT0FBb0IsRUFDcEIsVUFBaUY7Ozs7OzRCQUVwRSxxQkFBTSxZQUFZLEVBQUU7O3dCQUEzQixJQUFJLEdBQUcsU0FBb0I7d0JBRTNCLEdBQUcsR0FBRyxVQUFVLENBQUMsTUFBTSxDQUFDOzRCQUM1QixJQUFJLEVBQUUsSUFBSTs0QkFDVixlQUFlLEVBQUUsT0FBTzs0QkFDeEIscUJBQXFCLEVBQUUsSUFBSSxDQUFDLHFCQUFxQjt5QkFDbEQsQ0FBQyxDQUFDO3dCQUVILElBQUksQ0FBQyxxQkFBcUIsQ0FBQyxjQUFjLENBQUMsR0FBRyxDQUFDLENBQUM7d0JBQy9DLHNCQUFPLElBQUksQ0FBQyxxQkFBcUIsRUFBQzs7OztLQUNuQztJQUNILGVBQUM7QUFBRCxDQUFDO0FBakNZLDRCQUFROzs7Ozs7Ozs7Ozs7OztBQzlCckI7Ozs7Ozs7Ozs7Ozs7O0dBY0c7O0FBRUgsSUFBWSxhQUVYO0FBRkQsV0FBWSxhQUFhO0lBQ3ZCLDRCQUFXO0lBQUUsa0NBQWlCO0FBQ2hDLENBQUMsRUFGVyxhQUFhLEdBQWIscUJBQWEsS0FBYixxQkFBYSxRQUV4Qjs7Ozs7Ozs7Ozs7Ozs7QUNsQkQ7Ozs7Ozs7Ozs7Ozs7O0dBY0c7Ozs7O0FBRUgsbUZBQStCOzs7Ozs7Ozs7Ozs7OztBQ2hCL0I7Ozs7Ozs7Ozs7Ozs7O0dBY0c7Ozs7O0FBRUgscUVBQTJCOzs7Ozs7Ozs7Ozs7QUNoQjNCLHVFIiwiZmlsZSI6ImluZGV4LmpzIiwic291cmNlc0NvbnRlbnQiOlsiIFx0Ly8gVGhlIG1vZHVsZSBjYWNoZVxuIFx0dmFyIGluc3RhbGxlZE1vZHVsZXMgPSB7fTtcblxuIFx0Ly8gVGhlIHJlcXVpcmUgZnVuY3Rpb25cbiBcdGZ1bmN0aW9uIF9fd2VicGFja19yZXF1aXJlX18obW9kdWxlSWQpIHtcblxuIFx0XHQvLyBDaGVjayBpZiBtb2R1bGUgaXMgaW4gY2FjaGVcbiBcdFx0aWYoaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0pIHtcbiBcdFx0XHRyZXR1cm4gaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0uZXhwb3J0cztcbiBcdFx0fVxuIFx0XHQvLyBDcmVhdGUgYSBuZXcgbW9kdWxlIChhbmQgcHV0IGl0IGludG8gdGhlIGNhY2hlKVxuIFx0XHR2YXIgbW9kdWxlID0gaW5zdGFsbGVkTW9kdWxlc1ttb2R1bGVJZF0gPSB7XG4gXHRcdFx0aTogbW9kdWxlSWQsXG4gXHRcdFx0bDogZmFsc2UsXG4gXHRcdFx0ZXhwb3J0czoge31cbiBcdFx0fTtcblxuIFx0XHQvLyBFeGVjdXRlIHRoZSBtb2R1bGUgZnVuY3Rpb25cbiBcdFx0bW9kdWxlc1ttb2R1bGVJZF0uY2FsbChtb2R1bGUuZXhwb3J0cywgbW9kdWxlLCBtb2R1bGUuZXhwb3J0cywgX193ZWJwYWNrX3JlcXVpcmVfXyk7XG5cbiBcdFx0Ly8gRmxhZyB0aGUgbW9kdWxlIGFzIGxvYWRlZFxuIFx0XHRtb2R1bGUubCA9IHRydWU7XG5cbiBcdFx0Ly8gUmV0dXJuIHRoZSBleHBvcnRzIG9mIHRoZSBtb2R1bGVcbiBcdFx0cmV0dXJuIG1vZHVsZS5leHBvcnRzO1xuIFx0fVxuXG5cbiBcdC8vIGV4cG9zZSB0aGUgbW9kdWxlcyBvYmplY3QgKF9fd2VicGFja19tb2R1bGVzX18pXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLm0gPSBtb2R1bGVzO1xuXG4gXHQvLyBleHBvc2UgdGhlIG1vZHVsZSBjYWNoZVxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5jID0gaW5zdGFsbGVkTW9kdWxlcztcblxuIFx0Ly8gZGVmaW5lIGdldHRlciBmdW5jdGlvbiBmb3IgaGFybW9ueSBleHBvcnRzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLmQgPSBmdW5jdGlvbihleHBvcnRzLCBuYW1lLCBnZXR0ZXIpIHtcbiBcdFx0aWYoIV9fd2VicGFja19yZXF1aXJlX18ubyhleHBvcnRzLCBuYW1lKSkge1xuIFx0XHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCBuYW1lLCB7IGVudW1lcmFibGU6IHRydWUsIGdldDogZ2V0dGVyIH0pO1xuIFx0XHR9XG4gXHR9O1xuXG4gXHQvLyBkZWZpbmUgX19lc01vZHVsZSBvbiBleHBvcnRzXG4gXHRfX3dlYnBhY2tfcmVxdWlyZV9fLnIgPSBmdW5jdGlvbihleHBvcnRzKSB7XG4gXHRcdGlmKHR5cGVvZiBTeW1ib2wgIT09ICd1bmRlZmluZWQnICYmIFN5bWJvbC50b1N0cmluZ1RhZykge1xuIFx0XHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCBTeW1ib2wudG9TdHJpbmdUYWcsIHsgdmFsdWU6ICdNb2R1bGUnIH0pO1xuIFx0XHR9XG4gXHRcdE9iamVjdC5kZWZpbmVQcm9wZXJ0eShleHBvcnRzLCAnX19lc01vZHVsZScsIHsgdmFsdWU6IHRydWUgfSk7XG4gXHR9O1xuXG4gXHQvLyBjcmVhdGUgYSBmYWtlIG5hbWVzcGFjZSBvYmplY3RcbiBcdC8vIG1vZGUgJiAxOiB2YWx1ZSBpcyBhIG1vZHVsZSBpZCwgcmVxdWlyZSBpdFxuIFx0Ly8gbW9kZSAmIDI6IG1lcmdlIGFsbCBwcm9wZXJ0aWVzIG9mIHZhbHVlIGludG8gdGhlIG5zXG4gXHQvLyBtb2RlICYgNDogcmV0dXJuIHZhbHVlIHdoZW4gYWxyZWFkeSBucyBvYmplY3RcbiBcdC8vIG1vZGUgJiA4fDE6IGJlaGF2ZSBsaWtlIHJlcXVpcmVcbiBcdF9fd2VicGFja19yZXF1aXJlX18udCA9IGZ1bmN0aW9uKHZhbHVlLCBtb2RlKSB7XG4gXHRcdGlmKG1vZGUgJiAxKSB2YWx1ZSA9IF9fd2VicGFja19yZXF1aXJlX18odmFsdWUpO1xuIFx0XHRpZihtb2RlICYgOCkgcmV0dXJuIHZhbHVlO1xuIFx0XHRpZigobW9kZSAmIDQpICYmIHR5cGVvZiB2YWx1ZSA9PT0gJ29iamVjdCcgJiYgdmFsdWUgJiYgdmFsdWUuX19lc01vZHVsZSkgcmV0dXJuIHZhbHVlO1xuIFx0XHR2YXIgbnMgPSBPYmplY3QuY3JlYXRlKG51bGwpO1xuIFx0XHRfX3dlYnBhY2tfcmVxdWlyZV9fLnIobnMpO1xuIFx0XHRPYmplY3QuZGVmaW5lUHJvcGVydHkobnMsICdkZWZhdWx0JywgeyBlbnVtZXJhYmxlOiB0cnVlLCB2YWx1ZTogdmFsdWUgfSk7XG4gXHRcdGlmKG1vZGUgJiAyICYmIHR5cGVvZiB2YWx1ZSAhPSAnc3RyaW5nJykgZm9yKHZhciBrZXkgaW4gdmFsdWUpIF9fd2VicGFja19yZXF1aXJlX18uZChucywga2V5LCBmdW5jdGlvbihrZXkpIHsgcmV0dXJuIHZhbHVlW2tleV07IH0uYmluZChudWxsLCBrZXkpKTtcbiBcdFx0cmV0dXJuIG5zO1xuIFx0fTtcblxuIFx0Ly8gZ2V0RGVmYXVsdEV4cG9ydCBmdW5jdGlvbiBmb3IgY29tcGF0aWJpbGl0eSB3aXRoIG5vbi1oYXJtb255IG1vZHVsZXNcbiBcdF9fd2VicGFja19yZXF1aXJlX18ubiA9IGZ1bmN0aW9uKG1vZHVsZSkge1xuIFx0XHR2YXIgZ2V0dGVyID0gbW9kdWxlICYmIG1vZHVsZS5fX2VzTW9kdWxlID9cbiBcdFx0XHRmdW5jdGlvbiBnZXREZWZhdWx0KCkgeyByZXR1cm4gbW9kdWxlWydkZWZhdWx0J107IH0gOlxuIFx0XHRcdGZ1bmN0aW9uIGdldE1vZHVsZUV4cG9ydHMoKSB7IHJldHVybiBtb2R1bGU7IH07XG4gXHRcdF9fd2VicGFja19yZXF1aXJlX18uZChnZXR0ZXIsICdhJywgZ2V0dGVyKTtcbiBcdFx0cmV0dXJuIGdldHRlcjtcbiBcdH07XG5cbiBcdC8vIE9iamVjdC5wcm90b3R5cGUuaGFzT3duUHJvcGVydHkuY2FsbFxuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5vID0gZnVuY3Rpb24ob2JqZWN0LCBwcm9wZXJ0eSkgeyByZXR1cm4gT2JqZWN0LnByb3RvdHlwZS5oYXNPd25Qcm9wZXJ0eS5jYWxsKG9iamVjdCwgcHJvcGVydHkpOyB9O1xuXG4gXHQvLyBfX3dlYnBhY2tfcHVibGljX3BhdGhfX1xuIFx0X193ZWJwYWNrX3JlcXVpcmVfXy5wID0gXCJcIjtcblxuXG4gXHQvLyBMb2FkIGVudHJ5IG1vZHVsZSBhbmQgcmV0dXJuIGV4cG9ydHNcbiBcdHJldHVybiBfX3dlYnBhY2tfcmVxdWlyZV9fKF9fd2VicGFja19yZXF1aXJlX18ucyA9IFwiLi9zcmMvaW5kZXgudHNcIik7XG4iLCIvKlxuICogQ29weXJpZ2h0IDIwMjAgUmVkIEhhdCwgSW5jLiBhbmQvb3IgaXRzIGFmZmlsaWF0ZXMuXG4gKlxuICogTGljZW5zZWQgdW5kZXIgdGhlIEFwYWNoZSBMaWNlbnNlLCBWZXJzaW9uIDIuMCAodGhlIFwiTGljZW5zZVwiKTtcbiAqIHlvdSBtYXkgbm90IHVzZSB0aGlzIGZpbGUgZXhjZXB0IGluIGNvbXBsaWFuY2Ugd2l0aCB0aGUgTGljZW5zZS5cbiAqIFlvdSBtYXkgb2J0YWluIGEgY29weSBvZiB0aGUgTGljZW5zZSBhdFxuICpcbiAqICAgICAgICBodHRwOi8vd3d3LmFwYWNoZS5vcmcvbGljZW5zZXMvTElDRU5TRS0yLjBcbiAqXG4gKiBVbmxlc3MgcmVxdWlyZWQgYnkgYXBwbGljYWJsZSBsYXcgb3IgYWdyZWVkIHRvIGluIHdyaXRpbmcsIHNvZnR3YXJlXG4gKiBkaXN0cmlidXRlZCB1bmRlciB0aGUgTGljZW5zZSBpcyBkaXN0cmlidXRlZCBvbiBhbiBcIkFTIElTXCIgQkFTSVMsXG4gKiBXSVRIT1VUIFdBUlJBTlRJRVMgT1IgQ09ORElUSU9OUyBPRiBBTlkgS0lORCwgZWl0aGVyIGV4cHJlc3Mgb3IgaW1wbGllZC5cbiAqIFNlZSB0aGUgTGljZW5zZSBmb3IgdGhlIHNwZWNpZmljIGxhbmd1YWdlIGdvdmVybmluZyBwZXJtaXNzaW9ucyBhbmRcbiAqIGxpbWl0YXRpb25zIHVuZGVyIHRoZSBMaWNlbnNlLlxuICovXG5cbmltcG9ydCB7IEFwaURlZmluaXRpb24sIEVudmVsb3BlQnVzIH0gZnJvbSBcIkBrb2dpdG8tdG9vbGluZy9lbnZlbG9wZS1idXMvZGlzdC9hcGlcIjtcbmltcG9ydCB7IEVudmVsb3BlQnVzQ29udHJvbGxlciB9IGZyb20gXCJAa29naXRvLXRvb2xpbmcvZW52ZWxvcGUtYnVzL2Rpc3QvZW52ZWxvcGVcIjtcbmltcG9ydCB7IEVudmVsb3BlQXBpRmFjdG9yeSB9IGZyb20gXCIuL0VudmVsb3BlQXBpRmFjdG9yeVwiO1xuaW1wb3J0IHsgQ29udGFpbmVyVHlwZSB9IGZyb20gXCIuL2FwaVwiO1xuXG5leHBvcnQgaW50ZXJmYWNlIEVudmVsb3BlRGl2Q29uZmlnIHtcbiAgY29udGFpbmVyVHlwZTogQ29udGFpbmVyVHlwZS5ESVY7XG4gIGVudmVsb3BlSWQ6IHN0cmluZztcbn1cblxuZXhwb3J0IGludGVyZmFjZSBFbnZlbG9wZUlGcmFtZUNvbmZpZyB7XG4gIGNvbnRhaW5lclR5cGU6IENvbnRhaW5lclR5cGUuSUZSQU1FO1xufVxuXG5leHBvcnQgY2xhc3MgRW52ZWxvcGU8QXBpVG9Qcm92aWRlIGV4dGVuZHMgQXBpRGVmaW5pdGlvbjxBcGlUb1Byb3ZpZGU+LFxuICBBcGlUb0NvbnN1bWUgZXh0ZW5kcyBBcGlEZWZpbml0aW9uPEFwaVRvQ29uc3VtZT4sXG4gIFZpZXdUeXBlLFxuICBDb250ZXh0VHlwZT4ge1xuICBjb25zdHJ1Y3RvcihcbiAgICBidXM6IEVudmVsb3BlQnVzLFxuICAgIGNvbmZpZzogRW52ZWxvcGVEaXZDb25maWcgfCBFbnZlbG9wZUlGcmFtZUNvbmZpZyA9IHsgY29udGFpbmVyVHlwZTogQ29udGFpbmVyVHlwZS5JRlJBTUUgfSxcbiAgICBwcml2YXRlIHJlYWRvbmx5IGVudmVsb3BlQnVzQ29udHJvbGxlciA9IG5ldyBFbnZlbG9wZUJ1c0NvbnRyb2xsZXI8QXBpVG9Qcm92aWRlLCBBcGlUb0NvbnN1bWU+KFxuICAgICAgYnVzLFxuICAgICAgY29uZmlnLmNvbnRhaW5lclR5cGUgPT09IENvbnRhaW5lclR5cGUuRElWID8gY29uZmlnLmVudmVsb3BlSWQgOiB1bmRlZmluZWQpXG4gICkge1xuICB9XG5cbiAgcHVibGljIGdldCBjaGFubmVsQXBpKCkge1xuICAgIHJldHVybiB0aGlzLmVudmVsb3BlQnVzQ29udHJvbGxlci5jaGFubmVsQXBpO1xuICB9XG5cbiAgcHVibGljIGFzeW5jIHN0YXJ0KFxuICAgIHZpZXdEZWxlZ2F0ZTogKCkgPT4gUHJvbWlzZTwoKSA9PiBWaWV3VHlwZT4sXG4gICAgY29udGV4dDogQ29udGV4dFR5cGUsXG4gICAgYXBpRmFjdG9yeTogRW52ZWxvcGVBcGlGYWN0b3J5PEFwaVRvUHJvdmlkZSwgQXBpVG9Db25zdW1lLCBWaWV3VHlwZSwgQ29udGV4dFR5cGU+XG4gICkge1xuICAgIGNvbnN0IHZpZXcgPSBhd2FpdCB2aWV3RGVsZWdhdGUoKTtcblxuICAgIGNvbnN0IGFwaSA9IGFwaUZhY3RvcnkuY3JlYXRlKHtcbiAgICAgIHZpZXc6IHZpZXcsXG4gICAgICBlbnZlbG9wZUNvbnRleHQ6IGNvbnRleHQsXG4gICAgICBlbnZlbG9wZUJ1c0NvbnRyb2xsZXI6IHRoaXMuZW52ZWxvcGVCdXNDb250cm9sbGVyXG4gICAgfSk7XG5cbiAgICB0aGlzLmVudmVsb3BlQnVzQ29udHJvbGxlci5zdGFydExpc3RlbmluZyhhcGkpO1xuICAgIHJldHVybiB0aGlzLmVudmVsb3BlQnVzQ29udHJvbGxlcjtcbiAgfVxufVxuIiwiLypcbiAqIENvcHlyaWdodCAyMDIxIFJlZCBIYXQsIEluYy4gYW5kL29yIGl0cyBhZmZpbGlhdGVzLlxuICpcbiAqIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSBcIkxpY2Vuc2VcIik7XG4gKiB5b3UgbWF5IG5vdCB1c2UgdGhpcyBmaWxlIGV4Y2VwdCBpbiBjb21wbGlhbmNlIHdpdGggdGhlIExpY2Vuc2UuXG4gKiBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXRcbiAqXG4gKiAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wXG4gKlxuICogVW5sZXNzIHJlcXVpcmVkIGJ5IGFwcGxpY2FibGUgbGF3IG9yIGFncmVlZCB0byBpbiB3cml0aW5nLCBzb2Z0d2FyZVxuICogZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gXCJBUyBJU1wiIEJBU0lTLFxuICogV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuXG4gKiBTZWUgdGhlIExpY2Vuc2UgZm9yIHRoZSBzcGVjaWZpYyBsYW5ndWFnZSBnb3Zlcm5pbmcgcGVybWlzc2lvbnMgYW5kXG4gKiBsaW1pdGF0aW9ucyB1bmRlciB0aGUgTGljZW5zZS5cbiAqL1xuXG5leHBvcnQgZW51bSBDb250YWluZXJUeXBlIHtcbiAgRElWID0gXCJkaXZcIiwgSUZSQU1FID0gXCJpZnJhbWVcIlxufSIsIi8qXG4gKiBDb3B5cmlnaHQgMjAyMSBSZWQgSGF0LCBJbmMuIGFuZC9vciBpdHMgYWZmaWxpYXRlcy5cbiAqXG4gKiBMaWNlbnNlZCB1bmRlciB0aGUgQXBhY2hlIExpY2Vuc2UsIFZlcnNpb24gMi4wICh0aGUgXCJMaWNlbnNlXCIpO1xuICogeW91IG1heSBub3QgdXNlIHRoaXMgZmlsZSBleGNlcHQgaW4gY29tcGxpYW5jZSB3aXRoIHRoZSBMaWNlbnNlLlxuICogWW91IG1heSBvYnRhaW4gYSBjb3B5IG9mIHRoZSBMaWNlbnNlIGF0XG4gKlxuICogICAgICAgIGh0dHA6Ly93d3cuYXBhY2hlLm9yZy9saWNlbnNlcy9MSUNFTlNFLTIuMFxuICpcbiAqIFVubGVzcyByZXF1aXJlZCBieSBhcHBsaWNhYmxlIGxhdyBvciBhZ3JlZWQgdG8gaW4gd3JpdGluZywgc29mdHdhcmVcbiAqIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSBMaWNlbnNlIGlzIGRpc3RyaWJ1dGVkIG9uIGFuIFwiQVMgSVNcIiBCQVNJUyxcbiAqIFdJVEhPVVQgV0FSUkFOVElFUyBPUiBDT05ESVRJT05TIE9GIEFOWSBLSU5ELCBlaXRoZXIgZXhwcmVzcyBvciBpbXBsaWVkLlxuICogU2VlIHRoZSBMaWNlbnNlIGZvciB0aGUgc3BlY2lmaWMgbGFuZ3VhZ2UgZ292ZXJuaW5nIHBlcm1pc3Npb25zIGFuZFxuICogbGltaXRhdGlvbnMgdW5kZXIgdGhlIExpY2Vuc2UuXG4gKi9cblxuZXhwb3J0ICogZnJvbSBcIi4vQ29udGFpbmVyVHlwZVwiIiwiLypcbiAqIENvcHlyaWdodCAyMDIwIFJlZCBIYXQsIEluYy4gYW5kL29yIGl0cyBhZmZpbGlhdGVzLlxuICpcbiAqIExpY2Vuc2VkIHVuZGVyIHRoZSBBcGFjaGUgTGljZW5zZSwgVmVyc2lvbiAyLjAgKHRoZSBcIkxpY2Vuc2VcIik7XG4gKiB5b3UgbWF5IG5vdCB1c2UgdGhpcyBmaWxlIGV4Y2VwdCBpbiBjb21wbGlhbmNlIHdpdGggdGhlIExpY2Vuc2UuXG4gKiBZb3UgbWF5IG9idGFpbiBhIGNvcHkgb2YgdGhlIExpY2Vuc2UgYXRcbiAqXG4gKiAgICAgICAgaHR0cDovL3d3dy5hcGFjaGUub3JnL2xpY2Vuc2VzL0xJQ0VOU0UtMi4wXG4gKlxuICogVW5sZXNzIHJlcXVpcmVkIGJ5IGFwcGxpY2FibGUgbGF3IG9yIGFncmVlZCB0byBpbiB3cml0aW5nLCBzb2Z0d2FyZVxuICogZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIExpY2Vuc2UgaXMgZGlzdHJpYnV0ZWQgb24gYW4gXCJBUyBJU1wiIEJBU0lTLFxuICogV0lUSE9VVCBXQVJSQU5USUVTIE9SIENPTkRJVElPTlMgT0YgQU5ZIEtJTkQsIGVpdGhlciBleHByZXNzIG9yIGltcGxpZWQuXG4gKiBTZWUgdGhlIExpY2Vuc2UgZm9yIHRoZSBzcGVjaWZpYyBsYW5ndWFnZSBnb3Zlcm5pbmcgcGVybWlzc2lvbnMgYW5kXG4gKiBsaW1pdGF0aW9ucyB1bmRlciB0aGUgTGljZW5zZS5cbiAqL1xuXG5leHBvcnQgKiBmcm9tIFwiLi9FbnZlbG9wZVwiO1xuZXhwb3J0ICogZnJvbSBcIi4vRW52ZWxvcGVBcGlGYWN0b3J5XCI7XG4iLCJtb2R1bGUuZXhwb3J0cyA9IHJlcXVpcmUoXCJAa29naXRvLXRvb2xpbmcvZW52ZWxvcGUtYnVzL2Rpc3QvZW52ZWxvcGVcIik7Il0sInNvdXJjZVJvb3QiOiIifQ==
+\ No newline at end of file

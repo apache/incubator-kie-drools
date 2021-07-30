@@ -48,6 +48,7 @@ const ManagementConsole: React.FC<IOwnProps> = ({
         pageNavOpen={true}
         BrandAltText={'Management Console Logo'}
         BrandClick={() => routeProps.history.push('/')}
+        withHeader={true}
         PageNav={
           <ManagementConsoleNav pathname={routeProps.location.pathname} />
         }

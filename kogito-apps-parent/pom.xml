@@ -32,6 +32,7 @@
     <module>task-assigning</module>
     <module>jitexecutor</module>
     <module>apps-integration-tests</module>
+    <module>runtime-tools-quarkus-extension-parent</module>
   </modules>
 
 </project>

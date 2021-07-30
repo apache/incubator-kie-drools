@@ -11,6 +11,7 @@ exports[`PageLayout component tests open with PageSidebar closed 1`] = `
     </React.Fragment>
   }
   pageNavOpen={false}
+  withHeader={true}
 >
   <Page
     className="kogito-consoles-common--PageLayout"
@@ -229,6 +230,7 @@ exports[`PageLayout component tests open with PageSidebar closed 2`] = `
     </React.Fragment>
   }
   pageNavOpen={false}
+  withHeader={true}
 >
   <Page
     className="kogito-consoles-common--PageLayout"
@@ -446,6 +448,7 @@ exports[`PageLayout component tests snapshot tests 1`] = `
       page Navigation elements
     </React.Fragment>
   }
+  withHeader={true}
 >
   <Page
     className="kogito-consoles-common--PageLayout"

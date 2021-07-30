@@ -14,4 +14,6 @@
  * limitations under the License.
  */
 
-export interface TaskInboxApi {}
+export interface TaskInboxApi {
+  taskInbox__notify: (userName: string) => Promise<void>;
+}

@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ProcessListContainer tests Snapshot 1`] = `
+<ProcessListContainer
+  initialState={Object {}}
+>
+  <ForwardRef
+    data-ouia-component-type="process-list-container"
+    data-ouia-safe={true}
+    driver={
+      ProcessListGatewayApiImpl {
+        "_ProcessListState": Object {
+          "filters": Object {
+            "businessKey": Array [],
+            "status": Array [],
+          },
+          "sortBy": Object {},
+        },
+        "applyFilter": [Function],
+        "applySorting": [Function],
+        "handleProcessAbort": [Function],
+        "handleProcessMultipleAction": [Function],
+        "handleProcessRetry": [Function],
+        "handleProcessSkip": [Function],
+        "initialLoad": [Function],
+        "listeners": Array [
+          Object {
+            "onOpen": [Function],
+          },
+        ],
+        "openProcess": [Function],
+        "queries": Object {
+          "getChildProcessInstances": [MockFunction],
+          "getProcessInstances": [MockFunction],
+        },
+      }
+    }
+    initialState={Object {}}
+    targetOrigin="*"
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</ProcessListContainer>
+`;

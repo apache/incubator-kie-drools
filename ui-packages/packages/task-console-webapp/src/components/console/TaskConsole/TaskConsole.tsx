@@ -46,6 +46,7 @@ const TaskConsole: React.FC<Props> = ({
         pageNavOpen={false}
         BrandAltText={'Task Console Logo'}
         BrandClick={() => routeProps.history.push('/')}
+        withHeader={true}
         PageNav={<TaskConsoleNav pathname={routeProps.location.pathname} />}
       >
         {children}

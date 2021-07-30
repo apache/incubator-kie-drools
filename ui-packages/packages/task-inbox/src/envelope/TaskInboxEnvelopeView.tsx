@@ -30,8 +30,10 @@ export interface TaskInboxEnvelopeViewApi {
   initialize: (
     initialState?: TaskInboxState,
     allTaskStates?: string[],
-    activeTaskStates?: string[]
+    activeTaskStates?: string[],
+    userName?: string
   ) => void;
+  notify: (userName) => Promise<void>;
 }
 
 interface Props {
@@ -53,6 +55,7 @@ export const TaskInboxEnvelopeView = React.forwardRef<
   const [activeTaskStates, setActiveTaskStates] = useState<string[]>(
     getDefaultActiveTaskStates()
   );
+  const [currentUser, setCurrentUser] = useState<string>('');
   useImperativeHandle(
     forwardedRef,
     () => ({
@@ -64,7 +67,14 @@ export const TaskInboxEnvelopeView = React.forwardRef<
         if (!_.isEmpty(_activeTaskStates)) {
           setActiveTaskStates(_activeTaskStates);
         }
+
         setEnvelopeConnectedToChannel(true);
+      },
+      notify: userName => {
+        if (!_.isEmpty(userName)) {
+          setCurrentUser(userName);
+        }
+        return Promise.resolve();
       }
     }),
     []
@@ -78,6 +88,7 @@ export const TaskInboxEnvelopeView = React.forwardRef<
         initialState={initialState}
         allTaskStates={allTaskStates}
         activeTaskStates={activeTaskStates}
+        currentUser={currentUser}
       />
     </React.Fragment>
   );
