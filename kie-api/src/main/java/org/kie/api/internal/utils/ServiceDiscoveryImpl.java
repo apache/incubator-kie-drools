@@ -321,7 +321,9 @@ public class ServiceDiscoveryImpl {
             JarEntry entry = entries.nextElement();
             if (entry.getName().endsWith(CONF_FILE_NAME)) {
                 String metaInfString = metaInf.toString();
-                kieConfsUrls.add(new URL(metaInfString.substring(0, metaInfString.length() - CONF_FILE_FOLDER.length()) + entry.getName()));
+                // Adding +1 to length if the metaInf ends with / , need to count with it to properly calculate kie.conf URL
+                int confFileFolderLength = metaInfString.endsWith("/") ? CONF_FILE_FOLDER.length() + 1 : CONF_FILE_FOLDER.length();
+                kieConfsUrls.add(new URL(metaInfString.substring(0, metaInfString.length() - confFileFolderLength) + entry.getName()));
             }
         }
     }
