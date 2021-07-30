@@ -63,8 +63,7 @@ public class KiePMMLTextIndexTest {
         // <Constant>brown fox</Constant>
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT_0));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
 
         double frequency = 3.0;
         double logarithmic = Math.log10(1 + frequency);
@@ -94,8 +93,7 @@ public class KiePMMLTextIndexTest {
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
                                                                                                   NOT_NORMALIZED_TEXT_0));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
 
         double frequency = 3.0;
         double logarithmic = Math.log10(1 + frequency);
@@ -204,8 +202,7 @@ public class KiePMMLTextIndexTest {
                                                                                                   TERM_1),
                                                                  new KiePMMLNameValue("reviewText",
                                                                                       NOT_NORMALIZED_TEXT_1));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         assertEquals(1.0, kiePMMLTextIndex.evaluate(processingDTO));
     }
 
@@ -445,6 +442,10 @@ public class KiePMMLTextIndexTest {
             assertFalse(unwantedPattern.matcher(txt).find());
             assertTrue(wantedPattern.matcher(txt).find());
         });
+    }
+
+    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
+        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
     }
 
     private List<KiePMMLTextIndexNormalization> getKiePMMLTextIndexNormalizations() {
