@@ -93,20 +93,6 @@ public class ProcessingDTO {
         this.orderedReasonCodes = orderedReasonCodes;
     }
 
-//    /**
-//     *
-//     * @param defineFunctions
-//     * @param derivedFields
-//     * @param outputFields
-//     * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
-//     */
-//    public ProcessingDTO(final List<KiePMMLDefineFunction> defineFunctions,
-//                         final List<KiePMMLDerivedField> derivedFields,
-//                         final List<KiePMMLOutputField> outputFields,
-//                         final List<KiePMMLNameValue> kiePMMLNameValues) {
-//        this(defineFunctions, derivedFields, outputFields,kiePMMLNameValues, Collections.emptyList());
-//    }
-
     public List<KiePMMLDefineFunction> getDefineFunctions() {
         return Collections.unmodifiableList(defineFunctions);
     }
