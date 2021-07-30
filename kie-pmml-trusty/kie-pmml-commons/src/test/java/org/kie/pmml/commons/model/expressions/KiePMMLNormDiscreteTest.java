@@ -17,16 +17,14 @@
 package org.kie.pmml.commons.model.expressions;
 
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
-import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
-import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLNormDiscreteTest {
 
@@ -72,7 +70,4 @@ public class KiePMMLNormDiscreteTest {
         return new KiePMMLNormDiscrete(name, Collections.emptyList(), value, mapMissingTo);
     }
 
-    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
-        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
-    }
 }

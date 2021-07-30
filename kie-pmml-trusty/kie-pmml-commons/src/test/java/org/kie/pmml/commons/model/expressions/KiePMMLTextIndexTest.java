@@ -39,6 +39,7 @@ import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.AUGMENTED_NORMALIZED_TER
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.BINARY;
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.LOGARITHMIC;
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.TERM_FREQUENCY;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLTextIndexTest {
 
@@ -442,10 +443,6 @@ public class KiePMMLTextIndexTest {
             assertFalse(unwantedPattern.matcher(txt).find());
             assertTrue(wantedPattern.matcher(txt).find());
         });
-    }
-
-    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
-        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
     }
 
     private List<KiePMMLTextIndexNormalization> getKiePMMLTextIndexNormalizations() {

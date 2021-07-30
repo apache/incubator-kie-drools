@@ -23,9 +23,7 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
-import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
-import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -36,6 +34,7 @@ import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLApplyTest {
 
@@ -285,10 +284,6 @@ public class KiePMMLApplyTest {
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
-    }
-
-    private ProcessingDTO getProcessingDTO(List<KiePMMLDefineFunction> defineFunctions, List<KiePMMLDerivedField> derivedFields, List<KiePMMLNameValue> kiePMMLNameValues, List<MiningField> miningFields) {
-        return new ProcessingDTO(defineFunctions, derivedFields, Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, miningFields,  Collections.emptyList());
     }
 
     private MiningField getReferredByFieldRef(String name) {

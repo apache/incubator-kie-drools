@@ -38,6 +38,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLOutputFieldTest {
 
@@ -220,9 +221,4 @@ public class KiePMMLOutputFieldTest {
         return Arrays.asList(outputField1, outputField2);
     }
 
-    private ProcessingDTO getProcessingDTO(List<KiePMMLOutputField> outputFields,
-                                           List<KiePMMLNameValue> kiePMMLNameValues, List<String> reasonCodes) {
-        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), outputFields,
-                                 Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), reasonCodes);
-    }
 }

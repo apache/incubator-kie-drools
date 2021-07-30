@@ -19,18 +19,16 @@ package org.kie.pmml.commons.transformations;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.enums.OP_TYPE;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
-import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDefineFunctionTest {
 
@@ -132,8 +130,4 @@ public class KiePMMLDefineFunctionTest {
         assertEquals(expected, retrieved);
     }
 
-    private ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
-        return new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(),
-                                 Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), Collections.emptyList());
-    }
 }

@@ -28,6 +28,7 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLFieldRefTest {
 
@@ -100,7 +101,4 @@ public class KiePMMLFieldRefTest {
         assertNull(retrieved);
     }
 
-    private ProcessingDTO getProcessingDTO(List<KiePMMLDerivedField> derivedFields, List<KiePMMLNameValue> kiePMMLNameValues) {
-        return new ProcessingDTO(Collections.emptyList(), derivedFields, Collections.emptyList(), Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(),  Collections.emptyList());
-    }
 }
