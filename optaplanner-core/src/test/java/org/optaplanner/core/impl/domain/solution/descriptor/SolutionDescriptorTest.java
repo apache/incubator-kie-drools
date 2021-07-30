@@ -77,7 +77,7 @@ public class SolutionDescriptorTest {
     public void readMethodProblemFactCollectionProperty() {
         SolutionDescriptor<TestdataReadMethodProblemFactCollectionPropertySolution> solutionDescriptor =
                 TestdataReadMethodProblemFactCollectionPropertySolution.buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueList",
                 "createProblemFacts");
     }
@@ -122,10 +122,10 @@ public class SolutionDescriptorTest {
     public void wildcardProblemFactAndEntityProperties() {
         SolutionDescriptor<TestdataWildcardSolution> solutionDescriptor = TestdataWildcardSolution
                 .buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("extendsValueList",
                 "supersValueList");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("extendsEntityList");
     }
 
@@ -160,19 +160,19 @@ public class SolutionDescriptorTest {
     public void extended() {
         SolutionDescriptor<TestdataAnnotatedExtendedSolution> solutionDescriptor = TestdataAnnotatedExtendedSolution
                 .buildExtendedSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueList",
                 "subValueList");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList", "subEntityList");
     }
 
     @Test
     public void setProperties() {
         SolutionDescriptor<TestdataSetBasedSolution> solutionDescriptor = TestdataSetBasedSolution.buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("valueSet");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entitySet");
     }
 
@@ -180,9 +180,9 @@ public class SolutionDescriptorTest {
     public void arrayProperties() {
         SolutionDescriptor<TestdataArrayBasedSolution> solutionDescriptor = TestdataArrayBasedSolution
                 .buildSolutionDescriptor();
-        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys("values");
-        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getEntityMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entities");
     }
 
@@ -326,7 +326,7 @@ public class SolutionDescriptorTest {
                 .isEqualTo("constraintConfiguration");
         assertThat(solutionDescriptor.getProblemFactMemberAccessorMap()).containsOnlyKeys("constraintConfiguration",
                 "singleProblemFact", "problemFactList");
-        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).containsOnlyKeys();
+        assertThat(solutionDescriptor.getProblemFactCollectionMemberAccessorMap()).isEmpty();
         assertThat(solutionDescriptor.getEntityMemberAccessorMap()).containsOnlyKeys("otherEntity");
         assertThat(solutionDescriptor.getEntityCollectionMemberAccessorMap()).containsOnlyKeys("entityList");
 

@@ -62,7 +62,7 @@ public class CollectionInverseVariableListenerTest {
         solution.setValueList(Arrays.asList(val1, val2, val3));
 
         assertThat(val1.getEntities()).containsExactly(a, b);
-        assertThat(val2.getEntities()).containsExactly();
+        assertThat(val2.getEntities()).isEmpty();
         assertThat(val3.getEntities()).containsExactly(c, d);
 
         variableListener.beforeVariableChanged(scoreDirector, c);
