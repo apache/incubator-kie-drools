@@ -63,6 +63,16 @@ public class MvelEvaluator<T> {
             throw new UnsupportedOperationException();
         }
 
+        public <T> MvelEvaluator<T> createMvelEvaluator(MvelEvaluator<T> syncedWith, Serializable expr) {
+            switch (this) {
+                case THREAD_UNSAFE: return new MvelEvaluator<>(expr);
+                case THREAD_SAFE_ON_FIRST_EVAL: return new MvelEvaluator.ThreadSafe<>(expr);
+                case SYNCHRONIZED_TILL_EVALUATED: return new MvelEvaluator.SynchronizedTillEvaluated<>(syncedWith, expr);
+                case FULLY_SYNCHRONIZED: return new MvelEvaluator.FullySynchronized<>(syncedWith, expr);
+            }
+            throw new UnsupportedOperationException();
+        }
+
         static EvaluatorType decode(String id) {
             for (EvaluatorType evaluatorType : EvaluatorType.class.getEnumConstants()) {
                 if (evaluatorType.id.equalsIgnoreCase(id)) {
@@ -79,6 +89,10 @@ public class MvelEvaluator<T> {
 
     public static <T> MvelEvaluator<T> createMvelEvaluator(Serializable expr) {
         return EVALUATOR_TYPE.createMvelEvaluator(expr);
+    }
+
+    public static <T> MvelEvaluator<T> createMvelEvaluator(MvelEvaluator<T> syncedWith, Serializable expr) {
+        return EVALUATOR_TYPE.createMvelEvaluator(syncedWith, expr);
     }
 
     public T evaluate(Object ctx) {
@@ -180,10 +194,18 @@ public class MvelEvaluator<T> {
 
     private static class SynchronizedTillEvaluated<T> extends MvelEvaluator<T> {
 
+        private final MvelEvaluator<T> monitor;
+
         private volatile boolean fullyEvaluated;
 
         public SynchronizedTillEvaluated(Serializable expr) {
             super(expr);
+            this.monitor = this;
+        }
+
+        public SynchronizedTillEvaluated(MvelEvaluator<T> monitor, Serializable expr) {
+            super(expr);
+            this.monitor = monitor;
         }
 
         @Override
@@ -192,7 +214,7 @@ public class MvelEvaluator<T> {
                 return internalEvaluate(ctx, factory);
             }
 
-            synchronized (this) {
+            synchronized (monitor) {
                 T result = internalEvaluate(ctx, factory);
                 fullyEvaluated = isFullyEvaluated(expr);
                 return result;
@@ -205,7 +227,7 @@ public class MvelEvaluator<T> {
                 return super.evaluate(ctx, vars);
             }
 
-            synchronized (this) {
+            synchronized (monitor) {
                 T result = super.evaluate(ctx, vars);
                 fullyEvaluated = isFullyEvaluated(expr);
                 return result;
@@ -215,18 +237,30 @@ public class MvelEvaluator<T> {
 
     private static class FullySynchronized<T> extends MvelEvaluator<T> {
 
+        private final MvelEvaluator<T> monitor;
+
         public FullySynchronized(Serializable expr) {
             super(expr);
+            this.monitor = this;
+        }
+
+        public FullySynchronized(MvelEvaluator<T> monitor, Serializable expr) {
+            super(expr);
+            this.monitor = monitor;
         }
 
         @Override
-        public synchronized T evaluate(Object ctx, VariableResolverFactory factory) {
-            return internalEvaluate(ctx, factory);
+        public T evaluate(Object ctx, VariableResolverFactory factory) {
+            synchronized (monitor) {
+                return internalEvaluate(ctx, factory);
+            }
         }
 
         @Override
-        public synchronized T evaluate(Object ctx, Map<String, Object> vars) {
-            return super.evaluate(ctx, vars);
+        public T evaluate(Object ctx, Map<String, Object> vars) {
+            synchronized (monitor) {
+                return super.evaluate(ctx, vars);
+            }
         }
     }
 }

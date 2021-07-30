@@ -161,7 +161,7 @@ public class MVELConditionEvaluator implements ConditionEvaluator {
         if (!isEvaluated(node)) {
             ASTNode next = node.nextASTNode;
             node.nextASTNode = null;
-            evaluate( createMvelEvaluator(asCompiledExpression(node) ), handle, workingMemory, tuple);
+            evaluate( createMvelEvaluator(evaluator, asCompiledExpression(node) ), handle, workingMemory, tuple);
             node.nextASTNode = next;
         }
     }
