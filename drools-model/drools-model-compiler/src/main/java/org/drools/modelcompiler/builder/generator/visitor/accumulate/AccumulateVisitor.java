@@ -476,7 +476,6 @@ public class AccumulateVisitor {
                 // replace the type of the lambda with the one resulting from the accumulate operation only in the pattern immediately before it
                 replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, context.getExpressions().get(context.getExpressions().size()-2));
             }
-//            context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
         }
     }
 
