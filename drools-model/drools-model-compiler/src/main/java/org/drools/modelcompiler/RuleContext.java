@@ -16,9 +16,13 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
@@ -46,6 +50,8 @@ public class RuleContext {
     private int patternIndex = -1;
     private boolean needStreamMode = false;
 
+    private Deque<Set<Variable>> variablesInOrCondition;
+
     public RuleContext( KiePackagesBuilder builder, KnowledgePackageImpl pkg, RuleImpl rule ) {
         this.builder = builder;
         this.pkg = pkg;
@@ -71,8 +77,24 @@ public class RuleContext {
         return ++patternIndex;
     }
 
+    void startOrCondition() {
+        if (variablesInOrCondition == null) {
+            variablesInOrCondition = new ArrayDeque<>();
+        }
+        variablesInOrCondition.addLast(new HashSet<>());
+    }
+
+    void endOrCondition() {
+        variablesInOrCondition.removeLast();
+    }
+
     void registerPattern( Variable variable, Pattern pattern ) {
-        declarations.computeIfAbsent(variable, k -> pattern.getDeclaration());
+        if (variablesInOrCondition != null && !variablesInOrCondition.isEmpty() && !variablesInOrCondition.getLast().add(variable)) {
+            // allow to overwrite varibles that have been defined in a different or branch
+            declarations.put(variable, pattern.getDeclaration());
+        } else {
+            declarations.computeIfAbsent(variable, k -> pattern.getDeclaration());
+        }
     }
 
     Pattern getPattern( Variable variable ) {

@@ -1056,4 +1056,31 @@ public class FromTest extends BaseModelTest {
         ksession.insert( "A" );
         assertEquals( 1, ksession.fireAllRules() );
     }
+
+    @Test
+    public void testFromCollectWithOr() {
+        // DROOLS-6531
+        String str =
+                "import java.util.List;\n" +
+                "rule R when\n" +
+                "        $list: List()\n" +
+                "        $values:    (\n" +
+                "            List(size > 0) from collect ( String(length < 3) ) or\n" +
+                "            List(size > 0) from collect ( String(length > 5) )\n" +
+                "        )\n" +
+                "    then\n" +
+                "        $list.addAll($values);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<String> list = new ArrayList<>();
+        ksession.insert(list);
+        ksession.insert("t");
+        ksession.insert("test");
+        ksession.insert("testtest");
+
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
+    }
 }

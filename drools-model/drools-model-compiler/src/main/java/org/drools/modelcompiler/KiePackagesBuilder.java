@@ -153,6 +153,7 @@ import static java.util.stream.Collectors.toList;
 
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
+import static org.drools.core.rule.GroupElement.OR;
 import static org.drools.core.rule.Pattern.getReadAcessor;
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.entryPoint;
@@ -423,12 +424,12 @@ public class KiePackagesBuilder {
 
     private boolean ruleHasFirstLevelOr(RuleImpl rule) {
         GroupElement lhs = rule.getLhs();
-        if (lhs.getType() == GroupElement.Type.OR) {
+        if (lhs.getType() == OR) {
             return true;
         }
         if (lhs.getType() == GroupElement.Type.AND) {
             for (RuleConditionElement child : lhs.getChildren()) {
-                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == GroupElement.Type.OR ) {
+                if ( child instanceof GroupElement && (( GroupElement ) child).getType() == OR ) {
                     return true;
                 }
             }
@@ -690,11 +691,17 @@ public class KiePackagesBuilder {
     }
 
     private RuleConditionElement addSubConditions( RuleContext ctx, GroupElement ge, List<Condition> subconditions ) {
+        if (ge.getType() == OR) {
+            ctx.startOrCondition();
+        }
         for (int i = 0; i < subconditions.size(); i++) {
             RuleConditionElement element = conditionToElement( ctx, ge, subconditions.get(i) );
             if (element != null) {
                 ge.addChild( element );
             }
+        }
+        if (ge.getType() == OR) {
+            ctx.endOrCondition();
         }
         if (ge.getType() == AND && ge.getChildren().size() == 1) {
             return ge.getChildren().get(0);
