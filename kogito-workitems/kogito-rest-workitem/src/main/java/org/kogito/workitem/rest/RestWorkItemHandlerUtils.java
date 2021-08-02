@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
+import io.vertx.mutiny.core.Vertx;
 
 public class RestWorkItemHandlerUtils {
 
@@ -34,6 +35,14 @@ public class RestWorkItemHandlerUtils {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandlerUtils.class);
+    private static Vertx vertx;
+
+    public static synchronized Vertx vertx() {
+        if (vertx == null) {
+            vertx = Vertx.vertx();
+        }
+        return vertx;
+    }
 
     public static <T> T mergeObject(T target, JsonObject jsonObject) {
         return target instanceof ObjectNode ? (T) mergeJson(jsonObject, (ObjectNode) target) : mergeBean(jsonObject, target);

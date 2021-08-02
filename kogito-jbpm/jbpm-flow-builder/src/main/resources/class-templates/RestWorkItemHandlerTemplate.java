@@ -18,6 +18,7 @@ package org.jbpm.process.codegen;
 import io.vertx.mutiny.ext.web.client.WebClient;
 import io.vertx.mutiny.core.Vertx;
 import org.kogito.workitem.rest.RestWorkItemHandler;
+import static org.kogito.workitem.rest.RestWorkItemHandlerUtils.vertx;
 
 public class xxxRestWorkItemHandler extends RestWorkItemHandler {
 
@@ -26,7 +27,7 @@ public class xxxRestWorkItemHandler extends RestWorkItemHandler {
     }
 
     public xxxRestWorkItemHandler(Vertx vertx) {
-        super(WebClient.create(vertx));
+        super(WebClient.create(vertx == null ? vertx() : vertx));
     }
     
     @Override

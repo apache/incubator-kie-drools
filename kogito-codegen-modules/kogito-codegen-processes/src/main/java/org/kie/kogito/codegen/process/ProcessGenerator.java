@@ -399,7 +399,7 @@ public class ProcessGenerator {
                 if (context.hasDI()) {
                     context.getDependencyInjectionAnnotator().withApplicationComponent(handlerClazz);
                     context.getDependencyInjectionAnnotator()
-                            .withInjection(
+                            .withOptionalInjection(
                                     handlerClazz
                                             .getConstructors()
                                             .stream()
@@ -408,8 +408,7 @@ public class ProcessGenerator {
                                             .orElseThrow(
                                                     () -> new IllegalStateException(
                                                             "Cannot find a non empty constructor to annotate in handler class " +
-                                                                    handlerClazz)),
-                                    true);
+                                                                    handlerClazz)));
                 }
 
                 initMethodCall

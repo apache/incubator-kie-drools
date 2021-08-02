@@ -96,6 +96,7 @@ public class SpringDependencyInjectionAnnotator implements DependencyInjectionAn
     public <T extends NodeWithAnnotations<?>> T withOptionalInjection(T node) {
         node.addAnnotation(
                 new NormalAnnotationExpr(new Name("org.springframework.beans.factory.annotation.Autowired"), NodeList.nodeList(new MemberValuePair("required", new BooleanLiteralExpr(false)))));
+        node.addAnnotation("org.springframework.context.annotation.Lazy");
         return node;
     }
 
