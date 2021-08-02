@@ -148,7 +148,7 @@ public class PersistenceUtil {
             String jdbcUrl = dsProps.getProperty("url");
             // fix an incomplete JDBC URL used by some tests
             if (jdbcUrl.startsWith("jdbc:h2:") && !jdbcUrl.contains("tcp://")) {
-                dsProps.put("url", jdbcUrl + "tcp://localhost/target/persistence-test");
+                dsProps.put("url", jdbcUrl + "tcp://localhost/target/./persistence-test");
             }
             h2Server.start();
         }
