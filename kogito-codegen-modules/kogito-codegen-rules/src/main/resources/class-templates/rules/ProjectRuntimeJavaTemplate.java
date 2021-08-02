@@ -15,6 +15,8 @@
  */
 package org.drools.project.model;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -29,7 +31,7 @@ public class ProjectRuntime implements KieRuntimeBuilder {
     public static final ProjectRuntime INSTANCE = new ProjectRuntime();
 
     private static java.util.Map<String, KieBase> initKieBases() {
-        java.util.Map<String, KieBase> kbaseMap = new java.util.HashMap<>();
+        java.util.Map<String, KieBase> kbaseMap = new ConcurrentHashMap<>();
         if (org.kie.kogito.internal.RuntimeEnvironment.isNative()) {
         }
         return kbaseMap;
