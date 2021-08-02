@@ -16,6 +16,8 @@
 
 package org.kie.pmml.api.enums.builtinfunctions;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -48,13 +50,31 @@ public class DateFunctionsTest {
 
     @Test
     public void getDateDaysSinceYearCorrectInput() {
-        Date inputDate = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
+        LocalDateTime inputDateLocalDateTime = LocalDateTime.of(1960, 1, 1, 0, 0, 0);
+        logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
+        Date inputDate = java.util.Date.from(inputDateLocalDateTime.atZone(ZoneId.systemDefault())
+                                                     .toInstant());
         logger.debug("Input date");
         logger.debug("{}", inputDate);
         logger.debug("{}", inputDate.getTime());
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input1);
+        assertEquals(0, retrieved);
+        //--
+        inputDateLocalDateTime = LocalDateTime.of(2003, 4, 1, 0, 0, 0);
+        logger.debug("inputDateLocalDateTime {}", inputDateLocalDateTime);
+        inputDate = java.util.Date.from(inputDateLocalDateTime.atZone(ZoneId.systemDefault())
+                                                     .toInstant());
+        logger.debug("Input date");
+        logger.debug("{}", inputDate);
+        logger.debug("{}", inputDate.getTime());
+        Object[] input2 = {inputDate, 1960};
+        retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input2);
         assertEquals(15796, retrieved);
+
+
+
+
     }
 
     @Test(expected = IllegalArgumentException.class)

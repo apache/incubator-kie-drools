@@ -15,6 +15,8 @@
  */
 package org.kie.pmml.api.enums.builtinfunctions;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,6 +28,7 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkDate;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkDates;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkInteger;
@@ -42,6 +45,7 @@ public enum DateFunctions {
 
     private final String name;
     private static final Logger logger = LoggerFactory.getLogger(DateFunctions.class);
+    private static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;
 
 
     DateFunctions(String name) {
@@ -81,13 +85,19 @@ public enum DateFunctions {
         checkLength(inputData, 2);
         checkDate(inputData[0]);
         checkInteger(inputData[1]);
-        Date yearDate = new GregorianCalendar((int)inputData[1], Calendar.JANUARY, 1).getTime();
+
+        LocalDateTime referredDate = LocalDateTime.of((int)inputData[1], 1, 1, 0, 0, 0);
+        logger.debug("referredDate {}", referredDate);
+
+        LocalDateTime referringDate = ((Date) inputData[0]).toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDateTime();
         logger.debug("Referring date");
-        logger.debug("{}", yearDate);
-        logger.debug("{}", yearDate.getTime());
-        long diff = ((Date) inputData[0]).getTime() - yearDate.getTime();
-        logger.info("diff: {}", yearDate.getTime());
-        return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + 1;
+        logger.debug("{}", referringDate);
+
+        long toReturn = DAYS.between(referredDate, referringDate);
+        logger.info("toReturn: {}", toReturn);
+        return (int) toReturn;
     }
 
     private int dateSecondsSinceYear(final Object[] inputData) {
