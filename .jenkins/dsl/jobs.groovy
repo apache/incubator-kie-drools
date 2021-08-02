@@ -177,7 +177,7 @@ void setupSonarCloudJob(String jobFolder) {
 }
 
 void setupNativeJob(String jobFolder) {
-    def jobParams = getJobParams('kogito-native', jobFolder, 'Jenkinsfile.native', 'Kogito Runtimes Native Testing')
+    def jobParams = getJobParams('kogito-runtimes-native', jobFolder, 'Jenkinsfile.native', 'Kogito Runtimes Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
