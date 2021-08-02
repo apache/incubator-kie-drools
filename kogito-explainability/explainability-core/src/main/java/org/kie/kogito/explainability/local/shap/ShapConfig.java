@@ -34,6 +34,7 @@ public class ShapConfig {
 
     private final LinkType link;
     private final Integer nSamples;
+    private final double confidence;
     private final PerturbationContext pc;
     private final Executor executor;
     private final List<PredictionInput> background;
@@ -55,13 +56,14 @@ public class ShapConfig {
      * @param executor: The executor to use for the Shap CompletableFutures
      * @param nSamples: int, the number of data samples to run when computing shap values
      */
-    protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor, Integer nSamples) {
+    protected ShapConfig(LinkType link, List<PredictionInput> background, PerturbationContext pc, Executor executor, Integer nSamples, double confidence) {
         this.link = link;
         this.background = background;
         this.backgroundMatrix = MatrixUtils.matrixFromPredictionInput(background);
         this.pc = pc;
         this.executor = executor;
         this.nSamples = nSamples;
+        this.confidence = confidence;
     }
 
     public static Builder builder() {
@@ -77,6 +79,7 @@ public class ShapConfig {
         // optional
         private Executor builderExecutor = ForkJoinPool.commonPool();
         private Integer builderNSamples = null;
+        private double builderConfidence = .95;
         private PerturbationContext builderPC = new PerturbationContext(new SecureRandom(), 0);
 
         private Builder() {
@@ -139,6 +142,19 @@ public class ShapConfig {
         }
 
         /**
+         * Add confidence interval to the builder
+         *
+         * @param confidence: double, the desired confidence interval to report in the ShapValues, default is .95 for
+         *        a 95% confidence interval
+         *
+         * @return Builder
+         */
+        public Builder withConfidence(double confidence) {
+            this.builderConfidence = confidence;
+            return this;
+        }
+
+        /**
          * Add a random number generator to the builder
          *
          * @param pc: PerturbationContext to hold random number generator, Default is SecureRandom
@@ -163,7 +179,7 @@ public class ShapConfig {
             if (this.builderBackground.isEmpty()) {
                 throw new IllegalArgumentException("Background data list cannot be empty.");
             }
-            return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor, this.builderNSamples);
+            return new ShapConfig(this.builderLink, this.builderBackground, this.builderPC, this.builderExecutor, this.builderNSamples, this.builderConfidence);
         }
     }
 
@@ -192,5 +208,9 @@ public class ShapConfig {
 
     public Optional<Integer> getNSamples() {
         return Optional.ofNullable(this.nSamples);
+    }
+
+    public double getConfidence() {
+        return this.confidence;
     }
 }

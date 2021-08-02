@@ -28,11 +28,14 @@ class WeightedLinearRegressionResultsTest {
     void testWLRResultsNoIntercept() {
         double[][] coefficients = { { 5. }, { 1. }, { -1. }, { 3. } };
         double[] flatCoef = { 5., 1., -1., 3. };
+        double[] stdErrs = { 5., 1., -1., 3. };
+        double[] pvalues = new double[4];
         WeightedLinearRegressionResults wlrr =
-                new WeightedLinearRegressionResults(coefficients, false, 1.0, .01);
+                new WeightedLinearRegressionResults(coefficients, false, 1, .01, stdErrs, pvalues);
         assertArrayEquals(flatCoef, wlrr.getCoefficients());
+        assertArrayEquals(stdErrs, wlrr.getStdErrors());
+        assertArrayEquals(pvalues, wlrr.getPValues());
         assertEquals(0.0, wlrr.getIntercept());
-        assertEquals(1.0, wlrr.getGof());
         assertEquals(.01, wlrr.getMSE());
     }
 
@@ -41,11 +44,13 @@ class WeightedLinearRegressionResultsTest {
     void testWLRResultWithIntercept() {
         double[][] coefficients = { { 5. }, { 1. }, { -1. }, { 3. } };
         double[] flatCoef = { 5., 1., -1. };
+        double[] stdErrs = { 5., 1., -1., 3. };
+        double[] pvalues = new double[4];
         WeightedLinearRegressionResults wlrr =
-                new WeightedLinearRegressionResults(coefficients, true, 1.0, .01);
+                new WeightedLinearRegressionResults(coefficients, true, 1, .01, stdErrs, pvalues);
         assertArrayEquals(flatCoef, wlrr.getCoefficients());
+        assertArrayEquals(stdErrs, wlrr.getStdErrors());
         assertEquals(3.0, wlrr.getIntercept());
-        assertEquals(1.0, wlrr.getGof());
         assertEquals(.01, wlrr.getMSE());
     }
 
@@ -53,15 +58,17 @@ class WeightedLinearRegressionResultsTest {
     @Test
     void testPredictions() {
         double[][] coefficients = { { 5. }, { 1. }, { -1. }, { 3. }, { 5. } };
+        double[] stdErrs = { 5., 1., -1., 3., 5. };
         double[][] x = {
                 { 1., 5., 3., -2 },
                 { 10., -1., 0., 4. },
                 { -2, 7.5, 6., -3.3 },
         };
+        double[] pvalues = new double[5];
         double[] y = { 6., 66., -13.4 };
 
         WeightedLinearRegressionResults wlrr =
-                new WeightedLinearRegressionResults(coefficients, true, 1.0, .01);
+                new WeightedLinearRegressionResults(coefficients, true, 1, .01, stdErrs, pvalues);
         assertArrayEquals(y, wlrr.predict(x), 1e-6);
     }
 
@@ -70,6 +77,8 @@ class WeightedLinearRegressionResultsTest {
     @Test
     void testPredictionsWrongNumFeatures() {
         double[][] coefficients = { { 5. }, { 1. }, { -1. }, { 3. }, { 5. } };
+        double[] stdErrs = { 5., 1., -1., 3., 5. };
+        double[] pvalues = new double[5];
         double[][] x = {
                 { 1., 5. },
                 { 10., -1. },
@@ -77,7 +86,7 @@ class WeightedLinearRegressionResultsTest {
         };
 
         WeightedLinearRegressionResults wlrr =
-                new WeightedLinearRegressionResults(coefficients, true, 1.0, .01);
+                new WeightedLinearRegressionResults(coefficients, true, 1, .01, stdErrs, pvalues);
         assertThrows(IllegalArgumentException.class, () -> wlrr.predict(x));
     }
 }

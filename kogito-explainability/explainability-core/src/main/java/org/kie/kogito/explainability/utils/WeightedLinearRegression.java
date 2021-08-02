@@ -16,7 +16,11 @@
 
 package org.kie.kogito.explainability.utils;
 
+import java.util.Arrays;
 import java.util.Random;
+import java.util.stream.IntStream;
+
+import org.apache.commons.math3.distribution.TDistribution;
 
 /**
  * Performs a weighted linear regression over the provided features, observations, and weights
@@ -96,13 +100,15 @@ public class WeightedLinearRegression {
 
         // recover the coefficients by multiplying the inverse coefficient matrix by B
         double[][] coefficients = MatrixUtils.matrixMultiply(x, b);
-        double gof = WeightedLinearRegression
-                .getGoodnessOfFit(adjustedFeatures, observations, sampleWeights, coefficients);
         double mse = WeightedLinearRegression
                 .getMSE(adjustedFeatures, observations, sampleWeights, coefficients);
 
+        double[] stdErrors = WeightedLinearRegression.getVarianceMatrix(adjustedFeatures,
+                observations, sampleWeights, coefficients, x);
+        double[] pvalues = WeightedLinearRegression.getPValues(nfeatures, nsamples, stdErrors, coefficients);
+
         // mark the model as being fit and return coefficients
-        return new WeightedLinearRegressionResults(coefficients, intercept, gof, mse);
+        return new WeightedLinearRegressionResults(coefficients, intercept, nsamples - nfeatures, mse, stdErrors, pvalues);
     }
 
     /**
@@ -135,17 +141,20 @@ public class WeightedLinearRegression {
     }
 
     // MODEL METRICS ===================================================================================================
-    /**
-     * Recover the goodness-of-fit of the WLR model. This is the coefficient of determination, as per:
-     * https://en.wikipedia.org/wiki/Multiple_correlation
-     * 
-     * @return the coefficient of determination
-     */
-    private static double getGoodnessOfFit(double[][] features,
+    private static class ModelSquareSums {
+        public final double residualSquareSum;
+        public final double totalSquareSum;
+
+        ModelSquareSums(double residualSquareSum, double totalSquareSum) {
+            this.residualSquareSum = residualSquareSum;
+            this.totalSquareSum = totalSquareSum;
+        }
+    }
+
+    private static ModelSquareSums getRSSandTSS(double[][] features,
             double[] observations,
             double[] sampleWeights,
             double[][] coefficients) {
-
         int nfeatures = features[0].length;
         int nsamples = observations.length;
         double yBar = 0;
@@ -174,7 +183,43 @@ public class WeightedLinearRegression {
             throw new ArithmeticException("Total variance of observations is zero." +
                     " Use more samples to correct this error");
         }
-        return 1 - (residualSquareSum / totalSquareSum);
+        return new ModelSquareSums(residualSquareSum, totalSquareSum);
+    }
+
+    private static double[] getVarianceMatrix(double[][] features,
+            double[] observations,
+            double[] sampleWeights,
+            double[][] coefficients,
+            double[][] invertedLSMatrix) {
+
+        int nfeatures = features[0].length;
+        int nsamples = observations.length;
+        int dof = nsamples - nfeatures;
+        ModelSquareSums mss = WeightedLinearRegression.getRSSandTSS(features, observations, sampleWeights, coefficients);
+        double residualMeanSquare = mss.residualSquareSum / dof;
+        double[] coefficientError = new double[nfeatures];
+        for (int i = 0; i < nfeatures; i++) {
+            for (int j = 0; j < nfeatures; j++) {
+                invertedLSMatrix[i][j] *= residualMeanSquare;
+            }
+            coefficientError[i] = Math.sqrt(invertedLSMatrix[i][i]);
+        }
+
+        return coefficientError;
+    }
+
+    private static double[] getPValues(int nfeatures, int nsamples, double[] coefficientError,
+            double[][] coefficients) {
+
+        int dof = nsamples - nfeatures;
+        if (dof <= 0) {
+            return IntStream.range(0, nfeatures).mapToDouble(x -> Double.POSITIVE_INFINITY).toArray();
+        }
+        double[] coefs = MatrixUtils.getCol(coefficients, 0);
+        double[] tvalues = IntStream.range(0, coefficientError.length)
+                .mapToDouble(i -> coefs[i] / coefficientError[i]).toArray();
+        TDistribution tdist = new TDistribution(dof);
+        return Arrays.stream(tvalues).map(x -> 2 * (1 - tdist.cumulativeProbability(x))).toArray();
     }
 
     /**

@@ -30,10 +30,12 @@ import java.util.stream.IntStream;
 import org.apache.commons.math3.exception.MathArithmeticException;
 import org.apache.commons.math3.util.CombinatoricsUtils;
 import org.kie.kogito.explainability.local.LocalExplainer;
+import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.PredictionInput;
 import org.kie.kogito.explainability.model.PredictionOutput;
 import org.kie.kogito.explainability.model.PredictionProvider;
+import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.utils.MatrixUtils;
 import org.kie.kogito.explainability.utils.RandomChoice;
 import org.kie.kogito.explainability.utils.WeightedLinearRegression;
@@ -46,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * https://proceedings.neurips.cc/paper/2017/file/8a20a8621978632d76c43dfd28b67767-Paper.pdf
  * see also https://github.com/slundberg/shap/blob/master/shap/explainers/_kernel.py
  */
-public class ShapKernelExplainer implements LocalExplainer<double[][]> {
+public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShapKernelExplainer.class);
     private ShapConfig config;
 
@@ -237,6 +239,53 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
     }
 
     /**
+     * Given an n x m matrix of n outputs and m feature importances, return an array of Saliencies
+     *
+     * @param m: The n x m matrix
+     * @param pi: The prediction input
+     * @param po: The prediction output
+     *
+     * @return an array of n saliencies, one for each output of the model. Each Saliency lists the feature
+     *         importances of each input feature to that particular output
+     */
+    public static Saliency[] saliencyFromMatrix(double[][] m, PredictionInput pi, PredictionOutput po) {
+        int[] shape = MatrixUtils.getShape(m);
+        Saliency[] saliencies = new Saliency[shape[0]];
+        for (int i = 0; i < shape[0]; i++) {
+            List<FeatureImportance> fis = new ArrayList<>();
+            for (int j = 0; j < shape[1]; j++) {
+                fis.add(new FeatureImportance(pi.getFeatures().get(j), m[i][j]));
+            }
+            saliencies[i] = new Saliency(po.getOutputs().get(i), fis);
+        }
+        return saliencies;
+    }
+
+    /**
+     * Given an n x m matrix of feature importances and an nxm matrix of confidences, return an array of Saliencies
+     *
+     * @param m: The n x m matrix
+     * @param bounds: The n x m matrix of confidences
+     * @param pi: The prediction input
+     * @param po: The prediction output
+     *
+     * @return an array of n saliencies, one for each output of the model. Each Saliency lists the feature
+     *         importances and confidences of each input feature to that particular output
+     */
+    public static Saliency[] saliencyFromMatrix(double[][] m, double[][] bounds, PredictionInput pi, PredictionOutput po) {
+        int[] shape = MatrixUtils.getShape(m);
+        Saliency[] saliencies = new Saliency[shape[0]];
+        for (int i = 0; i < shape[0]; i++) {
+            List<FeatureImportance> fis = new ArrayList<>();
+            for (int j = 0; j < shape[1]; j++) {
+                fis.add(new FeatureImportance(pi.getFeatures().get(j), m[i][j], bounds[i][j]));
+            }
+            saliencies[i] = new Saliency(po.getOutputs().get(i), fis);
+        }
+        return saliencies;
+    }
+
+    /**
      * Compute the shap values for a specific prediction
      *
      * @param prediction: The ShapPrediction to be explained.
@@ -244,7 +293,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      *
      * @return the shap values for this prediction, of shape [n_model_outputs x n_features]
      */
-    private CompletableFuture<double[][]> explain(Prediction prediction, PredictionProvider model) {
+    private CompletableFuture<Saliency[]> explain(Prediction prediction, PredictionProvider model) {
         ShapDataCarrier sdc = this.initialize(model);
         sdc.setSamplesAdded(new ArrayList<>());
         PredictionInput pi = prediction.getInput();
@@ -273,7 +322,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
 
         // if no features vary, then the features do not effect output, and all shap values are zero.
         if (sdc.getNumVarying() == 0) {
-            return output;
+            return output.thenApply(o -> saliencyFromMatrix(o, pi, po));
         } else if (sdc.getNumVarying() == 1)
         // if 1 feature varies, this feature has all the effect
         {
@@ -284,7 +333,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
                 for (int i = 0; i < os; i++) {
                     out[i][sdc.getVaryingFeatureGroups(0)] = df[i];
                 }
-                return out;
+                return saliencyFromMatrix(out, pi, po);
             }));
         } else
         // if more than 1 feature varies, we need to perform WLR
@@ -308,7 +357,8 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
             CompletableFuture<double[][]> expectations = this.runSyntheticData(sdc);
 
             // run the wlr model over the synthetic data results
-            return output.thenCompose(o -> this.solveSystem(expectations, poMatrix[0], sdc));
+            return output.thenCompose(o -> this.solveSystem(expectations, poMatrix[0], sdc)
+                    .thenApply(wo -> saliencyFromMatrix(wo[0], wo[1], pi, po)));
         }
     }
 
@@ -545,7 +595,7 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      *
      * @return the shap values as found by the WLR
      */
-    private double[] solve(double[][] expectations, int output, double[] poMatrix, double[] fnull,
+    private double[][] solve(double[][] expectations, int output, double[] poMatrix, double[] fnull,
             int dropIdx, ShapDataCarrier sdc) {
         double[][] xs = new double[sdc.getSamplesAddedSize()][sdc.getCols()];
         double[] ws = new double[sdc.getSamplesAddedSize()];
@@ -582,12 +632,12 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      *
      * @return the shap values as found by the WLR
      */
-    private CompletableFuture<double[][]> solveSystem(CompletableFuture<double[][]> expectations, double[] poMatrix,
+    private CompletableFuture<double[][][]> solveSystem(CompletableFuture<double[][]> expectations, double[] poMatrix,
             ShapDataCarrier sdc) {
         int dropIdx = sdc.getVaryingFeatureGroups(sdc.getVaryingFeatureGroups().size() - 1);
 
         return expectations.thenCompose(exps -> sdc.getFnull().thenCompose(fn -> sdc.getOutputSize().thenCompose(os -> {
-            HashMap<Integer, CompletableFuture<double[]>> shapSlices = new HashMap<>();
+            HashMap<Integer, CompletableFuture<double[][]>> shapSlices = new HashMap<>();
             for (int output = 0; output < os; output++) {
                 int finalOutput = output;
                 shapSlices.put(output, CompletableFuture.supplyAsync(
@@ -596,10 +646,13 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
             }
 
             // reduce parallel operations into single array
-            final CompletableFuture<double[][]>[] shapVals = new CompletableFuture[] {
-                    CompletableFuture.supplyAsync(() -> new double[os][sdc.getCols()], this.config.getExecutor()) };
+            final CompletableFuture<double[][][]>[] shapVals = new CompletableFuture[] {
+                    CompletableFuture.supplyAsync(() -> new double[2][os][sdc.getCols()], this.config.getExecutor()) };
             shapSlices.forEach((idx, slice) -> shapVals[0] = shapVals[0].thenCompose(e -> slice.thenApply(s -> {
-                e[idx] = s;
+                // store shap values in first matrix
+                e[0][idx] = s[0];
+                // shap value confidences go in the second
+                e[1][idx] = s[1];
                 return e;
             })));
             return shapVals[0];
@@ -615,25 +668,37 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      * @param outputChange: The raw difference between the model output and the null output
      * @param dropIdx: The regularization feature index
      *
-     * @return the shap values as found by the WLR
+     * @return a 2xnFeatures array, containing the shap values as found by the WLR in the first row and the
+     *         confidences of those values in the second row.
      */
     // run the WLRR for a single output
-    private double[] runWLRR(double[][] maskDiff, double[] adjY, double[] ws, double outputChange,
+    private double[][] runWLRR(double[][] maskDiff, double[] adjY, double[] ws, double outputChange,
             int dropIdx, ShapDataCarrier sdc) {
         WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(maskDiff, adjY,
                 ws, false, this.config.getPC().getRandom());
         double[] coeffs = wlrr.getCoefficients();
+        double[] bounds = wlrr.getConf(1 - this.config.getConfidence());
+
         int usedCoefs = 0;
         double[] shapSlice = new double[sdc.getCols()];
+        double[] boundsReg = new double[sdc.getCols()];
         for (int i = 0; i < sdc.getVaryingFeatureGroups().size(); i++) {
             int idx = sdc.getVaryingFeatureGroups(i);
             if (idx != dropIdx) {
                 shapSlice[idx] = coeffs[usedCoefs];
+                boundsReg[idx] = bounds[usedCoefs];
                 usedCoefs += 1;
             }
         }
         shapSlice[dropIdx] = outputChange - Arrays.stream(coeffs).sum();
-        return shapSlice;
+        //propagate the error of sum
+        boundsReg[dropIdx] = Math.sqrt(Arrays.stream(bounds).map(x -> x * x).sum());
+
+        // bundle error and shap values together
+        double[][] wlrrOutput = new double[2][sdc.getCols()];
+        wlrrOutput[0] = shapSlice;
+        wlrrOutput[1] = boundsReg;
+        return wlrrOutput;
     }
 
     /**
@@ -641,10 +706,10 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      *
      * @param prediction: A ShapPrediction to be explained
      * @param model: The model to be explained
-     * @return shap values, double[][] of shape [n_outputs x n_features]
+     * @return shap values, Saliency[] of shape [n_outputs], with each saliency reporting m feature importances+confidences
      */
     @Override
-    public CompletableFuture<double[][]> explainAsync(Prediction prediction, PredictionProvider model) {
+    public CompletableFuture<Saliency[]> explainAsync(Prediction prediction, PredictionProvider model) {
         return explainAsync(prediction, model, null);
     }
 
@@ -655,10 +720,10 @@ public class ShapKernelExplainer implements LocalExplainer<double[][]> {
      * @param model: The model to be explained
      * @param intermediateResultsConsumer: Unused
      *
-     * @return shap values, double[][] of shape [n_outputs x n_features]
+     * @return shap values, Saliency[] of shape [n_outputs], with each saliency reporting m feature importances+confidences
      */
     @Override
-    public CompletableFuture<double[][]> explainAsync(Prediction prediction, PredictionProvider model, Consumer<double[][]> intermediateResultsConsumer) {
+    public CompletableFuture<Saliency[]> explainAsync(Prediction prediction, PredictionProvider model, Consumer<Saliency[]> intermediateResultsConsumer) {
         return this.explain(prediction, model);
     }
 }

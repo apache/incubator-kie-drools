@@ -23,10 +23,18 @@ public class FeatureImportance {
 
     private final Feature feature;
     private final double score;
+    private final double confidence;
 
     public FeatureImportance(Feature feature, double score) {
         this.feature = feature;
         this.score = score;
+        this.confidence = 0;
+    }
+
+    public FeatureImportance(Feature feature, double score, double confidence) {
+        this.feature = feature;
+        this.score = score;
+        this.confidence = confidence;
     }
 
     public Feature getFeature() {
@@ -37,11 +45,16 @@ public class FeatureImportance {
         return score;
     }
 
+    public double getConfidence() {
+        return confidence;
+    }
+
     @Override
     public String toString() {
         return "FeatureImportance{" +
                 "feature=" + feature +
                 ", score=" + score +
+                ", confidence= +/-" + confidence +
                 '}';
     }
 }

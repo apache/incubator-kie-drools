@@ -16,6 +16,7 @@
 package org.kie.kogito.explainability.utils;
 
 import java.util.Random;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -53,7 +54,6 @@ class WeightedLinearRegressionTest {
                 WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
-        assertEquals(1.0, wlrr.getGof(), 1e-6);
 
     }
 
@@ -77,7 +77,6 @@ class WeightedLinearRegressionTest {
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(5., wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
-        assertEquals(1.0, wlrr.getGof(), 1e-6);
     }
 
     // check the overspecified case with intercept, with also random error in the observations.
@@ -123,7 +122,6 @@ class WeightedLinearRegressionTest {
             WeightedLinearRegressionResults wlrr =
                     WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
-            assertEquals(1.0, wlrr.getGof(), 1e-6);
         }
     }
 
@@ -144,7 +142,39 @@ class WeightedLinearRegressionTest {
             WeightedLinearRegressionResults wlrr =
                     WeightedLinearRegression.fit(x, y, sampleWeights, true, random);
             assertEquals(0.0, wlrr.getMSE(), 1e-6);
-            assertEquals(1.0, wlrr.getGof(), 1e-6);
+        }
+    }
+
+    // === test some error cases ===
+    @Test
+    void testStdErr() {
+        for (int test = 0; test < 1; test++) {
+            double[] trueCoefs = { 1., 2., 3., 4., 5. };
+            double[] expectedErr = { 0.519, 0.537, 0.586, 0.415, 0.391 };
+            double[] expectedP = { 0.037, 0.415, 0.001, 0.000, 0.000 };
+            double[][] x = {
+                    { 8.32, 7.9, 0.31, 3.85, 0.05 },
+                    { 2.39, 7.59, 4.06, 8.73, 8.59 },
+                    { 1.59, 1.1, 4.3, 9.49, 2.13 },
+                    { 5.36, 2.64, 4.65, 9.88, 5.25 },
+                    { 1.96, 2.44, 0.58, 4.24, 0.3 },
+                    { 8.22, 8.07, 0.57, 2.34, 8.89 },
+                    { 9.08, 0.56, 2.22, 9.81, 0.34 },
+                    { 4.84, 6.52, 3.12, 8.62, 9.79 },
+                    { 2.42, 8.5, 9.33, 3.96, 9.9 },
+                    { 5.1, 9.88, 8.6, 7.58, 3.0 },
+            };
+            double[] y = { 33.26402211568451, 107.47389791796185, 72.15586479806592, 96.52857945629758, 29.289064802655997, 78.73842411657569, 68.1835699678292, 122.79428874425378, 119.66821422153396,
+                    96.08485899842191 };
+            double[] sampleWeights = { .1, .1, .1, .1, .1, .1, .1, .1, .1, .1 };
+            WeightedLinearRegressionResults wlrr = WeightedLinearRegression.fit(x, y, sampleWeights, false, random);
+            double[] coefs = wlrr.getCoefficients();
+            double[] conf = wlrr.getConf(.01);
+            double[] ub = IntStream.range(0, coefs.length).mapToDouble(i -> coefs[i] + conf[i]).toArray();
+            double[] lb = IntStream.range(0, coefs.length).mapToDouble(i -> coefs[i] - conf[i]).toArray();
+            assertArrayEquals(expectedErr, wlrr.getStdErrors(), .01);
+            assertArrayEquals(expectedP, wlrr.getPValues(), .01);
+
         }
     }
 
@@ -180,7 +210,6 @@ class WeightedLinearRegressionTest {
         assertArrayEquals(actualCoefs, wlrr.getCoefficients(), 1e-6);
         assertEquals(0.0, wlrr.getIntercept(), 1e-6);
         assertEquals(0.0, wlrr.getMSE(), 1e-6);
-        assertEquals(1.0, wlrr.getGof(), 1e-6);
     }
 
     // === testing error cases ===

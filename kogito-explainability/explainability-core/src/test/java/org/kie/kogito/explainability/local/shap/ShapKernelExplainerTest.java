@@ -17,6 +17,7 @@
 package org.kie.kogito.explainability.local.shap;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -27,11 +28,23 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.TestUtils;
-import org.kie.kogito.explainability.model.*;
+import org.kie.kogito.explainability.model.Feature;
+import org.kie.kogito.explainability.model.FeatureFactory;
+import org.kie.kogito.explainability.model.FeatureImportance;
+import org.kie.kogito.explainability.model.PerturbationContext;
+import org.kie.kogito.explainability.model.Prediction;
+import org.kie.kogito.explainability.model.PredictionInput;
+import org.kie.kogito.explainability.model.PredictionOutput;
+import org.kie.kogito.explainability.model.PredictionProvider;
+import org.kie.kogito.explainability.model.Saliency;
+import org.kie.kogito.explainability.model.SimplePrediction;
 import org.kie.kogito.explainability.utils.MatrixUtils;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ShapKernelExplainerTest {
@@ -116,7 +129,6 @@ class ShapKernelExplainerTest {
     };
 
     PerturbationContext pc = new PerturbationContext(new Random(0), 0);
-
     ShapConfig.Builder testConfig = ShapConfig.builder().withLink(ShapConfig.LinkType.IDENTITY).withPC(pc);
 
     // test helper functions ===========================================================================================
@@ -132,6 +144,18 @@ class ShapKernelExplainerTest {
             pis.add(new PredictionInput(fs));
         }
         return pis;
+    }
+
+    private double[][][] saliencyToMatrix(Saliency[] saliencies) {
+        double[][][] out = new double[2][saliencies.length][saliencies[0].getPerFeatureImportance().size()];
+        for (int i = 0; i < saliencies.length; i++) {
+            List<FeatureImportance> fis = saliencies[i].getPerFeatureImportance();
+            for (int j = 0; j < fis.size(); j++) {
+                out[0][i][j] = fis.get(j).getScore();
+                out[1][i][j] = fis.get(j).getConfidence();
+            }
+        }
+        return out;
     }
 
     /*
@@ -157,7 +181,8 @@ class ShapKernelExplainerTest {
         ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         for (int i = 0; i < toExplain.size(); i++) {
             //explanations shape: outputSize x nfeatures
-            double[][] explanations = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            double[][] explanations = saliencyToMatrix(explanationSaliencies)[0];
             for (int j = 0; j < explanations.length; j++) {
                 assertArrayEquals(expected[i][j], explanations[j], 1e-6);
             }
@@ -186,7 +211,8 @@ class ShapKernelExplainerTest {
         // evaluate if the explanations match the expected value
         for (int i = 0; i < toExplain.size(); i++) {
             //explanations shape: outputSize x nfeatures
-            double[][] explanations = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            Saliency[] exlanationSaliencies = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            double[][] explanations = saliencyToMatrix(exlanationSaliencies)[0];
             for (int j = 0; j < explanations.length; j++) {
                 assertArrayEquals(expected[i][j], explanations[j], 1e-6);
             }
@@ -298,7 +324,10 @@ class ShapKernelExplainerTest {
         // evaluate if the explanations match the expected value
         ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
         for (int i = 0; i < toExplain.size(); i++) {
-            double[][] explanations = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            Saliency[] explanationSaliencies = ske.explainAsync(predictions.get(i), model).get(5, TimeUnit.SECONDS);
+            double[][][] explanationsAndConfs = saliencyToMatrix(explanationSaliencies);
+            double[][] explanations = explanationsAndConfs[0];
+
             for (int j = 0; j < explanations.length; j++) {
                 assertArrayEquals(expected[i][j], explanations[j], 1e-2);
             }
@@ -338,11 +367,12 @@ class ShapKernelExplainerTest {
 
         // evaluate if the explanations match the expected value
         ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
-        CompletableFuture<double[][]> explanationsCF = ske.explainAsync(predictions.get(0), model);
+        CompletableFuture<Saliency[]> explanationsCF = ske.explainAsync(predictions.get(0), model);
 
         ExecutorService executor = ForkJoinPool.commonPool();
         executor.submit(() -> {
-            double[][] explanations = explanationsCF.join();
+            Saliency[] explanationSaliencies = explanationsCF.join();
+            double[][] explanations = saliencyToMatrix(explanationSaliencies)[0];
             assertArrayEquals(expected[0][0], explanations[0], 1e-2);
         });
     }
@@ -444,4 +474,51 @@ class ShapKernelExplainerTest {
             ske.setConfig(skConfig1);
         }
     }
+
+    double[][] backgroundAllZeros = new double[100][6];
+
+    double[][] toExplainAllOnes = {
+            { 1., 1., 1., 1., 1, 1. }
+    };
+
+    //given a noisy model, expect the n% confidence window to include true value roughly n% of the time
+    @ParameterizedTest
+    @ValueSource(doubles = { .001, .1, .25, .5 })
+    void testErrorBounds(double noise) throws InterruptedException, ExecutionException {
+        for (double interval : new double[] { .95, .975, .99 }) {
+            int[] testResults = new int[600];
+            for (int test = 0; test < 100; test++) {
+                PredictionProvider model = TestUtils.getNoisySumModel(pc.getRandom(), noise);
+                ShapConfig skConfig = testConfig
+                        .withBackground(createPIFromMatrix(backgroundAllZeros))
+                        .withConfidence(interval)
+                        .build();
+                List<PredictionInput> toExplain = createPIFromMatrix(toExplainAllOnes);
+                ShapKernelExplainer ske = new ShapKernelExplainer(skConfig);
+                List<PredictionOutput> predictionOutputs = model.predictAsync(toExplain).get();
+                Prediction p = new SimplePrediction(toExplain.get(0), predictionOutputs.get(0));
+                Saliency[] saliencies = ske.explainAsync(p, model).get();
+                double[][][] explanationsAndConfs = saliencyToMatrix(saliencies);
+                double[][] explanations = explanationsAndConfs[0];
+
+                double[][] confidence = explanationsAndConfs[1];
+
+                int[] shape = MatrixUtils.getShape(confidence);
+                for (int i = 0; i < shape[0]; i++) {
+                    for (int j = 0; j < shape[1]; j++) {
+                        double conf = confidence[i][j];
+                        double exp = explanations[i][j];
+
+                        // see if true value falls into confidence interval
+                        testResults[test * 6 + j] = (exp + conf) > 1.0 & 1.0 > (exp - conf) ? 1 : 0;
+                    }
+                }
+            }
+
+            // roughly interval% of the tests should be true
+            double score = Arrays.stream(testResults).sum() / 600.;
+            assertEquals(interval, score, .05);
+        }
+    }
+
 }

@@ -56,10 +56,12 @@ class ShapConfigTest {
                 .withPC(pc)
                 .withExecutor(executor)
                 .withNSamples(100)
+                .withConfidence(.99)
                 .build();
         assertEquals(ShapConfig.LinkType.IDENTITY, skConfig.getLink());
         assertTrue(skConfig.getNSamples().isPresent());
         assertEquals(100, skConfig.getNSamples().get());
+        assertEquals(.99, skConfig.getConfidence());
         assertSame(pc, skConfig.getPC());
         assertSame(executor, skConfig.getExecutor());
         assertSame(pis, skConfig.getBackground());

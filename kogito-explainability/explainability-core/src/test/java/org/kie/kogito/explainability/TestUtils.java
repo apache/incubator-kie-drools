@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
@@ -68,6 +69,23 @@ public class TestUtils {
                 }
                 PredictionOutput predictionOutput = new PredictionOutput(
                         List.of(new Output("sum-but" + skipFeatureIndex, Type.NUMBER, new Value(result), 1d)));
+                predictionOutputs.add(predictionOutput);
+            }
+            return predictionOutputs;
+        });
+    }
+
+    public static PredictionProvider getNoisySumModel(Random rn, double noiseMagnitude) {
+        return inputs -> supplyAsync(() -> {
+            List<PredictionOutput> predictionOutputs = new LinkedList<>();
+            for (PredictionInput predictionInput : inputs) {
+                List<Feature> features = predictionInput.getFeatures();
+                double result = 0;
+                for (int i = 0; i < features.size(); i++) {
+                    result += features.get(i).getValue().asNumber() + ((rn.nextDouble() - .5) * noiseMagnitude);
+                }
+                PredictionOutput predictionOutput = new PredictionOutput(
+                        List.of(new Output("noisy-sum", Type.NUMBER, new Value(result), 1d)));
                 predictionOutputs.add(predictionOutput);
             }
             return predictionOutputs;
