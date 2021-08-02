@@ -1,0 +1,149 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+kogitoRuntimesRepo = 'kogito-runtimes'
+optaplannerRepo = 'optaplanner'
+kogitoAppsRepo = 'kogito-apps'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+    }
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutKogitoRepo(kogitoRuntimesRepo)
+                    checkoutOptaplannerRepo()
+                    checkoutKogitoRepo(kogitoAppsRepo)
+                }
+            }
+        }
+        stage('Build Runtimes') {
+            steps {
+                script {
+                    getMavenCommand(kogitoRuntimesRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+        }
+        stage('Build OptaPlanner') {
+            steps {
+                script {
+                    getMavenCommand(optaplannerRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+        }
+        stage('Build Apps') {
+            steps {
+                script {
+                    getNativeMavenCommand(kogitoAppsRepo)
+                        .withProperty('skipUI')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        archiveArtifacts artifacts: '**/target/*-runner.jar,**/target/*-runner', fingerprint: true
+                        junit '**/target/surefire-reports/**/*.xml,**/target/failsafe-reports/**/*.xml'
+                    }
+                }
+                cleanup {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        always {
+            script {
+                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    emailext body: "**Native check job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+             subject: "[${params.BUILD_BRANCH_NAME}] Kogito Apps",
+             to: env.KOGITO_CI_EMAIL_TO
+}
+
+void checkoutKogitoRepo(String repo, String dirName=repo) {
+    dir(dirName) {
+        checkout(githubscm.resolveRepository(repo, params.GIT_AUTHOR, getKogitoTargetBranch(), false))
+    }
+}
+
+void checkoutOptaplannerRepo() {
+    dir(optaplannerRepo) {
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
+    }
+}
+
+String getKogitoTargetBranch() {
+    return getTargetBranch(0)
+}
+
+String getOptaplannerTargetBranch() {
+    return getTargetBranch(7)
+}
+
+String getTargetBranch(Integer addToMajor) {
+    String targetBranch = params.BUILD_BRANCH_NAME
+    String [] versionSplit = targetBranch.split("\\.")
+    if (versionSplit.length == 3
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+        && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + addToMajor}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
+        }
+    return targetBranch
+}
+
+MavenCommand getMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
+                .withProperty('java.net.preferIPv4Stack', true)
+                .inDirectory(directory)
+}
+
+MavenCommand getNativeMavenCommand(String directory) {
+    return getMavenCommand(directory)
+                .withProfiles(['native'])
+                .withProperty('quarkus.native.container-build', true)
+                .withProperty('quarkus.native.container-runtime', 'docker')
+                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}

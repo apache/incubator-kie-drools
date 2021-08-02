@@ -50,8 +50,7 @@ pipeline {
             steps {
                 script {
                     getMavenCommand('kogito-runtimes')
-                        .skipTests(true)
-                        .withProperty('skipITs', true)
+                        .withProperty('quickly')
                         .run('clean install')
                 }
             }

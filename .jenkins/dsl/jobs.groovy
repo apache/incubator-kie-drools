@@ -59,6 +59,7 @@ setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
 // Nightly jobs
+setupNativeJob(nightlyBranchFolder)
 setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
 
@@ -108,6 +109,20 @@ void setupMultijobPrLTSChecks() {
 void setupSonarCloudJob(String jobFolder) {
     def jobParams = getJobParams('kogito-apps-sonarcloud', jobFolder, 'Jenkinsfile.sonarcloud', 'Kogito Apps Daily Sonar')
     jobParams.triggers = [ cron : 'H 20 * * 1-5' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+        }
+    }
+}
+
+void setupNativeJob(String jobFolder) {
+    def jobParams = getJobParams('kogito-apps-native', jobFolder, 'Jenkinsfile.native', 'Kogito Apps Native Testing')
+    jobParams.triggers = [ cron : 'H 6 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
             stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
