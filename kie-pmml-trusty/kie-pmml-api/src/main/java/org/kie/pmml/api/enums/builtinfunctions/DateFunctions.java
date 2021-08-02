@@ -23,6 +23,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkDate;
 import static org.kie.pmml.api.enums.BUILTIN_FUNCTIONS.checkDates;
@@ -39,6 +41,8 @@ public enum DateFunctions {
     DATE_SECONDS_SINCE_MIDNIGHT("dateSecondsSinceMidnight");
 
     private final String name;
+    private static final Logger logger = LoggerFactory.getLogger(DateFunctions.class);
+
 
     DateFunctions(String name) {
         this.name = name;
@@ -77,8 +81,12 @@ public enum DateFunctions {
         checkLength(inputData, 2);
         checkDate(inputData[0]);
         checkInteger(inputData[1]);
-        Date yearDate = new GregorianCalendar((int)inputData[1], 0, 1).getTime();
+        Date yearDate = new GregorianCalendar((int)inputData[1], Calendar.JANUARY, 1).getTime();
+        logger.debug("Referring date");
+        logger.debug("{}", yearDate);
+        logger.debug("{}", yearDate.getTime());
         long diff = ((Date) inputData[0]).getTime() - yearDate.getTime();
+        logger.info("diff: {}", yearDate.getTime());
         return (int) TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS) + 1;
     }
 

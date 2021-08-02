@@ -24,6 +24,8 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,6 +35,7 @@ public class DateFunctionsTest {
 
     public final static List<DateFunctions> supportedDateFunctions;
     public final static List<DateFunctions> unsupportedDateFunctions;
+    private static final Logger logger = LoggerFactory.getLogger(DateFunctionsTest.class);
 
     static {
         supportedDateFunctions = new ArrayList<>();
@@ -46,6 +49,9 @@ public class DateFunctionsTest {
     @Test
     public void getDateDaysSinceYearCorrectInput() {
         Date inputDate = new GregorianCalendar(2003, Calendar.APRIL, 1).getTime();
+        logger.debug("Input date");
+        logger.debug("{}", inputDate);
+        logger.debug("{}", inputDate.getTime());
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_DAYS_SINCE_YEAR.getValue(input1);
         assertEquals(15796, retrieved);
@@ -75,7 +81,7 @@ public class DateFunctionsTest {
 
     @Test
     public void getDateSecondsSinceYearCorrectInput() {
-        Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 3, 3, 30, 3 ).getTime();
+        Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 3, 3, 30, 3).getTime();
         Object[] input1 = {inputDate, 1960};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_YEAR.getValue(input1);
         assertEquals(185403, retrieved);
@@ -105,15 +111,15 @@ public class DateFunctionsTest {
 
     @Test
     public void getDateSecondsSinceMidnightCorrectInput() {
-        Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 2, 0, 0, 1 ).getTime();
+        Date inputDate = new GregorianCalendar(1960, Calendar.JANUARY, 2, 0, 0, 1).getTime();
         Object[] input1 = {inputDate};
         Object retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input1);
         assertEquals(1, retrieved);
-        inputDate = new GregorianCalendar(1960, Calendar.MARCH, 12, 0, 1, 0 ).getTime();
+        inputDate = new GregorianCalendar(1960, Calendar.MARCH, 12, 0, 1, 0).getTime();
         Object[] input2 = {inputDate};
         retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input2);
         assertEquals(60, retrieved);
-        inputDate = new GregorianCalendar(1960, Calendar.DECEMBER, 23, 5, 23, 30 ).getTime();
+        inputDate = new GregorianCalendar(1960, Calendar.DECEMBER, 23, 5, 23, 30).getTime();
         Object[] input3 = {inputDate};
         retrieved = DateFunctions.DATE_SECONDS_SINCE_MIDNIGHT.getValue(input3);
         assertEquals(19410, retrieved);
@@ -141,5 +147,4 @@ public class DateFunctionsTest {
             }
         }
     }
-
 }
