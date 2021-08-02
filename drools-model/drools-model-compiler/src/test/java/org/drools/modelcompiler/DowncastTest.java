@@ -4,17 +4,28 @@ import java.math.BigDecimal;
 
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.assertEquals;
 
 public class DowncastTest extends BaseModelTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(DowncastTest.class);
+    
     public DowncastTest( RUN_TYPE testRunType ) {
         super( testRunType );
     }
 
     @Test
     public void testDowncast() {
+        
+        logger.warn("java.vendor : " + System.getProperty("java.vendor"));
+        logger.warn("java.version : " + System.getProperty("java.version"));
+        logger.warn("java.vm.version : " + System.getProperty("java.vm.version"));
+        logger.warn("os.version : " + System.getProperty("os.version"));
+        logger.warn("java.class.version : " + System.getProperty("java.class.version"));
+        logger.warn("java.runtime.version : " + System.getProperty("java.runtime.version"));
         // DROOLS-6520
         String str =
                 "import " + Product.class.getCanonicalName() + ";" +

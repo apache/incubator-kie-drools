@@ -821,6 +821,7 @@ public class ExpressionTyper {
         }
 
         Method m = rawClassCursor != null ? MethodUtils.findMethod(rawClassCursor, methodName, argsType) : null;
+        logger.warn("parseMethodCallExpr : m = " + m);
         if (m == null) {
             Optional<RuleContext.FunctionType> functionType = ruleContext.getFunctionType(methodName);
             if (functionType.isPresent()) {
@@ -863,6 +864,8 @@ public class ExpressionTyper {
                 Class<?> actualArgumentType = actualArgumentTypes[i];
 
                 Expression argumentExpression = methodCallExpr.getArgument(i);
+
+                logger.warn("argumentType : " + argumentType + ", actualArgumentType = " + actualArgumentType + ", argumentExpression" + argumentExpression);
 
                 if (argumentType != actualArgumentType) {
                     Expression coercedExpression = new BigDecimalArgumentCoercion().coercedArgument(argumentType, actualArgumentType, argumentExpression);

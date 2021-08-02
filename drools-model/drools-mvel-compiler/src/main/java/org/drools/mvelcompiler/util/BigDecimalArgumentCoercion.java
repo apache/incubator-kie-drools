@@ -20,11 +20,15 @@ import java.math.BigDecimal;
 
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.ast.NodeList.nodeList;
 
 public class BigDecimalArgumentCoercion {
 
+    private static final Logger logger = LoggerFactory.getLogger(BigDecimalArgumentCoercion.class);
+    
     public Expression coercedArgument(Class<?> argumentType, Class<?> actualType, Expression argument) {
         boolean argumentTypeIsBigDecimal = BigDecimal.class.isAssignableFrom(argumentType);
 
@@ -36,6 +40,8 @@ public class BigDecimalArgumentCoercion {
             return bigDecimalToPrimitive(argument, "doubleValue");
         } else if (isFloat(actualType) && argumentTypeIsBigDecimal) {
             return bigDecimalToPrimitive(argument, "floatValue");
+        } else {
+            logger.warn("coercedArgument : no match");
         }
 
         return argument;
