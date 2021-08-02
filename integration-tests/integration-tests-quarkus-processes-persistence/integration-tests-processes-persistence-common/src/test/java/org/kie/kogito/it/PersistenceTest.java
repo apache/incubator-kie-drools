@@ -30,11 +30,11 @@ import static org.junit.Assert.assertEquals;
 
 public abstract class PersistenceTest {
 
+    public static final String PROCESS_ID = "hello";
+
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
-
-    public static final String PROCESS_ID = "hello";
 
     @Test
     void testPersistence() {
@@ -75,5 +75,15 @@ public abstract class PersistenceTest {
                 .get("/greetings/{id}", pid)
                 .then()
                 .statusCode(404);
+    }
+
+    @Test
+    void testHealthCheck() {
+        given().contentType(ContentType.JSON)
+                .when()
+                .get("/q/health")
+                .then()
+                .statusCode(200)
+                .body("status", equalTo("UP"));
     }
 }

@@ -21,8 +21,6 @@ import java.util.Map;
 import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 
-import static org.kie.kogito.testcontainers.KogitoPostgreSqlContainer.POSTGRESQL_CONNECTION_URI;
-
 /**
  * PostgreSQL quarkus resource that works within the test lifecycle.
  */
@@ -40,7 +38,6 @@ public class PostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResourc
     @Override
     protected Map<String, String> getProperties() {
         Map<String, String> properties = new HashMap<>();
-        properties.put(POSTGRESQL_CONNECTION_URI, getTestResource().getReactiveUrl());
         properties.put(QUARKUS_DATASOURCE_REACTIVE_URL, getTestResource().getReactiveUrl());
         properties.put(QUARKUS_DATASOURCE_JDBC_URL, getTestResource().getJdbcUrl());
         properties.put(QUARKUS_DATASOURCE_USERNAME, getTestResource().getUsername());

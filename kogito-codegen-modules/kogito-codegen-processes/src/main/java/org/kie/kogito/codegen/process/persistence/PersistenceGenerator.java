@@ -500,43 +500,47 @@ public class PersistenceGenerator extends AbstractGenerator {
             context().getDependencyInjectionAnnotator().withConfigInjection(
                     constructor.getParameterByName(QUERY_TIMEOUT).get(), KOGITO_PERSISTENCE_QUERY_TIMEOUT,
                     String.valueOf(10000));
-            context().getDependencyInjectionAnnotator().withNamed(
-                    constructor.getParameterByName(CLIENT).get(), KOGITO);
             context().getDependencyInjectionAnnotator().withInjection(constructor);
 
             //empty constructor for DI
             persistenceProviderClazz.addConstructor(Keyword.PROTECTED);
 
-            //creating PgClient default producer class
-            ClassOrInterfaceDeclaration pgClientProducerClazz = new ClassOrInterfaceDeclaration()
-                    .setName("PgClientProducer")
-                    .setModifiers(Modifier.Keyword.PUBLIC);
+            if (context() instanceof SpringBootKogitoBuildContext) {
+                context().getDependencyInjectionAnnotator().withNamed(
+                        constructor.getParameterByName(CLIENT).get(), KOGITO);
 
-            //creating PgClient producer
-            Parameter uriConfigParam = new Parameter()
-                    .setType(StaticJavaParser.parseClassOrInterfaceType(Optional.class.getName())
-                            .setTypeArguments(StaticJavaParser.parseClassOrInterfaceType(String.class.getName())))
-                    .setName("uri");
+                //creating PgClient default producer class
+                ClassOrInterfaceDeclaration pgClientProducerClazz = new ClassOrInterfaceDeclaration()
+                        .setName("PgClientProducer")
+                        .setModifiers(Modifier.Keyword.PUBLIC);
 
-            MethodDeclaration clientProviderMethod = pgClientProducerClazz.addMethod(CLIENT, Keyword.PUBLIC)
-                    .setType(pgPoolClass)//PgPool
-                    .addParameter(uriConfigParam)
-                    .setBody(new BlockStmt()// return uri.isPresent() ?  PgPool.pool(connectionUri) : PgPool.pool()
-                            .addStatement(new ReturnStmt(
-                                    new ConditionalExpr(
-                                            new MethodCallExpr(new NameExpr(uriConfigParam.getName()), "isPresent"),
-                                            new MethodCallExpr(new NameExpr(pgPoolClass), "pool").addArgument(new MethodCallExpr(new NameExpr("uri"), "get")),
-                                            new MethodCallExpr(new NameExpr(pgPoolClass), "pool")))));
+                //creating PgClient producer
+                Parameter uriConfigParam = new Parameter()
+                        .setType(StaticJavaParser.parseClassOrInterfaceType(Optional.class.getName())
+                                .setTypeArguments(StaticJavaParser.parseClassOrInterfaceType(String.class.getName())))
+                        .setName("uri");
 
-            //inserting DI annotations
-            context().getDependencyInjectionAnnotator().withConfigInjection(uriConfigParam, KOGITO_POSTGRESQL_CONNECTION_URI);
-            context().getDependencyInjectionAnnotator().withProduces(clientProviderMethod, true);
-            context().getDependencyInjectionAnnotator().withNamed(clientProviderMethod, KOGITO);
-            context().getDependencyInjectionAnnotator().withApplicationComponent(pgClientProducerClazz);
+                MethodDeclaration clientProviderMethod = pgClientProducerClazz.addMethod(CLIENT, Keyword.PUBLIC)
+                        .setType(pgPoolClass)//PgPool
+                        .addParameter(uriConfigParam)
+                        .setBody(new BlockStmt()// return uri.isPresent() ?  PgPool.pool(uri.get()) : PgPool.pool()
+                                .addStatement(new ReturnStmt(
+                                        new ConditionalExpr(
+                                                new MethodCallExpr(new NameExpr(uriConfigParam.getName()), "isPresent"),
+                                                new MethodCallExpr(new NameExpr(pgPoolClass), "pool")
+                                                        .addArgument(new MethodCallExpr(new NameExpr("uri"), "get")),
+                                                new MethodCallExpr(new NameExpr(pgPoolClass), "pool")))));
 
-            Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(pgClientProducerClazz,
-                    new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(pgClientProducerClazz));
-            generatedPgClientFile.ifPresent(generatedFiles::add);
+                //inserting DI annotations
+                context().getDependencyInjectionAnnotator().withConfigInjection(uriConfigParam, KOGITO_POSTGRESQL_CONNECTION_URI);
+                context().getDependencyInjectionAnnotator().withProduces(clientProviderMethod, true);
+                context().getDependencyInjectionAnnotator().withNamed(clientProviderMethod, KOGITO);
+                context().getDependencyInjectionAnnotator().withApplicationComponent(pgClientProducerClazz);
+
+                Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(pgClientProducerClazz,
+                        new CompilationUnit(KOGITO_PROCESS_INSTANCE_PACKAGE).addType(pgClientProducerClazz));
+                generatedPgClientFile.ifPresent(generatedFiles::add);
+            }
         }
         addOptimisticLockFlag(persistenceProviderClazz);
         Optional<GeneratedFile> generatedPgClientFile = generatePersistenceProviderClazz(persistenceProviderClazz,
@@ -587,7 +591,9 @@ public class PersistenceGenerator extends AbstractGenerator {
         FieldDeclaration lockField = new FieldDeclaration().addVariable(new VariableDeclarator()
                 .setType(new ClassOrInterfaceType(null, new SimpleName(Optional.class.getCanonicalName()), NodeList.nodeList(new ClassOrInterfaceType(null, Boolean.class.getCanonicalName()))))
                 .setName(OPTIMISTIC_LOCK));
-        context().getDependencyInjectionAnnotator().withConfigInjection(lockField, OPTIMISTIC_LOCK_PROP);
+        if (context().hasDI()) {
+            context().getDependencyInjectionAnnotator().withConfigInjection(lockField, OPTIMISTIC_LOCK_PROP);
+        }
 
         BlockStmt lockMethodBody = new BlockStmt();
         lockMethodBody.addStatement(new ReturnStmt(new MethodCallExpr(new NameExpr(OPTIMISTIC_LOCK), OR_ELSE).addArgument(new BooleanLiteralExpr(false))));
