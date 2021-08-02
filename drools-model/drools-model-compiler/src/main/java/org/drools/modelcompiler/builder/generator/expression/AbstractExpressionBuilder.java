@@ -18,7 +18,6 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -61,7 +60,6 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
@@ -108,13 +106,13 @@ public abstract class AbstractExpressionBuilder {
 
     public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult);
 
-    protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
+    protected Expression getBindingExpression(SingleDrlxParseSuccess drlxParseResult) {
         if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined() && !drlxParseResult.isPredicate()) {
             return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
         } else {
-            final TypedExpression left = drlxParseResult.getLeft();
+            final TypedExpression boundExpr = drlxParseResult.getBoundExpr();
             // Can we unify it? Sometimes expression is in the left sometimes in expression
-            final Expression e = left != null ? findLeftmostExpression(left.getExpression()) : drlxParseResult.getExpr();
+            final Expression e = boundExpr != null ? findLeftmostExpression(boundExpr.getExpression()) : drlxParseResult.getExpr();
             return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
         }
     }
@@ -130,19 +128,13 @@ public abstract class AbstractExpressionBuilder {
         if (expression instanceof CastExpr) {
             CastExpr ce = (CastExpr) expression;
             return findLeftmostExpression(ce.getExpression());
-        } else if (expression instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
-            if(!methodCallExpr.getArguments().isEmpty()) {
-                return findLeftmostExpression(methodCallExpr.getArguments().iterator().next());
-            } else {
-                return expression;
-            }
-        } else if (expression instanceof FieldAccessExpr) {
-            return expression;
-        } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        }
+        if (expression instanceof MethodCallExpr || expression instanceof FieldAccessExpr) {
             return expression;
         }
+
+        context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        return expression;
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Expression expr ) {
@@ -160,14 +152,12 @@ public abstract class AbstractExpressionBuilder {
             return true;
         }
 
-        TypedExpression left = drlxParseResult.getLeft();
-        TypedExpression right = drlxParseResult.getRight();
-
-
-        if(!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
+        if (!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
             return false;
         }
 
+        TypedExpression left = drlxParseResult.getLeft();
+        TypedExpression right = drlxParseResult.getRight();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
         return left != null && (left.getFieldName() != null || isThisExpression(left.getExpression())) &&
@@ -181,10 +171,7 @@ public abstract class AbstractExpressionBuilder {
     private boolean isLeftIndexableExpression(Expression expr) {
         if (expr instanceof MethodCallExpr) {
             Optional<Expression> methodChainScope = DrlxParseUtil.findRootNodeViaScope(expr);
-
-            if (!methodChainScope.map(DrlxParseUtil::isThisExpression).orElse(false)) {
-                return false;
-            }
+            return methodChainScope.map(DrlxParseUtil::isThisExpression).orElse(false);
         }
         return true;
     }
@@ -193,9 +180,9 @@ public abstract class AbstractExpressionBuilder {
         if (usedDeclarations.size() > 4) {
             return false;
         }
-        return !usedDeclarations.stream()
+        return usedDeclarations.stream()
                 .map( context::getDeclarationById )
-                .anyMatch( optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
+                .noneMatch(optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
     }
 
     // See PatternBuilder:1198 (buildConstraintForPattern) Pattern are indexed only when the root of the right part
@@ -349,10 +336,7 @@ public abstract class AbstractExpressionBuilder {
             }
         }
 
-        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-
-        usedDeclarationsWithUnification.stream()
+        drlxParseResult.getUsedDeclarations().stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
@@ -384,9 +368,7 @@ public abstract class AbstractExpressionBuilder {
         if (drlxParseResult.getRight() != null) {
             if (drlxParseResult.getRight().getExpression().isNameExpr()) {
                 NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
-                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
-                    return true;
-                }
+                return name.equals(new NameExpr(THIS_PLACEHOLDER));
             } else {
                 return containsThis(drlxParseResult.getRight());
             }
@@ -401,10 +383,7 @@ public abstract class AbstractExpressionBuilder {
                 .map(NameExpr::getName)
                 .map(SimpleName::getIdentifier)
                 .findFirst(); // just first one
-        if (!opt.isPresent()) {
-            return false;
-        }
-        return opt.get().equals(THIS_PLACEHOLDER);
+        return opt.map(s -> s.equals(THIS_PLACEHOLDER)).orElse(false);
     }
 
     protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {

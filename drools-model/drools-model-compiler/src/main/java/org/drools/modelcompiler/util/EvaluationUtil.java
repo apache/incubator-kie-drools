@@ -25,6 +25,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
@@ -44,7 +45,7 @@ public class EvaluationUtil {
     public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);
 
     public static boolean areNullSafeEquals(Object obj1, Object obj2) {
-        return obj1 != null ? obj1.equals( obj2 ) : obj2 == null;
+        return Objects.equals(obj1, obj2);
     }
 
     public static boolean areNumbersNullSafeEquals(Number n1, Number n2) {
@@ -176,8 +177,8 @@ public class EvaluationUtil {
 
     private static class NumberPair {
 
-        private Number n1;
-        private Number n2;
+        private final Number n1;
+        private final Number n2;
 
         public NumberPair(Number n1, Number n2) {
             this.n1 = n1;
@@ -191,7 +192,6 @@ public class EvaluationUtil {
         public Number getN2() {
             return n2;
         }
-
     }
 
     public static boolean greaterThanNumbers(Number n1, Number n2) {

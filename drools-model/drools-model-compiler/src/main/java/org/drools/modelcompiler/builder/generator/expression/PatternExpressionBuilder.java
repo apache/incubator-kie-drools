@@ -84,6 +84,13 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
                 MethodCallExpr childExpr = buildExpressionWithIndexing(child);
                 childExpr.setScope( exprDSL );
                 exprDSL = childExpr;
+
+                if (child instanceof SingleDrlxParseSuccess && child.getExprBinding() != null) {
+                    SingleDrlxParseSuccess singleDrlxChild = (SingleDrlxParseSuccess) child;
+                    context.addDeclaration( child.getExprBinding(), singleDrlxChild.getLeftExprRawClass() );
+                    Expression dslExpr = buildBinding(singleDrlxChild);
+                    context.addExpression(dslExpr);
+                }
             }
             return new MethodCallExpr(exprDSL, multi.getOperator() == BinaryExpr.Operator.OR ? EXPR_END_OR_CALL : EXPR_END_AND_CALL );
         }
@@ -155,7 +162,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
                 drlxParseResult.getUnificationVariable() :
                 drlxParseResult.getExprBinding();
         bindDSL.addArgument(context.getVarExpr(boundVar));
-        final Expression constraintExpression = getConstraintExpression(drlxParseResult);
+        final Expression constraintExpression = getBindingExpression(drlxParseResult);
         drlxParseResult.getUsedDeclarationsOnLeft().forEach(d -> bindDSL.addArgument(context.getVar(d)));
         bindDSL.addArgument(constraintExpression);
         final Optional<MethodCallExpr> methodCallExpr = buildReactOn(drlxParseResult);
