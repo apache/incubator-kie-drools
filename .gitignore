@@ -4,7 +4,7 @@
 # Eclipse, Netbeans and IntelliJ files
 /.*
 !/.github
-!/.jenkins
+!/.ci
 !.gitignore
 !.gitattributes
 !/.mvn

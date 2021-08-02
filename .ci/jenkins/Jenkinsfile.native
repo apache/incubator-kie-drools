@@ -1,0 +1,172 @@
+@Library('jenkins-pipeline-shared-libraries')_
+
+import org.kie.jenkins.MavenCommand
+
+optaplannerRepo = 'optaplanner'
+quickstartsRepo = 'optaplanner-quickstarts'
+kogitoRuntimesRepo = 'kogito-runtimes'
+
+pipeline {
+    agent {
+        label 'kie-rhel7 && kie-mem16g'
+    }
+    tools {
+        maven 'kie-maven-3.6.2'
+        jdk 'kie-jdk11'
+    }
+    options {
+        timestamps()
+        timeout(time: 360, unit: 'MINUTES')
+    }
+    environment {
+        KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
+    }
+    stages {
+        stage('Initialize') {
+            steps {
+                script {
+                    checkoutRuntimesRepo()
+                    checkoutOptaplannerRepo()
+                    checkoutOptaplannerQuickstartsRepo()
+                }
+            }
+        }
+        stage('Build quickly kogito-runtimes') {
+            steps {
+                script {
+                    getMavenCommand(kogitoRuntimesRepo)
+                        .withProperty('quickly')
+                        .run('clean install')
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+        stage('Build optaplanner') {
+            steps {
+                script {
+                    try {
+                        getNativeMavenCommand('optaplanner')
+                            .run('clean install')
+                    }catch(err) {
+                        unstable("optaplanner test not finish correctly")
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+        stage('Build optaplanner-quickstarts') {
+            steps {
+                script {
+                    try {
+                        getNativeMavenCommand('optaplanner-quickstarts')
+                            .run('clean install')
+                    }catch(err) {
+                        unstable("optaplanner-quickstarts test not finish correctly")
+                    }
+                }
+            }
+            post {
+                always {
+                    script {
+                        cleanContainers()
+                    }
+                }
+            }
+        }
+    }
+    post {
+        unsuccessful {
+            sendNotification()
+        }
+        always {
+            script {
+                junit '**/target/surefire-reports/**/*.xml, **/target/failsafe-reports/**/*.xml'
+            }
+        }
+        cleanup {
+            script {
+                util.cleanNode('docker')
+            }
+        }
+    }
+}
+
+void sendNotification() {
+    emailext body: "**Native check job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+             subject: "[${params.BUILD_BRANCH_NAME}] Optaplanner",
+             to: env.KOGITO_CI_EMAIL_TO
+}
+
+void checkoutRuntimesRepo() {
+    dir(kogitoRuntimesRepo) {
+        checkout(githubscm.resolveRepository(kogitoRuntimesRepo, params.GIT_AUTHOR, getKogitoTargetBranch(), false))
+    }
+}
+
+void checkoutOptaplannerRepo() {
+    dir(optaplannerRepo) {
+        checkout(githubscm.resolveRepository(optaplannerRepo, params.GIT_AUTHOR, getOptaplannerTargetBranch(), false))
+    }
+}
+
+void checkoutOptaplannerQuickstartsRepo() {
+    // If the PR to OptaPlanner targets the 'main' branch, we assume the branch 'development' for quickstarts.
+    String quickstartsChangeTarget = params.BUILD_BRANCH_NAME == 'main' ? 'development' : getOptaplannerTargetBranch()
+
+    dir(quickstartsRepo) {
+        checkout(githubscm.resolveRepository(quickstartsRepo, params.GIT_AUTHOR, quickstartsChangeTarget, false))
+    }
+}
+
+String getKogitoTargetBranch() {
+    return getTargetBranch(-7)
+}
+
+String getOptaplannerTargetBranch() {
+    return getTargetBranch(0)
+}
+
+String getTargetBranch(Integer addToMajor) {
+    String targetBranch = params.BUILD_BRANCH_NAME
+    String [] versionSplit = targetBranch.split("\\.")
+    if (versionSplit.length == 3
+        && versionSplit[0].isNumber()
+        && versionSplit[1].isNumber()
+        && versionSplit[2] == 'x') {
+        targetBranch = "${Integer.parseInt(versionSplit[0]) + addToMajor}.${versionSplit[1]}.x"
+    } else {
+        echo "Cannot parse targetBranch as release branch so going further with current value: ${targetBranch}"
+        }
+    return targetBranch
+}
+
+MavenCommand getMavenCommand(String directory) {
+    return new MavenCommand(this, ['-fae'])
+                .withSettingsXmlId('kogito_release_settings')
+                .withProperty('java.net.preferIPv4Stack', true)
+                .inDirectory(directory)
+}
+
+MavenCommand getNativeMavenCommand(String directory) {
+    return getMavenCommand(directory)
+                .withProfiles(['native'])
+                .withProperty('quarkus.native.container-build', true)
+                .withProperty('quarkus.native.container-runtime', 'docker')
+                .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+}
+
+void cleanContainers() {
+    cloud.cleanContainersAndImages('docker')
+}
