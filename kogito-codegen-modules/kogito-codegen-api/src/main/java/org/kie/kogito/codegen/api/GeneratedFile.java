@@ -21,16 +21,17 @@ import java.util.Objects;
 
 public class GeneratedFile {
 
-    private final String relativePath;
+    private final Path path;
+    private final String pathAsString;
     private final byte[] contents;
     private final GeneratedFileType type;
 
-    public GeneratedFile(GeneratedFileType type, Path relativePath, String contents) {
-        this(type, relativePath, contents.getBytes(StandardCharsets.UTF_8));
+    public GeneratedFile(GeneratedFileType type, Path path, String contents) {
+        this(type, path, contents.getBytes(StandardCharsets.UTF_8));
     }
 
-    public GeneratedFile(GeneratedFileType type, Path relativePath, byte[] contents) {
-        this(type, relativePath.toString(), contents);
+    public GeneratedFile(GeneratedFileType type, Path path, byte[] contents) {
+        this(type, path, path.toString(), contents);
     }
 
     public GeneratedFile(GeneratedFileType type, String relativePath, String contents) {
@@ -38,13 +39,22 @@ public class GeneratedFile {
     }
 
     public GeneratedFile(GeneratedFileType type, String relativePath, byte[] contents) {
+        this(type, Path.of(relativePath), relativePath, contents);
+    }
+
+    private GeneratedFile(GeneratedFileType type, Path path, String pathAsString, byte[] contents) {
         this.type = type;
-        this.relativePath = relativePath;
+        this.path = path;
+        this.pathAsString = pathAsString;
         this.contents = contents;
     }
 
     public String relativePath() {
-        return relativePath;
+        return pathAsString;
+    }
+
+    public Path path() {
+        return path;
     }
 
     public byte[] contents() {
@@ -63,7 +73,7 @@ public class GeneratedFile {
     public String toString() {
         return "GeneratedFile{" +
                 "type=" + type +
-                ", relativePath='" + relativePath + '\'' +
+                ", path='" + path + '\'' +
                 '}';
     }
 
@@ -76,11 +86,11 @@ public class GeneratedFile {
             return false;
         }
         GeneratedFile that = (GeneratedFile) o;
-        return Objects.equals(relativePath, that.relativePath);
+        return Objects.equals(path, that.path);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(relativePath);
+        return Objects.hash(path);
     }
 }

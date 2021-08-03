@@ -136,14 +136,12 @@ public class GeneratedFileWriter {
         if (location == null) {
             return;
         }
-        // verify if this is still needed https://issues.redhat.com/browse/KOGITO-3085
-        String generatedClassFile = f.relativePath().replace("src/main/java", "");
         Files.write(
-                pathOf(location, generatedClassFile),
+                pathOf(location, f.path()),
                 f.contents());
     }
 
-    private Path pathOf(Path location, String end) throws IOException {
+    private Path pathOf(Path location, Path end) throws IOException {
         Path path = location.resolve(end);
         Files.createDirectories(path.getParent());
         return path;
