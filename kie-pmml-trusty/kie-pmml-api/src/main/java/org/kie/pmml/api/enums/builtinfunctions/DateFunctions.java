@@ -87,17 +87,10 @@ public enum DateFunctions {
         checkInteger(inputData[1]);
 
         LocalDateTime referredDate = LocalDateTime.of((int)inputData[1], 1, 1, 0, 0, 0);
-        logger.debug("referredDate {}", referredDate);
-
         LocalDateTime referringDate = ((Date) inputData[0]).toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDateTime();
-        logger.debug("Referring date");
-        logger.debug("{}", referringDate);
-
-        long toReturn = DAYS.between(referredDate, referringDate);
-        logger.info("toReturn: {}", toReturn);
-        return (int) toReturn;
+        return (int) DAYS.between(referredDate, referringDate);
     }
 
     private int dateSecondsSinceYear(final Object[] inputData) {
