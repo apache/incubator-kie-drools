@@ -20,4 +20,11 @@ public class KogitoEventStreams {
     public static final String OUTGOING = "kogito_outgoing_stream";
     public static final String PUBLISHER = "kogito_event_publisher";
     public static final String WORKER_THREAD = "kogito-event-worker";
+
+    private KogitoEventStreams() {
+    }
+
+    public static String getReceiverBeanName(String trigger) {
+        return '_' + trigger + "_EventReceiver";
+    }
 }

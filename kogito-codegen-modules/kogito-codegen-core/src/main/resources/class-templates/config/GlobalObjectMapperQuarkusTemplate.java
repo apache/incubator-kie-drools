@@ -15,10 +15,6 @@
  */
 package $Package$;
 
-
-import java.io.IOException;
-import java.util.List;
-
 import javax.inject.Singleton;
 import javax.inject.Inject;
 

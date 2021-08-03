@@ -19,6 +19,9 @@ import java.util.Optional;
 
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import org.kie.kogito.event.EventMarshaller;
 
 public class MessageProducer {
@@ -27,7 +30,7 @@ public class MessageProducer {
 
     Optional<Boolean> useCloudEvents = Optional.of(true);
 
-    EventMarshaller marshaller = new DefaultEventMarshaller();
+    EventMarshaller marshaller = new DefaultEventMarshaller(new ObjectMapper());
 
     public void configure() {
 

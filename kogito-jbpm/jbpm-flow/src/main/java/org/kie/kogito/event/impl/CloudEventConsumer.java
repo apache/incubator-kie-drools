@@ -49,9 +49,11 @@ public class CloudEventConsumer<D, M extends Model, T extends AbstractProcessDat
     public CompletionStage<?> consume(Application application, Process<M> process, Object object, String trigger) {
         T cloudEvent = (T) object;
         M model = function.apply(cloudEvent.getData());
-        if (ignoredMessageType(cloudEvent, trigger)) {
+        String simpleName = cloudEvent.getClass().getSimpleName();
+        // currently we filter out messages on the receiving end; for strategy see https://issues.redhat.com/browse/KOGITO-3591
+        if (ignoredMessageType(cloudEvent, simpleName) && ignoredMessageType(cloudEvent, trigger)) {
             logger.warn("Consumer for CloudEvent type '{}', trigger '{}': ignoring message with type '{}',  source '{}'",
-                    cloudEvent.getClass(),
+                    simpleName,
                     trigger,
                     cloudEvent.getType(),
                     cloudEvent.getSource());

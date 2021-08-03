@@ -32,6 +32,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /**
  * Spring implementation delegating to kafka template
  */
@@ -51,10 +53,12 @@ public class SpringKafkaCloudEventEmitter implements EventEmitter {
     private EventMarshaller marshaller;
     @Autowired
     ConfigBean configBean;
+    @Autowired
+    ObjectMapper mapper;
 
     @PostConstruct
     void init() {
-        marshaller = marshallerInstance.getIfAvailable(DefaultEventMarshaller::new);
+        marshaller = marshallerInstance.getIfAvailable(() -> new DefaultEventMarshaller(mapper));
     }
 
     @Override

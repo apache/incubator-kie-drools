@@ -27,17 +27,16 @@ import org.slf4j.LoggerFactory;
  */
 public class AddonsConfigDiscovery {
 
-    public static final String PERSISTENCE_FACTORY_CLASS = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
-    public static final String PROMETHEUS_CLASS = "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource";
-    public static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
-    public static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
-    public static final String QUARKUS_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventEmitter";
-    public static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventEmitter";
-    public static final String SPRING_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.spring.SpringKafkaCloudEventEmitter";
-    public static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
-    public static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
-    public static final String QUARKUS_PROCESS_SVG = "org.kie.kogito.svg.service.QuarkusProcessSvgService";
-    public static final String SPRING_PROCESS_SVG = "org.kie.kogito.svg.service.SpringBootProcessSvgService";
+    private static final String QUARKUS_RESOURCE_CLASS = "org.kie.kogito.addon.cloudevents.quarkus.http.AbstractQuarkusCloudEventResource";
+    private static final String PERSISTENCE_FACTORY_CLASS = "org.kie.kogito.persistence.KogitoProcessInstancesFactory";
+    private static final String PROMETHEUS_CLASS = "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource";
+    private static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
+    private static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
+    private static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventEmitter";
+    private static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
+    private static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
+    private static final String QUARKUS_PROCESS_SVG = "org.kie.kogito.svg.service.QuarkusProcessSvgService";
+    private static final String SPRING_PROCESS_SVG = "org.kie.kogito.svg.service.SpringBootProcessSvgService";
     private static final Logger LOGGER = LoggerFactory.getLogger(AddonsConfigDiscovery.class);
 
     private AddonsConfigDiscovery() {
@@ -53,7 +52,7 @@ public class AddonsConfigDiscovery {
         boolean usePrometheusMonitoring = classAvailabilityResolver.test(PROMETHEUS_CLASS);
         boolean useMonitoring = usePrometheusMonitoring || classAvailabilityResolver.test(MONITORING_CORE_CLASS);
         boolean useTracing = classAvailabilityResolver.test(TRACING_CLASS);
-        boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_CLOUD_EVENTS) || classAvailabilityResolver.test(SPRING_CLOUD_EVENTS);
+        boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_RESOURCE_CLASS);
         boolean useExplainability = classAvailabilityResolver.test(QUARKUS_EXPLAINABILITY) || classAvailabilityResolver.test(SPRING_EXPLAINABILITY);
         boolean useProcessSVG = classAvailabilityResolver.test(QUARKUS_PROCESS_SVG) || classAvailabilityResolver.test(SPRING_PROCESS_SVG);
         boolean useMultiChannel = classAvailabilityResolver.test(QUARKUS_MULTI_CLOUD_EVENTS);

@@ -61,6 +61,7 @@ import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
 import org.kie.kogito.codegen.process.openapi.OpenApiClientWorkItemIntrospector;
+import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 import org.kie.kogito.process.validation.ValidationContext;
 import org.kie.kogito.process.validation.ValidationException;
@@ -385,7 +386,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                        String eventListenerName = '_' + trigger.getName() + "_trigger";
+                        String eventListenerName = KogitoEventStreams.getReceiverBeanName(trigger.getName());
                         MessageDataEventGenerator msgDataEventGenerator =
                                 new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);

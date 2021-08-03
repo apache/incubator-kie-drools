@@ -20,6 +20,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.annotation.PostConstruct;
+import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -27,7 +28,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.kie.kogito.addon.cloudevents.quarkus.QuarkusCloudEventReceiver;
+import org.kie.kogito.addon.cloudevents.quarkus.AbstractQuarkusCloudEventReceiver;
 import org.kie.kogito.cloudevents.Printer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,8 +49,9 @@ public abstract class AbstractQuarkusCloudEventResource {
 
     @Inject
     ObjectMapper objectMapper;
+
     @Inject
-    QuarkusCloudEventReceiver publisher;
+    Instance<AbstractQuarkusCloudEventReceiver> receivers;
 
     @PostConstruct
     public void setup() {
@@ -59,10 +61,13 @@ public abstract class AbstractQuarkusCloudEventResource {
     @POST
     @Consumes(MediaType.WILDCARD)
     @Produces(MediaType.APPLICATION_JSON)
-    public CompletionStage<Response> cloudEventListener(CloudEvent event) {
-        return CompletableFuture.completedFuture(serialize(event))
-                .thenCompose(publisher::produce)
-                .thenApply(r -> Response.ok().type(MediaType.APPLICATION_JSON).build());
+    public CompletionStage<Response> cloudEventListener(CloudEvent payload) {
+        String serialized = serialize(payload);
+        CompletableFuture<?> future = CompletableFuture.completedFuture(null);
+        for (AbstractQuarkusCloudEventReceiver receiver : receivers) {
+            future = future.thenCompose(e -> receiver.produce(serialized));
+        }
+        return future.thenApply(r -> Response.ok().type(MediaType.APPLICATION_JSON).build());
     }
 
     protected String serialize(CloudEvent event) {
@@ -79,7 +84,8 @@ public abstract class AbstractQuarkusCloudEventResource {
                 // This happens when a client sends the data in an arbitrary format without informing the Content-Type, instead of rejecting the request, we try to serialize it using JSON.
                 // If it's not a valid JSON, we throw the exception to be correctly handled by the controller (4xx error)
                 objectMapper.readTree(event.getData());
-                final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON).build();
+                final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON)
+                        .build();
                 final String newDecodedEvent = objectMapper.writeValueAsString(newEvent);
                 LOGGER.debug("Decoded event {}", newDecodedEvent);
                 return newDecodedEvent;
@@ -97,8 +103,9 @@ public abstract class AbstractQuarkusCloudEventResource {
      * @param event the given CloudEvent to check
      * @return true if the given content-type is not supported
      */
+    @SuppressWarnings("squid:S2589")
     private boolean isSupportedContentType(CloudEvent event) {
-        return MediaType.APPLICATION_JSON_TYPE.isCompatible(MediaType.valueOf(event.getDataContentType()));
+        return event.getDataContentType() != null && MediaType.APPLICATION_JSON_TYPE.isCompatible(MediaType.valueOf(event.getDataContentType()));
     }
 
 }

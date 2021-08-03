@@ -41,6 +41,8 @@ import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -115,7 +117,7 @@ public class EventImplTest {
     @BeforeAll
     static void init() {
         factory = new DefaultEventConsumerFactory();
-        marshaller = new DefaultEventMarshaller();
+        marshaller = new DefaultEventMarshaller(new ObjectMapper());
     }
 
     private Process<DummyModel> process;
