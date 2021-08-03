@@ -236,6 +236,7 @@ public class ConstraintParser {
                     .setReactOnProperties( expressionTyperContext.getReactOnProperties() )
                     .setUsedDeclarations( expressionTyperContext.getUsedDeclarations() )
                     .setImplicitCastExpression( expressionTyperContext.getInlineCastExpression() )
+                    .setNullSafeExpressions(expressionTyperContext.getNullSafeExpressions())
                     .setIsPredicate(isPredicate);
         } else {
             final ExpressionTyperContext expressionTyperContext = new ExpressionTyperContext();
@@ -255,7 +256,10 @@ public class ConstraintParser {
     }
 
     private Expression combineExpressions( TypedExpressionResult leftTypedExpressionResult, Expression combo ) {
-        for (Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
+        List<Expression> allPrefixExpressions = new ArrayList<>();
+        allPrefixExpressions.addAll(leftTypedExpressionResult.getNullSafeExpressions());
+        allPrefixExpressions.addAll(leftTypedExpressionResult.getPrefixExpressions());
+        for (Expression e : allPrefixExpressions) {
             combo = new BinaryExpr( e, combo, BinaryExpr.Operator.AND );
         }
         return combo;
@@ -481,6 +485,8 @@ public class ConstraintParser {
 
         List<Expression> leftPrefixExpresssions = new ArrayList<>();
         if (isLogicalOperator(operator)) {
+            leftPrefixExpresssions.addAll(expressionTyperContext.getNullSafeExpressions());
+            expressionTyperContext.getNullSafeExpressions().clear();
             leftPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
             expressionTyperContext.getPrefixExpresssions().clear();
         }
@@ -499,6 +505,8 @@ public class ConstraintParser {
             }
             right = optRight.get();
             if (isLogicalOperator(operator)) {
+                rightPrefixExpresssions.addAll(expressionTyperContext.getNullSafeExpressions());
+                expressionTyperContext.getNullSafeExpressions().clear();
                 rightPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
                 expressionTyperContext.getPrefixExpresssions().clear();
             }

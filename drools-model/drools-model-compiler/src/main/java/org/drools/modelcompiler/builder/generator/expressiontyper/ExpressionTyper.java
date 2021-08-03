@@ -751,8 +751,8 @@ public class ExpressionTyper {
         }
     }
 
-    private void addNullSafeExpression( Expression scope ) {
-        toTypedExpressionRec(scope).ifPresent(te -> context.addPrefixExpression(0, new BinaryExpr(te.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS)));
+    private void addNullSafeExpression(Expression scope) {
+        toTypedExpressionRec(scope).ifPresent(te -> context.addNullSafeExpression(0, new BinaryExpr(te.getExpression(), new NullLiteralExpr(), BinaryExpr.Operator.NOT_EQUALS)));
     }
 
     private TypedExpressionCursor binaryExpr( BinaryExpr binaryExpr ) {

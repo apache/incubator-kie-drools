@@ -271,4 +271,73 @@ public class NullSafeDereferencingTest extends BaseModelTest {
 
         Assertions.assertThat(result).containsExactlyInAnyOrder("John", "George");
     }
+
+    @Test
+    public void testNullSafeDereferencingNonPredicate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1 when\n" +
+                     "   Person( $cityName : address!.city ) \n" +
+                     "then\n" +
+                     "  result.add($cityName);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 24, new Address("London")));
+        ksession.insert(new Person("Paul", 22, (Address) null));
+        ksession.insert(new Person("George", 21, new Address("Tokyo")));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactlyInAnyOrder("London", "Tokyo");
+    }
+
+    @Test
+    public void testMultipleNullSafeDereferencingNonPredicate() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1 when\n" +
+                     "   Person( $cityNameLength : address!.city!.length ) \n" +
+                     "then\n" +
+                     "  result.add($cityNameLength);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Integer> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 24, new Address("London")));
+        ksession.insert(new Person("Paul", 22, (Address) null));
+        ksession.insert(new Person("George", 21, new Address(null)));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactlyInAnyOrder(6);
+    }
+
+    @Test
+    public void testNullSafeDereferencingPredicateMethod() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                     "global java.util.List result;\n" +
+                     "rule R1 when\n" +
+                     "   Person( $containsL : address!.city.contains(\"L\") ) \n" +
+                     "then\n" +
+                     "  result.add($containsL);\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Boolean> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("John", 24, new Address("London")));
+        ksession.insert(new Person("Paul", 22, (Address) null));
+        ksession.insert(new Person("George", 21, new Address("Tokyo")));
+        ksession.fireAllRules();
+
+        Assertions.assertThat(result).containsExactlyInAnyOrder(true, false);
+    }
 }
