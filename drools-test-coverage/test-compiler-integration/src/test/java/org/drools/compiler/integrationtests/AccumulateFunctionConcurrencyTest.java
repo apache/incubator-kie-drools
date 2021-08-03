@@ -25,6 +25,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Album;
 import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Bus;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -76,59 +77,66 @@ public class AccumulateFunctionConcurrencyTest {
 
         List<Exception> exceptions = new ArrayList<>();
 
-        KieBase kieBase = null;
-        if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
-            kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
-        }
-        for (int i = 0; i < LOOP; i++) {
-            if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval");
+
+        try {
+            KieBase kieBase = null;
+            if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
                 kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
             }
-            ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-            CountDownLatch latch = new CountDownLatch(THREADS);
-            for (int j = 0; j < REQUESTS; j++) {
-                KieBase finalKieBase = kieBase;
-                executor.execute(new Runnable() {
+            for (int i = 0; i < LOOP; i++) {
+                if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+                    kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+                }
+                ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+                CountDownLatch latch = new CountDownLatch(THREADS);
+                for (int j = 0; j < REQUESTS; j++) {
+                    KieBase finalKieBase = kieBase;
+                    executor.execute(new Runnable() {
 
-                    public void run() {
-                        KieSession kSession = finalKieBase.newKieSession();
-                        List<String> result = new ArrayList<>();
-                        kSession.setGlobal("result", result);
+                        public void run() {
+                            KieSession kSession = finalKieBase.newKieSession();
+                            List<String> result = new ArrayList<>();
+                            kSession.setGlobal("result", result);
 
-                        Bus bus1 = new Bus("red", 30);
-                        bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
-                        bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-                        kSession.insert(bus1);
+                            Bus bus1 = new Bus("red", 30);
+                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
+                            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                            kSession.insert(bus1);
 
-                        try {
-                            latch.countDown();
-                            latch.await();
-                        } catch (InterruptedException e) {
-                            // ignore
-                        }
-
-                        try {
-                            kSession.fireAllRules();
-                        } catch (Exception e) {
-                            if (exceptions.isEmpty()) {
-                                e.printStackTrace();
+                            try {
+                                latch.countDown();
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                // ignore
                             }
-                            exceptions.add(e);
-                        } finally {
-                            kSession.dispose();
+
+                            try {
+                                kSession.fireAllRules();
+                            } catch (Exception e) {
+                                if (exceptions.isEmpty()) {
+                                    e.printStackTrace();
+                                }
+                                exceptions.add(e);
+                            } finally {
+                                kSession.dispose();
+                            }
                         }
-                    }
-                });
+                    });
+                }
+
+                executor.shutdown();
+                try {
+                    executor.awaitTermination(300, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
 
-            executor.shutdown();
-            try {
-                executor.awaitTermination(300, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // ignore
-            }
+            assertEquals(0, exceptions.size());
+
+        } finally {
+            System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
         }
-
-        assertEquals(0, exceptions.size());
     }
 }
