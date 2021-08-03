@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
@@ -146,15 +145,30 @@ public class PostProcess {
                                                                           toUpdate,
                                                                           processingDTO));
         }
-
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.PREDICTED_DISPLAY_VALUE), model::getPredictedDisplayValue);
-
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_ID), model::getEntityId);
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_ID), model::getEntityId);
-
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.AFFINITY), model::getAffinity);
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_AFFINITY), model::getAffinity);
-        populateOutputFields(toUpdate, processingDTO, outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_AFFINITY), model::getAffinity);
+        List<KiePMMLOutputField> pdvCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.PREDICTED_DISPLAY_VALUE);
+        if (pdvCodeOutputFields != null) {
+            pdvCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getPredictedDisplayValue()));
+        }
+        List<KiePMMLOutputField> entityIdCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_ID);
+        if (entityIdCodeOutputFields != null) {
+            entityIdCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getEntityId()));
+        }
+        List<KiePMMLOutputField> clusterIdCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_ID);
+        if (clusterIdCodeOutputFields != null) {
+            clusterIdCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getEntityId()));
+        }
+        List<KiePMMLOutputField> affinityCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.AFFINITY);
+        if (affinityCodeOutputFields != null) {
+            affinityCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getAffinity()));
+        }
+        List<KiePMMLOutputField> entityAffinityCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.ENTITY_AFFINITY);
+        if (entityAffinityCodeOutputFields != null) {
+            entityAffinityCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getAffinity()));
+        }
+        List<KiePMMLOutputField> clusterAffinityCodeOutputFields = outputFieldsByFeature.get(RESULT_FEATURE.CLUSTER_AFFINITY);
+        if (clusterAffinityCodeOutputFields != null) {
+            clusterAffinityCodeOutputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), model.getAffinity()));
+        }
     }
 
     static void populatePredictedOutputField(final KiePMMLOutputField outputField,
@@ -188,12 +202,6 @@ public class PostProcess {
         }
         Optional<Object> variableValue = Optional.ofNullable(outputField.evaluateReasonCodeValue(processingDTO));
         variableValue.ifPresent(objValue -> addVariable(toUpdate, processingDTO, outputField.getName(), objValue));
-    }
-
-    private static void populateOutputFields(PMML4Result toUpdate, ProcessingDTO processingDTO, List<KiePMMLOutputField> outputFields, Supplier<Object> valueSupplier) {
-        if (outputFields != null) {
-            outputFields.forEach(f -> addVariable(toUpdate, processingDTO, f.getName(), valueSupplier.get()));
-        }
     }
 
     private static void addVariable(PMML4Result toUpdate, ProcessingDTO processingDTO, String variableName, Object variableValue) {
