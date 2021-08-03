@@ -265,6 +265,7 @@ public class RuleContext {
         String declId = getDeclarationKey( id );
         scopedDeclarations.remove( declId );
         this.allDeclarations.remove( declId );
+        definedVars.remove(id);
     }
 
     public boolean hasDeclaration(String id) {
