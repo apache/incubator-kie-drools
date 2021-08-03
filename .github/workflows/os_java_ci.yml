@@ -6,9 +6,24 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - '.ci/**'      
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     branches:
       - main
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - '.ci/**'
 
 defaults:
   run:

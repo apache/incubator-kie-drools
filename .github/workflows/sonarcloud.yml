@@ -5,6 +5,13 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - 'LICENSE*'
+      - '.gitignore'
+      - '**.md'
+      - '**.adoc'
+      - '*.txt'
+      - '.ci/**'      
 
 defaults:
   run:
