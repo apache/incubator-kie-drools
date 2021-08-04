@@ -21,15 +21,19 @@ import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.TestFactory;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.Score;
 import org.optaplanner.examples.common.app.CommonApp;
 import org.optaplanner.examples.common.app.LoggingTest;
 import org.optaplanner.examples.common.business.ProblemFileComparator;
+import org.optaplanner.examples.common.business.SolutionBusiness;
 import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 /**
@@ -61,17 +65,44 @@ public abstract class OpenDataFilesTest<Solution_> extends LoggingTest {
     }
 
     @TestFactory
-    Stream<DynamicTest> readSolution() {
+    Stream<DynamicTest> readAndWriteSolution() {
         CommonApp<Solution_> commonApp = createCommonApp();
         SolutionFileIO<Solution_> solutionFileIO = commonApp.createSolutionFileIO();
+        SolutionBusiness<Solution_, ?> solutionBusiness = commonApp.createSolutionBusiness();
         return getSolutionFiles(commonApp).stream()
                 .map(solutionFile -> dynamicTest(
                         solutionFile.getName(),
-                        () -> readSolution(solutionFileIO, solutionFile)));
+                        () -> readAndWriteSolution(solutionBusiness, solutionFileIO, solutionFile)));
     }
 
-    private void readSolution(SolutionFileIO<Solution_> solutionFileIO, File solutionFile) {
-        solutionFileIO.read(solutionFile);
+    private <Score_ extends Score<Score_>> void readAndWriteSolution(SolutionBusiness<Solution_, Score_> solutionBusiness,
+            SolutionFileIO<Solution_> solutionFileIO, File solutionFile) {
+        // Make sure we can process the solution from an existing file.
+        Solution_ originalSolution = solutionFileIO.read(solutionFile);
         logger.info("Opened: {}", solutionFile);
+        Score_ originalScore = calculateScore(solutionBusiness, originalSolution);
+        Assertions.assertThat(originalScore).isNotNull();
+        // Write the solution to a temp file and read it back.
+        Solution_ roundTripSolution = null;
+        try {
+            File tmpFile = File.createTempFile("optaplanner-solution", ".tmp");
+            solutionFileIO.write(originalSolution, tmpFile);
+            logger.info("Written: {}", tmpFile);
+            roundTripSolution = solutionFileIO.read(tmpFile);
+            logger.info("Re-opened: {}", tmpFile);
+            tmpFile.delete();
+        } catch (Exception ex) {
+            Assertions.fail("Failed to write solution.", ex);
+        }
+        // Make sure the solutions equal by checking their scores against each other.
+        Score_ roundTripScore = calculateScore(solutionBusiness, roundTripSolution);
+        Assertions.assertThat(roundTripScore).isEqualTo(originalScore);
     }
+
+    private <Score_ extends Score<Score_>> Score_ calculateScore(SolutionBusiness<Solution_, Score_> solutionBusiness,
+            Solution_ solution) {
+        solutionBusiness.setSolution(Objects.requireNonNull(solution));
+        return solutionBusiness.getScore();
+    }
+
 }
