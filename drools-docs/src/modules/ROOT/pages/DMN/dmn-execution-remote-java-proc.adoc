@@ -19,12 +19,12 @@ endif::[]
 ifdef::DROOLS,JBPM,OP[]
 <<_installationandsetup>>.
 endif::[]
-* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}. Ideally, you have built the DMN project as an executable model for more efficient execution:
+* You have built the DMN project as a KJAR artifact and deployed it to {KIE_SERVER}:
 +
 --
 [source]
 ----
-mvn clean install -DgenerateDMNModel=yes
+mvn clean install
 ----
 
 For more information about project packaging and deployment and executable models, see
