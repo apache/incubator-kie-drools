@@ -205,7 +205,7 @@ class DefaultAggregatorTest {
         assertEquals(TraceEvent.class.getName(), cloudEvent.getType());
 
         try {
-            return DecisionTestUtils.MAPPER.readValue(cloudEvent.getData(), TraceEvent.class);
+            return DecisionTestUtils.MAPPER.readValue(cloudEvent.getData().toBytes(), TraceEvent.class);
         } catch (IOException e) {
             fail(e);
             return null;

@@ -157,7 +157,7 @@ public class SpringBootDecisionTracingTest {
         assertEquals(TEST_EXECUTION_ID, cloudEvent.getId());
         assertNotNull(cloudEvent.getData());
 
-        TraceEvent traceEvent = MAPPER.readValue(cloudEvent.getData(), TraceEvent.class);
+        TraceEvent traceEvent = MAPPER.readValue(cloudEvent.getData().toBytes(), TraceEvent.class);
 
         assertNotNull(traceEvent);
         assertEquals(TEST_SERVICE_URL, traceEvent.getHeader().getResourceId().getServiceUrl());

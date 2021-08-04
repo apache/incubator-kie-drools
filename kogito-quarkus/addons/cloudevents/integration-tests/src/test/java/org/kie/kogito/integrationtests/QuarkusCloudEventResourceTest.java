@@ -51,20 +51,6 @@ class QuarkusCloudEventResourceTest {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @Test
-    void verifyHttpRequestUnsupportedMediaType() {
-        given().when()
-                .header("ce-type", "myevent")
-                .header("ce-source", "/from/unit/test")
-                .header("ce-specversion", "1.0")
-                .header("ce-id", UUID.randomUUID().toString())
-                .header("ce-" + CloudEventExtensionConstants.PROCESS_REFERENCE_ID, "12345")
-                .header(HttpHeaders.CONTENT_TYPE, MediaType.TEXT_PLAIN)
-                .post("/")
-                .then()
-                .statusCode(Response.Status.BAD_REQUEST.getStatusCode());
-    }
-
     // We are not using RestAssured to send a plain HTTP request mocking an arbitrary client sending a request without the properly headers.
     @Test
     void verifyHttpRequestNoMediaType() throws IOException {

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <artifactId>kogito-addons-quarkus-knative-parent</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>kogito-addons-quarkus-knative-eventing</artifactId>
+  <name>Kogito :: Add-Ons :: Quarkus :: Knative :: Eventing</name>
+  <description>Knative Eventing Kogito Addon. Adds support for CloudEvents on top of HTTP and Knative env vars configuration.</description>
+  <dependencies>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-cloudevents</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-reactive-messaging-http</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-knative-eventing</artifactId>
+    </dependency>
+  </dependencies>
+</project>

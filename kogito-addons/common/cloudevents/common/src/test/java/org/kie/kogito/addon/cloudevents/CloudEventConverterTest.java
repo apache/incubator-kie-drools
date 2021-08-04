@@ -53,7 +53,7 @@ class CloudEventConverterTest {
                         .withData(payload.getBytes())
                         .build();
 
-        final JsonNode ceJson = objectMapper.readTree(cloudEvent.getData());
+        final JsonNode ceJson = objectMapper.readTree(cloudEvent.getData().toBytes());
         assertThat(ceJson.get("message").asText()).isNotEmpty().isEqualTo("Oi Mundo!");
     }
 
@@ -79,7 +79,7 @@ class CloudEventConverterTest {
 
         final CloudEvent event = objectMapper.readValue(messageJson, CloudEvent.class);
         assertThat(event).isNotNull();
-        final Person person = objectMapper.readValue(event.getData(), Person.class);
+        final Person person = objectMapper.readValue(event.getData().toBytes(), Person.class);
         assertThat(person).isNotNull();
         assertThat(person.getEmail()).isEqualTo("jan.kowalski@example.com");
 

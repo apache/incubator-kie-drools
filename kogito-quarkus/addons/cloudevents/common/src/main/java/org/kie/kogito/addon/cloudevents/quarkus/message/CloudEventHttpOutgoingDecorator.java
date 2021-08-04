@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus.decorators;
+package org.kie.kogito.addon.cloudevents.quarkus.message;
 
 import javax.ws.rs.core.HttpHeaders;
 

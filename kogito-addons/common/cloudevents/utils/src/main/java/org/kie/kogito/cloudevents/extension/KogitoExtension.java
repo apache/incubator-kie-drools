@@ -23,12 +23,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import io.cloudevents.CloudEventExtension;
 import io.cloudevents.CloudEventExtensions;
-import io.cloudevents.Extension;
 import io.cloudevents.core.extensions.impl.ExtensionUtils;
 import io.cloudevents.core.provider.ExtensionProvider;
 
-public class KogitoExtension implements Extension {
+public class KogitoExtension implements CloudEventExtension {
 
     public static final String KOGITO_EXECUTION_ID = "kogitoexecutionid";
     public static final String KOGITO_DMN_MODEL_NAME = "kogitodmnmodelname";
@@ -56,16 +56,6 @@ public class KogitoExtension implements Extension {
         ExtensionProvider.getInstance().registerExtension(KogitoExtension.class, KogitoExtension::new);
     }
 
-    @Override
-    public void readFrom(CloudEventExtensions extensions) {
-        readStringExtension(extensions, KOGITO_EXECUTION_ID, this::setExecutionId);
-        readStringExtension(extensions, KOGITO_DMN_MODEL_NAME, this::setDmnModelName);
-        readStringExtension(extensions, KOGITO_DMN_MODEL_NAMESPACE, this::setDmnModelNamespace);
-        readStringExtension(extensions, KOGITO_DMN_EVALUATE_DECISION, this::setDmnEvaluateDecision);
-        readBooleanExtension(extensions, KOGITO_DMN_FULL_RESULT, this::setDmnFullResult);
-        readBooleanExtension(extensions, KOGITO_DMN_FILTERED_CTX, this::setDmnFilteredCtx);
-    }
-
     private static void readStringExtension(CloudEventExtensions extensions, String key, Consumer<String> consumer) {
         Optional.ofNullable(extensions.getExtension(key))
                 // there seems to be a bug in the cloudevents sdk so that, when a extension attributes is null,
@@ -80,6 +70,16 @@ public class KogitoExtension implements Extension {
                 .filter(Boolean.class::isInstance)
                 .map(Boolean.class::cast)
                 .ifPresent(consumer);
+    }
+
+    @Override
+    public void readFrom(CloudEventExtensions extensions) {
+        readStringExtension(extensions, KOGITO_EXECUTION_ID, this::setExecutionId);
+        readStringExtension(extensions, KOGITO_DMN_MODEL_NAME, this::setDmnModelName);
+        readStringExtension(extensions, KOGITO_DMN_MODEL_NAMESPACE, this::setDmnModelNamespace);
+        readStringExtension(extensions, KOGITO_DMN_EVALUATE_DECISION, this::setDmnEvaluateDecision);
+        readBooleanExtension(extensions, KOGITO_DMN_FULL_RESULT, this::setDmnFullResult);
+        readBooleanExtension(extensions, KOGITO_DMN_FILTERED_CTX, this::setDmnFilteredCtx);
     }
 
     @Override
@@ -98,7 +98,7 @@ public class KogitoExtension implements Extension {
             case KOGITO_DMN_FILTERED_CTX:
                 return isDmnFilteredCtx();
         }
-        throw ExtensionUtils.generateInvalidKeyException(this.getClass().getSimpleName(), key);
+        throw ExtensionUtils.generateInvalidKeyException(this.getClass(), key);
     }
 
     @Override

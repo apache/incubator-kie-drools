@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus.decorators;
+package org.kie.kogito.addon.cloudevents.quarkus.message;
 
 /**
- * Provides a {@link MessageDecorator} instance
+ * Provides a {@link MessageDecorator} instance. Ideally should not be used outside the {@link MessageFactory}.
  */
 public final class MessageDecoratorFactory {
 
-    private static final String SMALLRYE_HTTP_METADATA_CLASS = "io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata";
+    private static final String QUARKUS_HTTP_METADATA_CLASS = "io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata";
 
     private MessageDecoratorFactory() {
     }
@@ -37,7 +37,7 @@ public final class MessageDecoratorFactory {
     public static MessageDecorator newInstance(boolean useCloudEvent) {
         if (useCloudEvent) {
             try {
-                Class.forName(SMALLRYE_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
+                Class.forName(QUARKUS_HTTP_METADATA_CLASS, false, MessageDecoratorFactory.class.getClassLoader());
                 return new CloudEventHttpOutgoingDecorator();
             } catch (ClassNotFoundException e) {
                 // returning NoOpMessageDecorator (complementary comment forced by sonar) 

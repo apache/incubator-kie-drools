@@ -32,6 +32,7 @@
         <module>cloudevents</module>
         <module>explainability</module>
         <module>jobs</module>
+        <module>knative</module>
         <module>mail</module>
         <module>persistence</module>
         <module>process-management</module>

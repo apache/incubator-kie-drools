@@ -83,9 +83,10 @@ public abstract class AbstractQuarkusCloudEventResource {
                 // We assume the data is in JSON format.
                 // This happens when a client sends the data in an arbitrary format without informing the Content-Type, instead of rejecting the request, we try to serialize it using JSON.
                 // If it's not a valid JSON, we throw the exception to be correctly handled by the controller (4xx error)
-                objectMapper.readTree(event.getData());
-                final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON)
-                        .build();
+                if (event.getData() != null) {
+                    objectMapper.readTree(event.getData().toBytes());
+                }
+                final CloudEvent newEvent = CloudEventBuilder.v1(event).withDataContentType(MediaType.APPLICATION_JSON).build();
                 final String newDecodedEvent = objectMapper.writeValueAsString(newEvent);
                 LOGGER.debug("Decoded event {}", newDecodedEvent);
                 return newDecodedEvent;

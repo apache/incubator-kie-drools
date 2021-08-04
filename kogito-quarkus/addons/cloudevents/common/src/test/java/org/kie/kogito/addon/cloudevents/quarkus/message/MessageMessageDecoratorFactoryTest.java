@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus.decorators;
+package org.kie.kogito.addon.cloudevents.quarkus.message;
 
-import org.eclipse.microprofile.reactive.messaging.Message;
+import org.junit.jupiter.api.Test;
 
-/**
- * Creates a Microprofile message without adding any metadata on top of the given payload.
- */
-public class NoOpMessageDecorator implements MessageDecorator {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @Override
-    public <T> Message<T> decorate(T payload) {
-        return Message.of(payload);
+class MessageMessageDecoratorFactoryTest {
+
+    @Test
+    void verifyCloudEventHttpIsOnClasspath() {
+        final MessageDecorator decorator = MessageDecoratorFactory.newInstance();
+        assertThat(decorator).isNotNull().isInstanceOf(CloudEventHttpOutgoingDecorator.class);
     }
 }

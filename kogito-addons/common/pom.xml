@@ -19,6 +19,7 @@
     <module>cloudevents</module>
     <module>events</module>
     <module>monitoring</module>
+    <module>knative</module>
   </modules>
 
   <profiles>

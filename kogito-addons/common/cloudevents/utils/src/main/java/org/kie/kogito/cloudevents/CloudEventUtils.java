@@ -34,22 +34,29 @@ import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.cloudevents.CloudEvent;
-import io.cloudevents.Extension;
+import io.cloudevents.CloudEventExtension;
 import io.cloudevents.core.builder.CloudEventBuilder;
+import io.cloudevents.core.data.PojoCloudEventData;
 import io.cloudevents.jackson.JsonFormat;
+import io.cloudevents.jackson.PojoCloudEventDataMapper;
+import io.cloudevents.rw.CloudEventRWException;
 
-public class CloudEventUtils {
+import static io.cloudevents.core.CloudEventUtils.mapData;
+
+public final class CloudEventUtils {
 
     private static final Logger LOG = LoggerFactory.getLogger(CloudEventUtils.class);
-
     public static final String UNKNOWN_SOURCE_URI_STRING = urlEncodedStringFrom("__UNKNOWN_SOURCE__")
             .orElseThrow(IllegalStateException::new);
+
+    private CloudEventUtils() {
+    }
 
     public static <E> Optional<CloudEvent> build(String id, URI source, E data, Class<E> dataType) {
         return build(id, source, dataType.getName(), null, data);
     }
 
-    public static Optional<CloudEvent> build(String id, URI source, String type, String subject, Object data, Extension... extensions) {
+    public static Optional<CloudEvent> build(String id, URI source, String type, String subject, Object data, CloudEventExtension... extensions) {
         try {
             byte[] bytes = Mapper.mapper().writeValueAsBytes(data);
 
@@ -64,7 +71,7 @@ public class CloudEventUtils {
             }
 
             if (extensions != null) {
-                for (Extension extension : extensions) {
+                for (CloudEventExtension extension : extensions) {
                     builder.withExtension(extension);
                 }
             }
@@ -78,6 +85,7 @@ public class CloudEventUtils {
 
     public static Optional<String> encode(CloudEvent event) {
         try {
+            // we should consider this in the future: https://cloudevents.github.io/sdk-java/json-jackson.html#using-the-json-event-format
             return Optional.of(Mapper.mapper().writeValueAsString(event));
         } catch (JsonProcessingException e) {
             LOG.error("Unable to encode CloudEvent", e);
@@ -95,6 +103,11 @@ public class CloudEventUtils {
         }
     }
 
+    public static boolean isCloudEvent(String json) {
+        final Optional<CloudEvent> ce = decode(json);
+        return ce.isPresent() && !"".equals(ce.get().getId()) && !"".equals(ce.get().getType());
+    }
+
     public static Optional<CloudEvent> decode(String json) {
         try {
             return Optional.of(Mapper.mapper().readValue(json, CloudEvent.class));
@@ -106,17 +119,24 @@ public class CloudEventUtils {
 
     public static <T> Optional<T> decodeData(CloudEvent event, Class<T> dataClass) {
         try {
-            return Optional.ofNullable(Mapper.mapper().readValue(event.getData(), dataClass));
-        } catch (IOException e) {
-            LOG.error("Unable to decode CloudEvent data to " + dataClass.getName(), e);
+            final PojoCloudEventData<T> cloudEventData = mapData(event, PojoCloudEventDataMapper.from(Mapper.mapper(), dataClass));
+            if (cloudEventData == null) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(cloudEventData.getValue());
+        } catch (CloudEventRWException e) {
+            LOG.error("Unable to decode CloudEvent", e);
             return Optional.empty();
         }
     }
 
     public static <K, V> Optional<Map<K, V>> decodeMapData(CloudEvent event, Class<K> keyClass, Class<V> valueClass) {
+        if (event == null || event.getData() == null) {
+            return Optional.empty();
+        }
         try {
             JavaType mapType = Mapper.mapper().getTypeFactory().constructMapType(HashMap.class, keyClass, valueClass);
-            return Optional.ofNullable(Mapper.mapper().readValue(event.getData(), mapType));
+            return Optional.ofNullable(Mapper.mapper().readValue(event.getData().toBytes(), mapType));
         } catch (IOException e) {
             LOG.error("Unable to decode CloudEvent data to Map<" + keyClass.getName() + "," + valueClass.getName() + ">", e);
             return Optional.empty();
@@ -176,20 +196,16 @@ public class CloudEventUtils {
     }
 
     // This trick allows to inject a mocked ObjectMapper in the unit tests via Mockito#mockStatic
-    public static class Mapper {
+    public static final class Mapper {
 
         private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper().registerModule(JsonFormat.getCloudEventJacksonModule());
+
+        private Mapper() {
+
+        }
 
         public static ObjectMapper mapper() {
             return OBJECT_MAPPER;
         }
-
-        private Mapper() {
-            throw new IllegalStateException("Instantiation of utility class CloudEventUtils.Mapper is forbidden");
-        }
-    }
-
-    private CloudEventUtils() {
-        throw new IllegalStateException("Instantiation of utility class CloudEventUtils is forbidden");
     }
 }

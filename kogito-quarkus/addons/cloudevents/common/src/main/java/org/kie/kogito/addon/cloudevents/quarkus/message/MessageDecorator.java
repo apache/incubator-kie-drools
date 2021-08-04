@@ -13,18 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus.decorators;
+package org.kie.kogito.addon.cloudevents.quarkus.message;
 
-import org.junit.jupiter.api.Test;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * {@link MessageDecorator}s can decorates the {@link Message} envelope with metadata and additional information in a given context.
+ */
+public interface MessageDecorator {
 
-class MessageMessageDecoratorFactoryTest {
-
-    @Test
-    void verifyCloudEventHttpIsOnClasspath() {
-        final MessageDecorator decorator = MessageDecoratorFactory.newInstance();
-        assertThat(decorator).isNotNull();
-        assertThat(decorator).isInstanceOf(CloudEventHttpOutgoingDecorator.class);
-    }
+    /**
+     * Decorates the given reactive message
+     *
+     * @param payload payload to decorate
+     * @param <T> payload type
+     * @return payload in Message format decorated
+     */
+    <T> Message<T> decorate(T payload);
 }

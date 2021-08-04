@@ -23,8 +23,7 @@ import javax.enterprise.inject.Instance;
 import javax.inject.Inject;
 
 import org.eclipse.microprofile.reactive.messaging.Message;
-import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecorator;
-import org.kie.kogito.addon.cloudevents.quarkus.decorators.MessageDecoratorFactory;
+import org.kie.kogito.addon.cloudevents.quarkus.message.MessageFactory;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
@@ -44,18 +43,17 @@ public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
     @Inject
     ObjectMapper mapper;
 
-    private MessageDecorator messageDecorator;
+    private MessageFactory messageFactory;
 
     @PostConstruct
     private void init() {
-        messageDecorator = MessageDecoratorFactory.newInstance(configBean.useCloudEvents());
+        messageFactory = new MessageFactory(configBean.useCloudEvents());
         marshaller = marshallers.isUnsatisfied() ? new DefaultEventMarshaller(mapper) : marshallers.get();
     }
 
     protected <T> Message<String> processMessage(T e, Optional<Function<T, Object>> processDecorator) {
-        return this.messageDecorator.decorate(marshaller.marshall(
+        return this.messageFactory.build(marshaller.marshall(
                 configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
-
     }
 
 }

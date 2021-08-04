@@ -24,8 +24,8 @@ import java.util.Set;
 
 import org.kie.kogito.event.CloudEventExtensionConstants;
 
+import io.cloudevents.CloudEventExtension;
 import io.cloudevents.CloudEventExtensions;
-import io.cloudevents.Extension;
 import io.cloudevents.core.provider.ExtensionProvider;
 
 // The size of this extension could be reevaluated since we could make use of `type`, `source` and `subject` for processId, referenceId and instanceState
@@ -33,7 +33,7 @@ import io.cloudevents.core.provider.ExtensionProvider;
 /**
  * CloudEvent extension for Kogito Process.
  */
-public class KogitoProcessExtension implements Extension {
+public class KogitoProcessExtension implements CloudEventExtension {
 
     static final Set<String> ALL_KEYS = new HashSet<>(
             Arrays.asList(

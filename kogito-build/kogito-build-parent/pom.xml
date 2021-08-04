@@ -147,7 +147,7 @@
     <version.javax.validation>2.0.1.Final</version.javax.validation>
     <version.javax.xml.bind>2.3.1</version.javax.xml.bind>
 
-    <version.io.cloudevents>2.0.0-milestone3</version.io.cloudevents>
+    <version.io.cloudevents>2.2.0</version.io.cloudevents>
     <version.io.fabric8.kubernetes-client>5.6.0</version.io.fabric8.kubernetes-client>
     <version.io.micrometer>1.7.2</version.io.micrometer>
     <version.io.serverlessworkflow>2.0.0.Final</version.io.serverlessworkflow>

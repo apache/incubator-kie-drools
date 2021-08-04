@@ -15,6 +15,7 @@ In this module you will find all the addons supported by the community for Quark
 | Events Smallrye      | kogito-addons-quarkus-events-smallrye |
 | Explainability       | kogito-addons-quarkus-explainability |
 | Jobs Management      | kogito-addons-quarkus-jobs-management |
+| Knative Eventing     | kogito-addons-quarkus-knative-eventing |
 | Mail                 | kogito-addons-quarkus-mail |
 | Monitoring Elastic   | kogito-addons-quarkus-monitoring-elastic |
 | Monitoring Prometheus | kogito-addons-quarkus-monitoring-prometheus |
