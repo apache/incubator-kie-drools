@@ -29,7 +29,7 @@ import com.thoughtworks.xstream.annotations.XStreamAlias;
  * <p>
  * Each {@link Examination} has only 1 instance of this class.
  */
-@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.examination.solver")
+@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.examination.score")
 @XStreamAlias("ExaminationConstraintConfiguration")
 public class ExaminationConstraintConfiguration extends AbstractPersistable {
     // Hard constraints

@@ -21,7 +21,7 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.buildin.hardmediumsoftlong.HardMediumSoftLongScore;
 import org.optaplanner.examples.common.domain.AbstractPersistable;
 
-@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.rocktour.solver")
+@ConstraintConfiguration(constraintPackage = "org.optaplanner.examples.rocktour.score")
 public class RockTourConstraintConfiguration extends AbstractPersistable {
 
     public static final String EARLY_LATE_BREAK_DRIVING_SECONDS = "Early late break driving seconds budget";
