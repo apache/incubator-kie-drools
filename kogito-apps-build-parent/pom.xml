@@ -38,7 +38,7 @@
         <container.image.task-assigning-service>org.kie.kogito/task-assigning-service:${project.version}</container.image.task-assigning-service>
 
         <!-- OptaPlanner version -->
-        <version.org.optaplanner>8.10.0-SNAPSHOT</version.org.optaplanner>
+        <version.org.optaplanner>8.11.0-SNAPSHOT</version.org.optaplanner>
 
         <version.org.apache.opennlp>1.9.2</version.org.apache.opennlp>
         <version.org.apache.commons.csv>1.8</version.org.apache.commons.csv>
