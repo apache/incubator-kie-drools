@@ -80,7 +80,7 @@ Classes and namespaces remains the same, you won't need to make any change in yo
 
 #### Common Add-ons
 
-> [1] Commons Addon-ons that are not supposed to be used by end user's projects.
+> [1] Commons Add-ons that are not supposed to be used by end user's projects.
 
 | Add-On Description  | Old Artifact ID | New Artifact ID |
 |---------------------|-----------------|-----------------|

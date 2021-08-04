@@ -1,28 +1,25 @@
-# Kogito Spring Boot Addons
+# Kogito Spring Boot Add-ons
 
-In this module you will find all the addons supported by the community for Spring Boot Kogito projects:
+In this module you will find all the add-ons supported by the community for Spring Boot Kogito projects:
 
-<!-- TODO: KOGITO-5300 add "since" column with the information of the first version this addon was introduced -->
-<!-- TODO: KOGITO-5300 add link to each doc -->
+<!-- Please update this table in alphabetical order when creating a new add-on -->
 
-<!-- Please update this table in alphabetical order when creating a new addon -->
-
-| Add-On Description  | Old Artifact ID |
-|---------------------|-----------------|
-| Cloud Events         | kogito-addons-springboot-cloudevents |
-| Events Decisions     | kogito-addons-springboot-events-decisions |
-| Events Kafka         | kogito-addons-springboot-events-kafka |
-| Explainability       | kogito-addons-springboot-explainability |
-| Jobs Management      | kogito-addons-springboot-jobs-management |
-| Mail                 | kogito-addons-springboot-mail |
-| Monitoring Elastic   | kogito-addons-springboot-monitoring-elastic |
-| Monitoring Prometheus |kogito-addons-springboot-monitoring-prometheus |
-| Process Management      | kogito-addons-springboot-process-management |
-| Process SVG             | kogito-addons-springboot-process-svg |
-| Task Management         | kogito-addons-springboot-task-management |
-| Task Notification       | kogito-addons-springboot-task-notification |
-| Tracing Decision        | kogito-addons-springboot-tracing-decision |
+| Add-On Description  | Artifact ID                           | Since             |
+|---------------------|---------------------------------------|-------------------|
+| Cloud Events         | kogito-addons-springboot-cloudevents | 1.0.0 |
+| Events Decisions     | kogito-addons-springboot-events-decisions | 1.2.0 |
+| Events Kafka         | kogito-addons-springboot-events-kafka | 0.3.0 |
+| Explainability       | kogito-addons-springboot-explainability | 0.15.0 |
+| Jobs Management      | kogito-addons-springboot-jobs-management | 0.6.0 |
+| Mail                 | kogito-addons-springboot-mail | 1.6.0 |
+| Monitoring Elastic   | kogito-addons-springboot-monitoring-elastic | 1.2.0 |
+| Monitoring Prometheus |kogito-addons-springboot-monitoring-prometheus | 0.1.0  |
+| Process Management      | kogito-addons-springboot-process-management | 0.3.0  |
+| Process SVG             | kogito-addons-springboot-process-svg | 1.0.0 |
+| Task Management         | kogito-addons-springboot-task-management | 1.4.0 |
+| Task Notification       | kogito-addons-springboot-task-notification | 1.6.0 |
+| Tracing Decision        | kogito-addons-springboot-tracing-decision  | 0.11.0 |
 
 ## Contributing
 
-To know more about creating a new addon, please check the main `addons` module [README](../../addons/README.md).
+To know more about creating a new add-on, please check the main `addons` module [README](../../addons/README.md).
