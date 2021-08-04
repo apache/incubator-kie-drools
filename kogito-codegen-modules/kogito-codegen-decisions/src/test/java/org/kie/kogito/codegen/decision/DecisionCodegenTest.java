@@ -19,6 +19,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -48,10 +49,31 @@ public class DecisionCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        DecisionCodegen emptyCodeGenerator = DecisionCodegen.ofCollectedResources(context, Collections.emptyList());
+
+        assertThat(emptyCodeGenerator.isEmpty()).isTrue();
+        assertThat(emptyCodeGenerator.isEnabled()).isFalse();
+
+        Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
+        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+
+        DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
+
+        assertThat(codeGenerator.isEmpty()).isFalse();
+        assertThat(codeGenerator.isEnabled()).isTrue();
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(1);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateAllFiles(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/models/vacationDays", contextBuilder);
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(6);
 
         Collection<String> expectedResources = new ArrayList<>(Arrays.asList("decision/InputSet.java",
@@ -75,7 +97,7 @@ public class DecisionCodegenTest {
     public void doNotGenerateTypesafeInfo(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision/alltypes/", contextBuilder);
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
 
         Collection<String> expectedResources = new ArrayList<>(Arrays.asList("http_58_47_47www_46trisotech_46com_47definitions_47__4f5608e9_454d74_454c22_45a47e_45ab657257fc9c/InputSet.java",
@@ -139,7 +161,7 @@ public class DecisionCodegenTest {
     public void resilientToDuplicateDMNIDs(KogitoBuildContext.Builder contextBuilder) {
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-test20200507", contextBuilder);
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(3);
 
         assertNotEmptySectionCompilationUnit(codeGenerator);
@@ -161,7 +183,7 @@ public class DecisionCodegenTest {
         // This test is meant to check that IFF Eclipse MP OpenAPI annotations are available on Build/CP of Kogito application, annotation is used with codegen
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW", contextBuilder);
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
         GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
         assertThat(new String(inputSetFile.contents())).containsPattern("@org\\.eclipse\\.microprofile\\.openapi\\.annotations\\.media\\.Schema\\(.*enumeration");
@@ -174,7 +196,7 @@ public class DecisionCodegenTest {
                 .withClassAvailabilityResolver(mockClassAvailabilityResolver(emptyList(), singleton("org.eclipse.microprofile.openapi.models.OpenAPI")));
         DecisionCodegen codeGenerator = getDecisionCodegen("src/test/resources/decision-NSEW", contextBuilder);
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles).anyMatch(x -> x.relativePath().endsWith("InputSet.java"));
         GeneratedFile inputSetFile = generatedFiles.stream().filter(x -> x.relativePath().endsWith("InputSet.java")).findFirst().get();
         assertThat(new String(inputSetFile.contents())).doesNotContain("@org.eclipse.microprofile.openapi.annotations.media.Schema");
@@ -230,13 +252,13 @@ public class DecisionCodegenTest {
         return DecisionCodegen.ofCollectedResources(context, CollectedResourceProducer.fromPaths(Paths.get(sourcePath).toAbsolutePath()));
     }
 
-    private List<String> fileNames(List<GeneratedFile> generatedFiles) {
+    private Collection<String> fileNames(Collection<GeneratedFile> generatedFiles) {
         return generatedFiles.stream().map(GeneratedFile::relativePath).collect(Collectors.toList());
     }
 
     private List<GeneratedFile> generateTestDashboards(KogitoBuildContext.Builder contextBuilder, DecisionCodegen codeGenerator) {
 
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
 
         List<GeneratedFile> dashboards = generatedFiles.stream()
                 .filter(x -> x.type().equals(DashboardGeneratedFileUtils.DASHBOARD_TYPE))

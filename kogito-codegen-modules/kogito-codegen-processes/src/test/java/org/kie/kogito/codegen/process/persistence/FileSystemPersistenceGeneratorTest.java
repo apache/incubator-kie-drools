@@ -22,11 +22,11 @@ import java.util.Collections;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
@@ -44,14 +44,16 @@ import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.PA
 class FileSystemPersistenceGeneratorTest {
 
     private static final String TEST_RESOURCES = "src/test/resources";
-    KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
-            .withApplicationProperties(new File(TEST_RESOURCES))
-            .withPackageName(this.getClass().getPackage().getName())
-            .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
-            .build();
 
-    @Test
-    void test() {
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void test(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder
+                .withApplicationProperties(new File(TEST_RESOURCES))
+                .withPackageName(this.getClass().getPackage().getName())
+                .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
+                .build();
+
         context.setApplicationProperty("kogito.persistence.type", FILESYSTEM_PERSISTENCE_TYPE);
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
@@ -62,30 +64,33 @@ class FileSystemPersistenceGeneratorTest {
 
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
-        assertThat(generatedFiles).hasSize(15);
+        int expectedNumberOfFiles = context.hasRESTForGenerator(persistenceGenerator) ? 15 : 14;
+        assertThat(generatedFiles).hasSize(expectedNumberOfFiles);
 
-        Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
-                .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
-                .findFirst();
+        if (context.hasDI()) {
+            Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
+                    .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
+                    .findFirst();
 
-        assertThat(persistenceFactoryImpl).isNotEmpty();
+            assertThat(persistenceFactoryImpl).isNotEmpty();
 
-        final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
+            final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
 
-        final ClassOrInterfaceDeclaration classDeclaration = compilationUnit
-                .findFirst(ClassOrInterfaceDeclaration.class)
-                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
+            final ClassOrInterfaceDeclaration classDeclaration = compilationUnit
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
 
-        final Optional<MethodDeclaration> methodDeclaration = classDeclaration
-                .findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals(PATH_NAME));
+            final Optional<MethodDeclaration> methodDeclaration = classDeclaration
+                    .findFirst(MethodDeclaration.class, d -> d.getName().getIdentifier().equals(PATH_NAME));
 
-        assertThat(methodDeclaration).isNotEmpty();
+            assertThat(methodDeclaration).isNotEmpty();
 
-        final Optional<FieldDeclaration> fieldDeclaration = classDeclaration
-                .findFirst(FieldDeclaration.class);
+            final Optional<FieldDeclaration> fieldDeclaration = classDeclaration
+                    .findFirst(FieldDeclaration.class);
 
-        assertThat(fieldDeclaration).isNotEmpty();
-        assertThat(fieldDeclaration.get().getVariables()).hasSize(1);
-        assertThat(fieldDeclaration.get().getVariables().get(0).getName().asString()).isEqualTo(PATH_NAME);
+            assertThat(fieldDeclaration).isNotEmpty();
+            assertThat(fieldDeclaration.get().getVariables()).hasSize(1);
+            assertThat(fieldDeclaration.get().getVariables().get(0).getName().asString()).isEqualTo(PATH_NAME);
+        }
     }
 }

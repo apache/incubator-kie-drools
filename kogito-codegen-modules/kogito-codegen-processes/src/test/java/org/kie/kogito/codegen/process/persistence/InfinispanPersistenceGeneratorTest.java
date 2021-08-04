@@ -24,11 +24,11 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.kie.kogito.codegen.api.AddonsConfig;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.codegen.process.persistence.proto.ReflectionProtoGenerator;
@@ -43,14 +43,15 @@ import static org.kie.kogito.codegen.process.persistence.PersistenceGenerator.IN
 class InfinispanPersistenceGeneratorTest {
 
     private static final String TEST_RESOURCES = "src/test/resources";
-    KogitoBuildContext context = QuarkusKogitoBuildContext.builder()
-            .withApplicationProperties(new File(TEST_RESOURCES))
-            .withPackageName(this.getClass().getPackage().getName())
-            .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
-            .build();
 
-    @Test
-    void test() {
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    void test(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder
+                .withApplicationProperties(new File(TEST_RESOURCES))
+                .withPackageName(this.getClass().getPackage().getName())
+                .withAddonsConfig(AddonsConfig.builder().withPersistence(true).build())
+                .build();
         context.setApplicationProperty("kogito.persistence.type", INFINISPAN_PERSISTENCE_TYPE);
 
         ReflectionProtoGenerator protoGenerator = ReflectionProtoGenerator.builder().build(Collections.singleton(GeneratedPOJO.class));
@@ -62,21 +63,23 @@ class InfinispanPersistenceGeneratorTest {
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE)).count()).isEqualTo(2);
         assertThat(generatedFiles.stream().filter(gf -> gf.type().equals(ProtoGenerator.PROTO_TYPE) && gf.relativePath().endsWith(".json")).count()).isEqualTo(1);
 
-        Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
-                .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
-                .findFirst();
-        List<GeneratedFile> marshallerFiles = generatedFiles.stream().filter(gf -> gf.relativePath().endsWith("MessageMarshaller.java")).collect(Collectors.toList());
+        if (context.hasDI()) {
+            Optional<GeneratedFile> persistenceFactoryImpl = generatedFiles.stream()
+                    .filter(gf -> gf.relativePath().equals("org/kie/kogito/persistence/KogitoProcessInstancesFactoryImpl.java"))
+                    .findFirst();
+            List<GeneratedFile> marshallerFiles = generatedFiles.stream().filter(gf -> gf.relativePath().endsWith("MessageMarshaller.java")).collect(Collectors.toList());
 
-        String expectedMarshaller = "PersonMessageMarshaller";
-        assertThat(persistenceFactoryImpl).isNotEmpty();
-        assertThat(marshallerFiles.size()).isEqualTo(1);
-        assertThat(marshallerFiles.get(0).relativePath()).endsWith(expectedMarshaller + ".java");
+            String expectedMarshaller = "PersonMessageMarshaller";
+            assertThat(persistenceFactoryImpl).isNotEmpty();
+            assertThat(marshallerFiles.size()).isEqualTo(1);
+            assertThat(marshallerFiles.get(0).relativePath()).endsWith(expectedMarshaller + ".java");
 
-        final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
+            final CompilationUnit compilationUnit = parse(new ByteArrayInputStream(persistenceFactoryImpl.get().contents()));
 
-        compilationUnit
-                .findFirst(ClassOrInterfaceDeclaration.class)
-                .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
+            compilationUnit
+                    .findFirst(ClassOrInterfaceDeclaration.class)
+                    .orElseThrow(() -> new NoSuchElementException("Compilation unit doesn't contain a class or interface declaration!"));
+        }
 
     }
 }

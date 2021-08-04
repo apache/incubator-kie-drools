@@ -137,7 +137,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     }
 
     @Override
-    public List<GeneratedFile> generate() {
+    public boolean isEmpty() {
+        return resources.isEmpty();
+    }
+
+    @Override
+    protected Collection<GeneratedFile> internalGenerate() {
         ReleaseIdImpl dummyReleaseId = new ReleaseIdImpl("dummy:dummy:0.0.0");
         if (!decisionTableSupported &&
                 resources.stream().anyMatch(r -> r.getResourceType() == ResourceType.DTABLE)) {

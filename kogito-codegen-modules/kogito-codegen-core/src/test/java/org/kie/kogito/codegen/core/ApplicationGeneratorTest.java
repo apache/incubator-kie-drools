@@ -228,7 +228,7 @@ public class ApplicationGeneratorTest {
         }
 
         @Override
-        public Collection<GeneratedFile> generate() {
+        protected Collection<GeneratedFile> internalGenerate() {
             if (context.hasRESTForGenerator(this)) {
                 return Collections.singleton(new GeneratedFile(REST_TYPE, "my/path", ""));
             } else {
@@ -239,6 +239,11 @@ public class ApplicationGeneratorTest {
         @Override
         public boolean isEnabled() {
             return enabled;
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return !isEnabled();
         }
     }
 }

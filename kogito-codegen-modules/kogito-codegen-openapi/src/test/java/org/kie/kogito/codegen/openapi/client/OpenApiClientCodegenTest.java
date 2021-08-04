@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.openapi.client;
 
 import java.nio.file.Paths;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +30,30 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.codegen.api.utils.CollectedResourcesTestUtils.toCollectedResources;
 
 class OpenApiClientCodegenTest {
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+        final String workflowDefinitionFile = "/sendcloudeventonprovision.sw.json";
+
+        KogitoBuildContext context = contextBuilder.build();
+        OpenApiClientCodegen emptyCodeGenerator = OpenApiClientCodegen.ofCollectedResources(context, Collections.emptyList());
+
+        assertThat(emptyCodeGenerator.isEmpty()).isTrue();
+        assertThat(emptyCodeGenerator.isEnabled()).isFalse();
+
+        Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
+        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+
+        final OpenApiClientCodegen codeGenerator =
+                OpenApiClientCodegen.ofCollectedResources(context,
+                        toCollectedResources(workflowDefinitionFile));
+
+        assertThat(codeGenerator.isEmpty()).isFalse();
+        assertThat(codeGenerator.isEnabled()).isTrue();
+
+        assertThat(codeGenerator.getOpenAPISpecResources()).hasSizeGreaterThanOrEqualTo(1);
+    }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")

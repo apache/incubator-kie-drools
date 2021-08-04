@@ -18,7 +18,6 @@ package org.kie.kogito.codegen.decision;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -110,15 +109,17 @@ public class DecisionCodegen extends AbstractGenerator {
     }
 
     @Override
-    public List<GeneratedFile> generate() {
-        if (cResources.isEmpty()) {
-            return Collections.emptyList();
-        }
+    protected Collection<GeneratedFile> internalGenerate() {
         loadModelsAndValidate();
         generateAndStoreRestResources();
         generateAndStoreDecisionModelResourcesProvider();
 
         return generatedFiles;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return cResources.isEmpty();
     }
 
     private void generateAndStoreRestResources() {

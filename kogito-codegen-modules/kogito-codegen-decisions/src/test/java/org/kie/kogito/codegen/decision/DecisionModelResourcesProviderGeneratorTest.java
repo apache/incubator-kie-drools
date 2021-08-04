@@ -73,7 +73,7 @@ public class DecisionModelResourcesProviderGeneratorTest {
         final DecisionCodegen codeGenerator = DecisionCodegen
                 .ofCollectedResources(context, collectedResources);
 
-        final List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        final Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
         assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(2); // the two resources below, see https://github.com/kiegroup/kogito-runtimes/commit/18ec525f530b1ff1bddcf18c0083f14f86aff171#diff-edd3a09d62dc627ee10fe37925944217R53
 
         // Align this FAI-215 test (#621) with unknown order of generated files (ie.: additional generated files might be present)

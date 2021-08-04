@@ -104,7 +104,7 @@ public class OpenApiClientCodegen extends AbstractGenerator {
     }
 
     @Override
-    public Collection<GeneratedFile> generate() {
+    protected Collection<GeneratedFile> internalGenerate() {
         final List<GeneratedFile> generatedFiles = new ArrayList<>();
         this.openApiSpecDescriptors.forEach(descriptor -> {
             LOGGER.debug("Generating OpenApi classes based on {}", descriptor.getResourceName());
@@ -129,6 +129,11 @@ public class OpenApiClientCodegen extends AbstractGenerator {
         });
         this.context().addContextAttribute(ContextAttributesConstants.OPENAPI_DESCRIPTORS, this.openApiSpecDescriptors);
         return generatedFiles;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return openApiSpecDescriptors.isEmpty();
     }
 
     /**

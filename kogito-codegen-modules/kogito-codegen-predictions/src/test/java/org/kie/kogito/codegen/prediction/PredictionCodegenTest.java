@@ -36,6 +36,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
 
 import com.github.javaparser.ast.CompilationUnit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -62,6 +63,28 @@ class PredictionCodegenTest {
     private static final String MOCK = "mock";
     private static final String NESTED_MOCK = "nestedMock";
     private static final String PMML = "PMML";
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        PredictionCodegen emptyCodeGenerator = PredictionCodegen.ofCollectedResources(context, Collections.emptyList());
+
+        assertThat(emptyCodeGenerator.isEmpty()).isTrue();
+        assertThat(emptyCodeGenerator.isEnabled()).isFalse();
+
+        Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
+        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+
+        PredictionCodegen codeGenerator = PredictionCodegen.ofCollectedResources(
+                context, CollectedResourceProducer.fromFiles(BASE_PATH, REGRESSION_FULL_SOURCE.toFile()));
+
+        assertThat(codeGenerator.isEmpty()).isFalse();
+        assertThat(codeGenerator.isEnabled()).isTrue();
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(1);
+    }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
@@ -101,7 +124,7 @@ class PredictionCodegenTest {
 
     private static void generateAllFiles(KogitoBuildContext context, PredictionCodegen codeGenerator, int expectedTotalFiles, int expectedJavaSources, int expectedRestEndpoints,
             boolean assertReflect) {
-        List<GeneratedFile> generatedFiles = codeGenerator.generate();
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
 
         int expectedGeneratedFilesSize = expectedTotalFiles - (context.hasRESTForGenerator(codeGenerator) ? 0 : expectedRestEndpoints * 2);
         assertEquals(expectedGeneratedFilesSize, generatedFiles.size());

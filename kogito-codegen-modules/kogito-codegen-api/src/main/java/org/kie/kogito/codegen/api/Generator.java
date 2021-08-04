@@ -49,6 +49,8 @@ public interface Generator {
 
     String name();
 
+    boolean isEmpty();
+
     /**
      * Override this method to specify an order of execution
      * 
@@ -59,7 +61,7 @@ public interface Generator {
     }
 
     default boolean isEnabled() {
-        return context().getApplicationProperty(CONFIG_PREFIX + name())
+        return !isEmpty() && context().getApplicationProperty(CONFIG_PREFIX + name())
                 .map("true"::equalsIgnoreCase)
                 .orElse(true);
     }

@@ -120,7 +120,6 @@ public class ProcessClassesMojo extends AbstractKieMojo {
                 // Json schema generation
                 Stream<Class<?>> classStream = reflections.getTypesAnnotatedWith(UserTask.class).stream();
                 generateJsonSchema(classStream).forEach(this::writeGeneratedFile);
-
             }
         } catch (Exception e) {
             throw new MojoExecutionException("Error during processing model classes", e);

@@ -49,6 +49,32 @@ class SampleCodegenTest {
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+        KogitoBuildContext context = contextBuilder.build();
+        SampleCodegen emptyCodeGenerator = SampleCodegen.ofCollectedResources(context, Collections.emptyList());
+
+        assertThat(emptyCodeGenerator.isEmpty()).isTrue();
+        assertThat(emptyCodeGenerator.isEnabled()).isFalse();
+
+        Collection<GeneratedFile> emptyGeneratedFiles = emptyCodeGenerator.generate();
+        assertThat(emptyGeneratedFiles.size()).isEqualTo(0);
+
+        Collection<CollectedResource> resources = Arrays.asList(
+                CollectedResourcesTestUtils.toCollectedResource("/sampleFile1.txt"),
+                CollectedResourcesTestUtils.toCollectedResource("/sampleFile2.txt"));
+        SampleCodegen codeGenerator = SampleCodegen.ofCollectedResources(
+                context, resources);
+
+        assertThat(codeGenerator.isEmpty()).isFalse();
+        assertThat(codeGenerator.isEnabled()).isTrue();
+
+        Collection<GeneratedFile> generatedFiles = codeGenerator.generate();
+        int minNumberOfResources = context.hasRESTForGenerator(codeGenerator) ? 1 : 0;
+        assertThat(generatedFiles.size()).isGreaterThanOrEqualTo(minNumberOfResources);
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     void generate(KogitoBuildContext.Builder contextBuilder) {
         KogitoBuildContext context = contextBuilder.build();
         Collection<CollectedResource> resources = Arrays.asList(

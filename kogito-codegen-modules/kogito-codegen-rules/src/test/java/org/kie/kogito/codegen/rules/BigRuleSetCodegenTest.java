@@ -17,7 +17,6 @@ package org.kie.kogito.codegen.rules;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.jupiter.api.Test;
@@ -39,7 +38,7 @@ public class BigRuleSetCodegenTest {
         IncrementalRuleCodegen incrementalRuleCodegen = IncrementalRuleCodegen.ofResources(
                 JavaKogitoBuildContext.builder().build(), resources);
 
-        List<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
+        Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
         System.out.println(generatedFiles.size());
     }
 

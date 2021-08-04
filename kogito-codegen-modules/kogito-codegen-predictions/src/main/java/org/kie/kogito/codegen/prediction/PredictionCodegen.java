@@ -103,12 +103,17 @@ public class PredictionCodegen extends AbstractGenerator {
     }
 
     @Override
-    public List<GeneratedFile> generate() {
+    protected Collection<GeneratedFile> internalGenerate() {
         List<GeneratedFile> files = new ArrayList<>();
         for (PMMLResource resource : resources) {
             generateModelsFromResource(files, resource);
         }
         return files;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return resources.isEmpty();
     }
 
     @Override

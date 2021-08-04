@@ -15,10 +15,13 @@
  */
 package org.kie.kogito.codegen.core;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.kie.kogito.codegen.api.ConfigGenerator;
+import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.Generator;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
@@ -57,4 +60,14 @@ public abstract class AbstractGenerator implements Generator {
     public Optional<ConfigGenerator> configGenerator() {
         return Optional.ofNullable(configGenerator);
     }
+
+    @Override
+    public final Collection<GeneratedFile> generate() {
+        if (isEmpty()) {
+            return Collections.emptySet();
+        }
+        return internalGenerate();
+    }
+
+    protected abstract Collection<GeneratedFile> internalGenerate();
 }

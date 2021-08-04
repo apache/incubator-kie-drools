@@ -267,19 +267,8 @@ public class ProcessCodegen extends AbstractGenerator {
         }
     }
 
-    public static String defaultWorkItemHandlerConfigClass(String packageName) {
-        return packageName + ".WorkItemHandlerConfig";
-    }
-
-    public static String defaultProcessListenerConfigClass(String packageName) {
-        return packageName + ".ProcessEventListenerConfig";
-    }
-
     @Override
-    public Collection<GeneratedFile> generate() {
-        if (processes.isEmpty()) {
-            return Collections.emptySet();
-        }
+    protected Collection<GeneratedFile> internalGenerate() {
 
         List<ProcessGenerator> ps = new ArrayList<>();
         List<ProcessInstanceGenerator> pis = new ArrayList<>();
@@ -537,6 +526,11 @@ public class ProcessCodegen extends AbstractGenerator {
         } else {
             generatedFiles.add(new GeneratedFile(type, path, source));
         }
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return processes.isEmpty();
     }
 
     @Override

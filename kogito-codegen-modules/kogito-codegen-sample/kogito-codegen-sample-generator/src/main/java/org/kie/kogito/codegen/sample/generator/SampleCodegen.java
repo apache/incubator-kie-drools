@@ -68,8 +68,13 @@ public class SampleCodegen implements Generator {
     }
 
     @Override
+    public boolean isEmpty() {
+        return sampleResources.isEmpty();
+    }
+
+    @Override
     public Collection<GeneratedFile> generate() {
-        if (sampleResources.isEmpty()) {
+        if (isEmpty()) {
             return Collections.emptyList();
         }
 

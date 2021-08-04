@@ -20,7 +20,6 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -122,11 +121,7 @@ public class PersistenceGenerator extends AbstractGenerator {
     }
 
     @Override
-    public Collection<GeneratedFile> generate() {
-        if (!context().getAddonsConfig().usePersistence()) {
-            return Collections.emptyList();
-        }
-
+    protected Collection<GeneratedFile> internalGenerate() {
         Collection<GeneratedFile> generatedFiles = new ArrayList<>();
 
         switch (persistenceType()) {
@@ -153,6 +148,12 @@ public class PersistenceGenerator extends AbstractGenerator {
         }
 
         return generatedFiles;
+    }
+
+    @Override
+    public boolean isEmpty() {
+        // PersistenceGenerator is a different type of generator without specific resources
+        return !context().getAddonsConfig().usePersistence();
     }
 
     public String persistenceType() {
