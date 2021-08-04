@@ -5,15 +5,14 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>${version.org.springframework.boot}</version>
-    <relativePath /> <!-- lookup parent from repository -->
+    <version>2.4.3</version>
   </parent>
 
-  <groupId>\${groupId}</groupId>
-  <artifactId>\${artifactId}</artifactId>
-  <version>\${version}</version>
+  <groupId>org.kie.kogito.acme</groupId>
+  <artifactId>test-groovy</artifactId>
+  <version>1.0</version>
 
-  <description>Generated project \${artifactId}</description>
+  <description>Generated project test-groovy</description>
 
   <properties>
     <java.version>${maven.compiler.release}</java.version>
@@ -29,12 +28,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-springboot-starter</artifactId>
-      <version>${kogito.version}</version>
     </dependency>
 
     <dependency>

@@ -188,6 +188,11 @@
     <version.org.springdoc>1.5.9</version.org.springdoc>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
     <version.io.vertx>4.1.2</version.io.vertx>
+
+    <!-- Groovy -->
+    <version.org.spockframework>2.0-groovy-3.0</version.org.spockframework>
+    <version.org.codehaus.groovy>3.0.8</version.org.codehaus.groovy>
+    <version.org.codehaus.gmavenplus>1.12.0</version.org.codehaus.gmavenplus>
   </properties>
 
   <dependencyManagement>
@@ -1260,6 +1265,21 @@ limitations under the License.
           <groupId>org.jsonschema2pojo</groupId>
           <artifactId>jsonschema2pojo-maven-plugin</artifactId>
           <version>${version.org.jsonschema2pojo-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <!-- The gmavenplus plugin is used to compile Groovy code. To learn more about this plugin,
+          visit https://github.com/groovy/GMavenPlus/wiki -->
+          <groupId>org.codehaus.gmavenplus</groupId>
+          <artifactId>gmavenplus-plugin</artifactId>
+          <version>${version.org.codehaus.gmavenplus}</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>compile</goal>
+                <goal>compileTests</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
       </plugins>
     </pluginManagement>

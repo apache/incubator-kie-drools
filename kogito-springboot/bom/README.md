@@ -27,9 +27,9 @@ Simply add the BOM in your module's `pom.xml` file:
 </dependencyManagement>
 ```
 
-If your project has a parent module, add there instead of adding in every child module.
+If your project has a parent module, add the BOM in the parent module instead of adding in every child module.
 
-> **Maintainers**: relevant parent modules within the project already have it like [`addons`](../addons) and [`starters`](../kogito-springboot-starter).
+> **Maintainers**: The relevant parent modules within the project already have it like [`addons`](../addons) and [`starters`](../starters).
 
 ## Adding new dependencies
 
