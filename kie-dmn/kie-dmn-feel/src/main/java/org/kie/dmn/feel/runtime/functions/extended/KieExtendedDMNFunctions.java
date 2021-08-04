@@ -32,7 +32,7 @@ import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNSumFunction;
 import org.kie.dmn.model.api.GwtIncompatible;
 
 /**
- * additional functions not part of the spec version 1.1
+ * additional functions not part of the spec version 1.x, or not incorporated in the spec yet.
  */
 public class KieExtendedDMNFunctions {
 
@@ -58,6 +58,8 @@ public class KieExtendedDMNFunctions {
                                                                         NNModeFunction.INSTANCE,
                                                                         NNStddevFunction.INSTANCE,
                                                                         NNSumFunction.INSTANCE,
+
+                                                                        StringJoinFunction.INSTANCE,
 
     };
 
