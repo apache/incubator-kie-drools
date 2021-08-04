@@ -1,5 +1,6 @@
 package org.kie.dmn.feel.lang.impl;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,8 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
 
 public class FEELProfileTest {
 
@@ -20,7 +23,7 @@ public class FEELProfileTest {
     public void testFeelProfileFunctionsAndValues() {
 
         // Instantiate a new FEEL with the profile to try the method that uses the data cache
-        FEEL feel = FEEL.newInstance(List.of(new TestFEELProfile()));
+        FEEL feel = FEEL.newInstance(Arrays.asList(new TestFEELProfile()));
 
         assertThat(feel.evaluate("use cache(\"val 1\")"), equalTo("1"));
         assertThat(feel.evaluate("use cache(\"val 3\")"), equalTo("3"));
@@ -34,12 +37,12 @@ public class FEELProfileTest {
 
         @Override
         public List<FEELFunction> getFEELFunctions() {
-            return List.of(new UseCacheFunction());
+            return Arrays.asList(new UseCacheFunction());
         }
 
         @Override
         public Map<String, Object> getValues() {
-            return Map.of("[internal-cache]", Map.of("val 1", "1", "val 2", "2", "val 3", "3"));
+            return mapOf(entry("[internal-cache]", mapOf(entry("val 1", "1"), entry("val 2", "2"), entry("val 3", "3"))));
         }
     }
 
