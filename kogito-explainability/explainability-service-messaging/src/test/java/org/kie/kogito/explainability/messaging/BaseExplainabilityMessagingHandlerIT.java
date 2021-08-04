@@ -104,7 +104,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
             LOGGER.info("Received from kafka: {}", s);
             CloudEventUtils.decode(s).ifPresent((CloudEvent cloudEvent) -> {
                 try {
-                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData(), BaseExplainabilityResultDto.class);
+                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResultDto.class);
                     assertNotNull(event);
                     assertResult(event);
                     countDownLatch.countDown();
@@ -144,7 +144,7 @@ abstract class BaseExplainabilityMessagingHandlerIT {
             LOGGER.info("Received from kafka: {}", s);
             CloudEventUtils.decode(s).ifPresent((CloudEvent cloudEvent) -> {
                 try {
-                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData(), BaseExplainabilityResultDto.class);
+                    BaseExplainabilityResultDto event = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityResultDto.class);
                     assertNotNull(event);
                     assertResult(event);
                     countDownLatch.countDown();

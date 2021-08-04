@@ -86,9 +86,11 @@ public class ExplainabilityMessagingHandler {
 
     @SuppressWarnings("unchecked")
     private CompletionStage<Void> handleCloudEvent(CloudEvent cloudEvent) {
-        BaseExplainabilityRequestDto requestDto;
+        BaseExplainabilityRequestDto requestDto = null;
         try {
-            requestDto = objectMapper.readValue(cloudEvent.getData(), BaseExplainabilityRequestDto.class);
+            if (cloudEvent.getData() != null) {
+                requestDto = objectMapper.readValue(cloudEvent.getData().toBytes(), BaseExplainabilityRequestDto.class);
+            }
         } catch (IOException e) {
             LOGGER.error("Unable to deserialize CloudEvent data as ExplainabilityRequest", e);
             return CompletableFuture.completedFuture(null);
@@ -133,5 +135,4 @@ public class ExplainabilityMessagingHandler {
     public Publisher<String> getEventPublisher() {
         return eventSubject.toHotStream();
     }
-
 }

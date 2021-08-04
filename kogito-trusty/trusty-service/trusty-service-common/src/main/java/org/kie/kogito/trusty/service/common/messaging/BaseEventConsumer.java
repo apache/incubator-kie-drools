@@ -67,9 +67,11 @@ public abstract class BaseEventConsumer<E> {
     }
 
     protected void handleCloudEvent(final CloudEvent cloudEvent) {
-        final E payload;
+        E payload = null;
         try {
-            payload = mapper.readValue(cloudEvent.getData(), getEventType());
+            if (cloudEvent.getData() != null) {
+                payload = mapper.readValue(cloudEvent.getData().toBytes(), getEventType());
+            }
         } catch (IOException e) {
             LOG.error("Unable to deserialize CloudEvent data as " + getEventType().getType().getTypeName(), e);
             return;
