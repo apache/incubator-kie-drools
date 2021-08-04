@@ -33,7 +33,7 @@
       <entityClass>org.optaplanner.examples.projectjobscheduling.domain.Allocation</entityClass>
 
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.projectjobscheduling.score.ProjectJobSchedulingIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <constraintProviderClass>org.optaplanner.examples.projectjobscheduling.score.ProjectJobSchedulingConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>5</minutesSpentLimit>

@@ -34,7 +34,7 @@ public class MachineReassignmentPerformanceTest extends SolverPerformanceTest<Ma
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-117351236soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-272621414soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "0hard/-86121794soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-204041393soft", EnvironmentMode.FAST_ASSERT));
     }
 }

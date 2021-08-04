@@ -34,7 +34,7 @@ public class ExaminationPerformanceTest extends SolverPerformanceTest<Examinatio
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-4393soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-4407soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "0hard/-4295soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-4377soft", EnvironmentMode.FAST_ASSERT));
     }
 }

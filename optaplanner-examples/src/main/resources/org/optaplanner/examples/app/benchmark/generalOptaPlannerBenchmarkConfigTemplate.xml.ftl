@@ -24,7 +24,7 @@
       <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <constructionHeuristic>
@@ -56,7 +56,7 @@
       <entityClass>org.optaplanner.examples.machinereassignment.domain.MrProcessAssignment</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <constraintProviderClass>org.optaplanner.examples.machinereassignment.score.MachineReassignmentConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <customPhase>
         <customPhaseCommandClass>org.optaplanner.examples.machinereassignment.solver.solution.initializer.ToOriginalMachineSolutionInitializer</customPhaseCommandClass>
@@ -87,7 +87,7 @@
       <entityClass>org.optaplanner.examples.curriculumcourse.domain.Lecture</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/curriculumcourse/solver/curriculumCourseConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>FIRST_FIT_DECREASING</constructionHeuristicType>
@@ -122,7 +122,7 @@
       <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <queuedEntityPlacer>
@@ -196,7 +196,7 @@
       <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <constructionHeuristic>
         <constructionHeuristicType>WEAKEST_FIT</constructionHeuristicType>
@@ -254,7 +254,7 @@
       <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
       <randomType>${randomType}</randomType>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <localSearch>
         <unionMoveSelector>

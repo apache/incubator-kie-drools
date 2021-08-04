@@ -32,7 +32,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class CoachShuttleGatheringApp extends CommonApp<CoachShuttleGatheringSolution> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/coachshuttlegathering/solver/coachShuttleGatheringSolverConfig.xml";
+            "org/optaplanner/examples/coachshuttlegathering/coachShuttleGatheringSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "coachshuttlegathering";
 

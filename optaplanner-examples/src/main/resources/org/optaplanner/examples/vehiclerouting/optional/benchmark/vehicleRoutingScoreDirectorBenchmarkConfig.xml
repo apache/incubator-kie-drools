@@ -46,19 +46,10 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>ConstraintStreams (Drools)</name>
+    <name>ConstraintStreams</name>
     <solver>
       <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider</constraintProviderClass>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>ConstraintStreams (Bavet)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.vehiclerouting.optional.score.VehicleRoutingConstraintProvider</constraintProviderClass>
-        <constraintStreamImplType>BAVET</constraintStreamImplType>
+        <constraintProviderClass>org.optaplanner.examples.vehiclerouting.score.VehicleRoutingConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>
@@ -66,7 +57,7 @@
     <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/vehiclerouting/solver/vehicleRoutingConstraints.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/vehiclerouting/optional/score/vehicleRoutingConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

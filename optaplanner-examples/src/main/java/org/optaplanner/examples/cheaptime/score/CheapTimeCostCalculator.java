@@ -18,7 +18,7 @@ package org.optaplanner.examples.cheaptime.score;
 
 import java.math.BigDecimal;
 
-public class CheapTimeCostCalculator {
+public final class CheapTimeCostCalculator {
 
     public static final long MICROS_PER_ONE_AS_LONG = 100000000000L;
     public static final double MICROS_PER_ONE_AS_DOUBLE = 100000000000.0;

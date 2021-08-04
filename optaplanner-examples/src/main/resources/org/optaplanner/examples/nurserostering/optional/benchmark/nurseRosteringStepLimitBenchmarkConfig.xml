@@ -10,7 +10,7 @@
       <solutionClass>org.optaplanner.examples.nurserostering.domain.NurseRoster</solutionClass>
       <entityClass>org.optaplanner.examples.nurserostering.domain.ShiftAssignment</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nurserostering/solver/nurseRosteringConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.nurserostering.score.NurseRosteringConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>

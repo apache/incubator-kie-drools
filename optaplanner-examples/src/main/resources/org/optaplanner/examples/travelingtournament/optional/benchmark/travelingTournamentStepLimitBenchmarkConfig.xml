@@ -16,7 +16,7 @@
       <solutionClass>org.optaplanner.examples.travelingtournament.domain.TravelingTournament</solutionClass>
       <entityClass>org.optaplanner.examples.travelingtournament.domain.Match</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/travelingtournament/solver/travelingTournamentConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.travelingtournament.score.TravelingTournamentConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <termination>
         <stepCountLimit>100</stepCountLimit>

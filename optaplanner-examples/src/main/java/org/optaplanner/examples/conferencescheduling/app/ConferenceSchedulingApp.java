@@ -26,7 +26,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class ConferenceSchedulingApp extends CommonApp<ConferenceSolution> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingSolverConfig.xml";
+            "org/optaplanner/examples/conferencescheduling/conferenceSchedulingSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "conferencescheduling";
 

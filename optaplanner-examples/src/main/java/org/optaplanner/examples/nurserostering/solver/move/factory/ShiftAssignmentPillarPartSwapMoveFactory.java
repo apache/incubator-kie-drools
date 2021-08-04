@@ -32,7 +32,6 @@ import org.optaplanner.examples.nurserostering.domain.Employee;
 import org.optaplanner.examples.nurserostering.domain.NurseRoster;
 import org.optaplanner.examples.nurserostering.domain.ShiftAssignment;
 import org.optaplanner.examples.nurserostering.domain.solver.ShiftAssignmentPinningFilter;
-import org.optaplanner.examples.nurserostering.score.drools.EmployeeWorkSequence;
 import org.optaplanner.examples.nurserostering.solver.move.EmployeeMultipleChangeMove;
 
 public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory<NurseRoster> {
@@ -133,9 +132,6 @@ public class ShiftAssignmentPillarPartSwapMoveFactory implements MoveListFactory
         return moveList;
     }
 
-    /**
-     * TODO DRY with {@link EmployeeWorkSequence}.
-     */
     private static class AssignmentSequence {
 
         private Employee employee;

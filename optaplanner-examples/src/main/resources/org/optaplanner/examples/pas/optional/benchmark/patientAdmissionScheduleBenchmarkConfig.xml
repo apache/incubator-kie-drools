@@ -9,7 +9,7 @@
       <solutionClass>org.optaplanner.examples.pas.domain.PatientAdmissionSchedule</solutionClass>
       <entityClass>org.optaplanner.examples.pas.domain.BedDesignation</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/pas/solver/patientAdmissionScheduleConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.pas.score.PatientAdmissionScheduleConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <termination>
         <secondsSpentLimit>300</secondsSpentLimit>

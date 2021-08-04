@@ -34,7 +34,7 @@ public class TaskAssigningPerformanceTest extends SolverPerformanceTest<TaskAssi
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3925/-6293940/-7772/-20463]soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3988/-10452712/-15713/-21195]soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3925/-6293940/-7784/-20600]soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "[0]hard/[-3925/-6293940/-7883/-20476]soft", EnvironmentMode.FAST_ASSERT));
     }
 }

@@ -47,7 +47,7 @@ public class CloudBalancingBenchmarkHelloWorld {
     public static void runBasicBenchmark() {
         // Build the PlannerBenchmark
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverConfigXmlResource(
-                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+                "org/optaplanner/examples/cloudbalancing/cloudBalancingSolverConfig.xml");
 
         CloudBalancingGenerator generator = new CloudBalancingGenerator();
         PlannerBenchmark benchmark = benchmarkFactory.buildPlannerBenchmark(

@@ -53,6 +53,14 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
+    <name>ConstraintStreams</name>
+    <solver>
+      <scoreDirectorFactory>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.score.NQueensConstraintProvider</constraintProviderClass>
+      </scoreDirectorFactory>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
     <name>Incremental java (basic)</name>
     <solver>
       <scoreDirectorFactory>
@@ -69,27 +77,10 @@
     </solver>
   </solverBenchmark>
   <solverBenchmark>
-    <name>ConstraintStreams (Drools)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
-    <name>ConstraintStreams (Bavet)</name>
-    <solver>
-      <scoreDirectorFactory>
-        <constraintProviderClass>org.optaplanner.examples.nqueens.optional.score.NQueensConstraintProvider</constraintProviderClass>
-        <constraintStreamImplType>BAVET</constraintStreamImplType>
-      </scoreDirectorFactory>
-    </solver>
-  </solverBenchmark>
-  <solverBenchmark>
     <name>DRL (Drools)</name>
     <solver>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+        <scoreDrl>org/optaplanner/examples/nqueens/optional/score/nQueensConstraints.drl</scoreDrl>
       </scoreDirectorFactory>
     </solver>
   </solverBenchmark>

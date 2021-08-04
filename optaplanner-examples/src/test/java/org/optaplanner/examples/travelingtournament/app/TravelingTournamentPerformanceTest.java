@@ -34,7 +34,7 @@ public class TravelingTournamentPerformanceTest extends SolverPerformanceTest<Tr
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-75968soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-77619soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "0hard/-73073soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-73073soft", EnvironmentMode.FAST_ASSERT));
     }
 }

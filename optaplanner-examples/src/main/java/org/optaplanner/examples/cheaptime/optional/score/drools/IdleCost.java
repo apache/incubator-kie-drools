@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.examples.cheaptime.optional.score.drools;
+package org.optaplanner.examples.cheaptime.optional.score;
 
 import static java.util.Comparator.comparing;
 import static java.util.Comparator.comparingLong;

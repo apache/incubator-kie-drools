@@ -31,7 +31,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class PatientAdmissionScheduleApp extends CommonApp<PatientAdmissionSchedule> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/pas/solver/patientAdmissionScheduleSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/pas/patientAdmissionScheduleSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "pas";
 

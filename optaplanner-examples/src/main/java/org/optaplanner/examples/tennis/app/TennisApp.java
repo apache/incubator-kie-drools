@@ -24,7 +24,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class TennisApp extends CommonApp<TennisSolution> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/tennis/solver/tennisSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/tennis/tennisSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "tennis";
 

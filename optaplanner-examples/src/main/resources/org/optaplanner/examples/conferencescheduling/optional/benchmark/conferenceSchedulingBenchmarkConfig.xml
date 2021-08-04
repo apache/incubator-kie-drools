@@ -8,7 +8,7 @@
       <solutionClass>org.optaplanner.examples.conferencescheduling.domain.ConferenceSolution</solutionClass>
       <entityClass>org.optaplanner.examples.conferencescheduling.domain.Talk</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/conferencescheduling/solver/conferenceSchedulingConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.curriculumcourse.score.CurriculumCourseConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       <termination>
         <minutesSpentLimit>15</minutesSpentLimit>

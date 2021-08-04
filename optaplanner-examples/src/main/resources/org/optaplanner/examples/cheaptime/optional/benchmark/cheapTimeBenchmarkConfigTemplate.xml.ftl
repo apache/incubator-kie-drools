@@ -62,7 +62,7 @@
       <solutionClass>org.optaplanner.examples.cheaptime.domain.CheapTimeSolution</solutionClass>
       <entityClass>org.optaplanner.examples.cheaptime.domain.TaskAssignment</entityClass>
       <scoreDirectorFactory>
-        <incrementalScoreCalculatorClass>org.optaplanner.examples.cheaptime.score.CheapTimeIncrementalScoreCalculator</incrementalScoreCalculatorClass>
+        <constraintProviderClass>org.optaplanner.examples.cheaptime.score.CheapTimeConstraintProvider</constraintProviderClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>

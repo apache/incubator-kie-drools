@@ -11,7 +11,7 @@
       <entityClass>org.optaplanner.examples.examination.domain.LeadingExam</entityClass>
       <entityClass>org.optaplanner.examples.examination.domain.FollowingExam</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/examination/solver/examinationConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.examination.score.ExaminationConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
     </solver>
     <problemBenchmarks>

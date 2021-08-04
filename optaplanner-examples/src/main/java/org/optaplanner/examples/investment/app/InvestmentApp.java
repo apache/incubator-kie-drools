@@ -26,7 +26,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 
 public class InvestmentApp extends CommonApp<InvestmentSolution> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/investment/solver/investmentSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/investment/investmentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "investment";
 

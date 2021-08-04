@@ -32,7 +32,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
 public class MachineReassignmentApp extends CommonApp<MachineReassignment> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/machinereassignment/solver/machineReassignmentSolverConfig.xml";
+            "org/optaplanner/examples/machinereassignment/machineReassignmentSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "machinereassignment";
 

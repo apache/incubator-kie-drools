@@ -34,7 +34,7 @@ public class TspPerformanceTest extends SolverPerformanceTest<TspSolution> {
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "-217957000", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "-219637000", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "-216469618", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "-217458433", EnvironmentMode.FAST_ASSERT));
     }
 }

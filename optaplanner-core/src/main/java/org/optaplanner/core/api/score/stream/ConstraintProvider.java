@@ -20,15 +20,9 @@ import org.optaplanner.core.api.domain.constraintweight.ConstraintWeight;
 import org.optaplanner.core.api.score.Score;
 
 /**
- * WARNING: The ConstraintStreams/ConstraintProvider API is TECH PREVIEW.
- * It works but it has many API gaps.
- * Therefore, it is not rich enough yet to handle complex constraints.
- * <p>
- * Used by constraint stream {@link Score} calculation.
- * <p>
- * An implementation must be stateless.
- *
- * @see ConstraintStreamScoreDirector
+ * Used by Constraint Streams' {@link Score} calculation.
+ * An implementation must be stateless in order to facilitate building a single set of constraints
+ * independent of potentially changing constraint weights.
  */
 public interface ConstraintProvider {
 

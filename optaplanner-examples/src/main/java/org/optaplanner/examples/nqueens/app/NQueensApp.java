@@ -45,7 +45,7 @@ import org.optaplanner.persistence.common.api.domain.solution.SolutionFileIO;
  */
 public class NQueensApp extends CommonApp<NQueens> {
 
-    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/solver/nqueensSolverConfig.xml";
+    public static final String SOLVER_CONFIG = "org/optaplanner/examples/nqueens/nqueensSolverConfig.xml";
 
     public static final String DATA_DIR_NAME = "nqueens";
 
@@ -91,7 +91,7 @@ public class NQueensApp extends CommonApp<NQueens> {
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setScoreDrlList(
-                Arrays.asList("org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl"));
+                Arrays.asList("org/optaplanner/examples/nqueens/optional/score/nQueensConstraints.drl"));
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         solverConfig.setTerminationConfig(new TerminationConfig().withBestScoreLimit("0"));

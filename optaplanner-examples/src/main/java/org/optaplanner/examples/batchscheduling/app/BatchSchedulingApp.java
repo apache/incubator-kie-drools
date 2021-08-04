@@ -26,7 +26,7 @@ import org.optaplanner.persistence.xstream.impl.domain.solution.XStreamSolutionF
 public class BatchSchedulingApp extends CommonApp<BatchSchedule> {
 
     public static final String SOLVER_CONFIG =
-            "org/optaplanner/examples/batchscheduling/solver/batchSchedulingSolverConfig.xml";
+            "org/optaplanner/examples/batchscheduling/batchSchedulingSolverConfig.xml";
     public static final String DATA_DIR_NAME = "batchscheduling";
 
     // Determines rounding logic. If fractional value is more than specified number

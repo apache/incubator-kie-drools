@@ -34,7 +34,7 @@ public class CheapTimePerformanceTest extends SolverPerformanceTest<CheapTimeSol
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/-902335925205947medium/-20672soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/-918680355373904medium/-22228soft", EnvironmentMode.FAST_ASSERT));
+                testData(UNSOLVED_DATA_FILE, "0hard/-1043600344878178medium/-24077soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/-1047922570736971medium/-23863soft", EnvironmentMode.FAST_ASSERT));
     }
 }

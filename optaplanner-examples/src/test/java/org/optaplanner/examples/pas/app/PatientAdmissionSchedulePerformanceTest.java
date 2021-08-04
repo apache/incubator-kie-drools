@@ -34,12 +34,7 @@ public class PatientAdmissionSchedulePerformanceTest extends SolverPerformanceTe
     @Override
     protected Stream<TestData> testData() {
         return Stream.of(
-                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7458soft", EnvironmentMode.REPRODUCIBLE),
-                // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
-                //                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7172soft", EnvironmentMode.REPRODUCIBLE),
-                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7408soft", EnvironmentMode.FAST_ASSERT)
-        // TODO Adding overconstrained functionality reduced Solver efficiency, so this ran too long (over 1 minute):
-        //                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7192soft", EnvironmentMode.FAST_ASSERT)
-        );
+                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7364soft", EnvironmentMode.REPRODUCIBLE),
+                testData(UNSOLVED_DATA_FILE, "0hard/0medium/-7442soft", EnvironmentMode.FAST_ASSERT));
     }
 }

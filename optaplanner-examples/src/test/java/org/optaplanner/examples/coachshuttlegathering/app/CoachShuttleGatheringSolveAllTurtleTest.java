@@ -16,7 +16,6 @@
 
 package org.optaplanner.examples.coachshuttlegathering.app;
 
-import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.examples.coachshuttlegathering.domain.CoachShuttleGatheringSolution;
 import org.optaplanner.examples.coachshuttlegathering.optional.score.CoachShuttleGatheringEasyScoreCalculator;
 import org.optaplanner.examples.common.app.CommonApp;
@@ -30,7 +29,7 @@ public class CoachShuttleGatheringSolveAllTurtleTest extends UnsolvedDirSolveAll
     }
 
     @Override
-    protected Class<? extends EasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
+    protected Class<CoachShuttleGatheringEasyScoreCalculator> overwritingEasyScoreCalculatorClass() {
         return CoachShuttleGatheringEasyScoreCalculator.class;
     }
 }
