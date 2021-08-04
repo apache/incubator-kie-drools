@@ -38,12 +38,12 @@ public class StringJoinFunction extends BaseFEELFunction {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "cannot be null"));
         }
         if (list.isEmpty()) {
-            return FEELFnResult.ofResult("");
+            return FEELFnResult.ofResult(""); // If list is empty, the result is the empty string
         }
-        StringJoiner sj = new StringJoiner(delimiter != null ? delimiter : "");
+        StringJoiner sj = new StringJoiner(delimiter != null ? delimiter : ""); // If delimiter is null, the string elements are joined without a separator
         for (Object element : list) {
             if (element == null) {
-                continue; //
+                continue; // Null elements in the list parameter are ignored.
             } else if (element instanceof CharSequence) {
                 sj.add((CharSequence) element);
             } else {
