@@ -92,6 +92,7 @@ if (!Utils.isMainBranch(this)) {
 
 if (Utils.isLTSBranch(this)) {
     setupQuarkusJob(nightlyBranchFolder, Utils.getQuarkusLTSVersion(this))
+    setupNativeLTSJob(nightlyBranchFolder)
 }
 /////////////////////////////////////////////////////////////////
 // Methods
@@ -186,6 +187,24 @@ void setupNativeJob(String jobFolder) {
         }
         environmentVariables {
             env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Native check')
+        }
+    }
+}
+
+void setupNativeLTSJob(String jobFolder) {
+    def jobParams = getJobParams('kogito-runtimes-native-lts', jobFolder, 'Jenkinsfile.native', 'Kogito Runtimes Native LTS Testing')
+    jobParams.triggers = [ cron : 'H 8 * * *' ]
+    KogitoJobTemplate.createPipelineJob(this, jobParams).with {
+        parameters {
+            stringParam('BUILD_BRANCH_NAME', "${GIT_BRANCH}", 'Set the Git branch to checkout')
+            stringParam('GIT_AUTHOR', "${GIT_AUTHOR_NAME}", 'Set the Git author to checkout')
+
+            stringParam('NATIVE_BUILDER_IMAGE', Utils.getLTSNativeBuilderImage(this), 'Which native builder image to use ?')
+        }
+        environmentVariables {
+            env('JENKINS_EMAIL_CREDS_ID', "${JENKINS_EMAIL_CREDS_ID}")
+            env('NOTIFICATION_JOB_NAME', 'Native LTS check')
         }
     }
 }
