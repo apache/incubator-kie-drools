@@ -35,9 +35,11 @@ import java.util.SortedMap;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.function.ToIntBiFunction;
 import java.util.function.ToIntFunction;
@@ -45,12 +47,15 @@ import java.util.function.ToLongBiFunction;
 import java.util.function.ToLongFunction;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.function.PentaFunction;
 import org.optaplanner.core.api.function.QuadFunction;
+import org.optaplanner.core.api.function.QuadPredicate;
 import org.optaplanner.core.api.function.ToIntQuadFunction;
 import org.optaplanner.core.api.function.ToIntTriFunction;
 import org.optaplanner.core.api.function.ToLongQuadFunction;
 import org.optaplanner.core.api.function.ToLongTriFunction;
 import org.optaplanner.core.api.function.TriFunction;
+import org.optaplanner.core.api.function.TriPredicate;
 import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
 import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
 import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
@@ -67,6 +72,10 @@ import org.optaplanner.core.impl.score.stream.uni.DefaultUniConstraintCollector;
  */
 public final class ConstraintCollectors {
 
+    private static final Runnable NOOP = () -> {
+        // No operation.
+    };
+
     // ************************************************************************
     // count
     // ************************************************************************
@@ -76,6 +85,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(count())} returns {@code 5}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -198,6 +209,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(countDistinct(Person::getAge))} returns {@code 3}, one for age 20, 25 and 30 each.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -368,6 +381,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(sum(Person::getAge))} returns {@code 125}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code 0}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -701,6 +716,8 @@ public final class ConstraintCollectors {
      * {@link Comparable} by the {@code age} field.
      * To avoid this, always end your {@link Comparator} by an identity comparison, such as
      * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -720,6 +737,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(min(Person::getAge))} returns {@code 20}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -812,6 +831,8 @@ public final class ConstraintCollectors {
      * {@link Comparable} by the {@code age} field.
      * To avoid this, always end your {@link Comparator} by an identity comparison, such as
      * {@code Comparator.comparing(Person::getAge).comparing(Person::getId))}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -831,6 +852,8 @@ public final class ConstraintCollectors {
      * <p>
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]} with
      * {@code .groupBy(max(Person::getAge))} returns {@code 30}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is {@code null}.
      *
      * @param <A> type of the matched fact
      * @param <Mapped> type of the result
@@ -979,6 +1002,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Set}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -990,6 +1015,8 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedSet}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1009,6 +1036,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link List}.
      *
      * @param <A> type of the matched fact
      * @return never null
@@ -1047,6 +1076,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link Set} of the same element type as the {@link ConstraintStream}.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet()}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Set}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1066,6 +1097,8 @@ public final class ConstraintCollectors {
     /**
      * Creates constraint collector that returns {@link SortedSet} of the same element type as the
      * {@link ConstraintStream}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedSet}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting set
      * @param <A> type of the matched fact
@@ -1095,6 +1128,8 @@ public final class ConstraintCollectors {
      * Creates constraint collector that returns {@link List} of the given element type.
      * Makes no guarantees on iteration order.
      * For stable iteration order, use {@link #toSortedSet(Function)}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link List}.
      *
      * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
      * @param <A> type of the matched fact
@@ -1131,12 +1166,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, Set<Mapped>> toSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1151,12 +1180,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, Mapped extends Comparable<Mapped>> BiConstraintCollector<A, B, ?, SortedSet<Mapped>> toSortedSet(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1179,12 +1202,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, Mapped> BiConstraintCollector<A, B, ?, List<Mapped>> toList(
             BiFunction<A, B, Mapped> groupValueMapping) {
@@ -1217,13 +1234,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, Set<Mapped>> toSet(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1238,13 +1248,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, Mapped extends Comparable<Mapped>> TriConstraintCollector<A, B, C, ?, SortedSet<Mapped>>
             toSortedSet(TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1267,13 +1270,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, C, Mapped> TriConstraintCollector<A, B, C, ?, List<Mapped>> toList(
             TriFunction<A, B, C, Mapped> groupValueMapping) {
@@ -1306,14 +1302,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, Set<Mapped>> toSet(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1328,14 +1316,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedSet(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting set
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting set
-     * @return never null
      */
     public static <A, B, C, D, Mapped extends Comparable<Mapped>> QuadConstraintCollector<A, B, C, D, ?, SortedSet<Mapped>>
             toSortedSet(QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1358,14 +1338,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toList(Function)}.
-     *
-     * @param groupValueMapping never null, converts matched facts to elements of the resulting collection
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Mapped> type of elements in the resulting collection
-     * @return never null
      */
     public static <A, B, C, D, Mapped> QuadConstraintCollector<A, B, C, D, ?, List<Mapped>> toList(
             QuadFunction<A, B, C, D, Mapped> groupValueMapping) {
@@ -1393,6 +1365,8 @@ public final class ConstraintCollectors {
      * <p>
      * Makes no guarantees on iteration order, neither for map entries, nor for the value sets.
      * For stable iteration order, use {@link #toSortedMap(Function, Function, IntFunction)}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1417,6 +1391,8 @@ public final class ConstraintCollectors {
      * Iteration order of value collections depends on the {@link Set} provided.
      * Makes no guarantees on iteration order for map entries, use {@link #toSortedMap(Function, Function, IntFunction)}
      * for that.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1602,7 +1578,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order for map entries.
      * For stable iteration order, use {@link #toSortedMap(Function, Function, BinaryOperator)}.
      * <p>
-     * This constraint collector is slow and causes considerable garbage collector pressure.
+     * The default result of the collector (e.g. when never called) is an empty {@link Map}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1632,7 +1608,7 @@ public final class ConstraintCollectors {
      * Makes no guarantees on iteration order for the value sets, use
      * {@link #toSortedMap(Function, Function, IntFunction)} for that.
      * <p>
-     * This constraint collector is slow and causes considerable garbage collector pressure.
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1655,6 +1631,8 @@ public final class ConstraintCollectors {
      * {@code {20: [Ann, Eric], 25: [Beth], 30: [Cathy, David]}}.
      * <p>
      * Iteration order of value collections depends on the {@link Set} provided.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1681,6 +1659,8 @@ public final class ConstraintCollectors {
      * For example, {@code [Ann(age = 20), Beth(age = 25), Cathy(age = 30), David(age = 30), Eric(age = 20)]}
      * with {@code .groupBy(toMap(Person::getAge, Person::getName, (name1, name2) -> name1 + " and " + name2)} returns
      * {@code {20: "Ann and Eric", 25: "Beth", 30: "Cathy and David"}}.
+     * <p>
+     * The default result of the collector (e.g. when never called) is an empty {@link SortedMap}.
      *
      * @param keyMapper map matched fact to a map key
      * @param valueMapper map matched fact to a value
@@ -1701,14 +1681,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key, Value> BiConstraintCollector<A, B, ?, Map<Key, Set<Value>>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1718,16 +1690,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, Key, Value, ValueSet extends Set<Value>> BiConstraintCollector<A, B, ?, Map<Key, ValueSet>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1749,15 +1711,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key, Value> BiConstraintCollector<A, B, ?, Map<Key, Value>> toMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1770,14 +1723,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1787,16 +1732,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             BiConstraintCollector<A, B, ?, SortedMap<Key, ValueSet>> toSortedMap(
@@ -1810,15 +1745,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, Key extends Comparable<Key>, Value> BiConstraintCollector<A, B, ?, SortedMap<Key, Value>> toSortedMap(
             BiFunction<? super A, ? super B, ? extends Key> keyMapper,
@@ -1831,15 +1757,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key, Value> TriConstraintCollector<A, B, C, ?, Map<Key, Set<Value>>> toMap(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1849,17 +1766,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, Key, Value, ValueSet extends Set<Value>> TriConstraintCollector<A, B, C, ?, Map<Key, ValueSet>>
             toMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1882,16 +1788,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key, Value> TriConstraintCollector<A, B, C, ?, Map<Key, Value>> toMap(
             TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1905,15 +1801,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Set<Value>>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1923,17 +1810,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             TriConstraintCollector<A, B, C, ?, SortedMap<Key, ValueSet>> toSortedMap(
@@ -1948,16 +1824,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, Key extends Comparable<Key>, Value> TriConstraintCollector<A, B, C, ?, SortedMap<Key, Value>>
             toSortedMap(TriFunction<? super A, ? super B, ? super C, ? extends Key> keyMapper,
@@ -1971,16 +1837,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key, Value> QuadConstraintCollector<A, B, C, D, ?, Map<Key, Set<Value>>> toMap(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
@@ -1990,18 +1846,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, D, Key, Value, ValueSet extends Set<Value>>
             QuadConstraintCollector<A, B, C, D, ?, Map<Key, ValueSet>> toMap(
@@ -2025,17 +1869,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key, Value> QuadConstraintCollector<A, B, C, D, ?, Map<Key, Value>> toMap(
             QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
@@ -2049,16 +1882,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Set<Value>>> toSortedMap(
@@ -2069,18 +1892,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, IntFunction)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param valueSetFunction creates a set that will be used to store value mappings
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @param <ValueSet> type of the value set
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value, ValueSet extends Set<Value>>
             QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, ValueSet>> toSortedMap(
@@ -2095,17 +1906,6 @@ public final class ConstraintCollectors {
 
     /**
      * As defined by {@link #toSortedMap(Function, Function, BinaryOperator)}.
-     *
-     * @param keyMapper map matched fact to a map key
-     * @param valueMapper map matched fact to a value
-     * @param mergeFunction takes two values and merges them to one
-     * @param <A> type of the first matched fact
-     * @param <B> type of the second matched fact
-     * @param <C> type of the third matched fact
-     * @param <D> type of the fourth matched fact
-     * @param <Key> type of map key
-     * @param <Value> type of map value
-     * @return never null
      */
     public static <A, B, C, D, Key extends Comparable<Key>, Value> QuadConstraintCollector<A, B, C, D, ?, SortedMap<Key, Value>>
             toSortedMap(QuadFunction<? super A, ? super B, ? super C, ? super D, ? extends Key> keyMapper,
@@ -2115,6 +1915,97 @@ public final class ConstraintCollectors {
                 () -> new ToSimpleMapResultContainer<>((Supplier<TreeMap<Key, Value>>) TreeMap::new, mergeFunction),
                 (resultContainer, a, b, c, d) -> toMapAccumulator(keyMapper, valueMapper, resultContainer, a, b, c, d),
                 ToSimpleMapResultContainer::getResult);
+    }
+
+    // ************************************************************************
+    // conditional collectors
+    // ************************************************************************
+
+    /**
+     * Returns a collector that delegates to the underlying collector
+     * if and only if the input tuple meets the given condition.
+     *
+     * <p>
+     * The result of the collector is always the underlying collector's result.
+     * Therefore the default result of the collector (e.g. when never called) is the default result of the underlying collector.
+     *
+     * @param condition never null, condition to meet in order to delegate to the underlying collector
+     * @param delegate never null, the underlying collector to delegate to
+     * @param <A> generic type of the tuple variable
+     * @param <ResultContainer_> generic type of the result container
+     * @param <Result_> generic type of the collector's return value
+     * @return never null
+     */
+    public static <A, ResultContainer_, Result_> UniConstraintCollector<A, ResultContainer_, Result_> conditionally(
+            Predicate<A> condition, UniConstraintCollector<A, ResultContainer_, Result_> delegate) {
+        BiFunction<ResultContainer_, A, Runnable> accumulator = delegate.accumulator();
+        return new DefaultUniConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a) -> {
+                    if (condition.test(a)) {
+                        return accumulator.apply(resultContainer, a);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, ResultContainer_, Result_> BiConstraintCollector<A, B, ResultContainer_, Result_>
+            conditionally(BiPredicate<A, B> condition,
+                    BiConstraintCollector<A, B, ResultContainer_, Result_> delegate) {
+        TriFunction<ResultContainer_, A, B, Runnable> accumulator = delegate.accumulator();
+        return new DefaultBiConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b) -> {
+                    if (condition.test(a, b)) {
+                        return accumulator.apply(resultContainer, a, b);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, C, ResultContainer_, Result_> TriConstraintCollector<A, B, C, ResultContainer_, Result_>
+            conditionally(TriPredicate<A, B, C> condition,
+                    TriConstraintCollector<A, B, C, ResultContainer_, Result_> delegate) {
+        QuadFunction<ResultContainer_, A, B, C, Runnable> accumulator = delegate.accumulator();
+        return new DefaultTriConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b, c) -> {
+                    if (condition.test(a, b, c)) {
+                        return accumulator.apply(resultContainer, a, b, c);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
+    }
+
+    /**
+     * As defined by {@link #conditionally(Predicate, UniConstraintCollector)}.
+     */
+    public static <A, B, C, D, ResultContainer_, Result_> QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_>
+            conditionally(QuadPredicate<A, B, C, D> condition,
+                    QuadConstraintCollector<A, B, C, D, ResultContainer_, Result_> delegate) {
+        PentaFunction<ResultContainer_, A, B, C, D, Runnable> accumulator = delegate.accumulator();
+        return new DefaultQuadConstraintCollector<>(
+                delegate.supplier(),
+                (resultContainer, a, b, c, d) -> {
+                    if (condition.test(a, b, c, d)) {
+                        return accumulator.apply(resultContainer, a, b, c, d);
+                    } else {
+                        return NOOP;
+                    }
+                },
+                delegate.finisher());
     }
 
     private ConstraintCollectors() {
