@@ -16,12 +16,15 @@
 package org.kie.kogito.it;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
 import org.apache.kafka.clients.admin.AdminClient;
+import org.apache.kafka.clients.admin.CreateTopicsResult;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
@@ -37,6 +40,7 @@ import io.smallrye.common.annotation.Identifier;
 public class KafkaPersistenceIT extends PersistenceTest {
 
     public static final String PROCESS_TOPIC = "kogito.process." + PersistenceTest.PROCESS_ID;
+    public static final String PROCESS_EMBEDDED_TOPIC = "kogito.process." + PersistenceTest.PROCESS_EMBEDDED_ID;
     private Logger LOGGER = LoggerFactory.getLogger(KafkaPersistenceIT.class);
 
     @Inject
@@ -45,19 +49,15 @@ public class KafkaPersistenceIT extends PersistenceTest {
 
     @BeforeEach
     public void init() {
-        AdminClient client = AdminClient.create(kafkaConfig);
-        client.listTopics().names()
-                .thenApply(topics -> topics.stream()
-                        .filter(PROCESS_ID::equals)
-                        .findFirst()
-                        .orElseGet(() -> {
-                            try {
-                                client.createTopics(Arrays.asList(new NewTopic(PROCESS_TOPIC, 1, (short) 1))).all().get(10, TimeUnit.SECONDS);
-                                LOGGER.info("Created kogito.process.hello");
-                            } catch (Exception e) {
-                                LOGGER.error("Error creating {}", PROCESS_TOPIC, e);
-                            }
-                            return PROCESS_TOPIC;
-                        }));
+        List<String> topics = Arrays.asList(PROCESS_TOPIC, PROCESS_EMBEDDED_TOPIC);
+        try {
+            AdminClient client = AdminClient.create(kafkaConfig);
+            List<NewTopic> newTopics = topics.stream().map(e -> new NewTopic(e, 1, (short) 1)).collect(Collectors.toList());
+            CreateTopicsResult result = client.createTopics(newTopics);
+            LOGGER.info("trying to create {}", result);
+            result.all().get(10, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            LOGGER.error("Error creating {}", topics, e);
+        }
     }
 }
