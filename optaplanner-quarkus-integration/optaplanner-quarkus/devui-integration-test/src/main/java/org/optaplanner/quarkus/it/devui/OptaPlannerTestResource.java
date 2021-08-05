@@ -48,7 +48,10 @@ public class OptaPlannerTestResource {
         SolverJob<TestdataStringLengthShadowSolution, Long> solverJob = solverManager.solve(1L, planningProblem);
         try {
             return solverJob.getFinalBestSolution().getScore().toString();
-        } catch (InterruptedException | ExecutionException e) {
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new IllegalStateException("Solving was interrupted.", e);
+        } catch (ExecutionException e) {
             throw new IllegalStateException("Solving failed.", e);
         }
     }
