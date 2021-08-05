@@ -104,7 +104,7 @@ pipeline {
 }
 
 void sendNotification() {
-    emailext body: "**Native check job** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
+    emailext body: "**${NOTIFICATION_JOB_NAME}** #${BUILD_NUMBER} was: ${currentBuild.currentResult}\nPlease look here: ${BUILD_URL}",
              subject: "[${params.BUILD_BRANCH_NAME}] Optaplanner",
              to: env.KOGITO_CI_EMAIL_TO
 }
@@ -159,14 +159,24 @@ MavenCommand getMavenCommand(String directory) {
                 .inDirectory(directory)
 }
 
-MavenCommand getNativeMavenCommand(String directory) {
-    return getMavenCommand(directory)
+MavenCommand getNativeMavenCommand(String directory, String builderImage = getNativeBuilderImage()) {
+    def mvnCmd = getMavenCommand(directory)
                 .withProfiles(['native'])
                 .withProperty('quarkus.native.container-build', true)
                 .withProperty('quarkus.native.container-runtime', 'docker')
                 .withProperty('quarkus.profile', 'native') // Added due to https://github.com/quarkusio/quarkus/issues/13341
+    
+    if (builderImage) {
+        mvnCmd.withProperty('quarkus.native.builder-image', builderImage)
+    }
+
+    return mvnCmd
 }
 
 void cleanContainers() {
     cloud.cleanContainersAndImages('docker')
+}
+
+String getNativeBuilderImage() {
+    return params.NATIVE_BUILDER_IMAGE
 }
