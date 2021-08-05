@@ -5,9 +5,9 @@ on:
     types: [opened, synchronize, reopened, ready_for_review]
     paths-ignore:
       - 'LICENSE'
-      - '.gitignore'
-      - '*.md'
-      - '*.adoc'
+      - '**/.gitignore'
+      - '**.md'
+      - '**.adoc'
       - '*.txt'
       - 'docsimg/**'
       - '.github/*'
