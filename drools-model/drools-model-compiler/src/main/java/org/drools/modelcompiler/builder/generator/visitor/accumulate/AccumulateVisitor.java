@@ -472,7 +472,10 @@ public class AccumulateVisitor {
         if (bindingId != null) {
             Class accumulateFunctionResultType = accumulateFunction.getResultType();
             context.addDeclarationReplacing(new DeclarationSpec(bindingId, accumulateFunctionResultType));
-            context.getExpressions().forEach(expression -> replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, expression));
+            if (context.getExpressions().size() > 1) {
+                // replace the type of the lambda with the one resulting from the accumulate operation only in the pattern immediately before it
+                replaceTypeInExprLambda(bindingId, accumulateFunctionResultType, context.getExpressions().get(context.getExpressions().size()-2));
+            }
         }
     }
 
