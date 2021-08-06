@@ -62,10 +62,6 @@ if (Utils.isMainBranch(this)) {
     setupOptaplannerNativePrJob()
     // End of old PR checks
 
-    // Optaweb PR checks
-    setupOptawebEmployeeRosteringPrJob()
-    setupOptawebVehicleRoutingPrJob()
-
     // For BDD runtimes PR job
     setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
 }
@@ -74,6 +70,10 @@ if (Utils.isMainBranch(this)) {
 setupMultijobPrDefaultChecks()
 setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
+
+// Optaweb PR checks
+setupOptawebEmployeeRosteringPrJob()
+setupOptawebVehicleRoutingPrJob()
 
 // Nightly jobs
 setupNativeJob(nightlyBranchFolder)
