@@ -29,11 +29,14 @@ import org.drools.mvel.integrationtests.facts.BeanA;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.runtime.KieSession;
+import org.kie.test.testcategory.TurtleTestCategory;
 
 @RunWith(Parameterized.class)
+@Category(TurtleTestCategory.class)
 public class SharedSessionParallelTest extends AbstractConcurrentTest {
 
     @Parameterized.Parameters(name = "Enforced jitting={0}, KieBase type={1}")
@@ -62,7 +65,7 @@ public class SharedSessionParallelTest extends AbstractConcurrentTest {
         super(enforcedJitting, false, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 60000)
+    @Test(timeout = 120000)
     public void testNoExceptions() throws InterruptedException {
         final String drl = "rule R1 when String() then end";
 
