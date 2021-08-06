@@ -16,6 +16,7 @@
 package org.kie.kogito.addon.cloudevents.quarkus;
 
 import java.util.Optional;
+import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
 import javax.annotation.PostConstruct;
@@ -28,10 +29,14 @@ import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventEmitter;
 import org.kie.kogito.event.EventMarshaller;
 import org.kie.kogito.services.event.impl.DefaultEventMarshaller;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
+
+    private static final Logger logger = LoggerFactory.getLogger(AbstractQuarkusCloudEventEmitter.class);
 
     @Inject
     ConfigBean configBean;
@@ -46,14 +51,19 @@ public abstract class AbstractQuarkusCloudEventEmitter implements EventEmitter {
     private MessageFactory messageFactory;
 
     @PostConstruct
-    private void init() {
+    void init() {
         messageFactory = new MessageFactory(configBean.useCloudEvents());
         marshaller = marshallers.isUnsatisfied() ? new DefaultEventMarshaller(mapper) : marshallers.get();
     }
 
-    protected <T> Message<String> processMessage(T e, Optional<Function<T, Object>> processDecorator) {
-        return this.messageFactory.build(marshaller.marshall(
+    @Override
+    public <T> CompletionStage<Void> emit(T e, String type, Optional<Function<T, Object>> processDecorator) {
+        logger.debug("publishing event {} for type {}", e, type);
+        final Message<String> message = this.messageFactory.getMessageDecorator().decorate(marshaller.marshall(
                 configBean.useCloudEvents() ? processDecorator.map(d -> d.apply(e)).orElse(e) : e));
+        emit(message);
+        return message.getAck().get();
     }
 
+    protected abstract void emit(Message<String> message);
 }

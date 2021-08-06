@@ -16,6 +16,7 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.Map;
+import java.util.Objects;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.util.StringUtils;
@@ -133,11 +134,6 @@ public class TriggerMetaData {
         return this;
     }
 
-    @Override
-    public String toString() {
-        return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" + modelRef + "]";
-    }
-
     public static ObjectCreationExpr buildAction(String signalName, String variable, String scope) {
         return new ObjectCreationExpr(null,
                 parseClassOrInterfaceType(SignalProcessInstanceAction.class.getCanonicalName()),
@@ -220,5 +216,27 @@ public class TriggerMetaData {
         return new LambdaExpr(
                 new Parameter(new UnknownType(), KCONTEXT_VAR), // (kcontext) ->
                 actionBody);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dataType, modelRef, name, ownerId, type);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (!(obj instanceof TriggerMetaData))
+            return false;
+        TriggerMetaData other = (TriggerMetaData) obj;
+        return Objects.equals(dataType, other.dataType) && Objects.equals(modelRef, other.modelRef) && Objects.equals(
+                name, other.name) && Objects.equals(ownerId, other.ownerId) && type == other.type;
+    }
+
+    @Override
+    public String toString() {
+        return "TriggerMetaData [name=" + name + ", type=" + type + ", dataType=" + dataType + ", modelRef=" +
+                modelRef + ", ownerId=" + ownerId + "]";
     }
 }

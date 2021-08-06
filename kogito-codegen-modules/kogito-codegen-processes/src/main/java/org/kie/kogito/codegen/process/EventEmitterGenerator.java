@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.addon.cloudevents.quarkus;
+package org.kie.kogito.codegen.process;
 
-import java.util.Set;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-public interface ChannelResolver {
+public class EventEmitterGenerator extends EventGenerator {
 
-    Set<String> getOutputChannels();
+    public EventEmitterGenerator(KogitoBuildContext context, String trigger) {
+        super(context, trigger, "EventEmitter");
+    }
+
 }

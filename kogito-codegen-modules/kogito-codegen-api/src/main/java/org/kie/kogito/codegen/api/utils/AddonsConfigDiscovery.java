@@ -32,7 +32,6 @@ public class AddonsConfigDiscovery {
     private static final String PROMETHEUS_CLASS = "org.kie.kogito.monitoring.prometheus.common.rest.MetricsResource";
     private static final String MONITORING_CORE_CLASS = "org.kie.kogito.monitoring.core.common.MonitoringRegistry";
     private static final String TRACING_CLASS = "org.kie.kogito.tracing.decision.DecisionTracingListener";
-    private static final String QUARKUS_MULTI_CLOUD_EVENTS = "org.kie.kogito.addon.cloudevents.quarkus.QuarkusMultiCloudEventEmitter";
     private static final String QUARKUS_EXPLAINABILITY = "org.kie.kogito.explainability.QuarkusExplainableResource";
     private static final String SPRING_EXPLAINABILITY = "org.kie.kogito.explainability.SpringBootExplainableResource";
     private static final String QUARKUS_PROCESS_SVG = "org.kie.kogito.svg.service.QuarkusProcessSvgService";
@@ -55,7 +54,6 @@ public class AddonsConfigDiscovery {
         boolean useCloudEvents = classAvailabilityResolver.test(QUARKUS_RESOURCE_CLASS);
         boolean useExplainability = classAvailabilityResolver.test(QUARKUS_EXPLAINABILITY) || classAvailabilityResolver.test(SPRING_EXPLAINABILITY);
         boolean useProcessSVG = classAvailabilityResolver.test(QUARKUS_PROCESS_SVG) || classAvailabilityResolver.test(SPRING_PROCESS_SVG);
-        boolean useMultiChannel = classAvailabilityResolver.test(QUARKUS_MULTI_CLOUD_EVENTS);
 
         AddonsConfig addonsConfig = AddonsConfig.builder()
                 .withPersistence(usePersistence)
@@ -65,7 +63,6 @@ public class AddonsConfigDiscovery {
                 .withCloudEvents(useCloudEvents)
                 .withExplainability(useExplainability)
                 .withProcessSVG(useProcessSVG)
-                .withMultiChannel(useMultiChannel)
                 .build();
 
         LOGGER.info("Performed addonsConfig discovery, found: {}", addonsConfig);

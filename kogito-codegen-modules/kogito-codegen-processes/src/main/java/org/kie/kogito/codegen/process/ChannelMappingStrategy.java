@@ -13,18 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
+package org.kie.kogito.codegen.process;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.annotation.PostConstruct;
+import java.util.Collection;
+import java.util.Map;
 
-import org.kie.kogito.addon.cloudevents.quarkus.DefaultChannelResolver;
+import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 
-@ApplicationScoped
-public class ChannelResolver extends DefaultChannelResolver {
-
-    @PostConstruct
-    void populateChannels() {
-
-    }
+public interface ChannelMappingStrategy {
+    Map<TriggerMetaData, String> getChannelMapping(KogitoBuildContext kogitoBuildContext, Collection<TriggerMetaData> metadata);
 }

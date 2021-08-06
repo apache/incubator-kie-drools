@@ -18,7 +18,7 @@ package $Package$;
 
 import java.util.concurrent.ExecutorService;
 import javax.inject.Inject;
-import io.quarkus.runtime.annotations.RegisterForReflection;
+import javax.inject.Named;
 import org.kie.kogito.Application;
 import org.kie.kogito.conf.ConfigBean;
 import org.kie.kogito.event.EventConverter;
@@ -31,7 +31,6 @@ import org.kie.kogito.services.event.impl.AbstractMessageConsumer;
 
 
 @io.quarkus.runtime.Startup
-@RegisterForReflection
 public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $DataType$, $DataEventType$> {
 
     @Inject
@@ -41,13 +40,14 @@ public class $Type$MessageConsumer extends AbstractMessageConsumer<$Type$, $Data
     EventConverter<String> eventConverter;
 
     @Inject
-    @javax.inject.Named("$ProcessName$")
+    @Named("$ProcessName$")
     Process<$Type$> process;
 
     @Inject
     ConfigBean configBean;
 
     @Inject
+    @Named("$BeanName$")
     EventReceiver eventReceiver;
 
     @Inject

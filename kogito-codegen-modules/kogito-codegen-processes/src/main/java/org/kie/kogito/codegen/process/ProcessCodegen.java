@@ -28,6 +28,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -42,6 +43,7 @@ import org.jbpm.compiler.canonical.ModelMetaData;
 import org.jbpm.compiler.canonical.ProcessMetaData;
 import org.jbpm.compiler.canonical.ProcessToExecModelGenerator;
 import org.jbpm.compiler.canonical.TriggerMetaData;
+import org.jbpm.compiler.canonical.TriggerMetaData.TriggerType;
 import org.jbpm.compiler.canonical.UserTaskModelMetaData;
 import org.jbpm.compiler.xml.XmlProcessReader;
 import org.jbpm.process.core.validation.ProcessValidationError;
@@ -255,6 +257,7 @@ public class ProcessCodegen extends AbstractGenerator {
 
     private final Map<String, KogitoWorkflowProcess> processes;
     private final Set<GeneratedFile> generatedFiles = new HashSet<>();
+    private final Optional<ChannelMappingStrategy> mappingStrategy;
 
     public ProcessCodegen(KogitoBuildContext context, Collection<? extends Process> processes) {
         super(context, GENERATOR_NAME, new ProcessConfigGenerator(context));
@@ -265,6 +268,37 @@ public class ProcessCodegen extends AbstractGenerator {
             }
             this.processes.put(process.getId(), (KogitoWorkflowProcess) process);
         }
+        mappingStrategy = context().getAddonsConfig().useCloudEvents() ? Optional.of(getChannelMappingStrategy()) : Optional.empty();
+    }
+
+    public static String defaultWorkItemHandlerConfigClass(String packageName) {
+        return packageName + ".WorkItemHandlerConfig";
+    }
+
+    public static String defaultProcessListenerConfigClass(String packageName) {
+        return packageName + ".ProcessEventListenerConfig";
+    }
+
+    private Optional<String> getBeanName(Map<TriggerMetaData, String> channelMapping, Map<String, EventGenerator> eventGenerators, TriggerMetaData trigger) {
+        String beanName = null;
+        if (context().getAddonsConfig().useCloudEvents()) {
+            String channel = channelMapping.get(trigger);
+            if (channel != null) {
+                EventGenerator eventGenerator = eventGenerators.get(channel);
+                if (eventGenerator != null) {
+                    beanName = eventGenerator.getBeanName();
+                }
+            }
+            if (beanName == null) {
+                beanName = trigger.getType() == TriggerType.ConsumeMessage ? KogitoEventStreams.DEFAULT_INCOMING_BEAN_NAME : KogitoEventStreams.DEFAULT_OUTGOING_BEAN_NAME;
+            }
+        }
+        return Optional.ofNullable(beanName);
+    }
+
+    private static ChannelMappingStrategy getChannelMappingStrategy() {
+        // If in future we want to create more strategies, we should implement then and change this method to select them based on system property 
+        return new DefaultChannelMappingStrategy();
     }
 
     @Override
@@ -277,7 +311,6 @@ public class ProcessCodegen extends AbstractGenerator {
         List<MessageDataEventGenerator> mdegs = new ArrayList<>(); // message data events
         List<MessageConsumerGenerator> megs = new ArrayList<>(); // message endpoints/consumers
         List<MessageProducerGenerator> mpgs = new ArrayList<>(); // message producers
-        Map<String, EventReceiverGenerator> eventReceiverGenerators = new HashMap<>();
 
         Map<String, ModelClassGenerator> processIdToModelGenerator = new HashMap<>();
         Map<String, InputModelClassGenerator> processIdToInputModelGenerator = new HashMap<>();
@@ -285,6 +318,8 @@ public class ProcessCodegen extends AbstractGenerator {
 
         Map<String, List<UserTaskModelMetaData>> processIdToUserTaskModel = new HashMap<>();
         Map<String, ProcessMetaData> processIdToMetadata = new HashMap<>();
+
+        Map<String, EventGenerator> eventGenerators = new HashMap<>();
 
         OpenApiClientWorkItemIntrospector introspector = new OpenApiClientWorkItemIntrospector(this.context());
 
@@ -310,11 +345,6 @@ public class ProcessCodegen extends AbstractGenerator {
         // with the data classes that we have already resolved
         ProcessToExecModelGenerator execModelGenerator =
                 new ProcessToExecModelGenerator(context().getClassLoader());
-
-        ChannelResolverGenerator channelGenerator = null;
-        if (context().getAddonsConfig().useMultiChannel()) {
-            channelGenerator = new ChannelResolverGenerator(context());
-        }
 
         // collect all process descriptors (exec model)
         for (KogitoWorkflowProcess workFlowProcess : processes.values()) {
@@ -371,13 +401,16 @@ public class ProcessCodegen extends AbstractGenerator {
 
             if (metaData.getTriggers() != null) {
 
+                Map<TriggerMetaData, String> channelMapping = mappingStrategy.map(m -> m.getChannelMapping(context(), metaData.getTriggers())).orElse(Collections.emptyMap());
+                channelMapping.entrySet().forEach(e -> eventGenerators.computeIfAbsent(e.getValue(), k -> buildEventGenerator(e)));
+
                 for (TriggerMetaData trigger : metaData.getTriggers()) {
 
                     // generate message consumers for processes with message start events
                     if (trigger.getType().equals(TriggerMetaData.TriggerType.ConsumeMessage)) {
-                        String eventListenerName = KogitoEventStreams.getReceiverBeanName(trigger.getName());
                         MessageDataEventGenerator msgDataEventGenerator =
                                 new MessageDataEventGenerator(context(), workFlowProcess, trigger);
+
                         mdegs.add(msgDataEventGenerator);
                         megs.add(new MessageConsumerGenerator(
                                 context(),
@@ -387,27 +420,24 @@ public class ProcessCodegen extends AbstractGenerator {
                                 applicationCanonicalName(),
                                 msgDataEventGenerator.className(),
                                 trigger,
-                                eventListenerName));
-                        if (context().getAddonsConfig().useMultiChannel()) {
-                            eventReceiverGenerators.computeIfAbsent(trigger.getName(), t -> new EventReceiverGenerator(context(), eventListenerName, trigger));
-                        }
+                                getBeanName(channelMapping, eventGenerators, trigger)));
                     } else if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
 
                         MessageDataEventGenerator msgDataEventGenerator =
                                 new MessageDataEventGenerator(context(), workFlowProcess, trigger);
                         mdegs.add(msgDataEventGenerator);
+
                         mpgs.add(new MessageProducerGenerator(
                                 context(),
                                 workFlowProcess,
                                 modelClassGenerator.className(),
                                 execModelGen.className(),
                                 msgDataEventGenerator.className(),
-                                trigger));
-                        if (channelGenerator != null) {
-                            channelGenerator.addOutputChannel(trigger.getName());
-                        }
+                                trigger,
+                                getBeanName(channelMapping, eventGenerators, trigger)));
                     }
                 }
+
             }
 
             processGenerators.add(p);
@@ -416,12 +446,7 @@ public class ProcessCodegen extends AbstractGenerator {
             pis.add(pi);
         }
 
-        if (channelGenerator != null) {
-            storeFile(MODEL_TYPE, channelGenerator.generateFilePath(), channelGenerator.generate());
-            for (EventReceiverGenerator eventRecGenerator : eventReceiverGenerators.values()) {
-                storeFile(MODEL_TYPE, eventRecGenerator.generateFilePath(), eventRecGenerator.generate());
-            }
-        }
+        eventGenerators.values().forEach(eventGenerator -> storeFile(GeneratedFileType.SOURCE, eventGenerator.generateFilePath(), eventGenerator.generate()));
 
         for (ModelClassGenerator modelClassGenerator : processIdToModelGenerator.values()) {
             ModelMetaData mmd = modelClassGenerator.generate();
@@ -518,6 +543,12 @@ public class ProcessCodegen extends AbstractGenerator {
             storeFile(PROCESS_INSTANCE_TYPE, pi.generatedFilePath(), pi.generate());
         }
         return generatedFiles;
+    }
+
+    private EventGenerator buildEventGenerator(Entry<TriggerMetaData, String> entry) {
+
+        return entry.getKey().getType() == TriggerType.ConsumeMessage ? new EventReceiverGenerator(context(), entry.getValue()) : new EventEmitterGenerator(context(), entry.getValue());
+
     }
 
     private void storeFile(GeneratedFileType type, String path, String source) {

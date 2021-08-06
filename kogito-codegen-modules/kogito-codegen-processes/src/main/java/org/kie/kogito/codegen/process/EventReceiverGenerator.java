@@ -15,39 +15,12 @@
  */
 package org.kie.kogito.codegen.process;
 
-import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.template.InvalidTemplateException;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
+public class EventReceiverGenerator extends EventGenerator {
 
-public class EventReceiverGenerator {
-
-    private TemplatedGenerator template;
-    private CompilationUnit generator;
-
-    public EventReceiverGenerator(KogitoBuildContext context, String eventListenerName, TriggerMetaData trigger) {
-        String className = trigger.getName().replace(" ", "_") + "EventReceiver";
-        template = TemplatedGenerator.builder()
-                .withTargetTypeName(className)
-                .build(context, "EventReceiver");
-        generator = template.compilationUnitOrThrow("Cannot generate eventReceiver");
-        ClassOrInterfaceDeclaration clazz = generator.findFirst(ClassOrInterfaceDeclaration.class).orElseThrow(() -> new InvalidTemplateException(template, "Cannot find class declaration"));
-        clazz.setName(className);
-        clazz.findAll(StringLiteralExpr.class)
-                .forEach(str -> str.setString(str.asString().replace("$BeanName$", eventListenerName)));
-        clazz.findAll(StringLiteralExpr.class)
-                .forEach(str -> str.setString(str.asString().replace("$Trigger$", trigger.getName())));
+    public EventReceiverGenerator(KogitoBuildContext context, String trigger) {
+        super(context, trigger, "EventReceiver");
     }
 
-    public String generate() {
-        return generator.toString();
-    }
-
-    public String generateFilePath() {
-        return template.generatedFilePath();
-    }
 }
