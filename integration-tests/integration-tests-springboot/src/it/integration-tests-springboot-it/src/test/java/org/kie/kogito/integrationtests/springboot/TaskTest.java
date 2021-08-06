@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.acme.travels.Traveller;
 import org.acme.travels.Address;
@@ -51,10 +50,6 @@ import static org.junit.Assert.assertEquals;
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = KogitoSpringbootApplication.class)
 public class TaskTest extends BaseRestTest {
-
-    static {
-        RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-    }
 
     @Test
     void testJsonSchema() {
@@ -103,7 +98,7 @@ public class TaskTest extends BaseRestTest {
 
     @Test
     void testJsonSchemaFiles() {
-        long expectedJsonSchemas = 8;
+        long expectedJsonSchemas = 9;
         Path jsonDir = Paths.get("target", "classes").resolve(JsonSchemaUtil.getJsonDir());
         try (Stream<Path> paths = Files.walk(jsonDir)) {
             long generatedJsonSchemas = paths

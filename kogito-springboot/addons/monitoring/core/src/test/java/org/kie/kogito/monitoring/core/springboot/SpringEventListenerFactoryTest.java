@@ -18,7 +18,7 @@ package org.kie.kogito.monitoring.core.springboot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.monitoring.core.common.mock.MockedConfigBean;
-import org.kie.kogito.monitoring.core.common.process.MonitoringProcessEventListenerConfig;
+import org.kie.kogito.monitoring.core.common.process.MetricsProcessEventListener;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -39,6 +39,6 @@ class SpringEventListenerFactoryTest {
 
     @Test
     public void produceProcessListener() {
-        assertThat(factory.produceProcessListener()).isInstanceOf(MonitoringProcessEventListenerConfig.class);
+        assertThat(factory.produceProcessListener()).isInstanceOf(MetricsProcessEventListener.class);
     }
 }

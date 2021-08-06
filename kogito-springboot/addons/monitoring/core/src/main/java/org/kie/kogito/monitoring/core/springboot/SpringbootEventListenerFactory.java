@@ -18,11 +18,11 @@ package org.kie.kogito.monitoring.core.springboot;
 import org.drools.core.config.DefaultRuleEventListenerConfig;
 import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.conf.ConfigBean;
+import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.monitoring.core.common.Constants;
 import org.kie.kogito.monitoring.core.common.MonitoringRegistry;
-import org.kie.kogito.monitoring.core.common.process.MonitoringProcessEventListenerConfig;
+import org.kie.kogito.monitoring.core.common.process.MetricsProcessEventListener;
 import org.kie.kogito.monitoring.core.common.rule.RuleMetricsListenerConfig;
-import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,9 +47,9 @@ public class SpringbootEventListenerFactory {
             value = Constants.MONITORING_PROCESS_USE_DEFAULT,
             havingValue = "true",
             matchIfMissing = true)
-    public DefaultProcessEventListenerConfig produceProcessListener() {
+    public KogitoProcessEventListener produceProcessListener() {
         LOGGER.debug("Producing default listener for process monitoring.");
-        return new MonitoringProcessEventListenerConfig(configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
+        return new MetricsProcessEventListener("default-process-monitoring-listener", configBean.getGav().orElse(KogitoGAV.EMPTY_GAV), MonitoringRegistry.getDefaultMeterRegistry());
     }
 
     @ConditionalOnProperty(
