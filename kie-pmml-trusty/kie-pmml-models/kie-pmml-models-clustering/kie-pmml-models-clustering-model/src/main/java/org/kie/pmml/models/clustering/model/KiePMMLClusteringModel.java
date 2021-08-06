@@ -68,8 +68,15 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
                     .apply(clusteringFields, comparisonMeasure.getCompareFunction(), inputs, clusters.get(i).getValuesArray(), adjustmentFactor);
         }
 
-        final int minIndex = findMinIndex(aggregates);
-        return clusters.get(minIndex).getId().orElseGet(() -> Integer.toString(minIndex + 1));
+        final int selectedIndex = findMinIndex(aggregates);
+        final KiePMMLCluster selectedCluster = clusters.get(selectedIndex);
+        final int selectedEntityId = selectedIndex + 1;
+
+        selectedCluster.getName().ifPresent(this::setPredictedDisplayValue);
+        setEntityId(selectedEntityId);
+        setAffinity(aggregates[selectedIndex]);
+
+        return clusters.get(selectedIndex).getId().orElseGet(() -> Integer.toString(selectedEntityId));
     }
 
     private double computeAdjustmentFactor(Map<String, Object> requestData) {

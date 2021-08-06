@@ -91,6 +91,9 @@
             </InlineTable>
           </MapValues>
       </OutputField>
+      <OutputField name="predicted_cluster_name" feature="predictedDisplayValue" dataType="string"/>
+      <OutputField name="predicted_cluster_index" feature="entityId" dataType="integer"/>
+      <OutputField name="predicted_cluster_affinity" feature="affinity" dataType="double"/>
     </Output>
     <ComparisonMeasure kind="distance">
       <squaredEuclidean/>
