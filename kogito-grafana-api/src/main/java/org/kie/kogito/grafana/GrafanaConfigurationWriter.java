@@ -148,7 +148,7 @@ public class GrafanaConfigurationWriter {
 
     public static String buildDashboardName(Optional<KogitoGAV> gav, String handlerName) {
         if (gav.isPresent()) {
-            return String.format("%s:%s - %s", gav.get().getArtifactId(), gav.get().getVersion(), handlerName);
+            return String.format("%s_%s - %s", gav.get().getArtifactId(), gav.get().getVersion(), handlerName);
         }
         return handlerName;
     }

@@ -27,7 +27,7 @@ public class GrafanaConfigurationWriterTest {
     public void testGrafanaDashboardName() {
         KogitoGAV gav = new KogitoGAV("groupId", "artifactId", "versionId");
         String handlerName = "myHandler";
-        String expected = "artifactId:versionId - myHandler";
+        String expected = "artifactId_versionId - myHandler";
 
         String dashboardName = GrafanaConfigurationWriter.buildDashboardName(Optional.of(gav), handlerName);
 
