@@ -14,10 +14,6 @@
  * limitations under the License.
  */
 
-// Performs the post processing tasks in the generated project
-
-import groovy.xml.XmlParser
-import groovy.xml.XmlUtil
 import org.slf4j.LoggerFactory
 
 import java.nio.file.Files
@@ -30,7 +26,7 @@ log = LoggerFactory.getLogger("org.apache.maven")
  * Verify if the starters in the parameters are valid and convert them into actual artifact ids
  */
 def startersToArtifactIds(String starters) {
-    if (starters == "" || starters == null) {
+    if (starters == "_UNDEFINED_" || starters == "" || starters == null) {
         return []
     }
     def validStarters = [
@@ -42,14 +38,12 @@ def startersToArtifactIds(String starters) {
     ]
     def startersList = starters.split(",")
     return startersList.collect { starterId ->
-        {
-            def found = validStarters.find { it -> it.id == starterId }
-            if (found == null) {
-                log.warn("Can't find supported Kogito Spring Boot Starter with id '{}'. Make sure that the starter id is correct. Skipping.", starterId)
-                return null
-            }
-            return found.starter
+        def found = validStarters.find { it -> it.id == starterId }
+        if (found == null) {
+            log.warn("Can't find supported Kogito Spring Boot Starter with id '{}'. Make sure that the starter id is correct. Skipping.", starterId)
+            return null
         }
+        return found.starter
     }.findAll { it -> it != null }
 }
 
@@ -57,7 +51,7 @@ def startersToArtifactIds(String starters) {
  * Convert the addons list to actual Kogito Addons artifacts Ids
  */
 def addonsToArtifactsIds(String addons) {
-    if (addons == "" || addons == null) {
+    if (addons == "_UNDEFINED_" || addons == "" || addons == null) {
         return []
     }
     // this list should be maintained manually for now for each generic/spring boot add-on we create
@@ -85,14 +79,12 @@ def addonsToArtifactsIds(String addons) {
     ]
     def addonsList = addons.split(",")
     return addonsList.collect { addonId ->
-        {
-            def found = validAddons.find { it -> it.id == addonId }
-            if (found == null) {
-                log.warn("Can't find supported Kogito Add-On with id '{}'. Make sure that the add-on id is correct. Skipping.", addonId)
-                return null
-            }
-            return found.addon
+        def found = validAddons.find { it -> it.id == addonId }
+        if (found == null) {
+            log.warn("Can't find supported Kogito Add-On with id '{}'. Make sure that the add-on id is correct. Skipping.", addonId)
+            return null
         }
+        return found.addon
     }.findAll { it -> it != null }
 }
 
@@ -104,20 +96,19 @@ def addDependenciesToPOM(String starters, String addons) {
     if (artifacts.isEmpty()) {
         artifacts << "kogito-spring-boot-starter"
     }
-    artifacts = artifacts.plus(addonsToArtifactsIds(addons))
-
-    def pomPath = Paths.get(request.getOutputDirectory(), request.getArtifactId(), "pom.xml")
-    def pomXml = new XmlParser().parse(pomPath.toFile())
+    artifacts = artifacts + addonsToArtifactsIds(addons)
+    def dependencies = new StringBuilder()
     artifacts.each { artifact ->
-        def depNode = new Node(null, "dependency")
-        depNode.appendNode("groupId", null, "org.kie.kogito")
-        depNode.appendNode("artifactId", null, artifact)
-        depNode.appendNode("version", null, '${kogito.version}')
-        pomXml.dependencies[0].children().add(0, depNode)
+        dependencies <<
+                '    <dependency>\n' +
+                '       <groupId>org.kie.kogito</groupId>\n' +
+                '       <artifactId>' + artifact + '</artifactId>\n' +
+                '       <version>${kogito.version}</version>\n' +
+                '    </dependency>\n'
     }
-    def writer = new FileWriter(pomPath.toString())
-    // removing unnecessary white spaces
-    XmlUtil.serialize(XmlUtil.serialize(pomXml).trim().replace("\n", "").replaceAll("( *)<", "<"), writer)
+    def pomPath = Paths.get(request.getOutputDirectory(), request.getArtifactId(), "pom.xml")
+    def pomFile = Files.readString(pomPath).replace("    <!-- kogito dependencies -->", dependencies)
+    pomPath.toFile().withWriter("utf-8") { writer -> writer.write(pomFile) }
 }
 
 /**

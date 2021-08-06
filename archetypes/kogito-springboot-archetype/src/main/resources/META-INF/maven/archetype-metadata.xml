@@ -19,10 +19,18 @@ specific language governing permissions and limitations
 under the License.
 -->
 
-<archetype-descriptor xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
-  name="${artifactId}">
-
+<archetype-descriptor xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0"
+                      xsi:schemaLocation="http://maven.apache.org/plugins/maven-archetype-plugin/archetype-descriptor/1.0.0 http://maven.apache.org/xsd/archetype-descriptor-1.0.0.xsd"
+                      name="${artifactId}">
+  <!-- we MUST have our properties defined here, otherwise in a raw environment, it won't work -->
+  <requiredProperties>
+    <requiredProperty key="starters">
+      <defaultValue>_UNDEFINED_</defaultValue>
+    </requiredProperty>
+    <requiredProperty key="addons">
+      <defaultValue>_UNDEFINED_</defaultValue>
+    </requiredProperty>
+  </requiredProperties>
   <fileSets>
     <fileSet encoding="UTF-8" filtered="true">
       <directory/>

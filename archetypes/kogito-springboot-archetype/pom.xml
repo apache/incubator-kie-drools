@@ -12,18 +12,6 @@
   <name>Kogito :: Maven Archetypes :: Spring Boot</name>
   <description>Kogito based on Spring Boot runtime Archetype</description>
 
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.spockframework</groupId>
-        <artifactId>spock-bom</artifactId>
-        <version>${version.org.spockframework}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
-
   <dependencies>
     <!-- these are used implicitly required by archetype integration test so let's make Maven aware of it -->
     <dependency>
@@ -68,22 +56,12 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.spockframework</groupId>
-      <artifactId>spock-junit4</artifactId>
+      <version>${version.org.spockframework}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy</artifactId>
-      <version>${version.org.codehaus.groovy}</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.groovy</groupId>
-      <artifactId>groovy-xml</artifactId>
+      <artifactId>groovy-all</artifactId>
       <version>${version.org.codehaus.groovy}</version>
       <scope>test</scope>
     </dependency>
@@ -98,13 +76,19 @@
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
-          <useModulePath>false</useModulePath>
-          <useFile>false</useFile>
           <includes>
             <include>**/*Test</include>
             <include>**/*Spec</include>
           </includes>
         </configuration>
+        <executions>
+          <execution>
+            <phase>test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
     <resources>
@@ -123,16 +107,6 @@
     </extensions>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <artifactId>maven-archetype-plugin</artifactId>
-          <dependencies>
-            <dependency>
-              <groupId>org.codehaus.groovy</groupId>
-              <artifactId>groovy-xml</artifactId>
-              <version>${version.org.codehaus.groovy}</version>
-            </dependency>
-          </dependencies>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-deploy-plugin</artifactId>
