@@ -22,8 +22,10 @@ import java.util.List;
 
 import org.junit.Test;
 import org.kie.pmml.api.enums.OUTLIER_TREATMENT_METHOD;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 
 import static org.junit.Assert.*;
 
@@ -52,7 +54,10 @@ public class KiePMMLNormContinuousTest {
         ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(),
                                                         Collections.emptyList(),
                                                         Collections.emptyList(),
-                                                        Collections.singletonList(new KiePMMLNameValue(fieldName, input)));
+                                                        Collections.emptyList(),
+                                                        Collections.singletonList(new KiePMMLNameValue(fieldName, input)),
+                                                        Collections.emptyList(),
+                                                        Collections.emptyList());
         Number retrieved = (Number) kiePMMLNormContinuous.evaluate(processingDTO);
         Number expected =
                 kiePMMLNormContinuous.linearNorms.get(0).getNorm() +
@@ -321,4 +326,5 @@ public class KiePMMLNormContinuousTest {
         List<KiePMMLLinearNorm> linearNorms = Arrays.asList(ln0, ln1, ln2, ln3);
         return new KiePMMLNormContinuous(name, Collections.emptyList(), linearNorms, outlierTreatmentMethod, mapMissingTo);
     }
+
 }

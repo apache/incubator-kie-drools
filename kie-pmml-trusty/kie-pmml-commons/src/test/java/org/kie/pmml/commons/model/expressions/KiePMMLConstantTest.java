@@ -29,7 +29,7 @@ public class KiePMMLConstantTest {
     public void evaluate() {
         Object value = 234.45;
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME", Collections.emptyList(), value);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
         Object retrieved = kiePMMLConstant.evaluate(processingDTO);
         assertEquals(value, retrieved);
     }

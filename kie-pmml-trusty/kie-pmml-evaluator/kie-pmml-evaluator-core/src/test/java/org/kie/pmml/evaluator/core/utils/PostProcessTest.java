@@ -31,7 +31,6 @@ import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -49,6 +48,7 @@ import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class PostProcessTest {
 
@@ -643,9 +643,4 @@ public class PostProcessTest {
         assertEquals(variableValue, toUpdate.getResultVariables().get(OUTPUT_NAME));
     }
 
-    private ProcessingDTO getProcessingDTO(final KiePMMLModel model,
-                                           final List<KiePMMLNameValue> kiePMMLNameValues,
-                                           final List<String> orderedReasonCodes) {
-        return new ProcessingDTO(model, kiePMMLNameValues, orderedReasonCodes);
-    }
 }

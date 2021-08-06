@@ -39,6 +39,7 @@ import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.AUGMENTED_NORMALIZED_TER
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.BINARY;
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.LOGARITHMIC;
 import static org.kie.pmml.api.enums.LOCAL_TERM_WEIGHTS.TERM_FREQUENCY;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLTextIndexTest {
 
@@ -63,8 +64,7 @@ public class KiePMMLTextIndexTest {
         // <Constant>brown fox</Constant>
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT_0));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
 
         double frequency = 3.0;
         double logarithmic = Math.log10(1 + frequency);
@@ -94,8 +94,7 @@ public class KiePMMLTextIndexTest {
         final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
                                                                                                   NOT_NORMALIZED_TEXT_0));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
 
         double frequency = 3.0;
         double logarithmic = Math.log10(1 + frequency);
@@ -204,8 +203,7 @@ public class KiePMMLTextIndexTest {
                                                                                                   TERM_1),
                                                                  new KiePMMLNameValue("reviewText",
                                                                                       NOT_NORMALIZED_TEXT_1));
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         assertEquals(1.0, kiePMMLTextIndex.evaluate(processingDTO));
     }
 

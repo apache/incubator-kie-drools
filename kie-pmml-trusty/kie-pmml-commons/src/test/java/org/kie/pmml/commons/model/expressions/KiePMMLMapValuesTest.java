@@ -28,6 +28,7 @@ import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLMapValuesTest {
 
@@ -57,8 +58,7 @@ public class KiePMMLMapValuesTest {
     @Test
     public void evaluateKeyNotFound() {
         KiePMMLMapValues kiePMMLMapValues = getKiePMMLMapValues();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         assertEquals(MAPMISSINGTO, kiePMMLMapValues.evaluate(processingDTO));
     }
 
@@ -68,8 +68,7 @@ public class KiePMMLMapValuesTest {
         List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 2)
                 .mapToObj(i -> new KiePMMLNameValue("FIELD-" + i, "NOT-VALUE-1-" + i))
                 .collect(Collectors.toList());
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         assertEquals(DEFAULTVALUE, kiePMMLMapValues.evaluate(processingDTO));
     }
 
@@ -79,8 +78,7 @@ public class KiePMMLMapValuesTest {
         List<KiePMMLNameValue> kiePMMLNameValues = IntStream.range(0, 2)
                 .mapToObj(i -> new KiePMMLNameValue("FIELD-" + i, "VALUE-1-" + i))
                 .collect(Collectors.toList());
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), kiePMMLNameValues);
+        ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
         Object retrieved = kiePMMLMapValues.evaluate(processingDTO);
         assertNotNull(retrieved);
     }

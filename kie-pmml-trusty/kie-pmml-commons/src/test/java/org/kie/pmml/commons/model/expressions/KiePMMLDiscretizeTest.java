@@ -33,6 +33,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDiscretizeTest {
 
@@ -68,7 +69,7 @@ public class KiePMMLDiscretizeTest {
     @Test
     public void evaluateNoInput() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList());
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertNull(retrieved);
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, null);
@@ -81,19 +82,19 @@ public class KiePMMLDiscretizeTest {
     public void evaluateDefaultValue() {
         KiePMMLDiscretize kiePMMLDiscretize = getKiePMMLDiscretize(null, null);
 
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(new KiePMMLNameValue(NAME, 20)));
+        ProcessingDTO processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
         Object retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertNull(retrieved);
         kiePMMLDiscretize = getKiePMMLDiscretize(MAP_MISSING_TO, DEFAULTVALUE);
-        processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(new KiePMMLNameValue(NAME, 20)));
+        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 20)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(DEFAULTVALUE, retrieved);
-        processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(new KiePMMLNameValue(NAME, 21)));
+        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 21)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(DEFAULTVALUE, retrieved);
-        processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(), Collections.emptyList(), Arrays.asList(new KiePMMLNameValue(NAME, 40)));
+        processingDTO = getProcessingDTO(Arrays.asList(new KiePMMLNameValue(NAME, 40)));
         retrieved = kiePMMLDiscretize.evaluate(processingDTO);
         assertNotNull(retrieved);
         assertEquals(DEFAULTVALUE, retrieved);
@@ -150,4 +151,5 @@ public class KiePMMLDiscretizeTest {
     private static KiePMMLDiscretizeBin getKiePMMLDiscretizeBin(String name, KiePMMLInterval interval, String binValue) {
         return new KiePMMLDiscretizeBin(name, Collections.emptyList(), binValue, interval);
     }
+
 }
