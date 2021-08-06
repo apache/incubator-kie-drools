@@ -68,6 +68,7 @@
 
     <schema.filename.benchmark>benchmark-with-import.xsd</schema.filename.benchmark>
     <schema.filename.solver>solver.xsd</schema.filename.solver>
+    <sonar.coverage.exclusions>**/swingui/**/*.java</sonar.coverage.exclusions>
   </properties>
 
   <dependencyManagement>
