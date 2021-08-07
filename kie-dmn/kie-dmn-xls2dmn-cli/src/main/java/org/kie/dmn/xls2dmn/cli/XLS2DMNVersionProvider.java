@@ -13,8 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.kie.dmn.xls2dmn.cli;
 
-public final class Constants {
-    public static final String VERSION="${project.version}";
+import org.drools.core.util.Drools;
+
+import picocli.CommandLine.IVersionProvider;
+
+public class XLS2DMNVersionProvider implements IVersionProvider {
+
+    @Override
+    public String[] getVersion() throws Exception {
+        return new String[]{Drools.getFullVersion()};
+    }
+
 }
