@@ -122,9 +122,10 @@ public class XLS2DMNParser implements DecisionTableParser {
                 break; // header found.
             }
         }
-        overview.entrySet().forEach(System.out::println);
+        overview.entrySet().forEach(e -> LOG.debug("{}", e));
         Map<String, DTHeaderInfo> headerInfos = generateDTHeaderInfo(overview);
-        headerInfos.entrySet().forEach(System.out::println);
+        LOG.info("Sheets have been indexed as:");
+        headerInfos.entrySet().forEach(e -> LOG.info("{}", e));
         Definitions definitions = new TDefinitions();
         setDefaultNSContext(definitions);
         definitions.setName("xls2dmn");
