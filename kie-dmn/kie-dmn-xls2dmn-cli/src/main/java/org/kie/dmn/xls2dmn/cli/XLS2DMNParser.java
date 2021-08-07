@@ -31,6 +31,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.DataFormatter;
@@ -164,6 +165,7 @@ public class XLS2DMNParser implements DecisionTableParser {
             InformationItem variable = new TInformationItem();
             variable.setName(hi.getSheetName());
             variable.setId("dvar_" + CodegenStringUtil.escapeIdentifier(hi.getSheetName()));
+            variable.setTypeRef(new QName("Any"));
             decision.setVariable(variable);
             for (String ri : hi.getRequiredInput()) {
                 InformationRequirement ir = new TInformationRequirement();
@@ -226,6 +228,7 @@ public class XLS2DMNParser implements DecisionTableParser {
                     InformationItem variable = new TInformationItem();
                     variable.setName(ri);
                     variable.setId("idvar_"+CodegenStringUtil.escapeIdentifier(ri));
+                    variable.setTypeRef(new QName("Any"));
                     id.setVariable(variable);
                     definitions.getDrgElement().add(id);
                 }
