@@ -2,4 +2,14 @@
 = Cloud balancing
 :imagesdir: ../..
 
-This example is explained in <<cloudBalancingTutorial,a tutorial>>.
+include::Tutorial/CloudBalancingTutorial-section.adoc[leveloffset=+1]
+
+include::DomainModel/CloudBalancingDomainModel-section.adoc[leveloffset=+1]
+
+include::MainMethod/CloudBalancingMainMethod-section.adoc[leveloffset=+1]
+
+include::SolverConfiguration/CloudBalancingSolverConfiguration-section.adoc[leveloffset=+1]
+
+include::ScoreConfiguration/CloudBalancingScoreConfiguration-section.adoc[leveloffset=+1]
+
+include::BeyondThisTutorial/CloudBalancingBeyondThisTutorial-section.adoc[leveloffset=+1]

@@ -37,7 +37,10 @@
           <attributes>
             <imagesdir>.</imagesdir>
             <project-version>${project.version}</project-version>
-            <version-org-spring-framework-boot>${version.org.springframework.boot}</version-org-spring-framework-boot>
+            <java-version>11</java-version>
+            <maven-version>${maven.min.version}</maven-version>
+            <quarkus-version>${version.io.quarkus}</quarkus-version>
+            <spring-boot-version>${version.org.springframework.boot}</spring-boot-version>
             <html-googleAnalyticsId>UA-39485370-1</html-googleAnalyticsId>
           </attributes>
         </configuration>

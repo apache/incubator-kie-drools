@@ -35,7 +35,7 @@ For an object representing the full data set and solution, a sample instance hol
 
 In the UML class diagram below, the OptaPlanner concepts are already annotated:
 
-image::QuickStart/PlainJava/CloudBalancingDomainModel/cloudBalanceClassDiagram.png[align="center"]
+image::UseCasesAndExamples/CloudBalancing/DomainModel/cloudBalanceClassDiagram.png[align="center"]
 
 [[cloudBalancingDomainModelImplementation]]
 == Domain model implementation
