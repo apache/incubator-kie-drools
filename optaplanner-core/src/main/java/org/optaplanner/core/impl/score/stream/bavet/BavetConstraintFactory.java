@@ -16,20 +16,14 @@
 
 package org.optaplanner.core.impl.score.stream.bavet;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.optaplanner.core.api.score.Score;
-import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.impl.domain.constraintweight.descriptor.ConstraintConfigurationDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetAbstractUniConstraintStream;
 import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniConstraintStream;
 
-public final class BavetConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
+public final class BavetConstraintFactory<Solution_>
+        extends InnerConstraintFactory<Solution_, BavetConstraint<Solution_>> {
 
     private final SolutionDescriptor<Solution_> solutionDescriptor;
     private final String defaultConstraintPackage;
@@ -54,31 +48,6 @@ public final class BavetConstraintFactory<Solution_> extends InnerConstraintFact
     public <A> BavetAbstractUniConstraintStream<Solution_, A> fromUnfiltered(Class<A> fromClass) {
         assertValidFromType(fromClass);
         return new BavetFromUniConstraintStream<>(this, fromClass);
-    }
-
-    // ************************************************************************
-    // SessionFactory creation
-    // ************************************************************************
-
-    public <Score_ extends Score<Score_>> BavetConstraintSessionFactory<Solution_, Score_> buildSessionFactory(
-            Constraint[] constraints) {
-        List<BavetConstraint<Solution_>> bavetConstraintList = new ArrayList<>(constraints.length);
-        Set<String> constraintIdSet = new HashSet<>(constraints.length);
-        for (Constraint constraint : constraints) {
-            if (constraint.getConstraintFactory() != this) {
-                throw new IllegalStateException("The constraint (" + constraint.getConstraintId()
-                        + ") must be created from the same constraintFactory.");
-            }
-            boolean added = constraintIdSet.add(constraint.getConstraintId());
-            if (!added) {
-                throw new IllegalStateException(
-                        "There are 2 constraints with the same constraintName (" + constraint.getConstraintName()
-                                + ") in the same constraintPackage (" + constraint.getConstraintPackage() + ").");
-            }
-            BavetConstraint<Solution_> bavetConstraint = (BavetConstraint) constraint;
-            bavetConstraintList.add(bavetConstraint);
-        }
-        return new BavetConstraintSessionFactory<>(solutionDescriptor, bavetConstraintList);
     }
 
     // ************************************************************************

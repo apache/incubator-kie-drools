@@ -27,7 +27,8 @@ import org.optaplanner.core.impl.score.stream.bavet.uni.BavetFromUniNode;
 import org.optaplanner.core.impl.score.stream.common.AbstractConstraint;
 import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 
-public final class BavetConstraint<Solution_> extends AbstractConstraint<Solution_, BavetConstraintFactory<Solution_>> {
+public final class BavetConstraint<Solution_>
+        extends AbstractConstraint<Solution_, BavetConstraint<Solution_>, BavetConstraintFactory<Solution_>> {
 
     private final List<BavetFromUniConstraintStream<Solution_, Object>> fromStreamList;
 

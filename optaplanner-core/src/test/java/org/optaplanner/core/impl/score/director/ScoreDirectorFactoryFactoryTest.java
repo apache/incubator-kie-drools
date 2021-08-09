@@ -38,7 +38,6 @@ import org.optaplanner.core.impl.score.director.incremental.IncrementalScoreDire
 import org.optaplanner.core.impl.score.director.stream.AbstractConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.BavetConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 
 class ScoreDirectorFactoryFactoryTest {
@@ -128,9 +127,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                scoreDirectorFactory.getConstraintSessionFactory();
-        assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
+        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isTrue();
     }
 
     @Test
@@ -144,9 +141,7 @@ class ScoreDirectorFactoryFactoryTest {
         assertThat(uncastScoreDirectorFactory).isInstanceOf(DroolsConstraintStreamScoreDirectorFactory.class);
         DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore> scoreDirectorFactory =
                 (DroolsConstraintStreamScoreDirectorFactory<TestdataSolution, SimpleScore>) uncastScoreDirectorFactory;
-        DroolsConstraintSessionFactory<TestdataSolution, SimpleScore> constraintSessionFactory =
-                scoreDirectorFactory.getConstraintSessionFactory();
-        assertThat(constraintSessionFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
+        assertThat(scoreDirectorFactory.isDroolsAlphaNetworkCompilationEnabled()).isFalse();
     }
 
     @Test

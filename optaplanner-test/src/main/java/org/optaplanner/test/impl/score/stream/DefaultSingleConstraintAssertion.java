@@ -119,8 +119,8 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
     private void assertImpact(ScoreImpactType scoreImpactType, Number matchWeightTotal, String message) {
         Number impact = deduceImpact();
         long longImpact = impact.longValue(); // Impact is always int or long, so this is safe.
-        AbstractConstraint<Solution_, ?> constraint =
-                (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
+        AbstractConstraint<Solution_, ?, ?> constraint =
+                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         ScoreImpactType actualScoreImpactType = constraint.getScoreImpactType();
         if (actualScoreImpactType == ScoreImpactType.MIXED) {
             // Impact means we need to check for expected impact type and actual impact match.
@@ -180,8 +180,8 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (actualMatchCount == expectedMatchCount) {
             return;
         }
-        AbstractConstraint<Solution_, ?> constraint =
-                (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
+        AbstractConstraint<Solution_, ?, ?> constraint =
+                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         String constraintId = constraint.getConstraintId();
         String assertionMessage =
                 buildAssertionErrorMessage(scoreImpactType, expectedMatchCount, actualMatchCount, constraintId, message);
@@ -192,8 +192,8 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (determineMatchCount(scoreImpactType) > 0) {
             return;
         }
-        AbstractConstraint<Solution_, ?> constraint =
-                (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
+        AbstractConstraint<Solution_, ?, ?> constraint =
+                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         String constraintId = constraint.getConstraintId();
         String assertionMessage = buildAssertionErrorMessage(scoreImpactType, constraintId, message);
         throw new AssertionError(assertionMessage);
@@ -203,8 +203,8 @@ public final class DefaultSingleConstraintAssertion<Solution_, Score_ extends Sc
         if (constraintMatchTotalCollection.isEmpty()) {
             return 0;
         }
-        AbstractConstraint<Solution_, ?> constraint =
-                (AbstractConstraint<Solution_, ?>) scoreDirectorFactory.getConstraints()[0];
+        AbstractConstraint<Solution_, ?, ?> constraint =
+                (AbstractConstraint<Solution_, ?, ?>) scoreDirectorFactory.getConstraints()[0];
         ScoreImpactType actualImpactType = constraint.getScoreImpactType();
 
         if (actualImpactType != scoreImpactType && actualImpactType != ScoreImpactType.MIXED) {

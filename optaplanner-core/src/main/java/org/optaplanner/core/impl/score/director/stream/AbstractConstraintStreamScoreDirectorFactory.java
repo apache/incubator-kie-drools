@@ -16,17 +16,12 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
-import java.util.Arrays;
-import java.util.Objects;
-
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
-import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirectorFactory;
 import org.optaplanner.core.impl.score.director.ScoreDirectorFactory;
-import org.optaplanner.core.impl.score.stream.InnerConstraintFactory;
 
 /**
  * FP streams implementation of {@link ScoreDirectorFactory}.
@@ -40,22 +35,6 @@ public abstract class AbstractConstraintStreamScoreDirectorFactory<Solution_, Sc
 
     protected AbstractConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor) {
         super(solutionDescriptor);
-    }
-
-    protected Constraint[] buildConstraints(ConstraintProvider constraintProvider,
-            InnerConstraintFactory<Solution_> constraintFactory) {
-        Constraint[] constraints = constraintProvider.defineConstraints(constraintFactory);
-        if (constraints == null) {
-            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
-                    + ")'s defineConstraints() must not return null.\n"
-                    + "Maybe return an empty array instead if there are no constraints.");
-        }
-        if (Arrays.stream(constraints).anyMatch(Objects::isNull)) {
-            throw new IllegalStateException("The constraintProvider class (" + constraintProvider.getClass()
-                    + ")'s defineConstraints() must not contain an element that is null.\n"
-                    + "Maybe don't include any null elements in the " + Constraint.class.getSimpleName() + " array.");
-        }
-        return constraints;
     }
 
     public abstract Constraint[] getConstraints();

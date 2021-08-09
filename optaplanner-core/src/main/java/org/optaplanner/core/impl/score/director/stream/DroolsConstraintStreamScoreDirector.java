@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.rule.AgendaFilter;
 import org.kie.api.runtime.rule.FactHandle;
 import org.optaplanner.core.api.domain.entity.PlanningEntity;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
@@ -32,7 +33,7 @@ import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.domain.variable.descriptor.VariableDescriptor;
 import org.optaplanner.core.impl.score.director.AbstractScoreDirector;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
 /**
  * FP streams implementation of {@link ScoreDirector}, which only recalculates the {@link Score}
@@ -48,6 +49,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     private final SolutionDescriptor<Solution_> solutionDescriptor;
 
     protected KieSession session;
+    protected AgendaFilter agendaFilter;
     protected ScoreInliner<Score_> scoreInliner;
 
     public DroolsConstraintStreamScoreDirector(
@@ -71,9 +73,10 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         if (session != null) {
             session.dispose();
         }
-        DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
+        SessionDescriptor<Score_> sessionDescriptor =
                 scoreDirectorFactory.newConstraintStreamingSession(constraintMatchEnabledPreference, workingSolution);
         session = sessionDescriptor.getSession();
+        agendaFilter = sessionDescriptor.getAgendaFilter();
         scoreInliner = sessionDescriptor.getScoreInliner();
         Collection<Object> workingFacts = getSolutionDescriptor().getAllFacts(workingSolution);
         for (Object fact : workingFacts) {
@@ -84,7 +87,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
     @Override
     public Score_ calculateScore() {
         variableListenerSupport.assertNotificationQueuesAreEmpty();
-        session.fireAllRules();
+        session.fireAllRules(agendaFilter);
         Score_ score = scoreInliner.extractScore(workingInitScore);
         setCalculatedScore(score);
         return score;
@@ -101,7 +104,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getConstraintMatchTotalMap().");
         }
-        session.fireAllRules();
+        session.fireAllRules(agendaFilter);
         return scoreInliner.getConstraintMatchTotalMap();
     }
 
@@ -111,7 +114,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
             throw new IllegalStateException(
                     "The method setWorkingSolution() must be called before the method getIndictmentMap().");
         }
-        session.fireAllRules();
+        session.fireAllRules(agendaFilter);
         return scoreInliner.getIndictmentMap();
     }
 
@@ -120,6 +123,7 @@ public final class DroolsConstraintStreamScoreDirector<Solution_, Score_ extends
         super.close();
         session.dispose();
         session = null;
+        agendaFilter = null;
         scoreInliner = null;
     }
 

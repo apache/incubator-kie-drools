@@ -35,7 +35,7 @@ import org.optaplanner.core.impl.domain.entity.descriptor.EntityDescriptor;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.score.director.stream.DroolsConstraintStreamScoreDirectorFactory;
 import org.optaplanner.core.impl.score.inliner.ScoreInliner;
-import org.optaplanner.core.impl.score.stream.drools.DroolsConstraintSessionFactory;
+import org.optaplanner.core.impl.score.stream.drools.SessionDescriptor;
 
 final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<Score_>>
         implements SessionBasedAssertionBuilder<Solution_, Score_> {
@@ -64,7 +64,7 @@ final class DroolsSessionBasedAssertionBuilder<Solution_, Score_ extends Score<S
     }
 
     private ScoreInliner<Score_> runSession(Object... facts) {
-        DroolsConstraintSessionFactory.SessionDescriptor<Score_> sessionDescriptor =
+        SessionDescriptor<Score_> sessionDescriptor =
                 constraintStreamScoreDirectorFactory.newConstraintStreamingSession(true, null);
         KieSession session = sessionDescriptor.getSession();
         Arrays.stream(facts).forEach(session::insert);

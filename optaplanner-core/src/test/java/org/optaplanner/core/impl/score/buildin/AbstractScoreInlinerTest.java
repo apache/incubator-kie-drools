@@ -32,21 +32,22 @@ import org.optaplanner.core.impl.score.stream.common.ScoreImpactType;
 public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<Score_>> {
 
     protected final boolean constraintMatchEnabled = true;
-    private final TestConstraintFactory<Solution_> constraintFactory =
+    private final TestConstraintFactory<Solution_, Score_> constraintFactory =
             new TestConstraintFactory<>(buildSolutionDescriptor());
 
     abstract protected SolutionDescriptor<Solution_> buildSolutionDescriptor();
 
     protected Map<Constraint, Score_> getConstaintToWeightMap(TestConstraint<Solution_, Score_>... constraint) {
         return Arrays.stream(constraint)
-                .collect(Collectors.toMap(c -> c, c -> (Score_) c.extractConstraintWeight(null)));
+                .collect(Collectors.toMap(c -> c, c -> c.extractConstraintWeight(null)));
     }
 
     protected TestConstraint<Solution_, Score_> buildConstraint(Score_ constraintWeight) {
         return new TestConstraint<>(constraintFactory, "Test Constraint", constraintWeight);
     }
 
-    public static final class TestConstraintFactory<Solution_> extends InnerConstraintFactory<Solution_> {
+    public static final class TestConstraintFactory<Solution_, Score_ extends Score<Score_>>
+            extends InnerConstraintFactory<Solution_, TestConstraint<Solution_, Score_>> {
 
         private final SolutionDescriptor<Solution_> solutionDescriptor;
 
@@ -71,9 +72,9 @@ public abstract class AbstractScoreInlinerTest<Solution_, Score_ extends Score<S
     };
 
     public static final class TestConstraint<Solution_, Score_ extends Score<Score_>>
-            extends AbstractConstraint<Solution_, TestConstraintFactory<Solution_>> {
+            extends AbstractConstraint<Solution_, TestConstraint<Solution_, Score_>, TestConstraintFactory<Solution_, Score_>> {
 
-        protected TestConstraint(TestConstraintFactory<Solution_> constraintFactory, String constraintName,
+        protected TestConstraint(TestConstraintFactory<Solution_, Score_> constraintFactory, String constraintName,
                 Score_ constraintWeight) {
             super(constraintFactory, constraintFactory.getDefaultConstraintPackage(), constraintName,
                     solution -> constraintWeight, ScoreImpactType.REWARD, false);

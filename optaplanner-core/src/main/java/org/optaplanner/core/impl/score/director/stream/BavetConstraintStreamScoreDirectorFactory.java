@@ -16,10 +16,13 @@
 
 package org.optaplanner.core.impl.score.director.stream;
 
+import java.util.List;
+
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.score.stream.Constraint;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.score.stream.bavet.BavetConstraint;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintFactory;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSession;
 import org.optaplanner.core.impl.score.stream.bavet.BavetConstraintSessionFactory;
@@ -28,14 +31,15 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
         extends AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> {
 
     private final BavetConstraintSessionFactory<Solution_, Score_> constraintSessionFactory;
-    private final Constraint[] constraints;
+    private final List<BavetConstraint<Solution_>> constraints;
 
     public BavetConstraintStreamScoreDirectorFactory(SolutionDescriptor<Solution_> solutionDescriptor,
             ConstraintProvider constraintProvider) {
         super(solutionDescriptor);
         BavetConstraintFactory<Solution_> constraintFactory = new BavetConstraintFactory<>(solutionDescriptor);
-        constraints = buildConstraints(constraintProvider, constraintFactory);
-        this.constraintSessionFactory = constraintFactory.buildSessionFactory(constraints);
+        constraints = constraintFactory.buildConstraints(constraintProvider);
+        this.constraintSessionFactory =
+                new BavetConstraintSessionFactory<>(solutionDescriptor, constraintFactory.buildConstraints(constraintProvider));
     }
 
     @Override
@@ -51,6 +55,7 @@ public final class BavetConstraintStreamScoreDirectorFactory<Solution_, Score_ e
 
     @Override
     public Constraint[] getConstraints() {
-        return constraints;
+        return constraints.stream()
+                .toArray(Constraint[]::new);
     }
 }
