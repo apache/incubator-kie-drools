@@ -1,0 +1,23 @@
+name: Workflows to notify the team about github issues
+
+on:
+  issues:
+    types: [opened, reopened]
+jobs:
+  message:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - run: 'echo ${{ github.event.issue.title }}'
+    - name: Send a stream message
+      uses: zulip/github-actions-zulip/send-message@e71e15b429b0e79cc7b63e4e3dad0146443fab6f
+      env:
+        CONTENT: "I have detected a new issue on github:\n${{ github.event.issue.body }}\n-- This is an automatically relayed message. Don't reply to me directly, I'm just a bot and I don't understand human language (yet). You can reply using this link: \n${{ github.event.issue.html_url }}"
+      with:
+        api-key: ${{ secrets.ZULIP_BOT_SECRET }}
+        email: 'github-kogito-bot@kie.zulipchat.com'
+        organization-url: 'https://kie.zulipchat.com'
+        to: 'kogito'
+        type: 'stream'
+        topic: 'GitHub Issues - ${{ github.event.issue.title }}'
+        content: ${{ env.CONTENT }}
