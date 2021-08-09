@@ -233,7 +233,6 @@ public abstract class AbstractIndexingServiceIT extends AbstractIndexingIT {
         List<String> taskIds = new ArrayList<>();
 
         IntStream.range(0, 200).forEach(i -> {
-            System.out.println("index = " + i);
             String taskId = UUID.randomUUID().toString();
             KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, UUID.randomUUID().toString(), null, null, "InProgress");
             indexUserTaskCloudEvent(event);
