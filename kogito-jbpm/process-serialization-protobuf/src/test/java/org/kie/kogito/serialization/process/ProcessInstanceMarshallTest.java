@@ -19,7 +19,9 @@ package org.kie.kogito.serialization.process;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +84,14 @@ public class ProcessInstanceMarshallTest {
     public void testRoundtripDateVarMarshaller() {
         Map<String, Object> in = new HashMap<>();
         in.put("date", new Date());
+        Map<String, Object> out = roundtrip(in);
+        Assertions.assertThat(in).isEqualTo(out);
+    }
+
+    @Test
+    public void testRoundtripTimestampVarMarshaller() {
+        Map<String, Object> in = new HashMap<>();
+        in.put("timestamp", new Timestamp(System.currentTimeMillis()));
         Map<String, Object> out = roundtrip(in);
         Assertions.assertThat(in).isEqualTo(out);
     }
@@ -166,6 +176,7 @@ public class ProcessInstanceMarshallTest {
         for (ObjectMarshallerStrategy strategy : loader) {
             strats.add(strategy);
         }
+        Collections.sort(strats);
         return strats.stream().toArray(ObjectMarshallerStrategy[]::new);
     }
 }

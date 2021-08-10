@@ -25,6 +25,7 @@ import org.kie.kogito.serialization.process.ProcessInstanceMarshallerException;
 import com.google.protobuf.Any;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.google.protobuf.Timestamp;
+import com.google.protobuf.util.Timestamps;
 
 public class ProtobufDateMarshallerStrategy implements ObjectMarshallerStrategy {
 
@@ -40,8 +41,7 @@ public class ProtobufDateMarshallerStrategy implements ObjectMarshallerStrategy 
 
     @Override
     public Object marshall(Object unmarshalled) {
-        Instant time = ((Date) unmarshalled).toInstant();
-        Timestamp timestamp = Timestamp.newBuilder().setSeconds(time.getEpochSecond()).build();
+        Timestamp timestamp = Timestamps.fromMillis(((Date) unmarshalled).getTime());
         return Any.pack(timestamp);
     }
 
