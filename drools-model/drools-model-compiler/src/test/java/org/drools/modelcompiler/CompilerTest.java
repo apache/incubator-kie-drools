@@ -248,6 +248,91 @@ public class CompilerTest extends BaseModelTest {
         assertEquals("Edson is older than Mark", result.getValue());
     }
 
+
+    @Test
+    public void testBetaMap() {
+
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Map.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $markV : Map(this['name'] == 'Mark')\n" +
+                "  $olderV : Map(this['name'] != 'Mark', this['age'] > $markV['age'])\n" +
+                "then\n" +
+                "  $r.setValue($olderV.get(\"name\") + \" is older than \" + $markV.get(\"name\"));\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+
+        Map<String, Object> mark = mapPerson("Mark", 37);
+        Map<String, Object> edson = mapPerson("Edson", 35);
+        Map<String, Object> mario = mapPerson("Mario", 40);
+
+        FactHandle markFH = ksession.insert(mark);
+        ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue( null );
+        ksession.delete( marioFH );
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+
+        mark.put("age", 34 );
+        ksession.update( markFH, mark );
+
+        ksession.fireAllRules();
+        assertEquals("Edson is older than Mark", result.getValue());
+    }
+
+    @Test
+    public void testBetaMapComparisonWithLiteral() {
+        String str =
+                "import " + Result.class.getCanonicalName() + ";" +
+                "import " + Map.class.getCanonicalName() + ";" +
+                "rule R when\n" +
+                "  $r : Result()\n" +
+                "  $olderV : Map(this['name'] != 'Mark', this['age'] > 37)\n" +
+                "then\n" +
+                "  $r.setValue($olderV.get(\"name\") + \" is older than Mark\"\n);" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        Result result = new Result();
+        ksession.insert( result );
+
+
+        Map<String, Object> mark = mapPerson("Mark", 37);
+        Map<String, Object> edson = mapPerson("Edson", 35);
+        Map<String, Object> mario = mapPerson("Mario", 40);
+
+        ksession.insert(edson);
+        FactHandle marioFH = ksession.insert(mario);
+
+        ksession.fireAllRules();
+        assertEquals("Mario is older than Mark", result.getValue());
+
+        result.setValue( null );
+        ksession.delete( marioFH );
+        ksession.fireAllRules();
+        assertNull(result.getValue());
+    }
+
+    private Map<String, Object> mapPerson(String name, int age) {
+        HashMap<String, Object> person = new HashMap<>();
+        person.put("name", name);
+        person.put("age", age);
+        return person;
+    }
+
     @Test
     public void testRuleExtends() {
         String str =
