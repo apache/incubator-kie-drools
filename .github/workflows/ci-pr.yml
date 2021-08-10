@@ -4,7 +4,7 @@ on: [pull_request]
 
 jobs:
   build-chain:
-    timeout-minutes: 120
+    timeout-minutes: 180
     strategy:
       matrix:
         os: [ubuntu-latest]
