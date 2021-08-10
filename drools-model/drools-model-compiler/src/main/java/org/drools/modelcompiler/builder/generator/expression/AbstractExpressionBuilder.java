@@ -389,14 +389,21 @@ public abstract class AbstractExpressionBuilder {
     protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {
         String exprId = drlxParseResult.getExprId(context.getPackageModel().getExprIdGenerator());
 
-        context.getPackageModel().indexConstraint(exprId, new PredicateInformation(
-                drlxParseResult.getOriginalDrlConstraint(),
-                context.getRuleName(),
-                Optional.ofNullable(context.getRuleDescr())
-                    .map(RuleDescr::getResource)
-                    .map(Resource::getSourcePath)
-                    .orElse("")
-        ));
+        String stringConstraint = drlxParseResult.getOriginalDrlConstraint();
+        String ruleName = context.getRuleName();
+        String ruleFileName = Optional.ofNullable(context.getRuleDescr())
+                                      .map(RuleDescr::getResource)
+                                      .map(Resource::getSourcePath)
+                                      .orElse("");
+
+        Optional<PredicateInformation> optInfo = context.getPackageModel().findConstraintWithExprId(exprId);
+        if (optInfo.isPresent()) {
+            PredicateInformation info = optInfo.get();
+            info.addRuleName(ruleName, ruleFileName);
+        } else {
+            context.getPackageModel().indexConstraint(exprId, new PredicateInformation(stringConstraint, ruleName, ruleFileName));
+        }
+
         return exprId;
     }
 

@@ -59,6 +59,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class CompilerTest extends BaseModelTest {
 
@@ -2746,6 +2747,38 @@ public class CompilerTest extends BaseModelTest {
         me.setMoney(null);
         ksession.insert( me );
         ksession.fireAllRules();
+    }
+
+    @Test
+    public void testPredicateInformationWhenShared() {
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(me);
+        try {
+            ksession.fireAllRules();
+            fail("Should fail");
+        } catch (RuntimeException e) {
+            String errorMessage = e.getMessage();
+            if (testRunType == RUN_TYPE.STANDARD_FROM_DRL) {
+                assertEquals("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\" in r0.drl]", errorMessage);
+            } else if (testRunType == RUN_TYPE.PATTERN_DSL) {
+                assertEquals("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]", errorMessage);
+            }
+        }
     }
 
     @Test

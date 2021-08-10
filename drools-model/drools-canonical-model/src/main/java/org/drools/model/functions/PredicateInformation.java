@@ -16,8 +16,14 @@
 
 package org.drools.model.functions;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Used to generate a better error message when constraints fail
@@ -30,13 +36,17 @@ public class PredicateInformation {
 
     // Used to generate a significant error message
     private final String stringConstraint;
-    private final String ruleName;
-    private final String ruleFileName;
+    private final Map<String, Set<String>> ruleNameMap = new HashMap<>();
+
+    public PredicateInformation(String stringConstraint) {
+        this.stringConstraint = defaultToEmptyString(stringConstraint);
+    }
 
     public PredicateInformation(String stringConstraint, String ruleName, String ruleFileName) {
         this.stringConstraint = defaultToEmptyString(stringConstraint);
-        this.ruleName = defaultToEmptyString(ruleName);
-        this.ruleFileName = defaultToEmptyString(ruleFileName);
+        ruleName = defaultToEmptyString(ruleName);
+        ruleFileName = defaultToEmptyString(ruleFileName);
+        ruleNameMap.computeIfAbsent(ruleFileName, k -> new HashSet<>()).add(ruleName);
     }
 
     private String defaultToEmptyString(String stringConstraint) {
@@ -49,23 +59,42 @@ public class PredicateInformation {
         }
 
         String errorMessage = String.format(
-                "Error evaluating constraint '%s' in [Rule \"%s\" in %s]",
+                "Error evaluating constraint '%s' in %s",
                 stringConstraint,
-                ruleName,
-                ruleFileName);
+                formatRuleNames());
         return new RuntimeException(errorMessage, originalException);
+    }
+
+    private String formatRuleNames() {
+        if (ruleNameMap.isEmpty()) {
+            return "";
+        }
+        final StringBuilder sb = new StringBuilder();
+        List<String> ruleFileNameList = ruleNameMap.keySet().stream().sorted().collect(Collectors.toList());
+        ruleFileNameList.forEach(ruleFileName -> {
+            sb.append("[Rule ");
+            ruleNameMap.get(ruleFileName).stream().sorted().forEach(ruleName -> {
+                sb.append("\"" + ruleName + "\", ");
+            });
+            sb.delete(sb.length() - 2, sb.length()); // ruleName set is never empty (default to "") so safe to delete the tail
+            sb.append(" in " + ruleFileName + "] ");
+        });
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 
     public String getStringConstraint() {
         return stringConstraint;
     }
 
-    public String getRuleName() {
-        return ruleName;
+    public Map<String, Set<String>> getRuleNameMap() {
+        return ruleNameMap;
     }
 
-    public String getRuleFileName() {
-        return ruleFileName;
+    public void addRuleName(String ruleName, String ruleFileName) {
+        ruleName = defaultToEmptyString(ruleName);
+        ruleFileName = defaultToEmptyString(ruleFileName);
+        ruleNameMap.computeIfAbsent(ruleFileName, k -> new HashSet<>()).add(ruleName);
     }
 
     public boolean isEmpty() {
@@ -82,21 +111,19 @@ public class PredicateInformation {
         }
         PredicateInformation that = (PredicateInformation) o;
         return Objects.equals(stringConstraint, that.stringConstraint) &&
-                Objects.equals(ruleName, that.ruleName) &&
-                Objects.equals(ruleFileName, that.ruleFileName);
+                Objects.equals(ruleNameMap, that.ruleNameMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stringConstraint, ruleName, ruleFileName);
+        return Objects.hash(stringConstraint, ruleNameMap);
     }
 
     @Override
     public String toString() {
         return "PredicateInformation{" +
                 "stringConstraint='" + stringConstraint + '\'' +
-                ", ruleName='" + ruleName + '\'' +
-                ", ruleFileName='" + ruleFileName + '\'' +
+                ", ruleNameMap='" + ruleNameMap + '\'' +
                 '}';
     }
 }

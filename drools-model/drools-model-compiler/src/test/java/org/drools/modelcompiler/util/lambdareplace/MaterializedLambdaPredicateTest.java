@@ -35,12 +35,12 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PEE;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PDB;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaPredicateEE863708F0E52E1DD7FBE6537EB76024 implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
+                "public enum LambdaPredicateDB79C39D8DCF73551C2CE63B976491B8 implements org.drools.model.functions.Predicate1<org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"4DEB93975D9859892B1A5FD4B38E2155\";" +
                 "    public java.lang.String getExpressionHash() {\n" +
@@ -52,8 +52,11 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "        @Override()\n" +
                 "        public org.drools.model.functions.PredicateInformation predicateInformation() {\n" +
-                "            return new org.drools.model.functions.PredicateInformation(\"p.age > 35\", \"rule1\", \"rulefilename.drl\");" +
+                "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\");\n" +
+                "            info.addRuleName(\"rule1\", \"rulefilename.drl\");\n" +
+                "            return info;\n" +
                 "        }\n" +
+                "" +
                 "    }\n";
 
         verifyCreatedClass(aClass, expectedResult);

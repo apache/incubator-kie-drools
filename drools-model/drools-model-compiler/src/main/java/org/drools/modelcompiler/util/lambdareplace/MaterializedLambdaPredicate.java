@@ -17,12 +17,19 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.util.Map;
+import java.util.Set;
+
 import com.github.javaparser.ast.Modifier;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.EnumDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -52,7 +59,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     @Override
     void createMethodsDeclaration(EnumDeclaration classDeclaration) {
         createTestMethod(classDeclaration);
-        if(!predicateInformation.isEmpty()) {
+        if (!predicateInformation.isEmpty()) {
             createPredicateInformationMethod(classDeclaration);
         }
     }
@@ -60,7 +67,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     private void createTestMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
         methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
-        methodDeclaration.addAnnotation( createSimpleAnnotation("Override") );
+        methodDeclaration.addAnnotation(createSimpleAnnotation("Override"));
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 
         setMethodParameter(methodDeclaration);
@@ -75,12 +82,25 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
         ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) toJPType(PredicateInformation.class);
         methodDeclaration.setType(predicateInformationType);
 
-        ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(
-            new StringLiteralExpr().setString(predicateInformation.getStringConstraint()),
-            new StringLiteralExpr().setString(predicateInformation.getRuleName()),
-            new StringLiteralExpr().setString(predicateInformation.getRuleFileName())
-        ));
-        methodDeclaration.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(newPredicateInformation))));
+        BlockStmt block = new BlockStmt();
+
+        NameExpr infoExpr = new NameExpr("info");
+        VariableDeclarationExpr infoVar = new VariableDeclarationExpr(toClassOrInterfaceType(PredicateInformation.class), "info");
+        ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(new StringLiteralExpr().setString(predicateInformation.getStringConstraint())));
+        AssignExpr infoAssign = new AssignExpr(infoVar, newPredicateInformation, AssignExpr.Operator.ASSIGN);
+        block.addStatement(infoAssign);
+
+        Map<String, Set<String>> ruleNameMap = predicateInformation.getRuleNameMap();
+        ruleNameMap.forEach((ruleFileName, ruleNameList) -> {
+            ruleNameList.forEach(ruleName -> {
+                MethodCallExpr addRuleName = new MethodCallExpr(infoExpr, "addRuleName", NodeList.nodeList(new StringLiteralExpr(ruleName), new StringLiteralExpr(ruleFileName)));
+                block.addStatement(addRuleName);
+            });
+        });
+
+        block.addStatement(new ReturnStmt(infoExpr));
+
+        methodDeclaration.setBody(block);
     }
 
     @Override
