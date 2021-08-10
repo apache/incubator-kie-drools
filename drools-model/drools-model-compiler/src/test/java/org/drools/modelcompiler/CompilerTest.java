@@ -2834,6 +2834,135 @@ public class CompilerTest extends BaseModelTest {
     }
 
     @Test
+    public void testSharedPredicateInformation() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl]"));
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(me);
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testSharedPredicateInformationWithNonSharedRule() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R3\" in r0.drl]"));
+
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person()\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R3 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(me);
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testSharedPredicateInformationWithMultipleFiles() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint 'money < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
+
+        String str1 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+        String str2 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R3 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R4 when\n" +
+                     "  $p : Person(money < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str1, str2);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(me);
+        ksession.fireAllRules();
+    }
+
+    @Test
+    public void testSharedBetaPredicateInformationWithMultipleFiles() {
+        exceptionRule.expect(RuntimeException.class);
+        exceptionRule.expectMessage(equalTo("Error evaluating constraint '$i < salary * 20' in [Rule \"R1\", \"R2\" in r0.drl] [Rule \"R3\", \"R4\" in r1.drl]"));
+
+        String str1 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R1 when\n" +
+                     "  $i : Integer()\n" +
+                     "  $p : Person($i < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R2 when\n" +
+                     "  $i : Integer()\n" +
+                     "  $p : Person($i < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+        String str2 =
+                "import " + Person.class.getCanonicalName() + ";" +
+                     "rule R3 when\n" +
+                     "  $i : Integer()\n" +
+                     "  $p : Person($i < salary * 20 )\n" +
+                     "then\n" +
+                     "end\n" +
+                     "rule R4 when\n" +
+                     "  $i : Integer()\n" +
+                     "  $p : Person($i < salary * 20 )\n" +
+                     "then\n" +
+                     "end";
+
+        KieSession ksession = getKieSession(str1, str2);
+
+        Person me = new Person("Luca");
+        me.setSalary(null);
+        me.setMoney(null);
+        ksession.insert(Integer.valueOf(10));
+        ksession.insert(me);
+        ksession.fireAllRules();
+    }
+
+    @Test
     public void testWithQuotedStringConcatenationOnConstraint() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +
