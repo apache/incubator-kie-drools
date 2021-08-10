@@ -45,7 +45,7 @@ However, for portability reasons, a classpath resource is recommended.
 
 [NOTE]
 ====
-On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (such as the solver config, score DRLs and domain classes) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
+On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (the solver config, domain classes, etc.) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
 In those cases, provide the `ClassLoader` of your classes as a parameter:
 
 [source,java,options="nowrap"]
@@ -70,7 +70,7 @@ A solver configuration XML file looks like this:
 
   <!-- Define the score function -->
   <scoreDirectorFactory>
-    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.nqueens.score.NQueensConstraintProvider</constraintProviderClass>
   </scoreDirectorFactory>
 
   <!-- Configure the optimization algorithms (optional) -->
@@ -1125,10 +1125,10 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 [[problemFacts]]
 ==== Problem facts of a solution (`@ProblemFactCollectionProperty`)
 
-For <<constraintStreams,constraint streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+For <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
-All objects returned by those methods are available to use by the constraint streams or Drools rules.
+All objects returned by those methods are available to use by Constraint Streams or Drools rules.
 For example in `NQueens` all `Column` and `Row` instances are problem facts.
 
 [source,java,options="nowrap"]
@@ -1153,7 +1153,7 @@ public class NQueens {
 }
 ----
 
-All planning entities are automatically inserted into the Drools working memory.
+All planning entities are automatically inserted into the working memory.
 Do note add an annotation on their properties.
 
 [NOTE]

@@ -535,7 +535,7 @@ That component works in Karaf too.
 === JBoss Modules, WildFly, and JBoss EAP
 
 Because of JBoss Modules' `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (such as the solver config, score DRLs and domain classes) in your jars.
+so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
 
 It's also recommended <<customThreadFactory,to plug in WildFly's thread factory>>,
 especially with <<multithreadedSolving,multithreaded solving>>.
@@ -626,7 +626,7 @@ Let's create a module called __org.optaplanner__:
 === Java platform module system (Jigsaw)
 
 When using OptaPlanner from code on the modulepath (Java 9 and higher),
-_open_ your packages that contain your domain objects, DRL files and solver configuration
+_open_ your packages that contain your domain objects, constraints and solver configuration
 _to all modules_ in your `module-info.java` file:
 
 [source,java,options="nowrap"]
@@ -635,8 +635,9 @@ module org.optaplanner.cloudbalancing {
     requires org.optaplanner.core;
     ...
 
+    opens org.optaplanner.examples.cloudbalancing; // Solver configuration
     opens org.optaplanner.examples.cloudbalancing.domain; // Domain classes
-    opens org.optaplanner.examples.cloudbalancing.solver; // DRL file and solver configuration
+    opens org.optaplanner.examples.cloudbalancing.score; // Constraints
     ...
 }
 ----
@@ -671,7 +672,7 @@ The `optaplanner-core` jar includes OSGi metadata in its `MANIFEST.MF` file to f
 Furthermore, the maven artifact `kie-karaf-features` contains a `features.xml` file that supports the OSGi-feature ``optaplanner-engine``.
 
 Because of the OSGi's `ClassLoader` magic, provide the `ClassLoader` of your classes <<solverConfigurationByXML,during the SolverFactory creation>>,
-so it can find the classpath resources (such as the solver config, score DRLs and domain classes) in your jars.
+so it can find the classpath resources (the solver config, domain classes, etc.) in your jars.
 
 [NOTE]
 ====
@@ -684,7 +685,8 @@ It works perfectly fine in a normal Java environment too.
 === Android
 
 Android is not a complete JVM (because some JDK libraries are missing), but OptaPlanner works on Android with <<easyJavaScoreCalculation,easy Java>> or <<incrementalJavaScoreCalculation,incremental Java>> score calculation.
-The Drools rule engine does not work on Android yet, so Drools score calculation doesn't work on Android and its dependencies need to be excluded.
+The Drools rule engine does not work on Android yet,
+so <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>> doesn't work on Android and its dependencies need to be excluded.
 
 *Workaround to use OptaPlanner on Android:*
 

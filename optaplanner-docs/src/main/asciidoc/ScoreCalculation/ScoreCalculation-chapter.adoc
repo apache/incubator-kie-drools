@@ -414,7 +414,7 @@ you'll need to write custom glue code too.
 There are several ways to calculate the `Score` of a solution:
 
 * **<<easyJavaScoreCalculation,Easy Java score calculation>>**: Implement all constraints together in a single method in Java (or another JVM language). Does not scale.
-* **<<constraintStreams,Constraint streams score calculation>>**: Implement each constraint as a separate ConstraintStream in Java (or another JVM language). Fast and scalable.
+* **<<constraintStreams,Constraint streams score calculation>>**: Implement each constraint as a separate Constraint Stream in Java (or another JVM language). Fast and scalable.
 * **<<incrementalJavaScoreCalculation,Incremental Java score calculation>>** (not recommended): Implement multiple low-level methods in Java (or another JVM language). Fast and scalable. Very difficult to implement and maintain.
 * **<<droolsScoreCalculation,Drools score calculation>>**: Implement each constraint as a separate score rule in DRL. Scalable.
 
@@ -775,7 +775,7 @@ Many of those have an `InitializingScoreTrend` that only goes down:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
     <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -785,7 +785,7 @@ Alternatively, you can also specify the trend for each score level separately:
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
-    <scoreDrl>.../cloudBalancingConstraints.drl</scoreDrl>
+    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
     <initializingScoreTrend>ONLY_DOWN/ONLY_DOWN</initializingScoreTrend>
   </scoreDirectorFactory>
 ----
@@ -873,8 +873,8 @@ Similarly in employee rostering:
 image::ScoreCalculation/incrementalScoreCalculationEmployeeRostering.png[align="center"]
 
 This is a huge performance and scalability gain.
-*Drools score calculation gives you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
-Just let the Drools rule engine do the hard work.
+*<<constraintStreams,Constraint Streams>> or <<droolsScoreCalculation,Drools score calculation>> give you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
+Just let the rule engine do the hard work.
 
 Notice that the speedup is relative to the size of your planning problem (your __n__), making incremental score calculation far more scalable.
 
@@ -926,7 +926,7 @@ as explained in their documentation.
 === Other score calculation performance tricks
 
 * Verify that your score calculation happens in the correct `Number` type.
-If you are making the sum of `int` values, do not let Drools sum it in a `double` which takes longer.
+If you are making the sum of `int` values, do not sum it in a `double` which takes longer.
 * For optimal performance, always use server mode (``java -server``).
 We have seen performance increases of 50% by turning on server mode.
 * For optimal performance, use the latest Java version.
@@ -1082,7 +1082,7 @@ In the constraint configuration class, add a `@ConstraintWeight` field or proper
 
 [source,java,options="nowrap"]
 ----
-@ConstraintConfiguration(constraintPackage = "...conferencescheduling.solver")
+@ConstraintConfiguration(constraintPackage = "...conferencescheduling.score")
 public class ConferenceConstraintConfiguration {
 
     @ConstraintWeight("Speaker conflict")
@@ -1114,7 +1114,7 @@ These connect the constraint weight with the constraint implementation.
 
 * The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
 Most cases with <<droolsScoreCalculation,Drools score calculation>>, need to override that because the DRLs use another package.
-For example, the DRL below uses the package `...conferencescheduling.solver`,
+For example, the DRL below uses the package `...conferencescheduling.score`,
 so the constraint configuration above specifies a `constraintPackage`.
 Cases with <<constraintStreams,Constraint streams>>, normally don't need to specify it.
 
@@ -1308,5 +1308,5 @@ The sum of all the `Indictment.getScoreTotal()` differs from the overall score, 
 
 It's recommended to write a unit test for each score constraint individually to check that it behaves correctly.
 Different score calculation types come with different tools for testing.
-For more, see <<constraintStreamsTesting,testing constraint streams>> or
+For more, see <<constraintStreamsTesting,testing Constraint Streams>> or
 <<testingDroolsConstraints,testing Drools constraints>>.

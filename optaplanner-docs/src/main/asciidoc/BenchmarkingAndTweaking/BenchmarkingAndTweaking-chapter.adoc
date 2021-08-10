@@ -327,7 +327,7 @@ Then use those files in `<inputSolutionFile>` elements.
 [[warmingUpTheHotSpotCompiler]]
 === Warming up the HotSpot compiler
 
-Without a warm up, the results of the first (or first few) benchmarks are not reliable because they lose CPU time on HotSpot JIT compilation (and possibly DRL compilation too).
+Without a warm up, the results of the first (or first few) benchmarks are not reliable because they lose CPU time on HotSpot JIT compilation.
 
 To avoid that distortion, the benchmarker runs some of the benchmarks for 30 seconds, before running the real benchmarks. That default warm up of 30 seconds usually suffices. Change it, for example to give it 60 seconds:
 
@@ -382,7 +382,7 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
       <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
       <scoreDirectorFactory>
-        <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+        <constraintProviderClass>org.optaplanner.examples.nqueens.score.NQueensConstraintProvider</constraintProviderClass>
         <initializingScoreTrend>ONLY_DOWN</initializingScoreTrend>
       </scoreDirectorFactory>
       <termination>
@@ -887,7 +887,7 @@ To see which constraints are matched in the best score (and how much) over time,
 image::BenchmarkingAndTweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
 
 Requires the score calculation to support <<explainingTheScore,constraint matches>>.
-<<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically,
+<<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>> support constraint matches automatically,
 but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
 
 [WARNING]

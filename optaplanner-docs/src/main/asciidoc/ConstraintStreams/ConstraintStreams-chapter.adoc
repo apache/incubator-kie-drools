@@ -421,7 +421,7 @@ In the previous example, `filter()` and all subsequent operations no longer have
 ====
 
 There are several collectors available out of the box. You can also provide your own collectors by implementing the
-`org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` counterparts.
+`org.optaplanner.core.api.score.stream.uni.UniConstraintCollector` interface, or its `Bi...`, `Tri...` and `Quad...` counterparts.
 
 [[collectorsOutOfTheBox]]
 ==== Out-of-the-box collectors
@@ -431,6 +431,7 @@ The following collectors are provided out of the box:
 * <<collectorsCount,`count()`>>
 * <<collectorsCountDistinct,`countDistinct()`>>
 * <<collectorsSum,`sum()`>>
+* <<collectorsAverage,`average()`>>
 * <<collectorsMinMax,`min()` and `max()`>>
 * <<collectorsCollection,`toList()`, `toSet()` and `toMap()`>>
 
@@ -510,6 +511,34 @@ The sum is collected in an `int`. Variants of this collector:
 * a generic `sum()` variant for summing up custom types
 
 
+[[collectorsAverage]]
+===== `average()` collector
+
+To calculate the average of a particular property of all elements per group, use the `ConstraintCollectors.average(...)`
+collector.
+The following code snippet first groups all processes by the computer they run on and averages all the power
+required by the processes on that computer using the `ConstraintCollectors.average(...)` collector.
+
+[source,java,options="nowrap"]
+----
+    private Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, average(CloudProcess::getRequiredCpuPower))
+                .penalize("averageCpuPower",
+                        HardSoftScore.ONE_SOFT,
+                        (computer, averageCpuPower) -> averageCpuPower);
+    }
+----
+
+The average is collected as a `double`, and the average of no elements is `null`.
+Variants of this collector:
+
+* `averageLong()` collects a `long` value instead of an `int` value.
+* `averageBigDecimal()` collects a `java.math.BigDecimal` value instead of an `int` value, resulting in a `BigDecimal` average.
+* `averageBigInteger()` collects a `java.math.BigInteger` value instead of an `int` value, resulting in a `BigDecimal` average.
+* `averageDuration()` collects a `java.time.Duration` value instead of an `int` value, resulting in a `Duration` average.
+
+
 [[collectorsMinMax]]
 ===== `min()` and `max()` collectors
 
@@ -570,6 +599,82 @@ Variants of this collector:
 ====
 The iteration order of elements in the resulting collection is not guaranteed to be stable,
 unless it is a sorted collector such as `toSortedSet` or `toSortedMap`.
+====
+
+
+[[collectorsConditional]]
+==== Conditional collectors
+
+The constraint collector framework enables you to create constraint collectors which will only collect in certain circumstances.
+This is achieved using the `ConstraintCollectors.conditionally(...)` constraint collector.
+
+This collector accepts a predicate, and another collector to which it will delegate if the predicate is true.
+The following example returns a count of long-running processes assigned to a given computer,
+excluding processes which are not long-running:
+
+[source,java,options="nowrap"]
+----
+    private Constraint computerWithLongRunningProcesses(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, conditionally(
+                        CloudProcess::isLongRunning,
+                        count()
+                ))
+                .penalize("longRunningProcesses",
+                        HardSoftScore.ONE_HARD,
+                        (computer, longRunningProcessCount) -> ...);
+    }
+----
+
+This is useful in situations where multiple collectors are used and only some of them need to be restricted.
+If all of them needed to be restricted in the same way,
+then applying a <<constraintStreamsFilter,`filter()`>> before the grouping is preferable.
+
+
+[[collectorsComposition]]
+==== Composing collectors
+
+The constraint collector framework enables you to create complex collectors utilizing simpler ones.
+This is achieved using the `ConstraintCollectors.compose(...)` constraint collector.
+
+This collector accepts 2 to 4 other constraint collectors,
+and a function to merge their results into one.
+The following example builds an <<collectorsAverage,`average()` constraint collector>>
+using the <<collectorsCount,`count` constraint collector>> and <<collectorsSum,`sum()` constraint collector>>:
+
+[source,java,options="nowrap"]
+----
+    public static <A> UniConstraintCollector<A, ?, Double>
+        average(ToIntFunction<A> groupValueMapping) {
+            return compose(count(), sum(groupValueMapping), (count, sum) -> {
+                if (count == 0) {
+                    return null;
+                } else {
+                    return sum / (double) count;
+                }
+            });
+    }
+----
+
+Similarly, the `compose()` collector enables you to work around the limitation of <<constraintStreamsCardinality,Constraint Stream cardinality>>
+and use as many as 4 collectors in your <<constraintStreamsGroupingAndCollectors,`groupBy()` statements>>:
+
+[source,java,options="nowrap"]
+----
+    UniConstraintCollector<A, ?, Triple<Integer, Integer, Integer>> collector =
+        compose(count(),
+                min(),
+                max(),
+                (count, min, max) -> Triple.of(count, min, max));
+    }
+----
+
+Such a composite collector returns a `Triple` instance which allows you to access
+each of the sub collectors individually.
+
+[NOTE]
+====
+OptaPlanner does not provide any `Pair`, `Triple` or `Quadruple` implementation out of the box.
 ====
 
 

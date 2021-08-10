@@ -19,7 +19,7 @@ The file is named `cloudBalancingSolverConfig.xml`.
   <!-- Score configuration -->
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>-->
   </scoreDirectorFactory>
 
   <!-- Optimization algorithms configuration -->
@@ -47,13 +47,13 @@ What is our goal?_
 +
 Since we have hard and soft constraints, we use a ``HardSoftScore``.
 But we need to tell OptaPlanner how to calculate the score, depending on our business requirements.
-Further down, we will look into two alternatives to calculate the score: using an easy Java implementation, or using Drools DRL.
+Further down, we will look into two alternatives to calculate the score, such as using an easy Java implementation, or Constraint Streams.
 +
 [source,xml,options="nowrap"]
 ----
   <scoreDirectorFactory>
     <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
-    <!--<scoreDrl>org/optaplanner/examples/cloudbalancing/solver/cloudBalancingConstraints.drl</scoreDrl>-->
+    <!--<constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>-->
   </scoreDirectorFactory>
 ----
 

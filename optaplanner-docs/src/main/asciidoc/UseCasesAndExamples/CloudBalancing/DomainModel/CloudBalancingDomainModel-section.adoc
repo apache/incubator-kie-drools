@@ -128,10 +128,16 @@ The `CloudBalance` class has a [path]_@PlanningSolution_
 * It represents both the planning problem and (if it is initialized) the planning solution.
 * To save a solution, OptaPlanner initializes a new instance of the class.
 
-. The `processList` property holds a list of processes. OptaPlanner can change the processes, allocating them to different computers. Therefore, a process is a planning entity and the list of processes is a collection of planning entities. We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+. The `processList` property holds a list of processes.
+OptaPlanner can change the processes, allocating them to different computers.
+Therefore, a process is a planning entity and the list of processes is a collection of planning entities.
+We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
 
-. The `computerList` property holds a list of computers. OptaPlanner cannot change the computers. Therefore, a computer is a problem fact. Especially for score calculation with Drools, the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the Drools engine.
-
+. The `computerList` property holds a list of computers.
+OptaPlanner cannot change the computers.
+Therefore, a computer is a problem fact.
+Especially for <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the rule engine.
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
 OptaPlanner automatically updates it when it calculates a `Score` for a solution instance. Therefore, this property needs a setter.
