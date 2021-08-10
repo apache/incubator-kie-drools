@@ -57,8 +57,7 @@ public class GizmoMemberDescriptor {
     Object metadataDescriptor;
 
     /**
-     * If the member is a normal member, the class that declared it
-     * If the member is from Jandex, the Jandex ClassInfo of the class that declared it
+     * The class that declared this member
      */
     Class<?> declaringClass;
 
@@ -66,6 +65,11 @@ public class GizmoMemberDescriptor {
      * The MethodDescriptor of the corresponding setter. Is empty if not present.
      */
     Optional<MethodDescriptor> setter;
+
+    /**
+     * If final checks should be ignored due to Quarkus transformations
+     */
+    boolean ignoreFinalChecks = false;
 
     public GizmoMemberDescriptor(Member member) {
         declaringClass = member.getDeclaringClass();
@@ -101,6 +105,7 @@ public class GizmoMemberDescriptor {
     public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass) {
         this(name, memberDescriptor, metadataDescriptor, declaringClass,
                 lookupSetter(memberDescriptor, declaringClass, name).orElse(null));
+        ignoreFinalChecks = true;
     }
 
     public GizmoMemberDescriptor(String name, Object memberDescriptor, Object metadataDescriptor, Class<?> declaringClass,
@@ -166,7 +171,17 @@ public class GizmoMemberDescriptor {
     public boolean writeMemberValue(BytecodeCreator bytecodeCreator, ResultHandle thisObj, ResultHandle newValue) {
         if (memberDescriptor instanceof FieldDescriptor) {
             FieldDescriptor fd = (FieldDescriptor) memberDescriptor;
-            bytecodeCreator.writeInstanceField(fd, thisObj, newValue);
+            try {
+                Field field = declaringClass.getField(name);
+                if (!ignoreFinalChecks && Modifier.isFinal(field.getModifiers())) {
+                    throw new IllegalStateException(
+                            "Field (" + name + ") of class (" + declaringClass + ") is final and cannot be modified.");
+                } else {
+                    bytecodeCreator.writeInstanceField(fd, thisObj, newValue);
+                }
+            } catch (NoSuchFieldException e) {
+                throw new IllegalStateException("Field (" + name + ") of class (" + declaringClass + ") does not exist.", e);
+            }
             return true;
         } else if (memberDescriptor instanceof MethodDescriptor) {
             MethodDescriptor md = (MethodDescriptor) memberDescriptor;

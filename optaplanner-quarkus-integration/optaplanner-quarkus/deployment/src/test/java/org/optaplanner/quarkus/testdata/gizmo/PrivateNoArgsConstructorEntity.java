@@ -23,13 +23,13 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 @PlanningEntity
 public class PrivateNoArgsConstructorEntity {
     @PlanningId
-    String id;
+    final String id;
 
     @PlanningVariable(valueRangeProviderRefs = "valueRange")
     String value;
 
     private PrivateNoArgsConstructorEntity() {
-
+        id = null;
     }
 
     public PrivateNoArgsConstructorEntity(String id) {

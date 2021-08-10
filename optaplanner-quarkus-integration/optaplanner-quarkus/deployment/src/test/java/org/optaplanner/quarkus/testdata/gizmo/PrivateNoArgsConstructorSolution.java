@@ -31,13 +31,15 @@ public class PrivateNoArgsConstructorSolution {
     List<PrivateNoArgsConstructorEntity> planningEntityList;
 
     @PlanningScore
-    public SimpleScore score;
+    public final SimpleScore score;
 
     private PrivateNoArgsConstructorSolution() {
+        score = null;
     }
 
     public PrivateNoArgsConstructorSolution(List<PrivateNoArgsConstructorEntity> planningEntityList) {
         this.planningEntityList = planningEntityList;
+        score = null;
     }
 
     @ValueRangeProvider(id = "valueRange")

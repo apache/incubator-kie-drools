@@ -58,7 +58,9 @@ import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
 import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
 import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.optaplanner.core.api.domain.solution.cloner.SolutionCloner;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
@@ -100,7 +102,11 @@ public class GizmoMemberAccessorEntityEnhancer {
             OptaPlannerDroolsInitializer.class.getName() + "$Implementation";
 
     private static Set<Class<?>> visitedClasses = new HashSet<>();
+
+    // This keep track of fields we add virtual getters/setters for
     private static Set<Field> visitedFields = new HashSet<>();
+    // This keep track of what fields we made non-final
+    private static Set<Field> visitedFinalFields = new HashSet<>();
     private static Set<MethodInfo> visitedMethods = new HashSet<>();
 
     public static void makeConstructorAccessible(Class<?> clazz, BuildProducer<BytecodeTransformerBuildItem> transformers) {
@@ -118,6 +124,15 @@ public class GizmoMemberAccessorEntityEnhancer {
             throw new IllegalStateException(
                     "Class (" + clazz.getName() + ") must have a no-args constructor so it can be constructed by OptaPlanner.");
         }
+    }
+
+    public static void makeFieldNonFinal(Field finalField, BuildProducer<BytecodeTransformerBuildItem> transformers) {
+        if (visitedFinalFields.contains(finalField)) {
+            return;
+        }
+        transformers.produce(new BytecodeTransformerBuildItem(finalField.getDeclaringClass().getName(),
+                (className, classVisitor) -> new OptaPlannerFinalFieldEnhancingClassVisitor(classVisitor, finalField)));
+        visitedFinalFields.add(finalField);
     }
 
     public static void addVirtualFieldGetter(ClassInfo classInfo, FieldInfo fieldInfo,
@@ -192,6 +207,10 @@ public class GizmoMemberAccessorEntityEnhancer {
 
             FieldDescriptor memberDescriptor = FieldDescriptor.of(fieldInfo);
             String name = fieldInfo.name();
+
+            if (Modifier.isFinal(fieldMember.getModifiers())) {
+                makeFieldNonFinal(fieldMember, transformers);
+            }
 
             if (Modifier.isPublic(fieldInfo.flags())) {
                 member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
@@ -384,6 +403,10 @@ public class GizmoMemberAccessorEntityEnhancer {
                     FieldDescriptor memberDescriptor = FieldDescriptor.of(field);
                     String name = field.getName();
 
+                    if (Modifier.isFinal(field.getModifiers())) {
+                        makeFieldNonFinal(field, transformers);
+                    }
+
                     // Not being recorded, so can use Type and annotated element directly
                     if (Modifier.isPublic(field.getModifiers())) {
                         member = new GizmoMemberDescriptor(name, memberDescriptor, memberDescriptor, declaringClass);
@@ -553,6 +576,25 @@ public class GizmoMemberAccessorEntityEnhancer {
             }
         }
 
+    }
+
+    private static class OptaPlannerFinalFieldEnhancingClassVisitor extends ClassVisitor {
+        final Field finalField;
+
+        public OptaPlannerFinalFieldEnhancingClassVisitor(ClassVisitor outputClassVisitor, Field finalField) {
+            super(Gizmo.ASM_API_VERSION, outputClassVisitor);
+            this.finalField = finalField;
+        }
+
+        @Override
+        public FieldVisitor visitField(int access, String name, String descriptor, String signature, Object value) {
+            if (name.equals(finalField.getName())) {
+                // x & ~bitFlag = x without bitFlag set
+                return super.visitField(access & ~Opcodes.ACC_FINAL, name, descriptor, signature, value);
+            } else {
+                return super.visitField(access, name, descriptor, signature, value);
+            }
+        }
     }
 
     private static class OptaPlannerConstructorEnhancingClassVisitor extends ClassVisitor {
