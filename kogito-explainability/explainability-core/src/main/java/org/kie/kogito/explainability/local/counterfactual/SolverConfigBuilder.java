@@ -30,16 +30,16 @@ import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 
-public class CounterfactualConfigurationFactory {
+public class SolverConfigBuilder {
 
     private static final long DEFAULT_TIME_LIMIT = 60;
     private static final int DEFAULT_TABU_SIZE = 70;
     private static final int DEFAULT_ACCEPTED_COUNT = 5000;
 
-    private CounterfactualConfigurationFactory() {
+    private SolverConfigBuilder() {
     }
 
-    public static CounterfactualConfigurationFactory.Builder builder() {
+    public static SolverConfigBuilder.Builder builder() {
         return new Builder();
     }
 

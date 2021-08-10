@@ -19,8 +19,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executor;
-import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -40,7 +38,6 @@ import org.kie.kogito.explainability.model.PredictionProvider;
 import org.optaplanner.core.api.solver.SolverJob;
 import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.config.solver.SolverConfig;
-import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,20 +48,15 @@ import org.slf4j.LoggerFactory;
  */
 public class CounterfactualExplainer implements LocalExplainer<CounterfactualResult> {
 
+    public static final Consumer<CounterfactualSolution> assignSolutionId =
+            counterfactual -> counterfactual.setSolutionId(UUID.randomUUID());
     private static final Logger logger =
             LoggerFactory.getLogger(CounterfactualExplainer.class);
 
-    private final SolverConfig solverConfig;
-    private final Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory;
-    private final Executor executor;
-
-    public static final Consumer<CounterfactualSolution> assignSolutionId =
-            counterfactual -> counterfactual.setSolutionId(UUID.randomUUID());
+    private final CounterfactualConfig counterfactualConfig;
 
     public CounterfactualExplainer() {
-        this.solverConfig = CounterfactualConfigurationFactory.builder().build();
-        this.solverManagerFactory = solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
-        this.executor = ForkJoinPool.commonPool();
+        this.counterfactualConfig = new CounterfactualConfig();
     }
 
     /**
@@ -77,22 +69,14 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
      * A customizable OptaPlanner solver configuration can be passed using a {@link SolverConfig}.
      * A {@link Consumer<CounterfactualSolution>} should be provided for the intermediate and final search results.
      *
-     * @param solverConfig An OptaPlanner {@link SolverConfig} configuration
+     * @param counterfactualConfig An Counterfactual {@link CounterfactualConfig} configuration
      */
-    protected CounterfactualExplainer(SolverConfig solverConfig,
-            Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory,
-            Executor executor) {
-        this.solverConfig = solverConfig;
-        this.solverManagerFactory = solverManagerFactory;
-        this.executor = executor;
+    public CounterfactualExplainer(CounterfactualConfig counterfactualConfig) {
+        this.counterfactualConfig = counterfactualConfig;
     }
 
-    public SolverConfig getSolverConfig() {
-        return solverConfig;
-    }
-
-    public static Builder builder() {
-        return new Builder();
+    public CounterfactualConfig getCounterfactualConfig() {
+        return this.counterfactualConfig;
     }
 
     /**
@@ -137,7 +121,8 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                 uuid -> new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), executionId);
 
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
-            try (SolverManager<CounterfactualSolution, UUID> solverManager = solverManagerFactory.apply(solverConfig)) {
+            try (SolverManager<CounterfactualSolution, UUID> solverManager =
+                    this.counterfactualConfig.getSolverManagerFactory().apply(this.counterfactualConfig.getSolverConfig())) {
 
                 SolverJob<CounterfactualSolution, UUID> solverJob =
                         solverManager.solveAndListen(executionId, initial,
@@ -155,7 +140,7 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                     throw new IllegalStateException("Solving failed (Thread interrupted)", e);
                 }
             }
-        }, this.executor);
+        }, this.counterfactualConfig.getExecutor());
 
         final CompletableFuture<List<PredictionOutput>> cfOutputs =
                 cfSolution.thenCompose(s -> model.predictAsync(List.of(new PredictionInput(
@@ -172,42 +157,4 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
 
     }
 
-    public static class Builder {
-        private Executor executor = ForkJoinPool.commonPool();
-        private SolverConfig solverConfig = null;
-        private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory = null;
-
-        private Builder() {
-        }
-
-        public Builder withExecutor(Executor executor) {
-            this.executor = executor;
-            return this;
-        }
-
-        public Builder withSolverConfig(SolverConfig solverConfig) {
-            this.solverConfig = solverConfig;
-            return this;
-        }
-
-        public Builder withSolverManagerFactory(
-                Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory) {
-            this.solverManagerFactory = solverManagerFactory;
-            return this;
-        }
-
-        public CounterfactualExplainer build() {
-            // Create a default solver configuration if none provided
-            if (this.solverConfig == null) {
-                this.solverConfig = CounterfactualConfigurationFactory.builder().build();
-            }
-            if (this.solverManagerFactory == null) {
-                this.solverManagerFactory = solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
-            }
-            return new CounterfactualExplainer(
-                    solverConfig,
-                    solverManagerFactory,
-                    executor);
-        }
-    }
 }

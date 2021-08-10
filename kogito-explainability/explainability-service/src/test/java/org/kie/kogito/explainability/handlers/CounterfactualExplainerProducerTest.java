@@ -33,8 +33,8 @@ class CounterfactualExplainerProducerTest {
 
         assertNotNull(counterfactualExplainer);
         assertTrue(counterfactualExplainer instanceof CounterfactualExplainer);
-        assertEquals(10, ((CounterfactualExplainer) counterfactualExplainer).getSolverConfig().getTerminationConfig()
-                .getSecondsSpentLimit());
+        assertEquals(10, ((CounterfactualExplainer) counterfactualExplainer).getCounterfactualConfig().getSolverConfig()
+                .getTerminationConfig().getSecondsSpentLimit());
     }
 
 }
