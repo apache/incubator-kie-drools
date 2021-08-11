@@ -1156,6 +1156,18 @@ public class ExpressionTyper {
         return fieldName.getIdentifier();
     }
 
+    public static Expression findLeftLeafOfNameExprTraversingParent(Node expression) {
+        Expression parentLeft = findLeftLeafOfNameExpr(expression);
+        if (parentLeft instanceof HalfBinaryExpr) {
+            Optional<Node> optParent = expression.getParentNode();
+            if (optParent.isPresent()) {
+                return findLeftLeafOfNameExprTraversingParent(optParent.get());
+            } else {
+                throw new CannotTypeExpressionException("Cannot find left leaf : expression = " + expression);
+            }
+        }
+        return parentLeft;
+    }
 
     public static Expression findLeftLeafOfNameExpr(Node expression) {
         if (expression instanceof BinaryExpr) {

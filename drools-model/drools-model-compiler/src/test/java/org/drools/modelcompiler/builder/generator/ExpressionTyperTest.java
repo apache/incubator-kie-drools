@@ -215,6 +215,12 @@ public class ExpressionTyperTest {
         assertEquals(expected.toString(),  toTypedExpression(expr.getExpr().toString(), Person.class).getExpression().toString());
     }
 
+    @Test
+    public void halfBinaryOrAndAmpersand() {
+        String expected = "_this.getAge() < 15 || _this.getAge() > 20 && _this.getAge() < 30";
+        assertEquals(expected, toTypedExpression("age < 15 || > 20 && < 30", Person.class).getExpression().toString());
+    }
+
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {
 
         for(DeclarationSpec d : declarations) {
