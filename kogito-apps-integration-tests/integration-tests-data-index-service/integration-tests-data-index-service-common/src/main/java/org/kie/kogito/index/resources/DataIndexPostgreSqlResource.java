@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.testcontainers.DataIndexPostgreSqlContainer;
+import org.kie.kogito.index.testcontainers.KogitoKafkaContainerWithoutBridge;
 import org.kie.kogito.resources.TestResource;
-import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,11 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DataIndexPostgreSqlResource implements TestResource {
 
+    public static final String DATA_INDEX_BLOCKING = "kogito.data-index.blocking";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexPostgreSqlResource.class);
 
-    KogitoKafkaContainer kafka = new KogitoKafkaContainer();
+    KogitoKafkaContainerWithoutBridge kafka = new KogitoKafkaContainerWithoutBridge();
     KogitoPostgreSqlContainer postgresql = new KogitoPostgreSqlContainer();
     DataIndexPostgreSqlContainer dataIndex = new DataIndexPostgreSqlContainer();
     Map<String, String> properties = new HashMap<>();
@@ -59,6 +61,7 @@ public class DataIndexPostgreSqlResource implements TestResource {
         String kafkaURL = kafka.getBootstrapServers();
         properties.put("kafka.bootstrap.servers", kafkaURL);
         properties.put("spring.kafka.bootstrap-servers", kafkaURL);
+
         dataIndex.addProtoFileFolder();
         dataIndex.withNetwork(network);
         dataIndex

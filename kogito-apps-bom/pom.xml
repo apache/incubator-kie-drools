@@ -552,7 +552,6 @@
                 <classifier>sources</classifier>
             </dependency>
 
-
             <!-- Explainability Services -->
             <dependency>
                 <groupId>org.kie.kogito</groupId>

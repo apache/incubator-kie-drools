@@ -20,9 +20,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.testcontainers.DataIndexInfinispanContainer;
+import org.kie.kogito.index.testcontainers.KogitoKafkaContainerWithoutBridge;
 import org.kie.kogito.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
-import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.Network;
@@ -31,7 +31,7 @@ public class DataIndexInfinispanResource implements TestResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexInfinispanResource.class);
 
-    KogitoKafkaContainer kafka = new KogitoKafkaContainer();
+    KogitoKafkaContainerWithoutBridge kafka = new KogitoKafkaContainerWithoutBridge();
     KogitoInfinispanContainer infinispan = new KogitoInfinispanContainer();
     DataIndexInfinispanContainer dataIndex = new DataIndexInfinispanContainer();
     Map<String, String> properties = new HashMap<>();

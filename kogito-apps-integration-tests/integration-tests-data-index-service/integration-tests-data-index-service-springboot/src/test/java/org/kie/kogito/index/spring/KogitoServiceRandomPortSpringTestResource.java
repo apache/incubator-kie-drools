@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.kie.kogito.index.spring;
 
-import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.index.resources.DataIndexPostgreSqlResource;
+import org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource;
 import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 
-public class DataIndexPostgreSqlSpringTestResource extends ConditionalSpringBootTestResource<DataIndexPostgreSqlResource> {
+import static java.util.Collections.singletonMap;
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
+public class KogitoServiceRandomPortSpringTestResource extends ConditionalSpringBootTestResource<KogitoServiceRandomPortTestResource> {
 
-    public DataIndexPostgreSqlSpringTestResource() {
-        super(new DataIndexPostgreSqlResource());
+    public static final String SPRINGBOOT_SERVICE_HTTP_PORT = "server.port";
+
+    public KogitoServiceRandomPortSpringTestResource() {
+        super(new KogitoServiceRandomPortTestResource());
     }
 
     @Override
     protected Map<String, String> getProperties() {
-        Map<String, String> properties = new HashMap<>();
-        properties.put(KOGITO_DATA_INDEX_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
-        properties.putAll(getTestResource().getProperties());
-        return properties;
+        return singletonMap(SPRINGBOOT_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
     }
-
 }

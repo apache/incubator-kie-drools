@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.index.testcontainers;
 
-package org.kie.kogito.index.quarkus;
+import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 
-import java.util.Arrays;
-import java.util.List;
+import com.github.dockerjava.api.command.InspectContainerResponse;
 
-import io.quarkus.test.junit.QuarkusTestProfile;
-
-public class InfinispanTestProfile implements QuarkusTestProfile {
+public class KogitoKafkaContainerWithoutBridge extends KogitoKafkaContainer {
 
     @Override
-    public List<TestResourceEntry> testResources() {
-        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
-                new TestResourceEntry(DataIndexInfinispanQuarkusTestResource.class));
+    protected void containerIsStarting(InspectContainerResponse containerInfo, boolean reused) {
+        containerInfo.getNetworkSettings().getNetworks().remove("bridge");
+        super.containerIsStarting(containerInfo, reused);
     }
 }

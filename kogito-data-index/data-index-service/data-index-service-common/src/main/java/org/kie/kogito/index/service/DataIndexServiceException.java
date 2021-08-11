@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.kie.kogito.index.service;
 
-package org.kie.kogito.index.quarkus;
+public class DataIndexServiceException extends RuntimeException {
 
-import java.util.Arrays;
-import java.util.List;
+    public DataIndexServiceException(String message) {
+        super(message);
+    }
 
-import io.quarkus.test.junit.QuarkusTestProfile;
-
-public class InfinispanTestProfile implements QuarkusTestProfile {
-
-    @Override
-    public List<TestResourceEntry> testResources() {
-        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
-                new TestResourceEntry(DataIndexInfinispanQuarkusTestResource.class));
+    public DataIndexServiceException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

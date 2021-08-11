@@ -16,7 +16,7 @@
 
 package org.kie.kogito.index.quarkus;
 
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
 
 import io.quarkus.test.junit.QuarkusTestProfile;
@@ -25,7 +25,8 @@ public class MongoDBTestProfile implements QuarkusTestProfile {
 
     @Override
     public List<TestResourceEntry> testResources() {
-        return Collections.singletonList(new TestResourceEntry(DataIndexMongoDBQuarkusTestResource.class));
+        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
+                new TestResourceEntry(DataIndexMongoDBQuarkusTestResource.class));
     }
 
 }

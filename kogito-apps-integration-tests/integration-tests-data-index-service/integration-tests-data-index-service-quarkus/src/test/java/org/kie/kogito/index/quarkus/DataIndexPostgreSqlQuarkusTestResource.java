@@ -24,7 +24,7 @@ import org.kie.kogito.resources.ConditionalQuarkusTestResource;
 
 public class DataIndexPostgreSqlQuarkusTestResource extends ConditionalQuarkusTestResource<DataIndexPostgreSqlResource> {
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.data-index-service.url";
+    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
 
     public DataIndexPostgreSqlQuarkusTestResource() {
         super(new DataIndexPostgreSqlResource());

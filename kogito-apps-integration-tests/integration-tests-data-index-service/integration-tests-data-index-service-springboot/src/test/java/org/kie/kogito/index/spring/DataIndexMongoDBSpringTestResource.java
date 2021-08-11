@@ -24,7 +24,7 @@ import org.kie.kogito.resources.ConditionalSpringBootTestResource;
 
 public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBResource> {
 
-    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.data-index-service.url";
+    public static final String KOGITO_DATA_INDEX_SERVICE_URL = "kogito.dataindex.http.url";
 
     public DataIndexMongoDBSpringTestResource() {
         super(new DataIndexMongoDBResource());

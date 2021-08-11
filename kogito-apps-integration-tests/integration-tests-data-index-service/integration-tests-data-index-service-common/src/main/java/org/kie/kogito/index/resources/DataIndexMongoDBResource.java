@@ -20,8 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.testcontainers.DataIndexMongoDBContainer;
+import org.kie.kogito.index.testcontainers.KogitoKafkaContainerWithoutBridge;
 import org.kie.kogito.resources.TestResource;
-import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.kie.kogito.testcontainers.KogitoMongoDBContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +31,7 @@ public class DataIndexMongoDBResource implements TestResource {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexMongoDBResource.class);
 
-    KogitoKafkaContainer kafka = new KogitoKafkaContainer();
+    KogitoKafkaContainerWithoutBridge kafka = new KogitoKafkaContainerWithoutBridge();
     KogitoMongoDBContainer mongodb = new KogitoMongoDBContainer();
     DataIndexMongoDBContainer dataIndex = new DataIndexMongoDBContainer();
     Map<String, String> properties = new HashMap<>();

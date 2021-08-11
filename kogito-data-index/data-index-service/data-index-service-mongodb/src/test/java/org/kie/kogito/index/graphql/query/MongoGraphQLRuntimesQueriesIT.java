@@ -14,18 +14,20 @@
  * limitations under the License.
  */
 
-package org.kie.kogito.index.quarkus;
+package org.kie.kogito.index.graphql.query;
 
-import java.util.Arrays;
-import java.util.List;
+import org.kie.kogito.index.TestUtils;
+import org.kie.kogito.index.test.InMemoryMessageTestProfile;
 
-import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.TestProfile;
 
-public class InfinispanTestProfile implements QuarkusTestProfile {
+@QuarkusTest
+@TestProfile(InMemoryMessageTestProfile.class)
+class MongoGraphQLRuntimesQueriesIT extends AbstractGraphQLRuntimesQueriesIT {
 
     @Override
-    public List<TestResourceEntry> testResources() {
-        return Arrays.asList(new TestResourceEntry(KogitoServiceRandomPortQuarkusTestResource.class),
-                new TestResourceEntry(DataIndexInfinispanQuarkusTestResource.class));
+    protected String getTestProtobufFileContent() throws Exception {
+        return TestUtils.readFileContent("travels-mongo.proto");
     }
 }
