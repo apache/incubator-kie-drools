@@ -16,7 +16,6 @@
 package org.kie.kogito.codegen.rules;
 
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 import org.drools.modelcompiler.builder.ModelSourceClass;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -28,7 +27,6 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
@@ -81,7 +79,8 @@ public class ProjectRuntimeGenerator {
                 .findFirst()
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find initKieBases method"));
 
-        IfStmt ifStmt = initKieBasesMethod.findFirst(IfStmt.class).orElseThrow(() -> new NoSuchElementException());
+        IfStmt ifStmt = initKieBasesMethod.findFirst(IfStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find if statement in initKieBases method"));
         BlockStmt ifBlock = ifStmt.getThenStmt().asBlockStmt();
         for (String kbaseName : modelMethod.getKieBaseNames()) {
             ifBlock.addStatement("kbaseMap.put( \"" + kbaseName + "\", " +
@@ -98,7 +97,9 @@ public class ProjectRuntimeGenerator {
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find getKieBase method"));
 
         if (modelMethod.getDefaultKieBaseName() != null) {
-            getDefaultKieBaseMethod.findFirst(StringLiteralExpr.class).get().setString(modelMethod.getDefaultKieBaseName());
+            getDefaultKieBaseMethod.findFirst(StringLiteralExpr.class)
+                    .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find string inside getKieBase method"))
+                    .setString(modelMethod.getDefaultKieBaseName());
         }
     }
 
@@ -110,7 +111,9 @@ public class ProjectRuntimeGenerator {
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find newKieSession method"));
 
         if (modelMethod.getDefaultKieSessionName() != null) {
-            newDefaultKieSessionMethod.findFirst(StringLiteralExpr.class).get().setString(modelMethod.getDefaultKieSessionName());
+            newDefaultKieSessionMethod.findFirst(StringLiteralExpr.class)
+                    .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find string inside newKieSession method"))
+                    .setString(modelMethod.getDefaultKieSessionName());
         }
     }
 
@@ -120,12 +123,13 @@ public class ProjectRuntimeGenerator {
                 .findFirst()
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find getKieBaseForSession method"));
 
-        SwitchStmt switchStmt = getKieBaseForSessionMethod.findFirst(SwitchStmt.class).get();
+        SwitchStmt switchStmt = getKieBaseForSessionMethod.findFirst(SwitchStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find switch inside getKieBaseForSession method"));
 
         for (Map.Entry<String, String> entry : modelMethod.getkSessionForkBase().entrySet()) {
             StringLiteralExpr sessionName = new StringLiteralExpr(entry.getKey());
             Statement stmt = parseStatement("return getKieBase(\"" + entry.getValue() + "\");");
-            SwitchEntry switchEntry = new SwitchEntry(new NodeList<Expression>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(stmt));
+            SwitchEntry switchEntry = new SwitchEntry(new NodeList<>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(stmt));
             switchStmt.getEntries().add(switchEntry);
         }
     }
@@ -136,11 +140,13 @@ public class ProjectRuntimeGenerator {
                 .findFirst()
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find getConfForSession method"));
 
-        SwitchStmt switchStmt = getConfForSessionMethod.findFirst(SwitchStmt.class).get();
+        SwitchStmt switchStmt = getConfForSessionMethod.findFirst(SwitchStmt.class)
+                .orElseThrow(() -> new InvalidTemplateException(generator, "Cannot find switch inside getConfForSession method"));
+        ;
 
         for (Map.Entry<String, BlockStmt> entry : modelMethod.getkSessionConfs().entrySet()) {
             StringLiteralExpr sessionName = new StringLiteralExpr(entry.getKey());
-            SwitchEntry switchEntry = new SwitchEntry(new NodeList<Expression>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(entry.getValue()));
+            SwitchEntry switchEntry = new SwitchEntry(new NodeList<>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(entry.getValue()));
             switchStmt.getEntries().add(switchEntry);
         }
     }

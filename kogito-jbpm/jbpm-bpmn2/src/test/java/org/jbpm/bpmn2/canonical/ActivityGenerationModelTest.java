@@ -18,6 +18,9 @@ package org.jbpm.bpmn2.canonical;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -422,9 +425,12 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
 
     @Test
     public void testBusinessRuleTaskProcess() throws Exception {
+        // This is a workaround to make it compile. A process that includes rules will never execute without a full Kogito context
+        MockClassLoader classLoader = new MockClassLoader("org.kie.kogito.legacy.rules.KieRuntimeBuilder");
+
         BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-BusinessRuleTask.bpmn2")).get(0);
 
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.process());
+        ProcessMetaData metaData = new ProcessToExecModelGenerator(classLoader).generate((WorkflowProcess) process.process());
         String content = metaData.getGeneratedClassModel().toString();
         assertThat(content).isNotNull();
         log(content);
@@ -561,5 +567,22 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
             return super.findClass(name);
         }
 
+    }
+
+    private static class MockClassLoader extends ClassLoader {
+
+        private final Collection<String> mockedClass = new ArrayList<>();
+
+        private MockClassLoader(String... mockedClass) {
+            this.mockedClass.addAll(Arrays.asList(mockedClass));
+        }
+
+        @Override
+        public Class<?> loadClass(String name) throws ClassNotFoundException {
+            if (mockedClass.contains(name)) {
+                return Object.class;
+            }
+            return super.loadClass(name);
+        }
     }
 }

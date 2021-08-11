@@ -42,9 +42,11 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.withLegacyApi;
 
 public class IncrementalRuleCodegenTest {
 
@@ -58,6 +60,8 @@ public class IncrementalRuleCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void isEmpty(KogitoBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
         KogitoBuildContext context = contextBuilder.build();
         IncrementalRuleCodegen emptyCodeGenerator = IncrementalRuleCodegen.ofCollectedResources(context, Collections.emptyList());
 
@@ -81,23 +85,29 @@ public class IncrementalRuleCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateSingleFile(KogitoBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1/file1.drl"));
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(3, 1, generatedFiles.size());
+        assertHasLegacyApiFiles(generatedFiles);
+        assertRules(5, 1, generatedFiles.size());
     }
 
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateSinglePackage(KogitoBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1").listFiles());
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
-        assertRules(5, 1, generatedFiles.size());
+        assertHasLegacyApiFiles(generatedFiles);
+        assertRules(7, 1, generatedFiles.size());
     }
 
     @ParameterizedTest
@@ -131,13 +141,17 @@ public class IncrementalRuleCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateSingleDtable(KogitoBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/candrink/CanDrink.xls"));
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertHasLegacyApiFiles(generatedFiles);
         int externalizedLambda = 5;
-        assertRules(2, 1, generatedFiles.size() - externalizedLambda);
+        int legacyApiFiles = 2;
+        assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
     }
 
     @ParameterizedTest
@@ -155,13 +169,17 @@ public class IncrementalRuleCodegenTest {
     @ParameterizedTest
     @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
     public void generateCepRule(KogitoBuildContext.Builder contextBuilder) {
+        withLegacyApi(contextBuilder);
+
         IncrementalRuleCodegen incrementalRuleCodegen = getIncrementalRuleCodegenFromFiles(
                 contextBuilder,
                 new File(RESOURCE_PATH + "/org/drools/simple/cep/cep.drl"));
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.withHotReloadMode().generate();
+        assertHasLegacyApiFiles(generatedFiles);
         int externalizedLambda = 2;
-        assertRules(2, 1, generatedFiles.size() - externalizedLambda);
+        int legacyApiFiles = 2;
+        assertRules(2, 1, generatedFiles.size() - externalizedLambda - legacyApiFiles);
     }
 
     @ParameterizedTest
@@ -234,6 +252,23 @@ public class IncrementalRuleCodegenTest {
         for (String endpointClass : endpointClasses) {
             assertMonitoringEndpoints(endpointClass);
         }
+    }
+
+    @ParameterizedTest
+    @MethodSource("org.kie.kogito.codegen.api.utils.KogitoContextTestUtils#contextBuilders")
+    public void missingLegacyApi(KogitoBuildContext.Builder contextBuilder) {
+        IncrementalRuleCodegen codeGenerator = getIncrementalRuleCodegenFromFiles(
+                contextBuilder,
+                new File(RESOURCE_PATH + "/org/kie/kogito/codegen/rules/pkg1/file1.drl"));
+
+        assertThatThrownBy(codeGenerator::generate)
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("kogito-legacy-api");
+    }
+
+    private void assertHasLegacyApiFiles(Collection<GeneratedFile> generatedFiles) {
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().endsWith("/ProjectModel.java")));
+        assertTrue(generatedFiles.stream().anyMatch(f -> f.relativePath().endsWith("/ProjectRuntime.java")));
     }
 
     private IncrementalRuleCodegen getIncrementalRuleCodegenFromFiles(KogitoBuildContext.Builder contextBuilder, File... resources) {

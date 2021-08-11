@@ -87,7 +87,7 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public static IncrementalRuleCodegen ofCollectedResources(KogitoBuildContext context, Collection<CollectedResource> resources) {
         List<Resource> generatedRules = resources.stream()
                 .map(CollectedResource::resource)
-                .filter(r -> r.getResourceType() == ResourceType.DRL || r.getResourceType() == ResourceType.DTABLE || r.getResourceType() == ResourceType.PROPERTIES)
+                .filter(r -> isRuleFile(r) || r.getResourceType() == ResourceType.PROPERTIES)
                 .collect(toList());
         return ofResources(context, generatedRules);
     }
@@ -183,6 +183,8 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             generateRuleUnits(errors, generatedFiles);
         } else if (context().hasClassAvailable("org.kie.kogito.legacy.rules.KieRuntimeBuilder")) {
             generateProject(dummyReleaseId, modelsByUnit, generatedFiles);
+        } else if (hasRuleFiles()) { // this additional check is necessary because also properties or java files can be loaded
+            throw new IllegalStateException("Found DRL files using legacy API, add org.kie.kogito:kogito-legacy-api dependency to enable it");
         }
 
         if (!errors.isEmpty()) {
@@ -418,6 +420,14 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
     public IncrementalRuleCodegen withHotReloadMode() {
         this.hotReloadMode = true;
         return this;
+    }
+
+    private boolean hasRuleFiles() {
+        return resources.stream().anyMatch(IncrementalRuleCodegen::isRuleFile);
+    }
+
+    private static boolean isRuleFile(Resource resource) {
+        return resource.getResourceType() == ResourceType.DRL || resource.getResourceType() == ResourceType.DTABLE;
     }
 
     private static KieModuleModel findKieModuleModel(Path[] resourcePaths) {

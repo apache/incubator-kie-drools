@@ -25,21 +25,31 @@ import org.kie.api.io.ResourceType;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.kie.kogito.codegen.api.utils.KogitoContextTestUtils.withLegacyApi;
+
 public class BigRuleSetCodegenTest {
 
     @Test
     public void test() {
         // This test is used to check that compilation of large knowledge bases doesn't cause an Out Of Memory
         // We are not running the test with such a big kbase by default to avoid slowing down CI
-        // Collection<Resource> resources = generateResourcesToBeCompiled(17, 1000);
+        // int numberOfResource = 17;
+        // int rulesPerResource = 1000;
 
-        Collection<Resource> resources = generateResourcesToBeCompiled(2, 3);
+        int numberOfResource = 2;
+        int rulesPerResource = 3;
+
+        Collection<Resource> resources = generateResourcesToBeCompiled(numberOfResource, rulesPerResource);
 
         IncrementalRuleCodegen incrementalRuleCodegen = IncrementalRuleCodegen.ofResources(
-                JavaKogitoBuildContext.builder().build(), resources);
+                withLegacyApi(JavaKogitoBuildContext.builder()).build(), resources);
 
         Collection<GeneratedFile> generatedFiles = incrementalRuleCodegen.generate();
-        System.out.println(generatedFiles.size());
+
+        int legacyApiFiles = 2;
+        int domainClasses = 1;
+        assertThat(generatedFiles).hasSizeGreaterThan(legacyApiFiles + domainClasses);
     }
 
     private Collection<Resource> generateResourcesToBeCompiled(int numberOfResources, int rulesPerResource) {

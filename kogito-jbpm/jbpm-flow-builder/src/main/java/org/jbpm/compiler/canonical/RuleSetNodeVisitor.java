@@ -88,6 +88,9 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         NameExpr methodScope = new NameExpr(getNodeId(node));
         MethodCallExpr m;
         if (ruleType.isRuleFlowGroup()) {
+            if (!hasClass("org.kie.kogito.legacy.rules.KieRuntimeBuilder")) {
+                throw new IllegalArgumentException("Rule task " + nodeName + "is invalid: the usage of RuleFlowGroup requires org.kie.kogito:kogito-legacy-api dependency");
+            }
             m = handleRuleFlowGroup(ruleType);
         } else if (ruleType.isRuleUnit()) {
             m = handleRuleUnit(variableScope, metadata, node, nodeName, ruleType);
@@ -140,7 +143,7 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         RuleUnitDescription description;
 
         try {
-            Class<?> unitClass = loadUnitClass(nodeName, unitName, metadata.getPackageName());
+            Class<?> unitClass = loadUnitClass(unitName, metadata.getPackageName());
             description = new ReflectiveRuleUnitDescription(null, (Class<? extends RuleUnitData>) unitClass);
         } catch (ClassNotFoundException e) {
             logger.warn("Rule task \"{}\": cannot load class {}. " +
@@ -194,12 +197,15 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
 
     }
 
-    private Class<?> loadUnitClass(String nodeName, String unitName, String packageName) throws ClassNotFoundException {
+    private Class<?> loadUnitClass(String unitName, String packageName) throws ClassNotFoundException {
         ClassNotFoundException ex;
         try {
             return contextClassLoader.loadClass(unitName);
         } catch (ClassNotFoundException e) {
             ex = e;
+        }
+        if (packageName == null || packageName.isEmpty()) {
+            throw ex;
         }
         // maybe the name is not qualified. Let's try with tacking the packageName at the front
         try {
@@ -207,6 +213,15 @@ public class RuleSetNodeVisitor extends AbstractNodeVisitor<RuleSetNode> {
         } catch (ClassNotFoundException e) {
             // throw the original error
             throw ex;
+        }
+    }
+
+    private boolean hasClass(String className) {
+        try {
+            loadUnitClass(className, null);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
         }
     }
 }

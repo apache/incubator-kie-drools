@@ -20,9 +20,13 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.params.provider.Arguments;
+import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.SpringBootKogitoBuildContext;
+
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singleton;
 
 public class KogitoContextTestUtils {
 
@@ -55,6 +59,11 @@ public class KogitoContextTestUtils {
                 return false;
             }
         };
+    }
+
+    public static KogitoBuildContext.Builder withLegacyApi(KogitoBuildContext.Builder contextBuilder) {
+        return contextBuilder
+                .withClassAvailabilityResolver(mockClassAvailabilityResolver(singleton("org.kie.kogito.legacy.rules.KieRuntimeBuilder"), emptyList()));
     }
 
 }
