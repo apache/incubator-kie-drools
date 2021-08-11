@@ -33,5 +33,6 @@
     <module>addons</module>
     <module>bom</module>
     <module>starters</module>
+    <module>archetype</module>
   </modules>
 </project>

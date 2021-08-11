@@ -127,7 +127,6 @@
     <module>springboot</module>
     <module>kogito-maven-plugin</module>
     <module>quarkus</module>
-    <module>archetypes</module>
     <module>grafana-api</module>
     <module>addons</module>
     <module>kogito-workitems</module>
