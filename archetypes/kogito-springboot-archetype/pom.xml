@@ -12,6 +12,18 @@
   <name>Kogito :: Maven Archetypes :: Spring Boot</name>
   <description>Kogito based on Spring Boot runtime Archetype</description>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-springboot-bom</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <!-- these are used implicitly required by archetype integration test so let's make Maven aware of it -->
     <dependency>
@@ -56,13 +68,11 @@
     <dependency>
       <groupId>org.spockframework</groupId>
       <artifactId>spock-core</artifactId>
-      <version>${version.org.spockframework}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy-all</artifactId>
-      <version>${version.org.codehaus.groovy}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

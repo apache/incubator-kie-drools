@@ -103,7 +103,6 @@ def addDependenciesToPOM(String starters, String addons) {
                 '    <dependency>\n' +
                 '       <groupId>org.kie.kogito</groupId>\n' +
                 '       <artifactId>' + artifact + '</artifactId>\n' +
-                '       <version>${kogito.version}</version>\n' +
                 '    </dependency>\n'
     }
     def pomPath = Paths.get(request.getOutputDirectory(), request.getArtifactId(), "pom.xml")

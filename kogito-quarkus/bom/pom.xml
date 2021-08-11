@@ -13,7 +13,8 @@
   <artifactId>kogito-quarkus-bom</artifactId>
   <packaging>pom</packaging>
 
-  <name>Kogito :: Quarkus Extension :: BOM</name>
+  <name>Kogito :: Quarkus :: BOM</name>
+  <description>Internal BOM descriptor for Kogito modules targeting Quarkus use-cases. Specific dependencies targeting the Quarkus platform must be added here.</description>
 
   <dependencyManagement>
     <dependencies>

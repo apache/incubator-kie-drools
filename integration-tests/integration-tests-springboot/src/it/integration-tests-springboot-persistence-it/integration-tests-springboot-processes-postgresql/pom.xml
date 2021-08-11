@@ -1,5 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>integration-tests-springboot-persistence-it</artifactId>
@@ -69,55 +69,16 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>${version.org.springframework.boot}</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>repackage</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
-        <version>${project.version}</version>
-        <extensions>true</extensions>
       </plugin>
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>generate-resources</phase>
-            <goals>
-              <goal>copy-resources</goal>
-            </goals>
-            <configuration>
-              <outputDirectory>${project.basedir}/src/main/</outputDirectory>
-              <resources>
-                <resource>
-                  <directory>${project.parent.basedir}/integration-tests-springboot-processes-persistence-common/src/main/</directory>
-                  <includes>
-                    <include>**/*.bpmn</include>
-                  </includes>
-                </resource>
-              </resources>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
-        <configuration>
-          <filesets>
-            <fileset>
-              <directory>${project.basedir}/src/main/</directory>
-              <includes>
-                <include>**/*.bpmn</include>
-              </includes>
-            </fileset>
-          </filesets>
-        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -14,6 +14,15 @@
   <description>Spring Boot descriptor for Kogito libraries and projects based on Spring runtime.</description>
   <packaging>pom</packaging>
 
+  <properties>
+    <version.io.swagger.core.v3>2.1.7</version.io.swagger.core.v3>
+    <version.org.springdoc>1.5.9</version.org.springdoc>
+    <!-- Groovy -->
+    <!-- must be aligned with the Archetype plugin: https://maven.apache.org/archetype/maven-archetype-plugin/dependencies.html -->
+    <version.org.codehaus.groovy>2.4.16</version.org.codehaus.groovy>
+    <version.org.spockframework>1.3-groovy-2.4</version.org.spockframework>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>
@@ -33,7 +42,35 @@
         <artifactId>swagger-annotations</artifactId>
         <version>${version.io.swagger.core.v3}</version>
       </dependency>
+      <dependency>
+        <groupId>org.codehaus.groovy</groupId>
+        <artifactId>groovy-all</artifactId>
+        <version>${version.org.codehaus.groovy}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.spockframework</groupId>
+        <artifactId>spock-core</artifactId>
+        <version>${version.org.spockframework}</version>
+        <scope>test</scope>
+      </dependency>
     </dependencies>
   </dependencyManagement>
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>${version.org.springframework.boot}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-maven-plugin</artifactId>
+          <version>${project.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
 
 </project>

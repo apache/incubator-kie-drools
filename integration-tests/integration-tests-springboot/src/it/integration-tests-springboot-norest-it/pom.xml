@@ -62,12 +62,10 @@
         <dependency>
           <groupId>org.springdoc</groupId>
           <artifactId>springdoc-openapi-ui</artifactId>
-          <version>@version.org.springdoc@</version>
         </dependency>
         <dependency>
           <groupId>io.swagger.parser.v3</groupId>
           <artifactId>swagger-parser</artifactId>
-          <version>@version.io.swagger.parser.v3@</version>
           <scope>test</scope>
           <exclusions>
             <exclusion>

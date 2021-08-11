@@ -11,7 +11,6 @@
   <properties>
     <project.version>@project.version@</project.version>
     <version.org.infinispan>@version.org.infinispan@</version.org.infinispan>
-    <version.org.springframework.boot>@version.org.springframework.boot@</version.org.springframework.boot>
     <maven.compiler.release>@maven.compiler.release@</maven.compiler.release>
     <maven.compiler.source>@maven.compiler.release@</maven.compiler.source>
     <maven.compiler.target>@maven.compiler.release@</maven.compiler.target>
@@ -90,6 +89,63 @@
     </dependency>
   </dependencies>
   <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-maven-plugin</artifactId>
+          <version>@version.org.springframework.boot@</version>
+          <executions>
+            <execution>
+              <goals>
+                <goal>repackage</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-maven-plugin</artifactId>
+          <version>${project.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <executions>
+            <execution>
+              <phase>generate-resources</phase>
+              <goals>
+                <goal>copy-resources</goal>
+              </goals>
+              <configuration>
+                <outputDirectory>${project.basedir}/src/main/</outputDirectory>
+                <resources>
+                  <resource>
+                    <directory>${project.parent.basedir}/integration-tests-springboot-processes-persistence-common/src/main/</directory>
+                    <includes>
+                      <include>**/*.bpmn</include>
+                    </includes>
+                  </resource>
+                </resources>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+        <plugin>
+          <artifactId>maven-clean-plugin</artifactId>
+          <configuration>
+            <filesets>
+              <fileset>
+                <directory>${project.basedir}/src/main/</directory>
+                <includes>
+                  <include>**/*.bpmn</include>
+                </includes>
+              </fileset>
+            </filesets>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

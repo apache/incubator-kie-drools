@@ -4,31 +4,19 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- instead of importing, we define it as parent because of the plugin management. see: https://issues.apache.org/jira/browse/MNG-5588 -->
   <parent>
-    <groupId>org.springframework.boot</groupId>
-    <artifactId>spring-boot-starter-parent</artifactId>
-    <version>@version.org.springframework.boot@</version>
+    <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-springboot-bom</artifactId>
+    <version>@project.version@</version>
   </parent>
 
-  <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-cloudevents-spring-boot-addon-it-invoked</artifactId>
   <version>@project.version@</version>
 
   <properties>
     <java.version>@maven.compiler.release@</java.version>
   </properties>
-
-  <dependencyManagement>
-    <dependencies>
-      <dependency>
-        <groupId>org.kie.kogito</groupId>
-        <artifactId>kogito-springboot-bom</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
   <dependencies>
     <dependency>
@@ -66,14 +54,10 @@
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
-        <version>${project.version}
-        </version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
-        <extensions>true</extensions>
       </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <version>@version.org.springframework.boot@</version>
         <executions>
           <execution>
             <goals>

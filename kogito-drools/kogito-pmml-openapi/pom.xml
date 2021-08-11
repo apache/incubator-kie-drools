@@ -48,7 +48,6 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
-      <version>${version.io.smallrye-open-api-core}</version>
     </dependency>
     <!-- TEST -->
     <dependency>

@@ -20,6 +20,7 @@
     <module>kogito-build-parent</module>
     <module>kogito-ide-config</module>
     <module>kogito-kie7-bom</module>
+    <module>kogito-dependencies-bom</module>
   </modules>
 
 </project>
