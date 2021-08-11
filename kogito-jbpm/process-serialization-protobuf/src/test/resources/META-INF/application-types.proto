@@ -1,0 +1,30 @@
+syntax = "proto2"; 
+package org.kie.kogito.app; 
+import "kogito-types.proto";
+
+enum CustomStates {
+    RESOLVED = 0;
+    ABORTED = 1;
+    COMPLETED = 2;
+}
+message Address { 
+	option java_package = "org.acme.deals";
+	optional string city = 1; 
+	optional string country = 2; 
+	optional string street = 3; 
+	optional string zipCode = 4; 
+}
+message Traveller { 
+	option java_package = "org.acme.deals";
+	optional Address travAddress = 1;
+	optional string travName = 2;
+	optional kogito.String kogString = 3;
+	optional kogito.Integer kogInt = 4;
+	optional kogito.Long kogLong = 5;
+	optional kogito.Double kogDouble = 6;
+	optional kogito.Float kogFloat = 7;
+	optional kogito.Boolean kogBool = 8;
+	optional kogito.Date kogDate = 9;
+	optional kogito.BasicStates kogBasicState = 10;
+	optional CustomStates customState = 11;
+}
