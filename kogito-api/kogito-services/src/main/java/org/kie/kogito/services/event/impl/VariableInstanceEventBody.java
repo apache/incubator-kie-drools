@@ -178,7 +178,7 @@ public class VariableInstanceEventBody {
         return new Builder(new VariableInstanceEventBody());
     }
 
-    static class Builder {
+    public static class Builder {
 
         private VariableInstanceEventBody instance;
 

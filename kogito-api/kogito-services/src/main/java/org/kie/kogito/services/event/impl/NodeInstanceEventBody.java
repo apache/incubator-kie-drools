@@ -96,7 +96,7 @@ public class NodeInstanceEventBody {
         return new Builder(new NodeInstanceEventBody());
     }
 
-    static class Builder {
+    public static class Builder {
 
         private NodeInstanceEventBody instance;
 

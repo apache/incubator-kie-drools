@@ -19,6 +19,7 @@ In this module you will find all the add-ons supported by the community for Spri
 | Task Management         | kogito-addons-springboot-task-management | 1.4.0 |
 | Task Notification       | kogito-addons-springboot-task-notification | 1.6.0 |
 | Tracing Decision        | kogito-addons-springboot-tracing-decision  | 0.11.0 |
+| Events MongoDB       | kogito-addons-springboot-events-mongodb | 1.11.0 |
 
 ## Contributing
 

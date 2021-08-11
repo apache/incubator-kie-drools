@@ -23,6 +23,7 @@ In this module you will find all the add-ons supported by the community for Quar
 | Task Management         | kogito-addons-quarkus-task-management | 1.4.0 |
 | Task Notification       | kogito-addons-quarkus-task-notification | 1.6.0 |
 | Tracing Decision        | kogito-addons-quarkus-tracing-decision | 0.11.0 |
+| Events MongoDB       | kogito-addons-quarkus-events-mongodb | 1.11.0 |
 
 ## Contributing
 

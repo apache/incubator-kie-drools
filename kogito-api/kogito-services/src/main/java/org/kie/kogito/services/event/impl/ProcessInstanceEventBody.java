@@ -170,7 +170,7 @@ public class ProcessInstanceEventBody {
         return new Builder(new ProcessInstanceEventBody());
     }
 
-    static class Builder {
+    public static class Builder {
 
         private ProcessInstanceEventBody instance;
 

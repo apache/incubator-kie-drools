@@ -28,6 +28,7 @@
       </activation>
       <modules>
         <module>kafka</module>
+        <module>mongodb</module>
       </modules>
     </profile>
   </profiles>

@@ -28,6 +28,7 @@
       </activation>
       <modules>
         <module>smallrye</module>
+        <module>mongodb</module>
       </modules>
     </profile>
   </profiles>

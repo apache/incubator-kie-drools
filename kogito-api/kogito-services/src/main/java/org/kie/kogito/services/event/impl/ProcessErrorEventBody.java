@@ -40,7 +40,7 @@ public class ProcessErrorEventBody {
         return new Builder(new ProcessErrorEventBody());
     }
 
-    static class Builder {
+    public static class Builder {
 
         private ProcessErrorEventBody instance;
 

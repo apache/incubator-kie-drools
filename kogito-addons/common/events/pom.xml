@@ -14,4 +14,18 @@
   <modules>
     <module>decisions</module>
   </modules>
+
+  <profiles>
+    <profile>
+        <id>default</id>
+        <activation>
+            <property>
+                <name>!productized</name>
+            </property>
+        </activation>
+        <modules>
+            <module>mongodb</module>
+        </modules>
+    </profile>
+  </profiles>
 </project>

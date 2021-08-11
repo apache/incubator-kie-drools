@@ -204,7 +204,7 @@ public class UserTaskInstanceEventBody {
         return true;
     }
 
-    static class Builder {
+    public static class Builder {
 
         private UserTaskInstanceEventBody instance;
 
