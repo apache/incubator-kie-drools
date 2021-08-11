@@ -30,7 +30,7 @@ public class MVEL {
         return evaluator.compileEvaluateWithDroolsMvelCompiler(compiledExpression.getEx(), vars, evaluator.getClass().getClassLoader());
     }
 
-    public static Serializable executeExpression(final Object compiledExpression) {
+    public static Serializable executeExpressionWithDefaultVariables(final Object compiledExpression) {
         return executeExpression(compiledExpression, createTestMap());
     }
 
