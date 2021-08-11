@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.codegen.process.persistence;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.ArrayList;
@@ -324,8 +323,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             Expression chainExpression = newFileDescriptorSource;
             for (GeneratedFile generatedFile : protoFiles) {
                 String path = generatedFile.relativePath();
-                int idx = path.lastIndexOf(File.separator);
-                String name = idx >= 0 && path.length() > idx + 1 ? path.substring(idx + 1) : path;
+                String name = generatedFile.path().getFileName().toString();
                 if (!name.endsWith(".proto")) {
                     continue;
                 }
