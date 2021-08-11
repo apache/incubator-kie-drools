@@ -16,7 +16,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.drools.mvel.MVEL.compileExpression;
-import static org.drools.mvel.MVEL.createTestMap;
 import static org.drools.mvel.MVEL.executeExpression;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -29,12 +28,12 @@ public class ArithmeticTests {
   @Ignore("Generates wrong code for promotion")
   @Test
   public void testMath() {
-    Map<String, Object> vars = createTestMap();
-
     //   assertEquals(188, executeExpression("pi * hour", vars));
 
-    Serializable s = compileExpression("pi * hour");
-    assertEquals(188, executeExpression(s, vars));
+    String expression = "pi * hour";
+    int result = 188;
+
+    assertEquals(result, executeExpression(expression));
   }
 
   @Test
@@ -61,43 +60,45 @@ public class ArithmeticTests {
   @Test
   public void testMath4a() {
     String expression = "(100 % 90) * 20 - 15 / 16 + 80 + (50 * 21)";
-    System.out.println("Expression: " + expression);
+    double result = (100d % 90d) * 20d - 15d / 16d + 80d + (50d * 21d);
     
-    assertEquals(((100d % 90d) * 20d - 15d / 16d + 80d + (50d * 21d)), executeExpression(expression));
+	assertEquals(result, executeExpression(expression));
   }
 
   @Test
   public void testMath5() {
-    assertEquals(300.5 / 5.3 / 2.1 / 1.5, executeExpression("300.5 / 5.3 / 2.1 / 1.5"));
+    String expression = "300.5 / 5.3 / 2.1 / 1.5";
+	double result = 300.5 / 5.3 / 2.1 / 1.5;
+	
+	assertEquals(result, executeExpression(expression));
   }
 
   @Test
   public void testMath5a() {
     String expression = "300.5 / 5.3 / 2.1 / 1.5";
-    System.out.println("Expression: " + expression);
+    
     assertEquals(300.5 / 5.3 / 2.1 / 1.5, executeExpression(expression));
   }
 
   @Ignore("Rounding error")
   @Test
   public void testMath6() {
-    double val = (300 * 5 + 1) + 100 / 2 * 2;
     String expression = "(300 * five + 1) + (100 / 2 * 2)";
-    System.out.println(">>" + expression + "<<");
+    double result = (300 * 5 + 1) + 100 / 2 * 2;
 
-    Map<String, Object> vars = createTestMap();
-    assertEquals(val, executeExpression(expression, vars));
+    assertEquals(result, executeExpression(expression));
 
-    Serializable s = compileExpression(expression);
-    assertEquals(val, executeExpression(s, vars));
+    assertEquals(result, executeExpression(expression));
     //  assertEquals(val, executeExpression("(300 * five + 1) + (100 / 2 * 2)"));
   }
 
   @Ignore("Rounding error")
   @Test
   public void testMath7() {
-    double val = ((100d % 3d) * 2d - 1d / 1d + 8d + (5d * 2d));
-    assertEquals(val, executeExpression("(100 % 3) * 2 - 1 / 1 + 8 + (5 * 2)"));
+	String expression = "(100 % 3) * 2 - 1 / 1 + 8 + (5 * 2)";
+    double result = ((100d % 3d) * 2d - 1d / 1d + 8d + (5d * 2d));
+
+	assertEquals(result, executeExpression(expression));
   }
 
   @Test
@@ -121,8 +122,7 @@ public class ArithmeticTests {
     //  assertEquals(-15, executeExpression(expr, vars));
     vars.clear();
 
-    Serializable s = compileExpression(expr);
-    assertEquals(-15, executeExpression(s, vars));
+    assertEquals(-15, executeExpression(expr, vars));
 
     //  assertEquals(-15, executeExpression("int x = 15; -x"));
   }
@@ -134,70 +134,71 @@ public class ArithmeticTests {
 
   @Test
   public void testMath15() {
-    String ex = "100-500*200 + 500*800-400";
-    assertEquals(100 - 500 * 200 + 500 * 800 - 400, executeExpression(ex));
+    String expression = "100-500*200 + 500*800-400";
+    assertEquals(100 - 500 * 200 + 500 * 800 - 400, executeExpression(expression));
   }
 
   @Test
   public void testMath16() {
-    String ex = "100-500*200*150 + 500*800-400";
-    assertEquals(100 - 500 * 200 * 150 + 500 * 800 - 400, executeExpression(ex));
+    String expression = "100-500*200*150 + 500*800-400";
+    assertEquals(100 - 500 * 200 * 150 + 500 * 800 - 400, executeExpression(expression));
   }
 
   @Test
   public void testMath17() {
-    String ex = "(100d * 50d) * 20d / 30d * 2d";
-    assertEquals((100d * 50d) * 20d / 30d * 2d, executeExpression(ex));
+    String expression = "(100d * 50d) * 20d / 30d * 2d";
+    double result = (100d * 50d) * 20d / 30d * 2d;
+    
+	assertEquals(result, executeExpression(expression));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testMath18() {
-    String ex = "a = 100d; b = 50d; c = 20d; d = 30d; e = 2d; (a * b) * c / d * e";
-    System.out.println("Expression: " + ex);
+    String expression = "a = 100d; b = 50d; c = 20d; d = 30d; e = 2d; (a * b) * c / d * e";
+    double result = (100d * 50d) * 20d / 30d * 2d;
 
-    Serializable s = compileExpression(ex);
-
-    assertEquals((100d * 50d) * 20d / 30d * 2d, executeExpression(s, Collections.emptyMap()));
+    assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testMath19() {
-    String ex = "a = 100; b = 500; c = 200; d = 150; e = 500; f = 800; g = 400; a-b*c*d + e*f-g";
-    System.out.println("Expression: " + ex);
-    assertEquals(100 - 500 * 200 * 150 + 500 * 800 - 400, executeExpression(ex, Collections.emptyMap()));
+    String expression = "a = 100; b = 500; c = 200; d = 150; e = 500; f = 800; g = 400; a-b*c*d + e*f-g";
+    int result = 100 - 500 * 200 * 150 + 500 * 800 - 400;
+
+    assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testMath32() {
-    String ex = "x = 20; y = 10; z = 5; x-y-z";
-    System.out.println("Expression: " + ex);
-    assertEquals(20 - 10 - 5, executeExpression(ex, Collections.emptyMap()));
+    String expression = "x = 20; y = 10; z = 5; x-y-z";
+    int result = 20 - 10 - 5;
+    
+	assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testMath33() {
-    String ex = "x = 20; y = 2; z = 2; x/y/z";
-    System.out.println("Expression: " + ex);
-    Serializable s = compileExpression(ex);
-
-    assertEquals(20 / 2 / 2, executeExpression(s, Collections.emptyMap()));
+    String expression = "x = 20; y = 2; z = 2; x/y/z";
+    int result = 20 / 2 / 2;
+    
+	assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Test
   public void testMath20() {
-    String ex = "10-5*7-3*8-6";
-    System.out.println("Expression: " + ex);
-    assertEquals(10 - 5 * 7 - 3 * 8 - 6, executeExpression(ex));
+    String expression = "10-5*7-3*8-6";
+    
+    assertEquals(10 - 5 * 7 - 3 * 8 - 6, executeExpression(expression));
   }
 
   @Test
   public void testMath21() {
     String expression = "100-50*70-30*80-60";
-    System.out.println("Expression: " + expression);
+    
     assertEquals(100 - 50 * 70 - 30 * 80 - 60, executeExpression(expression));
   }
 
@@ -205,7 +206,7 @@ public class ArithmeticTests {
   @Test
   public void testMath22() {
     String expression = "(100-50)*70-30*(20-9)**3";
-    System.out.println("Expression: " + expression);
+    
     assertEquals((int) ((100 - 50) * 70 - 30 * Math.pow(20 - 9, 3)), executeExpression(expression));
   }
 
@@ -213,15 +214,16 @@ public class ArithmeticTests {
   @Test
   public void testMath22b() {
     String expression = "a = 100; b = 50; c = 70; d = 30; e = 20; f = 9; g = 3; (a-b)*c-d*(e-f)**g";
-    System.out.println("Expression: " + expression);
-    assertEquals((int) ((100 - 50) * 70 - 30 * Math.pow(20 - 9, 3)), executeExpression(expression, Collections.emptyMap()));
+    int result = (int) ((100 - 50) * 70 - 30 * Math.pow(20 - 9, 3));
+    
+	assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testMath23() {
     String expression = "10 ** (3)*10**3";
-    System.out.println("Expression: " + expression);
+    
     assertEquals((int) (Math.pow(10, 3) * Math.pow(10, 3)), executeExpression(expression));
   }
 
@@ -229,11 +231,9 @@ public class ArithmeticTests {
   @Test
   public void testMath24() {
     String expression = "51 * 52 * 33 / 24 / 15 + 45 * 66 * 47 * 28 + 19";
-    double val = 51d * 52d * 33d / 24d / 15d + 45d * 66d * 47d * 28d + 19d;
-    System.out.println("Expression: " + expression);
-    System.out.println("Expected Result: " + val);
+    double result = 51d * 52d * 33d / 24d / 15d + 45d * 66d * 47d * 28d + 19d;
 
-    assertEquals(val, executeExpression(expression));
+    assertEquals(result, executeExpression(expression));
   }
 
   @Ignore("Calculation error")
@@ -241,8 +241,6 @@ public class ArithmeticTests {
   public void testMath25() {
     String expression = "51 * (40 - 1000 * 50) + 100 + 50 * 20 / 10 + 11 + 12 - 80";
     double result = 51 * (40 - 1000 * 50) + 100 + 50 * 20 / 10 + 11 + 12 - 80;
-    System.out.println("Expression: " + expression);
-    System.out.println("Expected Result: " + result);
     
     assertEquals(result, executeExpression(expression));
   }
@@ -252,8 +250,6 @@ public class ArithmeticTests {
   public void testMath26() {
     String expression = "5 + 3 * 8 * 2 ** 2";
     int result = (int) (5d + 3d * 8d * Math.pow(2, 2));
-    System.out.println("Expression: " + expression);
-    System.out.println("Expected Result: " + result);
     
     assertEquals(result, executeExpression(expression));
   }
@@ -263,8 +259,6 @@ public class ArithmeticTests {
   public void testMath27() {
     String expression = "50 + 30 * 80 * 20 ** 3 * 51";
     double result = 50 + 30 * 80 * Math.pow(20, 3) * 51;
-    System.out.println("Expression: " + expression);
-    System.out.println("Expected Result: " + result);
     
     assertEquals((int) result, executeExpression(expression));
   }
@@ -282,7 +276,6 @@ public class ArithmeticTests {
   @Test
   public void testMath29() {
     String expression = "10 + 20 / 4 / 4";
-    System.out.println("Expression: " + expression);
     double result = 10d + 20d / 4d / 4d;
 
     assertEquals(result, executeExpression(expression));
@@ -292,7 +285,6 @@ public class ArithmeticTests {
   @Test
   public void testMath30() {
     String expression = "40 / 20 + 10 + 60 / 21";
-    System.out.println("Expression: " + expression);
     double result = 40d / 20d + 10d + 60d / 21d;
     
     assertEquals(result, executeExpression(expression));
@@ -311,6 +303,7 @@ public class ArithmeticTests {
   @Test
   public void testMath34() {
     String expression = "a+b-c*d*x/y-z+10";
+    double result = (double) 200 + 100 - 150 * 2 * 400 / 300 - 75 + 10;
 
     Map<String, Object> map = new HashMap<>();
     map.put("a", 200);
@@ -321,15 +314,14 @@ public class ArithmeticTests {
     map.put("y", 300);
     map.put("z", 75);
 
-    Serializable s = compileExpression(expression);
-
-    assertEquals((double) 200 + 100 - 150 * 2 * 400 / 300 - 75 + 10, executeExpression(s, map));
+	assertEquals(result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
   @Test
   public void testMath34_Interpreted() {
     String expression = "a+b-c*x/y-z";
+    double result = (double) 200 + 100 - 150 * 400 / 300 - 75;
 
     Map<String, Object> map = new HashMap<>();
     map.put("a", 200);
@@ -339,7 +331,7 @@ public class ArithmeticTests {
     map.put("y", 300);
     map.put("z", 75);
 
-    assertEquals((double) 200 + 100 - 150 * 400 / 300 - 75, executeExpression(expression, map));
+	assertEquals(result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
@@ -379,6 +371,7 @@ public class ArithmeticTests {
   @Test
   public void testMath36() {
     String expression = "b/x*z/a+x-b+x-b/z+y";
+    double result = 20d / 40d * 60d / 10d + 40d - 20d + 40d - 20d / 60d + 50d;
 
     Map<String, Object> map = new HashMap<>();
     map.put("a", 10);
@@ -388,15 +381,14 @@ public class ArithmeticTests {
     map.put("y", 50);
     map.put("z", 60);
 
-    Serializable s = compileExpression(expression);
-
-    assertNumEquals(20d / 40d * 60d / 10d + 40d - 20d + 40d - 20d / 60d + 50d, executeExpression(s, map));
+	assertNumEquals(result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
   @Test
   public void testMath37() {
     String expression = "x+a*a*c/x*b*z+x/y-b";
+    double result = 2d + 10d * 10d * 30d / 2d * 20d * 60d + 2d / 2d - 20d;
 
     Map<String, Object> map = new HashMap<>();
     map.put("a", 10);
@@ -406,9 +398,7 @@ public class ArithmeticTests {
     map.put("y", 2);
     map.put("z", 60);
 
-    Serializable s = compileExpression(expression);
-
-    assertNumEquals(2d + 10d * 10d * 30d / 2d * 20d * 60d + 2d / 2d - 20d, executeExpression(s, map));
+	assertNumEquals(result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
@@ -417,8 +407,6 @@ public class ArithmeticTests {
     String expression = "100 + 200 - 300 + 400 - 500 + 105 / 205 - 405 + 305 * 206";
     double res = 100d + 200d - 300d + 400d - 500d + 105d / 205d - 405d + 305d * 206d;
 
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectResult:" + res);
     assertEquals(res, executeExpression(expression));
   }
 
@@ -427,9 +415,6 @@ public class ArithmeticTests {
   public void testMath39() {
     String expression = "147 + 60 / 167 % 448 + 36 * 23 / 166";
     double res = 147d + 60d / 167d % 448d + 36d * 23d / 166d;
-
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
 
     assertEquals(res, executeExpression(expression));
   }
@@ -440,9 +425,6 @@ public class ArithmeticTests {
     String expression = "228 - 338 % 375 - 103 + 260 + 412 * 177 + 121";
     double res = 228d - 338d % 375d - 103d + 260d + 412d * 177d + 121d;
 
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
-
     assertEquals(res, executeExpression(expression));
   }
 
@@ -450,9 +432,6 @@ public class ArithmeticTests {
   public void testMath41() {
     String expression = "304d - 246d / 242d % 235d / 425d - 326d + 355d * 264d % 308d";
     double res = 304d - 246d / 242d % 235d / 425d - 326d + 355d * 264d % 308d;
-
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
 
     assertEquals(res, executeExpression(expression));
   }
@@ -462,9 +441,6 @@ public class ArithmeticTests {
     String expression = "11d - 7d / 3d * 18d % 14d * 8d * 11d - 2d - 11d / 13d + 14d";
     double res = 11d - 7d / 3d * 18d % 14d * 8d * 11d - 2d - 11d / 13d + 14d;
 
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
-
     assertEquals(res, executeExpression(expression));
   }
 
@@ -472,9 +448,6 @@ public class ArithmeticTests {
   public void testMath43() {
     String expression = "4d/3d*6d%8d*5d*8d+7d+9d*1d";
     double res = 4d / 3d * 6d % 8d * 5d * 8d + 7d + 9d * 1d;
-
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
 
     assertEquals(res, executeExpression(expression));
   }
@@ -484,18 +457,13 @@ public class ArithmeticTests {
     String expression = "6d+8d/9d*1d*9d*10d%4d*4d-4d*6d*3d";
     double res = 6d + 8d / 9d * 1d * 9d * 10d % 4d * 4d - 4d * 6d * 3d;
 
-    System.out.println("Expression: " + expression);
-    System.out.println("CorrectRes: " + res);
-
     assertEquals(res, executeExpression(expression));
   }
 
   @Test
   public void testMath44b() {
     String expression = "a+b/c*d*e*f%g*h-i*j*k";
-    double res = 6d + 8d / 9d * 1d * 9d * 10d % 4d * 4d - 4d * 6d * 3d;
-
-    Serializable s = compileExpression(expression);
+    double result = 6d + 8d / 9d * 1d * 9d * 10d % 4d * 4d - 4d * 6d * 3d;
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("a", 6d);
@@ -510,47 +478,47 @@ public class ArithmeticTests {
     vars.put("j", 6d);
     vars.put("k", 3d);
 
-    assertEquals(res, executeExpression(s, vars));
+    assertEquals(result, executeExpression(expression, vars));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testOperatorPrecedence() {
-    String ex = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.1";
-    assertEquals(true, executeExpression(ex));
+    String expression = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.1";
+    assertEquals(true, executeExpression(expression));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testOperatorPrecedence2() {
-    String ex = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
-    assertEquals(true, executeExpression(ex));
+    String expression = "_x_001 = 500.2; _x_002 = 200.8; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
+    assertEquals(true, executeExpression(expression));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testOperatorPrecedence3() {
-    String ex = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
-    assertEquals(false, executeExpression(ex));
+    String expression = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
+    assertEquals(false, executeExpression(expression));
   }
 
   @Ignore("Unable to parse")
   @Test
   public void testOperatorPrecedence4() {
-    String ex = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.2";
-    assertEquals(true, executeExpression(ex));
+    String expression = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 || _x_001 == 500 + 0.2";
+    assertEquals(true, executeExpression(expression));
   }
 
   @Test
   public void testOperatorPrecedence5() {
-    String ex = "_x_001 == _x_001 / 2 - _x_001 + _x_001 + _x_001 / 2 && _x_002 / 2 == _x_002 / 2";
+    String expression = "_x_001 == _x_001 / 2 - _x_001 + _x_001 + _x_001 / 2 && _x_002 / 2 == _x_002 / 2";
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("_x_001", 500.2);
     vars.put("_x_002", 200.9);
     vars.put("_r_001", 701);
 
-    ExpressionCompiler compiler = new ExpressionCompiler(ex);
+    ExpressionCompiler compiler = new ExpressionCompiler(expression);
     assertEquals(true, executeExpression(compiler.compile(), vars));
   }
 
@@ -640,10 +608,9 @@ public class ArithmeticTests {
   @Ignore("Unable to parse")
   @Test
   public void testUnsignedShiftRightAssign() {
-    String exp = "_xXx = -5; _xXx >>>= 2";
-    Serializable s = compileExpression(exp);
-
-    assertEquals(-5 >>> 2, executeExpression(s, Collections.emptyMap()));
+    String expression = "_xXx = -5; _xXx >>>= 2";
+    
+    assertEquals(-5 >>> 2, executeExpression(expression, Collections.emptyMap()));
   }
 
   @Test
@@ -679,11 +646,10 @@ public class ArithmeticTests {
   @Ignore("Generates wrong code")
   @Test
   public void testDeepAssignmentIncrement() {
-    String ex = "foo.countTest += 5; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
+    String expression = "foo.countTest += 5; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
         " else { foo.countTest = 0; return false; }";
 
-    Map<String, Object> vars = createTestMap();
-    assertEquals(true, executeExpression(ex, vars));
+    assertEquals(true, executeExpression(expression));
 
     assertEquals(true,
         executeExpression("foo.countTest += 5; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
@@ -693,11 +659,10 @@ public class ArithmeticTests {
   @Ignore("Generates wrong code - check for statements")
   @Test
   public void testDeepAssignmentWithBlock() {
-    String ex = "with (foo) { countTest += 5 }; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
+    String expression = "with (foo) { countTest += 5 }; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
         " else { foo.countTest = 0; return false; }";
 
-    Map<String, Object> vars = createTestMap();
-    assertEquals(true, executeExpression(ex, vars));
+    assertEquals(true, executeExpression(expression));
 
     assertEquals(true,
         executeExpression("with (foo) { countTest += 5 }; if (foo.countTest == 5) { foo.countTest = 0; return true; }" +
@@ -777,13 +742,10 @@ public class ArithmeticTests {
   @Test
   public void testStringAppend() {
     String expression = "c + 'bar'";
-    Map<String, Object> vars = createTestMap();
 
-    assertEquals("catbar", executeExpression(expression, vars));
+    assertEquals("catbar", executeExpression(expression));
 
-    Serializable s = compileExpression(expression);
-
-    assertEquals("catbar", executeExpression(expression, vars));
+    assertEquals("catbar", executeExpression(expression));
   }
 
   @Test
@@ -947,22 +909,23 @@ public class ArithmeticTests {
   @Ignore
   @Test
   public void testJIRA164f() {
-    Serializable s = compileExpression("10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14",
-        ParserContext.create().stronglyTyped().withInput("var1", double.class));
+    String expression = "10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14";
+    double var1 = 1d;
+    float result = (float) (10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14);
+
+    //	Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
 
-    double var1 = 1d;
     vars.put("var1", var1);
 
     OptimizerFactory.setDefaultOptimizer("reflective");
-    assertEquals((float) (10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14),
-        ((Double) executeExpression(s, vars)).floatValue(), 0.01);
+	assertEquals(result,
+        ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
 
-    s = compileExpression("10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14",
-        ParserContext.create().withInput("var1", double.class));
+//    s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
     OptimizerFactory.setDefaultOptimizer("ASM");
-    assertEquals((float) (10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14),
-        ((Double) executeExpression(s, vars)).floatValue(), 0.01);
+    assertEquals(result,
+        ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
   }
 
   @Ignore
@@ -1007,8 +970,7 @@ public class ArithmeticTests {
 
   @Test
   public void testJIRA180() {
-    Serializable s = compileExpression("-Math.sin(0)");
-    executeExpression(s);
+    executeExpression("-Math.sin(0)");
   }
 
   @Test
@@ -1018,17 +980,11 @@ public class ArithmeticTests {
 
     String[] testCases = {"bal - 80 - 90 - 30", "bal-80-90-30", "100 + 80 == 180", "100+80==180"};
 
-    //     System.out.println("bal = " + vars.get("bal"));
-
     Object val1, val2;
     for (String expr : testCases) {
-      System.out.println("Evaluating '" + expr + "': ......");
       val1 = executeExpression(expr, vars);
-      //       System.out.println("'" + expr + " ' = " + ret.toString());
       assertNotNull(val1);
-      Serializable compiled = compileExpression(expr);
-      val2 = executeExpression(compiled, vars);
-      //     System.out.println("'" + expr + " ' = " + ret.toString());
+      val2 = executeExpression(expr, vars);
       assertNotNull(val2);
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
@@ -1038,7 +994,7 @@ public class ArithmeticTests {
   public void testJIRA1208a() {
     Map<String, Object> bal = new HashMap<>();
     bal.put("bal", 999);
-    assertEquals(799, executeExpression(compileExpression("bal - 80 - 90 - 30"), bal));
+    assertEquals(799, executeExpression("bal - 80 - 90 - 30", bal));
   }
 
   @Test
@@ -1052,17 +1008,11 @@ public class ArithmeticTests {
         "bal / 80 * 80"
     };
 
-    //     System.out.println("bal = " + vars.get("bal"));
-
     Object val1, val2;
     for (String expr : testCases) {
-      System.out.println("Evaluating '" + expr + "': ......");
       val1 = executeExpression(expr, vars);
-      //       System.out.println("'" + expr + " ' = " + ret.toString());
       assertNotNull(val1);
-      Serializable compiled = compileExpression(expr);
-      val2 = executeExpression(compiled, vars);
-      //     System.out.println("'" + expr + " ' = " + ret.toString());
+      val2 = executeExpression(expr, vars);
       assertNotNull(val2);
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
@@ -1078,13 +1028,9 @@ public class ArithmeticTests {
 
     Object val1, val2;
     for (String expr : testCases) {
-      System.out.println("Evaluating '" + expr + "': ......");
       val1 = executeExpression(expr, vars);
-      //       System.out.println("'" + expr + " ' = " + ret.toString());
       assertNotNull(val1);
-      Serializable compiled = compileExpression(expr);
-      val2 = executeExpression(compiled, vars);
-      //     System.out.println("'" + expr + " ' = " + ret.toString());
+      val2 = executeExpression(expr, vars);
       assertNotNull(val2);
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
@@ -1098,7 +1044,8 @@ public class ArithmeticTests {
     Map<String, Object> vars = new HashMap<>();
     vars.put("param", params);
     vars.put("param2", 10);
-    assertEquals(1 + 2 * 10, executeExpression(compileExpression("1 + 2 * param.value"), vars));
+    
+    assertEquals(1 + 2 * 10, executeExpression("1 + 2 * param.value", vars));
   }
 
   @Test
@@ -1108,7 +1055,7 @@ public class ArithmeticTests {
     map.put("y", 10);
     map.put("z", 5);
 
-    assertEquals(20 - 10 - 5,executeExpression("x - y - z", map));
+    assertEquals(20 - 10 - 5, executeExpression("x - y - z", map));
   }
 
   @Test
@@ -1150,7 +1097,7 @@ public class ArithmeticTests {
   //@Ignore("Generates wrong code")
   @Test
   public void testIntsWithDivision() {
-    String str = "0 == x - (y/2)";
+    String expression = "0 == x - (y/2)";
 
     ParserConfiguration pconf = new ParserConfiguration();
     ParserContext pctx = new ParserContext(pconf);
@@ -1158,19 +1105,19 @@ public class ArithmeticTests {
     pctx.addInput("x", int.class);
     pctx.addInput("y", int.class);
 
-    Object stmt = (Object) compileExpression(str, pctx);
+    Object stmt = (Object) compileExpression(expression, pctx);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 50);
     vars.put("y", 100);
-    Boolean result = (Boolean) executeExpression(str, vars);
+    Boolean result = (Boolean) executeExpression(expression, vars);
     assertTrue(result);
   }
 
   @Ignore("Wrong result")
   @Test
   public void testMathCeil() {
-    String str = "Math.ceil( x/3 ) == 2";
+    String expression = "Math.ceil( x/3 ) == 2";
 
     ParserConfiguration pconf = new ParserConfiguration();
     pconf.addImport("Math", Math.class);
@@ -1182,7 +1129,7 @@ public class ArithmeticTests {
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
-    Boolean result = (Boolean) executeExpression(str, vars);
+    Boolean result = (Boolean) executeExpression(expression, vars);
     assertTrue(result);
   }
   
@@ -1192,7 +1139,7 @@ public class ArithmeticTests {
     int x = 4;
     int m = (int) Math.ceil( x/3 ); // demonstrating it's perfectly valid java
 
-    String str = "int m = (int) java.lang.Math.ceil( x/3 ); return m;";
+    String expression = "int m = (int) java.lang.Math.ceil( x/3 ); return m;";
 
     ParserConfiguration pconf = new ParserConfiguration();
     ParserContext pctx = new ParserContext(pconf);
@@ -1203,13 +1150,13 @@ public class ArithmeticTests {
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
-    assertEquals(Integer.valueOf(2), executeExpression(str, vars));
+    assertEquals(Integer.valueOf(2), executeExpression(expression, vars));
   }  
 
   @Ignore("Calculates wrong result")
   @Test
   public void testStaticMathCeilWithJavaClassStyleLiterals() {            
-	String str = "java.lang.Math.ceil( x/3 )";
+	String expression = "java.lang.Math.ceil( x/3 )";
 	
 	ParserConfiguration pconf = new ParserConfiguration();
 	ParserContext pctx = new ParserContext(pconf);
@@ -1220,13 +1167,13 @@ public class ArithmeticTests {
 	
 	Map<String, Object> vars = new HashMap<>();
 	vars.put("x", 4);
-	assertEquals(Math.ceil((double) 4 / 3), executeExpression(str, vars));
+	assertEquals(Math.ceil((double) 4 / 3), executeExpression(expression, vars));
   }
   
   //@Ignore("Generates wrong code - missing symbol")
   @Test
   public void testMathCeilWithDoubleCast() {
-    String str = "Math.ceil( (double) x / 3 )";
+    String expression = "Math.ceil( (double) x / 3 )";
 
     ParserConfiguration pconf = new ParserConfiguration();
     pconf.addImport("Math", Math.class);
@@ -1234,33 +1181,33 @@ public class ArithmeticTests {
     pctx.setStrongTyping(true);
     pctx.addInput("x", Integer.class);
 
-    Object stmt = (Object) compileExpression(str, pctx);
+    Object stmt = (Object) compileExpression(expression, pctx);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
-    assertEquals(Math.ceil((double) 4 / 3), executeExpression(str, vars));
+    assertEquals(Math.ceil((double) 4 / 3), executeExpression(expression, vars));
   }
   
   @Test
   public void testBigDecimalAssignmentIncrement() {
-    String str = "s1=0B;s1+=1;s1+=1;s1";
-    Serializable expr = compileExpression(str);
-    Object result = executeExpression(expr, new HashMap<>());
-    assertEquals(new BigDecimal(2), result);
+    Serializable expression = "s1=0B;s1+=1;s1+=1;s1";
+    BigDecimal result = new BigDecimal(2);
+
+    assertEquals(result, executeExpression(expression, new HashMap<>()));
   }
   
+  /* https://github.com/mvel/mvel/issues/249
+   * The following caused a ClassCastException because the compiler optimized for integers
+   */
   //@Ignore("Generates wrong code - missing symbol")
   @Test
   public void testIssue249() {
-    /* https://github.com/mvel/mvel/issues/249
-     * The following caused a ClassCastException because the compiler optimized for integers
-     */
-    String rule = "70 + 30 *  x1";
+    String expression = "70 + 30 *  x1";
     ParserContext parserContext = new ParserContext();
 //    Serializable compileExpression = compileExpression(rule, parserContext);
     Map<String, Object> expressionVars = new HashMap<>();
     expressionVars.put("x1", 128.33);
-    Object result = executeExpression(rule, expressionVars);
+    Object result = executeExpression(expression, expressionVars);
     assertEquals(3919.9, ((Number)result).doubleValue(), 0.01);
   }
 

@@ -34,11 +34,6 @@ public class MVEL {
         return executeExpression(compiledExpression, createTestMap());
     }
 
-    public static Object test(final Object compiledExpression) {
-        return executeExpression(compiledExpression, createTestMap());
-    }
-
-
 
     protected static Map<String, Object> createTestMap() {
         Map<String, Object> map = new HashMap<String, Object>();
