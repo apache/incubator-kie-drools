@@ -53,7 +53,7 @@ public class MetricsProcessEventListenerTest {
         eventListener.afterProcessStarted(processStartedEvent);
 
         // Assert
-        assertEquals(2, registry.find("kie_process_instance_running_total")
+        assertEquals(2, registry.find("kogito_process_instance_running_total")
                 .gauge()
                 .value());
     }

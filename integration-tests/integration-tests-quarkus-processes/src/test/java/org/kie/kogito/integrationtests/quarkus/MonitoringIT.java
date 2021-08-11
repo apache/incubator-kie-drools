@@ -61,9 +61,9 @@ public class MonitoringIT {
 
         KogitoGAV kogitoGAV = configBean.getGav().get();
 
-        assertThat(response).contains(format("kie_process_instance_started_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
+        assertThat(response).contains(format("kogito_process_instance_started_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
                 kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
+        assertThat(response).contains(format("kogito_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
                 kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
 
         String taskId = given()
@@ -96,21 +96,23 @@ public class MonitoringIT {
                 .statusCode(200)
                 .extract().body().asString();
 
-        assertThat(response).contains(format("kie_work_item_duration_seconds_max{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_work_item_duration_seconds_count{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",} 1.0", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_work_item_duration_seconds_sum{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+        assertThat(response).contains(format("kogito_work_item_duration_seconds_max{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+        assertThat(response)
+                .contains(format("kogito_work_item_duration_seconds_count{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",} 1.0", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+        assertThat(response).contains(format("kogito_work_item_duration_seconds_sum{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
 
         assertThat(response)
-                .contains(format("kie_process_instance_completed_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",node_name=\"2\",process_id=\"monitoring\",version=\"%s\",} 1.0",
+                .contains(format(
+                        "kogito_process_instance_completed_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",node_name=\"2\",process_id=\"monitoring\",version=\"%s\",} 1.0",
                         kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 0.0",
+        assertThat(response).contains(format("kogito_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 0.0",
                 kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_process_instance_duration_seconds_max{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
+        assertThat(response).contains(format("kogito_process_instance_duration_seconds_max{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
                 kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
         assertThat(response)
-                .contains(format("kie_process_instance_duration_seconds_count{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
+                .contains(format("kogito_process_instance_duration_seconds_count{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
                         kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kie_process_instance_duration_seconds_sum{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
+        assertThat(response).contains(format("kogito_process_instance_duration_seconds_sum{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
                 kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
     }
 

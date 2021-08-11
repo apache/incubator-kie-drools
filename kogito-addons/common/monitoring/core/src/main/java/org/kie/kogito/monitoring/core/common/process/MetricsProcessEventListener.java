@@ -54,7 +54,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
 
     private Counter getNumberOfProcessInstancesStartedCounter(String appId, String processId) {
         return Counter
-                .builder("kie_process_instance_started_total")
+                .builder("kogito_process_instance_started_total")
                 .description("Started Process Instances")
                 .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(meterRegistry);
@@ -62,7 +62,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
 
     private Counter getNumberOfSLAsViolatedCounter(String appId, String processId, String nodeName) {
         return Counter
-                .builder("kie_process_instance_sla_violated_total")
+                .builder("kogito_process_instance_sla_violated_total")
                 .description("Process Instances SLA Violated")
                 .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
                         Tag.of("version", gav.getVersion())))
@@ -71,7 +71,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
 
     private Counter getNumberOfProcessInstancesCompletedCounter(String appId, String processId, String nodeName) {
         return Counter
-                .builder("kie_process_instance_completed_total")
+                .builder("kogito_process_instance_completed_total")
                 .description("Completed Process Instances")
                 .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("node_name", nodeName), Tag.of("artifactId", gav.getArtifactId()),
                         Tag.of("version", gav.getVersion())))
@@ -83,7 +83,7 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
             return gaugeMap.get(appId + processId);
         }
         AtomicInteger atomicInteger = new AtomicInteger(0);
-        Gauge.builder("kie_process_instance_running_total", atomicInteger, AtomicInteger::doubleValue)
+        Gauge.builder("kogito_process_instance_running_total", atomicInteger, AtomicInteger::doubleValue)
                 .description("Running Process Instances")
                 .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(meterRegistry);
@@ -92,14 +92,14 @@ public class MetricsProcessEventListener extends DefaultKogitoProcessEventListen
     }
 
     private DistributionSummary getProcessInstancesDurationSummary(String appId, String processId) {
-        return DistributionSummary.builder("kie_process_instance_duration_seconds")
+        return DistributionSummary.builder("kogito_process_instance_duration_seconds")
                 .description("Process Instances Duration")
                 .tags(Arrays.asList(Tag.of("app_id", appId), Tag.of("process_id", processId), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(meterRegistry);
     }
 
     private DistributionSummary getWorkItemsDurationSummary(String name) {
-        return DistributionSummary.builder("kie_work_item_duration_seconds")
+        return DistributionSummary.builder("kogito_work_item_duration_seconds")
                 .description("Work Items Duration")
                 .tags(Arrays.asList(Tag.of("name", name), Tag.of("artifactId", gav.getArtifactId()), Tag.of("version", gav.getVersion())))
                 .register(meterRegistry);
