@@ -43,7 +43,7 @@
 \*\/$
 ]]>
     </checkstyle.header.template>
-    <checkstyle.header.extensions>java</checkstyle.header.extensions>
+    <checkstyle.header.extensions>java,groovy</checkstyle.header.extensions>
     <checkstyle.logViolationsToConsole>true</checkstyle.logViolationsToConsole>
 
     <!-- container images for testing -->
