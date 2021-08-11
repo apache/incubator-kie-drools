@@ -25,14 +25,15 @@ public class ParserContext {
 
     }
 
-    public void addInput(String a, Class<?> longClass) {
+    public void addInput(String key, Class<?> klass) {
+    	inputs.put(key, klass);
 
     }
 
-    Map<String, Class> inputs = new HashMap<>();
+    Map<String, Class<?>> inputs = new HashMap<>();
 
-    public ParserContext withInput(String var1, Class<Double> doubleClass) {
-        inputs.put(var1, doubleClass);
+    public ParserContext withInput(String var1, Class<?> klass) {
+        inputs.put(var1, klass);
         return this;
     }
 

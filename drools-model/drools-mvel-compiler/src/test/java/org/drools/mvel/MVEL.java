@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+
 import static java.lang.System.currentTimeMillis;
 
 public class MVEL {
@@ -16,15 +17,15 @@ public class MVEL {
     public static Serializable compileExpression(String compiledExpression, ParserContext parserContext) {
         Evaluator evaluator = new Evaluator();
         Map vars = parserContext.getMap();
-        return new Evaluator().compileEvaluateWithDroolsMvelCompiler(compiledExpression, vars, evaluator.getClass().getClassLoader());
+        return evaluator.compileWithDroolsMvelCompiler(compiledExpression, vars, evaluator.getClass().getClassLoader());
     }
 
-    public static Serializable executeExpression(final Object compiledExpression, final Map vars) {
+    public static Serializable executeExpression(final Object compiledExpression, final Map<String, Object> vars) {
         Evaluator evaluator = new Evaluator();
         return evaluator.compileEvaluateWithDroolsMvelCompiler(compiledExpression, vars, evaluator.getClass().getClassLoader());
     }
 
-    public static Serializable executeExpression(final CompiledExpression compiledExpression, final Map vars) {
+    public static Serializable executeExpression(final CompiledExpression compiledExpression, final Map<String, Object> vars) {
         Evaluator evaluator = new Evaluator();
         return evaluator.compileEvaluateWithDroolsMvelCompiler(compiledExpression.getEx(), vars, evaluator.getClass().getClassLoader());
     }
@@ -37,28 +38,10 @@ public class MVEL {
         return executeExpression(compiledExpression, createTestMap());
     }
 
-    public static Object eval(String ex, Map vars) {
-        return executeExpression(ex, vars);
-    }
 
-    public static Object eval(String ex, Class<?> vars) {
-        return executeExpression(ex, createTestMap());
-    }
 
-    public static Object executeExpression(Object stmt, Object o, Map<String, Object> vars) {
-        return executeExpression(stmt, createTestMap());
-    }
-
-    public static Object eval(String expression) {
-        return executeExpression(expression, createTestMap());
-    }
-
-    public static Object testCompiledSimple(String ex, Map hashMap) {
-        return executeExpression(ex, hashMap);
-    }
-
-    protected static Map createTestMap() {
-        Map map = new HashMap();
+    protected static Map<String, Object> createTestMap() {
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("foo", new Foo());
         map.put("a", null);
         map.put("b", null);

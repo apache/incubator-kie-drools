@@ -128,7 +128,7 @@ public class EvaluatorGenerator {
         Object contextVar = entry.getValue();
 
         if (contextVar != null) {
-            Class<?> contextVarClass = contextVar.getClass();
+            Class<?> contextVarClass = contextVar instanceof Class? (Class<? extends Object>) contextVar: contextVar.getClass();
             if (contextVarClass != null && contextVarClass.getCanonicalName() != null) {
                 Type type = StaticJavaParser.parseType(contextVarClass.getCanonicalName());
                 VariableDeclarationExpr variable = new VariableDeclarationExpr(type, binding);

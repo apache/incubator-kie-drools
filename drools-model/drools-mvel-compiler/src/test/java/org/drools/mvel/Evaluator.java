@@ -27,7 +27,14 @@ public class Evaluator {
     public Serializable compileEvaluateWithDroolsMvelCompiler(Object compiledExpression,
                                                               Map<String, Object> vars,
                                                               ClassLoader classLoader)  {
-        CompiledResult input = compileWithMvelCompiler(compiledExpression, vars, classLoader);
+        CompiledJavaEvaluator evaluator = compileWithDroolsMvelCompiler(compiledExpression, vars, classLoader);
+
+        return (Serializable) evaluator.eval(vars);
+    }
+
+    public CompiledJavaEvaluator compileWithDroolsMvelCompiler(Object compiledExpression, Map<String, Object> vars,
+			ClassLoader classLoader) {
+		CompiledResult input = compileWithMvelCompiler(compiledExpression, vars, classLoader);
 
         CompilationUnit evaluatorSource = createEvaluatorClass((String) compiledExpression, input, vars);
 
@@ -37,9 +44,8 @@ public class Evaluator {
 
         Class<?> evaluatorDefinition = compiledClasses.get(javaFQN);
         CompiledJavaEvaluator evaluator = createEvaluatorInstance(evaluatorDefinition);
-
-        return (Serializable) evaluator.eval(vars);
-    }
+		return evaluator;
+	}
 
     private String evaluatorFullQualifiedName(CompilationUnit evaluatorCompilationUnit) {
         ClassOrInterfaceDeclaration evaluatorClass = evaluatorCompilationUnit
