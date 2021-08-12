@@ -221,4 +221,12 @@ public class CoercedExpressionTest {
         Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
                 .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
     }
+
+    @Test
+    public void testNameExprToString() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getName", String.class);
+        final TypedExpression right = expr("$maxName", Comparable.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, true).coerce();
+        assertEquals(expr("(java.lang.String) $maxName", String.class), coerce.getCoercedRight());
+    }
 }

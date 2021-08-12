@@ -30,6 +30,8 @@ public class BigDecimalArgumentCoercion {
 
         if (isInteger(actualType) && argumentTypeIsBigDecimal) {
             return bigDecimalToPrimitive(argument, "intValue");
+        } else if (isLong(actualType) && argumentTypeIsBigDecimal) {
+            return bigDecimalToPrimitive(argument, "longValue");
         } else if (isShort(actualType) && argumentTypeIsBigDecimal) {
             return bigDecimalToPrimitive(argument, "shortValue");
         } else if (isDouble(actualType) && argumentTypeIsBigDecimal) {
@@ -47,6 +49,10 @@ public class BigDecimalArgumentCoercion {
 
     private boolean isInteger(Class<?> actualType) {
         return actualType == int.class || actualType == Integer.class;
+    }
+
+    private boolean isLong(Class<?> actualType) {
+        return actualType == long.class || actualType == Long.class;
     }
 
     private boolean isFloat(Class<?> actualType) {

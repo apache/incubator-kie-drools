@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
@@ -35,6 +36,7 @@ public class ProcessingDTO {
     private final List<KiePMMLTarget> kiePMMLTargets;
     private final List<KiePMMLNameValue> kiePMMLNameValues;
     private final List<String> orderedReasonCodes;
+    private final List<MiningField> miningFields;
 
     /**
      *
@@ -62,6 +64,7 @@ public class ProcessingDTO {
         kiePMMLTargets = model.getKiePMMLTargets();
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = orderedReasonCodes;
+        miningFields = model.getMiningFields();
     }
 
     /**
@@ -69,34 +72,25 @@ public class ProcessingDTO {
      * @param defineFunctions
      * @param derivedFields
      * @param outputFields
+     * @param kiePMMLTargets
      * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
+     * @param miningFields
      * @param orderedReasonCodes a <b>mutable</b> list
      */
     public ProcessingDTO(final List<KiePMMLDefineFunction> defineFunctions,
                          final List<KiePMMLDerivedField> derivedFields,
                          final List<KiePMMLOutputField> outputFields,
+                         final List<KiePMMLTarget> kiePMMLTargets,
                          final List<KiePMMLNameValue> kiePMMLNameValues,
+                         final List<MiningField> miningFields,
                          final List<String> orderedReasonCodes) {
         this.defineFunctions = defineFunctions;
         this.derivedFields = derivedFields;
         this.outputFields =  outputFields;
-        kiePMMLTargets = Collections.emptyList();
+        this.kiePMMLTargets = kiePMMLTargets;
+        this.miningFields =  miningFields;
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = orderedReasonCodes;
-    }
-
-    /**
-     *
-     * @param defineFunctions
-     * @param derivedFields
-     * @param outputFields
-     * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
-     */
-    public ProcessingDTO(final List<KiePMMLDefineFunction> defineFunctions,
-                         final List<KiePMMLDerivedField> derivedFields,
-                         final List<KiePMMLOutputField> outputFields,
-                         final List<KiePMMLNameValue> kiePMMLNameValues) {
-        this(defineFunctions, derivedFields, outputFields,kiePMMLNameValues, Collections.emptyList());
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
@@ -136,5 +130,9 @@ public class ProcessingDTO {
 
     public boolean addOrderedReasonCodes(List<String> toAdd) {
         return orderedReasonCodes.addAll(toAdd);
+    }
+
+    public List<MiningField> getMiningFields() {
+        return Collections.unmodifiableList(miningFields);
     }
 }

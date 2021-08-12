@@ -25,7 +25,7 @@ import picocli.CommandLine.Parameters;
 
 @Command(name = "java -jar <xl2dmn .jar file>",
         mixinStandardHelpOptions = true,
-        version = Constants.VERSION,
+        versionProvider = XLS2DMNVersionProvider.class,
         description = "Experimental DMN generator for Excel (.xls/.xlsx) file containing DMN decision tables.")
 public class App implements Callable<Integer> {
     @Parameters(index = "0", paramLabel = "INPUT_FILE", description = "The input Excel (.xls/.xlsx) file containing DMN decision tables.")

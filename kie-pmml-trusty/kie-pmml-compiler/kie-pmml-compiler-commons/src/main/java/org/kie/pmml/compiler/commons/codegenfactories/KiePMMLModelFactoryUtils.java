@@ -42,6 +42,8 @@ import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -206,8 +208,19 @@ public class KiePMMLModelFactoryUtils {
                     Expression dataType = dtT != null ?
                             new NameExpr(dtT.getClass().getName() + "." + dtT.name())
                             : new NullLiteralExpr();
+                    MISSING_VALUE_TREATMENT_METHOD mVTM =  miningField.getMissingValueTreatmentMethod();
+                    Expression missingValueTreatmentMethod = mVTM != null ?
+                            new NameExpr(mVTM.getClass().getName() + "." + mVTM.name())
+                            : new NullLiteralExpr();
+                    INVALID_VALUE_TREATMENT_METHOD iVTM =  miningField.getInvalidValueTreatmentMethod();
+                    Expression invalidValueTreatmentMethod = iVTM != null ?
+                            new NameExpr(iVTM.getClass().getName() + "." + iVTM.name())
+                            : new NullLiteralExpr();
                     Expression missingValueReplacement = miningField.getMissingValueReplacement() != null ?
                             new StringLiteralExpr(miningField.getMissingValueReplacement())
+                            : new NullLiteralExpr();
+                    Expression invalidValueReplacement = miningField.getInvalidValueReplacement() != null ?
+                            new StringLiteralExpr(miningField.getInvalidValueReplacement())
                             : new NullLiteralExpr();
                     Expression allowedValues = miningField.getAllowedValues() != null ?
                             CommonCodegenUtils.createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
@@ -215,7 +228,16 @@ public class KiePMMLModelFactoryUtils {
                     Expression intervals = miningField.getIntervals() != null ?
                             createIntervalsExpression(miningField.getIntervals())
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, usageType, opType, dataType, missingValueReplacement, allowedValues, intervals));
+                    toReturn.setArguments(NodeList.nodeList(name,
+                                                            usageType,
+                                                            opType,
+                                                            dataType,
+                                                            missingValueTreatmentMethod,
+                                                            invalidValueTreatmentMethod,
+                                                            missingValueReplacement,
+                                                            invalidValueReplacement,
+                                                            allowedValues,
+                                                            intervals));
                     return toReturn;
                 })
                 .collect(Collectors.toList());

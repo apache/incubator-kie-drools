@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.scorecard.model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -46,7 +47,7 @@ public class KiePMMLComplexPartialScore extends AbstractKiePMMLComponent {
                            final List<KiePMMLOutputField> outputFields,
                            final Map<String, Object> inputData) {
         final List<KiePMMLNameValue> kiePMMLNameValues = getKiePMMLNameValuesFromInputDataMap(inputData);
-        ProcessingDTO processingDTO = new ProcessingDTO(defineFunctions, derivedFields, outputFields, kiePMMLNameValues);
+        ProcessingDTO processingDTO = new ProcessingDTO(defineFunctions, derivedFields, outputFields, Collections.emptyList(), kiePMMLNameValues, Collections.emptyList(), Collections.emptyList());
         Object toReturn = expression.evaluate(processingDTO);
         return toReturn != null ? (Number) toReturn : null;
     }

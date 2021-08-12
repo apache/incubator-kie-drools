@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,6 +27,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
@@ -42,7 +43,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(Parameterized.class)
 @Category(TurtleTestCategory.class)
-public class ConstraintConcurrencyTest {
+public class QueryConcurrencyTest {
 
     private static int LOOP = 500;
 
@@ -51,83 +52,97 @@ public class ConstraintConcurrencyTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public ConstraintConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public QueryConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
     }
 
     @Test(timeout = 300000)
     public void testConstraintConcurrency() {
         final String drl =
                 "package com.example.reproducer\n" +
-                           "import " + Bus.class.getCanonicalName() + ";\n" +
-                           "import static " + ConstraintConcurrencyTest.class.getCanonicalName() + ".TOSTRING;\n" +
-                           "dialect \"mvel\"\n" +
-                           "rule \"rule_mt_1a\"\n" +
-                           "    when\n" +
-                           "        $bus : Bus( $check: \"GAMMA RAY\",\n" +
-                           "                    $title: \"POWER PLANT\",\n" +
-                           "                    karaoke.dvd[$title] != null,\n" +
-                           "                    TOSTRING(karaoke.dvd[$title].artist) != null )\n" +
-                           "    then\n" +
-                           "end";
+                        "import " + Bus.class.getCanonicalName() + ";\n" +
+                        "import static " + QueryConcurrencyTest.class.getCanonicalName() + ".TOSTRING;\n" +
+                        "dialect \"mvel\"\n" +
+                        "query checkLength(String $s, int $l)\n" +
+                        "    $s := String( length == $l )\n" +
+                        "end\n" +
+                        "rule \"rule_mt_1a\"\n" +
+                        "    when\n" +
+                        "        $bus : Bus( $check: \"GAMMA RAY\",\n" +
+                        "                    $title: \"POWER PLANT\")\n" +
+                        "        checkLength(TOSTRING($bus.karaoke.dvd[$title].artist), 9;)\n" +
+                        "    then\n" +
+
+                        "end";
 
         List<Exception> exceptions = new ArrayList<>();
 
-        KieBase kieBase = null;
-        if(kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
-            kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
-        }
-        for (int i = 0; i < LOOP; i++) {
-            if(!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval");
+
+        try {
+            KieBase kieBase = null;
+            if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
                 kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
             }
-            ExecutorService executor = Executors.newFixedThreadPool(THREADS);
-            CountDownLatch latch = new CountDownLatch(THREADS);
-            for (int j = 0; j < REQUESTS; j++) {
-                KieBase finalKieBase = kieBase;
-                executor.execute(new Runnable() {
+            for (int i = 0; i < LOOP; i++) {
+                if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
+                    kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
+                }
+                ExecutorService executor = Executors.newFixedThreadPool(THREADS);
+                CountDownLatch latch = new CountDownLatch(THREADS);
+                for (int j = 0; j < REQUESTS; j++) {
+                    KieBase finalKieBase = kieBase;
+                    executor.execute(new Runnable() {
 
-                    public void run() {
-                        KieSession kSession = finalKieBase.newKieSession();
+                        public void run() {
+                            KieSession kSession = finalKieBase.newKieSession();
 
-                        Bus bus1 = new Bus("red", 30);
-                        bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
-                        bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-                        kSession.insert(bus1);
+                            Bus bus1 = new Bus("red", 30);
+                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
+                            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+                            kSession.insert(bus1);
+                            kSession.insert("GAMMA RAY");
 
-                        try {
-                            latch.countDown();
-                            latch.await();
-                        } catch (InterruptedException e) {
-                            // ignore
+                            try {
+                                latch.countDown();
+                                latch.await();
+                            } catch (InterruptedException e) {
+                                // ignore
+                            }
+
+                            try {
+                                kSession.fireAllRules();
+                            } catch (Exception e) {
+                                exceptions.add(e);
+                            } finally {
+                                kSession.dispose();
+                            }
                         }
+                    });
+                }
 
-                        try {
-                            kSession.fireAllRules();
-                        } catch (Exception e) {
-                            // java.lang.RuntimeException: Error evaluating constraint 'TOSTRING(karaoke.dvd[$title].artist) != null' in [Rule "rule_mt_1a" in rules1.drl]
-                            exceptions.add(e);
-                        } finally {
-                            kSession.dispose();
-                        }
-                    }
-                });
+                executor.shutdown();
+                try {
+                    executor.awaitTermination(1000000, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    // ignore
+                }
             }
 
-            executor.shutdown();
-            try {
-                executor.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                // ignore
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
+
+            assertEquals(0, exceptions.size());
+
+        } finally {
+            System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
         }
-
-        assertEquals(0, exceptions.size());
     }
 
     public static class Bus {

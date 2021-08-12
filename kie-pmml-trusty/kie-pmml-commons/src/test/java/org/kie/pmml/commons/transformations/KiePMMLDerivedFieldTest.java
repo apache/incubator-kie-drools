@@ -31,6 +31,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 import static org.junit.Assert.assertEquals;
+import static org.kie.pmml.commons.CommonTestingUtility.getProcessingDTO;
 
 public class KiePMMLDerivedFieldTest {
 
@@ -51,8 +52,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLConstant1)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
         assertEquals(value1, retrieved);
     }
@@ -68,8 +68,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLFieldRef)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(),
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
                                                         Arrays.asList(new KiePMMLNameValue(PARAM_1, value1)));
         Object retrieved = derivedField.evaluate(processingDTO);
         assertEquals(value1, retrieved);
@@ -93,8 +92,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLApply)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), Collections.emptyList(),
-                                                        Collections.emptyList(), getKiePMMLNameValues());
+        ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues());
         Object retrieved = derivedField.evaluate(processingDTO);
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
@@ -118,8 +116,7 @@ public class KiePMMLDerivedFieldTest {
                                                                              OP_TYPE.CONTINUOUS.getName(),
                                                                              kiePMMLApply)
                 .build();
-        ProcessingDTO processingDTO = new ProcessingDTO(Collections.emptyList(), getDerivedFields(),
-                                                        Collections.emptyList(), new ArrayList<>());
+        ProcessingDTO processingDTO = getProcessingDTO(getDerivedFields(), new ArrayList<>());
         Object retrieved = derivedField.evaluate(processingDTO);
         Object expected = value1 / value2;
         assertEquals(expected, retrieved);
@@ -150,4 +147,5 @@ public class KiePMMLDerivedFieldTest {
                 .build();
         return Arrays.asList(derivedField1, derivedField2);
     }
+
 }

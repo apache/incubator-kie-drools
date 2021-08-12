@@ -49,7 +49,9 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected List<KiePMMLTarget> kiePMMLTargets = new ArrayList<>();
     protected KiePMMLTransformationDictionary transformationDictionary;
     protected KiePMMLLocalTransformations localTransformations;
-
+    protected Object predictedDisplayValue;
+    protected Object entityId;
+    protected Object affinity;
 
     protected KiePMMLModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -123,6 +125,30 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public KiePMMLLocalTransformations getLocalTransformations() {
         return localTransformations;
+    }
+
+    public Object getPredictedDisplayValue() {
+        return predictedDisplayValue;
+    }
+
+    protected void setPredictedDisplayValue(Object predictedDisplayValue) {
+        this.predictedDisplayValue = predictedDisplayValue;
+    }
+
+    public Object getEntityId() {
+        return entityId;
+    }
+
+    protected void setEntityId(Object entityId) {
+        this.entityId = entityId;
+    }
+
+    public Object getAffinity() {
+        return affinity;
+    }
+
+    protected void setAffinity(Object affinity) {
+        this.affinity = affinity;
     }
 
     /**

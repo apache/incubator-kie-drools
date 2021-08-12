@@ -18,6 +18,7 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 import com.github.javaparser.ast.expr.Expression;
@@ -38,6 +39,8 @@ public interface DrlxParseSuccess extends DrlxParseResult {
     DrlxParseSuccess addAllWatchedProperties(Collection<String> watchedProperties);
 
     Optional<Expression> getImplicitCastExpression();
+
+    List<Expression> getNullSafeExpressions();
 
     default boolean isOOPath() {
         return getExpr() instanceof OOPathExpr;

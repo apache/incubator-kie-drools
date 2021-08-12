@@ -17,10 +17,12 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -72,6 +74,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private boolean combined;
 
     private Optional<Expression> implicitCastExpression = Optional.empty();
+    private List<Expression> nullSafeExpressions = new ArrayList<>();
 
     public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
@@ -104,6 +107,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.temporal = drlx.isTemporal();
         this.combined = drlx.isCombined();
         this.implicitCastExpression = drlx.getImplicitCastExpression();
+        this.nullSafeExpressions = drlx.getNullSafeExpressions();
 
         this.watchedProperties = drlx.getWatchedProperties();
     }
@@ -428,6 +432,16 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     @Override
     public Optional<Expression> getImplicitCastExpression() {
         return implicitCastExpression;
+    }
+
+    @Override
+    public List<Expression> getNullSafeExpressions() {
+        return nullSafeExpressions;
+    }
+
+    public SingleDrlxParseSuccess setNullSafeExpressions(List<Expression> nullSafeExpressions) {
+        this.nullSafeExpressions = nullSafeExpressions;
+        return this;
     }
 
     @Override

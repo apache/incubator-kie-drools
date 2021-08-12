@@ -46,6 +46,8 @@ import org.dmg.pmml.Value;
 import org.kie.pmml.api.enums.CAST_INTEGER;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -330,15 +332,26 @@ public class ModelUtils {
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataType = dataField.getDataType() != null ?
                 DATA_TYPE.byName(dataField.getDataType().value()) : null;
+        final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod = toConvert.getMissingValueTreatment() != null ?
+                MISSING_VALUE_TREATMENT_METHOD.byName(toConvert.getMissingValueTreatment().value()) : null;
+        final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod = toConvert.getInvalidValueTreatment() != null ?
+                INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()) : null;
         final String missingValueReplacement = toConvert.getMissingValueReplacement() != null ?
                 toConvert.getMissingValueReplacement().toString() : null;
+        final String invalidValueReplacement = toConvert.getInvalidValueReplacement() != null ?
+                toConvert.getInvalidValueReplacement().toString() : null;
         final List<String> allowedValues = convertDataFieldValues(dataField.getValues());
         final List<org.kie.pmml.api.models.Interval> intervals = convertDataFieldIntervals(dataField.getIntervals());
+
+
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
                                                        opType,
                                                        dataType,
+                                                       missingValueTreatmentMethod,
+                                                       invalidValueTreatmentMethod,
                                                        missingValueReplacement,
+                                                       invalidValueReplacement,
                                                        allowedValues,
                                                        intervals);
     }

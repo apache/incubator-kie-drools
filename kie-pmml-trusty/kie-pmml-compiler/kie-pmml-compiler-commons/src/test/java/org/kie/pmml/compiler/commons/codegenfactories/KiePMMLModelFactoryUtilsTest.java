@@ -52,6 +52,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
@@ -551,13 +553,23 @@ public class KiePMMLModelFactoryUtilsTest {
             assertTrue(miningFieldOpt.isPresent());
             MiningField miningField = miningFieldOpt.get();
             assertEquals(MiningField.class.getCanonicalName(), objCrt.getType().asString());
-            String expected = FIELD_USAGE_TYPE.class.getCanonicalName() + "." + miningField.getUsageType();
-            assertEquals(expected, objCrt.getArgument(1).asNameExpr().toString());
-            expected = DATA_TYPE.class.getCanonicalName() + "." + miningField.getDataType();
-            assertEquals(expected, objCrt.getArgument(3).asNameExpr().toString());
+            String expected = miningField.getUsageType() != null ? FIELD_USAGE_TYPE.class.getCanonicalName() + "." + miningField.getUsageType() : "null";
+            assertEquals(expected, objCrt.getArgument(1).toString());
+            expected = miningField.getOpType() != null ? OP_TYPE.class.getCanonicalName() + "." + miningField.getOpType() : "null";
+            assertEquals(expected, objCrt.getArgument(2).toString());
+            expected = miningField.getDataType() != null ? DATA_TYPE.class.getCanonicalName() + "." + miningField.getDataType() : "null";
+            assertEquals(expected, objCrt.getArgument(3).toString());
+            expected = miningField.getMissingValueTreatmentMethod() != null ? MISSING_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getMissingValueTreatmentMethod() : "null";
+            assertEquals(expected, objCrt.getArgument(4).toString());
+            expected = miningField.getInvalidValueTreatmentMethod() != null ? INVALID_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getInvalidValueTreatmentMethod() : "null";
+            assertEquals(expected, objCrt.getArgument(5).toString());
+            expected = miningField.getMissingValueReplacement() != null ? miningField.getMissingValueReplacement() : "null";
+            assertEquals(expected, objCrt.getArgument(6).toString());
+            expected = miningField.getInvalidValueReplacement() != null ? miningField.getInvalidValueReplacement() : "null";
+            assertEquals(expected, objCrt.getArgument(7).toString());
             expected = "java.util.Arrays.asList()";
-            assertEquals(expected, objCrt.getArgument(5).asMethodCallExpr().toString());
-            assertEquals(expected, objCrt.getArgument(6).asMethodCallExpr().toString());
+            assertEquals(expected, objCrt.getArgument(8).toString());
+            assertEquals(expected, objCrt.getArgument(9).toString());
             });
     }
 
@@ -590,45 +602,6 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(expected, superInvocation.toString()); // modified by invocation
     }
 
-    private boolean evaluateKiePMMLOutputFieldPopulation(MethodCallExpr methodCallExpr, KiePMMLOutputField outputField) {
-        boolean toReturn = commonEvaluateMethodCallExpr(methodCallExpr, "build", new NodeList<>(),
-                                                        MethodCallExpr.class);
-        MethodCallExpr resultFeatureScopeExpr = (MethodCallExpr) methodCallExpr.getScope().get();
-        NodeList<Expression> expectedArguments =
-                NodeList.nodeList(new NameExpr(RESULT_FEATURE.class.getName() + "." + outputField.getResultFeature().toString()));
-        toReturn &= commonEvaluateMethodCallExpr(resultFeatureScopeExpr, "withResultFeature", expectedArguments,
-                                                 MethodCallExpr.class);
-        MethodCallExpr targetFieldScopeExpr = (MethodCallExpr) resultFeatureScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().get()));
-        toReturn &= commonEvaluateMethodCallExpr(targetFieldScopeExpr, "withTargetField", expectedArguments,
-                                                 MethodCallExpr.class);
-        MethodCallExpr valueScopeExpr = (MethodCallExpr) targetFieldScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-        toReturn &= commonEvaluateMethodCallExpr(valueScopeExpr, "withValue", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr rankScopeExpr = (MethodCallExpr) valueScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new IntegerLiteralExpr(outputField.getRank()));
-        toReturn &= commonEvaluateMethodCallExpr(rankScopeExpr, "withRank", expectedArguments, MethodCallExpr.class);
-        MethodCallExpr builderScopeExpr = (MethodCallExpr) rankScopeExpr.getScope().get();
-        expectedArguments = NodeList.nodeList(new StringLiteralExpr(outputField.getName()), new NameExpr("Collections.emptyList()"));
-        toReturn &= commonEvaluateMethodCallExpr(builderScopeExpr, "builder", expectedArguments, NameExpr.class);
-        toReturn &= builderScopeExpr.getName().equals(new SimpleName("builder"));
-        toReturn &= builderScopeExpr.getScope().get().equals(new NameExpr("KiePMMLOutputField"));
-        return toReturn;
-    }
-
-    private boolean commonEvaluateMethodCallExpr(MethodCallExpr toEvaluate, String name,
-                                                 NodeList<Expression> expectedArguments,
-                                                 Class<? extends Expression> expectedScopeType) {
-        boolean toReturn = Objects.equals(new SimpleName(name), toEvaluate.getName());
-        toReturn &= expectedArguments.size() == toEvaluate.getArguments().size();
-        for (int i = 0; i < expectedArguments.size(); i++) {
-            toReturn &= expectedArguments.get(i).equals(toEvaluate.getArgument(i));
-        }
-        if (expectedScopeType != null) {
-            toReturn &= toEvaluate.getScope().isPresent() && toEvaluate.getScope().get().getClass().equals(expectedScopeType);
-        }
-        return toReturn;
-    }
 
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
