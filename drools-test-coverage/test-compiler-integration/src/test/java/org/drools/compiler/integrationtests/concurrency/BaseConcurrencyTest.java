@@ -13,80 +13,60 @@
  * limitations under the License.
  */
 
-package org.drools.compiler.integrationtests;
+package org.drools.compiler.integrationtests.concurrency;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Album;
-import org.drools.compiler.integrationtests.ConstraintConcurrencyTest.Bus;
 import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.test.testcategory.TurtleTestCategory;
 
 import static org.junit.Assert.assertEquals;
 
-@RunWith(Parameterized.class)
-@Category(TurtleTestCategory.class)
-public class MVELDateClassFieldReaderConcurrencyTest {
+public abstract class BaseConcurrencyTest {
 
-    private static int LOOP = 500;
+    protected static int LOOP = 500;
+    protected static int THREADS = 32;
+    protected static int REQUESTS = 32;
+    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    private static int THREADS = 32;
-    private static int REQUESTS = 32;
-
-    private final KieBaseTestConfiguration kieBaseTestConfiguration;
-
-    public MVELDateClassFieldReaderConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public BaseConcurrencyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
-    @Parameterized.Parameters(name = "KieBase type={0}")
-    public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
-    }
-
     @Test(timeout = 300000)
-    public void testMVELDateClassFieldReaderConcurrency() {
-        final String drl =
-                "package com.example.reproducer\n" +
-                           "import " + Bus.class.getCanonicalName() + ";\n" +
-                           "import java.util.Date;\n" +
-                           "dialect \"mvel\"\n" +
-                           "rule R1\n" +
-                           "    when\n" +
-                           "        $d : Date()\n" +
-                           "        $bus1 : Bus( new Date(name.concat(karaoke.dvd[\"POWER PLANT\"].artist).length) == $d )\n" +
-                           "    then\n" +
-                           "end\n";
+    public void testConcurrency() {
+        final String drl = getDrl();
 
         List<Exception> exceptions = new ArrayList<>();
 
-        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval");
+        // Basically, what we want to test is "synced_till_eval"
+
+//        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "unsafe"); // fails with all tests with non-exec-model
+//      System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "safe_on_first"); // fails with ConsequenceWithAndOrConcurrencyTest, ConstraintWithAndOrConcurrencyTest, ConstraintWithAndOrJittingConcurrencyTest with non-exec-model
+        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "synced_till_eval"); // passes all tests
+//        System.setProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY, "fully_synced"); // passes all tests
 
         try {
             KieBase kieBase = null;
-            if (kieBaseTestConfiguration.isExecutableModel()) { // There's no such a thing as jitting, so we can create the KieBase once
+            if (kieBaseTestConfiguration.isExecutableModel()) { // exec-model doesn't have mvel optimization so we can create the KieBase once
                 kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
             }
             for (int i = 0; i < LOOP; i++) {
                 if (!kieBaseTestConfiguration.isExecutableModel()) { // to reset MVELConstraint Jitting we need to create a new KieBase each time
                     kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("accumulate-test", kieBaseTestConfiguration, drl);
                 }
+
+                preprocess(kieBase);
+
                 ExecutorService executor = Executors.newFixedThreadPool(THREADS);
                 CountDownLatch latch = new CountDownLatch(THREADS);
                 for (int j = 0; j < REQUESTS; j++) {
@@ -96,11 +76,8 @@ public class MVELDateClassFieldReaderConcurrencyTest {
                         public void run() {
                             KieSession kSession = finalKieBase.newKieSession();
 
-                            Bus bus1 = new Bus("red", 30);
-                            bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
-                            bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
-                            kSession.insert(bus1);
-                            kSession.insert(new Date());
+                            setGlobal(kSession);
+                            insertFacts(kSession);
 
                             try {
                                 latch.countDown();
@@ -112,23 +89,25 @@ public class MVELDateClassFieldReaderConcurrencyTest {
                             try {
                                 kSession.fireAllRules();
                             } catch (Exception e) {
-                                if (exceptions.isEmpty()) {
-                                    e.printStackTrace();
-                                }
                                 exceptions.add(e);
                             } finally {
                                 kSession.dispose();
                             }
                         }
+
                     });
                 }
 
                 executor.shutdown();
                 try {
-                    executor.awaitTermination(10, TimeUnit.SECONDS);
+                    executor.awaitTermination(300, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     // ignore
                 }
+            }
+
+            if (!exceptions.isEmpty()) {
+                exceptions.get(0).printStackTrace();
             }
 
             assertEquals(0, exceptions.size());
@@ -136,5 +115,23 @@ public class MVELDateClassFieldReaderConcurrencyTest {
         } finally {
             System.clearProperty(MvelEvaluator.THREAD_SAFETY_PROPERTY);
         }
+    }
+
+    protected void preprocess(KieBase kieBase) {
+        // by default, no preprocess
+    }
+
+    protected void setGlobal(KieSession kSession) {
+        // by default, no global
+    }
+
+    protected abstract String getDrl();
+
+    // This is a typical insertion but sub class may override
+    protected void insertFacts(KieSession kSession) {
+        Bus bus1 = new Bus("red", 30);
+        bus1.getKaraoke().getDvd().put("POWER PLANT", new Album("POWER PLANT", "GAMMA RAY"));
+        bus1.getKaraoke().getDvd().put("Somewhere Out In Space", new Album("Somewhere Out In Space", "GAMMA RAY"));
+        kSession.insert(bus1);
     }
 }
