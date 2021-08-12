@@ -1463,6 +1463,17 @@
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-quarkus-decisions-deployment</artifactId>
         <version>${project.version}</version>
+        <exclusions>
+          <!--
+            Required for Gradle + Quarkus compat. See:
+            https://github.com/quarkusio/quarkus/pull/19307
+            https://quarkusio.zulipchat.com/#narrow/stream/187038-dev/topic/Gradle.20Kogito.20debugging
+          -->
+          <exclusion>
+            <groupId>org.drools</groupId>
+            <artifactId>drools-core-dynamic</artifactId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <dependency>
         <groupId>org.kie.kogito</groupId>

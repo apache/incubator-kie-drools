@@ -188,6 +188,7 @@ public abstract class AbstractKogitoBuildContext implements KogitoBuildContext {
         protected AddonsConfig addonsConfig;
         protected ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         protected Predicate<String> classAvailabilityResolver = this::hasClass;
+        // default fallback value (usually overridden)
         protected AppPaths appPaths = AppPaths.fromProjectDir(new File(".").toPath());
         protected KogitoGAV gav;
 

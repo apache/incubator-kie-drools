@@ -23,6 +23,7 @@
     <module>integration-tests-quarkus-norest</module>
     <module>integration-tests-springboot</module>
     <module>integration-tests-kogito-plugin</module>
+    <module>integration-tests-quarkus-gradle</module>
   </modules>
 
 </project>

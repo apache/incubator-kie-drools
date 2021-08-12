@@ -17,6 +17,7 @@ package org.kie.kogito.codegen.api.utils;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,18 +27,24 @@ import java.util.function.UnaryOperator;
 
 public class AppPaths {
 
+    public enum BuildTool {
+        MAVEN,
+        GRADLE
+    }
+
     public static final String TARGET_DIR = "target";
 
     private final Set<Path> projectPaths = new LinkedHashSet<>();
     private final Collection<Path> classesPaths = new ArrayList<>();
 
     private final boolean isJar;
+    private final Path resourcesPath;
 
     public static AppPaths fromProjectDir(Path projectDir) {
-        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false);
+        return new AppPaths(Collections.singleton(projectDir), Collections.emptyList(), false, BuildTool.MAVEN);
     }
 
-    public static AppPaths fromQuarkus(Iterable<Path> paths) {
+    public static AppPaths fromQuarkus(Iterable<Path> paths, BuildTool bt) {
         Set<Path> projectPaths = new LinkedHashSet<>();
         Collection<Path> classesPaths = new ArrayList<>();
         boolean isJar = false;
@@ -62,7 +69,7 @@ public class AppPaths {
                     break;
             }
         }
-        return new AppPaths(projectPaths, classesPaths, isJar);
+        return new AppPaths(projectPaths, classesPaths, isJar, bt);
     }
 
     private static PathType getPathType(Path archiveLocation) {
@@ -88,10 +95,15 @@ public class AppPaths {
         UNKNOWN
     }
 
-    private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar) {
+    private AppPaths(Set<Path> projectPaths, Collection<Path> classesPaths, boolean isJar, BuildTool bt) {
         this.isJar = isJar;
         this.projectPaths.addAll(projectPaths);
         this.classesPaths.addAll(classesPaths);
+        if (bt == BuildTool.GRADLE) {
+            resourcesPath = Paths.get(""); // no prefix required
+        } else {
+            resourcesPath = Paths.get("src", "main", "resources");
+        }
     }
 
     public Path[] getPaths() {
@@ -126,11 +138,11 @@ public class AppPaths {
     }
 
     public File[] getResourceFiles() {
-        return projectPaths.stream().map(p -> p.resolve("src/main/resources").toFile()).toArray(File[]::new);
+        return projectPaths.stream().map(p -> p.resolve(resourcesPath).toFile()).toArray(File[]::new);
     }
 
     public Path[] getResourcePaths() {
-        return transformPaths(projectPaths, p -> p.resolve("src/main/resources"));
+        return transformPaths(projectPaths, p -> p.resolve(resourcesPath));
     }
 
     public Path[] getSourcePaths() {
