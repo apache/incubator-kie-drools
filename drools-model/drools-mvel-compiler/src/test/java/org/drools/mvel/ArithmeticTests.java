@@ -1,6 +1,5 @@
 package org.drools.mvel;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
@@ -28,8 +27,6 @@ public class ArithmeticTests {
   @Ignore("Generates wrong code for promotion")
   @Test
   public void testMath() {
-    //   assertEquals(188, executeExpression("pi * hour", vars));
-
     String expression = "pi * hour";
     int result = 188;
 
@@ -91,9 +88,6 @@ public class ArithmeticTests {
     double result = (300 * 5 + 1) + 100 / 2 * 2;
 
     assertEquals(result, executeExpressionWithDefaultVariables(expression));
-
-    assertEquals(result, executeExpressionWithDefaultVariables(expression));
-    //  assertEquals(val, executeExpression("(300 * five + 1) + (100 / 2 * 2)"));
   }
 
   @Ignore("Rounding error")
@@ -125,12 +119,7 @@ public class ArithmeticTests {
     String expr = "int x = 15; -x";
     Map<String, Object> vars = new HashMap<>();
 
-    //  assertEquals(-15, executeExpression(expr, vars));
-    vars.clear();
-
     assertEquals(-15, executeExpression(expr, vars));
-
-    //  assertEquals(-15, executeExpression("int x = 15; -x"));
   }
 
   @Test
@@ -179,7 +168,6 @@ public class ArithmeticTests {
   public void testMath19() {
     String expression = "a = 100; b = 500; c = 200; d = 150; e = 500; f = 800; g = 400; a-b*c*d + e*f-g";
     int result = 100 - 500 * 200 * 150 + 500 * 800 - 400;
-
     assertEquals(result, executeExpression(expression, Collections.emptyMap()));
   }
 
@@ -518,6 +506,7 @@ public class ArithmeticTests {
   @Test
   public void testOperatorPrecedence3() {
     String expression = "_x_001 = 500.2; _x_002 = 200.9; _r_001 = 701; _r_001 == _x_001 + _x_002 && _x_001 == 500 + 0.2";
+
     assertEquals(false, executeExpressionWithDefaultVariables(expression));
   }
 
@@ -773,10 +762,6 @@ public class ArithmeticTests {
 
   @Test
   public void testStrongTypingModeComparison() {
-    ParserContext parserContext = new ParserContext();
-    parserContext.setStrongTyping(true);
-    parserContext.addInput("a", Long.class);
-
     Map<String, Object> variables = new HashMap<>();
     variables.put("a", 0l);
     
@@ -787,23 +772,16 @@ public class ArithmeticTests {
   @Ignore("Rounding error")
   @Test
   public void testJIRA158() {
-//        Serializable s = MVEL.compileExpression("4/2 + Math.sin(1)");
-//
-//        assertEquals(4 / 2 + Math.sin(1), MVEL.executeExpression(s));
-
     String expression = "(float) (4/2 + Math.sin(1))";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped());
 
     assertEquals((float) (4 / 2 + Math.sin(1)), executeExpressionWithDefaultVariables(expression));
   }
 
-//  @Ignore("Generates wrong code - type error")
   @Test
   public void testJIRA162() {
     String expression = "1d - 2d + (3d * var1) * var1";
     double result = 1 - 2 + (3 * 1d) * 1;
     
-	//Serializable s = MVEL.compileExpression(expression, ParserContext.create().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", 1d);
 
@@ -813,12 +791,12 @@ public class ArithmeticTests {
   @Test
   public void testJIRA161() {
     String expression = "1==-(-1)";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped());
+
     assertEquals(1 == -(-1), executeExpressionWithDefaultVariables(expression));
 
     ParserContext ctx = new ParserContext();
     ctx.setStrongTyping(true);
-    //CompiledExpression compiledExpression = new ExpressionCompiler(expression, ctx).compile();
+
     assertEquals(1 == -(-1), executeExpressionWithDefaultVariables(expression));
   }
 
@@ -828,7 +806,6 @@ public class ArithmeticTests {
     String expression = "1d - 2d + (3d * 4d) * var1";
     double result = 1 - 2 + (3 * 4) * 1d;
 
-    //Serializable s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", 1d);
 
@@ -839,18 +816,15 @@ public class ArithmeticTests {
   @Test
   public void testJIRA164() {
     String expression = "1 / (var1 + var1) * var1";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
+
     double var1 = 1d;
     double result = 1 / (var1 + var1) * var1;
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
 	assertEquals(result, executeExpression(expression, vars));
 
-    //s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals(result, executeExpression(expression, vars));
 
   }
@@ -859,18 +833,12 @@ public class ArithmeticTests {
   @Test
   public void testJIRA164b() {
     String expression = "1 + 1 / (var1 + var1) * var1";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
 
     double var1 = 1d;
     double result = 1 + 1 / (var1 + var1) * var1;
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
-	assertEquals(result, executeExpression(expression, vars));
-
-    //s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals(result, executeExpression(expression, vars));
   }
 
@@ -879,18 +847,12 @@ public class ArithmeticTests {
   public void testJIRA164c() {
 	double var1 = 1d;
     String expression = "1 + 1 / (var1 + var1 + 2 + 3) * var1";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
 
     double result = 1 + 1 / (var1 + var1 + 2 + 3) * var1;
    
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
-	assertEquals(result, executeExpression(expression, vars));
-
-    //s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals(result, executeExpression(expression, vars));
   }
 
@@ -900,16 +862,10 @@ public class ArithmeticTests {
 	double var1 = 1d;
     String expression = "1 + 1 + 1 / (var1 + var1) * var1";
     double result = 1 + 1 + 1 / (var1 + var1) * var1;
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
 
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
-	assertEquals(result, executeExpression(expression, vars));
-
-    //s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals(result, executeExpression(expression, vars));
   }
 
@@ -917,18 +873,11 @@ public class ArithmeticTests {
   @Test
   public void testJIRA164e() {
     String expression = "10 + 11 + 12 / (var1 + var1 + 51 + 71) * var1 + 13 + 14";
-	// Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
 
     double var1 = 1d;
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
-    assertEquals((float) (10 + 11 + 12 / (var1 + var1 + 51 + 71) * var1 + 13 + 14),
-        ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
-
-    // s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals((float) (10 + 11 + 12 / (var1 + var1 + 51 + 71) * var1 + 13 + 14),
         ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
   }
@@ -940,56 +889,35 @@ public class ArithmeticTests {
     double var1 = 1d;
     float result = (float) (10 + 11 + 12 / (var1 + 1 + var1 + 51 + 71) * var1 + 13 + 14);
 
-    //	Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
     Map<String, Object> vars = new HashMap<>();
 
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
 	assertEquals(result,
-        ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
-
-//    s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
-    assertEquals(result,
         ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
   }
 
-  //@Ignore
+
   @Test
   public void testJIRA164g() {
     String expression = "1 - 2 + (3 * var1) * var1";
-	//Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
     double var1 = 1d;
     float result = (float) (1 - 2 + (3 * var1) * var1);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("var1", var1);
 
-    OptimizerFactory.setDefaultOptimizer("reflective");
-	assertEquals(result, ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
-
-    //s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
     assertEquals(result, ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
   }
 
-  //@Ignore
   @Test
   public void testJIRA164h() {
     String expression = "1 - var1 * (var1 * var1 * (var1 * var1) * var1) * var1";
-//	Serializable s = compileExpression(expression, ParserContext.create().stronglyTyped().withInput("var1", double.class));
+
     Map<String, Object> vars = new HashMap<>();
 
     double var1 = 2d;
     vars.put("var1", var1);
-
-    OptimizerFactory.setDefaultOptimizer("reflective");
-    assertEquals((float) (1 - var1 * (var1 * var1 * (var1 * var1) * var1) * var1),
-        ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
-
-//    s = compileExpression(expression, ParserContext.create().withInput("var1", double.class));
-    OptimizerFactory.setDefaultOptimizer("ASM");
 
     assertEquals((float) (1 - var1 * (var1 * var1 * (var1 * var1) * var1) * var1),
         ((Double) executeExpression(expression, vars)).floatValue(), 0.01);
@@ -1030,16 +958,16 @@ public class ArithmeticTests {
     vars.put("bal", 999);
 
     String[] testCases = {
-        //        "bal + 80 - 80",
-        //        "bal - 80 + 80", "bal * 80 / 80",
+                "bal + 80 - 80",
+               "bal - 80 + 80", "bal * 80 / 80",
         "bal / 80 * 80"
     };
 
-    Object val1, val2;
+    
     for (String expr : testCases) {
-      val1 = executeExpression(expr, vars);
+      Object val1 = executeExpression(expr, vars);
       assertNotNull(val1);
-      val2 = executeExpression(expr, vars);
+      Object val2 = executeExpression(expr, vars);
       assertNotNull(val2);
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
@@ -1053,11 +981,10 @@ public class ArithmeticTests {
     String[] testCases = {"bal - 1 + \"abc\"",};
 
 
-    Object val1, val2;
     for (String expr : testCases) {
-      val1 = executeExpression(expr, vars);
+      Object val1 = executeExpression(expr, vars);
       assertNotNull(val1);
-      val2 = executeExpression(expr, vars);
+      Object val2 = executeExpression(expr, vars);
       assertNotNull(val2);
       assertEquals("expression did not evaluate correctly: " + expr, val1, val2);
     }
@@ -1099,17 +1026,8 @@ public class ArithmeticTests {
   @Test
   public void testModExpr() {
     String str = "$y % 4 == 0 && $y % 100 != 0 || $y % 400 == 0 ";
-
-    ParserConfiguration pconf = new ParserConfiguration();
-
-    ParserContext pctx = new ParserContext(pconf);
-    pctx.setStrictTypeEnforcement(true);
-    pctx.setStrongTyping(true);
-    pctx.addInput("$y", int.class);
-
     Map<String, Object> vars = new HashMap<>();
 
-//    Object stmt = compileExpression(str, pctx);
     for (int i = 0; i < 500; i++) {
       int y = i;
       boolean expected = y % 4 == 0 && y % 100 != 0 || y % 400 == 0;
@@ -1117,22 +1035,12 @@ public class ArithmeticTests {
 
       assertEquals(expected, executeExpression(str, vars));
 
-//      assertEquals(expected, ((Boolean) executeExpression(str, null, vars)).booleanValue());
     }
   }
 
-  //@Ignore("Generates wrong code")
   @Test
   public void testIntsWithDivision() {
     String expression = "0 == x - (y/2)";
-
-    ParserConfiguration pconf = new ParserConfiguration();
-    ParserContext pctx = new ParserContext(pconf);
-    pctx.setStrongTyping(true);
-    pctx.addInput("x", int.class);
-    pctx.addInput("y", int.class);
-
-    //Object stmt = (Object) compileExpression(expression, pctx);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 50);
@@ -1145,14 +1053,6 @@ public class ArithmeticTests {
   @Test
   public void testMathCeil() {
     String expression = "Math.ceil( x/3 ) == 2";
-
-    ParserConfiguration pconf = new ParserConfiguration();
-    pconf.addImport("Math", Math.class);
-    ParserContext pctx = new ParserContext(pconf);
-    pctx.setStrongTyping(true);
-    pctx.addInput("x", int.class);
-
-    //Object stmt = (Object) compileExpression(str, pctx);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
@@ -1168,13 +1068,6 @@ public class ArithmeticTests {
 
     String expression = "int m = (int) java.lang.Math.ceil( x/3 ); return m;";
 
-    ParserConfiguration pconf = new ParserConfiguration();
-    ParserContext pctx = new ParserContext(pconf);
-    pctx.setStrongTyping(true);
-    pctx.addInput("x", int.class);
-
-    //Object stmt = (Object) compileExpression(str, pctx);
-
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
     assertEquals(Integer.valueOf(2), executeExpression(expression, vars));
@@ -1186,31 +1079,15 @@ public class ArithmeticTests {
 	String expression = "java.lang.Math.ceil( x/3 )";
 	double result = Math.ceil((double) 4 / 3);
 	
-	ParserConfiguration pconf = new ParserConfiguration();
-	ParserContext pctx = new ParserContext(pconf);
-	pctx.setStrongTyping(true);
-	pctx.addInput("x", int.class);
-	
-	  //Object stmt = (Object) compileExpression(str, pctx);
-	
 	Map<String, Object> vars = new HashMap<>();
 	vars.put("x", 4);
 	assertEquals(result, executeExpression(expression, vars));
   }
   
-  //@Ignore("Generates wrong code - missing symbol")
   @Test
   public void testMathCeilWithDoubleCast() {
     String expression = "Math.ceil( (double) x / 3 )";
     double result = Math.ceil((double) 4 / 3);
-
-    ParserConfiguration pconf = new ParserConfiguration();
-    pconf.addImport("Math", Math.class);
-    ParserContext pctx = new ParserContext(pconf);
-    pctx.setStrongTyping(true);
-    pctx.addInput("x", Integer.class);
-
-    //Object stmt = (Object) compileExpression(expression, pctx);
 
     Map<String, Object> vars = new HashMap<>();
     vars.put("x", 4);
@@ -1219,7 +1096,7 @@ public class ArithmeticTests {
   
   @Test
   public void testBigDecimalAssignmentIncrement() {
-    Serializable expression = "s1=0B;s1+=1;s1+=1;s1";
+    String expression = "s1=0B;s1+=1;s1+=1;s1";
     BigDecimal result = new BigDecimal(2);
 
     assertEquals(result, executeExpression(expression, new HashMap<>()));
@@ -1228,12 +1105,9 @@ public class ArithmeticTests {
   /* https://github.com/mvel/mvel/issues/249
    * The following caused a ClassCastException because the compiler optimized for integers
    */
-  //@Ignore("Generates wrong code - missing symbol")
   @Test
   public void testIssue249() {
     String expression = "70 + 30 *  x1";
-    ParserContext parserContext = new ParserContext();
-//    Serializable compileExpression = compileExpression(rule, parserContext);
     Map<String, Object> expressionVars = new HashMap<>();
     expressionVars.put("x1", 128.33);
     
