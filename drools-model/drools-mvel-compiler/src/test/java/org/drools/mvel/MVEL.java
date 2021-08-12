@@ -1,8 +1,10 @@
 package org.drools.mvel;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -10,24 +12,43 @@ import static java.lang.System.currentTimeMillis;
 
 public class MVEL {
 
-    public static Serializable compileExpression(String s) {
-        return s;
-    }
+    public static class MiscTestClass {
+	    int exec = 0;
+	
+	    @SuppressWarnings({"unchecked", "UnnecessaryBoxing"})
+	    public List toList(Object object1, String string, int integer, Map map, List list) {
+	      exec++;
+	      List l = new ArrayList();
+	      l.add(object1);
+	      l.add(string);
+	      l.add(Integer.valueOf(integer));
+	      l.add(map);
+	      l.add(list);
+	      return l;
+	    }
+	
+	
+	    public int getExec() {
+	      return exec;
+	    }
+	  }
 
-    public static Serializable compileExpression(String compiledExpression, ParserContext parserContext) {
-        Evaluator evaluator = new Evaluator();
-        Map vars = parserContext.getMap();
-        return evaluator.compileWithDroolsMvelCompiler(compiledExpression, vars, evaluator.getClass().getClassLoader());
-    }
+    public static class Order {
+        private int number = 20;
 
-    public static Serializable executeExpression(final Object compiledExpression, final Map<String, Object> vars) {
+
+        public int getNumber() {
+          return number;
+        }
+
+        public void setNumber(int number) {
+          this.number = number;
+        }
+      }
+
+	public static Serializable executeExpression(final Object compiledExpression, final Map<String, Object> vars) {
         Evaluator evaluator = new Evaluator();
         return evaluator.compileEvaluateWithDroolsMvelCompiler(compiledExpression, vars, evaluator.getClass().getClassLoader());
-    }
-
-    public static Serializable executeExpression(final CompiledExpression compiledExpression, final Map<String, Object> vars) {
-        Evaluator evaluator = new Evaluator();
-        return evaluator.compileEvaluateWithDroolsMvelCompiler(compiledExpression.getEx(), vars, evaluator.getClass().getClassLoader());
     }
 
     public static Serializable executeExpressionWithDefaultVariables(final Object compiledExpression) {
@@ -43,7 +64,7 @@ public class MVEL {
         map.put("c", "cat");
         map.put("BWAH", "");
 
-        map.put("misc", new ArithmeticTests.MiscTestClass());
+        map.put("misc", new MiscTestClass());
 
         map.put("pi", "3.14");
         map.put("hour", 60);
@@ -51,7 +72,7 @@ public class MVEL {
 
         map.put("array", new String[]{"", "blip"});
 
-        map.put("order", new ArithmeticTests.Order());
+        map.put("order", new Order());
         map.put("$id", 20);
 
         map.put("five", 5);
@@ -68,7 +89,6 @@ public class MVEL {
                     }
                 });
 
-        map.put("derived", new DerivedClass());
 
         map.put("ipaddr", "10.1.1.2");
 

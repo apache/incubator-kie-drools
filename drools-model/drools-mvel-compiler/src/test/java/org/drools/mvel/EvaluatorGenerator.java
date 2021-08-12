@@ -58,7 +58,8 @@ public class EvaluatorGenerator {
 
         defineLastStatement(compiledMVELBlock);
 
-        logGenerateClass();
+        // disabled to prevent long loggings, reactivate when debugging
+        // logGenerateClass();
         return template;
     }
 

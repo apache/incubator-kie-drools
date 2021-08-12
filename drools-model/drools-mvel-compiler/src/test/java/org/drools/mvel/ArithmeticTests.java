@@ -1,14 +1,9 @@
 package org.drools.mvel;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.junit.Ignore;
@@ -21,6 +16,13 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
+
+/**
+ * Porting of ArithmeticTests from MVEL project.
+ * 
+ * Disabled tests are failing for various causes
+ * 
+ */
 
 public class ArithmeticTests {
 	
@@ -353,7 +355,7 @@ public class ArithmeticTests {
     map.put("y", 50);
     map.put("z", 60);
 
-	assertNumEquals(result, executeExpression(expression, map));
+	assertEquals((Object) result, executeExpression(expression, map));
   }
 
 
@@ -371,7 +373,7 @@ public class ArithmeticTests {
     map.put("y", 50);
     map.put("z", 60);
 
-	assertNumEquals(result, executeExpression(expression, map));
+	assertEquals((Object) result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
@@ -388,7 +390,7 @@ public class ArithmeticTests {
     map.put("y", 50);
     map.put("z", 60);
 
-	assertNumEquals(result, executeExpression(expression, map));
+	assertEquals((Object) result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
@@ -405,7 +407,7 @@ public class ArithmeticTests {
     map.put("y", 2);
     map.put("z", 60);
 
-	assertNumEquals(result, executeExpression(expression, map));
+	assertEquals((Object) result, executeExpression(expression, map));
   }
 
   @Ignore("Rounding error")
@@ -751,8 +753,6 @@ public class ArithmeticTests {
     String expression = "c + 'bar'";
 
     assertEquals("catbar", executeExpressionWithDefaultVariables(expression));
-
-    assertEquals("catbar", executeExpressionWithDefaultVariables(expression));
   }
 
   @Test
@@ -793,11 +793,6 @@ public class ArithmeticTests {
     String expression = "1==-(-1)";
 
     assertEquals(1 == -(-1), executeExpressionWithDefaultVariables(expression));
-
-    ParserContext ctx = new ParserContext();
-    ctx.setStrongTyping(true);
-
-    assertEquals(1 == -(-1), executeExpressionWithDefaultVariables(expression));
   }
 
   
@@ -824,8 +819,6 @@ public class ArithmeticTests {
     vars.put("var1", var1);
 
 	assertEquals(result, executeExpression(expression, vars));
-
-    assertEquals(result, executeExpression(expression, vars));
 
   }
 
@@ -1112,367 +1105,6 @@ public class ArithmeticTests {
     expressionVars.put("x1", 128.33);
     
     assertEquals(3919.9, ((Number)executeExpression(expression, expressionVars)).doubleValue(), 0.01);
-  }
-
-  public static class MiscTestClass {
-    int exec = 0;
-
-    @SuppressWarnings({"unchecked", "UnnecessaryBoxing"})
-    public List toList(Object object1, String string, int integer, Map map, List list) {
-      exec++;
-      List l = new ArrayList();
-      l.add(object1);
-      l.add(string);
-      l.add(Integer.valueOf(integer));
-      l.add(map);
-      l.add(list);
-      return l;
-    }
-
-
-    public int getExec() {
-      return exec;
-    }
-  }
-
-  public static class Bean {
-    private Date myDate = new Date();
-
-    public Date getToday() {
-      return new Date();
-    }
-
-    public Date getNullDate() {
-      return null;
-    }
-
-    public String getNullString() {
-      return null;
-    }
-
-    public Date getMyDate() {
-      return myDate;
-    }
-
-    public void setMyDate(Date myDate) {
-      this.myDate = myDate;
-    }
-  }
-
-  public static class Context {
-    private final SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yy");
-    private Bean bean;
-
-    public Bean getBean() {
-      return bean;
-    }
-
-    public void setBean(Bean bean) {
-      this.bean = bean;
-    }
-
-    public String formatDate(Date date) {
-      return date == null ? null : dateFormat.format(date);
-    }
-
-    public String formatString(String str) {
-      return str == null ? "<NULL>" : str;
-    }
-  }
-
-  public static class Person {
-    private String name;
-    private int age;
-    private String likes;
-    private List<Foo> footributes;
-    private Map<String, Foo> maptributes;
-    private Map<Object, Foo> objectKeyMaptributes;
-
-    public Person() {
-
-    }
-
-    public Person(String name) {
-      this.name = name;
-    }
-
-    public Person(String name, int age) {
-      this.name = name;
-      this.age = age;
-    }
-
-    public Person(String name, String likes, int age) {
-      this.name = name;
-      this.likes = likes;
-      this.age = age;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-
-    public int getAge() {
-      return age;
-    }
-
-    public void setAge(int age) {
-      this.age = age;
-    }
-
-    public List<Foo> getFootributes() {
-      return footributes;
-    }
-
-    public void setFootributes(List<Foo> footributes) {
-      this.footributes = footributes;
-    }
-
-    public Map<String, Foo> getMaptributes() {
-      return maptributes;
-    }
-
-    public void setMaptributes(Map<String, Foo> maptributes) {
-      this.maptributes = maptributes;
-    }
-
-    public Map<Object, Foo> getObjectKeyMaptributes() {
-      return objectKeyMaptributes;
-    }
-
-    public void setObjectKeyMaptributes(Map<Object, Foo> objectKeyMaptributes) {
-      this.objectKeyMaptributes = objectKeyMaptributes;
-    }
-
-    public String toString() {
-      return "Person( name==" + name + " age==" + age + " likes==" + likes + " )";
-    }
-  }
-
-  public static class Address {
-    private String street;
-
-    public Address(String street) {
-      super();
-      this.street = street;
-    }
-
-    public String getStreet() {
-      return street;
-    }
-
-    public void setStreet(String street) {
-      this.street = street;
-    }
-  }
-
-  public static class Drools {
-    public void insert(Object obj) {
-    }
-  }
-
-  public static class Model {
-    private List latestHeadlines;
-
-
-    public List getLatestHeadlines() {
-      return latestHeadlines;
-    }
-
-    public void setLatestHeadlines(List latestHeadlines) {
-      this.latestHeadlines = latestHeadlines;
-    }
-  }
-
-  public static class Message {
-    public static final int HELLO = 0;
-    public static final int GOODBYE = 1;
-
-    private List items = new ArrayList();
-
-    private String message;
-
-    private int status;
-
-    public String getMessage() {
-      return this.message;
-    }
-
-    public void setMessage(String message) {
-      this.message = message;
-    }
-
-    public int getStatus() {
-      return this.status;
-    }
-
-    public void setStatus(int status) {
-      this.status = status;
-    }
-
-    public void addItem(Item item) {
-      this.items.add(item);
-    }
-
-    public List getItems() {
-      return items;
-    }
-  }
-
-  public static class Item {
-    private String name;
-
-    public Item(String name) {
-      this.name = name;
-    }
-
-    public String getName() {
-      return name;
-    }
-
-    public void setName(String name) {
-      this.name = name;
-    }
-  }
-
-  public class ClassA {
-    private Integer i;
-    private double d;
-    private String s;
-    public Date date;
-    private BigDecimal bigdec;
-    private BigInteger bigint;
-
-    public Integer getI() {
-      return i;
-    }
-
-    public void setI(Integer i) {
-      this.i = i;
-    }
-
-    public double getD() {
-      return d;
-    }
-
-    public void setD(double d) {
-      this.d = d;
-    }
-
-    public String getS() {
-      return s;
-    }
-
-    public void setS(String s) {
-      this.s = s;
-    }
-
-    public Date getDate() {
-      return date;
-    }
-
-    public void setDate(Date date) {
-      this.date = date;
-    }
-
-    public BigDecimal getBigdec() {
-      return bigdec;
-    }
-
-    public void setBigdec(BigDecimal bigdec) {
-      this.bigdec = bigdec;
-    }
-
-    public BigInteger getBigint() {
-      return bigint;
-    }
-
-    public void setBigint(BigInteger bigint) {
-      this.bigint = bigint;
-    }
-  }
-
-  public class ClassB {
-    private Integer i;
-    private double d;
-    private String s;
-    public String date;
-    private BigDecimal bigdec;
-    private BigInteger bigint;
-
-    public Integer getI() {
-      return i;
-    }
-
-    public void setI(Integer i) {
-      this.i = i;
-    }
-
-    public double getD() {
-      return d;
-    }
-
-    public void setD(double d) {
-      this.d = d;
-    }
-
-    public String getS() {
-      return s;
-    }
-
-    public void setS(String s) {
-      this.s = s;
-    }
-
-    public String getDate() {
-      return date;
-    }
-
-    public void setDate(String date) {
-      this.date = date;
-    }
-
-    public BigDecimal getBigdec() {
-      return bigdec;
-    }
-
-    public void setBigdec(BigDecimal bigdec) {
-      this.bigdec = bigdec;
-    }
-
-    public BigInteger getBigint() {
-      return bigint;
-    }
-
-    public void setBigint(BigInteger bigint) {
-      this.bigint = bigint;
-    }
-  }
-
-  public static class Order {
-    private int number = 20;
-
-
-    public int getNumber() {
-      return number;
-    }
-
-    public void setNumber(int number) {
-      this.number = number;
-    }
-  }
-
-  public static void assertNumEquals(Object obj, Object obj2) {
-    assertNumEquals(obj, obj2, true);
-  }
-
-  public static void assertNumEquals(Object obj, Object obj2, boolean permitRoundingVariance) {
-    if (obj == null || obj2 == null) throw new AssertionError("null value");
-
-    assertEquals(obj, obj2);
   }
 
 }
