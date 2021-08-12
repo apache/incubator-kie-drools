@@ -1,6 +1,6 @@
 # Kogito Spring Boot BOM
 
-In this module you will find the `kogito-springboot-bom`
+In this module you will find the `kogito-spring-boot-bom`
 BOM ([Bill of Materials](https://maven.apache.org/guides/introduction/introduction-to-dependency-mechanism.html#bill-of-materials-bom-poms))
 .
 
@@ -18,7 +18,7 @@ Simply add the BOM in your module's `pom.xml` file:
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-springboot-bom</artifactId>
+      <artifactId>kogito-spring-boot-bom</artifactId>
       <version>${project.version}</version>
       <type>pom</type>
       <scope>import</scope>

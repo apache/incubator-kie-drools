@@ -12,7 +12,7 @@ Before jumping into the starters, consider adding the Kogito Spring Boot BOM to 
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-springboot-bom</artifactId>
+      <artifactId>kogito-spring-boot-bom</artifactId>
       <version>${version.kogito}</version>
       <type>pom</type>
       <scope>import</scope>

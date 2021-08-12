@@ -74,7 +74,7 @@ Add this section to your `pom.xml` file:
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-springboot-bom</artifactId>
+      <artifactId>kogito-spring-boot-bom</artifactId>
       <version>${kogito.version}</version>
       <type>pom</type>
       <scope>import</scope>

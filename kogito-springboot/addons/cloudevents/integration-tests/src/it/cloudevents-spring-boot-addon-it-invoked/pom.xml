@@ -7,7 +7,7 @@
   <!-- instead of importing, we define it as parent because of the plugin management. see: https://issues.apache.org/jira/browse/MNG-5588 -->
   <parent>
     <groupId>org.kie.kogito</groupId>
-    <artifactId>kogito-springboot-bom</artifactId>
+    <artifactId>kogito-spring-boot-bom</artifactId>
     <version>@project.version@</version>
   </parent>
 
