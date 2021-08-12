@@ -58,8 +58,7 @@ public class EvaluatorGenerator {
 
         defineLastStatement(compiledMVELBlock);
 
-        // disabled to prevent long loggings, reactivate when debugging
-        // logGenerateClass();
+        logGenerateClass();
         return template;
     }
 
@@ -80,7 +79,7 @@ public class EvaluatorGenerator {
     }
 
     private void logGenerateClass() {
-        LOG.info(template.toString());
+        LOG.fine(template.toString());
     }
 
     // Simulate "Last expression is a return statement"
