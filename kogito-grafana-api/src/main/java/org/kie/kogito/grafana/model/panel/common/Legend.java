@@ -21,26 +21,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Legend {
 
-    @JsonProperty("avg")
-    public boolean avg;
-
     @JsonProperty("alignAsTable")
     public boolean alignAsTable;
 
-    @JsonProperty("rightSide")
-    public boolean rightSide;
-
-    @JsonProperty("legend")
-    public boolean legend;
+    @JsonProperty("avg")
+    public boolean avg;
 
     @JsonProperty("current")
     public boolean current;
+
+    @JsonProperty("hideEmpty")
+    public boolean hideEmpty;
+
+    @JsonProperty("hideZero")
+    public boolean hideZero;
+
+    @JsonProperty("legend")
+    public boolean legend;
 
     @JsonProperty("max")
     public boolean max;
 
     @JsonProperty("min")
     public boolean min;
+
+    @JsonProperty("rightSide")
+    public boolean rightSide;
 
     @JsonProperty("show")
     public boolean show;

@@ -36,6 +36,9 @@ public class GrafanaTarget {
     @JsonProperty("instant")
     public boolean instant;
 
+    @JsonProperty("legendFormat")
+    public String legendFormat;
+
     public GrafanaTarget() {
     }
 

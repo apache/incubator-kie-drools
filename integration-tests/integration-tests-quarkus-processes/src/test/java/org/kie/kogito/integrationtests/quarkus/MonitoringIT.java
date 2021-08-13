@@ -46,7 +46,7 @@ public class MonitoringIT {
     public void test() {
         String pId = given().contentType(ContentType.JSON)
                 .when()
-                .post("/monitoring")
+                .post("/monitoring/")
                 .then()
                 .statusCode(201)
                 .body("id", not(emptyOrNullString()))

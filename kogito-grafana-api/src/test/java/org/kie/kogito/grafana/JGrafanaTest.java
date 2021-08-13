@@ -34,9 +34,17 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JGrafanaTest {
 
-    public static String readStandardDashboard() {
+    public static String readProcessOperationalDashboard() {
+        return readDashboard("test_process_operational_dashboard.json");
+    }
 
-        InputStream is = JGrafanaTest.class.getResourceAsStream("/org/kie/kogito/grafana/test_dashboard.json");
+    public static String readStandardDashboard() {
+        return readDashboard("test_standard_dashboard.json");
+    }
+
+    private static String readDashboard(String dashboardFileName) {
+
+        InputStream is = JGrafanaTest.class.getResourceAsStream("/org/kie/kogito/grafana/" + dashboardFileName);
         return new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
     }
 
@@ -160,9 +168,16 @@ public class JGrafanaTest {
     }
 
     @Test
-    public void givenAnExistingDashboardWhenParseMethodIsCalledThenTheDashboardIsImported() {
+    public void givenAnExistingStandardDashboardWhenParseMethodIsCalledThenTheDashboardIsImported() {
         assertDoesNotThrow(() -> {
             JGrafana dash = JGrafana.parse(readStandardDashboard());
+        });
+    }
+
+    @Test
+    public void givenAnExistingProcessOperationalDashboardWhenParseMethodIsCalledThenTheDashboardIsImported() {
+        assertDoesNotThrow(() -> {
+            JGrafana dash = JGrafana.parse(readProcessOperationalDashboard());
         });
     }
 }

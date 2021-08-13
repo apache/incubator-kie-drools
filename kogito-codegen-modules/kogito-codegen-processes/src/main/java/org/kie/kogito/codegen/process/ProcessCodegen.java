@@ -51,6 +51,7 @@ import org.jbpm.process.core.validation.ProcessValidatorRegistry;
 import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.api.io.Resource;
+import org.kie.kogito.KogitoGAV;
 import org.kie.kogito.codegen.api.ApplicationSection;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
@@ -59,6 +60,7 @@ import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
+import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
@@ -77,6 +79,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
+import static org.kie.kogito.grafana.GrafanaConfigurationWriter.buildDashboardName;
+import static org.kie.kogito.grafana.GrafanaConfigurationWriter.generateOperationalDashboard;
 
 /**
  * Entry point to process code generation
@@ -97,6 +101,9 @@ public class ProcessCodegen extends AbstractGenerator {
     private static final String JSON_PARSER = "json";
     public static final String SVG_EXPORT_NAME_EXPRESION = "%s-svg.svg";
     public static final Map<String, String> SUPPORTED_SW_EXTENSIONS;
+
+    private static final String GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/global-operational-dashboard-template.json";
+    private static final String PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE = "/grafana-dashboard-template/processes/process-operational-dashboard-template.json";
 
     static {
         BPMN_SEMANTIC_MODULES.addSemanticModule(new BPMNSemanticModule());
@@ -542,6 +549,20 @@ public class ProcessCodegen extends AbstractGenerator {
         for (ProcessInstanceGenerator pi : pis) {
             storeFile(PROCESS_INSTANCE_TYPE, pi.generatedFilePath(), pi.generate());
         }
+
+        // generate Grafana dashboards
+        if (context().getAddonsConfig().usePrometheusMonitoring()) {
+            String globalDbName = buildDashboardName(context().getGAV(), "Global");
+            String globalDbJson = generateOperationalDashboard(GLOBAL_OPERATIONAL_DASHBOARD_TEMPLATE, globalDbName, "Global", context().getGAV().orElse(KogitoGAV.EMPTY_GAV), false);
+            generatedFiles.addAll(DashboardGeneratedFileUtils.operational(globalDbJson, globalDbName + ".json"));
+
+            for (KogitoWorkflowProcess process : processes.values()) {
+                String dbName = buildDashboardName(context().getGAV(), process.getId());
+                String dbJson = generateOperationalDashboard(PROCESS_OPERATIONAL_DASHBOARD_TEMPLATE, dbName, process.getId(), context().getGAV().orElse(KogitoGAV.EMPTY_GAV), false);
+                generatedFiles.addAll(DashboardGeneratedFileUtils.operational(dbJson, dbName + ".json"));
+            }
+        }
+
         return generatedFiles;
     }
 
