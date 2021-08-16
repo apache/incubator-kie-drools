@@ -33,7 +33,7 @@ height: calc(100vh - 98px);
 <script>
     const devUI = RuntimeToolsDevUI.open({
         container: document.getElementById("envelope-app"),
-        users: {info: userInfo.arrayRepresentation.raw},
+        users: {info:userInfo.arrayRepresentation.raw},
         dataIndexUrl: "{config:property('org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.DataIndexClient/mp-rest/url')}/graphql",
         page: "ProcessInstances"
     })
