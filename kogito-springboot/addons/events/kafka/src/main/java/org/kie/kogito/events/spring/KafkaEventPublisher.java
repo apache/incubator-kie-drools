@@ -16,7 +16,6 @@
 package org.kie.kogito.events.spring;
 
 import java.util.Collection;
-import java.util.TimeZone;
 
 import org.kie.kogito.event.DataEvent;
 import org.kie.kogito.event.EventPublisher;
@@ -28,7 +27,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 @Component
 public class KafkaEventPublisher implements EventPublisher {
@@ -39,7 +37,8 @@ public class KafkaEventPublisher implements EventPublisher {
 
     private static final Logger logger = LoggerFactory.getLogger(KafkaEventPublisher.class);
 
-    private ObjectMapper json = new ObjectMapper();
+    @Autowired
+    private ObjectMapper json;
 
     @Autowired
     private KafkaTemplate<String, String> eventsEmitter;
@@ -52,10 +51,6 @@ public class KafkaEventPublisher implements EventPublisher {
 
     @Value("${kogito.events.variables.enabled:true}")
     private boolean variablesEvents;
-
-    public KafkaEventPublisher() {
-        json.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
-    }
 
     @Override
     public void publish(DataEvent<?> event) {

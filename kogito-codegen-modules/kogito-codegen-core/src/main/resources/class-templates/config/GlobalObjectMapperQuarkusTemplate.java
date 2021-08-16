@@ -16,10 +16,14 @@
 package $Package$;
 
 import javax.inject.Singleton;
+
+import java.util.TimeZone;
+
 import javax.inject.Inject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.util.StdDateFormat;
 
 import io.quarkus.jackson.ObjectMapperCustomizer;
 
@@ -33,5 +37,6 @@ public class GlobalObjectMapper implements ObjectMapperCustomizer {
         if (!configBean.failOnEmptyBean()) {
             mapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
         }
+        mapper.setDateFormat(new StdDateFormat().withColonInTimeZone(true).withTimeZone(TimeZone.getDefault()));
     }
 }
