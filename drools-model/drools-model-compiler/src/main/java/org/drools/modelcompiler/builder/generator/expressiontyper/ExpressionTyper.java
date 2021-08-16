@@ -1157,16 +1157,15 @@ public class ExpressionTyper {
     }
 
     public static Expression findLeftLeafOfNameExprTraversingParent(Node expression) {
-        Expression parentLeft = findLeftLeafOfNameExpr(expression);
-        if (parentLeft instanceof HalfBinaryExpr) {
-            Optional<Node> optParent = expression.getParentNode();
-            if (optParent.isPresent()) {
-                return findLeftLeafOfNameExprTraversingParent(optParent.get());
-            } else {
-                throw new CannotTypeExpressionException("Cannot find left leaf : expression = " + expression);
-            }
+        Optional<Expression> optParent = expression.findAncestor(Expression.class, expr -> {
+            Expression leftLeaf = findLeftLeafOfNameExpr(expr);
+            return !(leftLeaf instanceof HalfBinaryExpr);
+        });
+        if (optParent.isPresent()) {
+            return findLeftLeafOfNameExpr(optParent.get());
+        } else {
+            throw new CannotTypeExpressionException("Cannot find a left leaf : expression = " + expression);
         }
-        return parentLeft;
     }
 
     public static Expression findLeftLeafOfNameExpr(Node expression) {

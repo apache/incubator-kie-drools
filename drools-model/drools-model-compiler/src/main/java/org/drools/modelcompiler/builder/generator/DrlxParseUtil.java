@@ -359,10 +359,8 @@ public class DrlxParseUtil {
     public static Expression trasformHalfBinaryToBinary(Expression drlxExpr) {
         final Optional<Node> parent = drlxExpr.getParentNode();
         if(drlxExpr instanceof HalfBinaryExpr && parent.isPresent()) {
-
             HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
-
-            Expression parentLeft = findLeftLeafOfNameExprTraversingParent( parent.get() );
+            Expression parentLeft = findLeftLeafOfNameExprTraversingParent( halfBinaryExpr );
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
             return new BinaryExpr(parentLeft, halfBinaryExpr.getRight(), operator);
         }
