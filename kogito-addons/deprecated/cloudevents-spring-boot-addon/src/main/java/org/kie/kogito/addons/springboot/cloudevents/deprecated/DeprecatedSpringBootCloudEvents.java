@@ -23,7 +23,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 /**
- * @deprecated The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-cloudevents instead
+ * @deprecated The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-messaging instead
  */
 @Deprecated
 @Component
@@ -33,11 +33,11 @@ public class DeprecatedSpringBootCloudEvents implements ApplicationListener<Appl
     public static final Logger LOGGER = LoggerFactory.getLogger(DeprecatedSpringBootCloudEvents.class);
 
     public DeprecatedSpringBootCloudEvents() {
-        LOGGER.warn("The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-cloudevents instead");
+        LOGGER.warn("The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-messaging instead");
     }
 
     @Override
     public void onApplicationEvent(ApplicationReadyEvent applicationReadyEvent) {
-        LOGGER.warn("The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-cloudevents instead");
+        LOGGER.warn("The library kogito-cloudevents-spring-boot-addon is deprecated and will be removed in a future release! Please use kogito-addons-springboot-messaging instead");
     }
 }

@@ -15,8 +15,8 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>cloudevents</module>
     <module>events</module>
+    <module>messaging</module>
     <module>monitoring</module>
   </modules>
 
@@ -29,7 +29,6 @@
         </property>
       </activation>
       <modules>
-        <module>cloudevents</module>
         <module>explainability</module>
         <module>jobs</module>
         <module>knative</module>

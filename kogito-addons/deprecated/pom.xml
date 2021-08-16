@@ -18,6 +18,11 @@
     <module>cloudevents-common-addon</module>
     <module>cloudevents-quarkus-addon</module>
     <module>cloudevents-spring-boot-addon</module>
+    <module>kogito-addons-quarkus-cloudevents</module>
+    <module>kogito-addons-quarkus-cloudevents-multi</module>
+    <module>kogito-addons-quarkus-events-smallrye</module>
+    <module>kogito-addons-springboot-cloudevents</module>
+    <module>kogito-addons-springboot-events-kafka</module>
     <module>kogito-event-driven-decisions-common</module>
     <module>kogito-event-driven-decisions-quarkus-addon</module>
     <module>kogito-event-driven-decisions-springboot-addon</module>

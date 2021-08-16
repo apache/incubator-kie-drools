@@ -16,8 +16,8 @@
 
   <!-- Please keep in alphabetical order -->
   <modules>
-    <module>cloudevents</module>
     <module>events</module>
+    <module>messaging</module>
     <module>monitoring</module>
     <module>knative</module>
   </modules>
@@ -31,7 +31,6 @@
         </property>
       </activation>
       <modules>
-        <module>cloudevents</module>
         <module>explainability</module>
         <module>human-task-prediction</module>
         <module>jobs</module>

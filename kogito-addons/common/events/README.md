@@ -4,6 +4,9 @@ The Kogito Events add-on adds the capability to handle use cases with events on 
 
 - [Kogito runtime events](https://docs.jboss.org/kogito/release/latest/html_single/#con-kogito-runtime-events_kogito-configuring)
 - [Travel agency tutorial for Kogito services on OpenShift](https://docs.jboss.org/kogito/release/latest/html_single/#con-kogito-travel-agency_kogito-deploying-on-openshift)
+- [Kogito Data Index Service](https://docs.jboss.org/kogito/release/latest/html_single/#con-data-index-service_kogito-configuring)
+- [Kogito Trusty Service and Explainability Service](https://docs.jboss.org/kogito/release/latest/html_single/#con-trusty-service_kogito-configuring)
+
 
 ## Examples
 

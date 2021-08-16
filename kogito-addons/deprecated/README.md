@@ -108,3 +108,26 @@ Classes and namespaces remains the same, you won't need to make any change in yo
 | Tracing Decision API [1]   | tracing-decision-api   | kogito-addons-tracing-decision-api | 
 | Tracing Decision Common [1] | tracing-decision-common | kogito-addons-tracing-decision-common | 
 | Tracing TypedValue API [1] | typedvalue-api | kogito-addons-tracing-typedvalue-api |
+
+### Version 1.11.x
+
+The artifact IDs for these Kogito Add-ons have changed since version 1.10.x. Please refer to the table below for the new
+add-on names to update your project `pom.xml` dependencies section.
+
+Classes and namespaces remains the same, you won't need to make any change in your code base.
+
+#### Quarkus Add-ons
+
+| Add-On Description  | Old Artifact ID | New Artifact ID |
+|---------------------|-----------------|-----------------|
+| Cloud Events         | kogito-addons-quarkus-cloudevents | kogito-addons-quarkus-messaging
+| Cloud Events Multi   | kogito-addons-quarkus-cloudevents-multi | kogito-addons-quarkus-messaging
+| Events Smallrye      | kogito-addons-quarkus-events-smallrye | kogito-addons-quarkus-events-process
+
+#### Spring Boot Add-ons
+
+| Add-On Description  | Old Artifact ID | New Artifact ID |
+|---------------------|-----------------|-----------------|
+| Cloud Events         | kogito-addons-springboot-cloudevents | kogito-addons-springboot-messaging
+| Events Kafka         | kogito-addons-springboot-events-kafka | kogito-addons-springboot-events-process-kafka
+

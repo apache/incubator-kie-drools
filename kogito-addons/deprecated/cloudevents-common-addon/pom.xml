@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-cloudevents</artifactId>
+      <artifactId>kogito-addons-messaging</artifactId>
     </dependency>
   </dependencies>
 </project>

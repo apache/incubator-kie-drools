@@ -12,7 +12,7 @@ the [`K_SINK`](https://knative.dev/development/developer/eventing/sources/sinkbi
 and [`K_CE_OVERRIDES`](https://knative.dev/development/developer/eventing/sources/sinkbinding/reference/#cloudevent-overrides)
 environment variables injected by Knative Eventing controllers.
 
-To wire the Kogito service with a given sink, it requires the [Kogito Cloud Addon](../cloudevents)
+To wire the Kogito service with a given sink, it requires the [Kogito Messaging](../messaging)
 and [Quarkus HTTP connector](https://quarkus.io/guides/reactive-messaging-http.html)
 libraries. Both are dependencies of this addon.
 
