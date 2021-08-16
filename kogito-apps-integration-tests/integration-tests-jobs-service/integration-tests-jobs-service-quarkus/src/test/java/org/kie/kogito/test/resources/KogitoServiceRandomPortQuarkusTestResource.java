@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.resources;
+package org.kie.kogito.test.resources;
 
 import java.util.Map;
 
@@ -21,17 +21,25 @@ import org.kie.kogito.it.KogitoServiceRandomPortTestResource;
 
 import static java.util.Collections.singletonMap;
 
-public class KogitoServiceRandomPortSpringBootTestResource extends ConditionalSpringBootTestResource<KogitoServiceRandomPortTestResource> {
+public class KogitoServiceRandomPortQuarkusTestResource extends ConditionalQuarkusTestResource {
 
-    public static final String SPRINGBOOT_SERVICE_HTTP_PORT = "server.port";
+    public static final String QUARKUS_SERVICE_HTTP_PORT = "quarkus.http.test-port";
 
-    public KogitoServiceRandomPortSpringBootTestResource() {
+    public KogitoServiceRandomPortQuarkusTestResource() {
         super(new KogitoServiceRandomPortTestResource());
+    }
+
+    /**
+     * The Kogito Service must be run first to make the port available in the rest of services.
+     */
+    @Override
+    public int order() {
+        return -1;
     }
 
     @Override
     protected Map<String, String> getProperties() {
-        return singletonMap(SPRINGBOOT_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
+        return singletonMap(QUARKUS_SERVICE_HTTP_PORT, String.valueOf(getTestResource().getMappedPort()));
     }
 
 }

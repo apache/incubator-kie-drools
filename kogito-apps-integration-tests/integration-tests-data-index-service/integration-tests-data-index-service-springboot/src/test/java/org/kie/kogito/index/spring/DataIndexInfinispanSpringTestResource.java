@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.resources.DataIndexInfinispanResource;
-import org.kie.kogito.resources.ConditionalSpringBootTestResource;
+import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
 public class DataIndexInfinispanSpringTestResource extends ConditionalSpringBootTestResource<DataIndexInfinispanResource> {
 

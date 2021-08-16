@@ -20,7 +20,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
@@ -44,14 +44,14 @@ public class TraceEventConsumerIT {
     @InjectMock
     TrustyService trustyService;
 
-    KafkaClient kafkaClient;
+    KafkaTestClient kafkaClient;
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     private String kafkaBootstrapServers;
 
     @BeforeEach
     public void setup() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
     }
 
     @AfterEach

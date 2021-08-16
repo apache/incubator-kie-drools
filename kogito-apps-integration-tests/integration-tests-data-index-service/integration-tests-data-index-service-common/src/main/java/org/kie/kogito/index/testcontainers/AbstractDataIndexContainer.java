@@ -18,7 +18,7 @@ package org.kie.kogito.index.testcontainers;
 
 import java.io.File;
 
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.wait.strategy.Wait;

@@ -32,8 +32,8 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
-import org.kie.kogito.kafka.KafkaClient;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
+import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -62,7 +62,7 @@ public abstract class AbstractMessagingLoadKafkaIT {
     @ConfigProperty(name = "kogito.data-index.domain-indexing", defaultValue = "true")
     Boolean indexDomain;
 
-    List<KafkaClient> kafkaClients;
+    List<KafkaTestClient> kafkaClients;
 
     Duration timeout = Duration.ofMinutes(1);
 
@@ -79,7 +79,7 @@ public abstract class AbstractMessagingLoadKafkaIT {
         if (indexDomain) {
             protobufService.registerProtoBufferType(getTestProtobufFileContent());
         }
-        kafkaClients = Stream.generate(() -> new KafkaClient(kafkaBootstrapServers)).parallel().limit(producers).collect(Collectors.toList());
+        kafkaClients = Stream.generate(() -> new KafkaTestClient(kafkaBootstrapServers)).parallel().limit(producers).collect(Collectors.toList());
     }
 
     @AfterEach
@@ -184,11 +184,11 @@ public abstract class AbstractMessagingLoadKafkaIT {
 
     }
 
-    private void sendProcessInstanceEvent(KafkaClient client, KogitoProcessCloudEvent event) throws Exception {
+    private void sendProcessInstanceEvent(KafkaTestClient client, KogitoProcessCloudEvent event) throws Exception {
         client.produce(mapper.writeValueAsString(event), "kogito-processinstances-events");
     }
 
-    private void sendUserTaskEvent(KafkaClient client, KogitoUserTaskCloudEvent event) throws Exception {
+    private void sendUserTaskEvent(KafkaTestClient client, KogitoUserTaskCloudEvent event) throws Exception {
         client.produce(mapper.writeValueAsString(event), "kogito-usertaskinstances-events");
     }
 

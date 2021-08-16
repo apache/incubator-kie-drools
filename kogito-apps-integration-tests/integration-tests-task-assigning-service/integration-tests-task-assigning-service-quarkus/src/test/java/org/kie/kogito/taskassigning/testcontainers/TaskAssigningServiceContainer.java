@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.util.Map;
 import java.util.Properties;
 
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 

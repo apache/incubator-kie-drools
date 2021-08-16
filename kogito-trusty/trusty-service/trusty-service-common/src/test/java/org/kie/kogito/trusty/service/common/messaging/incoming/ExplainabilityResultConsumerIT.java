@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;
@@ -52,7 +52,7 @@ public class ExplainabilityResultConsumerIT {
     @InjectMock
     TrustyService trustyService;
 
-    KafkaClient kafkaClient;
+    KafkaTestClient kafkaClient;
 
     public static CloudEvent buildExplainabilityCloudEvent(BaseExplainabilityResultDto resultDto) {
         return CloudEventUtils.build(
@@ -68,7 +68,7 @@ public class ExplainabilityResultConsumerIT {
 
     @BeforeEach
     public void setup() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
     }
 
     @AfterEach

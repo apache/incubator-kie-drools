@@ -16,8 +16,8 @@
 package org.kie.kogito.it.jobs;
 
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.resources.JobServiceQuarkusTestResource;
-import org.kie.kogito.resources.KogitoServiceRandomPortQuarkusTestResource;
+import org.kie.kogito.test.resources.JobServiceQuarkusTestResource;
+import org.kie.kogito.test.resources.KogitoServiceRandomPortQuarkusTestResource;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.quarkus.test.common.QuarkusTestResource;

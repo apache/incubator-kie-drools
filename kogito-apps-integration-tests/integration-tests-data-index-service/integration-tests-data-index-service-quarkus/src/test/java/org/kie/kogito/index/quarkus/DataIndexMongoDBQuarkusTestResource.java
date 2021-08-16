@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.resources.DataIndexMongoDBResource;
-import org.kie.kogito.resources.ConditionalQuarkusTestResource;
+import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
 public class DataIndexMongoDBQuarkusTestResource extends ConditionalQuarkusTestResource<DataIndexMongoDBResource> {
 

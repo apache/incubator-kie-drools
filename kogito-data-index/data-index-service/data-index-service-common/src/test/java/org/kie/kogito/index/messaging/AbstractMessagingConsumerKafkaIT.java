@@ -25,7 +25,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.index.DataIndexStorageService;
-import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import io.restassured.http.ContentType;
@@ -45,11 +45,11 @@ public abstract class AbstractMessagingConsumerKafkaIT {
     @Inject
     public DataIndexStorageService cacheService;
 
-    KafkaClient kafkaClient;
+    KafkaTestClient kafkaClient;
 
     @BeforeEach
     void setup() {
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
         cacheService.getJobsCache().clear();
         cacheService.getProcessInstancesCache().clear();
         cacheService.getUserTaskInstancesCache().clear();

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.resources;
+package org.kie.kogito.test.resources;
 
 import java.util.Map;
 
@@ -22,14 +22,14 @@ import org.kie.kogito.testcontainers.JobServiceContainer;
 import static java.util.Collections.singletonMap;
 
 /**
- * Infinispan spring boot resource that works within the test lifecycle.
+ * Infinispan quarkus resource that works within the test lifecycle.
  *
  */
-public class JobServiceSpringBootTestResource extends ConditionalSpringBootTestResource<JobServiceContainer> {
+public class JobServiceQuarkusTestResource extends ConditionalQuarkusTestResource {
 
     public static final String JOBS_SERVICE_URL = "kogito.jobs-service.url";
 
-    public JobServiceSpringBootTestResource() {
+    public JobServiceQuarkusTestResource() {
         super(new JobServiceContainer());
     }
 
@@ -38,11 +38,4 @@ public class JobServiceSpringBootTestResource extends ConditionalSpringBootTestR
         return singletonMap(JOBS_SERVICE_URL, "http://localhost:" + getTestResource().getMappedPort());
     }
 
-    public static class Conditional extends JobServiceSpringBootTestResource {
-
-        public Conditional() {
-            super();
-            enableConditional();
-        }
-    }
 }

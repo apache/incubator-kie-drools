@@ -21,9 +21,9 @@ import java.util.Map;
 
 import org.kie.kogito.index.testcontainers.AbstractDataIndexContainer;
 import org.kie.kogito.index.testcontainers.DataIndexInfinispanContainer;
-import org.kie.kogito.resources.TestResource;
 import org.kie.kogito.taskassigning.testcontainers.TaskAssigningProcessesContainer;
 import org.kie.kogito.taskassigning.testcontainers.TaskAssigningServiceContainer;
+import org.kie.kogito.test.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoInfinispanContainer;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.slf4j.Logger;

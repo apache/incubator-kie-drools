@@ -19,7 +19,7 @@ package org.kie.kogito.taskassigning.resources;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.kie.kogito.resources.ConditionalQuarkusTestResource;
+import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
 public class TaskAssigningServiceQuarkusTestResource extends ConditionalQuarkusTestResource<TaskAssigningServiceResource> {
 

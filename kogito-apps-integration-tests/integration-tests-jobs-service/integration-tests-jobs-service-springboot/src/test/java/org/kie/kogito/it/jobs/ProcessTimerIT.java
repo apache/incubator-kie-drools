@@ -17,8 +17,8 @@ package org.kie.kogito.it.jobs;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.KogitoApplication;
-import org.kie.kogito.resources.JobServiceSpringBootTestResource;
-import org.kie.kogito.resources.KogitoServiceRandomPortSpringBootTestResource;
+import org.kie.kogito.test.resources.JobServiceSpringBootTestResource;
+import org.kie.kogito.test.resources.KogitoServiceRandomPortSpringBootTestResource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;

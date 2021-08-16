@@ -18,7 +18,7 @@ package org.kie.kogito.index.quarkus;
 import java.util.Map;
 
 import org.kie.kogito.index.resources.KogitoServiceRandomPortTestResource;
-import org.kie.kogito.resources.ConditionalQuarkusTestResource;
+import org.kie.kogito.test.resources.ConditionalQuarkusTestResource;
 
 import static java.util.Collections.singletonMap;
 

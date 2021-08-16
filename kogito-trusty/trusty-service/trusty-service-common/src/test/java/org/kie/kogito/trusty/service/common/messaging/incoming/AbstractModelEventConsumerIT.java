@@ -22,7 +22,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.kafka.KafkaClient;
+import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
@@ -43,7 +43,7 @@ public abstract class AbstractModelEventConsumerIT {
     @Inject
     TrustyStorageService trustyStorageService;
 
-    KafkaClient kafkaClient;
+    KafkaTestClient kafkaClient;
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
     private String kafkaBootstrapServers;
@@ -51,7 +51,7 @@ public abstract class AbstractModelEventConsumerIT {
     @BeforeEach
     public void setup() {
         trustyStorageService.getModelStorage().clear();
-        kafkaClient = new KafkaClient(kafkaBootstrapServers);
+        kafkaClient = new KafkaTestClient(kafkaBootstrapServers);
     }
 
     @AfterEach

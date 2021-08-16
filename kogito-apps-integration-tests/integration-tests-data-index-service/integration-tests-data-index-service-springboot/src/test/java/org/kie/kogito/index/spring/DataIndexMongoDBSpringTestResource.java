@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kie.kogito.index.resources.DataIndexMongoDBResource;
-import org.kie.kogito.resources.ConditionalSpringBootTestResource;
+import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
 
 public class DataIndexMongoDBSpringTestResource extends ConditionalSpringBootTestResource<DataIndexMongoDBResource> {
 

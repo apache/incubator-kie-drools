@@ -21,7 +21,7 @@ import java.util.Map;
 
 import org.kie.kogito.index.testcontainers.DataIndexPostgreSqlContainer;
 import org.kie.kogito.index.testcontainers.KogitoKafkaContainerWithoutBridge;
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoPostgreSqlContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

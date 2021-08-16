@@ -16,7 +16,7 @@
 
 package org.kie.kogito.taskassigning.testcontainers;
 
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.kie.kogito.testcontainers.KogitoGenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 
