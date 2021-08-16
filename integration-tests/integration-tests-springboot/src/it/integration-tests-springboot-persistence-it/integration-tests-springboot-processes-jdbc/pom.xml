@@ -65,7 +65,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-test-utils</artifactId>
+      <artifactId>kogito-spring-boot-test-utils</artifactId>
       <version>${project.version}</version>
       <scope>test</scope>
     </dependency>

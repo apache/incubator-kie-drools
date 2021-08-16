@@ -17,8 +17,8 @@ package org.kie.kogito.integrationtests.springboot.utils;
 
 import java.util.Map;
 
-import org.kie.kogito.resources.ConditionalSpringBootTestResource;
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
+import org.kie.kogito.test.resources.TestResource;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
 

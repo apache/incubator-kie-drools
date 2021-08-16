@@ -17,7 +17,7 @@ package org.kie.kogito.testcontainers;
 
 import java.time.Duration;
 
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.testcontainers.containers.BindMode;
 import org.testcontainers.containers.wait.strategy.Wait;
 

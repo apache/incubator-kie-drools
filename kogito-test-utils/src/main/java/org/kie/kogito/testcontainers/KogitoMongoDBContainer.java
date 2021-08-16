@@ -15,7 +15,7 @@
  */
 package org.kie.kogito.testcontainers;
 
-import org.kie.kogito.resources.TestResource;
+import org.kie.kogito.test.resources.TestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.MongoDBContainer;

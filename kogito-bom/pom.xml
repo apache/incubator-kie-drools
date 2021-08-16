@@ -1748,6 +1748,16 @@
         <artifactId>kogito-test-utils</artifactId>
         <version>${project.version}</version>
       </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-quarkus-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.kie.kogito</groupId>
+        <artifactId>kogito-spring-boot-test-utils</artifactId>
+        <version>${project.version}</version>
+      </dependency>
     </dependencies>
 
   </dependencyManagement>

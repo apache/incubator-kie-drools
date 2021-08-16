@@ -19,6 +19,7 @@
   
   <modules>
     <module>bom</module>
+    <module>test</module>
     <module>extensions</module>
     <module>addons</module>
   </modules>

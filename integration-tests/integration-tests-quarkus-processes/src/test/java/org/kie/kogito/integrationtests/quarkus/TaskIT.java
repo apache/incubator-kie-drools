@@ -45,7 +45,7 @@ import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchema;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @QuarkusTest
 class TaskIT {

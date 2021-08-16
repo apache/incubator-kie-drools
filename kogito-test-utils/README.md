@@ -1,11 +1,30 @@
 # Common Utils For Kogito
 
-Add the common utils dependency in the _pom.xml_ file:
+Add the needed utils dependency in the _pom.xml_ file:
 
+### Framework agnostic
 ```xml
 <dependency>
   <groupId>org.kie.kogito</groupId>
   <artifactId>kogito-test-utils</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+### Quarkus
+```xml
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-quarkus-test-utils</artifactId>
+  <scope>test</scope>
+</dependency>
+```
+
+### Spring Boot
+```xml
+<dependency>
+  <groupId>org.kie.kogito</groupId>
+  <artifactId>kogito-spring-boot-test-utils</artifactId>
   <scope>test</scope>
 </dependency>
 ```
@@ -146,7 +165,7 @@ And make use of it:
 
 ```java
 @Autowired
-private KafkaClient kafkaClient;
+private KafkaTestClient kafkaClient;
 ``` 
 
 - In Kafka:
