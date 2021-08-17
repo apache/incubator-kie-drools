@@ -25,16 +25,14 @@ import java.util.Optional;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.CastExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isNumber;
-import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isObject;
-import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
+import static java.util.Optional.of;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.uncastExpr;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.isNumber;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.operatorToName;
 
-// TODO need to add a specific case for map.
 // Also it would be better to move every coercion case here
 abstract class SpecialComparisonCase {
 
@@ -53,26 +51,40 @@ abstract class SpecialComparisonCase {
     abstract ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator);
 
     static SpecialComparisonCase specialComparisonFactory(TypedExpression left, TypedExpression right) {
-        if (isNumber(left) && !isObject(right) || isNumber(right) && !isObject(left)) { // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
+        if (isNumber(left) && !isObject(right.getRawClass()) || isNumber(right) && !isObject(left.getRawClass())) { // Don't coerce Object yet. EvaluationUtil will handle it dynamically later
             Optional<Class<?>> leftCast = typeNeedsCast(left.getType());
             Optional<Class<?>> rightCast = typeNeedsCast(right.getType());
             if (leftCast.isPresent() || rightCast.isPresent()) {
-                return new NumberComparisonWithCast(left, right, leftCast, rightCast);
+                return new ComparisonWithCast(true, left, right, of(Number.class), of(Number.class));
             } else {
                 return new NumberComparisonWithoutCast(left, right);
             }
+        } else if (isMap(left.getRawClass()) && isMap(right.getRawClass())){
+            return new ComparisonWithCast(left, right, of(Comparable.class), of(Comparable.class));
         } else {
             return new PlainEvaluation(left, right);
         }
     }
 
     private static Optional<Class<?>> typeNeedsCast(Type t) {
-        boolean needCast = t.equals(Object.class) || Map.class.isAssignableFrom((Class<?>) t) || List.class.isAssignableFrom((Class<?>) t);
+        boolean needCast = isObject((Class<?>)t) || isMap((Class<?>) t) || isList((Class<?>) t);
         if (needCast) {
-            return Optional.of((Class<?>) t);
+            return of((Class<?>) t);
         } else {
             return Optional.empty();
         }
+    }
+
+    private static boolean isList(Class<?> t) {
+        return List.class.isAssignableFrom(t);
+    }
+
+    private static boolean isMap(Class<?> t) {
+        return Map.class.isAssignableFrom(t);
+    }
+
+    static boolean isObject(Class<?> clazz) {
+        return clazz.equals(Object.class);
     }
 
     public TypedExpression getLeft() {
@@ -100,35 +112,49 @@ class NumberComparisonWithoutCast extends SpecialComparisonCase {
     }
 }
 
-class NumberComparisonWithCast extends SpecialComparisonCase {
+class ComparisonWithCast extends SpecialComparisonCase {
 
+    private boolean isNumberComparison;
     Optional<Class<?>> leftTypeCast;
     Optional<Class<?>> rightTypeCast;
 
-    NumberComparisonWithCast(TypedExpression left, TypedExpression right, Optional<Class<?>> leftTypeCast, Optional<Class<?>> rightTypeCast) {
+    ComparisonWithCast(boolean isNumberComparison,
+                       TypedExpression left,
+                       TypedExpression right,
+                       Optional<Class<?>> leftTypeCast,
+                       Optional<Class<?>> rightTypeCast) {
         super(left, right);
+        this.isNumberComparison = isNumberComparison;
         this.leftTypeCast = leftTypeCast;
         this.rightTypeCast = rightTypeCast;
     }
 
+    ComparisonWithCast(TypedExpression left,
+                       TypedExpression right,
+                       Optional<Class<?>> leftTypeCast,
+                       Optional<Class<?>> rightTypeCast) {
+        this(false, left, right, leftTypeCast, rightTypeCast);
+    }
+
     @Override
     public ConstraintParser.SpecialComparisonResult createCompareMethod(BinaryExpr.Operator operator) {
-        String methodName = getMethodName(operator) + "Numbers";
+        // Numbers have a more specific comparison method with this suffix
+        // See org.drools.modelcompiler.util.EvaluationUtil.greaterThanNumbers(java.lang.Number, java.lang.Number)
+        String numberMethod = isNumberComparison ? "Numbers" : "";
+        String methodName = getMethodName(operator) + numberMethod;
         MethodCallExpr compareMethod = new MethodCallExpr(null, methodName);
 
-        ClassOrInterfaceType numberClass = toClassOrInterfaceType(Number.class);
-
         if(leftTypeCast.isPresent()) {
-            CastExpr castExpr = new CastExpr(numberClass, left.getExpression());
+            CastExpr castExpr = new CastExpr(toJavaParserType(leftTypeCast.get()), left.getExpression());
             compareMethod.addArgument(castExpr);
-            this.left = right.cloneWithNewExpression(castExpr);
+            this.left = left.cloneWithNewExpression(castExpr);
         } else {
             compareMethod.addArgument(left.getExpression());
         }
 
 
         if(rightTypeCast.isPresent()) {
-            CastExpr castExpr = new CastExpr(numberClass, right.getExpression());
+            CastExpr castExpr = new CastExpr(toJavaParserType(rightTypeCast.get()), right.getExpression());
             this.right = right.cloneWithNewExpression(castExpr);
             compareMethod.addArgument(castExpr);
         } else {

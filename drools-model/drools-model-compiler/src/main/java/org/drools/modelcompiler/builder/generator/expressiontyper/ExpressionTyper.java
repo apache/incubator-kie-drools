@@ -403,6 +403,9 @@ public class ExpressionTyper {
         if(index.isNameExpr()) {
             context.addUsedDeclarations(printConstraint(index));
         }
+        if (scope.isNameExpr() && !scope.equals(new NameExpr(THIS_PLACEHOLDER))) {
+            context.addUsedDeclarations(printConstraint(scope));
+        }
         TypedExpression typedExpression = new TypedExpression(mapAccessExpr, type);
         return of(typedExpression);
     }

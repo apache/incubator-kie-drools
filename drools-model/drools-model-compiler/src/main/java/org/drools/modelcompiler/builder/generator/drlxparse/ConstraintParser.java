@@ -666,16 +666,12 @@ public class ConstraintParser {
         return new SpecialComparisonResult(expression, left, right);
     }
 
-    private static Boolean isString( TypedExpression right ) {
+    private static boolean isString(TypedExpression right) {
         return right.getBoxedType().map( String.class::isAssignableFrom ).orElse( false );
     }
 
-    static Boolean isNumber(TypedExpression left) {
+    static boolean isNumber(TypedExpression left) {
         return left.getBoxedType().map(ConstraintParser::isNumericType).orElse( false );
-    }
-
-    static Boolean isObject(TypedExpression te) {
-        return te.getRawClass().equals(Object.class);
     }
 
     private SpecialComparisonResult handleSpecialComparisonCases(ExpressionTyper expressionTyper, BinaryExpr.Operator operator, TypedExpression left, TypedExpression right) {
