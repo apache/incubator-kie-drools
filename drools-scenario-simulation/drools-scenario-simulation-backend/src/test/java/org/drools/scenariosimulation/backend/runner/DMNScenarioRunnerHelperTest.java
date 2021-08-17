@@ -56,9 +56,11 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.ast.DecisionNode;
+import org.kie.dmn.core.impl.DMNMessageImpl;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -78,6 +80,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
+import static org.kie.dmn.api.core.DMNMessage.Severity.ERROR;
+import static org.kie.dmn.api.core.DMNMessage.Severity.WARN;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.anyString;
@@ -337,12 +341,31 @@ public class DMNScenarioRunnerHelperTest {
         ValueWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
                                                                               null,
                                                                               failedDecision,
+                                                                              null,
                                                                               expressionEvaluator);
         assertFalse(failedResult.isValid());
-        assertEquals("The decision " +
+        assertEquals("The decision \"" +
                              failedDecision.getDecisionName() +
-                             " has not been successfully evaluated: " +
+                             "\" has not been successfully evaluated: " +
                              failedDecision.getEvaluationStatus(),
+                     failedResult.getErrorMessage().get());
+    }
+
+    @Test
+    public void getSingleFactValueResultFailDecisionWithMessages() {
+        DMNMessage errorMessage = new DMNMessageImpl(ERROR, "DMN Internal Error", DMNMessageType.FEEL_EVALUATION_ERROR, null);
+        DMNMessage warnMessage = new DMNMessageImpl(WARN, "DMN Internal Warn", DMNMessageType.FEEL_EVALUATION_ERROR, null);
+
+        DMNDecisionResult failedDecision = createDecisionResultMock("Test", false, new ArrayList<>());
+        ValueWrapper<?> failedResult = runnerHelper.getSingleFactValueResult(null,
+                                                                             null,
+                                                                             failedDecision,
+                                                                             Arrays.asList(warnMessage, errorMessage),
+                                                                             expressionEvaluator);
+        assertFalse(failedResult.isValid());
+        assertEquals("The decision \"" +
+                             failedDecision.getDecisionName() +
+                             "\" has not been successfully evaluated: DMN Internal Error",
                      failedResult.getErrorMessage().get());
     }
 
