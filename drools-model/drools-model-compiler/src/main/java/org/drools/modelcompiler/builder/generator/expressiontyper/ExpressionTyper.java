@@ -218,6 +218,9 @@ public class ExpressionTyper {
 
         if (drlxExpr instanceof HalfBinaryExpr) {
             final Expression binaryExpr = trasformHalfBinaryToBinary(drlxExpr);
+            if (binaryExpr instanceof BinaryExpr && ((BinaryExpr)binaryExpr).getLeft() == drlxExpr) {
+                throw new CannotTypeExpressionException("left leaf is the same : drlxExpr = " + drlxExpr + ", originalExpression = " + context.getOriginalExpression());
+            }
             return toTypedExpressionRec(binaryExpr);
         }
 
@@ -262,10 +265,11 @@ public class ExpressionTyper {
         }
 
         if (drlxExpr instanceof HalfPointFreeExpr) {
-
             final HalfPointFreeExpr halfPointFreeExpr = (HalfPointFreeExpr)drlxExpr;
-            Expression parentLeft = findLeftLeafOfNameExpr(halfPointFreeExpr.getParentNode().orElseThrow(UnsupportedOperationException::new));
-
+            Expression parentLeft = findLeftLeafOfNameExprTraversingParent(halfPointFreeExpr);
+            if (parentLeft == halfPointFreeExpr) {
+                throw new CannotTypeExpressionException("left leaf is the same : halfPointFreeExpr = " + halfPointFreeExpr + ", originalExpression = " + context.getOriginalExpression());
+            }
             Optional<TypedExpression> optLeft = toTypedExpressionRec(parentLeft);
             OperatorSpec opSpec = getOperatorSpec(halfPointFreeExpr.getRight(), halfPointFreeExpr.getOperator());
 
@@ -1159,6 +1163,17 @@ public class ExpressionTyper {
         return fieldName.getIdentifier();
     }
 
+    public static Expression findLeftLeafOfNameExprTraversingParent(Node expression) {
+        Optional<Expression> optParent = expression.findAncestor(Expression.class, expr -> {
+            Expression leftLeaf = findLeftLeafOfNameExpr(expr);
+            return !(leftLeaf instanceof HalfBinaryExpr || leftLeaf instanceof HalfPointFreeExpr);
+        });
+        if (optParent.isPresent()) {
+            return findLeftLeafOfNameExpr(optParent.get());
+        } else {
+            throw new CannotTypeExpressionException("Cannot find a left leaf : expression = " + expression);
+        }
+    }
 
     public static Expression findLeftLeafOfNameExpr(Node expression) {
         if (expression instanceof BinaryExpr) {

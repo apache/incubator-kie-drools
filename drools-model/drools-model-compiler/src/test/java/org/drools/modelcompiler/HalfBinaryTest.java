@@ -14,6 +14,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
@@ -224,5 +228,53 @@ public class HalfBinaryTest extends BaseModelTest {
         ksession.insert( q );
         ksession.insert( s );
         assertEquals( 2, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testHalfBinaryOrAndAmpersand() {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "global java.util.List result;\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person(age < 15 || > 20 && < 30)\n" +
+                           "then\n" +
+                           "    result.add($p.getName());\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(drl);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("A", 12));
+        ksession.insert(new Person("B", 18));
+        ksession.insert(new Person("C", 25));
+        ksession.insert(new Person("D", 40));
+
+        ksession.fireAllRules();
+        Assertions.assertThat(result).containsExactlyInAnyOrder("A", "C");
+    }
+
+    @Test
+    public void testNestedHalfBinaryOrAndAmpersand() {
+        final String drl =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "global java.util.List result;\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person(name != \"X\" && (age < 15 || > 20 && < 30))\n" +
+                           "then\n" +
+                           "    result.add($p.getName());\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(drl);
+        List<String> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        ksession.insert(new Person("A", 12));
+        ksession.insert(new Person("B", 18));
+        ksession.insert(new Person("C", 25));
+        ksession.insert(new Person("D", 40));
+
+        ksession.fireAllRules();
+        Assertions.assertThat(result).containsExactlyInAnyOrder("A", "C");
     }
 }

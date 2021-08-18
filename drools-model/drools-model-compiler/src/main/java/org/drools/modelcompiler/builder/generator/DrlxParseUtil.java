@@ -110,7 +110,7 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
-import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExpr;
+import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
@@ -359,10 +359,8 @@ public class DrlxParseUtil {
     public static Expression trasformHalfBinaryToBinary(Expression drlxExpr) {
         final Optional<Node> parent = drlxExpr.getParentNode();
         if(drlxExpr instanceof HalfBinaryExpr && parent.isPresent()) {
-
             HalfBinaryExpr halfBinaryExpr = (HalfBinaryExpr) drlxExpr;
-
-            Expression parentLeft = findLeftLeafOfNameExpr( parent.get() );
+            Expression parentLeft = findLeftLeafOfNameExprTraversingParent( halfBinaryExpr );
             Operator operator = toBinaryExprOperator(halfBinaryExpr.getOperator());
             return new BinaryExpr(parentLeft, halfBinaryExpr.getRight(), operator);
         }

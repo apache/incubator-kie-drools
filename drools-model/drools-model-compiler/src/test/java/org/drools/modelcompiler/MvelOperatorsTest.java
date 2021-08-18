@@ -102,6 +102,23 @@ public class MvelOperatorsTest extends BaseModelTest {
     }
 
     @Test
+    public void testStrHalfOrAndAmpersand() {
+        String str =
+            "rule R when\n" +
+            "    String(this str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4)"+
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
+        ksession.insert( "Luca" );
+        ksession.insert( "Edoardo" );
+        ksession.insert( "Valentina" );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
     public void testRange() {
         String str =
                 "import " + Person.class.getCanonicalName() + "\n" +
