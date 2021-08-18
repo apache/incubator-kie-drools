@@ -223,7 +223,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected InternalFactHandle initialFactHandle;
 
     private PropagationContextFactory pctxFactory;
-    private FactHandleFactory factHandleFactory;
 
     protected SessionConfiguration config;
 
@@ -390,7 +389,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         registerReceiveNodes(kBase.getReceiveNodes());
 
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.factHandleFactory = this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService();
 
         if (agenda == null) {
             this.agenda = kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(kBase);
@@ -1205,7 +1203,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandleFactory getFactHandleFactory() {
-        return factHandleFactory;
+        return handleFactory;
     }
 
     public void setGlobal(final String identifier,

@@ -50,7 +50,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-    * @see org.kie.reteoo.FactHandleFactory#newFactHandle()
+    * @see org.drools.core.spi.FactHandleFactory#newFactHandle()
     */
     public final InternalFactHandle newFactHandle(Object object,
                                                   ObjectTypeConf conf,
@@ -64,7 +64,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.drools.core.spi.FactHandleFactory#newFactHandle(long)
      */
     public final InternalFactHandle newFactHandle(long id,
                                                   Object object,
@@ -80,7 +80,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newFactHandle(long)
+     * @see org.drools.core.spi.FactHandleFactory#newFactHandle(long)
      */
     public abstract InternalFactHandle newFactHandle(long id,
                                                      Object object,
@@ -98,7 +98,7 @@ public abstract class AbstractFactHandleFactory
     }
 
     /* (non-Javadoc)
-     * @see org.kie.reteoo.FactHandleFactory#newInstance()
+     * @see org.drools.core.spi.FactHandleFactory#newInstance()
      */
     public abstract FactHandleFactory newInstance();
 
