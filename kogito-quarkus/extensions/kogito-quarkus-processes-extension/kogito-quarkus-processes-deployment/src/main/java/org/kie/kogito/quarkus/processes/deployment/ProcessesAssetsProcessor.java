@@ -115,6 +115,11 @@ public class ProcessesAssetsProcessor {
         return new IndexDependencyBuildItem("com.google.protobuf", "protobuf-java");
     }
 
+    @BuildStep
+    public ReflectiveClassBuildItem reflectionRestWorkItemHandler() {
+        return new ReflectiveClassBuildItem(true, true, "org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder");
+    }
+
     /**
      * Main entry point of the Quarkus extension
      */

@@ -15,10 +15,14 @@
  */
 package org.jbpm.process.test;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Person {
 
+    @JsonProperty("Name")
     private String name;
 
+    @JsonProperty("Age")
     private int age;
 
     public Person() {

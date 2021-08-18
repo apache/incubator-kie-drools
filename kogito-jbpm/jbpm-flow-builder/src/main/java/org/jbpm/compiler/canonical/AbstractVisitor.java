@@ -16,18 +16,28 @@
 package org.jbpm.compiler.canonical;
 
 import java.util.Map;
+import java.util.Set;
 
+import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+
+import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
+import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.utils.StringEscapeUtils;
 
+import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VARIABLE;
 import static org.jbpm.ruleflow.core.factory.NodeFactory.METHOD_METADATA;
 
 public abstract class AbstractVisitor {
@@ -74,5 +84,23 @@ public abstract class AbstractVisitor {
                 body.addStatement(getFactoryMethod(variableName, METHOD_METADATA, new StringLiteralExpr(k), expression));
             }
         });
+    }
+
+    protected void visitVariableScope(String field, VariableScope variableScope, BlockStmt body, Set<String> visitedVariables, String contextClass) {
+        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
+            for (Variable variable : variableScope.getVariables()) {
+                if (!visitedVariables.add(variable.getName())) {
+                    continue;
+                }
+                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
+                ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
+                MethodCallExpr classLoaderMethodCallExpr = new MethodCallExpr()
+                        .setScope(new ClassExpr(new ClassOrInterfaceType(null, contextClass)))
+                        .setName("getClassLoader");
+                ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType()), classLoaderMethodCallExpr));
+                body.addStatement(getFactoryMethod(field, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()), variableValue, new StringLiteralExpr(Variable.VARIABLE_TAGS),
+                        tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
+            }
+        }
     }
 }

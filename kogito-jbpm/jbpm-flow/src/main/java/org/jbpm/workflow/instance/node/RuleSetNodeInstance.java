@@ -38,6 +38,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.core.impl.DataTransformerRegistry;
+import org.jbpm.process.core.transformation.JsonResolver;
 import org.jbpm.process.instance.ContextInstance;
 import org.jbpm.process.instance.ContextInstanceContainer;
 import org.jbpm.process.instance.context.exception.ExceptionScopeInstance;
@@ -67,6 +68,7 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.decision.DecisionModel;
 import org.kie.kogito.dmn.DmnDecisionModel;
+import org.kie.kogito.dmn.rest.DMNJSONUtils;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.rules.RuleUnitData;
 import org.kie.kogito.rules.RuleUnitInstance;
@@ -90,6 +92,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
     private Map<String, FactHandle> factHandles = new HashMap<>();
     private String ruleFlowGroup;
+    private final JsonResolver jsonResolver = new JsonResolver();
 
     // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
@@ -134,9 +137,9 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
                                         model))
                                 .get();
 
-                DMNContext context = modelInstance.newContext(inputs);
+                //Input Binding
+                DMNContext context = DMNJSONUtils.ctx(modelInstance, jsonResolver.resolveAll(inputs));
                 DMNResult dmnResult = modelInstance.evaluateAll(context);
-
                 if (dmnResult.hasErrors()) {
                     String errors = dmnResult.getMessages(Severity.ERROR).stream()
                             .map(Object::toString)
@@ -144,6 +147,7 @@ public class RuleSetNodeInstance extends StateBasedNodeInstance implements Event
 
                     throw new RuntimeException("DMN result errors:: " + errors);
                 }
+                //Output Binding
                 processOutputs(dmnResult.getContext().getAll());
                 triggerCompleted();
             } else if (ruleType.isRuleFlowGroup()) {

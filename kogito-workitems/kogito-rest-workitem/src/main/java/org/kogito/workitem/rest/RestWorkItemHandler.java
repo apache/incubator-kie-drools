@@ -15,12 +15,16 @@
  */
 package org.kogito.workitem.rest;
 
-import java.net.URI;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.UnaryOperator;
 
 import org.jbpm.process.core.Process;
@@ -63,6 +67,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     private static final Logger logger = LoggerFactory.getLogger(RestWorkItemHandler.class);
     private static final RestWorkItemHandlerResult DEFAULT_RESULT_HANDLER = new DefaultRestWorkItemHandlerResult();
     private static final RestWorkItemHandlerBodyBuilder DEFAULT_BODY_BUILDER = new DefaultWorkItemHandlerBodyBuilder();
+    private static final Map<String, RestWorkItemHandlerBodyBuilder> BODY_BUILDERS = new ConcurrentHashMap<>();
 
     // package scoped to allow unit test
     static class RestUnaryOperator implements UnaryOperator<Object> {
@@ -93,12 +98,15 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         logger.debug("Using target {}", targetInfo);
         //retrieving parameters
         Map<String, Object> parameters = new HashMap<>(workItem.getParameters());
+        //removing unnecessary parameter
+        parameters.remove("TaskName");
+
         String endPoint = getParam(parameters, URL, String.class, null);
         if (endPoint == null) {
             throw new IllegalArgumentException("Missing required parameter " + URL);
         }
         HttpMethod method = HttpMethod.valueOf(getParam(parameters, METHOD, String.class, "GET").toUpperCase());
-        Object inputModel = getParam(parameters, CONTENT_DATA, Object.class, Collections.emptyMap());
+        Object inputModel = getParam(parameters, CONTENT_DATA, Object.class, null);
         String user = getParam(parameters, USER, String.class, null);
         String password = getParam(parameters, PASSWORD, String.class, null);
         String hostProp = getParam(parameters, HOST, String.class, "localhost");
@@ -106,23 +114,65 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
         RestWorkItemHandlerResult resultHandler = getParam(parameters, RESULT_HANDLER, RestWorkItemHandlerResult.class,
                 DEFAULT_RESULT_HANDLER);
-        RestWorkItemHandlerBodyBuilder bodyBuilder = getParam(parameters, BODY_BUILDER, RestWorkItemHandlerBodyBuilder.class,
-                DEFAULT_BODY_BUILDER);
+        RestWorkItemHandlerBodyBuilder bodyBuilder = getBodyBuilder(parameters);
 
         logger.debug("Filtered parameters are {}", parameters);
         // create request
         UnaryOperator<Object> resolver = new RestUnaryOperator(inputModel);
         endPoint = resolvePathParams(endPoint, parameters, resolver);
-        URI uri = URI.create(endPoint);
-        String host = uri.getHost() != null ? uri.getHost() : hostProp;
-        int port = uri.getPort() > 0 ? uri.getPort() : portProp;
-        HttpRequest<Buffer> request = client.request(method, port, host, uri.getPath());
+        Optional<URL> url = getUrl(endPoint);
+        String host = url.map(java.net.URL::getHost).orElse(hostProp);
+        int port = url.map(java.net.URL::getPort).orElse(portProp);
+        String path = url.map(java.net.URL::getPath).orElse(endPoint).replace(" ", "%20");//fix issue with spaces in the path
+
+        HttpRequest<Buffer> request = client.request(method, port, host, path);
         if (user != null && !user.trim().isEmpty() && password != null && !password.trim().isEmpty()) {
             request.basicAuthentication(user, password);
         }
         HttpResponse<Buffer> response = method == HttpMethod.POST || method == HttpMethod.PUT ? request.sendJsonAndAwait(bodyBuilder.apply(inputModel, parameters, resolver)) : request.sendAndAwait();
         manager.completeWorkItem(workItem.getStringId(), targetInfo != null ? Collections.singletonMap(RESULT,
                 resultHandler.apply(targetInfo, response)) : Collections.emptyMap());
+
+    }
+
+    public RestWorkItemHandlerBodyBuilder getBodyBuilder(Map<String, Object> parameters) {
+        Object param = parameters.get(BODY_BUILDER);
+        //in case the body builder is not set as an input, just use the default
+        if (Objects.isNull(param)) {
+            return DEFAULT_BODY_BUILDER;
+        }
+        //check if an instance of RestWorkItemHandlerBodyBuilder was set and just return it
+        if (param instanceof RestWorkItemHandlerBodyBuilder) {
+            return (RestWorkItemHandlerBodyBuilder) param;
+        }
+        //in case of String, try to load an instance by the FQN of a RestWorkItemHandlerBodyBuilder
+        if (param instanceof String) {
+            return BODY_BUILDERS.computeIfAbsent(param.toString(), this::loadBodyBuilder);
+        }
+        throw new IllegalArgumentException("Invalid body builder instance " + param);
+    }
+
+    private RestWorkItemHandlerBodyBuilder loadBodyBuilder(String className) {
+        try {
+            return getClassLoader().loadClass(className).asSubclass(RestWorkItemHandlerBodyBuilder.class).getConstructor().newInstance();
+        } catch (ReflectiveOperationException | ClassCastException e) {
+            throw new IllegalArgumentException("Invalid RestWorkItemHandlerBodyBuilder Class " + className, e);
+        }
+    }
+
+    private ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
+    }
+
+    private Optional<URL> getUrl(String endPoint) {
+        return Optional.ofNullable(endPoint)
+                .map(spec -> {
+                    try {
+                        return new URL(spec);
+                    } catch (MalformedURLException e) {
+                        return null;
+                    }
+                });
     }
 
     private RestWorkItemTargetInfo getTargetInfo(KogitoWorkItem workItem) {
@@ -146,7 +196,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
         Variable variable = variableScope.findVariable(varName);
         if (variable != null) {
             try {
-                return Class.forName(variable.getType().getStringType());
+                return getClassLoader().loadClass(variable.getType().getStringType());
             } catch (ClassNotFoundException e) {
                 throw new IllegalStateException("Problem loading type " + variable.getType().getStringType(), e);
             }

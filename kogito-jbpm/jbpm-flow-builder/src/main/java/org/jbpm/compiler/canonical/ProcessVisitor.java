@@ -30,9 +30,7 @@ import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.ActionExceptionHandler;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.exception.ExceptionScope;
-import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
 import org.jbpm.process.instance.impl.actions.SignalProcessInstanceAction;
 import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
@@ -65,7 +63,6 @@ import org.kie.api.definition.process.Process;
 import org.kie.api.definition.process.WorkflowProcess;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
 
-import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.BooleanLiteralExpr;
@@ -74,7 +71,6 @@ import com.github.javaparser.ast.expr.LongLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
-import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
@@ -93,7 +89,6 @@ import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_IMPORTS;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_NAME;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_PACKAGE_NAME;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VALIDATE;
-import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VARIABLE;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VERSION;
 import static org.jbpm.ruleflow.core.RuleFlowProcessFactory.METHOD_VISIBILITY;
 
@@ -136,13 +131,14 @@ public class ProcessVisitor extends AbstractVisitor {
         VariableDeclarationExpr factoryField = new VariableDeclarationExpr(processFactoryType, FACTORY_FIELD_NAME);
         MethodCallExpr assignFactoryMethod = new MethodCallExpr(new NameExpr(processFactoryType.getName().asString()), "createProcess");
         assignFactoryMethod.addArgument(new StringLiteralExpr(process.getId()));
+
         body.addStatement(new AssignExpr(factoryField, assignFactoryMethod, AssignExpr.Operator.ASSIGN));
 
         // item definitions
         Set<String> visitedVariables = new HashSet<>();
         VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(VariableScope.VARIABLE_SCOPE);
 
-        visitVariableScope(variableScope, body, visitedVariables);
+        visitVariableScope(FACTORY_FIELD_NAME, variableScope, body, visitedVariables, metadata.getProcessClassName());
         visitSubVariableScopes(process.getNodes(), body, visitedVariables);
 
         //exception scope
@@ -177,28 +173,12 @@ public class ProcessVisitor extends AbstractVisitor {
         processMethod.setBody(body);
     }
 
-    private void visitVariableScope(VariableScope variableScope, BlockStmt body, Set<String> visitedVariables) {
-        if (variableScope != null && !variableScope.getVariables().isEmpty()) {
-            for (Variable variable : variableScope.getVariables()) {
-
-                if (!visitedVariables.add(variable.getName())) {
-                    continue;
-                }
-                String tags = (String) variable.getMetaData(Variable.VARIABLE_TAGS);
-                ClassOrInterfaceType variableType = new ClassOrInterfaceType(null, ObjectDataType.class.getSimpleName());
-                ObjectCreationExpr variableValue = new ObjectCreationExpr(null, variableType, new NodeList<>(new StringLiteralExpr(variable.getType().getStringType())));
-                body.addStatement(getFactoryMethod(FACTORY_FIELD_NAME, METHOD_VARIABLE, new StringLiteralExpr(variable.getName()), variableValue, new StringLiteralExpr(Variable.VARIABLE_TAGS),
-                        tags != null ? new StringLiteralExpr(tags) : new NullLiteralExpr()));
-            }
-        }
-    }
-
     private void visitSubVariableScopes(org.kie.api.definition.process.Node[] nodes, BlockStmt body, Set<String> visitedVariables) {
         for (org.kie.api.definition.process.Node node : nodes) {
             if (node instanceof ContextContainer) {
                 VariableScope variableScope = (VariableScope) ((ContextContainer) node).getDefaultContext(VariableScope.VARIABLE_SCOPE);
                 if (variableScope != null) {
-                    visitVariableScope(variableScope, body, visitedVariables);
+                    visitVariableScope(FACTORY_FIELD_NAME, variableScope, body, visitedVariables, node.getClass().getName());
                 }
             }
             if (node instanceof NodeContainer) {

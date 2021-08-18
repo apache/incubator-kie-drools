@@ -16,19 +16,16 @@
 package org.kogito.workitem.rest.bodybuilders;
 
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.function.UnaryOperator;
-import java.util.stream.Collectors;
+
+import static org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder.buildMap;
 
 public class ParamsRestWorkItemHandlerBodyBuilder implements RestWorkItemHandlerBodyBuilder {
 
     @Override
     public Object apply(Object inputModel, Map<String, Object> parameters, UnaryOperator<Object> resolver) {
         // if parameters is empty at this stage, assume post content is the whole input model
-        // if not, build a map from parameters remaining
-        return parameters.isEmpty() ? inputModel
-                : parameters.entrySet().stream().collect(Collectors.toMap(
-                        Entry::getKey, e -> resolver.apply(e.getValue())));
+        // if not, build a map from parameters remaining        
+        return parameters.isEmpty() ? inputModel : buildMap(parameters, resolver);
     }
-
 }

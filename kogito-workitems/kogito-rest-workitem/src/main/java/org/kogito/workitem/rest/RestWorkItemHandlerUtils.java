@@ -18,6 +18,10 @@ package org.kogito.workitem.rest;
 import java.beans.IntrospectionException;
 import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.Objects;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,14 +66,37 @@ public class RestWorkItemHandlerUtils {
         for (PropertyDescriptor descriptor : propertyDescritors) {
             if (descriptor.getName().equals(name)) {
                 try {
-                    descriptor.getWriteMethod().invoke(target, value);
-                } catch (ReflectiveOperationException e) {
+                    descriptor.getWriteMethod().invoke(target, convert(value, descriptor.getWriteMethod().getParameterTypes()[0]));
+                } catch (ReflectiveOperationException | NumberFormatException e) {
                     logger.error("Error invoking setter for {} with value {}", name, value, e);
                 }
                 return;
             }
         }
-        logger.warn("No property found for name {}", name);
+        logger.debug("No property found for name {}", name);
+    }
+
+    private static Object convert(Object value, Class<?> targetClass) {
+        if (Objects.nonNull(value) && !targetClass.isAssignableFrom(value.getClass())) {
+            if (targetClass.isAssignableFrom(Date.class)) {
+                if (value instanceof String) {
+                    return Date.from(Instant.from(DateTimeFormatter.ISO_DATE_TIME.parse(value.toString())));
+                } else if (value instanceof Number) {
+                    return new Date(((Number) value).longValue());
+                }
+            } else if (targetClass.isAssignableFrom(Integer.class) && value instanceof String) {
+                return Integer.parseInt(value.toString());
+            } else if (targetClass.isAssignableFrom(Long.class) && value instanceof String) {
+                return Long.parseLong(value.toString());
+            } else if (targetClass.isAssignableFrom(Boolean.class) && value instanceof String) {
+                return Boolean.parseBoolean(value.toString());
+            } else if (targetClass.isAssignableFrom(Float.class) && value instanceof String) {
+                return Float.parseFloat(value.toString());
+            } else if (targetClass.isAssignableFrom(Double.class) && value instanceof String) {
+                return Double.parseDouble(value.toString());
+            }
+        }
+        return value;
     }
 
     private static ObjectNode mergeJson(JsonObject src, ObjectNode target) {

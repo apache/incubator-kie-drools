@@ -18,6 +18,10 @@
       <artifactId>jbpm-flow</artifactId>
     </dependency>
     <dependency>
+      <groupId>io.smallrye.reactive</groupId>
+      <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter-api</artifactId>
       <scope>test</scope>
@@ -38,8 +42,14 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>io.smallrye.reactive</groupId>
-      <artifactId>smallrye-mutiny-vertx-web-client</artifactId>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
