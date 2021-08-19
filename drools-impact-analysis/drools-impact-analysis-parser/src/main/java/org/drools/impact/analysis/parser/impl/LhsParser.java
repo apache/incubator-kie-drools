@@ -88,7 +88,7 @@ public class LhsParser {
             context.addDeclaration( patternDescr.getIdentifier(), patternClass );
         }
 
-        ConstraintParser constraintParser = new ConstraintParser(context, packageModel);
+        ConstraintParser constraintParser = ConstraintParser.defaultConstraintParser(context, packageModel);
         for (BaseDescr constraintDescr : patternDescr.getConstraint().getDescrs()) {
             parseConstraint( context, patternDescr, pattern, constraintParser, constraintDescr );
         }
