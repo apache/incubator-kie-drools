@@ -503,7 +503,7 @@ limitations under the License.
                 </excludes>
                 <useDefaultExcludes>false</useDefaultExcludes>
                 <properties>
-                  <license.git.copyrightLastYearMaxCommitsLookup>100</license.git.copyrightLastYearMaxCommitsLookup> 
+                  <license.git.copyrightLastYearMaxCommitsLookup>100</license.git.copyrightLastYearMaxCommitsLookup>
                 </properties>
               </licenseSet>
             </licenseSets>

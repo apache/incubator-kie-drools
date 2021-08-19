@@ -57,7 +57,7 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-test-maven</artifactId>
-      <version>${version.io.quarkus}</version>
+      <version>${version.io.quarkus.quarkus-test-maven}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
