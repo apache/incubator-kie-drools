@@ -16,7 +16,6 @@
 package org.kie.kogito.addon.cloudevents.quarkus;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,7 +33,6 @@ import org.kie.kogito.event.KogitoEventStreams;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.runtime.annotations.RegisterForReflection;
 import io.smallrye.reactive.messaging.ChannelRegistar;
 import io.smallrye.reactive.messaging.DefaultMediatorConfiguration;
 import io.smallrye.reactive.messaging.MediatorConfiguration;
@@ -44,7 +42,6 @@ import io.smallrye.reactive.messaging.annotations.Merge.Mode;
 import io.smallrye.reactive.messaging.extension.MediatorManager;
 
 @ApplicationScoped
-@RegisterForReflection
 @Named(KogitoEventStreams.DEFAULT_INCOMING_BEAN_NAME)
 public class QuarkusCloudEventReceiver extends AbstractQuarkusCloudEventReceiver implements ChannelRegistar {
 
@@ -58,52 +55,46 @@ public class QuarkusCloudEventReceiver extends AbstractQuarkusCloudEventReceiver
     private BeanManager beanManager;
 
     MediatorConfiguration mediatorConf() {
+        try {
+            Bean<?> bean = beanManager.resolve(beanManager.getBeans(QuarkusCloudEventReceiver.class));
+            Method method = AbstractQuarkusCloudEventReceiver.class.getMethod("produce", Message.class);
+            return new DefaultMediatorConfiguration(
+                    method,
+                    bean) {
 
-        Bean<?> bean = beanManager.resolve(beanManager.getBeans(QuarkusCloudEventReceiver.class));
-        return new DefaultMediatorConfiguration(
-                getMethod(bean),
-                bean) {
+                @Override
+                public List<String> getIncoming() {
+                    return Collections.singletonList(KogitoEventStreams.INCOMING);
+                }
 
-            @Override
-            public List<String> getIncoming() {
-                return Collections.singletonList(KogitoEventStreams.INCOMING);
-            }
+                @Override
+                public Shape shape() {
+                    return Shape.SUBSCRIBER;
+                }
 
-            @Override
-            public Shape shape() {
-                return Shape.SUBSCRIBER;
-            }
+                @Override
+                public Consumption consumption() {
+                    return Consumption.MESSAGE;
+                }
 
-            @Override
-            public Consumption consumption() {
-                return Consumption.MESSAGE;
-            }
+                @Override
+                public boolean isBlocking() {
+                    return false;
+                }
 
-            @Override
-            public boolean isBlocking() {
-                return false;
-            }
+                @Override
+                public Acknowledgment.Strategy getAcknowledgment() {
+                    return Strategy.MANUAL;
+                }
 
-            @Override
-            public Acknowledgment.Strategy getAcknowledgment() {
-                return Strategy.MANUAL;
-            }
-
-            @Override
-            public Merge.Mode getMerge() {
-                return Mode.MERGE;
-            }
-        };
-    }
-
-    private Method getMethod(Bean<?> bean) {
-        Method[] methods = bean.getBeanClass().getMethods();
-        for (Method m : methods) {
-            if (m.getParameterCount() == 1 && Message.class.isAssignableFrom(m.getParameterTypes()[0])) {
-                return m;
-            }
+                @Override
+                public Merge.Mode getMerge() {
+                    return Mode.MERGE;
+                }
+            };
+        } catch (NoSuchMethodException e) {
+            throw new IllegalStateException(e);
         }
-        throw new IllegalStateException("Cannot find method that accept Message as input parameter in " + Arrays.toString(methods));
     }
 
     @Override
