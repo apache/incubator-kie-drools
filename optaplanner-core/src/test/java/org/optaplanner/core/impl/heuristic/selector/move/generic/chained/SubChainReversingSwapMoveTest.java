@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
@@ -289,8 +288,8 @@ public class SubChainReversingSwapMoveTest {
 
     public void assertSameProperties(List<Object> leftEntityList, List<Object> rightEntityList,
             SubChainReversingSwapMove move) {
-        assertListElementsSameExactly(leftEntityList, move.getLeftSubChain().getEntityList());
-        assertListElementsSameExactly(rightEntityList, move.getRightSubChain().getEntityList());
+        assertThat(move.getLeftSubChain().getEntityList()).hasSameElementsAs(leftEntityList);
+        assertThat(move.getRightSubChain().getEntityList()).hasSameElementsAs(rightEntityList);
     }
 
     @Test

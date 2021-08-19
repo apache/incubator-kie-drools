@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
@@ -186,7 +185,7 @@ public class SubChainChangeMoveTest {
     }
 
     public void assertSameProperties(List<Object> entityList, Object toPlanningVariable, SubChainChangeMove move) {
-        assertListElementsSameExactly(entityList, move.getSubChain().getEntityList());
+        assertThat(move.getSubChain().getEntityList()).hasSameElementsAs(entityList);
         assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);
     }
 

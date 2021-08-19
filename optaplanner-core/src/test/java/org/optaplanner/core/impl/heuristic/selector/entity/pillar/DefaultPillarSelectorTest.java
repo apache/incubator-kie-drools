@@ -16,12 +16,12 @@
 
 package org.optaplanner.core.impl.heuristic.selector.entity.pillar;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfPillarSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingPillarSelector;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertEmptyNeverEndingPillarSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import java.util.Arrays;
@@ -399,13 +399,13 @@ public class DefaultPillarSelectorTest {
         AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
         when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA1);
-        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        assertEmptyNeverEndingPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeA1);
 
         AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
         when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
         pillarSelector.stepStarted(stepScopeA2);
-        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        assertEmptyNeverEndingPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeA2);
 
         pillarSelector.phaseEnded(phaseScopeA);
@@ -417,7 +417,7 @@ public class DefaultPillarSelectorTest {
         AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
         when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
         pillarSelector.stepStarted(stepScopeB1);
-        assertCodesOfNeverEndingPillarSelector(pillarSelector);
+        assertEmptyNeverEndingPillarSelector(pillarSelector);
         pillarSelector.stepEnded(stepScopeB1);
 
         pillarSelector.phaseEnded(phaseScopeB);
@@ -425,19 +425,6 @@ public class DefaultPillarSelectorTest {
         pillarSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(entitySelector, 1, 2, 3);
-    }
-
-    private void assertAllCodesOfPillarSelector(PillarSelector pillarSelector, String... codes) {
-        assertAllCodesOfIterator(pillarSelector.iterator(), codes);
-        assertThat(pillarSelector.isCountable()).isTrue();
-        assertThat(pillarSelector.isNeverEnding()).isFalse();
-        assertThat(pillarSelector.getSize()).isEqualTo(codes.length);
-    }
-
-    private void assertCodesOfNeverEndingPillarSelector(PillarSelector pillarSelector, String... codes) {
-        assertCodesOfIterator(pillarSelector.iterator(), codes);
-        assertThat(pillarSelector.isCountable()).isTrue();
-        assertThat(pillarSelector.isNeverEnding()).isTrue();
     }
 
 }

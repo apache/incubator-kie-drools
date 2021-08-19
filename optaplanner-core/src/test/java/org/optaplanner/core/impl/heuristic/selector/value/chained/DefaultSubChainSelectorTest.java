@@ -21,7 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfIterator;
+import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfSubChainSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
 import java.util.Arrays;
@@ -286,13 +286,6 @@ public class DefaultSubChainSelectorTest {
         subChainSelector.solvingEnded(solverScope);
 
         verifyPhaseLifecycle(valueSelector, 1, 2, 3);
-    }
-
-    private void assertAllCodesOfSubChainSelector(SubChainSelector subChainSelector, String... codes) {
-        assertAllCodesOfIterator(subChainSelector.iterator(), codes);
-        assertThat(subChainSelector.isCountable()).isTrue();
-        assertThat(subChainSelector.isNeverEnding()).isFalse();
-        assertThat(subChainSelector.getSize()).isEqualTo(codes.length);
     }
 
     @Test

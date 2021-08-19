@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
@@ -274,8 +273,8 @@ public class PillarSwapMoveTest {
     }
 
     public void assertSameProperties(List<Object> leftPillar, List<Object> rightPillar, PillarSwapMove<?> move) {
-        assertListElementsSameExactly(leftPillar, move.getLeftPillar());
-        assertListElementsSameExactly(rightPillar, move.getRightPillar());
+        assertThat(move.getLeftPillar()).hasSameElementsAs(leftPillar);
+        assertThat(move.getRightPillar()).hasSameElementsAs(rightPillar);
     }
 
     @Test

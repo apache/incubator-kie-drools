@@ -20,7 +20,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCodesOfCollection;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCode;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertListElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
@@ -167,7 +166,7 @@ public class PillarChangeMoveTest {
     }
 
     public void assertSameProperties(List<Object> pillar, Object toPlanningVariable, PillarChangeMove<?> move) {
-        assertListElementsSameExactly(pillar, move.getPillar());
+        assertThat(move.getPillar()).hasSameElementsAs(pillar);
         assertThat(move.getToPlanningValue()).isSameAs(toPlanningVariable);
     }
 

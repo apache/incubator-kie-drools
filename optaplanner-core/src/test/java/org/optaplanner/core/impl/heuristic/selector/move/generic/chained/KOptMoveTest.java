@@ -18,7 +18,6 @@ package org.optaplanner.core.impl.heuristic.selector.move.generic.chained;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
-import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertArrayElementsSameExactly;
 import static org.optaplanner.core.impl.testdata.util.PlannerTestUtils.mockRebasingScoreDirector;
 
 import java.util.Arrays;
@@ -292,17 +291,17 @@ public class KOptMoveTest {
         SingletonInverseVariableSupply inverseVariableSupply = mock(SingletonInverseVariableSupply.class);
         AnchorVariableSupply anchorVariableSupply = mock(AnchorVariableSupply.class);
 
-        assertSameProperties(destinationA1, new Object[] { destinationC1, destinationB0 },
+        assertSameProperties(destinationA1, Arrays.asList(destinationC1, destinationB0),
                 new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a1, new Object[] { c1, b0 })
                         .rebase(destinationScoreDirector));
-        assertSameProperties(destinationA3, new Object[] { destinationA0, destinationB0 },
+        assertSameProperties(destinationA3, Arrays.asList(destinationA0, destinationB0),
                 new KOptMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply, a3, new Object[] { a0, b0 })
                         .rebase(destinationScoreDirector));
     }
 
-    public void assertSameProperties(Object leftentity, Object[] values, KOptMove<TestdataChainedSolution> move) {
-        assertThat(move.getEntity()).isSameAs(leftentity);
-        assertArrayElementsSameExactly(values, move.getValues());
+    public void assertSameProperties(Object leftEntity, Iterable<Object> values, KOptMove<TestdataChainedSolution> move) {
+        assertThat(move.getEntity()).isSameAs(leftEntity);
+        assertThat(move.getValues()).hasSameElementsAs(values);
     }
 
     @Test
