@@ -56,7 +56,7 @@
       "pluginVersion": "6.6.1",
       "targets": [
         {
-          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1d]))",
+          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1d]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -109,7 +109,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m]))",
+          "expr": "sum(increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1m]))",
           "instant": false,
           "intervalFactor": 2,
           "refId": "A"
@@ -201,7 +201,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(increase(api_execution_elapsed_seconds_sum{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m]))/sum(increase(api_execution_elapsed_seconds_count{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m]))",
+          "expr": "sum(increase(api_execution_elapsed_seconds_sum{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1m]))/sum(increase(api_execution_elapsed_seconds_count{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1m]))",
           "format": "time_series",
           "instant": false,
           "intervalFactor": 1,
@@ -292,7 +292,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum by (identifier) (increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1m]))",
+          "expr": "sum by (identifier) (increase(api_http_response_code_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1m]))",
           "instant": false,
           "intervalFactor": 2,
           "refId": "A"
@@ -378,7 +378,7 @@
       ],
       "targets": [
         {
-          "expr": "sum by (identifier) (increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1d]))",
+          "expr": "sum by (identifier) (increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1d]))",
           "format": "table",
           "instant": true,
           "intervalFactor": 2,
@@ -430,7 +430,7 @@
       "pluginVersion": "6.6.1",
       "targets": [
         {
-          "expr": "sum(increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion\"}[1d]))",
+          "expr": "sum(increase(api_http_stacktrace_exceptions_total{endpoint=\"$handlerName$\", artifactId=\"$gavArtifactId$\", version=\"$gavVersion$\"}[1d]))",
           "instant": true,
           "intervalFactor": 2,
           "refId": "A"
