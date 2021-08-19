@@ -84,7 +84,7 @@ public class CommonTestUtility {
         List<Interval> intervals = IntStream.range(0, 3)
                 .mapToObj(i -> new Interval(i * 2 + 3, i * 3 + 4))
                 .collect(Collectors.toList());
-        return new MiningField(fieldName, fieldUsageType, opType, dataType, null, null, intervals);
+        return new MiningField(fieldName, fieldUsageType, opType, dataType, null, null, null, null, null, intervals);
     }
 
     public static MiningField getRandomMiningFieldTarget() {
@@ -93,7 +93,7 @@ public class CommonTestUtility {
         FIELD_USAGE_TYPE fieldUsageType = FIELD_USAGE_TYPE.TARGET;
         OP_TYPE opType = OP_TYPE.values()[random.nextInt(OP_TYPE.values().length)];
         DATA_TYPE dataType = DATA_TYPE.values()[random.nextInt(DATA_TYPE.values().length)];
-        return new MiningField(fieldName, fieldUsageType, opType, dataType, null, null, null);
+        return new MiningField(fieldName, fieldUsageType, opType, dataType, null, null, null, null, null, null);
     }
 
     public static List<OutputField> getRandomOutputFields() {

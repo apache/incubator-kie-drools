@@ -76,6 +76,9 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
@@ -84,17 +87,26 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
+                null,
+                null,
                 null,
                 null,
                 null,
                 "MISSING_VALUE_REPLACEMENT",
                 null,
+                null,
                 null);
         assertFalse(PMMLOASUtils.isRequired(toVerify));
         toVerify = new MiningField(null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -112,6 +124,9 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
         assertTrue(PMMLOASUtils.isPredicted(toVerify));
         toVerify = new MiningField(null,
@@ -120,9 +135,15 @@ class PMMLOASUtilsTest {
                 null,
                 null,
                 null,
+                null,
+                null,
+                null,
                 null);
         assertTrue(PMMLOASUtils.isPredicted(toVerify));
         toVerify = new MiningField(null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -136,6 +157,9 @@ class PMMLOASUtilsTest {
                 .forEach(usageType -> {
                     MiningField miningField = new MiningField(null,
                             usageType,
+                            null,
+                            null,
+                            null,
                             null,
                             null,
                             null,
