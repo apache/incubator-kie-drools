@@ -794,6 +794,7 @@ limitations under the License.
         <skipTests>true</skipTests>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -838,6 +839,7 @@ limitations under the License.
         <skipITs>true</skipITs>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
       </properties>
       <build>
         <defaultGoal>clean install</defaultGoal>
@@ -889,6 +891,7 @@ limitations under the License.
       <properties>
         <invoker.skip>true</invoker.skip>
         <archetype.test.skip>true</archetype.test.skip>
+        <exec.skip>true</exec.skip>
       </properties>
     </profile>
 

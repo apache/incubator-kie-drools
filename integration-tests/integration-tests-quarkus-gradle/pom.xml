@@ -11,6 +11,8 @@
   <name>Kogito :: Integration Tests :: Quarkus :: Gradle</name>
 
   <properties>
+    <!-- skip evaluation if skipITs is set -->
+    <exec.skip>${skipITs}</exec.skip>
     <gradle.project.dir>${basedir}/integration-tests-quarkus-gradle-project</gradle.project.dir>
   </properties>
 
