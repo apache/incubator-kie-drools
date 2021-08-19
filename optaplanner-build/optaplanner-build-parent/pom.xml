@@ -40,6 +40,8 @@
 
     <maven.min.version>3.6.2</maven.min.version>
     <maven.compiler.release>11</maven.compiler.release>
+    <!-- A workaround for https://youtrack.jetbrains.com/issue/IDEA-276403. -->
+    <maven.compiler.target>11</maven.compiler.target>
     <!-- jboss suffixed version from jboss-parent which cannot be downloaded due to SNAPSHOT only policy for plugins from JBoss -->
     <version.compiler.plugin>3.8.1</version.compiler.plugin>
     <!-- The first version that supports analysis of classes compiled by Java 11. -->
