@@ -784,7 +784,8 @@ public interface TriConstraintStream<A, B, C> extends ConstraintStream {
     <ResultC_> TriConstraintStream<A, B, ResultC_> flattenLast(Function<C, Iterable<ResultC_>> mapping);
 
     /**
-     * Removes duplicate tuples from the stream, according to the tuple's facts {@link Object#equals(Object)equals}/hashcode
+     * Removes duplicate tuples from the stream, according to the tuple's facts
+     * {@link Object#equals(Object) equals}/{@link Object#hashCode() hashCode}
      * methods, such that only distinct tuples remain.
      * (No two tuples will {@link Object#equals(Object) equal}.)
      *
