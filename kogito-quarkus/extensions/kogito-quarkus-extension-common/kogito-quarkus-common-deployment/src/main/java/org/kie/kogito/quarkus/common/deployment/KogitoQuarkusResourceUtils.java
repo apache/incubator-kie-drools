@@ -111,11 +111,13 @@ public class KogitoQuarkusResourceUtils {
      * @return
      */
     private static boolean classAvailabilityResolver(ClassLoader classLoader, IndexView index, String className) {
-        DotName classDotName = DotName.createSimple(className);
-        boolean classFound = !index.getAnnotations(classDotName).isEmpty() ||
-                index.getClassByName(classDotName) != null;
-        if (classFound) {
-            return true;
+        if (index != null) {
+            DotName classDotName = DotName.createSimple(className);
+            boolean classFound = !index.getAnnotations(classDotName).isEmpty() ||
+                    index.getClassByName(classDotName) != null;
+            if (classFound) {
+                return true;
+            }
         }
         try {
             classLoader.loadClass(className);

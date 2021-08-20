@@ -59,11 +59,6 @@
     <!--  test -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>process-serialization-protobuf</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>drools-core-dynamic</artifactId>
       <scope>test</scope>
     </dependency>

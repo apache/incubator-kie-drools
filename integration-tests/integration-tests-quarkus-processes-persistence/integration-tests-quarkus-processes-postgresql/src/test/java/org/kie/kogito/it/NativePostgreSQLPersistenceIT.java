@@ -15,11 +15,8 @@
  */
 package org.kie.kogito.it;
 
-import org.junit.jupiter.api.Disabled;
-
 import io.quarkus.test.junit.NativeImageTest;
 
-@Disabled("KOGITO-5360 Native Image tests are broken in PostgreSQL Persistence")
 @NativeImageTest
 class NativePostgreSQLPersistenceIT extends PostgreSQLPersistenceIT {
 

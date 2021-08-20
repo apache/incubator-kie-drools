@@ -15,11 +15,8 @@
  */
 package org.kie.kogito.it;
 
-import org.junit.jupiter.api.Disabled;
-
 import io.quarkus.test.junit.NativeImageTest;
 
-@Disabled("KOGITO-5359 Native Image tests are broken in MongoDB persistence")
 @NativeImageTest
 class NativeMongoDBPersistenceIT extends MongoDBPersistenceIT {
 }

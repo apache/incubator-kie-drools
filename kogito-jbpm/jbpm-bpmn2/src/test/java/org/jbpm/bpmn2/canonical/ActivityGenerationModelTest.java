@@ -51,7 +51,6 @@ import org.kie.kogito.process.bpmn2.BpmnVariables;
 import org.kie.kogito.process.impl.CachedWorkItemHandlerConfig;
 import org.kie.kogito.process.impl.DefaultProcessEventListenerConfig;
 import org.kie.kogito.process.impl.StaticProcessConfig;
-import org.kie.kogito.serialization.process.ProcessInstanceMarshallerService;
 import org.kie.kogito.services.identity.StaticIdentityProvider;
 import org.kie.kogito.services.uow.CollectingUnitOfWorkFactory;
 import org.kie.kogito.services.uow.DefaultUnitOfWorkManager;
@@ -448,40 +447,6 @@ public class ActivityGenerationModelTest extends JbpmBpmn2TestCase {
         assertThat(metaData.getWorkItems())
                 .hasSize(1)
                 .contains("org.jbpm.bpmn2.objects.HelloService_hello_2_Handler");
-    }
-
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testUserTaskProcessWithMarshalling() throws Exception {
-        BpmnProcess process = BpmnProcess.from(new ClassPathResource("BPMN2-UserTask.bpmn2")).get(0);
-
-        ProcessMetaData metaData = ProcessToExecModelGenerator.INSTANCE.generate((WorkflowProcess) process.process());
-        String content = metaData.getGeneratedClassModel().toString();
-        assertThat(content).isNotNull();
-        log(content);
-
-        Map<String, String> classData = new HashMap<>();
-        classData.put("org.drools.bpmn2.UserTaskProcess", content);
-        TestWorkItemHandler workItemHandler = new TestWorkItemHandler();
-
-        Map<String, BpmnProcess> processes = createProcesses(classData, Collections.singletonMap("Human Task", workItemHandler));
-        ProcessInstance<BpmnVariables> processInstance = processes.get("UserTask").createInstance(BpmnVariables.create(Collections.singletonMap("s", "test")));
-
-        processInstance.start();
-        assertEquals(STATE_ACTIVE, processInstance.status());
-
-        ProcessInstanceMarshallerService marshaller = ProcessInstanceMarshallerService.newBuilder().withDefaultObjectMarshallerStrategies().build();
-
-        byte[] data = marshaller.marshallProcessInstance(processInstance);
-        assertNotNull(data);
-
-        processInstance = (ProcessInstance<BpmnVariables>) marshaller.unmarshallProcessInstance(data, process);
-
-        KogitoWorkItem workItem = workItemHandler.getWorkItem();
-        assertNotNull(workItem);
-        assertEquals("john", workItem.getParameter("ActorId"));
-        processInstance.completeWorkItem(workItem.getStringId(), null, SecurityPolicy.of(new StaticIdentityProvider("john")));
-        assertEquals(STATE_COMPLETED, processInstance.status());
     }
 
     @Test
