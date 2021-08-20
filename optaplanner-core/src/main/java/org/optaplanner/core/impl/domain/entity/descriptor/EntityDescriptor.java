@@ -209,8 +209,7 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy,
-            Member member) {
+    private void processPlanningVariableAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         Class<? extends Annotation> variableAnnotationClass = ConfigUtils.extractAnnotationClass(
                 member, VARIABLE_ANNOTATION_CLASSES);
         if (variableAnnotationClass != null) {
@@ -264,8 +263,7 @@ public class EntityDescriptor<Solution_> {
         }
     }
 
-    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy,
-            Member member) {
+    private void processPlanningPinAnnotation(DescriptorPolicy descriptorPolicy, Member member) {
         if (((AnnotatedElement) member).isAnnotationPresent(PlanningPin.class)) {
             MemberAccessor memberAccessor = MemberAccessorFactory.buildMemberAccessor(member, FIELD_OR_READ_METHOD,
                     PlanningPin.class, descriptorPolicy.getDomainAccessType(),
