@@ -48,7 +48,7 @@ import org.slf4j.LoggerFactory;
  * https://proceedings.neurips.cc/paper/2017/file/8a20a8621978632d76c43dfd28b67767-Paper.pdf
  * see also https://github.com/slundberg/shap/blob/master/shap/explainers/_kernel.py
  */
-public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
+public class ShapKernelExplainer implements LocalExplainer<ShapResults> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ShapKernelExplainer.class);
     private ShapConfig config;
 
@@ -293,7 +293,7 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
      *
      * @return the shap values for this prediction, of shape [n_model_outputs x n_features]
      */
-    private CompletableFuture<Saliency[]> explain(Prediction prediction, PredictionProvider model) {
+    private CompletableFuture<ShapResults> explain(Prediction prediction, PredictionProvider model) {
         ShapDataCarrier sdc = this.initialize(model);
         sdc.setSamplesAdded(new ArrayList<>());
         PredictionInput pi = prediction.getInput();
@@ -322,7 +322,7 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
 
         // if no features vary, then the features do not effect output, and all shap values are zero.
         if (sdc.getNumVarying() == 0) {
-            return output.thenApply(o -> saliencyFromMatrix(o, pi, po));
+            return output.thenApply(o -> saliencyFromMatrix(o, pi, po)).thenCombine(sdc.getFnull(), ShapResults::new);
         } else if (sdc.getNumVarying() == 1)
         // if 1 feature varies, this feature has all the effect
         {
@@ -334,7 +334,7 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
                     out[i][sdc.getVaryingFeatureGroups(0)] = df[i];
                 }
                 return saliencyFromMatrix(out, pi, po);
-            }));
+            })).thenCombine(sdc.getFnull(), ShapResults::new);
         } else
         // if more than 1 feature varies, we need to perform WLR
         {
@@ -358,7 +358,8 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
 
             // run the wlr model over the synthetic data results
             return output.thenCompose(o -> this.solveSystem(expectations, poMatrix[0], sdc)
-                    .thenApply(wo -> saliencyFromMatrix(wo[0], wo[1], pi, po)));
+                    .thenApply(wo -> saliencyFromMatrix(wo[0], wo[1], pi, po)))
+                    .thenCombine(sdc.getFnull(), ShapResults::new);
         }
     }
 
@@ -709,7 +710,7 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
      * @return shap values, Saliency[] of shape [n_outputs], with each saliency reporting m feature importances+confidences
      */
     @Override
-    public CompletableFuture<Saliency[]> explainAsync(Prediction prediction, PredictionProvider model) {
+    public CompletableFuture<ShapResults> explainAsync(Prediction prediction, PredictionProvider model) {
         return explainAsync(prediction, model, null);
     }
 
@@ -723,7 +724,7 @@ public class ShapKernelExplainer implements LocalExplainer<Saliency[]> {
      * @return shap values, Saliency[] of shape [n_outputs], with each saliency reporting m feature importances+confidences
      */
     @Override
-    public CompletableFuture<Saliency[]> explainAsync(Prediction prediction, PredictionProvider model, Consumer<Saliency[]> intermediateResultsConsumer) {
+    public CompletableFuture<ShapResults> explainAsync(Prediction prediction, PredictionProvider model, Consumer<ShapResults> intermediateResultsConsumer) {
         return this.explain(prediction, model);
     }
 }
