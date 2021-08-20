@@ -490,9 +490,9 @@ public class SolutionDescriptor<Solution_> {
             return;
         }
         throw new IllegalStateException("The solutionClass (" + solutionClass
-                + ") has a " + annotationClass.getSimpleName()
+                + ") has a @" + annotationClass.getSimpleName()
                 + " annotated member (" + memberAccessor
-                + ") that is duplicated by a " + otherAnnotationClass.getSimpleName()
+                + ") that is duplicated by a @" + otherAnnotationClass.getSimpleName()
                 + " annotated member (" + duplicate + ").\n"
                 + (annotationClass.equals(otherAnnotationClass)
                         ? "Maybe the annotation is defined on both the field and its getter."

@@ -66,7 +66,7 @@ public final class Substitute_MemberAccessorFactory {
             if (memberAccessorType == MemberAccessorFactory.MemberAccessorType.FIELD_OR_GETTER_METHOD_WITH_SETTER
                     && !memberAccessor.supportSetter()) {
                 throw new IllegalStateException("The class (" + method.getDeclaringClass()
-                        + ") has a " + annotationClass.getSimpleName()
+                        + ") has a @" + annotationClass.getSimpleName()
                         + " annotated getter method (" + method
                         + "), but lacks a setter for that property (" + memberAccessor.getName() + ").");
             }

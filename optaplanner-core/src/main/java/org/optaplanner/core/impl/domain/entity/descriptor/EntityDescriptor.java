@@ -237,7 +237,7 @@ public class EntityDescriptor<Solution_> {
                 duplicate = declaredShadowVariableDescriptorMap.get(memberName);
             }
             throw new IllegalStateException("The entityClass (" + entityClass
-                    + ") has a " + variableAnnotationClass.getSimpleName()
+                    + ") has a @" + variableAnnotationClass.getSimpleName()
                     + " annotated member (" + memberAccessor
                     + ") that is duplicated by another member for variableDescriptor (" + duplicate + ").\n"
                     + "Maybe the annotation is defined on both the field and its getter.");

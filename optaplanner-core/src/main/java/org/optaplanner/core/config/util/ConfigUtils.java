@@ -376,8 +376,8 @@ public class ConfigUtils {
             if (((AnnotatedElement) member).isAnnotationPresent(detectedAnnotationClass)) {
                 if (annotationClass != null) {
                     throw new IllegalStateException("The class (" + member.getDeclaringClass()
-                            + ") has a member (" + member + ") that has both a "
-                            + annotationClass.getSimpleName() + " annotation and a "
+                            + ") has a member (" + member + ") that has both a @"
+                            + annotationClass.getSimpleName() + " annotation and a @"
                             + detectedAnnotationClass.getSimpleName() + " annotation.");
                 }
                 annotationClass = detectedAnnotationClass;

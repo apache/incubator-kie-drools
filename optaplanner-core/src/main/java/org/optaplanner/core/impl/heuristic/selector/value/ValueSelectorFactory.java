@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionOrder;
@@ -204,7 +205,8 @@ public class ValueSelectorFactory<Solution_>
                         + ") that is not a known planning entity.\n"
                         + "Check your solver configuration. If that class (" + config.getDowncastEntityClass().getSimpleName()
                         + ") is not in the entityClassSet (" + solutionDescriptor.getEntityClassSet()
-                        + "), check your Solution implementation's annotated methods too.");
+                        + "), check your @" + PlanningSolution.class.getSimpleName()
+                        + " implementation's annotated methods too.");
             }
         }
         return entityDescriptor;
