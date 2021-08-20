@@ -134,8 +134,7 @@ public class SwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> 
     @Override
     public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return new AbstractOriginalSwapIterator<Solution_, Move<Solution_>, Object>(leftEntitySelector,
-                    rightEntitySelector) {
+            return new AbstractOriginalSwapIterator<>(leftEntitySelector, rightEntitySelector) {
                 @Override
                 protected Move<Solution_> newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained
@@ -145,8 +144,7 @@ public class SwapMoveSelector<Solution_> extends GenericMoveSelector<Solution_> 
                 }
             };
         } else {
-            return new AbstractRandomSwapIterator<Solution_, Move<Solution_>, Object>(leftEntitySelector,
-                    rightEntitySelector) {
+            return new AbstractRandomSwapIterator<>(leftEntitySelector, rightEntitySelector) {
                 @Override
                 protected Move<Solution_> newSwapSelection(Object leftSubSelection, Object rightSubSelection) {
                     return anyChained

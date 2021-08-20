@@ -102,7 +102,7 @@ public class AnchorShadowVariableDescriptor<Solution_> extends ShadowVariableDes
     public VariableListener<Solution_, ?> buildVariableListener(InnerScoreDirector<Solution_, ?> scoreDirector) {
         SingletonInverseVariableSupply inverseVariableSupply = scoreDirector.getSupplyManager()
                 .demand(new SingletonInverseVariableDemand<>(sourceVariableDescriptor));
-        return new AnchorVariableListener<Solution_>(this, sourceVariableDescriptor, inverseVariableSupply);
+        return new AnchorVariableListener<>(this, sourceVariableDescriptor, inverseVariableSupply);
     }
 
 }

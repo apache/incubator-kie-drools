@@ -139,7 +139,7 @@ public class KOptMoveSelector<Solution_> extends GenericMoveSelector<Solution_> 
                             + KOptMoveSelector.class.getSimpleName() + "."); // TODO
         } else {
             final Iterator<Object> entityIterator = entitySelector.iterator();
-            return new UpcomingSelectionIterator<Move<Solution_>>() {
+            return new UpcomingSelectionIterator<>() {
                 @Override
                 protected Move<Solution_> createUpcomingSelection() {
                     // TODO currently presumes that entitySelector and all valueSelectors are never ending, despite the hasNext() checks

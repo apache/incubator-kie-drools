@@ -116,7 +116,7 @@ public class TailChainSwapMoveSelector<Solution_> extends GenericMoveSelector<So
     public Iterator<Move<Solution_>> iterator() {
         final GenuineVariableDescriptor<Solution_> variableDescriptor = valueSelector.getVariableDescriptor();
         if (!randomSelection) {
-            return new AbstractOriginalChangeIterator<Solution_, Move<Solution_>>(entitySelector, valueSelector) {
+            return new AbstractOriginalChangeIterator<>(entitySelector, valueSelector) {
                 @Override
                 protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                     return new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,
@@ -124,7 +124,7 @@ public class TailChainSwapMoveSelector<Solution_> extends GenericMoveSelector<So
                 }
             };
         } else {
-            return new AbstractRandomChangeIterator<Solution_, Move<Solution_>>(entitySelector, valueSelector) {
+            return new AbstractRandomChangeIterator<>(entitySelector, valueSelector) {
                 @Override
                 protected Move<Solution_> newChangeSelection(Object entity, Object toValue) {
                     return new TailChainSwapMove<>(variableDescriptor, inverseVariableSupply, anchorVariableSupply,

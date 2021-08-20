@@ -96,8 +96,7 @@ public class SubChainSwapMoveSelector<Solution_> extends GenericMoveSelector<Sol
     @Override
     public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return new AbstractOriginalSwapIterator<Solution_, Move<Solution_>, SubChain>(leftSubChainSelector,
-                    rightSubChainSelector) {
+            return new AbstractOriginalSwapIterator<>(leftSubChainSelector, rightSubChainSelector) {
                 private Move<Solution_> nextReversingSelection = null;
 
                 @Override
@@ -121,8 +120,7 @@ public class SubChainSwapMoveSelector<Solution_> extends GenericMoveSelector<Sol
                 }
             };
         } else {
-            return new AbstractRandomSwapIterator<Solution_, Move<Solution_>, SubChain>(leftSubChainSelector,
-                    rightSubChainSelector) {
+            return new AbstractRandomSwapIterator<>(leftSubChainSelector, rightSubChainSelector) {
                 @Override
                 protected Move<Solution_> newSwapSelection(SubChain leftSubSelection, SubChain rightSubSelection) {
                     boolean reversing = selectReversingMoveToo && workingRandom.nextBoolean();

@@ -188,7 +188,7 @@ public class EntityDescriptor<Solution_> {
         if (difficultyComparatorClass != null) {
             Comparator<Object> difficultyComparator = ConfigUtils.newInstance(this::toString,
                     "difficultyComparatorClass", difficultyComparatorClass);
-            decreasingDifficultySorter = new ComparatorSelectionSorter<Solution_, Object>(
+            decreasingDifficultySorter = new ComparatorSelectionSorter<>(
                     difficultyComparator, SelectionSorterOrder.DESCENDING);
         }
         if (difficultyWeightFactoryClass != null) {

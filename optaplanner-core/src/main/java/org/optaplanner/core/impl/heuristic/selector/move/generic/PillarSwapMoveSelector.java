@@ -92,16 +92,14 @@ public class PillarSwapMoveSelector<Solution_> extends GenericMoveSelector<Solut
     @Override
     public Iterator<Move<Solution_>> iterator() {
         if (!randomSelection) {
-            return new AbstractOriginalSwapIterator<Solution_, Move<Solution_>, List<Object>>(leftPillarSelector,
-                    rightPillarSelector) {
+            return new AbstractOriginalSwapIterator<>(leftPillarSelector, rightPillarSelector) {
                 @Override
                 protected Move<Solution_> newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
                     return new PillarSwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
                 }
             };
         } else {
-            return new AbstractRandomSwapIterator<Solution_, Move<Solution_>, List<Object>>(leftPillarSelector,
-                    rightPillarSelector) {
+            return new AbstractRandomSwapIterator<>(leftPillarSelector, rightPillarSelector) {
                 @Override
                 protected Move<Solution_> newSwapSelection(List<Object> leftSubSelection, List<Object> rightSubSelection) {
                     return new PillarSwapMove<>(variableDescriptorList, leftSubSelection, rightSubSelection);
