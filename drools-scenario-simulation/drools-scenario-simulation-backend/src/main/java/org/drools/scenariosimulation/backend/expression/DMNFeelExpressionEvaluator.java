@@ -17,15 +17,18 @@
 package org.drools.scenariosimulation.backend.expression;
 
 import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.drools.scenariosimulation.api.utils.ScenarioSimulationSharedUtils;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.feel.runtime.events.FEELEventListener;
 import org.kie.dmn.core.compiler.profiles.ExtendedDMNProfile;
 import org.kie.dmn.feel.FEEL;
 import org.kie.dmn.feel.lang.EvaluationContext;
@@ -59,7 +62,14 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
     }
 
     protected EvaluationContext newEvaluationContext() {
+        return newEvaluationContext(null);
+    }
+
+    protected EvaluationContext newEvaluationContext(FEELEventListener eventListener) {
         final FEELEventListenersManager eventsManager = new FEELEventListenersManager();
+        if (eventListener != null) {
+            eventsManager.addListener(eventListener);
+        }
         return new EvaluationContextImpl(classLoader, eventsManager);
     }
 
@@ -93,12 +103,18 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
         variables.put(UNARY_PARAMETER_IDENTIFIER, BuiltInType.UNKNOWN);
         List<UnaryTest> unaryTests = executeAndVerifyErrors(feel -> feel.evaluateUnaryTests(rawExpression, variables));
 
-        EvaluationContext evaluationContext = newEvaluationContext();
+        List<FEELEvent> utEvalErrors = new ArrayList<>();
+        EvaluationContext evaluationContext = newEvaluationContext(errorEvent -> {
+            utEvalErrors.add(errorEvent);
+        });
         evaluationContext.setValue(UNARY_PARAMETER_IDENTIFIER, resultValue);
-        return unaryTests.stream()
-                .allMatch(unaryTest -> Optional
+        boolean allMatch = unaryTests.stream().allMatch(unaryTest -> Optional
                         .ofNullable(unaryTest.apply(evaluationContext, resultValue))
                         .orElse(false));
+        if (!utEvalErrors.isEmpty()) {
+            throw new IllegalArgumentException("Error during evaluation: " + utEvalErrors.stream().map(FEELEvent::getMessage).collect(Collectors.joining(", ")));
+        }
+        return allMatch;
     }
 
     /**
