@@ -30,8 +30,6 @@ import org.testcontainers.containers.wait.strategy.Wait;
 
 public class DataIndexPostgreSqlResource implements TestResource {
 
-    public static final String DATA_INDEX_BLOCKING = "kogito.data-index.blocking";
-
     private static final Logger LOGGER = LoggerFactory.getLogger(DataIndexPostgreSqlResource.class);
 
     KogitoKafkaContainerWithoutBridge kafka = new KogitoKafkaContainerWithoutBridge();
