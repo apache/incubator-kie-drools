@@ -1006,7 +1006,7 @@ image::ScoreCalculation/fairnessScoreConstraintPitfall.png[align="center"]
 
 [NOTE]
 ====
-Instead of the __squared workload__, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance]
+Instead of the _squared workload_, it is also possible to use the https://en.wikipedia.org/wiki/Variance[variance]
 (squared difference to the average) or the http://en.wikipedia.org/wiki/Standard_deviation[standard deviation]
 (square root of the variance).
 This has no effect on the score comparison, because the average will not change during planning.
@@ -1021,7 +1021,7 @@ To nullify this, either add the average multiplied by the number of entities to 
 
 Deciding the correct <<scoreConstraintWeight,weight>> and <<scoreLevel,level>> for each constraint is not easy.
 It often involves negotiating with different stakeholders and their priorities.
-Furthermore, quantifying the impact of soft constraints is often a new experience for business managers, so they 'll need a number of iterations to get it right.
+Furthermore, quantifying the impact of soft constraints is often a new experience for business managers, so they'll need a number of iterations to get it right.
 
 Don't get stuck between a rock and a hard place.
 Provide a UI to adjust the constraint weights and visualize the resulting solution, so the business managers can tweak the constraint weights themselves:

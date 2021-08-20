@@ -21,7 +21,7 @@ We release every month. https://www.optaplanner.org/download/releaseNotes/[Read 
 OptaPlanner separates its API and implementation:
 
 * **Public API**: All classes in the package namespace *org.optaplanner.core.api* are 100% *backwards compatible* in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly documented in https://www.optaplanner.org/download/upgradeRecipe/[the upgrade recipe].
-* **XML configuration**: The XML solver configuration is backwards compatible for all elements, except for elements that require the use of non public API classes. The XML solver configuration is defined by the classes in the package namespace **org.optaplanner.core.config**.
+* **XML configuration**: The XML solver configuration is backwards compatible for all elements, except for elements that require the use of non-public API classes. The XML solver configuration is defined by the classes in the package namespace **org.optaplanner.core.config**.
 * **Implementation classes**: All classes in the package namespace *org.optaplanner.core.impl* are _not_ backwards compatible: they will change in future major or minor releases (but probably not in hotfix releases). https://www.optaplanner.org/download/upgradeRecipe/[The upgrade recipe] describes every such relevant change and on how to quickly deal with it when upgrading to a newer version.
 
 
@@ -42,7 +42,7 @@ and https://www.facebook.com/OptaPlanner[facebook]. +
 
 Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[here].
 Bugs and feature requests are welcome in https://issues.redhat.com/browse/PLANNER[our issue tracker].
-Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you 'll benefit from our peer review and from our improvements made on top of your improvements.
+Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you'll benefit from our peer review and from our improvements made on top of your improvements.
 
 Red Hat sponsors OptaPlanner development by employing the core team.
 For enterprise support and consulting, take a look at https://www.optaplanner.org/product/services.html[these services].
