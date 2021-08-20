@@ -22,8 +22,7 @@ import java.util.stream.Collectors;
 
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>>
-        implements Sequence<Value_, Difference_> {
+final class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>> implements Sequence<Value_, Difference_> {
 
     private final ConsecutiveSetTree<Value_, ?, Difference_> sourceTree;
     private Value_ firstItem;
@@ -33,12 +32,11 @@ class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>>
     private Difference_ length;
     private NavigableSet<Value_> items;
 
-    protected SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree, Value_ item) {
+    SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree, Value_ item) {
         this(sourceTree, item, item);
     }
 
-    protected SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree,
-            Value_ firstItem, Value_ lastItem) {
+    SequenceImpl(ConsecutiveSetTree<Value_, ?, Difference_> sourceTree, Value_ firstItem, Value_ lastItem) {
         this.sourceTree = sourceTree;
         this.firstItem = firstItem;
         this.lastItem = lastItem;
@@ -80,34 +78,33 @@ class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>>
         return length;
     }
 
-    protected void setStart(Value_ item) {
+    void setStart(Value_ item) {
         firstItem = item;
         invalidate();
     }
 
-    protected void setEnd(Value_ item) {
+    void setEnd(Value_ item) {
         lastItem = item;
         invalidate();
     }
 
     // Called when start or end are removed; length
     // need to be invalidated
-    protected void invalidate() {
+    void invalidate() {
         length = null;
         items = null;
     }
 
-    protected SequenceImpl<Value_, Difference_> split(Value_ fromElement) {
-        Value_ newSequenceStart = sourceTree.getItemSet().higher(fromElement);
+    SequenceImpl<Value_, Difference_> split(Value_ fromElement) {
+        NavigableSet<Value_> itemSet = getItems();
+        Value_ newSequenceStart = itemSet.higher(fromElement);
         Value_ newSequenceEnd = lastItem;
-
-        lastItem = sourceTree.getItemSet().lower(fromElement);
-        invalidate();
+        setEnd(itemSet.lower(fromElement));
         return new SequenceImpl<>(sourceTree, newSequenceStart, newSequenceEnd);
     }
 
     // This Sequence is ALWAYS before other Sequence
-    protected void merge(SequenceImpl<Value_, Difference_> other) {
+    void merge(SequenceImpl<Value_, Difference_> other) {
         lastItem = other.lastItem;
         invalidate();
     }

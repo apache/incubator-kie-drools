@@ -73,7 +73,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(a);
                     return () -> acc.remove(a);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -98,7 +98,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -123,7 +123,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**
@@ -149,7 +149,7 @@ public class ExperimentalConstraintCollectors {
                     acc.add(result);
                     return () -> acc.remove(result);
                 },
-                ConsecutiveSetTree::getConsecutiveData);
+                tree -> tree);
     }
 
     /**

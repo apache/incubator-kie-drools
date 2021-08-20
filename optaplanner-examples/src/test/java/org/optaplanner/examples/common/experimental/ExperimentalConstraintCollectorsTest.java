@@ -22,9 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Objects;
 
 import org.junit.jupiter.api.Test;
-import org.optaplanner.core.api.score.stream.bi.BiConstraintCollector;
-import org.optaplanner.core.api.score.stream.quad.QuadConstraintCollector;
-import org.optaplanner.core.api.score.stream.tri.TriConstraintCollector;
 import org.optaplanner.core.api.score.stream.uni.UniConstraintCollector;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
@@ -128,7 +125,7 @@ public class ExperimentalConstraintCollectorsTest {
         ConsecutiveSetTree<Integer, Integer, Integer> tree =
                 new ConsecutiveSetTree<>(Integer::intValue, (a, b) -> b - a, Integer::sum, 1, 0);
         asList(data).forEach(tree::add);
-        return tree.getConsecutiveData();
+        return tree;
     }
 
     private ConsecutiveIntervalInfoImpl<Interval, Integer, Integer> consecutiveIntervalData(Interval... data) {
@@ -138,51 +135,9 @@ public class ExperimentalConstraintCollectorsTest {
         return tree.getConsecutiveIntervalData();
     }
 
-    private static <A, B, C, Container_, Result_> Runnable accumulate(
-            TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, A valueA, B valueB,
-            C valueC) {
-        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC);
-    }
-
-    private static <A, B, C, D, Container_, Result_> Runnable accumulate(
-            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container, A valueA, B valueB,
-            C valueC, D valueD) {
-        return collector.accumulator().apply((Container_) container, valueA, valueB, valueC, valueD);
-    }
-
-    private static <A, B, Container_, Result_> Runnable accumulate(
-            BiConstraintCollector<A, B, Container_, Result_> collector, Object container, A valueA, B valueB) {
-        return collector.accumulator().apply((Container_) container, valueA, valueB);
-    }
-
     private static <A, Container_, Result_> Runnable accumulate(
             UniConstraintCollector<A, Container_, Result_> collector, Object container, A value) {
         return collector.accumulator().apply((Container_) container, value);
-    }
-
-    private static <A, B, C, D, Container_, Result_> void assertResult(
-            QuadConstraintCollector<A, B, C, D, Container_, Result_> collector, Object container,
-            Result_ expectedResult) {
-        Result_ actualResult = collector.finisher().apply((Container_) container);
-        assertThat(actualResult)
-                .as("Collector (" + collector + ") did not produce expected result.")
-                .isEqualTo(expectedResult);
-    }
-
-    private static <A, B, C, Container_, Result_> void assertResult(
-            TriConstraintCollector<A, B, C, Container_, Result_> collector, Object container, Result_ expectedResult) {
-        Result_ actualResult = collector.finisher().apply((Container_) container);
-        assertThat(actualResult)
-                .as("Collector (" + collector + ") did not produce expected result.")
-                .isEqualTo(expectedResult);
-    }
-
-    private static <A, B, Container_, Result_> void assertResult(
-            BiConstraintCollector<A, B, Container_, Result_> collector, Object container, Result_ expectedResult) {
-        Result_ actualResult = collector.finisher().apply((Container_) container);
-        assertThat(actualResult)
-                .as("Collector (" + collector + ") did not produce expected result.")
-                .isEqualTo(expectedResult);
     }
 
     private static <A, Container_, Result_> void assertResult(
@@ -191,7 +146,7 @@ public class ExperimentalConstraintCollectorsTest {
         assertThat(actualResult)
                 .as("Collector (" + collector + ") did not produce expected result.")
                 .usingRecursiveComparison()
-                .ignoringFields("sourceTree")
+                .ignoringFields("sourceTree", "indexFunction", "sequenceList", "startItemToSequence")
                 .isEqualTo(expectedResult);
     }
 }

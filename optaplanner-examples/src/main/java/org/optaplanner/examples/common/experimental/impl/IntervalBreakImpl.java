@@ -21,15 +21,14 @@ import java.util.Objects;
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
-class IntervalBreakImpl<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
+final class IntervalBreakImpl<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
         implements IntervalBreak<Interval_, Point_, Difference_> {
     private IntervalCluster<Interval_, Point_, Difference_> previousCluster;
     private IntervalCluster<Interval_, Point_, Difference_> nextCluster;
     private Difference_ length;
 
-    public IntervalBreakImpl(IntervalCluster<Interval_, Point_, Difference_> previousCluster,
-            IntervalCluster<Interval_, Point_, Difference_> nextCluster,
-            Difference_ length) {
+    IntervalBreakImpl(IntervalCluster<Interval_, Point_, Difference_> previousCluster,
+            IntervalCluster<Interval_, Point_, Difference_> nextCluster, Difference_ length) {
         this.previousCluster = previousCluster;
         this.nextCluster = nextCluster;
         this.length = length;
@@ -50,17 +49,15 @@ class IntervalBreakImpl<Interval_, Point_ extends Comparable<Point_>, Difference
         return length;
     }
 
-    public void setPreviousCluster(
-            IntervalCluster<Interval_, Point_, Difference_> previousCluster) {
+    void setPreviousCluster(IntervalCluster<Interval_, Point_, Difference_> previousCluster) {
         this.previousCluster = previousCluster;
     }
 
-    public void setNextCluster(
-            IntervalCluster<Interval_, Point_, Difference_> nextCluster) {
+    void setNextCluster(IntervalCluster<Interval_, Point_, Difference_> nextCluster) {
         this.nextCluster = nextCluster;
     }
 
-    public void setLength(Difference_ length) {
+    void setLength(Difference_ length) {
         this.length = length;
     }
 

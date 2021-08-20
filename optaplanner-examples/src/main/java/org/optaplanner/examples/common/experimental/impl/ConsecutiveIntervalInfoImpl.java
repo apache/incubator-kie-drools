@@ -28,9 +28,8 @@ import org.optaplanner.examples.common.experimental.api.ConsecutiveIntervalInfo;
 import org.optaplanner.examples.common.experimental.api.IntervalBreak;
 import org.optaplanner.examples.common.experimental.api.IntervalCluster;
 
-public class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
-        implements
-        ConsecutiveIntervalInfo<Interval_, Point_, Difference_> {
+public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>>
+        implements ConsecutiveIntervalInfo<Interval_, Point_, Difference_> {
     private final NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalClusterImpl<Interval_, Point_, Difference_>> clusterStartSplitPointToCluster;
     private final NavigableSet<IntervalSplitPoint<Interval_, Point_>> splitPointSet;
     private final NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalBreakImpl<Interval_, Point_, Difference_>> clusterStartSplitPointToNextBreak;
@@ -48,7 +47,7 @@ public class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Comparable<Po
         this.differenceFunction = differenceFunction;
     }
 
-    protected void addInterval(Interval<Interval_, Point_> interval) {
+    void addInterval(Interval<Interval_, Point_> interval) {
         NavigableMap<IntervalSplitPoint<Interval_, Point_>, IntervalClusterImpl<Interval_, Point_, Difference_>> intersectedIntervalClusterMap =
                 clusterStartSplitPointToCluster.subMap(
                         ObjectUtils.defaultIfNull(clusterStartSplitPointToCluster.floorKey(interval.getStartSplitPoint()),
@@ -221,7 +220,7 @@ public class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Comparable<Po
         }
     }
 
-    protected void removeInterval(Interval<Interval_, Point_> interval) {
+    void removeInterval(Interval<Interval_, Point_> interval) {
         Map.Entry<IntervalSplitPoint<Interval_, Point_>, IntervalClusterImpl<Interval_, Point_, Difference_>> intervalClusterEntry =
                 clusterStartSplitPointToCluster.floorEntry(interval.getStartSplitPoint());
         IntervalClusterImpl<Interval_, Point_, Difference_> intervalCluster = intervalClusterEntry.getValue();
@@ -281,7 +280,7 @@ public class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Comparable<Po
 
     @Override
     public String toString() {
-        return "ConsecutiveIntervalData{" +
+        return "Clusters {" +
                 "intervalClusters=" + intervalClusterIterable +
                 ", breaks=" + breaksIterable +
                 '}';

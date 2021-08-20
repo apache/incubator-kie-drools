@@ -19,13 +19,13 @@ package org.optaplanner.examples.common.experimental.impl;
 import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
-class BreakImpl<Value_, Difference_ extends Comparable<Difference_>>
+final class BreakImpl<Value_, Difference_ extends Comparable<Difference_>>
         implements Break<Value_, Difference_> {
     private Sequence<Value_, Difference_> previousSequence;
     private Sequence<Value_, Difference_> nextSequence;
     private Difference_ length;
 
-    public BreakImpl(Sequence<Value_, Difference_> previousSequence, Sequence<Value_, Difference_> nextSequence,
+    BreakImpl(Sequence<Value_, Difference_> previousSequence, Sequence<Value_, Difference_> nextSequence,
             Difference_ length) {
         this.previousSequence = previousSequence;
         this.nextSequence = nextSequence;
@@ -47,15 +47,15 @@ class BreakImpl<Value_, Difference_ extends Comparable<Difference_>>
         return length;
     }
 
-    public void setPreviousSequence(Sequence<Value_, Difference_> previousSequence) {
+    void setPreviousSequence(Sequence<Value_, Difference_> previousSequence) {
         this.previousSequence = previousSequence;
     }
 
-    public void setNextSequence(Sequence<Value_, Difference_> nextSequence) {
+    void setNextSequence(Sequence<Value_, Difference_> nextSequence) {
         this.nextSequence = nextSequence;
     }
 
-    public void setLength(Difference_ length) {
+    void setLength(Difference_ length) {
         this.length = length;
     }
 

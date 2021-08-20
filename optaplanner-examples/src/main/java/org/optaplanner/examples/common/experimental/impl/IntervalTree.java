@@ -21,19 +21,19 @@ import java.util.TreeSet;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
-    final TreeSet<IntervalSplitPoint<Interval_, Point_>> splitPointSet;
-    final Function<Interval_, Point_> startMapping;
-    final Function<Interval_, Point_> endMapping;
-    final ConsecutiveIntervalInfoImpl<Interval_, Point_, Difference_> consecutiveIntervalData;
+public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Difference_ extends Comparable<Difference_>> {
 
-    public IntervalTree(Function<Interval_, Point_> startMapping,
-            Function<Interval_, Point_> endMapping,
+    private final Function<Interval_, Point_> startMapping;
+    private final Function<Interval_, Point_> endMapping;
+    private final TreeSet<IntervalSplitPoint<Interval_, Point_>> splitPointSet;
+    private final ConsecutiveIntervalInfoImpl<Interval_, Point_, Difference_> consecutiveIntervalData;
+
+    public IntervalTree(Function<Interval_, Point_> startMapping, Function<Interval_, Point_> endMapping,
             BiFunction<Point_, Point_, Difference_> differenceFunction) {
         this.startMapping = startMapping;
         this.endMapping = endMapping;
-        splitPointSet = new TreeSet<>();
-        consecutiveIntervalData = new ConsecutiveIntervalInfoImpl<>(splitPointSet, differenceFunction);
+        this.splitPointSet = new TreeSet<>();
+        this.consecutiveIntervalData = new ConsecutiveIntervalInfoImpl<>(splitPointSet, differenceFunction);
     }
 
     public Interval<Interval_, Point_> getInterval(Interval_ intervalValue) {

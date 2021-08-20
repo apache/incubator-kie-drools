@@ -18,10 +18,10 @@ package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.function.Function;
 
-public class Interval<Interval_, Point_ extends Comparable<Point_>> {
-    final Interval_ value;
-    final IntervalSplitPoint<Interval_, Point_> startSplitPoint;
-    final IntervalSplitPoint<Interval_, Point_> endSplitPoint;
+public final class Interval<Interval_, Point_ extends Comparable<Point_>> {
+    private final Interval_ value;
+    private final IntervalSplitPoint<Interval_, Point_> startSplitPoint;
+    private final IntervalSplitPoint<Interval_, Point_> endSplitPoint;
 
     public Interval(Interval_ value, Function<Interval_, Point_> startMapping,
             Function<Interval_, Point_> endMapping) {

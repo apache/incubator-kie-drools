@@ -18,12 +18,12 @@ package org.optaplanner.examples.common.experimental.impl;
 
 import java.util.Iterator;
 
-public class IntervalTreeIterator<Interval_, Point_ extends Comparable<Point_>>
-        implements Iterator<Interval_> {
-    final Iterator<IntervalSplitPoint<Interval_, Point_>> splitPointSetIterator;
-    Iterator<Interval_> splitPointValueIterator;
+final class IntervalTreeIterator<Interval_, Point_ extends Comparable<Point_>> implements Iterator<Interval_> {
 
-    public IntervalTreeIterator(Iterable<IntervalSplitPoint<Interval_, Point_>> splitPointSet) {
+    private final Iterator<IntervalSplitPoint<Interval_, Point_>> splitPointSetIterator;
+    private Iterator<Interval_> splitPointValueIterator;
+
+    IntervalTreeIterator(Iterable<IntervalSplitPoint<Interval_, Point_>> splitPointSet) {
         this.splitPointSetIterator = splitPointSet.iterator();
         if (splitPointSetIterator.hasNext()) {
             splitPointValueIterator = splitPointSetIterator.next().getValuesStartingFromSplitPointIterator();

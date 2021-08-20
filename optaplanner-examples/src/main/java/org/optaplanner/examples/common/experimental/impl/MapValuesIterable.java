@@ -19,10 +19,10 @@ package org.optaplanner.examples.common.experimental.impl;
 import java.util.Iterator;
 import java.util.Map;
 
-public class MapValuesIterable<Key_, Value_> implements Iterable<Value_> {
+final class MapValuesIterable<Key_, Value_> implements Iterable<Value_> {
     private final Map<Key_, ? extends Value_> sourceMap;
 
-    public MapValuesIterable(Map<Key_, ? extends Value_> sourceMap) {
+    MapValuesIterable(Map<Key_, ? extends Value_> sourceMap) {
         this.sourceMap = sourceMap;
     }
 
@@ -34,8 +34,6 @@ public class MapValuesIterable<Key_, Value_> implements Iterable<Value_> {
 
     @Override
     public String toString() {
-        return "MapValuesIterable{" +
-                "sourceMap=" + sourceMap +
-                '}';
+        return sourceMap.values().toString();
     }
 }
