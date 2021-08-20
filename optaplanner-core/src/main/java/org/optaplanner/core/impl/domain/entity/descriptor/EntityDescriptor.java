@@ -477,7 +477,7 @@ public class EntityDescriptor<Solution_> {
                 && !ReflectionHelper.hasField(entityClass, variableName)) {
             String exceptionMessage = "The variableName (" + variableName
                     + ") for entityClass (" + entityClass
-                    + ") does not exists as a getter or field on that class.\n"
+                    + ") does not exist as a getter or field on that class.\n"
                     + "Check the spelling of the variableName (" + variableName + ").";
             if (variableName.length() >= 2
                     && !Character.isUpperCase(variableName.charAt(0))

@@ -134,7 +134,7 @@ public class CustomShadowVariableDescriptor<Solution_> extends ShadowVariableDes
                         + ") with refVariableName (" + refVariableName
                         + ") which is not a valid planning variable on entityClass ("
                         + refEntityDescriptor.getEntityClass() + ").\n"
-                        + entityDescriptor.buildInvalidVariableNameExceptionMessage(refVariableName));
+                        + refEntityDescriptor.buildInvalidVariableNameExceptionMessage(refVariableName));
             }
             if (!(uncastRefVariableDescriptor instanceof CustomShadowVariableDescriptor)) {
                 throw new IllegalArgumentException("The entityClass (" + entityDescriptor.getEntityClass()

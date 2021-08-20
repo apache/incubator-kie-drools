@@ -91,7 +91,7 @@ public class InverseRelationShadowVariableDescriptor<Solution_> extends ShadowVa
                     + ") with sourceVariableName (" + sourceVariableName
                     + ") which is not a valid planning variable on entityClass ("
                     + sourceEntityDescriptor.getEntityClass() + ").\n"
-                    + entityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
+                    + sourceEntityDescriptor.buildInvalidVariableNameExceptionMessage(sourceVariableName));
         }
         boolean chained = (sourceVariableDescriptor instanceof GenuineVariableDescriptor) &&
                 ((GenuineVariableDescriptor<Solution_>) sourceVariableDescriptor).isChained();
