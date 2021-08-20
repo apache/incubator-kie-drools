@@ -163,7 +163,7 @@ public abstract class AbstractScoreDirector<Solution_, Score_ extends Score<Scor
     }
 
     @Override
-    public SupplyManager getSupplyManager() {
+    public SupplyManager<Solution_> getSupplyManager() {
         return variableListenerSupport;
     }
 
