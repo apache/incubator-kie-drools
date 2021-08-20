@@ -44,15 +44,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static org.kie.kogito.codegen.core.events.AbstractCloudEventMetaFactoryGenerator.buildTemplatedGenerator;
+import static org.kie.kogito.codegen.core.events.AbstractCloudEventMetaFactoryGenerator.getBuilderMethodName;
+import static org.kie.kogito.codegen.core.events.AbstractCloudEventMetaFactoryGenerator.toValidJavaIdentifier;
 
-class CloudEventMetaFactoryGeneratorTest {
+class ProcessCloudEventMetaFactoryGeneratorTest {
 
     @Test
     void testTemplateIsValid() {
-        TemplatedGenerator generator = CloudEventMetaFactoryGenerator.buildTemplatedGenerator(getContext(true));
+        TemplatedGenerator generator = buildTemplatedGenerator(getContext(true), ProcessCloudEventMetaFactoryGenerator.CLASS_NAME);
 
         CompilationUnit compilationUnit = generator.compilationUnit()
-                .orElseGet(() -> fail("Cannot generate CloudEventMetaFactory"));
+                .orElseGet(() -> fail("Cannot generate ProcessCloudEventMetaFactory"));
 
         ClassOrInterfaceDeclaration classDefinition = compilationUnit.findFirst(ClassOrInterfaceDeclaration.class)
                 .orElseGet(() -> fail("Compilation unit doesn't contain a class or interface declaration!"));
@@ -91,7 +94,7 @@ class CloudEventMetaFactoryGeneratorTest {
     @Test
     void testGetBuilderMethodName() {
         String testSource = "" +
-                "class CloudEventMetaFactory {\n" +
+                "class ProcessCloudEventMetaFactory {\n" +
                 "    public CloudEventMeta buildCloudEventMeta_CONSUMED_first() {\n" +
                 "        return new CloudEventMeta(\"first\", \"\", org.kie.kogito.event.EventKind.CONSUMED);\n" +
                 "    }\n" +
@@ -106,17 +109,17 @@ class CloudEventMetaFactoryGeneratorTest {
         String templatedBuildMethodName = "buildCloudEventMeta_$methodName$";
 
         assertEquals("buildCloudEventMeta_PRODUCED_first",
-                CloudEventMetaFactoryGenerator.getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "PRODUCED_first"));
+                getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "PRODUCED_first"));
         assertEquals("buildCloudEventMeta_CONSUMED_first_1",
-                CloudEventMetaFactoryGenerator.getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "CONSUMED_first"));
+                getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "CONSUMED_first"));
         assertEquals("buildCloudEventMeta_CONSUMED_third",
-                CloudEventMetaFactoryGenerator.getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "CONSUMED_third"));
+                getBuilderMethodName(testClassDefinition, templatedBuildMethodName, "CONSUMED_third"));
     }
 
     @Test
     void testToValidJavaIdentifier() {
-        assertEquals("simpleName", CloudEventMetaFactoryGenerator.toValidJavaIdentifier("simpleName"));
-        assertEquals("more_37Com__plex_47Name_33", CloudEventMetaFactoryGenerator.toValidJavaIdentifier("more%Com_plex/Name!"));
+        assertEquals("simpleName", toValidJavaIdentifier("simpleName"));
+        assertEquals("more_37Com__plex_47Name_33", toValidJavaIdentifier("more%Com_plex/Name!"));
     }
 
     @Test
@@ -185,8 +188,8 @@ class CloudEventMetaFactoryGeneratorTest {
     private ClassOrInterfaceDeclaration generateAndParseClass(String bpmnFile, int expectedTriggers, boolean withInjection) {
         KogitoBuildContext context = getContext(withInjection);
 
-        final CloudEventMetaFactoryGenerator generator =
-                new CloudEventMetaFactoryGenerator(
+        final ProcessCloudEventMetaFactoryGenerator generator =
+                new ProcessCloudEventMetaFactoryGenerator(
                         context,
                         ProcessGenerationUtils.execModelFromProcessFile(bpmnFile));
         if (expectedTriggers > 0) {

@@ -15,10 +15,11 @@
  */
 package org.kie.kogito.event;
 
-import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Responsible to hold information about a topic being consumed or produced by a Kogito service
@@ -27,10 +28,10 @@ public class Topic {
 
     private String name;
     private ChannelType type;
-    private List<CloudEventMeta> eventsMeta;
+    private Set<CloudEventMeta> eventsMeta;
 
     public Topic() {
-        this.eventsMeta = new ArrayList<>();
+        this.eventsMeta = new HashSet<>();
     }
 
     public Topic(final String name, final ChannelType type) {
@@ -60,12 +61,12 @@ public class Topic {
      *
      * @return a list of events
      */
-    public List<CloudEventMeta> getEventsMeta() {
-        return Collections.unmodifiableList(this.eventsMeta);
+    public Collection<CloudEventMeta> getEventsMeta() {
+        return Collections.unmodifiableSet(this.eventsMeta);
     }
 
-    public void setEventsMeta(List<CloudEventMeta> eventsMeta) {
-        this.eventsMeta = new ArrayList<>(eventsMeta);
+    public void setEventsMeta(Collection<CloudEventMeta> eventsMeta) {
+        this.eventsMeta = new HashSet<>(eventsMeta);
     }
 
     @Override

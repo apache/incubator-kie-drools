@@ -57,13 +57,11 @@ import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.ContextAttributesConstants;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.QuarkusKogitoBuildContext;
 import org.kie.kogito.codegen.api.io.CollectedResource;
 import org.kie.kogito.codegen.core.AbstractGenerator;
 import org.kie.kogito.codegen.core.DashboardGeneratedFileUtils;
 import org.kie.kogito.codegen.process.config.ProcessConfigGenerator;
-import org.kie.kogito.codegen.process.events.CloudEventMetaFactoryGenerator;
-import org.kie.kogito.codegen.process.events.CloudEventsResourceGenerator;
+import org.kie.kogito.codegen.process.events.ProcessCloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.openapi.OpenApiClientWorkItemIntrospector;
 import org.kie.kogito.event.KogitoEventStreams;
 import org.kie.kogito.internal.process.runtime.KogitoWorkflowProcess;
@@ -529,20 +527,14 @@ public class ProcessCodegen extends AbstractGenerator {
             });
         }
 
-        // Generic CloudEvents HTTP Endpoint will be handled by https://issues.redhat.com/browse/KOGITO-2956
-        if (context().getAddonsConfig().useCloudEvents() && context().hasRESTGloballyAvailable() && QuarkusKogitoBuildContext.CONTEXT_NAME.equals(context().name())) {
-            final CloudEventsResourceGenerator ceGenerator =
-                    new CloudEventsResourceGenerator(context(), processExecutableModelGenerators);
-            storeFile(REST_TYPE, ceGenerator.generatedFilePath(), ceGenerator.generate());
-        }
         if ((context().getAddonsConfig().useProcessSVG())) {
             Map<String, String> svgs = context().getContextAttribute(ContextAttributesConstants.PROCESS_AUTO_SVG_MAPPING, Map.class);
             svgs.keySet().stream().forEach(key -> storeFile(GeneratedFileType.RESOURCE, "META-INF/processSVG/" + key + ".svg", svgs.get(key)));
         }
 
         if (context().hasRESTForGenerator(this)) {
-            final CloudEventMetaFactoryGenerator topicsGenerator =
-                    new CloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
+            final ProcessCloudEventMetaFactoryGenerator topicsGenerator =
+                    new ProcessCloudEventMetaFactoryGenerator(context(), processExecutableModelGenerators);
             storeFile(REST_TYPE, topicsGenerator.generatedFilePath(), topicsGenerator.generate());
         }
 

@@ -43,6 +43,10 @@ import org.slf4j.LoggerFactory;
 import io.cloudevents.CloudEvent;
 import io.cloudevents.core.provider.ExtensionProvider;
 
+/**
+ * This class must always have exact FQCN as <code>org.kie.kogito.eventdriven.decision.EventDrivenDecisionController</code>
+ * for code generation plugins to correctly detect if this addon is enabled.
+ */
 public class EventDrivenDecisionController {
 
     public static final String REQUEST_EVENT_TYPE = "DecisionRequest";

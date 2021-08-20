@@ -24,10 +24,9 @@ import java.util.stream.Collectors;
 
 import org.jbpm.compiler.canonical.TriggerMetaData;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.api.template.InvalidTemplateException;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.CodegenUtils;
+import org.kie.kogito.codegen.core.events.AbstractCloudEventMetaFactoryGenerator;
 import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 import org.kie.kogito.event.EventKind;
 import org.kie.kogito.services.event.DataEventAttrBuilder;
@@ -42,17 +41,14 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 
-public class CloudEventMetaFactoryGenerator extends AbstractEventResourceGenerator {
+public class ProcessCloudEventMetaFactoryGenerator extends AbstractCloudEventMetaFactoryGenerator {
 
-    private static final String CLASS_NAME = "CloudEventMetaFactory";
+    static final String CLASS_NAME = "ProcessCloudEventMetaFactory";
 
-    private final KogitoBuildContext context;
     private final Map<String, List<TriggerMetaData>> triggers;
 
-    public CloudEventMetaFactoryGenerator(final KogitoBuildContext context,
-            final List<ProcessExecutableModelGenerator> generators) {
-        super(buildTemplatedGenerator(context));
-        this.context = context;
+    public ProcessCloudEventMetaFactoryGenerator(KogitoBuildContext context, List<ProcessExecutableModelGenerator> generators) {
+        super(buildTemplatedGenerator(context, CLASS_NAME), context);
         this.triggers = this.filterTriggers(generators);
     }
 
@@ -70,8 +66,8 @@ public class CloudEventMetaFactoryGenerator extends AbstractEventResourceGenerat
                 .findFirst(MethodDeclaration.class, x -> x.getName().toString().startsWith("buildCloudEventMeta_"))
                 .orElseThrow(() -> new InvalidTemplateException(generator, "Impossible to find expected buildCloudEventMeta_ method"));
 
-        List<CloudEventMetaMethodData> methodDataList = triggers.entrySet().stream()
-                .flatMap(entry -> entry.getValue().stream().map(trigger -> new CloudEventMetaMethodData(entry.getKey(), trigger)))
+        List<MethodData> methodDataList = triggers.entrySet().stream()
+                .flatMap(entry -> entry.getValue().stream().map(trigger -> new MethodData(entry.getKey(), trigger)))
                 .distinct()
                 .collect(Collectors.toList());
 
@@ -121,44 +117,7 @@ public class CloudEventMetaFactoryGenerator extends AbstractEventResourceGenerat
         return Collections.emptyMap();
     }
 
-    static TemplatedGenerator buildTemplatedGenerator(KogitoBuildContext context) {
-        return TemplatedGenerator.builder()
-                .withTemplateBasePath(TEMPLATE_EVENT_FOLDER)
-                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
-                .build(context, CLASS_NAME);
-    }
-
-    static String getBuilderMethodName(ClassOrInterfaceDeclaration classDefinition, String templatedBuildMethodName, String methodNameValue) {
-        String baseMethodName = templatedBuildMethodName.replace("$methodName$", methodNameValue);
-        List<MethodDeclaration> methods = classDefinition.findAll(MethodDeclaration.class);
-        int counter = 0;
-        while (true) {
-            String expectedMethodName = counter == 0
-                    ? baseMethodName
-                    : String.format("%s_%d", baseMethodName, counter);
-            if (methods.stream().anyMatch(m -> m.getNameAsString().equals(expectedMethodName))) {
-                counter++;
-            } else {
-                return expectedMethodName;
-            }
-        }
-    }
-
-    static String toValidJavaIdentifier(String input) {
-        StringBuilder sb = new StringBuilder(input.length());
-        for (char c : input.toCharArray()) {
-            if (c == '_') {
-                sb.append("__");
-            } else if (!Character.isJavaIdentifierPart(c)) {
-                sb.append("_").append(Integer.valueOf(c));
-            } else {
-                sb.append(c);
-            }
-        }
-        return sb.toString();
-    }
-
-    private static class CloudEventMetaMethodData {
+    private static class MethodData {
 
         final String processId;
         final String triggerName;
@@ -166,7 +125,7 @@ public class CloudEventMetaFactoryGenerator extends AbstractEventResourceGenerat
         final String eventType;
         final String eventSource;
 
-        public CloudEventMetaMethodData(String processId, TriggerMetaData trigger) {
+        public MethodData(String processId, TriggerMetaData trigger) {
             this.processId = processId;
             this.triggerName = trigger.getName();
 
@@ -191,7 +150,7 @@ public class CloudEventMetaFactoryGenerator extends AbstractEventResourceGenerat
             if (o == null || getClass() != o.getClass()) {
                 return false;
             }
-            CloudEventMetaMethodData that = (CloudEventMetaMethodData) o;
+            MethodData that = (MethodData) o;
             return processId.equals(that.processId) && triggerName.equals(that.triggerName) && eventKind == that.eventKind && eventType.equals(that.eventType) && eventSource.equals(that.eventSource);
         }
 

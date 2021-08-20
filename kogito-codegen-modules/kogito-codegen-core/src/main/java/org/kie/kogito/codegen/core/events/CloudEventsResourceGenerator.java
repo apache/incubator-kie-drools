@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process.events;
+package org.kie.kogito.codegen.core.events;
 
-import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
-import org.kie.kogito.codegen.process.ProcessExecutableModelGenerator;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -30,8 +28,7 @@ public class CloudEventsResourceGenerator extends AbstractEventResourceGenerator
 
     private static final String CLASS_NAME = "CloudEventListenerResource";
 
-    public CloudEventsResourceGenerator(final KogitoBuildContext context,
-            final List<ProcessExecutableModelGenerator> generators) {
+    public CloudEventsResourceGenerator(KogitoBuildContext context) {
         super(TemplatedGenerator.builder()
                 .withTemplateBasePath(TEMPLATE_EVENT_FOLDER)
                 .build(context, CLASS_NAME));
