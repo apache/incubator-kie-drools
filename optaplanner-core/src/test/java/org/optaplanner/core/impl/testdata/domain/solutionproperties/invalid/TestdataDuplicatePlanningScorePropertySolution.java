@@ -60,7 +60,7 @@ public class TestdataDuplicatePlanningScorePropertySolution extends TestdataObje
         this.valueList = valueList;
     }
 
-    @PlanningEntityCollectionProperty // Duplicate
+    @PlanningEntityCollectionProperty
     public List<TestdataEntity> getEntityList() {
         return entityList;
     }
@@ -69,7 +69,7 @@ public class TestdataDuplicatePlanningScorePropertySolution extends TestdataObje
         this.entityList = entityList;
     }
 
-    @PlanningScore
+    @PlanningScore // Duplicate
     public SimpleScore getScore() {
         return score;
     }
