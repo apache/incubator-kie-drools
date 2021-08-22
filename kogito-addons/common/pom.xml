@@ -19,7 +19,6 @@
     <module>events</module>
     <module>messaging</module>
     <module>monitoring</module>
-    <module>knative</module>
   </modules>
 
   <profiles>
@@ -41,6 +40,7 @@
         <module>rest-exception-handler</module>
         <module>task-management</module>
         <module>tracing</module>
+        <module>knative</module>
       </modules>
     </profile>
   </profiles>

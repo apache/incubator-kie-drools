@@ -23,8 +23,21 @@
     <module>kogito-predictions-spring-boot-starter</module>
     <module>kogito-processes-spring-boot-starter</module>
     <module>kogito-rules-spring-boot-starter</module>
-    <module>kogito-serverless-workflow-spring-boot-starter</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-serverless-workflow-spring-boot-starter</module>
+      </modules>
+    </profile>
+  </profiles>
 
   <dependencyManagement>
     <dependencies>

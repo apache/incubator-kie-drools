@@ -39,11 +39,6 @@
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-process-svg</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-spring-boot-starter</artifactId>
       <scope>test</scope>
     </dependency>

@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-builder</artifactId>
-  <name>Kogito :: Serverless Workflow Builder</name>
+  <name>Kogito :: Serverless Workflow :: Builder</name>
   <description>Kogito Serverless Workflow Builder</description>
 
   <dependencies>

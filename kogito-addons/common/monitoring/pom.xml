@@ -15,6 +15,19 @@
   <modules>
     <module>core</module>
     <module>prometheus</module>
-    <module>elastic</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>elastic</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

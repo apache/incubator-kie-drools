@@ -8,7 +8,7 @@
     <version>2.0.0-SNAPSHOT</version>
   </parent>
   <artifactId>kogito-addons-quarkus-events-smallrye</artifactId>
-  <name>Kogito :: Add-Ons :: Deprecated:: Events :: Smallrye Messaging</name>
+  <name>Kogito :: Add-Ons :: Deprecated :: Events :: Smallrye Messaging</name>
   <description>The library kogito-addons-quarkus-events-smallrye is deprecated and will be removed in a future release!. The new name for this addon is kogito-addons-quarkus-events-process</description>
 
 

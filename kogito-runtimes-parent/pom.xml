@@ -119,7 +119,6 @@
   <modules>
     <module>kogito-build</module>
     <module>kogito-bom</module>
-    <module>kogito-test-utils</module>
     <module>api</module>
     <module>drools</module>
     <module>jbpm</module>
@@ -142,6 +141,7 @@
         </property>
       </activation>
       <modules>
+        <module>kogito-test-utils</module>
         <module>kogito-cloud-services</module>
         <module>integration-tests</module>
       </modules>
