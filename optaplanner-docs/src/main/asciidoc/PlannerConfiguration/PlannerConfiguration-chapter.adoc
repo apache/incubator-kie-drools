@@ -741,7 +741,7 @@ A `ValueRangeProvider` on the planning entity is not currently compatible with a
 [[valueRangeFactory]]
 ===== `ValueRangeFactory`
 
-Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableValueRange``, build by the ``ValueRangeFactory``:
+Instead of a ``Collection``, you can also return a `ValueRange` or ``CountableValueRange``, built by the ``ValueRangeFactory``:
 
 [source,java,options="nowrap"]
 ----
@@ -1154,7 +1154,7 @@ public class NQueens {
 ----
 
 All planning entities are automatically inserted into the working memory.
-Do note add an annotation on their properties.
+Do not add an annotation on their properties.
 
 [NOTE]
 ====
@@ -1251,7 +1251,7 @@ The automatic annotation is based on the field type (or getter return type):
 * `@PlanningEntityCollectionProperty`: when it's a `Collection` (or array) of a type that is a configured `@PlanningEntity` class or subclass
 * `@PlanningScore`: when it is a `Score` or subclass
 
-These automatic annotation can still be overwritten per field (or getter).
+These automatic annotations can still be overwritten per field (or getter).
 Specifically, a <<bendableScore, BendableScore>> always needs to override
 with an explicit `@PlanningScore` annotation to define the number of hard and soft levels.
 
@@ -1680,7 +1680,7 @@ most appenders (including the console) cause congestion with `debug` and `trace`
 Switch to an async appender to avoid this problem or turn off `debug` logging.
 ====
 
-If instead, you are still using Log4J 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
+If instead, you are still using Log4j 1.x (and you do not want to switch to its faster successor, Logback), add the bridge dependency:
 
 [source,xml,options="nowrap"]
 ----
