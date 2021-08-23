@@ -17,106 +17,34 @@
 package org.kie.dmn.feel.lang.types.impl;
 
 import org.junit.Test;
+import org.kie.dmn.feel.model.SupportRequest;
+import org.kie.dmn.feel.util.EvalHelper.PropertyValueResult;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class ImmutableFPAWrappingPOJOTest {
 
     @Test
     public void testSupportRequest() {
         ImmutableFPAWrappingPOJO fpa = new ImmutableFPAWrappingPOJO(new SupportRequest("John Doe", "47", "info@redhat.com", "+1", "somewhere", false));
-        System.out.println(fpa.allFEELProperties());
-    }
 
-    public static class SupportRequest implements java.io.Serializable {
+        assertThat(fpa.getFEELProperty("full name").toOptional()).contains("John Doe");
+        assertThat(fpa.getFEELProperty("account").toOptional()).contains("47");
+        assertThat(fpa.getFEELProperty("email").toOptional()).contains("info@redhat.com");
+        assertThat(fpa.getFEELProperty("mobile").toOptional()).contains("+1");
+        assertThat(fpa.getFEELProperty("mailing address").toOptional()).contains("somewhere");
+        assertThat(fpa.getFEELProperty("premium").toOptional()).contains(false);
 
-        static final long serialVersionUID = 1L;
+        assertThat(fpa.getFEELProperty("priority")).isInstanceOfSatisfying(PropertyValueResult.class, x -> assertThat(x.isDefined()).isTrue()); // property exists, but it's null.
 
-        private String fullName;
-        private String account;
-        private String email;
-        private String mobile;
-        private String mailingAddress;
-        private boolean premium;
-        /**
-         * This is deliberately not part of the constructor
-         */
-        private String priority;
+        assertThat(fpa.getFEELProperty("unexisting").toOptional()).isEmpty();
 
-        public SupportRequest() {}
-
-        @org.kie.dmn.feel.lang.FEELProperty("full name")
-        public String getFullName() {
-            return this.fullName;
-        }
-
-        public void setFullName(String fullName) {
-            this.fullName = fullName;
-        }
-
-        public String getAccount() {
-            return this.account;
-        }
-
-        public void setAccount(String account) {
-            this.account = account;
-        }
-
-        public String getEmail() {
-            return this.email;
-        }
-
-        public void setEmail(String email) {
-            this.email = email;
-        }
-
-        public String getMobile() {
-            return this.mobile;
-        }
-
-        public void setMobile(String mobile) {
-            this.mobile = mobile;
-        }
-
-        @org.kie.dmn.feel.lang.FEELProperty("mailing address")
-        public String getMailingAddress() {
-            return this.mailingAddress;
-        }
-
-        public void setMailingAddress(String mailingAddress) {
-            this.mailingAddress = mailingAddress;
-        }
-
-        public boolean isPremium() {
-            return this.premium;
-        }
-
-        public void setPremium(boolean premium) {
-            this.premium = premium;
-        }
-
-        public SupportRequest(String fullName, String account,
-                              String email, String mobile,
-                              String mailingAddress, boolean premium) {
-            this.fullName = fullName;
-            this.account = account;
-            this.email = email;
-            this.mobile = mobile;
-            this.mailingAddress = mailingAddress;
-            this.premium = premium;
-        }
-
-        public String getPriority() {
-            return priority;
-        }
-
-        public void setPriority(String priority) {
-            this.priority = priority;
-        }
-
-        @Override
-        public String toString() {
-            return "SupportRequest [account=" + account + ", email=" + email + ", fullName=" + fullName + ", mailingAddress=" + mailingAddress + ", mobile=" + mobile + ", premium=" + premium + ", priority=" + priority +
-                   "]";
-        }
+        assertThat(fpa.allFEELProperties()).hasFieldOrPropertyWithValue("full name", "John Doe")
+                                           .hasFieldOrPropertyWithValue("account", "47")
+                                           .hasFieldOrPropertyWithValue("email", "info@redhat.com")
+                                           .hasFieldOrPropertyWithValue("mobile", "+1")
+                                           .hasFieldOrPropertyWithValue("mailing address", "somewhere")
+                                           .hasFieldOrPropertyWithValue("premium", false);
     }
 }
 

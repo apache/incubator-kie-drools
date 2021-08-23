@@ -40,13 +40,20 @@ public class PutFunction extends BaseFEELFunction {
         super("put");
     }
 
-    public FEELFnResult<Map<?, ?>> invoke(@ParameterName("context") Object context, @ParameterName("key") String key, @ParameterName("value") Object value) {
+    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") Object context, @ParameterName("key") String key, @ParameterName("value") Object value) {
         if (context == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "cannot be null"));
         }
         if (key == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "key", "cannot be null"));
         }
+        FEELFnResult<Map<String, Object>> result = toMap(context);
+        result.map(r -> r.put(key, value));
+
+        return result;
+    }
+
+    public FEELFnResult<Map<String, Object>> toMap(Object context) {
         Map<String, Object> result;
         if (context instanceof Map) {
             result = new HashMap<>();
@@ -63,8 +70,6 @@ public class PutFunction extends BaseFEELFunction {
         } else {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "is not a context"));
         }
-        result.put(key, value);
-
         return FEELFnResult.ofResult(result);
     }
 }
