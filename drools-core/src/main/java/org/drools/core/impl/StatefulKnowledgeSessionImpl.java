@@ -1805,7 +1805,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                 ObjectTypeNode.expireRightTuple(rt);
             });
 
-            if (isMasterPartition()) {
+            if (isMainPartition()) {
                 WorkingMemoryReteExpireAction.expireFactHandle( wm, factHandle );
             }
         }

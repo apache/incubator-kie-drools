@@ -103,7 +103,7 @@ public interface PropagationEntry {
             this.partition = partition;
         }
 
-        protected boolean isMasterPartition() {
+        protected boolean isMainPartition() {
             return partition == 0;
         }
     }
@@ -345,7 +345,7 @@ public interface PropagationEntry {
                 cachedNode.retractObject( handle, context, wm, partition );
             }
 
-            if (handle.isEvent() && isMasterPartition()) {
+            if (handle.isEvent() && isMainPartition()) {
                 ((EventFactHandle) handle).unscheduleAllJobs(wm);
             }
         }

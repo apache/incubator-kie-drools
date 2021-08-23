@@ -44,13 +44,13 @@ public class PartitionedDefaultAgenda extends DefaultAgenda {
         InternalFactHandle factHandle = ectx.getFactHandle();
         ObjectTypeNode.retractLeftTuples( factHandle, ectx, workingMemory, partition );
         ObjectTypeNode.retractRightTuples( factHandle, ectx, workingMemory, partition );
-        if ( isMasterPartition() && factHandle.isPendingRemoveFromStore() ) {
+        if ( isMainPartition() && factHandle.isPendingRemoveFromStore() ) {
             String epId = factHandle.getEntryPointName();
             ( (InternalWorkingMemoryEntryPoint) workingMemory.getEntryPoint( epId ) ).removeFromObjectStore( factHandle );
         }
     }
 
-    private boolean isMasterPartition() {
+    private boolean isMainPartition() {
         return partition == 0;
     }
 }
