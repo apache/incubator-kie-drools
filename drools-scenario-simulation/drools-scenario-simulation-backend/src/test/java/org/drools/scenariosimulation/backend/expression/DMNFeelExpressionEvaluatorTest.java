@@ -110,7 +110,7 @@ public class DMNFeelExpressionEvaluatorTest {
                 .hasMessageStartingWith("Syntax error:");
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("? > 2", null, BigDecimal.class))
-                .isInstanceOf(NullPointerException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
