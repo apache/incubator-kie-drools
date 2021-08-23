@@ -280,7 +280,11 @@ public class RuleTerminalNode extends AbstractTerminalNode {
     }
 
     private int calculateHashCode() {
-        return 31 * this.rule.hashCode() + (consequenceName == null ? 0 : 37 * consequenceName.hashCode());
+        int result = 31 * rule.hashCode();
+        result = 31 * result + subruleIndex;
+        result = 31 * result + (consequenceName != null ? consequenceName.hashCode() : 0);
+
+        return result;
     }
 
     @Override
@@ -293,7 +297,7 @@ public class RuleTerminalNode extends AbstractTerminalNode {
             return false;
         }
         final RuleTerminalNode other = (RuleTerminalNode) object;
-        return rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
+        return subruleIndex == other.subruleIndex && rule.equals(other.rule) && (consequenceName == null ? other.consequenceName == null : consequenceName.equals(other.consequenceName));
     }
 
     public short getType() {
