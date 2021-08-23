@@ -812,11 +812,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                                                                  null, null, handle, getEntryPoint());
 
 
-            BaseNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx, calledFromRHS);
+            TerminalNode[] tnodes = evalQuery(queryName, queryObject, handle, pCtx, calledFromRHS);
 
             List<Map<String, Declaration>> decls = new ArrayList<Map<String, Declaration>>();
             if ( tnodes != null ) {
-                for ( BaseNode node : tnodes ) {
+                for ( TerminalNode node : tnodes ) {
                     decls.add( ((QueryTerminalNode) node).getSubRule().getOuterDeclarations() );
                 }
             }
@@ -883,13 +883,13 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         }
     }
 
-    protected BaseNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
+    protected QueryTerminalNode[] evalQuery(final String queryName, final DroolsQuery queryObject, final InternalFactHandle handle, final PropagationContext pCtx, final boolean isCalledFromRHS) {
         ExecuteQuery executeQuery = new ExecuteQuery( queryName, queryObject, handle, pCtx, isCalledFromRHS);
         addPropagation( executeQuery );
         return executeQuery.getResult();
     }
 
-    private class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<BaseNode[]> {
+    private class ExecuteQuery extends PropagationEntry.PropagationEntryWithResult<QueryTerminalNode[]> {
 
         private final String queryName;
         private final DroolsQuery queryObject;
@@ -907,7 +907,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         @Override
         public void execute( InternalWorkingMemory wm ) {
-            BaseNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
+            QueryTerminalNode[] tnodes = kBase.getReteooBuilder().getTerminalNodesForQuery( queryName );
             if ( tnodes == null ) {
                 throw new RuntimeException( "Query '" + queryName + "' does not exist" );
             }

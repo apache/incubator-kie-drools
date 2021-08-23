@@ -28,7 +28,7 @@ import org.drools.core.util.bitmask.BitMask;
  */
 public interface TerminalNode
     extends
-    NetworkNode, LeftTupleSinkNode, MemoryFactory<PathMemory> {
+    NetworkNode, PathEndNode, MemoryFactory<PathMemory> {
     
     LeftTupleSource getLeftTupleSource();
     
