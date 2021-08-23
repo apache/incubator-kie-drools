@@ -43,11 +43,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
     }
 
     @Override
-    public boolean evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
+    public ExpressionEvaluatorResult evaluateUnaryExpression(String rawExpression, Object resultValue, Class<?> resultClass) {
         if (isStructuredResult(resultClass)) {
             return verifyResult(rawExpression, resultValue, resultClass);
         } else {
-            return internalUnaryEvaluation(rawExpression, resultValue, resultClass, false);
+            return ExpressionEvaluatorResult.of(internalUnaryEvaluation(rawExpression, resultValue, resultClass, false));
         }
     }
 
@@ -57,7 +57,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * @return
      */
     protected boolean isStructuredResult(Class<?> resultClass) {
-        return resultClass != null && ScenarioSimulationSharedUtils.isCollection(resultClass.getCanonicalName());
+        return resultClass != null && ScenarioSimulationSharedUtils.isCollectionOrMap(resultClass.getCanonicalName());
     }
 
     /**
@@ -66,7 +66,7 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
      * @return
      */
     protected boolean isStructuredInput(String className) {
-        return ScenarioSimulationSharedUtils.isCollection(className);
+        return ScenarioSimulationSharedUtils.isCollectionOrMap(className);
     }
 
     protected Object convertResult(String rawString, String className, List<String> genericClasses) {
@@ -115,15 +115,11 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             Map.Entry<String, JsonNode> element = fields.next();
             String key = element.getKey();
             JsonNode jsonNode = element.getValue();
-            // if is a simple value just return the parsed result
+
             if (isSimpleTypeNode(jsonNode)) {
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
-                Object value = internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey());
-                setField(toReturn, key, value);
-                return toReturn;
-            }
-
-            if (jsonNode.isArray()) {
+                setField(toReturn, key, internalLiteralEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldDescriptor.getKey()));
+            } else if (jsonNode.isArray()) {
                 List<Object> nestedList = new ArrayList<>();
                 Map.Entry<String, List<String>> fieldDescriptor = getFieldClassNameAndGenerics(toReturn, key, className, genericClasses);
                 List<Object> returnedList = createAndFillList((ArrayNode) jsonNode, nestedList, fieldDescriptor.getKey(), fieldDescriptor.getValue());
@@ -143,9 +139,9 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         return toReturn;
     }
 
-    protected boolean verifyResult(String rawExpression, Object resultRaw, Class<?> resultClass) {
+    protected ExpressionEvaluatorResult verifyResult(String rawExpression, Object resultRaw, Class<?> resultClass) {
         if (rawExpression == null) {
-            return resultRaw == null;
+            return ExpressionEvaluatorResult.of(resultRaw == null);
         }
         if (resultRaw != null && !(resultRaw instanceof List) && !(resultRaw instanceof Map)) {
             throw new IllegalArgumentException("A list or map was expected");
@@ -155,10 +151,10 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
 
         if (jsonNode.isTextual()) {
             /* JSON Text: expression manually written by the user to build a list/map */
-            return internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false);
+            return ExpressionEvaluatorResult.of(internalUnaryEvaluation(jsonNode.asText(), resultRaw, resultClass, false));
         } else if (jsonNode.isArray()) {
             /* JSON Array: list of expressions created using List collection editor */
-            return verifyList((ArrayNode) jsonNode, (List) resultRaw);
+            return verifyList((ArrayNode) jsonNode, (List<Object>) resultRaw);
         } else if (jsonNode.isObject()) {
             /* JSON Map: map of expressions created using Map collection editor */
             return verifyObject((ObjectNode) jsonNode, resultRaw);
@@ -166,30 +162,43 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
         throw new IllegalArgumentException(ConstantsHolder.MALFORMED_RAW_DATA_MESSAGE);
     }
 
-    protected boolean verifyList(ArrayNode json, List resultRaw) {
+    protected ExpressionEvaluatorResult verifyList(ArrayNode json, List<Object> resultRaw) {
         if (resultRaw == null) {
-            return isListEmpty(json);
+            return ExpressionEvaluatorResult.of(isListEmpty(json));
         }
+        int elementNumber = 0;
         for (JsonNode node : json) {
+            elementNumber++;
             boolean success = false;
+            boolean simpleTypeNode = isSimpleTypeNode(node);
+
             for (Object result : resultRaw) {
-                boolean simpleTypeNode = isSimpleTypeNode(node);
                 if (simpleTypeNode && internalUnaryEvaluation(getSimpleTypeNodeTextValue(node), result, result.getClass(), true)) {
                     success = true;
-                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result)) {
+                } else if (!simpleTypeNode && verifyObject((ObjectNode) node, result).isSuccessful()) {
                     success = true;
                 }
+
+                if (success) {
+                    break;
+                }
             }
+
             if (!success) {
-                return false;
+                ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
+                if (simpleTypeNode) {
+                    evaluatorResult.setWrongValue(getSimpleTypeNodeTextValue(node));
+                }
+                evaluatorResult.addListItemStepToPath(elementNumber);
+                return evaluatorResult;
             }
         }
-        return true;
+        return ExpressionEvaluatorResult.ofSuccessful();
     }
 
-    protected boolean verifyObject(ObjectNode json, Object resultRaw) {
+    protected ExpressionEvaluatorResult verifyObject(ObjectNode json, Object resultRaw) {
         if (resultRaw == null) {
-            return isObjectEmpty(json);
+            return ExpressionEvaluatorResult.of(isObjectEmpty(json));
         }
         Iterator<Map.Entry<String, JsonNode>> fields = json.fields();
         while (fields.hasNext()) {
@@ -198,26 +207,38 @@ public abstract class AbstractExpressionEvaluator implements ExpressionEvaluator
             JsonNode jsonNode = element.getValue();
             Object fieldValue = extractFieldValue(resultRaw, key);
             Class<?> fieldClass = fieldValue != null ? fieldValue.getClass() : null;
+            ExpressionEvaluatorResult evaluatorResult = ExpressionEvaluatorResult.ofFailed();
 
             if (isSimpleTypeNode(jsonNode)) {
-                if (!internalUnaryEvaluation(getSimpleTypeNodeTextValue(jsonNode), fieldValue, fieldClass, true)) {
-                    return false;
+                String nodeValue = getSimpleTypeNodeTextValue(jsonNode);
+                if (!internalUnaryEvaluation(nodeValue, fieldValue, fieldClass, true)) {
+                    evaluatorResult.setWrongValue(nodeValue);
+                    evaluatorResult.addMapItemStepToPath(key);
+                    return evaluatorResult;
                 }
             } else if (jsonNode.isArray()) {
-                if (!verifyList((ArrayNode) jsonNode, (List) fieldValue)) {
-                    return false;
+                evaluatorResult = verifyList((ArrayNode) jsonNode, (List) fieldValue);
+                if (!evaluatorResult.isSuccessful()) {
+                    evaluatorResult.addMapItemStepToPath(key);
+                    return evaluatorResult;
                 }
             } else if (jsonNode.isObject()) {
-                if (!verifyObject((ObjectNode) jsonNode, fieldValue)) {
-                    return false;
+                evaluatorResult = verifyObject((ObjectNode) jsonNode, fieldValue);
+                if (!evaluatorResult.isSuccessful()) {
+                    if (resultRaw instanceof Map) {
+                        evaluatorResult.addMapItemStepToPath(key);
+                    } else {
+                        evaluatorResult.addFieldItemStepToPath(key);
+                    }
+                    return evaluatorResult;
                 }
             } else {
                 if (!internalUnaryEvaluation(jsonNode.textValue(), fieldValue, fieldClass, true)) {
-                    return false;
+                    return ExpressionEvaluatorResult.ofFailed(jsonNode.textValue(), key);
                 }
             }
         }
-        return true;
+        return ExpressionEvaluatorResult.ofSuccessful();
     }
 
     /**

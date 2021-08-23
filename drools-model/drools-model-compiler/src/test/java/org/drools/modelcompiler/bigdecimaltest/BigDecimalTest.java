@@ -210,4 +210,54 @@ public class BigDecimalTest extends BaseModelTest {
         assertEquals(1, ksession.fireAllRules());
 
     }
+
+    @Test
+    public void testBigDecimalAdd() {
+        // RHDM-1635
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $customer: Customer( $rate : (rate + 10) == 20 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer c1 = new Customer();
+        c1.setRate(new BigDecimal("10"));
+        Customer c2 = new Customer();
+        c2.setRate(new BigDecimal("11"));
+
+        ksession.insert(c1);
+        ksession.insert(c2);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testBigDecimalRemainder() {
+        // RHDM-1635
+        String str =
+                "package org.drools.modelcompiler.bigdecimals\n" +
+                "import " + Customer.class.getCanonicalName() + ";\n" +
+                "import " + BigDecimal.class.getCanonicalName() + ";\n" +
+                "rule R when\n" +
+                "  $customer: Customer( $rate : (rate % 10) == 0 )\n" +
+                "then\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+
+        Customer c1 = new Customer();
+        c1.setRate(new BigDecimal("20"));
+        Customer c2 = new Customer();
+        c2.setRate(new BigDecimal("21"));
+
+        ksession.insert(c1);
+        ksession.insert(c2);
+
+        assertEquals(1, ksession.fireAllRules());
+    }
 }

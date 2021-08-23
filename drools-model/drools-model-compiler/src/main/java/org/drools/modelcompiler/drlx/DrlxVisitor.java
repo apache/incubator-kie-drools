@@ -64,7 +64,7 @@ public class DrlxVisitor implements DrlVoidVisitor<Void> {
                 }
             } else if (item instanceof RuleConsequence) {
                 RuleConsequence c = (RuleConsequence) item;
-                ruleDescrBuilder.rhs(c.getBlock().toString());
+                ruleDescrBuilder.rhs(c.getStatement().toString());
             } else {
                 throw new IllegalArgumentException(item.getClass().getCanonicalName());
             }

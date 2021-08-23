@@ -16,9 +16,8 @@
 
 package org.drools.core.reteoo.builder;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
@@ -27,7 +26,6 @@ import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.WindowNode;
 import org.drools.core.rule.Accumulate;
-import org.drools.core.rule.AsyncSend;
 import org.drools.core.rule.Behavior;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.EntryPointId;
@@ -76,28 +74,29 @@ public class PatternBuilder
         }
 
         context.pushRuleComponent( pattern );
+        context.syncObjectTypesWithObjectCount(); // must unwind object types from subnetworks, if they exist
         this.attachPattern( context,
                             utils,
                             pattern );
+        // mus be added after
+        context.addPattern( pattern );
         context.popRuleComponent();
-
     }
 
     private void attachPattern(final BuildContext context,
                                final BuildUtils utils,
                                final Pattern pattern) throws InvalidPatternException {
-
-        // Set pattern offset to the appropriate value
-        pattern.setOffset( context.getCurrentPatternOffset() );
-
         Constraints constraints = createConstraints(context, pattern);
+
+        // Set pattern tuple index and objectIndex to the appropriate value
+        pattern.setTupleIndex(context.getTupleSource() == null ? 0 : context.getTupleSource().getPathIndex() + 1);
+        pattern.setObjectIndex((context.getTupleSource() != null) ? context.getTupleSource().getObjectCount() : 0);
 
         // Create BetaConstraints object
         context.setBetaconstraints( constraints.betaConstraints );
 
         if ( pattern.getSource() != null ) {
             context.setAlphaConstraints( constraints.alphaConstraints );
-            final int currentOffset = context.getCurrentPatternOffset();
 
             PatternSource source = pattern.getSource();
 
@@ -108,8 +107,6 @@ public class PatternBuilder
             }
 
             builder.build( context, utils, source );
-            // restoring offset
-            context.setCurrentPatternOffset( currentOffset );
         } else {
             // default entry point
             PatternSource source = EntryPointId.DEFAULT;
@@ -124,12 +121,6 @@ public class PatternBuilder
         }
 
         buildXpathConstraints(context, utils, pattern, constraints);
-
-        // last thing to do is increment the offset, since if the pattern has a source,
-        // offset must be overriden
-        if ( !(pattern.getSource() instanceof AsyncSend) ) {
-            context.incrementCurrentPatternOffset();
-        }
     }
 
     private void buildBehaviors(BuildContext context, BuildUtils utils, Pattern pattern, Constraints constraints) {
@@ -160,7 +151,6 @@ public class PatternBuilder
 
             if (constraints.xpathConstraints.size() == 1 && constraints.xpathConstraints.get(0).getXpathStartDeclaration() != null) {
                 context.setObjectSource( null );
-                context.decrementCurrentPatternOffset();
             } else {
                 buildJoinNode( context, utils );
             }
@@ -172,18 +162,6 @@ public class PatternBuilder
                     context.setBetaconstraints(chunk.getBetaConstraints());
                     context.setXpathConstraints(chunk.getXpathConstraints());
                     builder.build(context, utils, chunk.asFrom());
-                }
-
-                Declaration declaration = xpathConstraint.getDeclaration();
-
-                if ( declaration != null ) { // oopath actually have the binding
-                    Pattern clonedPattern = new Pattern( pattern.getIndex(),
-                                                         context.getCurrentPatternOffset(),
-                                                         new ClassObjectType( xpathConstraint.getResultClass() ),
-                                                         declaration.getIdentifier(),
-                                                         declaration.isInternalFact() );
-    
-                    declaration.setPattern( clonedPattern );
                 }
             }
 
@@ -274,8 +252,7 @@ public class PatternBuilder
     }
 
     private boolean isNegative(final BuildContext context) {
-        for ( ListIterator<RuleConditionElement> it = context.stackIterator(); it.hasPrevious(); ) {
-            RuleConditionElement rce = it.previous();
+        for ( RuleConditionElement rce : context.getBuildstack() ) {
             if ( rce instanceof GroupElement && ((GroupElement) rce).isNot() ) {
                 return true;
             }
@@ -418,15 +395,12 @@ public class PatternBuilder
             // Check if this object type exists before
             // If it does we need stop instance equals cross product
             final Class< ? > thisClass = ((ClassObjectType) pattern.getObjectType()).getClassType();
-            for ( final Pattern previousPattern : context.getObjectType() ) {
+            for ( final Pattern previousPattern : context.getPatterns() ) {
                 final Class< ? > previousClass = ((ClassObjectType) previousPattern.getObjectType()).getClassType();
                 if ( thisClass.isAssignableFrom( previousClass ) ) {
                     betaConstraints.add( new InstanceNotEqualsConstraint( previousPattern ) );
                 }
             }
-
-            // Must be added after the checking, otherwise it matches against itself
-            context.getObjectType().add( pattern );
         }
     }
 
@@ -441,8 +415,8 @@ public class PatternBuilder
     }
 
     private static class Constraints {
-        private final List<AlphaNodeFieldConstraint> alphaConstraints = new LinkedList<AlphaNodeFieldConstraint>();
-        private final List<BetaNodeFieldConstraint> betaConstraints = new LinkedList<BetaNodeFieldConstraint>();
-        private final List<XpathConstraint> xpathConstraints = new LinkedList<XpathConstraint>();
+        private final List<AlphaNodeFieldConstraint> alphaConstraints = new ArrayList<>();
+        private final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+        private final List<XpathConstraint> xpathConstraints = new ArrayList<>();
     }
 }

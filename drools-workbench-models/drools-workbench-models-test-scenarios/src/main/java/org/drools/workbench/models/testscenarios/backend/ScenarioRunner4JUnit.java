@@ -122,7 +122,8 @@ public class ScenarioRunner4JUnit extends Runner {
                     }
 
                     // FLUSSSSSH!
-                    for (FactHandle factHandle : ksession.getFactHandles()) {
+                    // DROOLS-6511 ConcurrentModificationException - fixed by using a new copy of FactHandle list
+                    for (FactHandle factHandle : new ArrayList<FactHandle>(ksession.getFactHandles())) {
                         ksession.delete(factHandle);
                     }
 

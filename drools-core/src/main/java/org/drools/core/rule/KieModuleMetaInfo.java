@@ -22,12 +22,12 @@ import java.util.Set;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class KieModuleMetaInfo implements Serializable {
 
     private static class Marshaller {
-        private static final XStream xStream = createTrustingXStream( new DomDriver() );
+        private static final XStream xStream = createNonTrustingXStream( new DomDriver() );
 
         static {
             xStream.setClassLoader( KieModuleMetaInfo.class.getClassLoader() );

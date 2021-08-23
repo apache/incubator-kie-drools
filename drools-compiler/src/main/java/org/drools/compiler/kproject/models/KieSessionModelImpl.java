@@ -62,6 +62,12 @@ public class KieSessionModelImpl
 
     private FileLoggerModel                  fileLogger;
 
+    private boolean                          directFiring = false;
+
+    private boolean                          threadSafe = true;
+
+    private boolean                          accumulateNullPropagation = false;
+
     private KieSessionModelImpl() { }
 
     public KieSessionModelImpl(KieBaseModelImpl kBase, String name) {
@@ -80,9 +86,42 @@ public class KieSessionModelImpl
         this.kBase = (KieBaseModelImpl) kieBaseModel;
     }
 
-
-    public KieSessionModel setDefault(boolean isDefault) {
+    public KieSessionModel setDefault( boolean isDefault) {
         this.isDefault = isDefault;
+        return this;
+    }
+
+    @Override
+    public boolean isDirectFiring() {
+        return directFiring;
+    }
+
+    @Override
+    public KieSessionModel setDirectFiring( boolean directFiring ) {
+        this.directFiring = directFiring;
+        return this;
+    }
+
+
+    @Override
+    public boolean isThreadSafe() {
+        return threadSafe;
+    }
+
+    @Override
+    public KieSessionModel setThreadSafe( boolean threadSafe ) {
+        this.threadSafe = threadSafe;
+        return this;
+    }
+
+    @Override
+    public boolean isAccumulateNullPropagation() {
+        return accumulateNullPropagation;
+    }
+
+    @Override
+    public KieSessionModel setAccumulateNullPropagation(boolean accumulateNullPropagation) {
+        this.accumulateNullPropagation = accumulateNullPropagation;
         return this;
     }
 
@@ -252,6 +291,9 @@ public class KieSessionModelImpl
             writer.addAttribute("name", kSession.getName());
             writer.addAttribute("type", kSession.getType().toString().toLowerCase() );
             writer.addAttribute( "default", Boolean.toString(kSession.isDefault()) );
+            writer.addAttribute( "directFiring", Boolean.toString(kSession.isDirectFiring()) );
+            writer.addAttribute( "threadSafe", Boolean.toString(kSession.isThreadSafe()) );
+            writer.addAttribute( "accumulateNullPropagation", Boolean.toString(kSession.isAccumulateNullPropagation()) );
             if (kSession.getClockType() != null) {
                 writer.addAttribute("clockType", kSession.getClockType().getClockType());
             }
@@ -299,6 +341,9 @@ public class KieSessionModelImpl
             final KieSessionModelImpl kSession = new KieSessionModelImpl();
             kSession.name = reader.getAttribute("name");
             kSession.setDefault( "true".equals(reader.getAttribute( "default" )) );
+            kSession.setDirectFiring( "true".equals(reader.getAttribute( "directFiring" )) );
+            kSession.setThreadSafe( "true".equals(reader.getAttribute( "threadSafe" )) );
+            kSession.setAccumulateNullPropagation( "true".equals(reader.getAttribute( "accumulateNullPropagation" )) );
 
             String kSessionType = reader.getAttribute("type");
             kSession.setType(kSessionType != null ? KieSessionType.valueOf( kSessionType.toUpperCase() ) : KieSessionType.STATEFUL);

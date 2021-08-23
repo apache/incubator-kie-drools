@@ -1,0 +1,34 @@
+package org.kie.pmml.commons.model.predicates;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
+
+
+public class KiePMMLSimpleSetPredicateEvaluateMethodTemplate {
+
+    private boolean evaluateIN(Map<String, Object> stringObjectMap) {
+        org.kie.pmml.api.enums.ARRAY_TYPE arrayType = null;
+        if (!stringObjectMap.containsKey("avalue")) {
+            return false;
+        }
+        final String stringValue = (String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(String.class, stringObjectMap.get("avalue"));
+        final Object value = arrayType.getValue(stringValue);
+        final List values = java.util.Arrays.asList();
+        return values.contains(value);
+    }
+
+    private boolean evaluateNOT_IN(Map<String, Object> stringObjectMap) {
+        org.kie.pmml.api.enums.ARRAY_TYPE arrayType = null;
+        if (!stringObjectMap.containsKey("avalue")) {
+                    return false;
+        }
+        final String stringValue = (String) org.kie.pmml.api.utils.ConverterTypeUtil.convert(String.class, stringObjectMap.get("avalue"));
+        final Object value = arrayType.getValue(stringValue);
+        final List values = java.util.Arrays.asList();
+        return !values.contains(value);
+    }
+
+}

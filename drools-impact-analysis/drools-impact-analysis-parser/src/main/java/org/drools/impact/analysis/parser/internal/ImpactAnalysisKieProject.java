@@ -18,9 +18,9 @@ import java.util.function.BiFunction;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.kie.internal.builder.KnowledgeBuilder;
 
@@ -48,7 +48,7 @@ public class ImpactAnalysisKieProject extends KieModuleKieProject {
     }
 
     @Override
-    public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs, BuildContext buildContext) {
         ImpactAnalysisKieModule kmodule = (ImpactAnalysisKieModule) getInternalKieModule();
         kmodule.setAnalysisModel( modelBuilder.getAnalysisModel() );
     }

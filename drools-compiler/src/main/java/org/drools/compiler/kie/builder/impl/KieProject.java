@@ -51,7 +51,7 @@ public interface KieProject {
 
     ResultsImpl verify();
     ResultsImpl verify( String... kModelNames );
-    void verify(ResultsImpl messages);
+    void verify(BuildContext buildContext);
 
     long getCreationTimestamp();
 
@@ -60,8 +60,8 @@ public interface KieProject {
 
     InputStream getPomAsStream();
 
-    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages );
-    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, ResultsImpl messages, Predicate<String> buildFilter );
+    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, BuildContext buildContext );
+    KnowledgeBuilder buildKnowledgePackages( KieBaseModelImpl kBaseModel, BuildContext buildContext, Predicate<String> buildFilter );
 
-    default void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {}
+    default void writeProjectOutput(MemoryFileSystem trgMfs, BuildContext buildContext) {}
 }

@@ -364,7 +364,7 @@ public class MVELCompilationUnit
             }
         }
 
-        InternalFactHandle[] handles = tuple instanceof LeftTuple ? ( (LeftTuple) tuple ).toFactHandles() : null;
+        InternalFactHandle[] handles = tuple instanceof LeftTuple ? tuple.toFactHandles() : null;
         if ( operators.length > 0 ) {
             for (EvaluatorWrapper operator : operators) {
                 // TODO: need to have one operator per working memory
@@ -388,8 +388,8 @@ public class MVELCompilationUnit
                 }
 
                 for (Declaration decl : prevDecl) {
-                    int offset = decl.getOffset();
-                    Object o = decl.getValue(workingMemory, objs != null ? objs[offset] : handles[offset].getObject());
+                    Object o = decl.getValue(workingMemory, objs != null ? objs[decl.getObjectIndex()] :
+                                                                            handles[decl.getObjectIndex()].getObject());
                     factory.getIndexedVariableResolver(i++).setValue(o);
                 }
             }
@@ -399,9 +399,9 @@ public class MVELCompilationUnit
             for ( Declaration decl : this.localDeclarations ) {
                 Object value;
                 if( readLocalsFromTuple && tuple != null ) {
-                    int offset = decl.getOffset();
                     value = decl.getValue( workingMemory,
-                                           objs != null ? objs[offset] : handles[offset].getObject() );
+                                           objs != null ? objs[decl.getObjectIndex()] :
+                                                          handles[decl.getObjectIndex()].getObject());
                 } else {
                     value = decl.getValue( workingMemory,
                                           rightObject ); 

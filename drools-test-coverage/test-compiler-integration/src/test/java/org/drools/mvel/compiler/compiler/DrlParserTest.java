@@ -16,6 +16,8 @@
 package org.drools.mvel.compiler.compiler;
 
 import java.io.StringReader;
+import java.util.Collection;
+import java.util.List;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.compiler.DrlParser;
@@ -26,20 +28,35 @@ import org.drools.compiler.lang.dsl.DSLMappingFile;
 import org.drools.compiler.lang.dsl.DSLTokenizedMappingFile;
 import org.drools.compiler.lang.dsl.DefaultExpander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
+@RunWith(Parameterized.class)
 public class DrlParserTest {
 
     private static final String NL = System.getProperty("line.separator");
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DrlParserTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with testIfAfterPattern. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testExpandDRL() throws Exception {
@@ -251,22 +268,10 @@ public class DrlParserTest {
     }
 
     private void createKBuilderAddDrlAndAssertHasNoErrors(String drl) {
-        KnowledgeBuilder kbuilder = createKBuilderWithSpecifiedDrl( drl );
-        assertHasNoErrors( kbuilder );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertEquals("Expected no build errors, but got: " + errors.toString(),
+                     0,
+                     errors.size());
     }
-
-    private KnowledgeBuilder createKBuilderWithSpecifiedDrl( String drl ) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader(drl) ),
-                      ResourceType.DRL );
-        return kbuilder;
-    }
-
-    private void assertHasNoErrors(KnowledgeBuilder kbuilder) {
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        assertEquals( "Expected no build errors, but got: " + errors.toString(),
-                      0,
-                      errors.size() );
-    }
-
 }

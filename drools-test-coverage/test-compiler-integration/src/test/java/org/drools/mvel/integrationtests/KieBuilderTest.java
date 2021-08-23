@@ -15,14 +15,20 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
 import org.assertj.core.api.Assertions;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -48,7 +54,20 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class KieBuilderTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieBuilderTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieBuilderTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testResourceInclusion() {
@@ -91,13 +110,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
         final Resource r2 = ResourceFactory.newByteArrayResource( drl2.getBytes() ).setResourceType( ResourceType.GDRL ).setSourcePath( "kbase1/drl2.gdrl" );
         final Resource r3 = ResourceFactory.newByteArrayResource( drl3.getBytes() ).setResourceType( ResourceType.RDRL ).setSourcePath( "kbase1/drl3.rdrl" );
         final Resource r4 = ResourceFactory.newByteArrayResource( drl4.getBytes() ).setResourceType( ResourceType.TDRL ).setSourcePath( "kbase1/drl4.tdrl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1,
-                                           r2,
-                                           r3,
-                                           r4 );
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1, r2, r3, r4);
 
         final InternalKieModule ikm = (InternalKieModule) km;
         assertNotNull( ikm.getResource( r1.getSourcePath() ) );
@@ -132,10 +146,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1);
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1);
 
         ks.newKieContainer( km.getReleaseId() );
     }
@@ -161,9 +173,9 @@ public class KieBuilderTest extends CommonTestMethodBase {
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
 
-        Assertions.assertThatThrownBy(() -> createAndDeployJar(ks, kmodule, releaseId1, r1))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("XSD validation failed");
+        Assertions.assertThatThrownBy(() -> KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1))
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("XSD validation failed");
     }
 
     @Test
@@ -186,10 +198,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
         // Create an in-memory jar for version 1.0.0
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1);
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1);
 
         ks.newKieContainer( km.getReleaseId() );
     }
@@ -222,7 +232,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         kfs.writeKModuleXML( kmoduleModel.toXML() );
 
-        final KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertEquals( 0, builder.getResults().getMessages().size() );
         ks.getRepository().addKieModule( builder.getKieModule() );
 
@@ -242,7 +252,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
         final KieFileSystem kfs = ks.newKieFileSystem()
                 .write( "src/main/java/JavaClass.java", java );
 
-        final Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        Results results = kieBuilder.getResults();
 
         System.out.println( results.getMessages() );
 
@@ -274,10 +285,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
                 .setSourcePath( "org/drools/mvel/compiler/JavaSourceMessage.java" );
         final Resource drlResource = ResourceFactory.newByteArrayResource( drl.getBytes() ).setResourceType( ResourceType.DRL )
                 .setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                kmodule,
-                releaseId1,
-                javaResource, drlResource);
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), javaResource, drlResource);
 
         final KieContainer kieContainer = ks.newKieContainer(km.getReleaseId());
         try {
@@ -322,11 +331,12 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         KieModule km = null;
         try {
-            km = createAndDeployJar( ks,
-                                     kmodule,
-                                     filter,
-                                     releaseId1,
-                                     allowedJavaResource, filteredJavaResource, drlResource);
+            // KieBuilderImpl.buildAll( Predicate<String> classFilter ) only works with KieModuleKieProject. So not parameterized
+            KieFileSystem kfs = KieUtil.getKieFileSystemWithKieModule(KieModuleModelImpl.fromXML(kmodule), releaseId1, allowedJavaResource, filteredJavaResource, drlResource);
+            KieBuilder kieBuilder = ks.newKieBuilder(kfs);
+            ((InternalKieBuilder)kieBuilder).buildAll(filter);
+            km = kieBuilder.getKieModule();
+            ks.getRepository().addKieModule(km);
         } catch ( final IllegalStateException ise ) {
             if ( ise.getMessage().contains( "org/drools/mvel/compiler/ClassCausingClassNotFoundException.java" ) ) {
                 fail( "Build failed because source file was not filtered out." );
@@ -371,7 +381,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         kfs.writeKModuleXML( kmoduleModel.toXML() );
 
-        final KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+
         for ( final org.kie.api.builder.Message m : builder.getResults().getMessages() ) {
             System.out.println( m );
         }
@@ -410,7 +421,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         kfs.write( "src/main/resources/org/drools/compiler/drl1.drl", drlResource );
 
-        final KieBuilder kb = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kb = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         final List<org.kie.api.builder.Message> messages = kb.getResults().getMessages( org.kie.api.builder.Message.Level.ERROR );
         assertEquals( 4, messages.size() );
@@ -470,8 +481,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId releaseId = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final KieFileSystem kfs = ks.newKieFileSystem().generateAndWritePomXML( releaseId ).writeKModuleXML( kmodule );
-        final KieBuilder kieBuilder = ks.newKieBuilder( kfs );
-        kieBuilder.buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         final Results results = kieBuilder.getResults();
         assertEquals( expectedErrors, results.getMessages( org.kie.api.builder.Message.Level.ERROR ).size() );
         assertNotNull(((InternalKieBuilder) kieBuilder ).getKieModuleIgnoringErrors());
@@ -487,8 +497,7 @@ public class KieBuilderTest extends CommonTestMethodBase {
         Assertions.assertThatThrownBy(() -> kbuilder.add(ResourceFactory.newClassPathResource("some.rf"), ResourceType.DRF))
                 .isInstanceOf(RuntimeException.class);
     }
-    
-    
+
     @Test
     public void testDeclarativeChannelRegistration() {
         final String drl1 = "package org.drools.mvel.compiler\n" +
@@ -512,10 +521,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1);
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1);
 
         KieContainer kieContainer = ks.newKieContainer( km.getReleaseId());
         
@@ -547,10 +554,8 @@ public class KieBuilderTest extends CommonTestMethodBase {
 
         final ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-kie-builder", "1.0.0" );
         final Resource r1 = ResourceFactory.newByteArrayResource( drl1.getBytes() ).setResourceType( ResourceType.DRL ).setSourcePath( "kbase1/drl1.drl" );
-        final KieModule km = createAndDeployJar( ks,
-                                           kmodule,
-                                           releaseId1,
-                                           r1);
+
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, KieModuleModelImpl.fromXML(kmodule), r1);
 
         KieContainer kieContainer = ks.newKieContainer( km.getReleaseId());
         

@@ -21,14 +21,15 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.validation.dtanalysis.model.DTAnalysis;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TABLE;
 
@@ -81,5 +82,20 @@ public class Check1stNFViolationTest extends AbstractDTAnalysisTest {
         assertThat(analysis.getSubsumptions().isEmpty(), is(false));
         assertTrue("No message about subsumption",
                    validate.stream().noneMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_SUBSUMPTION_RULE)));
+    }
+
+    @Test
+    public void testCheck1stNFViolationCollect() {
+        List<DMNMessage> validate = validator.validate(getReader("DT1stNFViolationCollect.dmn"), ANALYZE_DECISION_TABLE);
+
+        DTAnalysis analysisDuplicate = getAnalysis(validate, "_4237d55b-2589-48a5-8183-f9f4e0e00c07");
+        assertThat(analysisDuplicate.is1stNFViolation(), is(true));
+        assertThat(analysisDuplicate.getDuplicateRulesTuples(), hasSize(2));
+        assertTrue("It should contain DMNMessage(s) for the 1st NF Violation",
+                   validate.stream().anyMatch(p -> p.getSourceId().equals("_4237d55b-2589-48a5-8183-f9f4e0e00c07") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION)));
+        assertTrue("Being a C table, DMNMessage(s) for the 1st NF Violation are of type Warning",
+                   validate.stream()
+                           .filter(p -> p.getSourceId().equals("_4237d55b-2589-48a5-8183-f9f4e0e00c07") && p.getMessageType().equals(DMNMessageType.DECISION_TABLE_1STNFVIOLATION))
+                           .allMatch(p -> p.getLevel() == Level.WARNING));
     }
 }

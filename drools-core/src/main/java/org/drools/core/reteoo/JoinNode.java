@@ -41,6 +41,7 @@ public class JoinNode extends BetaNode {
                binder,
                context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'join' node increase the object count
     }
 
     public short getType() {

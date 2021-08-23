@@ -72,6 +72,28 @@ public class CodegenTestUtils {
         }
     }
 
+    public static void commonValidateCompilationWithImports(BlockStmt body, List<Class<?>> imports) {
+        ClassOrInterfaceDeclaration classOrInterfaceType = new ClassOrInterfaceDeclaration();
+        classOrInterfaceType.setName("CommCodeTest");
+        MethodDeclaration toAdd = new MethodDeclaration();
+        toAdd.setType("void");
+        toAdd.setName("TestingMethod");
+        toAdd.setParameters(NodeList.nodeList());
+        toAdd.setBody(body);
+        classOrInterfaceType.addMember(toAdd);
+        CompilationUnit compilationUnit = StaticJavaParser.parse("");
+        imports.forEach(compilationUnit::addImport);
+        compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
+        compilationUnit.addType(classOrInterfaceType);
+        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils.CommCodeTest",
+                                                                  compilationUnit.toString());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
     public static void commonValidateCompilation(MethodDeclaration methodDeclaration) {
         ClassOrInterfaceDeclaration classOrInterfaceType = new ClassOrInterfaceDeclaration();
         classOrInterfaceType.setName("CommCodeTest");
@@ -80,6 +102,37 @@ public class CodegenTestUtils {
         compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
         compilationUnit.addType(classOrInterfaceType);
         Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils.CommCodeTest",
+                                                                  compilationUnit.toString());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public static void commonValidateCompilationWithImports(MethodDeclaration methodDeclaration, List<Class<?>> imports) {
+        ClassOrInterfaceDeclaration classOrInterfaceType = new ClassOrInterfaceDeclaration();
+        classOrInterfaceType.setName("CommCodeTest");
+        classOrInterfaceType.addMember(methodDeclaration);
+        CompilationUnit compilationUnit = StaticJavaParser.parse("");
+        imports.forEach(compilationUnit::addImport);
+        compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
+        compilationUnit.addType(classOrInterfaceType);
+        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils.CommCodeTest",
+                                                                  compilationUnit.toString());
+        try {
+            KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+    }
+
+    public static void commonValidateCompilationWithImports(ClassOrInterfaceDeclaration classOrInterfaceType, List<Class<?>> imports) {
+        CompilationUnit compilationUnit = StaticJavaParser.parse("");
+        imports.forEach(compilationUnit::addImport);
+        compilationUnit.setPackageDeclaration("org.kie.pmml.compiler.commons.utils");
+        compilationUnit.addType(classOrInterfaceType);
+        Map<String, String> sourcesMap = Collections.singletonMap("org.kie.pmml.compiler.commons.utils."+classOrInterfaceType.getName().asString(),
                                                                   compilationUnit.toString());
         try {
             KieMemoryCompiler.compile(sourcesMap, Thread.currentThread().getContextClassLoader());

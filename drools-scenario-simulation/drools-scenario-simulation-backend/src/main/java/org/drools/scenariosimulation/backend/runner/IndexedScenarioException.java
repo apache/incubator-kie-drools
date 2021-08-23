@@ -16,42 +16,27 @@
 
 package org.drools.scenariosimulation.backend.runner;
 
+import org.drools.scenariosimulation.backend.util.ScenarioSimulationServerMessages;
+
 public class IndexedScenarioException extends ScenarioException {
 
     private final int index;
+    private final String scenarioDescription;
+    private final String fileName;
 
-    private String fileName;
-
-    public IndexedScenarioException(int index, String message) {
-        super(message);
-        this.index = index;
-    }
-
-    public IndexedScenarioException(int index, String message, Throwable cause) {
-        super(message, cause);
-        this.index = index;
-    }
-
-    public IndexedScenarioException(int index, Throwable cause) {
+    public IndexedScenarioException(int index, String scenarioDescription, String fileName, Throwable cause) {
         super(cause);
         this.index = index;
-    }
-
-    public String getFileName() {
-        return fileName;
-    }
-
-    public void setFileName(String fileName) {
+        this.scenarioDescription = scenarioDescription;
         this.fileName = fileName;
     }
 
     @Override
     public String getMessage() {
-        String errorMessage = getCause() != null ? getCause().getMessage() : super.getMessage();
-        StringBuilder message = new StringBuilder().append("#").append(index).append(": ").append(errorMessage);
-        if (getFileName() != null) {
-            message.append("(").append(getFileName()).append(")");
-        }
-        return message.toString();
+        String exceptionMessage = getCause() != null ? getCause().getMessage() : super.getMessage();
+        return ScenarioSimulationServerMessages.getIndexedScenarioMessage(exceptionMessage,
+                                                                          index,
+                                                                          scenarioDescription,
+                                                                          fileName);
     }
 }

@@ -22,16 +22,49 @@ import java.util.HashSet;
 import java.util.Map;
 
 import org.drools.impact.analysis.graph.Node.Status;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class ImpactAnalysisHelper {
 
-    private static Logger logger = LoggerFactory.getLogger(ImpactAnalysisHelper.class);
+    private LinkFilter linkFilter = LinkFilter.ALL;
 
+    public ImpactAnalysisHelper() {}
+
+    // will be deprecated
+    public ImpactAnalysisHelper(boolean positiveOnly) {
+        if (positiveOnly) {
+            this.linkFilter = LinkFilter.POSITIVE;
+        } else {
+            this.linkFilter = LinkFilter.ALL;
+        }
+    }
+
+    public ImpactAnalysisHelper(LinkFilter linkFilter) {
+        this.linkFilter = linkFilter;
+    }
+
+    /**
+     * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
+     * @param graph
+     * @param name of changedNode (= rule name)
+     * @return sub graph which contains only changed node and impacted nodes
+     */
+    public Graph filterImpactedNodes(Graph graph, String changedNodeName) {
+        Node changedNode = graph.getNodeMap().get(changedNodeName);
+        if (changedNode == null) {
+            throw new RuntimeException("Cannot find a node : name = " + changedNodeName);
+        }
+        return filterImpactedNodes(graph, changedNode);
+    }
+
+    /**
+     * Set changedNode status to Status.CHANGED and impacted nodes status to Status.IMPACTED
+     * @param graph
+     * @param changedNode
+     * @return sub graph which contains only changed node and impacted nodes
+     */
     public Graph filterImpactedNodes(Graph graph, Node changedNode) {
 
-        Collection<Node> impactedNodes = new HashSet<Node>();
+        Collection<Node> impactedNodes = new HashSet<>();
         collectImpactedNodes(changedNode, impactedNodes);
         changedNode.setStatus(Status.CHANGED);
 
@@ -45,6 +78,7 @@ public class ImpactAnalysisHelper {
         changedNode.setStatus(Status.IMPACTED);
         impactedNodes.add(changedNode);
         changedNode.getOutgoingLinks().stream()
+                   .filter(link -> linkFilter.accept(link.getReactivityType()))
                    .map(Link::getTarget)
                    .filter(node -> !impactedNodes.contains(node))
                    .forEach(node -> collectImpactedNodes(node, impactedNodes));

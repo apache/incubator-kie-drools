@@ -39,6 +39,7 @@ import org.kie.api.builder.KieBuilder;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
@@ -52,7 +53,7 @@ public class ConstraintsTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -118,9 +119,9 @@ public class ConstraintsTest {
                 "    when\n" +
                 "        $m : Mailbox( \n" +
                 "                $type1 : FolderType.INBOX,\n" +
-                "                $type2 : " + Mailbox.class.getCanonicalName() + "$FolderType.INBOX,\n" +
+                "                $type2 : " + Mailbox.class.getCanonicalName() + ".FolderType.INBOX,\n" +
                 "                $work1 : getFolder(null),\n" +
-                "                $work2 : getFolder(" + Mailbox.class.getCanonicalName() + "$FolderType.INBOX),\n" +
+                "                $work2 : getFolder(" + Mailbox.class.getCanonicalName() + ".FolderType.INBOX),\n" +
                 "                $work3 : getFolder(FolderType.INBOX),\n" +
                 "                getFolder($type1) != null,\n" +
                 "                getFolder($type1).size() > 0,\n" +
@@ -128,7 +129,7 @@ public class ConstraintsTest {
                 "                $work6 : folders,\n" +
                 "                $work7 : folders.size,\n" +
                 "                //folders.containsKey(FolderType.INBOX),\n" +
-                "                folders.containsKey(" + Mailbox.class.getCanonicalName() + "$FolderType.INBOX),\n" +
+                "                folders.containsKey(" + Mailbox.class.getCanonicalName() + ".FolderType.INBOX),\n" +
                 "                folders.containsKey($type2),\n" +
                 "                !folders.isEmpty,\n" +
                 "                getFolder(FolderType.INBOX) != null,\n" +
@@ -449,7 +450,11 @@ public class ConstraintsTest {
                 "end";
 
         final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
-        Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
+        List<org.kie.api.builder.Message> messages = kieBuilder.getResults().getMessages();
+        Assertions.assertThat(messages).hasSize(1);
+        Assertions.assertThat(messages.iterator().next().getText())
+                .contains("Predicate 'name + name' must be a Boolean expression")
+                .isNotEmpty();
     }
 
     @Test

@@ -15,18 +15,18 @@ import java.util.concurrent.Executors;
 
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.KieProject;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl.KieModuleRepo;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
+import org.drools.compiler.kproject.ReleaseIdImpl;
+import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.io.internal.InternalResource;
-import org.drools.compiler.kproject.ReleaseIdImpl;
-import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.reflective.ResourceProvider;
 import org.junit.After;
 import org.junit.Before;
@@ -403,7 +403,7 @@ public class KieModuleRepoTest {
         }
 
         @Override
-        public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
+        public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
             throw new UnsupportedOperationException();
         }
 

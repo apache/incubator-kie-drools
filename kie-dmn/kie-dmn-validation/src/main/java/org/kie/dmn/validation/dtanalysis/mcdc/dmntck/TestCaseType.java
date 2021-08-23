@@ -1,6 +1,7 @@
 // Copied under Apache License from https://github.com/dmn-tck/tck/blob/8c23dc13caa508a33d11b47cca318d7c3a3ca2fc/LICENSE-ASL-2.0.txt
 package org.kie.dmn.validation.dtanalysis.mcdc.dmntck;
 
+import org.kie.dmn.feel.util.Generated;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 import javax.xml.bind.annotation.XmlType;
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  * </pre>
  * 
  */
+@Generated("com.sun.tools.xjc.Driver")
 @XmlType(name = "testCaseType")
 @XmlEnum
 public enum TestCaseType {

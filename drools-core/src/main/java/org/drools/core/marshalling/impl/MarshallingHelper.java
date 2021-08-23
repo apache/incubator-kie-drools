@@ -14,6 +14,8 @@
 
 package org.drools.core.marshalling.impl;
 
+import org.drools.core.reteoo.LeftTuple;
+import org.drools.core.reteoo.LeftTupleNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.TerminalNode;
@@ -41,19 +43,16 @@ public class MarshallingHelper {
         return objects;
     }
 
-    protected static long[] createTupleArray(final Tuple leftTuple) {
-        if( leftTuple != null ) {
-            long[] tuple = new long[leftTuple.size()];
+    protected static long[] createTupleArray(final Tuple tuple) {
+        if( tuple != null ) {
+            LeftTuple leftTuple = (LeftTuple) tuple;
+            long[] tupleArray = new long[((LeftTupleNode)leftTuple.getTupleSink()).getLeftTupleSource().getObjectCount()];
             // tuple iterations happens backwards
-            int i = tuple.length;
-            for( Tuple entry = leftTuple; entry != null && i > 0; entry = entry.getParent() ) {
-                if ( entry.getFactHandle() != null ) {
-                    // can be null for eval, not and exists that have no right input
-                    // have to decrement i before assignment
-                    tuple[--i] = entry.getFactHandle().getId();
-                }
+            int i = tupleArray.length-1;
+            for( Tuple entry = leftTuple.skipEmptyHandles(); entry != null; entry = entry.getParent() ) {
+                tupleArray[i--] = entry.getFactHandle().getId();
             }
-            return tuple;
+            return tupleArray;
         } else {
             return new long[0];
         }

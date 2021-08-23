@@ -42,7 +42,6 @@ public abstract class KiePMMLRegressionClassificationTable extends KiePMMLRegres
         final LinkedHashMap<String, Double> probabilityMap = getProbabilityMap(resultMap);
         final Map.Entry<String, Double> predictedEntry = Collections.max(probabilityMap.entrySet(), Map.Entry.comparingByValue());
         probabilityMap.put(targetField, predictedEntry.getValue());
-        populateOutputFieldsMapWithResult(predictedEntry.getKey());
         populateOutputFieldsMapWithProbability(predictedEntry, probabilityMap);
         return predictedEntry.getKey();
     }

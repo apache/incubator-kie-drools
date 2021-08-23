@@ -1,0 +1,14 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
+
+public class KiePMMLFieldRefTemplate {
+
+
+    private KiePMMLFieldRef getKiePMMLFieldRef() {
+        KiePMMLFieldRef fieldRef = new KiePMMLFieldRef(name, Collections.emptyList(), mapMissingTo);
+    }
+
+}

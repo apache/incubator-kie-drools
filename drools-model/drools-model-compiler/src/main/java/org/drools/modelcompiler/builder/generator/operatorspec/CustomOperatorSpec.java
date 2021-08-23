@@ -28,7 +28,7 @@ public class CustomOperatorSpec extends NativeOperatorSpec {
 
     @Override
     protected Operator addOperatorArgument( RuleContext context, MethodCallExpr methodCallExpr, String opName ) {
-        EvaluatorDefinition evalDef = context.getKbuilder().getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+        EvaluatorDefinition evalDef = context.getEvaluatorDefinition( opName );
         if (evalDef == null) {
             throw new RuntimeException( "Unknown custom operator: " + opName );
         }

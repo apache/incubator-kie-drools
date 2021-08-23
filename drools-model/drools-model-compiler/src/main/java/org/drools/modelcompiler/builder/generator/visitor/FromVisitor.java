@@ -156,7 +156,7 @@ public class FromVisitor {
 
         Expression newExpr = generateLambdaWithoutParameters( bindingIds, parsedExpression, true, Optional.empty(), context );
         if (newExpr instanceof LambdaExpr) {
-            context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)newExpr, DrlxParseUtil.getClassFromType(context.getTypeResolver(), parsedExpression.getType()));
+            context.getPackageModel().registerLambdaReturnType((LambdaExpr)newExpr, DrlxParseUtil.getClassFromType(context.getTypeResolver(), parsedExpression.getType()));
         }
         fromCall.addArgument(newExpr);
         return of( fromCall );
@@ -292,7 +292,7 @@ public class FromVisitor {
                 Expression parsedExpression = drlxParseSuccess.getExpr();
                 Expression newExpr = generateLambdaWithoutParameters( singleResult.getUsedDeclarations(), parsedExpression, singleResult.isSkipThisAsParam(), ofNullable(singleResult.getPatternType()), context );
                 if (newExpr instanceof LambdaExpr) {
-                    context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr)newExpr, singleResult.getExprType());
+                    context.getPackageModel().registerLambdaReturnType((LambdaExpr)newExpr, singleResult.getExprType());
                 }
 
                 addArgumentWithPreexistingCheck(fromCall, singleResult.getUsedDeclarations());

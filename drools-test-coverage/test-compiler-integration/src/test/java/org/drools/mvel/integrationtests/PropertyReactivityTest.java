@@ -18,33 +18,47 @@ package org.drools.mvel.integrationtests;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.mvel.compiler.Address;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.State;
-import org.drools.core.impl.StatefulKnowledgeSessionImpl;
-import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.builder.conf.PropertySpecificOption;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.fail;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class PropertyReactivityTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class PropertyReactivityTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public PropertyReactivityTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test(timeout=10000)
     public void testComposedConstraint() {
@@ -59,7 +73,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " modify($k2) { setD(1) }\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final Klass2 k2 = new Klass2(0, 0, 0, 0);
@@ -115,7 +129,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " list.add( \"React\" );\n" +
                 " end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -298,7 +312,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $id + \"@I2\" );\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -350,7 +364,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $o.getClass().getSimpleName() );\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -405,8 +419,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 " insert( new SampleBean( 1L ) ); \n" +
                 " end";
 
-
-        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
         final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -500,8 +513,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                       " list.add( 0 );\n" +
                       "end";
 
-
-        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
         final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -571,8 +583,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "";
 
-
-        final KieBase kbase = loadKnowledgeBaseFromString( str1 );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
         final KieSession ksession = kbase.newKieSession();
         final ArrayList list = new ArrayList();
         ksession.setGlobal( "list", list );
@@ -626,7 +637,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -677,7 +688,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -726,7 +737,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -777,7 +788,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -827,7 +838,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -877,7 +888,7 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "end\n" +
                 "\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -908,11 +919,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( $fullName );\n" +
                 "end\n";
 
-        final KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        System.out.println( knowledgeBuilder.getErrors() );
-        assertTrue( knowledgeBuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test(timeout=10000)
@@ -932,11 +941,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KnowledgeBuilder knowledgeBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        knowledgeBuilder.add( new ByteArrayResource( str.getBytes() ), ResourceType.DRL );
-
-        System.out.println( knowledgeBuilder.getErrors() );
-        assertTrue( knowledgeBuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test(timeout=10000)
@@ -971,9 +978,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add( 3 );\n" +
                 "end";
 
-        final KieHelper helper = new KieHelper();
-        helper.addContent(rule1, ResourceType.DRL);
-        final KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule1);
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
@@ -1098,9 +1104,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    modify( $m ) { setValue(\"3\"), setData(\"y\") };\n" +
                 "end";
 
-        final KieHelper helper = new KieHelper();
-        helper.addContent(rule1, ResourceType.DRL);
-        final KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule1);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
@@ -1137,9 +1142,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "       modify($p){getAddress().setStreet(\"foo\");}\n" +
                 "end";
 
-        final KieHelper helper = new KieHelper();
-        helper.addContent(rule1, ResourceType.DRL);
-        final KieSession ksession = helper.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule1);
+        KieSession ksession = kbase.newKieSession();
 
         final Person p = new Person();
         p.setAddress(new Address());
@@ -1174,9 +1178,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
@@ -1208,9 +1211,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
@@ -1242,9 +1244,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(1);\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final List<Integer> list = new ArrayList<Integer>();
         ksession.setGlobal("list", list);
@@ -1280,9 +1281,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "       System.out.println(\"Rule fired.\");\n" +
                 "end\n";
 
-        final KieBase kbase = new KieHelper().addContent(str1, "a.drl")
-                                       .addContent(str2, "rules.drl")
-                                       .build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2);
+
     }
 
     public static class Event1 {
@@ -1391,9 +1391,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "        System.out.println(\"RG_TEST_3 fired\");\n" +
                 "end";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new DummyBean("1"));
         ksession.fireAllRules();
@@ -1414,9 +1413,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "  list.add(\"fired\");\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal( "list", list );
@@ -1443,7 +1441,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                      + "rule R when\n"
                      + "    $b : BaseFact( $n : name, name != null )\n"
                      + "then end\n";
-        final KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final MyFact f = new MyFact();
         final FactHandle fh = ksession.insert(f);
@@ -1522,7 +1521,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                      + "        Shuttle(destination == $destination)\n"
                      + "    then\n"
                      + "end";
-        final KieSession kieSession = new KieHelper().addContent(drl, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         final BusStop busStop = new BusStop();
         final Shuttle shuttle = new Shuttle();
@@ -1564,10 +1564,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    modify($p1) { setAge(35); } \n" +
                 "end\n";
 
-        // making the default explicit:
-        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
-                                                                          .build()
-                                                                          .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl); // default PropertySpecificOption.ALWAYS
+        KieSession ksession = kbase.newKieSession();
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
@@ -1598,10 +1596,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    modify($p1) { setAge(35); } \n" +
                 "end\n";
 
-        // making the default explicit:
-        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
-                                                                          .build()
-                                                                          .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl); // default PropertySpecificOption.ALWAYS
+        KieSession ksession = kbase.newKieSession();
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
@@ -1632,10 +1628,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    modify($p1) { setAge(35); } \n" +
                 "end\n";
 
-        // making the default explicit:
-        final KieSession ksession = new KieHelper(PropertySpecificOption.ALWAYS).addContent(drl, ResourceType.DRL)
-                                                                          .build()
-                                                                          .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl); // default PropertySpecificOption.ALWAYS
+        KieSession ksession = kbase.newKieSession();
         final List<String> list = new ArrayList<String>();
         ksession.setGlobal("list", list);
 
@@ -1650,8 +1644,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
 
     @Test
     public void testPropertyChangeSupportNewAPI() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_PropertyChangeTypeDecl.drl"));
-        final KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_PropertyChangeTypeDecl.drl");
+        KieSession session = kbase.newKieSession();
 
         final List list = new ArrayList();
         session.setGlobal("list", list);
@@ -1695,11 +1689,9 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                      "              )\n" +
                      "then end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        kbuilder.newKieBase().newKieSession();
-
-        assertTrue( kbuilder.getErrors().isEmpty() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -1712,9 +1704,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         final Klass bean = new Klass( 1, 2, 3, 4, 5, 6 );
         final FactHandle fh = ksession.insert( bean );
@@ -1744,9 +1735,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "        modify($o) { setPrice(10) }\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         Order order = new Order( Arrays.asList(new OrderLine( 9 ), new OrderLine( 8 )), 12 );
         ksession.insert( order );
@@ -1826,9 +1816,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "        modify($s) { setAnother(10) }\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         StrangeGetter bean = new StrangeGetter();
         bean.setValue( 1 );
@@ -1848,9 +1837,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "        modify($s) { setAnother(10) }\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         StrangeGetter bean = new StrangeGetter();
         bean.setValue( 1 );
@@ -1884,9 +1872,8 @@ public class PropertyReactivityTest extends CommonTestMethodBase {
                 "    update($c);\n" +
                 "end\n\n";
 
-        final KieSession ksession = new KieHelper().addContent( str1, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1);
+        KieSession ksession = kbase.newKieSession();
 
         assertEquals( 2, ksession.fireAllRules() );
     }

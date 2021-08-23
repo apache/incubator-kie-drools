@@ -24,6 +24,7 @@ import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.core.spi.FactHandleFactory;
 import org.drools.traits.core.common.TraitDefaultFactHandle;
 
 public class TraitFactHandleFactory extends ReteooFactHandleFactory {
@@ -31,6 +32,11 @@ public class TraitFactHandleFactory extends ReteooFactHandleFactory {
     @Override
     public DefaultFactHandle createDefaultFactHandle(long id, Object initialFact, long recency, WorkingMemoryEntryPoint wmEntryPoint) {
         return new TraitDefaultFactHandle(id, initialFact, recency, wmEntryPoint);
+    }
+
+    @Override
+    public FactHandleFactory newInstance() {
+        return new TraitFactHandleFactory();
     }
 
     /* (non-Javadoc)

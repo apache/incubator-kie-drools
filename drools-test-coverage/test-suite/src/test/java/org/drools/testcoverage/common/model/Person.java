@@ -56,6 +56,12 @@ public class Person implements Serializable {
         this.age = age;
     }
 
+    public Person(final int id, final String name, final int age) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+    }
+
     public Person(final String name, final String likes, final int age) {
         this.name = name;
         this.likes = likes;
@@ -65,6 +71,12 @@ public class Person implements Serializable {
     public Person(final String name, final String likes) {
         this.name = name;
         this.likes = likes;
+    }
+
+    public Person(final String name, final int age, final BigDecimal salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
     }
 
     public int getId() {

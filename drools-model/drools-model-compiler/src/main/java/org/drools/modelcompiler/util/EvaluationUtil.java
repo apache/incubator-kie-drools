@@ -18,10 +18,20 @@ package org.drools.modelcompiler.util;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiPredicate;
 
 import org.drools.core.base.CoercionUtil;
+import org.drools.core.time.TimeUtils;
+import org.drools.core.util.DateUtils;
 import org.drools.model.BitMask;
 import org.drools.model.bitmask.AllSetBitMask;
 import org.drools.model.bitmask.AllSetButLastBitMask;
@@ -32,8 +42,10 @@ import org.drools.model.bitmask.OpenBitSet;
 
 public class EvaluationUtil {
 
+    public final static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(DateUtils.getDateFormatMask(), Locale.ENGLISH);
+
     public static boolean areNullSafeEquals(Object obj1, Object obj2) {
-        return obj1 != null ? obj1.equals( obj2 ) : obj2 == null;
+        return Objects.equals(obj1, obj2);
     }
 
     public static boolean areNumbersNullSafeEquals(Number n1, Number n2) {
@@ -165,8 +177,8 @@ public class EvaluationUtil {
 
     private static class NumberPair {
 
-        private Number n1;
-        private Number n2;
+        private final Number n1;
+        private final Number n2;
 
         public NumberPair(Number n1, Number n2) {
             this.n1 = n1;
@@ -180,7 +192,6 @@ public class EvaluationUtil {
         public Number getN2() {
             return n2;
         }
-
     }
 
     public static boolean greaterThanNumbers(Number n1, Number n2) {
@@ -316,5 +327,25 @@ public class EvaluationUtil {
             return new org.drools.core.util.bitmask.OpenBitSet( ( (OpenBitSet) mask ).getBits(), ( (OpenBitSet) mask ).getNumWords() );
         }
         throw new IllegalArgumentException( "Unknown bitmask: " + mask );
+    }
+
+    public static Date convertDate(String s) {
+        return GregorianCalendar.from(convertDateLocal(s).atStartOfDay(ZoneId.systemDefault())).getTime();
+    }
+
+    public static LocalDate convertDateLocal(String s) {
+        return LocalDate.parse(s, DATE_TIME_FORMATTER);
+    }
+
+    public static LocalDateTime convertDateTimeLocal( String s) {
+        return convertDateLocal(s).atStartOfDay();
+    }
+
+    public static int string2Int(String s) {
+        try {
+            return Integer.parseInt( s );
+        } catch (NumberFormatException nfe) {
+            return (int) TimeUtils.parseTimeString( s );
+        }
     }
 }

@@ -1342,6 +1342,56 @@ public class BRLRuleModelTest {
     }
 
     @Test
+    public void testActionCallWithTemplateKeys() {
+        final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
+
+        final Pattern52 p1 = new Pattern52();
+        p1.setBoundName("x");
+        p1.setFactType("Context");
+
+        final ConditionCol52 c = new ConditionCol52();
+        c.setConstraintValueType(BaseSingleFieldConstraint.TYPE_LITERAL);
+        p1.getChildColumns().add(c);
+        dt.getConditions().add(p1);
+
+        final BRLActionColumn brlAction1 = new BRLActionColumn();
+        final ActionCallMethod actionCallMethod = new ActionCallMethod("x");
+        actionCallMethod.setState(ActionCallMethod.TYPE_DEFINED);
+        actionCallMethod.setMethodName("add");
+        ActionFieldFunction actionFieldFunction = new ActionFieldFunction();
+        actionFieldFunction.setMethod("");
+        actionFieldFunction.setField("add");
+        actionFieldFunction.setNature(BaseSingleFieldConstraint.TYPE_TEMPLATE);
+        actionFieldFunction.setType("String");
+        actionFieldFunction.setValue("$p");
+        actionCallMethod.setFieldValues(new ActionFieldValue[]{actionFieldFunction});
+
+        brlAction1.getDefinition().add(actionCallMethod);
+        brlAction1.getChildColumns().add(new BRLActionVariableColumn("$p",
+                                                                     DataType.TYPE_STRING,
+                                                                     null,
+                                                                     null));
+        dt.getActionCols().add(brlAction1);
+
+        dt.setData(DataUtilities.makeDataLists(new Object[][]{
+                new Object[]{"1", "", "desc", "x", "test"}
+        }));
+        final String drl = GuidedDTDRLPersistence.getInstance().marshal(dt);
+        final String expected = "//from row number: 1\n" +
+                "//desc\n" +
+                "rule \"Row 1 null\"\n" +
+                "dialect \"mvel\"\n" +
+                "when\n" +
+                "  x : Context( )\n" +
+                "then\n" +
+                "  x.add( \"test\" );\n" +
+                "end\n";
+
+        assertEqualsIgnoreWhitespace(expected,
+                                     drl);
+    }
+
+    @Test
     public void testLHSNonEmptyStringValues() {
         GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.setTableFormat(GuidedDecisionTable52.TableFormat.EXTENDED_ENTRY);

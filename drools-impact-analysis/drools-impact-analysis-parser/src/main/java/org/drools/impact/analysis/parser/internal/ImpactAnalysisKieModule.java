@@ -24,6 +24,7 @@ import java.util.zip.ZipFile;
 import org.appformer.maven.support.DependencyFilter;
 import org.appformer.maven.support.PomModel;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdater;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
@@ -208,8 +209,8 @@ public class ImpactAnalysisKieModule implements InternalKieModule {
     }
 
     @Override
-    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        return internalKieModule.createKieBase( kBaseModel, kieProject, messages, conf );
+    public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+        return internalKieModule.createKieBase( kBaseModel, kieProject, buildContext, conf );
     }
 
     @Override

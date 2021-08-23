@@ -284,6 +284,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model attributes
+     *
      * @param buf
      * @param model
      */
@@ -314,6 +315,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal model metadata
+     *
      * @param buf
      * @param model
      */
@@ -328,6 +330,7 @@ public class RuleModelDRLPersistenceImpl
 
     /**
      * Marshal LHS patterns
+     *
      * @param buf
      * @param model
      */
@@ -1372,7 +1375,6 @@ public class RuleModelDRLPersistenceImpl
             final String[] values = ListSplitter.split("\"", true, workingValue);
             buf.append(" ( ");
             for (String v : values) {
-                v = v.trim();
                 constraintValueBuilder.buildLHSFieldValue(buf,
                                                           type,
                                                           fieldType,
@@ -1669,12 +1671,22 @@ public class RuleModelDRLPersistenceImpl
 
         public void visitActionSetField(final ActionSetField action) {
             if (action instanceof ActionCallMethod) {
-                this.generateSetMethodCallsMethod((ActionCallMethod) action,
-                                                  action.getFieldValues());
+                visitActionCallMethod((ActionCallMethod)action);
             } else {
                 this.generateSetMethodCalls(action.getVariable(),
                                             action.getFieldValues());
             }
+        }
+
+        public void visitActionCallMethod(final ActionCallMethod action) {
+            final RHSGeneratorContext gctx = generatorContextFactory.newChildGeneratorContext(rootContext,
+                                                                                              action);
+            preGenerateAction(gctx);
+
+            this.generateActionCallMethod(action,
+                                          action.getFieldValues());
+
+            postGenerateAction(gctx);
         }
 
         private void generateSetMethodCalls(final String variableName,
@@ -1834,8 +1846,8 @@ public class RuleModelDRLPersistenceImpl
                                                       fieldValue.getValue());
         }
 
-        private void generateSetMethodCallsMethod(final ActionCallMethod action,
-                                                  final FieldNature[] fieldValues) {
+        private void generateActionCallMethod(final ActionCallMethod action,
+                                              final FieldNature[] fieldValues) {
             buf.append(indentation);
             if (isDSLEnhanced) {
                 buf.append(">");
@@ -1859,6 +1871,10 @@ public class RuleModelDRLPersistenceImpl
                     buf.append(valueFunction.getValue());
                 } else if (valueFunction.getNature() == FieldNatureType.TYPE_VARIABLE) {
                     buf.append(valueFunction.getValue());
+                } else if (valueFunction.getNature() == FieldNatureType.TYPE_TEMPLATE) {
+                    buf.append("@{");
+                    buf.append(valueFunction.getValue());
+                    buf.append("}");
                 } else {
                     buildDefaultFieldValue(valueFunction,
                                            buf);
@@ -1918,7 +1934,31 @@ public class RuleModelDRLPersistenceImpl
     public RuleModel unmarshal(final String str,
                                final List<String> globals,
                                final PackageDataModelOracle dmo,
+                               final boolean splitEvals) {
+        return unmarshal(str,
+                         globals,
+                         dmo,
+                         Collections.emptyList(),
+                         splitEvals);
+    }
+
+    @Override
+    public RuleModel unmarshal(final String str,
+                               final List<String> globals,
+                               final PackageDataModelOracle dmo,
                                final Collection<RuleModelIActionPersistenceExtension> extensions) {
+        return unmarshal(str,
+                         globals,
+                         dmo,
+                         extensions,
+                         false);
+    }
+
+    public RuleModel unmarshal(final String str,
+                               final List<String> globals,
+                               final PackageDataModelOracle dmo,
+                               final Collection<RuleModelIActionPersistenceExtension> extensions,
+                               final boolean splitEvals) {
         PortablePreconditions.checkNotNull("extensions",
                                            extensions);
 
@@ -1930,7 +1970,8 @@ public class RuleModelDRLPersistenceImpl
                                               false).registerGlobals(dmo,
                                                                      globals),
                                 dmo,
-                                extensions);
+                                extensions,
+                                splitEvals);
         } catch (RuleModelDRLPersistenceException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
@@ -1965,7 +2006,8 @@ public class RuleModelDRLPersistenceImpl
                                           dsls).registerGlobals(dmo,
                                                                 globals),
                                 dmo,
-                                extensions);
+                                extensions,
+                                false);
         } catch (RuleModelDRLPersistenceException e) {
             throw new RuntimeException(e);
         } catch (Exception e) {
@@ -2033,7 +2075,8 @@ public class RuleModelDRLPersistenceImpl
 
     private RuleModel getRuleModel(final ExpandedDRLInfo expandedDRLInfo,
                                    final PackageDataModelOracle dmo,
-                                   final Collection<RuleModelIActionPersistenceExtension> extensions) throws RuleModelDRLPersistenceException {
+                                   final Collection<RuleModelIActionPersistenceExtension> extensions,
+                                   final boolean splitEvals) throws RuleModelDRLPersistenceException {
         //De-serialize model
         RuleDescr ruleDescr = parseDrl(expandedDRLInfo);
         RuleModel model = new RuleModel();
@@ -2068,7 +2111,8 @@ public class RuleModelDRLPersistenceImpl
                  boundParams,
                  expandedDRLInfo,
                  dmo,
-                 extensions);
+                 extensions,
+                 splitEvals);
         return model;
     }
 
@@ -2879,7 +2923,8 @@ public class RuleModelDRLPersistenceImpl
                           final Map<String, String> boundParams,
                           final ExpandedDRLInfo expandedDRLInfo,
                           final PackageDataModelOracle dmo,
-                          final Collection<RuleModelIActionPersistenceExtension> extensions) throws RuleModelDRLPersistenceException {
+                          final Collection<RuleModelIActionPersistenceExtension> extensions,
+                          final boolean splitEvals) throws RuleModelDRLPersistenceException {
         PortableWorkDefinition pwd = null;
         Map<String, List<String>> setStatements = new HashMap<String, List<String>>();
         Map<String, Integer> setStatementsPosition = new HashMap<String, Integer>();
@@ -3154,16 +3199,29 @@ public class RuleModelDRLPersistenceImpl
                 m.addRhsItem(action,
                              setStatementsPosition.get(entry.getKey()));
             } else {
-                StringBuilder sb = new StringBuilder();
-                for (String setter : entry.getValue()) {
-                    sb.append(setter).append("\n");
-                }
-                String drl = sb.toString();
 
-                FreeFormLine action = new FreeFormLine();
-                action.setText(drl);
-                m.addRhsItem(action,
-                             setStatementsPosition.get(entry.getKey()));
+                if (splitEvals) {
+
+                    for (final String drl : entry.getValue()) {
+
+                        final FreeFormLine action = new FreeFormLine();
+                        action.setText(drl);
+                        m.addRhsItem(action,
+                                     setStatementsPosition.get(entry.getKey()));
+                    }
+                } else {
+
+                    final StringBuilder drl = new StringBuilder();
+                    for (final String setter : entry.getValue()) {
+                        drl.append(setter).append("\n");
+                    }
+
+                    final FreeFormLine action = new FreeFormLine();
+                    action.setText(drl.toString());
+                    m.addRhsItem(action,
+                                 setStatementsPosition.get(entry.getKey()));
+                }
+
             }
         }
 
@@ -4223,7 +4281,7 @@ public class RuleModelDRLPersistenceImpl
                 con.setValue(value.substring(1,
                                              value.length() - 1));
             } else if (value.startsWith("(")) {
-                if (operator != null && operator.contains("in")) {
+                if (operator != null && (Objects.equals("in", operator) || Objects.equals("not in", operator))) {
                     con.setConstraintValueType(SingleFieldConstraint.TYPE_LITERAL);
                     String[] split = ListSplitter.splitPreserveQuotes("\"", true, unwrapParenthesis(value));
                     con.setValue(String.join(", ", split));
@@ -4367,6 +4425,7 @@ public class RuleModelDRLPersistenceImpl
          * It breaks the UI if user has a rule with this case, so we convert to the new format:
          * Fact(something != null && something matches "P.*")
          *                           ^^^^^^^^
+         *
          * @param comp The CompositeFieldConstraint with legacy 'matches'.
          */
         private void convertLegacyMatchesToNewFormat(final CompositeFieldConstraint comp) {

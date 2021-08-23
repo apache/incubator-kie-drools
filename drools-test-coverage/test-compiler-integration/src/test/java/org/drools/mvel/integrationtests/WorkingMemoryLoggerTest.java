@@ -18,39 +18,53 @@ package org.drools.mvel.integrationtests;
 import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Message;
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryFileLogger;
 import org.drools.core.audit.WorkingMemoryInMemoryLogger;
 import org.drools.core.audit.event.ActivationLogEvent;
 import org.drools.core.audit.event.LogEvent;
 import org.drools.core.event.ProcessNodeLeftEventImpl;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.definition.process.Node;
 import org.kie.api.definition.process.Process;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.NodeInstance;
 import org.kie.api.runtime.process.NodeInstanceContainer;
 import org.kie.api.runtime.process.ProcessInstance;
 import org.kie.api.runtime.process.WorkflowProcessInstance;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class WorkingMemoryLoggerTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public WorkingMemoryLoggerTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testOutOfMemory() throws Exception {
-        final KieBase kbase = loadKnowledgeBase( "empty.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "empty.drl");
 
         for (int i = 0; i < 10000; i++) {
-            final KieSession session = createKnowledgeSession(kbase);
+            KieSession session = kbase.newKieSession();
             final WorkingMemoryFileLogger logger = new WorkingMemoryFileLogger((WorkingMemory) session);
             session.fireAllRules();
             session.dispose();
@@ -69,9 +83,8 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
                 "        update($messageInstance);\n" +
                 "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger((WorkingMemory) ksession);
 
@@ -128,9 +141,8 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
                  "    $any.setTypeId(null);\n" +
                  "end";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger( (WorkingMemory) ksession );
 
@@ -143,8 +155,8 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
 
     @Test
     public void testWorkingMemoryLoggerWithUnbalancedBranches() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_Logger.drl"));
-        final KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Logger.drl");
+        KieSession wm = kbase.newKieSession();
 
         try {
             wm.fireAllRules();
@@ -162,8 +174,9 @@ public class WorkingMemoryLoggerTest extends CommonTestMethodBase {
     @Test
     public void testLogEvents() throws Exception {
 
-        final KieSession ksession = new KieHelper().build()
-                                                   .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration);
+        KieSession ksession = kbase.newKieSession();
+
 
         final WorkingMemoryInMemoryLogger logger = new WorkingMemoryInMemoryLogger((WorkingMemory) ksession);
 

@@ -25,7 +25,6 @@ import org.kie.dmn.feel.lang.types.BuiltInType;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.kie.dmn.feel.util.Msg;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -88,8 +87,7 @@ public class PathExpressionNode
         return null;
     }
 
-    private Object fetchValue(Object o)
-            throws IllegalAccessException, InvocationTargetException {
+    private Object fetchValue(Object o) {
         if ( name instanceof NameRefNode ) {
             o = EvalHelper.getValue( o, name.getText() );
         } else if ( name instanceof QualifiedNameNode ) {

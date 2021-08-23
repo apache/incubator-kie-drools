@@ -29,6 +29,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.model.IsDrools;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.KiePMMLOutputField;
@@ -43,7 +44,7 @@ import static org.kie.pmml.models.drools.utils.KiePMMLAgendaListenerUtils.getAge
 /**
  * KIE representation of PMML model that use <b>drool</b> for implementation
  */
-public abstract class KiePMMLDroolsModel extends KiePMMLModel {
+public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrools {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLDroolsModel.class);
 

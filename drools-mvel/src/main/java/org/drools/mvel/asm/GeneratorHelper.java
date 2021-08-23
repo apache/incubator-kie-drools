@@ -57,7 +57,7 @@ import static org.mvel2.asm.Opcodes.ISTORE;
 
 public final class GeneratorHelper {
 
-    public static final Long INVOKER_SERIAL_UID = new Long(510L);
+    public static final Long INVOKER_SERIAL_UID = Long.valueOf(510L);
 
     // DeclarationMatcher
 
@@ -71,23 +71,22 @@ public final class GeneratorHelper {
     }
 
     public static class DeclarationMatcher implements Comparable {
-
+        private final int         matcherIndex;
         private final Declaration declaration;
-        private final int originalIndex;
-        private final int rootDistance;
+        private final int         tupleIndex;
 
-        public DeclarationMatcher(int originalIndex, Declaration declaration) {
+        public DeclarationMatcher(int matchersIndex, Declaration declaration) {
+            this.matcherIndex = matchersIndex;
             this.declaration = declaration;
-            this.originalIndex = originalIndex;
-            this.rootDistance = declaration.getOffset();
+            this.tupleIndex = declaration.getTupleIndex();
         }
 
-        public int getOriginalIndex() {
-            return originalIndex;
+        public int getMatcherIndex() {
+            return matcherIndex;
         }
 
-        public int getRootDistance() {
-            return rootDistance;
+        public int getTupleIndex() {
+            return tupleIndex;
         }
 
         public Declaration getDeclaration() {
@@ -95,7 +94,7 @@ public final class GeneratorHelper {
         }
 
         public int compareTo(Object obj) {
-            return ((DeclarationMatcher) obj).rootDistance - rootDistance;
+            return ((DeclarationMatcher) obj).tupleIndex - tupleIndex;
         }
     }
 
@@ -228,8 +227,9 @@ public final class GeneratorHelper {
             return store(registry, declarationType);
         }
 
-        protected Tuple traverseTuplesUntilDeclaration(Tuple currentTuple, int declarOffset, int tupleReg) {
-            while (currentTuple.getFactHandle() == null || currentTuple.getIndex() > declarOffset) {
+        protected Tuple traverseTuplesUntilDeclaration(Tuple currentTuple, int tupleIndex, int tupleReg) {
+            // do not use currentTuple.skipEmptyHandles(), as we use else where, because we need the getParent as part of the generated code.
+            while (currentTuple.getIndex() != tupleIndex) {
                 // FactHandle is null for eval, not and join nodes as it has no right input
                 mv.visitVarInsn(ALOAD, tupleReg);
                 invokeInterface(Tuple.class, "getParent", Tuple.class);

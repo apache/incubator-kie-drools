@@ -24,7 +24,7 @@ import java.util.Objects;
 
 import org.kie.pmml.api.exceptions.KieDataFieldException;
 import org.kie.pmml.api.exceptions.KieEnumException;
-import org.kie.pmml.api.utils.PrimitiveBoxedUtils;
+import org.kie.pmml.api.utils.ConverterTypeUtil;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/DataDictionary.html#xsdType_DATATYPE>DATATYPE</a>
@@ -115,15 +115,14 @@ public enum DATA_TYPE {
                     case DATE_TIME_SECONDS_SINCE_1970:
                     case DATE_TIME_SECONDS_SINCE_1980:
                         return Long.parseLong(stringValue);
+                    default:
+                        throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName());
                 }
             } catch (Exception e) {
                 throw new KieDataFieldException("Fail to convert " + rawValue + "[" + rawValue.getClass().getName() + "] to expected class " + mappedClass.getName(), e);
             }
+        } else {
+            return ConverterTypeUtil.convert(mappedClass, rawValue);
         }
-        if (PrimitiveBoxedUtils.areSameWithBoxing(mappedClass, rawValue.getClass())) {
-            // No cast/transformation needed
-            return rawValue;
-        }
-        throw new KieDataFieldException("Unexpected " + rawValue + "[" + rawValue.getClass().getName() + "] to convert");
     }
 }

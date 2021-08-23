@@ -19,19 +19,21 @@ package org.drools.modelcompiler.builder.generator.declaredtype;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.compiler.AnnotationDeclarationError;
 import org.drools.compiler.compiler.DroolsError;
+import org.drools.compiler.compiler.TypeDeclarationError;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.lang.descr.QualifiedName;
 import org.drools.compiler.lang.descr.TypeDeclarationDescr;
 import org.drools.compiler.lang.descr.TypeFieldDescr;
-import org.drools.core.factmodel.AccessibleFact;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.AnnotationDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
@@ -42,8 +44,9 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
+
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
+import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
 public class DescrTypeDefinition implements TypeDefinition {
 
@@ -98,11 +101,9 @@ public class DescrTypeDefinition implements TypeDefinition {
     private void processClassAnnotations() {
         for (AnnotationDescr ann : typeDeclarationDescr.getAnnotations()) {
             if (ann.getName().equals(SERIAL_VERSION_UID)) {
-                DescrFieldDefinition serialVersionField = new DescrFieldDefinition(SERIAL_VERSION_UID,
-                                                                                   "long",
-                                                                                   ann.getValue("value").toString());
-                serialVersionField.setFinal(true);
-                serialVersionField.setStatic(true);
+                DescrFieldDefinition serialVersionField = new DescrFieldDefinition(SERIAL_VERSION_UID, "long", ann.getValue("value").toString())
+                        .setFinal(true)
+                        .setStatic(true);
                 fieldDefinition.add(serialVersionField);
             }
             try {
@@ -160,26 +161,38 @@ public class DescrTypeDefinition implements TypeDefinition {
         return fields;
     }
 
-    private List<TypeFieldDescr> typeFieldsSortedByPosition() {
-        Map<String, TypeFieldDescr> typeFields = typeDeclarationDescr.getFields();
+    private List<TypeFieldDescr> typeFieldsSortedByPosition(List<FieldDefinition> inheritedFields) {
+        Collection<TypeFieldDescr> typeFields = typeDeclarationDescr.getFields().values().stream()
+                .filter( f -> inheritedFields.stream().map( FieldDefinition::getFieldName ).noneMatch( name -> name.equals( f.getFieldName() ) ) )
+                .collect( Collectors.toList() );
         TypeFieldDescr[] sortedTypes = new TypeFieldDescr[typeFields.size()];
 
         List<TypeFieldDescr> nonPositionalFields = new ArrayList<>();
-        for (TypeFieldDescr descr : typeFields.values()) {
+        for (TypeFieldDescr descr : typeFields) {
             AnnotationDescr ann = descr.getAnnotation("Position");
             if (ann == null) {
                 nonPositionalFields.add(descr);
             } else {
                 int pos = Integer.parseInt(ann.getValue().toString());
-                sortedTypes[pos] = descr;
+                if (pos >= sortedTypes.length) {
+                    errors.add( new TypeDeclarationError(typeDeclarationDescr,
+                            "Out of range position " + pos + " for field '" + descr.getFieldName() + "' on class " + typeDeclarationDescr.getTypeName()) );
+                } else if (sortedTypes[pos] != null) {
+                    errors.add(new TypeDeclarationError(typeDeclarationDescr,
+                            "Duplicated position " + pos + " for field '" + descr.getFieldName() + "' on class " + typeDeclarationDescr.getTypeName()));
+                } else {
+                    sortedTypes[pos] = descr;
+                }
             }
+        }
+
+        if (!errors.isEmpty()) {
+            return Collections.emptyList();
         }
 
         int counter = 0;
         for (TypeFieldDescr descr : nonPositionalFields) {
-            for (; sortedTypes[counter] != null; counter++) {
-                ;
-            }
+            for (; sortedTypes[counter] != null; counter++);
             sortedTypes[counter++] = descr;
         }
 
@@ -204,15 +217,24 @@ public class DescrTypeDefinition implements TypeDefinition {
     }
 
     private List<DescrFieldDefinition> processFields() {
-        List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition();
+        List<FieldDefinition> inheritedFields = findInheritedDeclaredFields();
+        List<TypeFieldDescr> sortedTypeFields = typeFieldsSortedByPosition(inheritedFields);
 
-        int position = findInheritedDeclaredFields().size();
+        int position = inheritedFields.size();
         List<DescrFieldDefinition> allFields = new ArrayList<>();
         for (TypeFieldDescr typeFieldDescr : sortedTypeFields) {
             ProcessedTypeField processedTypeField = processTypeField(position, typeFieldDescr);
 
             allFields.add(processedTypeField.fieldDefinition);
             position = processedTypeField.position;
+        }
+
+        if (typeDeclarationDescr.getFields().size() != sortedTypeFields.size()) {
+            typeDeclarationDescr.getFields().values().stream()
+                    .filter( f -> inheritedFields.stream().map( FieldDefinition::getFieldName ).anyMatch( name -> name.equals( f.getFieldName() ) ) )
+                    .map( DescrFieldDefinition::new )
+                    .map( d -> d.setOverride( true ) )
+                    .forEach( allFields::add );
         }
         return allFields;
     }

@@ -29,9 +29,10 @@ import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNMinFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNModeFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNStddevFunction;
 import org.kie.dmn.feel.runtime.functions.twovaluelogic.NNSumFunction;
+import org.kie.dmn.model.api.GwtIncompatible;
 
 /**
- * additional functions not part of the spec version 1.1
+ * additional functions not part of the spec version 1.x, or not incorporated in the spec yet.
  */
 public class KieExtendedDMNFunctions {
 
@@ -58,12 +59,15 @@ public class KieExtendedDMNFunctions {
                                                                         NNStddevFunction.INSTANCE,
                                                                         NNSumFunction.INSTANCE,
 
+                                                                        StringJoinFunction.INSTANCE,
+
     };
 
     public static FEELFunction[] getFunctions() {
         return FUNCTIONS;
     }
 
+    @GwtIncompatible
     public static <T extends FEELFunction> T getFunction(Class<T> functionClazz) {
         return (T) Stream.of(FUNCTIONS)
                 .filter(f -> functionClazz.isAssignableFrom(f.getClass()))

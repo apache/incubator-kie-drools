@@ -15,28 +15,39 @@
 
 package org.drools.mvel.integrationtests;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.mvel.compiler.Cheese;
 import org.drools.core.command.runtime.rule.FireAllRulesCommand;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
-import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.runtime.StatelessKnowledgeSession;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.StatelessKieSession;
+import org.kie.internal.command.CommandFactory;
 
+import static org.junit.Assert.assertEquals;
+
+@RunWith(Parameterized.class)
 public class FireAllRulesCommandTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FireAllRulesCommandTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
     @Test
     public void oneRuleFiredTest() {
         String str = "";
@@ -166,18 +177,7 @@ public class FireAllRulesCommandTest {
     }
 
     private StatelessKieSession getSession(String drl) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add(ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            System.err.println(kbuilder.getErrors());
-        }
-        assertFalse(kbuilder.hasErrors());
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         return kbase.newStatelessKieSession();
     }
 

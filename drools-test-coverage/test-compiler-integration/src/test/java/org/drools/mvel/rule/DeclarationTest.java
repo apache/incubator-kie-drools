@@ -65,7 +65,7 @@ public class DeclarationTest {
                     declaration.getExtractor() );
 
         assertEquals( 5,
-                      declaration.getPattern().getOffset() );
+                      declaration.getPattern().getPatternId());
 
     }
 

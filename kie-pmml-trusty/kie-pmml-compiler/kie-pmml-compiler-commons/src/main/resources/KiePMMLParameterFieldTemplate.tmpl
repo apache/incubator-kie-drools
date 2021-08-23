@@ -1,0 +1,18 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+
+public class KiePMMLParameterFieldTemplate {
+
+
+    private KiePMMLParameterField geKiePMMLParameterField() {
+        KiePMMLParameterField parameterField = KiePMMLParameterField.builder(name, Collections.emptyList())
+                        .withDataType(dataType)
+                        .withOpType(opType)
+                        .withDisplayName(displayName)
+                        .build();
+    }
+
+}

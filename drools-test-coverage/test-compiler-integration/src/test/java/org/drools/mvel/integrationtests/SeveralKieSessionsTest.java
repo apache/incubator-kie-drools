@@ -17,9 +17,16 @@ package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -29,10 +36,10 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.command.Command;
 import org.kie.api.definition.type.FactType;
-import org.kie.internal.io.ResourceFactory;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.CommandFactory;
+import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -42,7 +49,20 @@ import static org.junit.Assert.assertTrue;
  * Tests evaluation of a backward chaining family relationships example using
  * several KieSessions.
  */
+@RunWith(Parameterized.class)
 public class SeveralKieSessionsTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SeveralKieSessionsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     // DROOLS-145
 
@@ -101,7 +121,7 @@ public class SeveralKieSessionsTest {
         kfs.write("src/main/resources/" + PACKAGE_PATH + "/" + DRL_FILE_NAME,
                   ResourceFactory.newClassPathResource(DRL_FILE_NAME, this.getClass()));
 
-        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertEquals(0, builder.getResults().getMessages().size());
 
         ks.getRepository().addKieModule(builder.getKieModule());

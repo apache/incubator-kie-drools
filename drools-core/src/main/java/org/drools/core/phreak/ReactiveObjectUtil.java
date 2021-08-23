@@ -84,7 +84,7 @@ public class ReactiveObjectUtil {
             }
 
             ReactiveFromNode.ReactiveFromMemory mem = wm.getNodeMemory(node);
-            InternalFactHandle factHandle = node.createFactHandle( leftTuple, propagationContext, wm, object );
+            InternalFactHandle factHandle = node.createFactHandle( wm, object );
 
             if ( type != ModificationType.REMOVE && isAllowed( factHandle, node.getAlphaConstraints(), wm, mem ) ) {
                 ContextEntry[] context = mem.getBetaMemory().getContext();

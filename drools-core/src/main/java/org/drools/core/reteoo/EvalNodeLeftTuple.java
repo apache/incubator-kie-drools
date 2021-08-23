@@ -166,7 +166,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
     public String toString() {
         final StringBuilder buffer = new StringBuilder();
 
-        LeftTuple entry = this;
+        LeftTuple entry = (LeftTuple) skipEmptyHandles();
         while (entry != null) {
             //buffer.append( entry.handle );
             buffer.append(entry.getFactHandle()).append("\n");
@@ -180,7 +180,7 @@ public class EvalNodeLeftTuple extends BaseLeftTuple {
         builder.append(String.format("%08X",
                                      System.identityHashCode(this))).append(":");
         long[] ids = new long[getIndex() + 1];
-        LeftTuple entry = this;
+        LeftTuple entry = (LeftTuple) skipEmptyHandles();
         while (entry != null) {
             ids[entry.getIndex()] = entry.getFactHandle().getId();
             entry = entry.getParent();

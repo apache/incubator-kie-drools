@@ -24,11 +24,14 @@ import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieSession;
 
 import static java.util.Arrays.asList;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class MvelOperatorsTest extends BaseModelTest {
@@ -96,6 +99,23 @@ public class MvelOperatorsTest extends BaseModelTest {
         ksession.insert( "Edoardo" );
         ksession.insert( "Valentina" );
         assertEquals(3, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testStrHalfOrAndAmpersand() {
+        String str =
+            "rule R when\n" +
+            "    String(this str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4)"+
+            "then\n" +
+            "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        ksession.insert( "Mario" );
+        ksession.insert( "Luca" );
+        ksession.insert( "Edoardo" );
+        ksession.insert( "Valentina" );
+        assertEquals(2, ksession.fireAllRules());
     }
 
     @Test
@@ -505,5 +525,75 @@ public class MvelOperatorsTest extends BaseModelTest {
         Object obj = result.get(0);
         assertTrue(obj instanceof Map);
         assertEquals("value", ((Map) obj).get("key"));
+    }
+
+    @Test
+    public void testEmptySingleApexString() {
+        // DROOLS-6057
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "global java.util.List list\n" +
+                "rule R when\n" +
+                "    Person( $name : name == '' )" +
+                "then\n" +
+                "    list.add($name);" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        Person person1 = new Person("");
+        ksession.insert(person1);
+        ksession.fireAllRules();
+
+        assertEquals(1, list.size());
+        assertEquals("", list.get(0));
+    }
+
+    @Test
+    public void testContainsOnString() {
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( name contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        KieSession ksession = getKieSession(str);
+
+        Person person1 = new Person("");
+        ksession.insert(new Person("mario", 47));
+        ksession.insert(new Person("atesta", 47));
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testContainsOnMapShouldntCompile() {
+        // BAPL-1957
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( itemsString contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        Results results = createKieBuilder( str ).getResults();
+        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
+    }
+
+    @Test
+    public void testContainsOnIntShouldntCompile() {
+        // BAPL-1957
+        String str =
+                "import " + Person.class.getCanonicalName() + "\n" +
+                "rule R when\n" +
+                "    Person( age contains \"test\" )" +
+                "then\n" +
+                "end ";
+
+        Results results = createKieBuilder( str ).getResults();
+        assertFalse(results.getMessages( Message.Level.ERROR ).isEmpty());
     }
 }

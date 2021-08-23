@@ -34,6 +34,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.drools.core.QueryResultsImpl;
 import org.drools.core.QueryResultsRowImpl;
 import org.drools.core.common.DisconnectedFactHandle;
+import org.drools.core.common.InternalFactHandle;
 import org.drools.core.rule.Declaration;
 import org.drools.core.xml.jaxb.util.JaxbListAdapter;
 import org.drools.core.xml.jaxb.util.JaxbListWrapper;
@@ -115,7 +116,7 @@ public class FlatQueryResults implements QueryResults {
                         // no result value "" because "abducibl/retrieved facts are hidden
                         obj = resultImpl.get( id );
                     }
-                    factHandle = DisconnectedFactHandle.newFrom( factHandle );
+                    factHandle = newFrom( factHandle );
 
                     idFactHandleMap.put( id, factHandle );
                     idResultMap.put( id, obj );
@@ -123,6 +124,23 @@ public class FlatQueryResults implements QueryResults {
             }
             idFactHandleMaps.add(idFactHandleMap);
             idResultMaps.add(idResultMap);
+        }
+    }
+
+    // This does not put the object into the fact handle to avoid having it serialized when using JSON or JaxB, therefore
+    // Reducing the payload by roughly a half (in case of many objects returned by the query)
+    public static DisconnectedFactHandle newFrom( FactHandle handle ) {
+        if( handle instanceof DisconnectedFactHandle ) {
+            return (DisconnectedFactHandle) handle;
+        } else {
+            InternalFactHandle ifh = (InternalFactHandle) handle;
+            return new DisconnectedFactHandle(ifh.getId(),
+                                              ifh.getIdentityHashCode(),
+                                              ifh.getObjectHashCode(),
+                                              ifh.getRecency(),
+                                              ifh.getEntryPointName(),
+                                              null,
+                                              ifh.isTraitOrTraitable() );
         }
     }
 

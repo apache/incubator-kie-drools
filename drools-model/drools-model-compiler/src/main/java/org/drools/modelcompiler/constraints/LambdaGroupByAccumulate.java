@@ -20,6 +20,7 @@ import java.io.ObjectOutput;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
+import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.AccumulateNode.AccumulateContextEntry;
 import org.drools.core.reteoo.AccumulateNode.GroupByContext;
 import org.drools.core.reteoo.LeftTuple;
@@ -29,6 +30,7 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.Accumulator;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.index.TupleList;
+import org.drools.model.functions.Function1;
 import org.drools.model.functions.FunctionN;
 
 
@@ -37,6 +39,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     private Accumulate innerAccumulate;
     private Declaration[] groupingDeclarations;
     private FunctionN groupingFunction;
+    private Function1 groupingFunction1;
 
     public LambdaGroupByAccumulate() { }
 
@@ -45,16 +48,25 @@ public class LambdaGroupByAccumulate extends Accumulate {
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
+        this.groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
     }
 
     private Object getKey( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
+        if (groupingFunction1 != null) {
+            return groupingFunction1.apply( getValue( tuple, handle, workingMemory, groupingDeclarations[0] ) );
+        }
+
         Object[] args = new Object[groupingDeclarations.length];
         for (int i = 0; i < groupingDeclarations.length; i++) {
-            Declaration declaration = groupingDeclarations[i];
-            Object object = tuple != null && declaration.getOffset() < tuple.size() ? declaration.getValue(tuple) : handle.getObject();
-            args[i] = declaration.getValue( workingMemory.getInternalWorkingMemory(), object );
+            args[i] = getValue( tuple, handle, workingMemory, groupingDeclarations[i] );
         }
         return groupingFunction.apply( args );
+    }
+
+    private Object getValue( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory, Declaration declaration ) {
+        // we already have the handle, so avoid tuple iteration if not needed.
+        // (is this really saving time, as get(int index) has pretty much the same check, at best saves some method call) (mdp)
+        return declaration.getValue( ( InternalWorkingMemory )workingMemory, declaration.getTupleIndex() < tuple.size() ? tuple.get( declaration ).getObject() : handle.getObject() );
     }
 
     @Override
@@ -64,6 +76,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
         this.innerAccumulate = (Accumulate) in.readObject();
         this.groupingDeclarations = (Declaration[]) in.readObject();
         this.groupingFunction = (FunctionN) in.readObject();
+        this.groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
     }
 
     @Override
@@ -95,28 +108,17 @@ public class LambdaGroupByAccumulate extends Accumulate {
     public Object accumulate( Object workingMemoryContext, Object context,
                               Tuple match, InternalFactHandle handle, WorkingMemory wm ) {
         GroupByContext groupByContext = ( GroupByContext ) context;
-        Object key = getKey(match, handle, wm);
-        if (key==null) {
-            throw new IllegalStateException("Unable to find group for: " + match + " : " + handle);
-        }
-
         TupleList<AccumulateContextEntry> tupleList = groupByContext.getGroup(workingMemoryContext, innerAccumulate,
-                                                                              match, handle, key, wm);
-        Object value = accumulate(workingMemoryContext, (LeftTuple) match, handle, groupByContext, tupleList, wm);
+                                                                              match, getKey(match, handle, wm), wm);
 
-        return value;
+        return accumulate(workingMemoryContext, match, handle, groupByContext, tupleList, wm);
     }
 
     @Override
-    public Object accumulate(Object workingMemoryContext, LeftTuple match, InternalFactHandle handle,
+    public Object accumulate(Object workingMemoryContext, Tuple match, InternalFactHandle handle,
                              GroupByContext groupByContext, TupleList<AccumulateContextEntry> tupleList, WorkingMemory wm) {
         groupByContext.moveToPropagateTupleList(tupleList);
-
-        Object value = innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(),
-                                                  match, handle, wm);
-
-        groupByContext.setLastTupleList(tupleList);
-        return value;
+        return innerAccumulate.accumulate(workingMemoryContext, tupleList.getContext(), match, handle, wm);
     }
 
     @Override
@@ -133,6 +135,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
             memory.remove( match );
             if ( memory.isEmpty() ) {
                 groupByContext.removeGroup( entry.getKey() );
+                memory.getContext().setEmpty( true );
             }
         }
 
@@ -142,7 +145,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
     @Override
     public Object getResult( Object workingMemoryContext, Object context, Tuple leftTuple, WorkingMemory workingMemory ) {
         AccumulateContextEntry entry = (AccumulateContextEntry) context;
-        return entry.getTupleList().isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
+        return entry.isEmpty() ? null : innerAccumulate.getResult(workingMemoryContext, context, leftTuple, workingMemory);
     }
 
     @Override

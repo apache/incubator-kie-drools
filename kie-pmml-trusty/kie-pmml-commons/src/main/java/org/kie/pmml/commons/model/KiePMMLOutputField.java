@@ -16,12 +16,15 @@
 package org.kie.pmml.commons.model;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
-import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
+import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
+import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
@@ -33,6 +36,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     private String targetField = null;
     private Integer rank;
     private Object value;
+    private KiePMMLExpression kiePMMLExpression;
 
     private KiePMMLOutputField(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -40,6 +44,19 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
     public static Builder builder(String name, List<KiePMMLExtension> extensions) {
         return new Builder(name, extensions);
+    }
+
+    static Optional<Object> getValueFromKiePMMLNameValuesByVariableName(final String variableName,
+                                                                        final List<KiePMMLNameValue> kiePMMLNameValues) {
+        return kiePMMLNameValues.stream()
+                .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(variableName))
+                .map(KiePMMLNameValue::getValue)
+                .findFirst();
+    }
+
+    static Optional<Object> getValueFromPMMLResultByVariableName(final String variableName,
+                                                                 final Map<String, Object> resultsVariables) {
+        return Optional.ofNullable(resultsVariables.get(variableName));
     }
 
     public RESULT_FEATURE getResultFeature() {
@@ -58,6 +75,46 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         return rank;
     }
 
+    public KiePMMLExpression getKiePMMLExpression() {
+        return kiePMMLExpression;
+    }
+
+    public Object evaluate(final ProcessingDTO processingDTO) {
+        switch (resultFeature) {
+            case PREDICTED_VALUE:
+                return evaluatePredictedValue(processingDTO);
+            case REASON_CODE:
+                return evaluateReasonCodeValue(processingDTO);
+            case TRANSFORMED_VALUE:
+                return evaluateTransformedValue(processingDTO);
+            default:
+                return null;
+        }
+    }
+
+    public Object evaluatePredictedValue(final ProcessingDTO processingDTO) {
+        return getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
+                .orElse(null);
+    }
+
+    public Object evaluateReasonCodeValue(final ProcessingDTO processingDTO) {
+        final List<String> orderedReasonCodes = processingDTO.getOrderedReasonCodes();
+        if (rank != null) {
+            int index = rank - 1;
+            String resultCode = null;
+            if (index < orderedReasonCodes.size()) {
+                resultCode = orderedReasonCodes.get(index);
+            }
+           return resultCode;
+        } else {
+            return null;
+        }
+    }
+
+    public Object evaluateTransformedValue(final ProcessingDTO processingDTO) {
+        return kiePMMLExpression != null ? kiePMMLExpression.evaluate(processingDTO) : null;
+    }
+
     @Override
     public String toString() {
         return new StringJoiner(", ", KiePMMLOutputField.class.getSimpleName() + "[", "]")
@@ -66,6 +123,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
                 .add("rank=" + rank)
                 .add("value=" + value)
                 .add("name='" + name + "'")
+                .add("kiePMMLExpression='" + kiePMMLExpression + "'")
                 .add("extensions=" + extensions)
                 .add("id='" + id + "'")
                 .add("parentId='" + parentId + "'")
@@ -101,12 +159,16 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         }
 
         public Builder withResultFeature(RESULT_FEATURE resultFeature) {
-            toBuild.resultFeature = resultFeature;
+            if (resultFeature != null) {
+                toBuild.resultFeature = resultFeature;
+            }
             return this;
         }
 
         public Builder withTargetField(String targetField) {
-            toBuild.targetField = targetField;
+            if (targetField != null) {
+                toBuild.targetField = targetField;
+            }
             return this;
         }
 
@@ -116,7 +178,16 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         }
 
         public Builder withRank(Integer rank) {
-            toBuild.rank = rank;
+            if (rank != null) {
+                toBuild.rank = rank;
+            }
+            return this;
+        }
+
+        public Builder withKiePMMLExpression(KiePMMLExpression kiePMMLExpression) {
+            if (kiePMMLExpression != null) {
+                toBuild.kiePMMLExpression = kiePMMLExpression;
+            }
             return this;
         }
     }

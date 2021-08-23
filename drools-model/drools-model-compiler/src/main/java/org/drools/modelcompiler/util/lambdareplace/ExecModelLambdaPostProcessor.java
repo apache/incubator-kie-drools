@@ -18,15 +18,17 @@
 package org.drools.modelcompiler.util.lambdareplace;
 
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.MethodDeclaration;
@@ -39,27 +41,29 @@ import com.github.javaparser.ast.expr.LiteralStringValueExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.model.BitMask;
 import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
-import org.drools.modelcompiler.builder.generator.expression.FlowExpressionBuilder;
-import org.drools.modelcompiler.builder.generator.expression.PatternExpressionBuilder;
 import org.drools.modelcompiler.util.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
@@ -74,7 +78,10 @@ public class ExecModelLambdaPostProcessor {
     private final Collection<String> staticImports;
     private final Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes;
     private final Map<String, PredicateInformation> debugPredicateInformation;
-    private final CompilationUnit clone;
+    private final CompilationUnit cu;
+    private final boolean isParallel;
+
+    private final List<Runnable> toBeReplacedLambdas = Collections.synchronizedList(new ArrayList<>());
 
     private static final PrettyPrinterConfiguration configuration = new PrettyPrinterConfiguration();
 
@@ -85,7 +92,7 @@ public class ExecModelLambdaPostProcessor {
     public static final PrettyPrinter MATERIALIZED_LAMBDA_PRETTY_PRINTER = new PrettyPrinter(configuration);
 
     public ExecModelLambdaPostProcessor(PackageModel pkgModel,
-                                        CompilationUnit clone) {
+                                        CompilationUnit cu) {
         this.lambdaClasses = pkgModel.getLambdaClasses();
         this.packageName = pkgModel.getName();
         this.ruleClassName = pkgModel.getRulesFileNameWithPackage();
@@ -93,64 +100,90 @@ public class ExecModelLambdaPostProcessor {
         this.staticImports = pkgModel.getStaticImports();
         this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
         this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
-        this.clone = clone;
+        this.cu = cu;
+        this.isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
     }
 
-    public ExecModelLambdaPostProcessor(Map<String, CreatedClass> lambdaClasses,
-                                        String packageName,
+    public ExecModelLambdaPostProcessor(String packageName,
                                         String ruleClassName,
                                         Collection<String> imports,
                                         Collection<String> staticImports,
                                         Map<LambdaExpr, java.lang.reflect.Type> lambdaReturnTypes,
                                         Map<String, PredicateInformation> debugPredicateInformation,
-                                        CompilationUnit clone) {
-        this.lambdaClasses = lambdaClasses;
+                                        CompilationUnit cu,
+                                        boolean isParallel) {
+        this.lambdaClasses = new ConcurrentHashMap<>();
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
         this.imports = imports;
         this.staticImports = staticImports;
         this.lambdaReturnTypes = lambdaReturnTypes;
         this.debugPredicateInformation = debugPredicateInformation;
-        this.clone = clone;
+        this.cu = cu;
+        this.isParallel = isParallel;
     }
 
     public void convertLambdas() {
+        if (isParallel) {
+            convertLambdasWithForkJoinPool();
+        } else {
+            convertLambdasWithStream();
+        }
+    }
 
-        clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()) ||
-                                                  FlowExpressionBuilder.EXPR_CALL.equals(mc.getNameAsString()))
-             .forEach(methodCallExpr1 -> {
-                 if (containsTemporalPredicate(methodCallExpr1)) {
-                     this.convertTemporalExpr(methodCallExpr1);
-                 } else {
-                     extractLambdaFromMethodCall(methodCallExpr1,
-                                                 (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));
-                 }
-             });
+    private void convertLambdasWithForkJoinPool() {
+        KnowledgeBuilderImpl.ForkJoinPoolHolder.COMPILER_POOL.submit(this::convertLambdasWithStream).join();
+    }
 
-        clone.findAll(MethodCallExpr.class, mc -> INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+    private void convertLambdasWithStream() {
+        List<MethodCallExpr> exprMethods = new ArrayList<>();
+        List<MethodCallExpr> indexMethods = new ArrayList<>();
+        List<MethodCallExpr> bindMethods = new ArrayList<>();
+        List<MethodCallExpr> fromMethods = new ArrayList<>();
+        List<MethodCallExpr> executeMethods = new ArrayList<>();
 
-        clone.findAll(MethodCallExpr.class, mc -> ALPHA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+        cu.walk(MethodCallExpr.class, mc -> {
+            String methodName = mc.getNameAsString();
+            if ( EXPR_CALL.equals(methodName) || EVAL_EXPR_CALL.equals(methodName) ) {
+                exprMethods.add(mc);
+            } else if ( ALPHA_INDEXED_BY_CALL.contains(methodName) || BETA_INDEXED_BY_CALL.contains(methodName) ) {
+                indexMethods.add(mc);
+            } else if ( BIND_CALL.equals(methodName) ) {
+                bindMethods.add(mc);
+            } else if ( FROM_CALL.equals(methodName) || REACTIVE_FROM_CALL.equals(methodName) ) {
+                fromMethods.add(mc);
+            } else if ( isExecuteNonNestedCall(mc) ) {
+                executeMethods.add(mc);
+            }
+        });
 
-        clone.findAll(MethodCallExpr.class, mc -> BETA_INDEXED_BY_CALL.contains(mc.getName().asString()))
-             .forEach(this::convertIndexedByCall);
+        createStream(exprMethods)
+                .forEach(methodCallExpr1 -> {
+                    if (containsTemporalPredicate(methodCallExpr1)) {
+                        this.convertTemporalExpr(methodCallExpr1);
+                    } else {
+                        extractLambdaFromMethodCall(methodCallExpr1,
+                                (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));
+                    }
+                });
 
-        clone.findAll(MethodCallExpr.class, mc -> PatternExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertBindCall);
+        createStream(indexMethods).forEach(this::convertIndexedByCall);
 
-        clone.findAll(MethodCallExpr.class, mc -> FlowExpressionBuilder.BIND_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertBindCallForFlowDSL);
+        createStream(bindMethods).forEach(this::convertBindCall);
 
-        clone.findAll(MethodCallExpr.class, mc -> FROM_CALL.equals(mc.getNameAsString()) ||
-                                                  REACTIVE_FROM_CALL.equals(mc.getNameAsString()))
-             .forEach(this::convertFromCall);
+        createStream(fromMethods).forEach(this::convertFromCall);
 
-        clone.findAll(MethodCallExpr.class, this::isExecuteNonNestedCall)
-             .forEach(methodCallExpr -> {
-                 List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
-                 extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
-             });
+        createStream(executeMethods)
+                .forEach(methodCallExpr -> {
+                    List<MaterializedLambda.BitMaskVariable> bitMaskVariables = findBitMaskFields(methodCallExpr);
+                    extractLambdaFromMethodCall(methodCallExpr, (a) -> new MaterializedLambdaConsequence(packageName, ruleClassName, bitMaskVariables));
+                });
+
+        toBeReplacedLambdas.forEach(Runnable::run);
+    }
+
+    private Stream<MethodCallExpr> createStream(List<MethodCallExpr> expressionLists) {
+        return isParallel ? expressionLists.parallelStream() : expressionLists.stream();
     }
 
     private PredicateInformation getPredicateInformation(Optional<String> exprId) {
@@ -176,12 +209,12 @@ public class ExecModelLambdaPostProcessor {
 
     private boolean containsTemporalPredicate(MethodCallExpr mc) {
         return mc.getArguments()
-                 .stream()
-                 .filter(MethodCallExpr.class::isInstance)
-                 .map(MethodCallExpr.class::cast)
-                 .map(DrlxParseUtil::findLastMethodInChain)
-                 .map(MethodCallExpr::getNameAsString)
-                 .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
+                .stream()
+                .filter(MethodCallExpr.class::isInstance)
+                .map(MethodCallExpr.class::cast)
+                .map(DrlxParseUtil::findLastMethodInChain)
+                .map(MethodCallExpr::getNameAsString)
+                .anyMatch(name -> name.startsWith("D.") && ModelGenerator.temporalOperators.contains(name.substring(2)));
     }
 
     private boolean isExecuteNonNestedCall(MethodCallExpr mc) {
@@ -192,25 +225,25 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private void convertIndexedByCall(MethodCallExpr methodCallExpr) {
-        Expression argument = methodCallExpr.getArgument(0);
+        NodeList<Expression> arguments = methodCallExpr.getArguments();
+        Expression firstArgument = arguments.get(0);
 
-        if (!argument.isClassExpr()) {
-            logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
+        if (!firstArgument.isClassExpr()) {
+            logger.warn("argument is not ClassExpr. argument : {}, methodCallExpr : {}", firstArgument, methodCallExpr);
             return;
         }
 
-        String returnType = getType(argument).asString();
         Optional<String> exprId = methodCallExpr.findFirst(StringLiteralExpr.class).map(LiteralStringValueExpr::getValue);
 
-        boolean first = true;
-        for (Expression expr : methodCallExpr.getArguments()) {
+        Expression leftOperandExtractorLambda = arguments.get(3);
+        if (leftOperandExtractorLambda.isLambdaExpr()) {
+            replaceLambda(leftOperandExtractorLambda.asLambdaExpr(), id -> new MaterializedLambdaExtractor(packageName, ruleClassName, getType(firstArgument).clone()), exprId);
+        }
+
+        for (int i = 4; i < arguments.size(); i++) {
+            Expression expr = arguments.get(i);
             if (expr.isLambdaExpr()) {
-                if (first) {
-                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, returnType ), exprId );
-                    first = false;
-                } else {
-                    replaceLambda( expr.asLambdaExpr(), ( i ) -> new MaterializedLambdaExtractor( packageName, ruleClassName, "java.lang.Object" ), exprId );
-                }
+                replaceLambda(expr.asLambdaExpr(), id -> new MaterializedLambdaExtractor(packageName, ruleClassName, toClassOrInterfaceType(Object.class)), exprId);
             }
         }
     }
@@ -223,43 +256,13 @@ public class ExecModelLambdaPostProcessor {
             return;
         }
 
-        Optional<Type> optType = findVariableType((NameExpr) argument);
-        if (!optType.isPresent()) {
+        Optional<Type> optReturnType = findVariableType((NameExpr) argument);
+        if (!optReturnType.isPresent()) {
             logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
             return;
         }
-        String returnType = optType.get().asString();
 
-        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
-    }
-
-    private void convertBindCallForFlowDSL(MethodCallExpr methodCallExpr) {
-        Expression argument = methodCallExpr.getArgument(0);
-
-        if (!argument.isNameExpr()) {
-            logger.warn("argument is not NameExpr. argument : {}, methodCallExpr : {}", argument, methodCallExpr);
-            return;
-        }
-
-        Optional<Type> optType = findVariableType((NameExpr) argument);
-        if (!optType.isPresent()) {
-            logger.warn("VariableDeclarator type was not found for {}, methodCallExpr : {}", argument, methodCallExpr);
-            return;
-        }
-        String returnType = optType.get().asString();
-
-        Optional<MethodCallExpr> bindAsMethodOpt = optionalToStream(methodCallExpr.getParentNode())
-            .filter(MethodCallExpr.class::isInstance)
-            .map(MethodCallExpr.class::cast)
-            .filter(parentMethod -> parentMethod.getNameAsString().equals(BIND_AS_CALL))
-            .findFirst();
-
-        if (!bindAsMethodOpt.isPresent()) {
-            logger.warn("Method 'as' is not found for {}", methodCallExpr);
-            return; // not externalize
-        }
-
-        extractLambdaFromMethodCall(bindAsMethodOpt.get(), (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, returnType));
+        extractLambdaFromMethodCall(methodCallExpr, (i) -> new MaterializedLambdaExtractor(packageName, ruleClassName, optReturnType.get().clone()));
     }
 
     private void convertFromCall(MethodCallExpr methodCallExpr) {
@@ -287,10 +290,10 @@ public class ExecModelLambdaPostProcessor {
 
         returnType = ClassUtil.boxTypePrimitive(returnType);
 
-        String returnTypeStr;
+        Type returnTypeJp;
 
         if (returnType instanceof Class) {
-            returnTypeStr = ((Class<?>)returnType).getCanonicalName();
+            returnTypeJp = toClassOrInterfaceType((Class<?>)returnType);
         } else if (returnType instanceof ParameterizedType) {
             ParameterizedType parameterizedType = (ParameterizedType) returnType;
             java.lang.reflect.Type[] actualTypeArguments = parameterizedType.getActualTypeArguments();
@@ -300,7 +303,7 @@ public class ExecModelLambdaPostProcessor {
             java.lang.reflect.Type argType = actualTypeArguments[0];
             if (argType instanceof Class) {
                 // java.util.List<org.drools.FromTest$MyPerson> has to be resolved to canonical name java.util.List<org.drools.FromTest.MyPerson>
-                returnTypeStr = canonicalNameParameterizedType(parameterizedType, (Class<?>)argType);
+                returnTypeJp = toClassOrInterfaceType(canonicalNameParameterizedType(parameterizedType, (Class<?>)argType));
             } else {
                 return Optional.empty(); // e.g. java.util.Collection<V> (V is TypeVariable), nested ParameterizedType, GenericArrayType etc.
             }
@@ -308,7 +311,7 @@ public class ExecModelLambdaPostProcessor {
             return Optional.empty(); // e.g. GenericArrayType etc.
         }
 
-        return Optional.of(new MaterializedLambdaExtractor(packageName, ruleClassName, returnTypeStr));
+        return Optional.of(new MaterializedLambdaExtractor(packageName, ruleClassName, returnTypeJp));
     }
 
     private String canonicalNameParameterizedType(ParameterizedType parameterizedType, Class<?> argType) {
@@ -319,27 +322,25 @@ public class ExecModelLambdaPostProcessor {
     }
 
     private Optional<Type> findVariableType(NameExpr nameExpr) {
-        return optionalToStream(nameExpr.findAncestor(MethodDeclaration.class))
-            .flatMap(node -> node.findAll(VariableDeclarator.class).stream())
-            .filter(node -> node.getName().equals(nameExpr.getName()))
-            .map(VariableDeclarator::getType)
-            .filter(ClassOrInterfaceType.class::isInstance)
-            .map(ClassOrInterfaceType.class::cast)
-            .flatMap(classOrInterfaceType -> optionalToStream(classOrInterfaceType.getTypeArguments()))
-            .filter(typeArgList -> typeArgList.size() == 1)
-            .map(typeArgList -> typeArgList.get(0))
-            .findFirst();
+        return nameExpr.findAncestor(MethodDeclaration.class).flatMap(m -> findVariableType(nameExpr, m));
+    }
+
+    private Optional<Type> findVariableType(NameExpr nameExpr, MethodDeclaration m) {
+        for (Statement s : m.getBody().get().getStatements()) {
+            Optional<VariableDeclarator> vDecl = s.findFirst(VariableDeclarator.class);
+            if (vDecl.isPresent() && vDecl.get().getName().equals(nameExpr.getName())) {
+                return ((ClassOrInterfaceType)vDecl.get().getType()).getTypeArguments().map( args -> args.get(0) );
+            }
+        }
+        return Optional.empty();
     }
 
     protected Type getType(Expression argument) {
         Type type = argument.asClassExpr().getType();
-        if (type.isPrimitiveType()) {
-            return type.asPrimitiveType().toBoxedType();
-        }
-        return type;
+        return type.isPrimitiveType() ? type.asPrimitiveType().toBoxedType() : type;
     }
 
-    private Expression lambdaInstance(ClassOrInterfaceType type) {
+    private FieldAccessExpr lambdaInstance(ClassOrInterfaceType type) {
         return new FieldAccessExpr(new NameExpr(type.asString()), "INSTANCE");
     }
 
@@ -386,11 +387,11 @@ public class ExecModelLambdaPostProcessor {
 
     private void replaceLambda(LambdaExpr lambdaExpr, Function<Optional<String>, MaterializedLambda> lambdaExtractor, Optional<String> exprId) {
         try {
-            CreatedClass aClass = lambdaExtractor.apply(exprId).create(lambdaExpr.toString(), imports, staticImports);
+            CreatedClass aClass = lambdaExtractor.apply(exprId).create(lambdaExpr.clone(), imports, staticImports);
             lambdaClasses.put(aClass.getClassNameWithPackage(), aClass);
-
-            ClassOrInterfaceType type = StaticJavaParser.parseClassOrInterfaceType(aClass.getClassNameWithPackage());
-            lambdaExpr.replace(lambdaInstance(type));
+            ClassOrInterfaceType type = toClassOrInterfaceType(aClass.getClassNameWithPackage());
+            FieldAccessExpr lambdaInstance = lambdaInstance(type);
+            toBeReplacedLambdas.add( () -> lambdaExpr.replace(lambdaInstance) );
         } catch (DoNotConvertLambdaException e) {
             logger.debug("Cannot externalize lambdas {}", e.getMessage());
         }

@@ -26,7 +26,7 @@ import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.api.runtime.PMMLRuntime;
-import org.kie.pmml.commons.utils.ConverterTypeUtil;
+import org.kie.pmml.api.utils.ConverterTypeUtil;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuntimeFactoryImpl;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
 

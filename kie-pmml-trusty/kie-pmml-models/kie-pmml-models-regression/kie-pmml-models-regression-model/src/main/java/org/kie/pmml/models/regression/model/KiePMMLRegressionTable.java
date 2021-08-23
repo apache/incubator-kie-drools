@@ -15,17 +15,21 @@
  */
 package org.kie.pmml.models.regression.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 
-public abstract class KiePMMLRegressionTable {
+import org.kie.pmml.api.iinterfaces.SerializableFunction;
 
-    protected Map<String, Function<Double, Double>> numericFunctionMap = new HashMap<>();
-    protected Map<String, Function<Object, Double>> categoricalFunctionMap = new HashMap<>();
+public abstract class KiePMMLRegressionTable implements Serializable {
+
+    private static final long serialVersionUID = -7899446939844650691L;
+    protected Map<String, SerializableFunction<Double, Double>> numericFunctionMap = new HashMap<>();
+    protected Map<String, SerializableFunction<Object, Double>> categoricalFunctionMap = new HashMap<>();
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
-    protected Map<String, Function<Map<String, Object>, Double>> predictorTermsFunctionMap = new HashMap<>();
+    protected Map<String, SerializableFunction<Map<String, Object>, Double>> predictorTermsFunctionMap = new HashMap<>();
     protected double intercept;
     protected String targetField;
 
@@ -34,26 +38,24 @@ public abstract class KiePMMLRegressionTable {
     public Object evaluateRegression(Map<String, Object> input) {
         final AtomicReference<Double> result = new AtomicReference<>(intercept);
         final Map<String, Double> resultMap = new HashMap<>();
-        for (Map.Entry<String, Function<Double, Double>> entry : numericFunctionMap.entrySet()) {
+        for (Map.Entry<String, SerializableFunction<Double, Double>> entry : numericFunctionMap.entrySet()) {
             String key = entry.getKey();
             if (input.containsKey(key)) {
                 resultMap.put(key, entry.getValue().apply(((Number) input.get(key)).doubleValue()));
             }
         }
-        for (Map.Entry<String, Function<Object, Double>> entry : categoricalFunctionMap.entrySet()) {
+        for (Map.Entry<String, SerializableFunction<Object, Double>> entry : categoricalFunctionMap.entrySet()) {
             String key = entry.getKey();
             if (input.containsKey(key)) {
                 resultMap.put(key, entry.getValue().apply(input.get(key)));
             }
         }
-        for (Map.Entry<String, Function<Map<String, Object>, Double>> entry : predictorTermsFunctionMap.entrySet()) {
+        for (Map.Entry<String, SerializableFunction<Map<String, Object>, Double>> entry : predictorTermsFunctionMap.entrySet()) {
             resultMap.put(entry.getKey(), entry.getValue().apply(input));
         }
         resultMap.values().forEach(value -> result.accumulateAndGet(value, Double::sum));
         updateResult(result);
-        Object toReturn = result.get();
-        populateOutputFieldsMapWithResult(toReturn);
-        return toReturn;
+        return result.get();
     }
 
     public Map<String, Object> getOutputFieldsMap() {
@@ -64,15 +66,15 @@ public abstract class KiePMMLRegressionTable {
         return targetField;
     }
 
-    public Map<String, Function<Double, Double>> getNumericFunctionMap() {
+    public Map<String, SerializableFunction<Double, Double>> getNumericFunctionMap() {
         return numericFunctionMap;
     }
 
-    public Map<String, Function<Object, Double>> getCategoricalFunctionMap() {
+    public Map<String, SerializableFunction<Object, Double>> getCategoricalFunctionMap() {
         return categoricalFunctionMap;
     }
 
-    public Map<String, Function<Map<String, Object>, Double>> getPredictorTermsFunctionMap() {
+    public Map<String, SerializableFunction<Map<String, Object>, Double>> getPredictorTermsFunctionMap() {
         return predictorTermsFunctionMap;
     }
 
@@ -81,7 +83,5 @@ public abstract class KiePMMLRegressionTable {
     }
 
     protected abstract void updateResult(final AtomicReference<Double> toUpdate);
-
-    protected abstract void populateOutputFieldsMapWithResult(final Object result);
 
 }

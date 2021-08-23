@@ -37,12 +37,16 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     private final Variable[] boundVariables;
     private final Pattern<T> pattern;
 
-    public AccumulatePatternImpl(Condition condition, AccumulateFunction... accumulateFunctions) {
+    public AccumulatePatternImpl(Condition condition,  Variable var, AccumulateFunction... accumulateFunctions) {
         this.condition = condition;
         this.accumulateFunctions = accumulateFunctions;
-        boundVariables = new Variable[accumulateFunctions.length];
+        int extraVar = var == null ? 0 : 1; // this is the groupbyKey var
+        boundVariables = new Variable[accumulateFunctions.length + extraVar];
         for (int i = 0; i < accumulateFunctions.length; i++) {
             boundVariables[i] = accumulateFunctions[i].getResult();
+        }
+        if (var != null) {
+            boundVariables[boundVariables.length-1] = var; // add extra var to end
         }
         this.pattern = findPatternImplSource();
     }
@@ -50,6 +54,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     private Pattern findPatternImplSource() {
         if (condition instanceof Pattern) {
             return ( Pattern ) condition;
+        }
+        if (condition instanceof QueryCallPattern) {
+            return (( QueryCallPattern ) condition).getResultPattern();
         }
 
         if (accumulateFunctions.length == 0) {
@@ -76,9 +83,9 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
                 if (isSource) {
                     return patternImpl;
                 }
-
             }
         }
+
         return null;
     }
 
@@ -90,6 +97,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public boolean isCompositePatterns() {
         return condition instanceof CompositePatterns;
+    }
+
+    @Override
+    public boolean isQuerySource() {
+        return condition instanceof QueryCallPattern;
     }
 
     @Override
@@ -123,6 +135,11 @@ public class AccumulatePatternImpl<T> extends AbstractSinglePattern implements A
     @Override
     public String[] getWatchedProps() {
         return pattern.getWatchedProps();
+    }
+
+    @Override
+    public boolean isPassive() {
+        return pattern.isPassive();
     }
 
     @Override

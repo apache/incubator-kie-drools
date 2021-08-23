@@ -1,0 +1,49 @@
+<svg width="410px" height="98px"
+ viewBox="0.00 0.00 410.17 98.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0) translate(4 94)">
+<title>example&#45;impacted&#45;collapsed&#45;sub&#45;graph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-94 406.1707,-94 406.1707,4 -4,4"/>
+<!-- Inventory shortage -->
+<g id="node1" class="node">
+<title>Inventory shortage</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="302.0796" cy="-72" rx="100.1823" ry="18"/>
+<text text-anchor="middle" x="302.0796" y="-68.3" font-family="Times,serif" font-size="14.00" fill="#000000">Inventory shortage</text>
+</g>
+<!-- PriceCheck -->
+<g id="node2" class="node">
+<title>PriceCheck</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="64.9942" cy="-18" rx="64.9885" ry="18"/>
+<text text-anchor="middle" x="64.9942" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck</text>
+</g>
+<!-- PriceCheck&#45;&gt;Inventory shortage -->
+<g id="edge2" class="edge">
+<title>PriceCheck&#45;&gt;Inventory shortage</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M115.2739,-29.452C148.4474,-37.0078 192.4401,-47.0278 229.4002,-55.4461"/>
+<polygon fill="#000000" stroke="#000000" points="229.0959,-58.9664 239.6235,-57.7746 230.6505,-52.1412 229.0959,-58.9664"/>
+</g>
+<!-- StatusCheck -->
+<g id="node3" class="node">
+<title>StatusCheck</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="302.0796" cy="-18" rx="70.6878" ry="18"/>
+<text text-anchor="middle" x="302.0796" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck</text>
+</g>
+<!-- PriceCheck&#45;&gt;StatusCheck -->
+<g id="edge1" class="edge">
+<title>PriceCheck&#45;&gt;StatusCheck</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M115.855,-6.6854C151.4515,-4.0906 199.293,-3.8065 237.5714,-5.8329"/>
+<polygon fill="#000000" stroke="#000000" points="237.3976,-9.3287 247.5886,-6.4316 237.8153,-2.3412 237.3976,-9.3287"/>
+</g>
+<!-- PriceCheck&#45;&gt;StatusCheck -->
+<g id="edge3" class="edge">
+<title>PriceCheck&#45;&gt;StatusCheck</title>
+<path fill="none" stroke="#000000" d="M130.0924,-18C158.051,-18 191.026,-18 220.5845,-18"/>
+<polygon fill="#000000" stroke="#000000" points="220.8834,-21.5001 230.8834,-18 220.8834,-14.5001 220.8834,-21.5001"/>
+</g>
+<!-- StatusCheck&#45;&gt;PriceCheck -->
+<g id="edge4" class="edge">
+<title>StatusCheck&#45;&gt;PriceCheck</title>
+<path fill="none" stroke="#000000" stroke-dasharray="5,2" d="M247.5886,-29.5684C211.3484,-31.9975 163.6941,-32.1355 126.1564,-29.9826"/>
+<polygon fill="#000000" stroke="#000000" points="126.0605,-26.4691 115.855,-29.3146 125.6075,-33.4545 126.0605,-26.4691"/>
+</g>
+</g>
+</svg>

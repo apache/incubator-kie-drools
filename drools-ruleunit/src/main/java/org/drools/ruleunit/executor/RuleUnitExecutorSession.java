@@ -243,7 +243,7 @@ public class RuleUnitExecutorSession implements InternalRuleUnitExecutor {
             currentRuleUnit.onYield( ruleUnit );
             session.getPropagationList().flush();
             InternalAgenda agenda = session.getAgenda();
-            agenda.getStackList().remove(agenda.getAgendaGroup(currentRuleUnit.getClass().getName()));
+            agenda.removeAgendaGroup(currentRuleUnit.getClass().getName());
 
             unitsStack.push( currentRuleUnit );
             currentRuDescr = bindRuleUnit( ruleUnit );

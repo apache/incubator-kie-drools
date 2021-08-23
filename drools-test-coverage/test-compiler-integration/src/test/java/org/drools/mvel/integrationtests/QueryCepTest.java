@@ -15,13 +15,19 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.time.SessionPseudoClock;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
@@ -30,12 +36,24 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
 import org.kie.api.runtime.rule.QueryResults;
+import org.kie.api.time.SessionPseudoClock;
 import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class QueryCepTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public QueryCepTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
     
     private KieSession ksession;
     
@@ -73,7 +91,7 @@ public class QueryCepTest {
         kfs.write( ResourceFactory.newByteArrayResource(drl.getBytes())
                                   .setTargetPath("org/drools/compiler/integrationtests/queries.drl") );
 
-        assertTrue(ks.newKieBuilder(kfs).buildAll().getResults().getMessages().isEmpty());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, true);
         ksession = ks.newKieContainer(ks.getRepository().getDefaultReleaseId()).newKieSession();
         
         firstEntryPoint = ksession.getEntryPoint("FirstStream");

@@ -24,13 +24,13 @@ public class Address implements Serializable {
     
     private String street;
     private String suburb;
+    private int number;
     private String zipCode;
+    private String city;
 
     public Address() {
 
     }
-    
-    
 
     public Address(String street,
                    String suburb,
@@ -39,7 +39,15 @@ public class Address implements Serializable {
         this.suburb = suburb;
         this.zipCode = zipCode;
     }
-    
+
+    public Address(String street,
+                   int number,
+                   String zipCode) {
+        this.street = street;
+        this.number = number;
+        this.zipCode = zipCode;
+    }
+
     public Address(String street) {
         this.street = street;
     }
@@ -72,6 +80,7 @@ public class Address implements Serializable {
         result = prime * result + ((street == null) ? 0 : street.hashCode());
         result = prime * result + ((suburb == null) ? 0 : suburb.hashCode());
         result = prime * result + ((zipCode == null) ? 0 : zipCode.hashCode());
+        result = prime * result + ((city == null) ? 0 : city.hashCode());
         return result;
     }
 
@@ -90,7 +99,17 @@ public class Address implements Serializable {
         if ( zipCode == null ) {
             if ( other.zipCode != null ) return false;
         } else if ( !zipCode.equals( other.zipCode ) ) return false;
+        if ( city == null ) {
+            if ( other.city != null ) return false;
+        } else if ( !city.equals( other.city ) ) return false;
         return true;
     }
-    
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getCity() {
+        return city;
+    }
 }

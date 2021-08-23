@@ -16,22 +16,16 @@
 
 package org.drools.core;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.QueryRowWithSubruleIndex;
-import org.drools.core.base.ValueType;
 import org.drools.core.rule.Declaration;
-import org.drools.core.spi.InternalReadAccessor;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 

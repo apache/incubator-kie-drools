@@ -16,46 +16,49 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
 import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
+import org.drools.core.util.ClassUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
+import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.api.builder.Message;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 
 import static java.util.stream.Collectors.groupingBy;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 
 public class CanonicalModelKieProject extends KieModuleKieProject {
 
-    private final boolean isPattern;
-
-    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create(boolean isPattern) {
-        return (internalKieModule, classLoader) -> new CanonicalModelKieProject(isPattern, internalKieModule, classLoader);
+    public static BiFunction<InternalKieModule, ClassLoader, KieModuleKieProject> create() {
+        return (internalKieModule, classLoader) -> new CanonicalModelKieProject(internalKieModule, classLoader);
     }
 
     protected Map<String, ModelBuilderImpl> modelBuilders = new HashMap<>();
 
-    public CanonicalModelKieProject(boolean isPattern, InternalKieModule kieModule, ClassLoader classLoader) {
+    public CanonicalModelKieProject(InternalKieModule kieModule, ClassLoader classLoader) {
         super(kieModule instanceof CanonicalKieModule ? kieModule : new CanonicalKieModule( kieModule ), classLoader);
-        this.isPattern = isPattern;
     }
 
     @Override
@@ -68,14 +71,13 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         ModelBuilderImpl<PackageSources> modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources,
                                                                                builderConfiguration,
                                                                                kModule.getReleaseId(),
-                                                                               isPattern,
                                                                                false);
         modelBuilders.put(kBaseModel.getName(), modelBuilder);
         return modelBuilder;
     }
 
     @Override
-    public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
+    public void writeProjectOutput(MemoryFileSystem trgMfs, BuildContext buildContext) {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
         Collection<String> modelFiles = new HashSet<>();
@@ -86,7 +88,11 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             ModelWriter.Result result = modelWriter.writeModel( srcMfs, modelBuilder.getValue().getPackageSources() );
             modelFiles.addAll( result.getModelFiles() );
             sourceFiles.addAll( result.getSourceFiles() );
-            modelsByKBase.put( modelBuilder.getKey(), result.getModelFiles() );
+
+            List<String> modelFilesForKieBase = new ArrayList<>();
+            modelFilesForKieBase.addAll( result.getModelFiles() );
+            modelFilesForKieBase.addAll( ((CanonicalModelBuildContext) buildContext).getNotOwnedModelFiles(modelBuilders, modelBuilder.getKey()) );
+            modelsByKBase.put( modelBuilder.getKey(), modelFilesForKieBase );
         }
 
         InternalKieModule kieModule = getInternalKieModule();
@@ -95,23 +101,32 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
+        Set<String> origFileNames = new HashSet<>(trgMfs.getFileNames());
+
         String[] sources = sourceFiles.toArray(new String[sourceFiles.size()]);
         if (sources.length != 0) {
             CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
             Stream.of(res.getErrors()).collect(groupingBy( CompilationProblem::getFileName))
                     .forEach( (name, errors) -> {
-                        errors.forEach( m -> messages.addMessage(new CompilationProblemAdapter( m )) );
+                        errors.forEach( m -> buildContext.getMessages().addMessage(new CompilationProblemAdapter( m )) );
                         File srcFile = srcMfs.getFile( name );
                         if ( srcFile instanceof MemoryFile ) {
                             String src = new String ( srcMfs.getFileContents( ( MemoryFile ) srcFile ) );
-                            messages.addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
+                            buildContext.getMessages().addMessage( Message.Level.ERROR, name, "Java source of " + name + " in error:\n" + src);
                         }
                     } );
 
             for (CompilationProblem problem : res.getWarnings()) {
-                messages.addMessage(new CompilationProblemAdapter(problem));
+                buildContext.getMessages().addMessage(new CompilationProblemAdapter(problem));
             }
+        }
+
+        if (ProjectClassLoader.isEnableStoreFirst()) {
+            Set<String> generatedClassPaths = new HashSet<>(trgMfs.getFileNames());
+            generatedClassPaths.removeAll(origFileNames);
+            Set<String> generatedClassNames = generatedClassPaths.stream().map(ClassUtils::convertResourceToClassName).collect(Collectors.toSet());
+            modelWriter.writeGeneratedClassNamesFile(generatedClassNames, trgMfs, getInternalKieModule().getReleaseId());
         }
 
         modelWriter.writeModelFile(modelFiles, trgMfs, getInternalKieModule().getReleaseId());
@@ -120,5 +135,10 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
     @Override
     protected boolean compileIncludedKieBases() {
         return false;
+    }
+
+    @Override
+    public BuildContext createBuildContext(ResultsImpl results) {
+        return new CanonicalModelBuildContext(results);
     }
 }

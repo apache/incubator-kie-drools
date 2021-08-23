@@ -72,10 +72,10 @@ public class ReturnValueGenerator {
 
                 Tuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
-                    int i = matcher.getOriginalIndex();
+                    int i = matcher.getMatcherIndex();
                     previousDeclarationsParamsPos[i] = objAstorePos;
 
-                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 7);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getTupleIndex(), 7);
 
                     mv.visitVarInsn(ALOAD, 3);
                     push(i);

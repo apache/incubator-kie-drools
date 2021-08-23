@@ -75,6 +75,10 @@ public class LambdaConstraint extends AbstractConstraint {
         this(evaluator, PredicateInformation.EMPTY_PREDICATE_INFORMATION);
     }
 
+    public ConstraintEvaluator getEvaluator() {
+        return evaluator;
+    }
+
     private void initIndexes() {
         Index index = evaluator.getIndex();
         if (index != null) {
@@ -110,7 +114,7 @@ public class LambdaConstraint extends AbstractConstraint {
 
     @Override
     public String toString() {
-        return evaluator.toString();
+        return "[" + evaluator.toString() + ", " + predicateInformation.getStringConstraint() + "]";
     }
 
     @Override
@@ -254,6 +258,10 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public int hashCode() {
         return evaluator.hashCode();
+    }
+
+    public PredicateInformation getPredicateInformation() {
+        return predicateInformation;
     }
 
     public static class LambdaContextEntry implements ContextEntry {

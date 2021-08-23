@@ -28,6 +28,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
@@ -35,6 +36,8 @@ import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EXPR;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.PASSIVE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
 
@@ -60,9 +63,16 @@ class PatternDSLPattern extends PatternDSL {
                 additionalPatterns.add( expr );
             } else {
                 MethodCallExpr currentExpr = ( MethodCallExpr ) expr;
-                findLastMethodInChain( currentExpr ).setScope( patternExpression );
-                patternExpression = currentExpr;
+                MethodCallExpr lastMethodInChain = findLastMethodInChain(currentExpr);
+                if (!NO_OP_EXPR.equals(lastMethodInChain.getNameAsString())) {
+                    lastMethodInChain.setScope(patternExpression);
+                    patternExpression = currentExpr;
+                }
             }
+        }
+
+        if (pattern.isQuery()) {
+            patternExpression = new MethodCallExpr( patternExpression, PASSIVE_CALL );
         }
 
         context.addExpression( addWatchToPattern( patternExpression ) );
@@ -96,8 +106,21 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private void buildConstraints(PatternDescr pattern, Class<?> patternType, List<PatternConstraintParseResult> patternConstraintParseResults) {
+        boolean hasOOPath = false;
         for (PatternConstraintParseResult patternConstraintParseResult : patternConstraintParseResults) {
+            // only one oopath per pattern is allowed
+            if (patternConstraintParseResult.getDrlxParseResult().isOOPath()) {
+                if (hasOOPath) {
+                    context.addCompilationError(new InvalidExpressionErrorResult("Only one oopath per pattern is allowed"));
+                    break;
+                } else {
+                    hasOOPath = true;
+                }
+            }
             buildConstraint(pattern, patternType, patternConstraintParseResult);
+        }
+        if (hasOOPath) {
+            context.clearOOPathPatternExpr();
         }
     }
 

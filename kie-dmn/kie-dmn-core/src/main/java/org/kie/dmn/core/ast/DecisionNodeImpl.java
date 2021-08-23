@@ -65,6 +65,12 @@ public class DecisionNodeImpl
         this.resultType = resultType;
     }
 
+    // since DROOLS-1767 defined hashCode explicitly, this must be explicit too; there is no change in behaviour since DROOLS-1767, just explicit identity.
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(getId(), getName());

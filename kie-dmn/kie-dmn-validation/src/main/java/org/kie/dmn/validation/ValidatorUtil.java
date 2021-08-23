@@ -59,7 +59,7 @@ public final class ValidatorUtil {
                           .stream()
                           .flatMap(e -> e.getChildren().stream())
                           .filter(e -> (e instanceof InformationRequirement || e instanceof KnowledgeRequirement || e instanceof AuthorityRequirement))
-                          .map(e -> (DMNElement) e)
+                          .map(DMNElement.class::cast)
                           .anyMatch(e -> (e.getId().equals(id)));
     }
 

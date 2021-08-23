@@ -119,15 +119,14 @@ public interface NodeFactory {
                                 BetaConstraints binder,
                                 BuildContext context );
 
-    AccumulateNode buildAccumulateNode( int id,
-                                        LeftTupleSource leftInput,
-                                        ObjectSource rightInput,
-                                        AlphaNodeFieldConstraint[] resultConstraints,
-                                        BetaConstraints sourceBinder,
-                                        BetaConstraints resultBinder,
-                                        Accumulate accumulate,
-                                        boolean unwrapRightObject,
-                                        BuildContext context );
+    AccumulateNode buildAccumulateNode(int id,
+                                       LeftTupleSource leftInput,
+                                       ObjectSource rightInput,
+                                       AlphaNodeFieldConstraint[] resultConstraints,
+                                       BetaConstraints sourceBinder,
+                                       BetaConstraints resultBinder,
+                                       Accumulate accumulate,
+                                       BuildContext context);
 
     LeftInputAdapterNode buildLeftInputAdapterNode( int nextId,
                                                     ObjectSource objectSource,

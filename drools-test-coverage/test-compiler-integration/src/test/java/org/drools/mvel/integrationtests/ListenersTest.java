@@ -16,9 +16,17 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -36,16 +44,25 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
 import org.kie.internal.io.ResourceFactory;
 
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 /**
  * Tests stateful/stateless KieSession listeners registration - DROOLS-818.
  */
+@RunWith(Parameterized.class)
 public class ListenersTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ListenersTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static final ReleaseId RELEASE_ID = KieServices.Factory.get()
             .newReleaseId("org.drools.mvel.compiler.test", "listeners-test", "1.0.0");
@@ -156,7 +173,7 @@ public class ListenersTest {
         kfs.write("src/main/resources/" + PACKAGE_PATH + "/test.drl",
                 ResourceFactory.newByteArrayResource(DRL.getBytes()));
 
-        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         assertEquals("Unexpected compilation errors", 0, builder.getResults().getMessages().size());
 
         ks.getRepository().addKieModule(builder.getKieModule());

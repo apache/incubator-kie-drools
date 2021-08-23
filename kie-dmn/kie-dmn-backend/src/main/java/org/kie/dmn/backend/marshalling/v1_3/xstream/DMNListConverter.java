@@ -51,7 +51,7 @@ public class DMNListConverter extends ExpressionConverter {
         List list = (List) parent;
         
         for (Expression e : list.getExpression()) {
-            writeChildrenNode(writer, context, e, MarshallingUtils.defineExpressionNodeName(e));
+            writeChildrenNode(writer, context, e, MarshallingUtils.defineExpressionNodeName(xstream, e));
         }
     }
 

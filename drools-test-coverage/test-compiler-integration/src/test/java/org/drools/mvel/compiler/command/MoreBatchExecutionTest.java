@@ -16,30 +16,41 @@
 package org.drools.mvel.compiler.command;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.command.Command;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ExecutionResults;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.command.CommandFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class MoreBatchExecutionTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MoreBatchExecutionTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MoreBatchExecutionTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private KieSession ksession = null;
     
@@ -53,14 +64,9 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
     
     @Test
     public void testFireAllRules() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("org/drools/mvel/integrationtests/drl/test_ImportFunctions.drl"), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "org/drools/mvel/integrationtests/drl/test_ImportFunctions.drl");
+        ksession = kbase.newKieSession();
 
         final Cheese cheese = new Cheese("stilton", 15);
         ksession.insert(cheese);
@@ -85,17 +91,11 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         assertEquals("rule3", list.get(2));
         assertEquals("rule4", list.get(3));
     }
-    
+
     @Test
     public void testQuery() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newClassPathResource("org/drools/mvel/integrationtests/simple_query_test.drl"), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, "org/drools/mvel/integrationtests/simple_query_test.drl");
+        KieSession ksession = kbase.newKieSession();
         
         ksession.insert( new Cheese( "stinky", 5 ) );
         ksession.insert( new Cheese( "smelly", 7 ) );
@@ -111,5 +111,4 @@ public class MoreBatchExecutionTest extends CommonTestMethodBase {
         
         assertEquals( 1, ((QueryResults) queryResultsObject).size() );
     }
-    
 }

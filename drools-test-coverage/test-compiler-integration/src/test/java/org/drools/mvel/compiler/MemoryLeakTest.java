@@ -40,18 +40,40 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.Rete;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
+import org.kie.api.KieServices;
+import org.kie.api.builder.ReleaseId;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.utils.KieHelper;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class MemoryLeakTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MemoryLeakTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testStagedTupleLeak() throws Exception {
@@ -75,7 +97,7 @@ public class MemoryLeakTest {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 10; i++ ) {
@@ -110,7 +132,7 @@ public class MemoryLeakTest {
                 "then\n" +
                 "end\n";
 
-        KieBase kbase = new KieHelper().addContent( str, ResourceType.DRL ).build();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession ksession = kbase.newKieSession();
         ksession.fireAllRules();
 
@@ -156,9 +178,8 @@ public class MemoryLeakTest {
                 "then \n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         FactHandle fh1 = ksession.insert( 1 );
         FactHandle fh2 = ksession.insert( 3 );
@@ -199,9 +220,12 @@ public class MemoryLeakTest {
                 "then\n" +
                 "end\n";
 
-        KieContainer kContainer = new KieHelper().addContent( drl, ResourceType.DRL ).getKieContainer();
-        KieSession ksession = kContainer.newKieSession();
-        KieBase kBase = ksession.getKieBase();
+        ReleaseId releaseId = KieUtil.generateReleaseId("test");
+        final List<Resource> resources = KieUtil.getResourcesFromDrls(drl);
+        KieUtil.getKieModuleFromResources(releaseId, kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
+        KieContainer kContainer = KieServices.Factory.get().newKieContainer(releaseId);
+        KieBase kBase = KieBaseUtil.getDefaultKieBaseFromReleaseId(releaseId);
+        KieSession ksession = kBase.newKieSession();
 
         ksession.insert( new Person("Mario", 40) );
         ksession.fireAllRules();

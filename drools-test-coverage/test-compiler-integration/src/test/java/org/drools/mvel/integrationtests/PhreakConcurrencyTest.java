@@ -55,6 +55,8 @@ import static org.junit.Assert.fail;
 @Ignore
 public class PhreakConcurrencyTest extends CommonTestMethodBase {
 
+    // This test already fails with standard-drl (probably not maintained) so not enhanced for exec-model
+
     @Test
     public void testMultipleConcurrentEPs() {
         final boolean PARALLEL = true;

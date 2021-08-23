@@ -83,33 +83,33 @@ public class NodePositionInPathTest {
             }
         }
 
-        assertEquals(0, liaNode.getPositionInPath());
+        assertEquals(0, liaNode.getPathIndex());
 
         LeftTupleSink[] liaSinks = liaNode.getSinkPropagator().getSinks();
         BetaNode join1 = (BetaNode)liaSinks[0];
-        assertEquals(1, join1.getPositionInPath());
+        assertEquals(1, join1.getPathIndex());
 
         ExistsNode ex1 = (ExistsNode)liaSinks[1];
-        assertEquals(1, ex1.getPositionInPath());
+        assertEquals(1, ex1.getPathIndex());
         BetaNode join2 = (BetaNode)ex1.getSinkPropagator().getSinks()[0];
-        assertEquals(2, join2.getPositionInPath());
+        assertEquals(2, join2.getPathIndex());
         RuleTerminalNode rtn1 = (RuleTerminalNode)join2.getSinkPropagator().getSinks()[0];
-        assertEquals(3, rtn1.getPositionInPath());
+        assertEquals(3, rtn1.getPathIndex());
 
         ExistsNode ex2 = (ExistsNode)liaSinks[2];
-        assertEquals(1, ex2.getPositionInPath());
+        assertEquals(1, ex2.getPathIndex());
         RuleTerminalNode rtn2 = (RuleTerminalNode)ex2.getSinkPropagator().getSinks()[0];
-        assertEquals(2, rtn2.getPositionInPath());
+        assertEquals(2, rtn2.getPathIndex());
 
         BetaNode join3 = (BetaNode) join1.getSinkPropagator().getSinks()[0];
-        assertEquals(2, join3.getPositionInPath());
+        assertEquals(2, join3.getPathIndex());
         RightInputAdapterNode ria1 = (RightInputAdapterNode) join3.getSinkPropagator().getSinks()[0];
-        assertEquals(3, ria1.getPositionInPath());
+        assertEquals(3, ria1.getPathIndex());
 
         BetaNode join4 = (BetaNode) join1.getSinkPropagator().getSinks()[1];
-        assertEquals(2, join4.getPositionInPath());
+        assertEquals(2, join4.getPathIndex());
         RightInputAdapterNode ria2 = (RightInputAdapterNode) join4.getSinkPropagator().getSinks()[0];
-        assertEquals(3, ria2.getPositionInPath());
+        assertEquals(3, ria2.getPathIndex());
 
         LeftTupleNode[] rtn1PathNodes = rtn1.getPathNodes();
         assertEquals( 4, rtn1PathNodes.length );
@@ -140,6 +140,6 @@ public class NodePositionInPathTest {
     }
 
     private void checkNodePosition(LeftTupleNode[] pathNodes, LeftTupleNode node) {
-        assertEquals( node, pathNodes[node.getPositionInPath()] );
+        assertEquals( node, pathNodes[node.getPathIndex()]);
     }
 }

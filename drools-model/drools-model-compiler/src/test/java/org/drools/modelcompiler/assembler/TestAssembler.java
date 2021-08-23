@@ -1,7 +1,6 @@
 package org.drools.modelcompiler.assembler;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
 import org.drools.compiler.compiler.DroolsError;
 import org.drools.compiler.lang.descr.FunctionDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
@@ -29,7 +28,7 @@ public class TestAssembler implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
         KnowledgeBuilderImpl kb = (KnowledgeBuilderImpl) kbuilder;
         PackageDescr fakEpkg = new PackageDescr("FAKEpkg");
         fakEpkg.addFunction(new FunctionDescr("INVALID", "INVALID"));

@@ -16,10 +16,7 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.Map;
-
 import org.drools.core.WorkingMemoryEntryPoint;
-import org.drools.core.common.InternalFactHandle;
 import org.drools.model.BitMask;
 import org.drools.model.DroolsEntryPoint;
 import org.kie.api.runtime.rule.EntryPoint;
@@ -29,9 +26,9 @@ import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 public class DroolsEntryPointImpl implements DroolsEntryPoint {
 
     private final EntryPoint entryPoint;
-    private final Map<Object, InternalFactHandle> fhLookup;
+    private final FactHandleLookup fhLookup;
 
-    public DroolsEntryPointImpl( EntryPoint entryPoint, Map<Object, InternalFactHandle> fhLookup ) {
+    public DroolsEntryPointImpl( EntryPoint entryPoint, FactHandleLookup fhLookup ) {
         this.entryPoint = entryPoint;
         this.fhLookup = fhLookup;
     }

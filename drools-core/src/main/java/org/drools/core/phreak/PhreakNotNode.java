@@ -23,10 +23,12 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
+import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
+import org.drools.core.util.index.TupleList;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -39,6 +41,22 @@ public class PhreakNotNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
+        if (!notNode.isRightInputIsRiaNode()) {
+            doNormalNode(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        } else {
+            PhreakSubnetworkNotExistsNode.doSubNetworkNode(notNode, sink, bm,
+                                                           srcLeftTuples, trgLeftTuples, stagedLeftTuples);
+        }
+    }
+
+    public void doNormalNode(NotNode notNode,
+                             LeftTupleSink sink,
+                             BetaMemory bm,
+                             InternalWorkingMemory wm,
+                             TupleSets<LeftTuple> srcLeftTuples,
+                             TupleSets<LeftTuple> trgLeftTuples,
+                             TupleSets<LeftTuple> stagedLeftTuples) {
+
         TupleSets<RightTuple> srcRightTuples = bm.getStagedRightTuples().takeAll();
 
         if (srcLeftTuples.getDeleteFirst() != null) {
@@ -46,7 +64,6 @@ public class PhreakNotNode {
             // stage an insertion, that is later deleted in the rightDelete, causing potential problems
             doLeftDeletes(bm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
         }
-
 
         if (srcLeftTuples.getUpdateFirst() != null) {
             // must happen before right inserts, so it can find left tuples to block.
@@ -189,7 +206,7 @@ public class PhreakNotNode {
     public static void unlinkNotNodeOnRightInsert(NotNode notNode,
                                                   BetaMemory bm,
                                                   InternalWorkingMemory wm) {
-        if (bm.getSegmentMemory().isSegmentLinked() && !notNode.isRightInputIsRiaNode() && notNode.isEmptyBetaConstraints()) {
+        if (bm.getSegmentMemory().isSegmentLinked() && notNode.isEmptyBetaConstraints()) {
             // this must be processed here, rather than initial insert, as we need to link the blocker
             // @TODO this could be more efficient, as it means the entire StagedLeftTuples for all previous nodes where evaluated, needlessly.
             bm.unlinkNode(wm);
@@ -518,4 +535,5 @@ public class PhreakNotNode {
             trgLeftTuples.addInsert( sink.createLeftTuple( leftTuple, sink, pctx, useLeftMemory ) );
         }
     }
+
 }

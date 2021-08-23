@@ -43,7 +43,7 @@ public class ModelBuilderImplTest {
     @Before
     public void setup() {
         internalKnowledgePackage = new KnowledgePackageImpl("apackage");
-        modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, CONFIGURATION, RELEASE_ID, true, false);
+        modelBuilder = new ModelBuilderImpl<>(PackageSources::dumpSources, CONFIGURATION, RELEASE_ID, false);
         packageRegistry = new PackageRegistry(ModelBuilderImplTest.class.getClassLoader(), CONFIGURATION, internalKnowledgePackage);
     }
 

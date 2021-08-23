@@ -19,9 +19,10 @@ package org.drools.decisiontable.parser;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeSet;
 
 import org.drools.decisiontable.parser.xls.PropertiesSheetListener;
@@ -81,6 +82,7 @@ implements RuleSheetListener {
     public static final String            MIN_SALIENCE_TAG       = "SequentialMinPriority";
     public static final String            MAX_SALIENCE_TAG       = "SequentialMaxPriority";
     public static final String            NUMERIC_DISABLED_FLAG  = "NumericDisabled";
+    public static final String            IGNORE_NUMERIC_FORMAT_FLAG     = "IgnoreNumericFormat";
     public static final String            VARIABLES_TAG          = "Variables";
     public static final String            RULE_TABLE_TAG         = "ruletable";
     public static final String            RULESET_TAG            = "RuleSet";
@@ -100,13 +102,14 @@ implements RuleSheetListener {
     private boolean                       _currentSequentialFlag   = false;                       // indicates that we are in sequential mode
     private boolean                       _currentEscapeQuotesFlag = true;                        // indicates that we are escaping quotes
     private boolean                       _currentNumericDisabledFlag = false;                    // indicates that we use String instead of double
+    private boolean                       _currentIgnoreNumericFormatFlag = false;                 // indicates that we don't use formatter for numeric value (except "General")
     private int                           _currentSalience = MAX_ROWS;                            // set to the start value of the salience and decremented for each row
     private int                           _minSalienceTag = 0;                                    // used to check if this minimum salience value is not violated
 
     //accumulated output
     private Map<Integer, ActionType>       _actions;
-    private final HashMap<Integer, String> _cellComments          = new HashMap<Integer, String>();
-    private final List<Rule>               _ruleList              = new LinkedList<Rule>();
+    private final HashMap<Integer, String> _cellComments          = new HashMap<>();
+    private final List<Rule>               _ruleList              = new ArrayList<>();
 
     //need to keep an ordered list of this to make conditions appear in the right order
     private Collection<SourceBuilder>     sourceBuilders;
@@ -225,7 +228,7 @@ implements RuleSheetListener {
                 switch( code ){
                 case SALIENCE:
                     try {
-                        ruleset.setSalience( new Integer( value ) );
+                        ruleset.setSalience( Integer.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Priority is not an integer literal, in cell " +
                                 getProperties().getSinglePropertyCell( code.getColHeader() ) );
@@ -233,7 +236,7 @@ implements RuleSheetListener {
                     break;
                 case DURATION:
                     try {
-                        ruleset.setDuration( new Long( value ) );
+                        ruleset.setDuration( Long.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Duration is not an integer literal, in cell " +
                                 getProperties().getSinglePropertyCell( code.getColHeader() )  );
@@ -388,6 +391,7 @@ implements RuleSheetListener {
         this._currentSequentialFlag = getFlagValue(SEQUENTIAL_FLAG, false);
         this._currentEscapeQuotesFlag = getFlagValue(ESCAPE_QUOTES_FLAG, true);
         this._currentNumericDisabledFlag = getFlagValue(NUMERIC_DISABLED_FLAG, false);
+        this._currentIgnoreNumericFormatFlag = getFlagValue(IGNORE_NUMERIC_FORMAT_FLAG, false);
 
         if (firstTable) {
             this._currentSalience = getNumericValue( MAX_SALIENCE_TAG, this._currentSalience );
@@ -449,7 +453,7 @@ implements RuleSheetListener {
             final int column,
             final String value) {
         String testVal = value.trim().toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             initRuleTable( row, column, value.trim(), true );
         } else {
             this._propertiesListener.newCell( row, column, value, RuleSheetListener.NON_MERGED );
@@ -462,7 +466,7 @@ implements RuleSheetListener {
             final int mergedColStart) {
         String trimVal = trimCell ? value.trim() : value;
         String testVal = trimVal.toLowerCase();
-        if ( testVal.startsWith( RULE_TABLE_TAG ) ) {
+        if (isRuleTable(testVal)) {
             finishRuleTable();
             initRuleTable( row, column, trimVal, false );
             return;
@@ -499,6 +503,10 @@ implements RuleSheetListener {
             nextDataCell( row, column, trimVal );
             break;
         }
+    }
+
+    private boolean isRuleTable(final String testVal) {
+        return Objects.equals(RULE_TABLE_TAG, testVal) || testVal.startsWith(RULE_TABLE_TAG + " ");
     }
 
     /**
@@ -645,7 +653,7 @@ implements RuleSheetListener {
                     this._currentRule.setSalience( value );
                 } else {
                     try {
-                        this._currentRule.setSalience( new Integer( value ) );
+                        this._currentRule.setSalience( Integer.valueOf( value ) );
                     } catch( NumberFormatException nfe ){
                         throw new DecisionTableParseException( "Priority is not an integer literal, in cell " +
                                 RuleSheetParserUtil.rc2name( row, column ) );
@@ -679,7 +687,7 @@ implements RuleSheetListener {
             break;
         case DURATION:
             try {
-                this._currentRule.setDuration( new Long( value ) );
+                this._currentRule.setDuration( Long.valueOf( value ) );
             } catch( NumberFormatException nfe ){
                 throw new DecisionTableParseException( "Duration is not an integer literal, in cell " +
                         RuleSheetParserUtil.rc2name( row, column ) );
@@ -725,5 +733,9 @@ implements RuleSheetListener {
 
     public boolean isNumericDisabled() {
         return _currentNumericDisabledFlag;
+    }
+
+    public boolean doesIgnoreNumericFormat() {
+        return _currentIgnoreNumericFormatFlag;
     }
 }

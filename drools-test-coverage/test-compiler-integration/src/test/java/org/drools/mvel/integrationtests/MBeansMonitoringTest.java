@@ -14,22 +14,30 @@
 */
 package org.drools.mvel.integrationtests;
 
+import java.io.StringReader;
 import java.lang.management.ManagementFactory;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collection;
 
 import javax.management.JMX;
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
+
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
 import org.drools.core.ClockType;
 import org.drools.core.impl.InternalKieContainer;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.management.DroolsManagementAgent;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
@@ -41,6 +49,7 @@ import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.builder.model.KieSessionModel.KieSessionType;
 import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.conf.MBeansOption;
+import org.kie.api.io.Resource;
 import org.kie.api.management.GenericKieSessionMonitoringMXBean;
 import org.kie.api.management.KieContainerMonitorMXBean;
 import org.kie.api.management.KieSessionMonitoringMXBean;
@@ -60,14 +69,26 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class MBeansMonitoringTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MBeansMonitoringTest {
     public static final Logger LOG = LoggerFactory.getLogger(MBeansMonitoringTest.class);
     
     public static final String KSESSION1 = "KSession1";
-	public static final String KBASE1 = "KBase1";
+    public static final String KBASE1 = "KBase1";
     private static final String KBASE2 = "KBase2";
     private static final String KSESSION2 = "KSession2";
     private String mbeansprop;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MBeansMonitoringTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
 
     @Before
     public void setUp() throws Exception {
@@ -113,6 +134,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
                 StatelessKieSessionMonitoringMXBean.class);
         
         assertEquals("myID", c1Monitor.getContainerId() );
+
         assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
         assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(KieContainerMonitorMXBean.CLASSPATH_KIECONTAINER_RELEASEID));
         assertEquals("org.kie.monitoring.kbase1.ksession1", statefulKieSessionMonitor.getKieSessionName());
@@ -175,7 +197,9 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     			.setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
     	ReleaseId releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
-    	createKJar( ks, kproj, releaseId1, null, drl );
+        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1.drl");
+    	KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, kproj, drlResource1);
 
     	KieContainer kc = ks.newKieContainer( releaseId1 );
 
@@ -187,12 +211,14 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
 
     	Object expOffset = mbserver.getAttribute( new ObjectName( kbOn + ",group=EntryPoints,EntryPoint=DEFAULT,ObjectType=org.drools.mvel.compiler.StockTick" ), "ExpirationOffset" );
     	assertEquals( 10001, ((Number) expOffset).longValue() );
+    	
+    	kc.dispose();
     }
     
     @Test
     public void testContainerMBeans() throws Exception {
     	String drl = "package org.drools.mvel.compiler.test\n" +
-    			"import org.drools.compiler.StockTick\n" +
+    			"import org.drools.mvel.compiler.StockTick\n" +
     			"declare StockTick\n" +
     			"    @role(event)\n" +
     			"    @expires(10s)\n" +
@@ -214,7 +240,9 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
     			.setClockType( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
     	ReleaseId releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
-    	createKJar( ks, kproj, releaseId1, null, drl );
+        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1.drl");
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, kproj, drlResource1);
     	
     	KieContainer kc = ks.newKieContainer( releaseId1 );
     	KieBase kiebase = kc.getKieBase( KBASE1 );
@@ -259,6 +287,9 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         kc.dispose();
         assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(kc1ID)+",*"), null).size());
         assertEquals(3, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("Matteo")+",*"), null).size());
+
+        kc.dispose();
+        kc2.dispose();
     }
     
     @Test
@@ -301,7 +332,9 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
                 .setType( KieSessionModel.KieSessionType.STATELESS );
 
         ReleaseId releaseId1 = ks.newReleaseId( "org.kie.test", "mbeans", "1.0.0" );
-        createKJar( ks, kproj, releaseId1, null, drl );
+        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1.drl");
+        KieModule km = KieUtil.buildAndInstallKieModuleIntoRepo(kieBaseTestConfiguration, releaseId1, kproj, drlResource1);
         
         String containerId = "myContainerId";
         KieContainer kc = ks.newKieContainer( containerId, releaseId1 );
@@ -438,6 +471,8 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
         kc.dispose();
         assertEquals(0, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote(containerId)+",*"), null).size());
         assertEquals(1, mbserver.queryNames(new ObjectName("org.kie:kcontainerId="+ObjectName.quote("kc2")+",*"), null).size());
+
+        kc2.dispose();
     }
     
     private void checkStatsByRule(GenericKieSessionMonitoringMXBean mb, String ruleName, long mCreated, long mCancelled, long mFired) {
@@ -511,7 +546,7 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
             assertNotNull( kieModule );
             assertEquals( releaseId, kieModule.getReleaseId() );
             
-            ks.newKieContainer("myID", releaseId);
+            KieContainer kc = ks.newKieContainer("myID", releaseId);
             
             KieContainerMonitorMXBean c1Monitor = JMX.newMXBeanProxy(
                     mbserver,
@@ -520,6 +555,8 @@ public class MBeansMonitoringTest extends CommonTestMethodBase {
             
             assertTrue(c1Monitor.getConfiguredReleaseId().sameGAVof(releaseId));
             assertTrue(c1Monitor.getResolvedReleaseId().sameGAVof(releaseId));
+
+            kc.dispose();
         } finally {
             Thread.currentThread().setContextClassLoader( cl );
         }

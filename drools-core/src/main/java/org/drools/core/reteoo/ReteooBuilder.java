@@ -22,10 +22,10 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -217,7 +217,7 @@ public class ReteooBuilder
      */
     private void removePath( Collection<InternalWorkingMemory> wms, RuleRemovalContext context, Map<Integer, BaseNode> stillInUse, Collection<ObjectSource> alphas, PathEndNode endNode ) {
         LeftTupleNode[] nodes = endNode.getPathNodes();
-        for (int i = endNode.getPositionInPath(); i >= 0; i--) {
+        for (int i = endNode.getPathIndex(); i >= 0; i--) {
             BaseNode node = (BaseNode) nodes[i];
 
             boolean removed = false;
@@ -416,7 +416,7 @@ public class ReteooBuilder
 
         public InternalIdGenerator(final int firstId) {
             this.nextId = firstId;
-            this.recycledIds = new LinkedList<>();
+            this.recycledIds = new ArrayDeque<>();
         }
 
         @SuppressWarnings("unchecked")

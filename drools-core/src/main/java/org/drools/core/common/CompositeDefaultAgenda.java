@@ -20,6 +20,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -60,7 +61,7 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     private final DefaultAgenda[] agendas = new DefaultAgenda[RuleBasePartitionId.PARALLEL_PARTITIONS_NUMBER];
 
-    private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ExecutionStateMachine();
+    private final DefaultAgenda.ExecutionStateMachine executionStateMachine = new DefaultAgenda.ConcurrentExecutionStateMachine();
 
     private PropagationList propagationList;
 
@@ -367,11 +368,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public AgendaGroup[] getStack() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getStack -> TODO" );
-    }
-
-    @Override
     public int focusStackSize() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.focusStackSize -> TODO" );
     }
@@ -393,11 +389,6 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
 
     @Override
     public void clearAndCancelAgendaGroup( String name ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.clearAndCancelAgendaGroup -> TODO" );
-    }
-
-    @Override
-    public void clearAndCancelAgendaGroup( InternalAgendaGroup agendaGroup ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.clearAndCancelAgendaGroup -> TODO" );
     }
 
@@ -427,18 +418,13 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public void cancelActivation( PropagationContext context, Activation activation ) {
+    public void cancelActivation( Activation activation ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.cancelActivation -> TODO" );
     }
 
     @Override
     public void modifyActivation( AgendaItem activation, boolean previouslyActive ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.modifyActivation -> TODO" );
-    }
-
-    @Override
-    public void addAgendaGroup( AgendaGroup agendaGroup ) {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addAgendaGroup -> TODO" );
     }
 
     @Override
@@ -454,6 +440,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     @Override
     public AgendaGroup getAgendaGroup( String name ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroup -> TODO" );
+    }
+
+    @Override
+    public void removeAgendaGroup(String name) {
+        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.removeAgendaGroup -> TODO" );
     }
 
     @Override
@@ -538,6 +529,11 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
+    public void putOnAgendaGroupsMap(String name, InternalAgendaGroup group) {
+        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getAgendaGroupsMap -> TODO" );
+    }
+
+    @Override
     public void addAgendaGroupOnStack( AgendaGroup agendaGroup ) {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.addAgendaGroupOnStack -> TODO" );
     }
@@ -558,13 +554,8 @@ public class CompositeDefaultAgenda implements Externalizable, InternalAgenda {
     }
 
     @Override
-    public java.util.LinkedList<AgendaGroup> getStackList() {
+    public Collection<String> getGroupsName() {
         throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getStackList -> TODO" );
-    }
-
-    @Override
-    public AgendaGroup getFocus() {
-        throw new UnsupportedOperationException( "org.drools.core.common.CompositeDefaultAgenda.getFocus -> TODO" );
     }
 
     @Override

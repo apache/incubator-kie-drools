@@ -52,6 +52,7 @@ public class NotNode extends BetaNode {
               joinNodeBinder,
               context);
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.setObjectCount(leftInput.getObjectCount()); // 'not' nodes do not increase the count
         
         // The reason why this is here is because forall can inject a
         //  "this == " + BASE_IDENTIFIER $__forallBaseIdentifier

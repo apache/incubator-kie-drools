@@ -13,12 +13,12 @@
     <MiningSchema>
       <MiningField name="age"/>
       <MiningField name="salary"/>
-      <MiningField name="car_location" usageType="target"/> <!-- <- wrong - used for test - should be overrided by Target -->
+      <MiningField name="car_location" usageType="target"/>
       <MiningField name="number_of_claims"/>
     </MiningSchema>
     <Targets>
       <Target field="number_of_claims"/>
-      <Target field="salary"/> <!-- <- wrong - used just for test -->
+      <Target field="salary"/>
     </Targets>
     <RegressionTable intercept="132.37">
       <NumericPredictor name="age" exponent="1" coefficient="7.1"/>

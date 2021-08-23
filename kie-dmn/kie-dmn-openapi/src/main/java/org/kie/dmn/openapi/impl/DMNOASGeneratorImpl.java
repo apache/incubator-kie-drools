@@ -24,10 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import io.smallrye.openapi.runtime.io.JsonUtil;
-import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNType;
@@ -39,17 +37,24 @@ import org.kie.dmn.openapi.model.DMNModelIOSets.DSIOSets;
 import org.kie.dmn.openapi.model.DMNOASResult;
 import org.kie.dmn.typesafe.DMNTypeUtils;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import io.smallrye.openapi.runtime.io.JsonUtil;
+import io.smallrye.openapi.runtime.io.schema.SchemaWriter;
+
 public class DMNOASGeneratorImpl implements DMNOASGenerator {
 
     private final List<DMNModel> dmnModels;
     private final List<DMNModelIOSets> ioSets = new ArrayList<>();
     private final Set<DMNType> typesIndex = new HashSet<>();
+    private final String refPrefix;
     private NamingPolicy namingPolicy;
     private final Map<DMNType, Schema> schemas = new HashMap<>();
     private ObjectNode jsonSchema;
 
-    public DMNOASGeneratorImpl(Collection<DMNModel> models) {
+    public DMNOASGeneratorImpl(Collection<DMNModel> models, String refPrefix) {
         this.dmnModels = new ArrayList<>(models);
+        this.refPrefix = refPrefix;
     }
 
     @Override
@@ -81,15 +86,30 @@ public class DMNOASGeneratorImpl implements DMNOASGenerator {
     }
 
     private void determineNamingPolicy() {
-        this.namingPolicy = new DefaultNamingPolicy();
+        this.namingPolicy = new DefaultNamingPolicy(refPrefix);
         if (namingIntegrityCheck()) {
             return;
         }
-        this.namingPolicy = new NamespaceAwareNamingPolicy(dmnModels);
+        this.namingPolicy = new NamespaceAwareNamingPolicy(dmnModels, refPrefix);
         if (namingIntegrityCheck()) {
             return;
         }
-        throw new IllegalStateException("Couldn't determine unique naming policy");
+        reportCollisions();
+    }
+
+    private void reportCollisions() {
+        List<String> messages = new ArrayList<>();
+        Map<String, Long> countByName = typesIndex.stream().collect(Collectors.groupingBy(namingPolicy::getName, Collectors.counting()));
+        for (Entry<String, Long> kv : countByName.entrySet()) {
+            if (kv.getValue() > 1) {
+                List<DMNType> collidingOverName = typesIndex.stream().filter(t -> namingPolicy.getName(t).equals(kv.getKey())).collect(Collectors.toList());
+                List<DMNModel> fromModels = dmnModels.stream().filter(m -> m.getItemDefinitions().stream().anyMatch(itemDef -> collidingOverName.contains(itemDef.getType()))).collect(Collectors.toList());
+                String modelsCoords = fromModels.stream().map(m -> String.format("Model '%s' (namespace '%s')", m.getName(), m.getNamespace())).collect(Collectors.joining(", "));
+                String message = String.format("Naming collision for types named: %s defined in the DMN models: %s (colliding on '%s')", collidingOverName, modelsCoords, kv.getKey());
+                messages.add(message);
+            }
+        }
+        throw new IllegalStateException("Couldn't determine unique naming policy.\nEnsure all DMN models are defined in their own namespace.\n" + messages.stream().collect(Collectors.joining("\n")));
     }
 
     private boolean namingIntegrityCheck() {

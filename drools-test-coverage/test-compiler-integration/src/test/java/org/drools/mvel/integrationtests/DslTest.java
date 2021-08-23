@@ -27,15 +27,24 @@ import org.drools.compiler.lang.Expander;
 import org.drools.compiler.lang.dsl.DefaultExpanderResolver;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Results;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.KiePackage;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.builder.KnowledgeBuilder;
@@ -46,9 +55,20 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class DslTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class DslTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DslTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
    
     @Test
     public void testMultiLineTemplates() throws Exception {
@@ -61,49 +81,27 @@ public class DslTest extends CommonTestMethodBase {
 
     @Test
     public void testWithExpanderDSL() throws Exception {
-        //final PackageBuilder builder = new PackageBuilder();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final Resource resource1 = KieServices.Factory.get().getResources().newClassPathResource("test_expander.dsl", getClass());
+        resource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_expander.dsl");
+        final Resource resource2 = KieServices.Factory.get().getResources().newClassPathResource("rule_with_expander_dsl.dslr", getClass());
+        resource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule_with_expander_dsl.dslr");
+        
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              ResourceType.DSL );
-        kbuilder.add(ResourceFactory.newClassPathResource("rule_with_expander_dsl.dslr", getClass()),
-                ResourceType.DSLR);
-
-        checkDSLExpanderTest(kbuilder);
+        checkDSLExpanderTest(kieBuilder);
     }
 
-    @Test
-    public void testWithExpanderDSLUsingCompositeBuiler() throws Exception {
-        //final PackageBuilder builder = new PackageBuilder();
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.batch()
-                .add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                        ResourceType.DSL )
-                .add( ResourceFactory.newClassPathResource( "rule_with_expander_dsl.dslr", getClass() ) ,
-                        ResourceType.DSLR )
-                .build();
-
-        checkDSLExpanderTest(kbuilder);
-    }
-
-    private void checkDSLExpanderTest(KnowledgeBuilder kbuilder) throws IOException, ClassNotFoundException {
-        assertFalse( kbuilder.hasErrors() );
-        final String err = kbuilder.getErrors().toString();
-        assertEquals( "",
-                      err );
-        assertEquals( 0,
-                      kbuilder.getErrors().size() );
+    private void checkDSLExpanderTest(KieBuilder kieBuilder) throws IOException, ClassNotFoundException {
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
         // the compiled package
-        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
         assertEquals( 2, pkgs.size() );
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( pkgs );
-        kbase    = SerializationHelper.serializeObject(kbase);
+        KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
-        KieSession session = createKnowledgeSession(kbase);
+        KieSession session = kbase.newKieSession();
         session.insert( new Person( "Bob",
                                "http://foo.bar" ) );
         session.insert( new Cheese( "stilton",
@@ -119,31 +117,23 @@ public class DslTest extends CommonTestMethodBase {
 
     @Test
     public void testWithExpanderMore() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final Resource resource1 = KieServices.Factory.get().getResources().newClassPathResource("test_expander.dsl", getClass());
+        resource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_expander.dsl");
+        final Resource resource2 = KieServices.Factory.get().getResources().newClassPathResource("rule_with_expander_dsl_more.dslr", getClass());
+        resource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule_with_expander_dsl_more.dslr");
         
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_expander.dsl", getClass() ),
-                              ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newClassPathResource("rule_with_expander_dsl_more.dslr", getClass()) ,
-                              ResourceType.DSLR );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
-        assertFalse( kbuilder.hasErrors() );
-
-        // Check errors
-        final String err = kbuilder.getErrors().toString();
-        assertEquals( "",
-                      err );
-        assertEquals( 0,
-                      kbuilder.getErrors().size() );
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
         
         // the compiled package
-        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
+        final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
         assertEquals( 2, pkgs.size() );
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( pkgs );
-        kbase    = SerializationHelper.serializeObject(kbase);
 
-        KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
+
+        KieSession session = kbase.newKieSession();
         session.insert( new Person( "rage" ) );
         session.insert( new Cheese( "cheddar",
                                15 ) );
@@ -203,7 +193,7 @@ public class DslTest extends CommonTestMethodBase {
         kbase.addPackages( pkgs );
         kbase    = SerializationHelper.serializeObject(kbase);
 
-        KieSession session = createKnowledgeSession(kbase);
+        KieSession session = kbase.newKieSession();
 
         pkgs = SerializationHelper.serializeObject(pkgs);
         assertNull( pkgs );
@@ -211,32 +201,23 @@ public class DslTest extends CommonTestMethodBase {
 
     @Test
     public void testDSLWithIndividualConstraintMappings() throws Exception {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dsl", getClass() ),
-                              ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newClassPathResource( "test_dslWithIndividualConstraints.dslr", getClass() ) ,
-                              ResourceType.DSLR );
+        final Resource resource1 = KieServices.Factory.get().getResources().newClassPathResource("test_dslWithIndividualConstraints.dsl", getClass());
+        resource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dslWithIndividualConstraints.dsl");
+        final Resource resource2 = KieServices.Factory.get().getResources().newClassPathResource("test_dslWithIndividualConstraints.dslr", getClass());
+        resource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dslWithIndividualConstraints.dslr");
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
-        // Check errors
-        final String err = kbuilder.getErrors().toString();
-        assertEquals( "",
-                      err );
-        assertEquals(0,
-                     kbuilder.getErrors().size());
-
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
+        
         // the compiled package
-        final Collection<KiePackage> pkgs = kbuilder.getKnowledgePackages();
-        assertEquals(1, pkgs.size());
+        final Collection<KiePackage> pkgs = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder).getKiePackages();
+        assertEquals( 1, pkgs.size() );
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(pkgs);
-        kbase    = SerializationHelper.serializeObject(kbase);
+        KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
-        KieSession session = createKnowledgeSession(kbase);
+        KieSession session = kbase.newKieSession();
         List results = new ArrayList();
         session.setGlobal("results",
                           results);
@@ -356,14 +337,18 @@ public class DslTest extends CommonTestMethodBase {
     }
 
     private List doTest(String dsl, String drl) {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DSLR );
+        final Resource resource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(dsl));
+        resource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dsl.dsl");
+        final Resource resource2 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        resource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dslr.dslr");
+        
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
 
-        assertFalse(kbuilder.hasErrors());
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
+        
         KieSession ksession = kbase.newKieSession();
 
         List list = new ArrayList();
@@ -391,8 +376,11 @@ public class DslTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem()
                               .write("src/main/resources/r1.dslr", dslr)
                               .write("src/main/resources/r1.dsl", dsl);
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
-        assertEquals(0, results.getMessages().size());
+
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        final List<Message> messages = kieBuilder.getResults().getMessages();
+
+        assertEquals(0, messages.size());
     }
 
     @Test
@@ -424,13 +412,13 @@ public class DslTest extends CommonTestMethodBase {
                      "ok\n" +
                      "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(dsl.getBytes()), ResourceType.DSL );
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DSLR);
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
+        final Resource resource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(dsl));
+        resource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dsl.dsl");
+        final Resource resource2 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(drl));
+        resource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "test_dslr.dslr");
+        
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, resource1, resource2);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
-
 }

@@ -41,16 +41,25 @@ public class ObjectTypeConfigurationRegistry implements Serializable {
         this.kBase = kBase;
     }
 
+    public ObjectTypeConf getObjectTypeConf(Object object) {
+        return this.typeConfMap.get( getKey( object ) );
+    }
+
     /**
      * Returns the ObjectTypeConfiguration object for the given object or
      * creates a new one if none is found in the cache
      */
-    public ObjectTypeConf getObjectTypeConf(EntryPointId entrypoint, Object object) {
-        return this.typeConfMap.get( getKey( object ) );
-    }
-
     public ObjectTypeConf getOrCreateObjectTypeConf(EntryPointId entrypoint, Object object) {
-        return this.typeConfMap.computeIfAbsent( getKey( object ), k -> createObjectTypeConf( entrypoint, k, object ) );
+        Object key = getKey( object );
+        ObjectTypeConf conf = this.typeConfMap.get( key );
+        if (conf == null) {
+            conf = createObjectTypeConf( entrypoint, key, object );
+            ObjectTypeConf existingConf = this.typeConfMap.putIfAbsent( key, conf );
+            if (existingConf != null) {
+                conf = existingConf;
+            }
+        }
+        return conf;
     }
 
     private Object getKey( Object object ) {

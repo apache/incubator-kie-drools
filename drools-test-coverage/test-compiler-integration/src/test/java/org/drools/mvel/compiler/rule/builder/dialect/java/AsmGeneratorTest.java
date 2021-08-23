@@ -16,26 +16,37 @@
 package org.drools.mvel.compiler.rule.builder.dialect.java;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Cheese;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-public class AsmGeneratorTest extends CommonTestMethodBase {
-     
+@RunWith(Parameterized.class)
+public class AsmGeneratorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public AsmGeneratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
+
     @Test
     public void testPatterDeclarations() {
         String s = 
@@ -51,18 +62,10 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
             "    // s5 is missed out on purpose to make sure we only resolved required declarations\n" +
             "   list.add( s1 + s2 + s3 + s5 ); \n" +
             "end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(s.getBytes()), ResourceType.DRL );
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );        
         
@@ -97,18 +100,10 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
             "    // *2 are missed out on purpose to make sure we only resolved required declarations\n" +
             "    list.add( s1 + p1 + $name1 + s3 + p3 + $name3 ); \n" +
             "end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( s.getBytes() ), ResourceType.DRL );        
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         
@@ -140,18 +135,10 @@ public class AsmGeneratorTest extends CommonTestMethodBase {
             "    // *2 are missed out on purpose to make sure we only resolved required declarations\n" +
             "    list.add( \"test3\"+$type +\":\"+ new Integer( $price ) ); \n" +
             "end\n";
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( s.getBytes() ), ResourceType.DRL );        
-        
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
-        KieSession ksession = createKnowledgeSession(kbase);
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list", list );
         

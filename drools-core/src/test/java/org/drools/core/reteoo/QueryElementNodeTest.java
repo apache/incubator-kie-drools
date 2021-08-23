@@ -52,7 +52,7 @@ public class QueryElementNodeTest extends DroolsTestCase {
     public void testAttach() throws Exception {
         QueryElement queryElement = new QueryElement(null, null, new QueryArgument[0], null, null, false, false);
 
-        final MockTupleSource source = new MockTupleSource( 12 );
+        final MockTupleSource source = new MockTupleSource(12, buildContext);
 
         final QueryElementNode node = new QueryElementNode( 18,
                                                             source,

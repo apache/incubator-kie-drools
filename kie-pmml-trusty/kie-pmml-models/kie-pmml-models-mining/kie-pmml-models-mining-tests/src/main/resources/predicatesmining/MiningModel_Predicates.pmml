@@ -50,7 +50,6 @@
         <SimplePredicate field="variable" operator="lessThan" value="20"/>
         <RegressionModel modelName="CategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>
@@ -168,7 +167,6 @@
         </CompoundPredicate>
         <RegressionModel modelName="OtherCategoricalVariablesRegression" functionName="regression">
           <MiningSchema>
-            <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
             <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
           </MiningSchema>

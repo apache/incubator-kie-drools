@@ -76,8 +76,8 @@ public class RuleDescr extends AnnotatedBaseDescr
                      final String documentation) {
         this.name = ruleName;
         this.documentation = documentation;
-        this.attributes = new LinkedHashMap<String, AttributeDescr>();
-        this.namedConsequence = new HashMap<String, Object>();
+        this.attributes = new LinkedHashMap<>();
+        this.namedConsequence = new HashMap<>();
         this.lhs = new AndDescr();
         this.consequence = "";
     }
@@ -206,7 +206,7 @@ public class RuleDescr extends AnnotatedBaseDescr
 
     private void addError(String message) {
         if (errors == null) {
-            errors = new ArrayList<String>();
+            errors = new ArrayList<>();
         }
         errors.add(message);
     }
@@ -278,7 +278,7 @@ public class RuleDescr extends AnnotatedBaseDescr
     public void setResource(org.kie.api.io.Resource resource) {
         super.setResource(resource);
         this.lhs.setResource(resource);
-    };
+    }
 
     @Override
     public String toString() {
@@ -360,7 +360,7 @@ public class RuleDescr extends AnnotatedBaseDescr
                 continue;
             }
             if (pattern instanceof PatternDescr) {
-                for (BaseDescr expr : ( (PatternDescr) pattern ).getDescrs()) {
+                for (BaseDescr expr : pattern.getDescrs()) {
                     if (expr instanceof ExprConstraintDescr) {
                         String text = expr.getText();
                         int pos = text.indexOf( identifier + "." );

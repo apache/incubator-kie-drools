@@ -33,7 +33,7 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "SimpleScorecardCategorical.pmml";
+    private static final String FILE_NAME = "Simple-Scorecard_Categorical.pmml";
     private static final String MODEL_NAME = "SimpleScorecardCategorical";
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
@@ -78,9 +78,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(score);
-        /* TODO: Uncomment when reason codes are implemented
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
-         */
     }
 }

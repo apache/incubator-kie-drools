@@ -34,8 +34,8 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 /* Used to generate Consequence DSL */
 class ConsequenceDSLGenerator {
@@ -58,15 +58,15 @@ class ConsequenceDSLGenerator {
 
         MethodDeclaration bodyDeclaration = (MethodDeclaration) StaticJavaParser.parseBodyDeclaration(template);
 
-        ClassOrInterfaceType arityType = parseClassOrInterfaceType(arityName(arity));
+        ClassOrInterfaceType arityType = toClassOrInterfaceType(arityName(arity));
 
         List<Parameter> parameters = genericTypeStream(arity, genericTypeIndex -> {
-            ClassOrInterfaceType type = parseClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
+            ClassOrInterfaceType type = toClassOrInterfaceType(String.format("Variable<%s>", argumentTypeName(genericTypeIndex)));
             return new Parameter(type, argName(genericTypeIndex));
         }).collect(Collectors.toList());
         bodyDeclaration.setParameters(nodeList(parameters));
 
-        ClassOrInterfaceType arityTypeWithNameSpace = parseClassOrInterfaceType("ConsequenceBuilder." + arityName(arity));
+        ClassOrInterfaceType arityTypeWithNameSpace = toClassOrInterfaceType("ConsequenceBuilder." + arityName(arity));
         List<Expression> argumentCall = genericTypeStream(arity,
                                                           genericTypeIndex -> new NameExpr(argName(genericTypeIndex))).collect(Collectors.toList());
         bodyDeclaration.setParameters(nodeList(parameters));
@@ -82,7 +82,7 @@ class ConsequenceDSLGenerator {
                 genericTypeStream(arity, ConsequenceDSLGenerator::parseType)
                         .collect(Collectors.toList());
 
-        ClassOrInterfaceType newType = parseClassOrInterfaceType("ConsequenceBuilder." + arityName(arity));
+        ClassOrInterfaceType newType = toClassOrInterfaceType("ConsequenceBuilder." + arityName(arity));
         newType.setTypeArguments(nodeList(genericTypeList));
         bodyDeclaration.setType(newType);
 
@@ -104,7 +104,7 @@ class ConsequenceDSLGenerator {
     }
 
     private static ClassOrInterfaceType parseType(int genericTypeIndex) {
-        return parseClassOrInterfaceType(argumentTypeName(genericTypeIndex));
+        return toClassOrInterfaceType(argumentTypeName(genericTypeIndex));
     }
 
     private static String argumentTypeName(int genericTypeIndex) {

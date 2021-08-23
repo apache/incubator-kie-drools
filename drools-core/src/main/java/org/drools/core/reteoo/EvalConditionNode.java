@@ -20,7 +20,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,6 +67,7 @@ public class EvalConditionNode extends LeftTupleSource
         super(id, context);
         this.condition = eval;
         setLeftTupleSource(tupleSource);
+        this.setObjectCount(leftInput.getObjectCount()); // 'eval' nodes do not increase the count
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         initMasks(context, tupleSource);
@@ -90,7 +90,8 @@ public class EvalConditionNode extends LeftTupleSource
         out.writeObject( componentsMap );
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
     }
 

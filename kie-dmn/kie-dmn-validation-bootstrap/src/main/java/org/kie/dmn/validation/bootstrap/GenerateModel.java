@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
@@ -135,11 +136,11 @@ public class GenerateModel {
     public static class ValidationBootstrapProject extends CanonicalModelKieProject {
 
         public ValidationBootstrapProject(InternalKieModule kieModule, ClassLoader classLoader) {
-            super(true, kieModule, classLoader);
+            super(kieModule, classLoader);
         }
 
         @Override
-        public void writeProjectOutput(MemoryFileSystem trgMfs, ResultsImpl messages) {
+        public void writeProjectOutput(MemoryFileSystem trgMfs, BuildContext buildContext) {
             MemoryFileSystem srcMfs = new MemoryFileSystem();
             List<String> modelFiles = new ArrayList<>();
             ModelWriter modelWriter = new ModelWriter();

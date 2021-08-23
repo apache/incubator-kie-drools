@@ -26,18 +26,20 @@ import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.ImportDeclaration;
 import com.github.javaparser.ast.body.TypeDeclaration;
+import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.printer.PrettyPrinter;
 import com.github.javaparser.printer.PrettyPrinterConfiguration;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.compiler.JavaDialectConfiguration;
+import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
+import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.JavaConfiguration;
-import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
-import org.drools.modelcompiler.builder.errors.CompilationProblemErrorResult;
-import org.kie.memorycompiler.CompilationProblem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,21 +48,13 @@ import static org.drools.core.util.ClassUtils.isJboss;
 
 public class JavaParserCompiler {
 
-    private static final Logger logger          = LoggerFactory.getLogger(JavaParserCompiler.class);
+    private static final Logger logger = LoggerFactory.getLogger(JavaParserCompiler.class);
 
-    private static final JavaConfiguration.CompilerType COMPILER_TYPE = isJboss() ?
-            JavaConfiguration.CompilerType.ECLIPSE :
-            JavaConfiguration.CompilerType.NATIVE;
-
-    private static final JavaCompiler JAVA_COMPILER = createCompiler();
+    private static final JavaCompiler JAVA_COMPILER = isJboss() ?
+                                                      JavaDialectConfiguration.createEclipseCompiler() :
+                                                      JavaDialectConfiguration.createDefaultCompiler();
 
     private static final PrettyPrinter PRETTY_PRINTER = createPrettyPrinter();
-
-    private static JavaCompiler createCompiler() {
-        JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( COMPILER_TYPE, "1.8" );
-        javaCompiler.setSourceFolder( "src/main/java/" );
-        return javaCompiler;
-    }
 
     public static JavaCompiler getCompiler() {
         return JAVA_COMPILER;
@@ -88,7 +82,7 @@ public class JavaParserCompiler {
         String[] resources = writeModel(classes, srcMfs);
         CompilationResult resultCompilation = createDefaultCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
-        if(errors.length != 0) {
+        if (errors.length != 0) {
             classes.forEach(c -> logger.error(c.toString()));
             for (CompilationProblem error : errors) {
                 kbuilder.addBuilderResult(new CompilationProblemErrorResult(new CompilationProblemAdapter( error )));
@@ -97,17 +91,32 @@ public class JavaParserCompiler {
         }
 
         InternalClassLoader internalClassLoader = AccessController.doPrivileged((PrivilegedAction<InternalClassLoader>) () -> new InternalClassLoader( classLoader, trgMfs ));
+        return loadClasses(getClassNames(classLoader, trgMfs), internalClassLoader);
+    }
 
+    private static Map<String, Class<?>> loadClasses(List<String> classNames, InternalClassLoader internalClassLoader) {
         Map<String, Class<?>> result = new HashMap<>();
-        for (GeneratedClassWithPackage cls : classes) {
-            final String fullClassName = cls.getPackageName() + "." + cls.getGeneratedClass().getNameAsString();
+        for (String className : classNames) {
             try {
-                result.put(fullClassName, Class.forName(fullClassName, true, internalClassLoader));
+                result.put(className, Class.forName(className, true, internalClassLoader));
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException( e );
             }
         }
         return result;
+    }
+
+    private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
+        List<String> classNames = new ArrayList<>();
+        for (Map.Entry<String, byte[]> entry : trgMfs.getMap().entrySet()) {
+            String fileName = entry.getKey();
+            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
+            classNames.add(className);
+            if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {
+                ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());
+            }
+        }
+        return classNames;
     }
 
     private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {
@@ -129,10 +138,10 @@ public class JavaParserCompiler {
         CompilationUnit cu = new CompilationUnit();
         cu.setPackageDeclaration( pkgName );
         for (String i : imports) {
-            cu.addImport(i);
+            cu.addImport( new ImportDeclaration(new Name(i), false, false ) );
         }
         for (String i : staticImports) {
-            cu.addImport(i, true, false);
+            cu.addImport( new ImportDeclaration(new Name(i), true, false ) );
         }
         cu.addType(pojo);
         return getPrettyPrinter().print(cu);

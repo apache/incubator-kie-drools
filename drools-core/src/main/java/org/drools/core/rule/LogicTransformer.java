@@ -33,9 +33,7 @@ import org.drools.core.spi.DeclarationScopeResolver;
 /**
  * LogicTransformation is reponsible for removing redundant nodes and move Or
  * nodes upwards.
- * 
- * This class does not turn Exists into two Nots at this stage, that role is
- * delegated to the Builder.
+ *
  */
 public class LogicTransformer {
     private final Map<GroupElement.Type, Transformation> orTransformations = new HashMap<GroupElement.Type, Transformation>();
@@ -196,7 +194,7 @@ public class LogicTransformer {
                 } else if (resolved == null) {
                     // it is probably an implicit declaration, so find the corresponding pattern
                     Pattern old = aDecl.getPattern();
-                    Pattern current = resolver.findPatternByIndex(old.getIndex());
+                    Pattern current = resolver.findPatternById(old.getPatternId());
                     if (current != null && old != current) {
                         resolved = aDecl.cloneWithPattern(current);
                         provider.replaceDeclaration(aDecl, resolved);
@@ -275,7 +273,7 @@ public class LogicTransformer {
             } else if ( resolved == null ) {
                 // it is probably an implicit declaration, so find the corresponding pattern
                 Pattern old = aDecl.getPattern();
-                Pattern current = resolver.findPatternByIndex( old.getIndex() );
+                Pattern current = resolver.findPatternById(old.getPatternId());
                 if ( current != null && old != current ) {
                     resolved = aDecl.cloneWithPattern( current );
                     constraint.replaceDeclaration( aDecl, resolved );
@@ -295,7 +293,7 @@ public class LogicTransformer {
             } else if ( resolved == null ) {
                 // it is probably an implicit declaration, so find the corresponding pattern
                 Pattern old = aDecl.getPattern();
-                Pattern current = resolver.findPatternByIndex( old.getIndex() );
+                Pattern current = resolver.findPatternById(old.getPatternId());
                 if ( current != null && old != current ) {
                     resolved = aDecl.cloneWithPattern( current );
                     accumulate.replaceDeclaration( aDecl, resolved );

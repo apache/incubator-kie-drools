@@ -65,6 +65,11 @@ public class DrlxParseFail implements DrlxParseResult {
         return this;
     }
 
+    @Override
+    public String getOriginalDrlConstraint() {
+        return originalDrlConstraint;
+    }
+
     public DroolsError getError() {
         if(specificError != null) {
             return specificError;

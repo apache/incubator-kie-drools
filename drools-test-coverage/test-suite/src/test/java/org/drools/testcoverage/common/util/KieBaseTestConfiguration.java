@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.drools.modelcompiler.ExecutableModelProject;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.builder.KieBuilder;
@@ -52,22 +51,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     CLOUD_IDENTITY_ALPHA_NETWORK(true, false, true),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.CLOUD</code> and
-     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
-     * Canonical rule model is used.
-     */
-    CLOUD_IDENTITY_MODEL_FLOW(true, false, false, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.CLOUD</code> and
-     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
-     * Canonical rule model is used.
-     */
-    CLOUD_IDENTITY_MODEL_FLOW_ALPHA_NETWORK(true, false, true, ExecutableModelFlowProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -105,22 +88,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.CLOUD</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
-     * Canonical rule model is used.
-     */
-    CLOUD_EQUALITY_MODEL_FLOW(false, false, false, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.CLOUD</code> and
-     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
-     * Canonical rule model is used.
-     */
-    CLOUD_EQUALITY_MODEL_FLOW_ALPHA_NETWORK(false, false, true, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.CLOUD</code> and
-     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
     CLOUD_EQUALITY_MODEL_PATTERN(false, false, false, ExecutableModelProject.class),
@@ -148,22 +115,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Canonical rule model is not used.
      */
     STREAM_IDENTITY_ALPHA_NETWORK(true, true, true),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.STREAM</code> and
-     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
-     * Canonical rule model is used.
-     */
-    STREAM_IDENTITY_MODEL_FLOW(true, true, false, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.STREAM</code> and
-     * <code>EqualityBehaviorOption.IDENTITY</code> options set.
-     * Canonical rule model is used.
-     */
-    STREAM_IDENTITY_MODEL_FLOW_ALPHA_NETWORK(true, true, true, ExecutableModelFlowProject.class),
 
     /**
      * Represents KieBase configuration with
@@ -201,22 +152,6 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
      * Represents KieBase configuration with
      * <code>EventProcessingOption.STREAM</code> and
      * <code>EqualityBehaviorOption.EQUALITY</code> options set.
-     * Canonical rule model is used.
-     */
-    STREAM_EQUALITY_MODEL_FLOW(false, true, false, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.STREAM</code> and
-     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
-     * Canonical rule model is used.
-     */
-    STREAM_EQUALITY_MODEL_FLOW_ALPHA_NETWORK(false, true, true, ExecutableModelFlowProject.class),
-
-    /**
-     * Represents KieBase configuration with
-     * <code>EventProcessingOption.STREAM</code> and
-     * <code>EqualityBehaviorOption.EQUALITY</code> options set.
      * Canonical rule model with pattern dialect is used.
      */
     STREAM_EQUALITY_MODEL_PATTERN(false, true, false, ExecutableModelProject.class),
@@ -233,8 +168,8 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
 
     private static List<KieBaseOption> additionalKieBaseOptions = Collections.emptyList();
 
-    private final boolean identity;
-    private final boolean streamMode;
+    private boolean identity;
+    private boolean streamMode;
     private final boolean alphaNetworkCompiler;
     private final Class<? extends KieBuilder.ProjectType> executableModelProjectClass;
 
@@ -250,6 +185,7 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
         this.executableModelProjectClass = executableModelProjectClass;
     }
 
+    // additionalKieBaseOptions is only used by getKieBaseConfiguration(), not by getKieBaseModel(). Little confusing
     @Override
     public void setAdditionalKieBaseOptions(final KieBaseOption... options) {
         additionalKieBaseOptions = Arrays.asList(options);
@@ -273,6 +209,10 @@ public enum KieBaseTestConfiguration implements KieBaseModelProvider {
     @Override
     public Optional<Class<? extends KieBuilder.ProjectType>> getExecutableModelProjectClass() {
         return Optional.ofNullable(executableModelProjectClass);
+    }
+
+    public boolean isExecutableModel() {
+        return executableModelProjectClass != null;
     }
 
     @Override

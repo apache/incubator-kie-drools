@@ -57,6 +57,8 @@ public class ConstantsHolder {
 
     public static final String MALFORMED_RAW_DATA_MESSAGE = "Malformed raw data";
     public static final String MALFORMED_MVEL_EXPRESSION = "Malformed MVEL expression";
+    public static final String IMPORTED_PREFIX = "imported";
+    public static final String SCESIM_EXTENSION = ".scesim";
 
     private ConstantsHolder() {
         // Not instantiable

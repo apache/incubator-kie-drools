@@ -34,7 +34,6 @@ import org.drools.core.phreak.PropagationEntry;
 import org.drools.core.phreak.PropagationEntry.AbstractPropagationEntry;
 import org.drools.core.phreak.PropagationList;
 import org.drools.core.phreak.SynchronizedPropagationList;
-import org.drools.core.reteoo.EntryPointNode;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.Activation;
@@ -248,7 +247,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         public void execute( EntryPoint entryPoint ) {
             WorkingMemoryEntryPoint ep = (WorkingMemoryEntryPoint) entryPoint;
             ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry()
-                                        .getObjectTypeConf( ep.getEntryPoint(), object );
+                                        .getObjectTypeConf( object );
 
             RuleUnit.Identity ruleUnitIdentity = (( RuleUnit ) ep.getRuleUnit()).getUnitIdentity();
             InternalFactHandle handle = dsFactHandle.childHandles.get( ruleUnitIdentity );
@@ -264,7 +263,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
                                                                                modifiedClass,
                                                                                null);
 
-            EntryPointNode.propagateModify( handle, context, typeConf, ep.getInternalWorkingMemory() );
+            PropagationEntry.Update.execute( handle, context, typeConf, ep.getInternalWorkingMemory() );
         }
     }
 
@@ -282,7 +281,7 @@ public class CursoredDataSource<T> implements InternalDataSource<T> {
         public void execute( EntryPoint entryPoint ) {
             WorkingMemoryEntryPoint ep = (WorkingMemoryEntryPoint) entryPoint;
             ObjectTypeConf typeConf = ep.getObjectTypeConfigurationRegistry()
-                                        .getObjectTypeConf( ep.getEntryPoint(), dsFactHandle.getObject() );
+                                        .getObjectTypeConf( dsFactHandle.getObject() );
 
             RuleUnit.Identity ruleUnitIdentity = (( RuleUnit ) ep.getRuleUnit()).getUnitIdentity();
             InternalFactHandle handle = dsFactHandle.childHandles.get( ruleUnitIdentity );

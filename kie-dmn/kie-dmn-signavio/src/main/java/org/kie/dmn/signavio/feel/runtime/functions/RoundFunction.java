@@ -23,6 +23,7 @@ import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 public class RoundFunction
         extends BaseFEELFunction {
@@ -42,6 +43,6 @@ public class RoundFunction
         if( digits == null ) {
             digits = BigDecimal.ZERO;
         }
-        return FEELFnResult.ofResult( number.setScale( digits.intValue(), BigDecimal.ROUND_HALF_EVEN ) );
+        return FEELFnResult.ofResult( number.setScale( digits.intValue(), RoundingMode.HALF_EVEN ) );
     }
 }

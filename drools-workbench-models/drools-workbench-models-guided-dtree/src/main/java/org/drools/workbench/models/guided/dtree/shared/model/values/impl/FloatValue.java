@@ -37,9 +37,9 @@ public class FloatValue implements Value<Float> {
     @Override
     public void setValue(final String value) {
         try {
-            setValue(new Float(value));
+            setValue(Float.valueOf(value));
         } catch (NumberFormatException nfe) {
-            setValue(new Float(0));
+            setValue(Float.valueOf(0));
         }
     }
 

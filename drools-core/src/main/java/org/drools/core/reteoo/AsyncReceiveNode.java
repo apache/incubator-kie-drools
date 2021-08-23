@@ -76,6 +76,7 @@ public class AsyncReceiveNode extends LeftTupleSource
         this.receive = receive;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
         setLeftTupleSource( tupleSource );
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'async receive' node increases the object count
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.betaConstraints.init(context, getType());
@@ -102,7 +103,8 @@ public class AsyncReceiveNode extends LeftTupleSource
         out.writeObject( betaConstraints );
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
         context.getKnowledgeBase().addReceiveNode(this);
     }

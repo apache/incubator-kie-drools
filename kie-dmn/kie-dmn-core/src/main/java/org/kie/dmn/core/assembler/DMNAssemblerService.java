@@ -44,6 +44,7 @@ import org.kie.dmn.api.marshalling.DMNMarshaller;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.compiler.DMNCompilerConfigurationImpl;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
+import org.kie.dmn.core.compiler.DMNDecisionLogicCompilerFactory;
 import org.kie.dmn.core.compiler.DMNProfile;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil;
 import org.kie.dmn.core.compiler.ImportDMNResolverUtil.ImportType;
@@ -67,6 +68,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     public static final String ORG_KIE_DMN_PREFIX = "org.kie.dmn";
     public static final String DMN_PROFILE_PREFIX = ORG_KIE_DMN_PREFIX + ".profiles.";
     public static final String DMN_RUNTIME_LISTENER_PREFIX = ORG_KIE_DMN_PREFIX + ".runtime.listeners.";
+    public static final String DMN_DECISION_LOGIC_COMPILER = ORG_KIE_DMN_PREFIX + ".decisionlogiccompilerfactory";
     public static final String DMN_COMPILER_CACHE_KEY = "DMN_COMPILER_CACHE_KEY";
     public static final String DMN_PROFILES_CACHE_KEY = "DMN_PROFILES_CACHE_KEY";
 
@@ -85,7 +87,7 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
+    public void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) throws Exception {
         EvalHelper.clearGenericAccessorCache();
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompilerImpl dmnCompiler = (DMNCompilerImpl) kbuilderImpl.getCachedOrCreate(DMN_COMPILER_CACHE_KEY, () -> getCompiler(kbuilderImpl));
@@ -152,8 +154,8 @@ public class DMNAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
-        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): " + resource.getSourcePath());
+    public void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+        logger.warn("invoked legacy addResourceAfterRules (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         DMNCompiler dmnCompiler = kbuilderImpl.getCachedOrCreate( DMN_COMPILER_CACHE_KEY, () -> getCompiler( kbuilderImpl ) );
 
@@ -253,7 +255,25 @@ public class DMNAssemblerService implements KieAssemblerService {
             compilerConfiguration.setProperty(RuntimeTypeCheckOption.PROPERTY_NAME, "true");
         }
 
+        try {
+            applyDecisionLogicCompilerFactory(kbuilderImpl.getRootClassLoader(), compilerConfiguration);
+        } catch (Exception e) {
+            kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "Trying to load a non-existing DMNDecisionLogicCompilerFactory " + e.getLocalizedMessage()));
+            logger.error("Trying to load a non-existing DMNDecisionLogicCompilerFactory {}", e.getLocalizedMessage(), e);
+            kbuilderImpl.addBuilderResult(new DMNKnowledgeBuilderError(ResultSeverity.WARNING, "DMN Compiler configuration contained errors, will fall-back to defaults."));
+            logger.warn("DMN Compiler configuration contained errors, will fall-back to defaults.");
+        }
+
         return DMNFactory.newCompiler(compilerConfiguration);
+    }
+
+    public static DMNCompilerConfigurationImpl applyDecisionLogicCompilerFactory(ClassLoader classLoader, DMNCompilerConfigurationImpl config) throws Exception {
+        String definedDLCompiler = config.getProperties().get(DMN_DECISION_LOGIC_COMPILER);
+        if (definedDLCompiler != null) {
+            DMNDecisionLogicCompilerFactory factory = (DMNDecisionLogicCompilerFactory) classLoader.loadClass(definedDLCompiler).newInstance();
+            config.setDecisionLogicCompilerFactory(factory);
+        }
+        return config;
     }
 
     /**

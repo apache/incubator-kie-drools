@@ -1,0 +1,15 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
+
+public class KiePMMLCompoundPredicateConstructorTemplate extends KiePMMLCompoundPredicate {
+
+      public KiePMMLCompoundPredicateConstructorTemplate() {
+            super(name, Collections.emptyList(), booleanOperator);
+            operatorFunction = null;
+            kiePMMLPredicates = null;
+      }
+
+}

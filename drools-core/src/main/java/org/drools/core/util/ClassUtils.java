@@ -55,7 +55,7 @@ import static java.lang.Character.toUpperCase;
 import static java.lang.System.arraycopy;
 import static java.lang.reflect.Modifier.PUBLIC;
 import static java.lang.reflect.Modifier.STATIC;
-
+import static org.drools.core.util.MethodUtils.getMethod;
 import static org.drools.core.util.StringUtils.ucFirst;
 
 public final class ClassUtils {
@@ -486,29 +486,25 @@ public final class ClassUtils {
                 .orElse( parameterType.isPrimitive() ? getSetter(clazz, field, convertFromPrimitiveType(parameterType)) : null );
     }
 
-    private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
-        try {
-            return Optional.of( clazz.getMethod(name, parameterTypes) );
-        } catch (NoSuchMethodException e) {
-            return Optional.empty();
-        }
+    public static boolean isReadableProperty( Class clazz, String property ) {
+        return getFieldOrAccessor( clazz, property ) != null;
     }
 
-    public static Member getFieldOrAccessor( Class clazz, String property) {
+    public static Member getFieldOrAccessor( Class clazz, String property ) {
         for (Field f : clazz.getFields()) {
             if (property.equals(f.getName())) {
                 if ((f.getModifiers() & PUBLIC) != 0) return f;
                 break;
             }
         }
-        return getGetter(clazz, property);
+        return getGetterMethod(clazz, property);
     }
 
-    private static Method getGetter( Class clazz, String property) {
+    public static Method getGetterMethod(Class clazz, String property ) {
         String simple = "get" + property;
         String simpleIsGet = "is" + property;
         String isGet = getIsGetter(property);
-        String getter = getGetter(property);
+        String getter = getGetterMethod(property);
 
         Method candidate = null;
 
@@ -530,7 +526,7 @@ public final class ClassUtils {
         return candidate;
     }
 
-    private static String getGetter(String s) {
+    public static String getGetterMethod(String s) {
         char[] c = s.toCharArray();
         char[] chars = new char[c.length + 3];
 
@@ -572,7 +568,7 @@ public final class ClassUtils {
             ParameterizedType type = (ParameterizedType) returnType;
             java.lang.reflect.Type[] typeArguments = type.getActualTypeArguments();
             if (typeArguments.length > 0) {
-                return (Class) typeArguments[0];
+                return typeArguments[0] instanceof ParameterizedType ? (Class) ((ParameterizedType)typeArguments[0]).getRawType() : (Class) typeArguments[0];
             }
         }
         throw new RuntimeException("No generic type");

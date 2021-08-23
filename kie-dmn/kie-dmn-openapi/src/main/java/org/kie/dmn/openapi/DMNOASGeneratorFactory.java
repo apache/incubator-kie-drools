@@ -28,6 +28,10 @@ public class DMNOASGeneratorFactory {
     }
 
     public static DMNOASGenerator generator(Collection<DMNModel> models) {
-        return new DMNOASGeneratorImpl(models);
+        return new DMNOASGeneratorImpl(models, "#/definitions/");
+    }
+
+    public static DMNOASGenerator generator(Collection<DMNModel> models, String refPrefix) {
+        return new DMNOASGeneratorImpl(models, refPrefix);
     }
 }

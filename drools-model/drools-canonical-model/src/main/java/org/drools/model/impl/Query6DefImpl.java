@@ -21,7 +21,7 @@ import org.drools.model.Query6Def;
 import org.drools.model.Variable;
 import org.drools.model.view.QueryCallViewItem;
 import org.drools.model.view.QueryCallViewItemImpl;
-import static org.drools.model.FlowDSL.declarationOf;
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.impl.RuleBuilder.DEFAULT_PACKAGE;
 
 public class Query6DefImpl<T1, T2, T3, T4, T5, T6> extends QueryDefImpl implements ModelComponent, Query6Def<T1, T2, T3, T4, T5, T6> {

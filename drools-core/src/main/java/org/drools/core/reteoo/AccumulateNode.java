@@ -45,6 +45,7 @@ import org.drools.core.spi.ObjectType;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.AbstractBaseLinkedListNode;
+import org.drools.core.util.FastIterator;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.index.TupleList;
 
@@ -60,7 +61,6 @@ public class AccumulateNode extends BetaNode {
 
     private static final long          serialVersionUID = 510l;
 
-    protected boolean                    unwrapRightObject;
     protected Accumulate                 accumulate;
     protected AlphaNodeFieldConstraint[] resultConstraints;
     protected BetaConstraints            resultBinder;
@@ -75,18 +75,17 @@ public class AccumulateNode extends BetaNode {
                           final BetaConstraints sourceBinder,
                           final BetaConstraints resultBinder,
                           final Accumulate accumulate,
-                          final boolean unwrapRightObject,
                           final BuildContext context) {
         super( id,
                leftInput,
                rightInput,
                sourceBinder,
                context );
+        this.setObjectCount(leftInput.getObjectCount() + 1); // 'accumulate' node increases the object count
         this.resultBinder = resultBinder;
         this.resultBinder.init( context, getType() );
         this.resultConstraints = resultConstraints;
         this.accumulate = accumulate;
-        this.unwrapRightObject = unwrapRightObject;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         addAccFunctionDeclarationsToLeftMask( context.getKnowledgeBase(), leftInput, accumulate );
@@ -126,7 +125,6 @@ public class AccumulateNode extends BetaNode {
     public void readExternal( ObjectInput in ) throws IOException,
                                               ClassNotFoundException {
         super.readExternal( in );
-        unwrapRightObject = in.readBoolean();
         accumulate = (Accumulate) in.readObject();
         resultConstraints = (AlphaNodeFieldConstraint[]) in.readObject();
         resultBinder = (BetaConstraints) in.readObject();
@@ -134,7 +132,6 @@ public class AccumulateNode extends BetaNode {
 
     public void writeExternal( ObjectOutput out ) throws IOException {
         super.writeExternal( out );
-        out.writeBoolean( unwrapRightObject );
         out.writeObject( accumulate );
         out.writeObject( resultConstraints );
         out.writeObject( resultBinder );
@@ -156,10 +153,6 @@ public class AccumulateNode extends BetaNode {
         return resultBinder;
     }
 
-    public boolean isUnwrapRightObject() {
-        return unwrapRightObject;
-    }
-
     public InternalFactHandle createResultFactHandle(final PropagationContext context,
                                                      final InternalWorkingMemory workingMemory,
                                                      final LeftTuple leftTuple,
@@ -170,17 +163,16 @@ public class AccumulateNode extends BetaNode {
         }
         if (handle == null) {
             handle = workingMemory.getFactHandleFactory().newFactHandle( result,
-                                                                         workingMemory.getObjectTypeConfigurationRegistry().getObjectTypeConf( context.getEntryPoint(),
-                                                                                                                                               result ),
+                                                                         null, // no need to retrieve the ObjectTypeConf, acc result is never an event or a trait
                                                                          workingMemory,
-                                                                         null ); // so far, result is not an event
+                                                                         null );
         }
         return handle;
     }
 
     @Override
-    public void attach( BuildContext context ) {
-        super.attach( context );
+    public void doAttach( BuildContext context ) {
+        super.doAttach( context );
     }
 
     protected int calculateHashCode() {
@@ -318,8 +310,7 @@ public class AccumulateNode extends BetaNode {
         private boolean            propagated;
         private Object             functionContext;
         private boolean            toPropagate;
-        private Object             value;
-        private TupleList<AccumulateContextEntry> tupleList;
+        private boolean            empty = true;
 
         public AccumulateContextEntry(Object key) {
             this.key = key;
@@ -369,20 +360,12 @@ public class AccumulateNode extends BetaNode {
             return this.key;
         }
 
-        public TupleList<AccumulateContextEntry> getTupleList() {
-            return tupleList;
+        public boolean isEmpty() {
+            return empty;
         }
 
-        public void setTupleList(TupleList<AccumulateContextEntry> tupleList) {
-            this.tupleList = tupleList;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
+        public void setEmpty( boolean empty ) {
+            this.empty = empty;
         }
     }
 
@@ -406,7 +389,6 @@ public class AccumulateNode extends BetaNode {
         private PropagationContext                              propagationContext;
         private Map<Object, TupleList<AccumulateContextEntry> > groupsMap = new HashMap<>();
         private TupleList<AccumulateContextEntry>               lastTupleList;
-        private TupleList<AccumulateContextEntry>               tupleList;
         private TupleList<AccumulateContextEntry>               toPropagateList;
 
         public PropagationContext getPropagationContext() {
@@ -422,19 +404,12 @@ public class AccumulateNode extends BetaNode {
         }
 
         public TupleList<AccumulateContextEntry> getGroup(Object workingMemoryContext, Accumulate accumulate, Tuple leftTuple,
-                                                          InternalFactHandle handle, Object key, WorkingMemory wm) {
+                                                          Object key, WorkingMemory wm) {
             return groupsMap.computeIfAbsent(key, k -> {
                 AccumulateContextEntry entry = new AccumulateContextEntry(key);
-                TupleList<AccumulateContextEntry> tupleList = new TupleList<>(entry);
-                entry.setTupleList(tupleList);
-                addTupleList(tupleList);
-
-                Object funcContext = accumulate.createFunctionContext();
-                funcContext = accumulate.init(workingMemoryContext, entry, funcContext, leftTuple, wm);
-                entry.setFunctionContext(funcContext);
+                entry.setFunctionContext( accumulate.init(workingMemoryContext, entry, accumulate.createFunctionContext(), leftTuple, wm) );
                 PhreakAccumulateNode.initContext(workingMemoryContext, (InternalWorkingMemory) wm, accumulate, leftTuple, entry);
-
-                return tupleList;
+                return new TupleList<>(entry);
             });
         }
 
@@ -442,34 +417,10 @@ public class AccumulateNode extends BetaNode {
             groupsMap.remove(key);
         }
 
-        public void addTupleList(TupleList<AccumulateContextEntry> list) {
-            // add to head of list
-            if (tupleList != null) {
-                tupleList.setPrevious(list);
-                list.setNext(tupleList);
-            }
-            tupleList = list;
-        }
-
         public void moveToPropagateTupleList(TupleList<AccumulateContextEntry> list) {
+            this.lastTupleList = list;
             if ( list.getContext().isToPropagate()) {
                 return;
-            }
-
-            TupleList next = list.getNext();
-            if (tupleList == list) {
-                // list is head
-                tupleList = next;
-                if (next != null) {
-                    next.setPrevious(null);
-                }
-            } else {
-                // list is mid or end
-                TupleList prev = list.getPrevious();
-                prev.setNext(next); // prev cannot be null here
-                if (next != null) {
-                    next.setPrevious(prev);
-                }
             }
 
             // add list to head
@@ -483,36 +434,19 @@ public class AccumulateNode extends BetaNode {
             list.getContext().setToPropagate(true);
         }
 
-        public void resetToPropagateTupleList(TupleList first, TupleList last) {
-            if (first == null) {
-                return;
-            }
-
-            if (tupleList == null) {
-                tupleList = toPropagateList;
-            } else {
-                last.setNext(tupleList);
-                tupleList.setPrevious(last);
-                tupleList = first;
-            }
-
+        public TupleList<AccumulateContextEntry> takeToPropagateList() {
+            TupleList<AccumulateContextEntry> list = toPropagateList;
             toPropagateList = null;
-        }
-
-        public TupleList<AccumulateContextEntry> getTupleList() {
-            return tupleList;
-        }
-
-        public TupleList<AccumulateContextEntry> getToPropagateList() {
-            return toPropagateList;
+            return list;
         }
 
         public TupleList<AccumulateContextEntry> getLastTupleList() {
             return lastTupleList;
         }
 
-        public void setLastTupleList(TupleList<AccumulateContextEntry> lastTupleList) {
-            this.lastTupleList = lastTupleList;
+        public void addMatchOnLastTupleList(LeftTuple match) {
+            lastTupleList.add(match);
+            lastTupleList.getContext().setEmpty( false );
         }
 
         public void clear() {
@@ -522,8 +456,7 @@ public class AccumulateNode extends BetaNode {
                     tuple.setContextObject(null);
                 }
             }
-            getGroups().clear();
-            tupleList = null;
+            groupsMap.clear();
             toPropagateList = null;
             lastTupleList = null;
         }

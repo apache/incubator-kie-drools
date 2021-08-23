@@ -33,8 +33,8 @@ import com.github.javaparser.ast.type.Type;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.FieldDefinition;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.replaceFieldName;
 
 public interface GeneratedConstructor {
@@ -102,17 +102,17 @@ class FullArgumentConstructor implements GeneratedConstructor {
 
         int nonStaticFields = 0;
         for (FieldDefinition fieldDefinition : typeDeclarationFields) {
-            if (fieldDefinition.isStatic()) {
+            if (fieldDefinition.isStatic() || fieldDefinition.isOverride()) {
                 continue;
             }
             nonStaticFields++;
             String fieldName = fieldDefinition.getFieldName();
-            Type returnType = parseType(fieldDefinition.getObjectType());
+            Type returnType = toClassOrInterfaceType(fieldDefinition.getObjectType());
             addConstructorArgument(constructor, returnType, fieldName);
             fieldAssignStatement.add(fieldAssignment(fieldName));
-
-            constructor.setBody(new BlockStmt(fieldAssignStatement));
         }
+
+        constructor.setBody(new BlockStmt(fieldAssignStatement));
 
         if (constructor.getParameters().isNonEmpty()) {
             generatedClass.addMember( constructor );
@@ -149,7 +149,7 @@ class FullArgumentConstructor implements GeneratedConstructor {
     }
 
     private static void addConstructorArgument(ConstructorDeclaration constructor, String typeName, String fieldName) {
-        addConstructorArgument(constructor, parseType(typeName), fieldName);
+        addConstructorArgument(constructor, toClassOrInterfaceType(typeName), fieldName);
     }
 
     private static void addConstructorArgument(ConstructorDeclaration constructor, Type fieldType, String fieldName) {

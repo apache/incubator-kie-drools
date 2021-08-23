@@ -16,6 +16,7 @@
 package org.drools.mvel.compiler.beliefsystem.jtms;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,53 +26,55 @@ import org.drools.core.beliefsystem.jtms.JTMSBeliefSetImpl;
 import org.drools.core.beliefsystem.jtms.JTMSBeliefSystem;
 import org.drools.core.common.EqualityKey;
 import org.drools.core.common.NamedEntryPoint;
-import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.StatefulKnowledgeSessionImpl;
 import org.drools.core.util.ObjectHashMap;
 import org.drools.core.util.ObjectHashMap.ObjectEntry;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.event.rule.RuleEventListener;
 import org.kie.internal.event.rule.RuleEventManager;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class JTMSTest {
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public JTMSTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with testConflictToggleWithoutGoingEmpty, testPosNegNonConflictingInsertions. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false, true);
+    }
+
     protected KieSession getSessionFromString( String drlString) {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        KieBase kBase;
 
         try {
             System.setProperty("drools.negatable", "on");
-            kBuilder.add(ResourceFactory.newByteArrayResource(drlString.getBytes()),
-                         ResourceType.DRL);
-            if (kBuilder.hasErrors()) {
-                System.err.println(kBuilder.getErrors());
-                fail();
-            }
+            kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drlString);
         } finally {
             System.setProperty("drools.negatable", "off");
         }
-
-        KieBaseConfiguration conf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        conf.setOption( EqualityBehaviorOption.EQUALITY );
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( conf );
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );
@@ -81,16 +84,7 @@ public class JTMSTest {
     }
     
     protected KieSession getSessionFromFile( String ruleFile ) {
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kBuilder.add( ResourceFactory.newClassPathResource( ruleFile, getClass() ),
-                ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-            fail();
-        }
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kBase.addPackages( kBuilder.getKnowledgePackages() );
+        KieBase kBase = KieBaseUtil.getKieBaseFromClasspathResources(this.getClass(), kieBaseTestConfiguration, ruleFile);
 
         KieSessionConfiguration ksConf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         ((SessionConfiguration) ksConf).setBeliefSystemType( BeliefSystemType.JTMS );

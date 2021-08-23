@@ -41,6 +41,10 @@ import java.util.Collection;
 import static org.junit.Assert.assertTrue;
 
 public class DynamicEvalTest {
+
+    // KieBuilder doesn't have addPackage(). So we don't re-write this test at the moment.
+    // If needed, we may test it with KieContainer.updateToVersion()
+
     KieBase kbase;
     KieSession session;
     SessionPseudoClock clock;

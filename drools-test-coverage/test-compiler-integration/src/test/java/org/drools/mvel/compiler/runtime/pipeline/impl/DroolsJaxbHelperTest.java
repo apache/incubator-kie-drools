@@ -15,12 +15,6 @@
  */
 package org.drools.mvel.compiler.runtime.pipeline.impl;
 
-import static java.util.Arrays.asList;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
 import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -28,20 +22,45 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.tools.xjc.Options;
 import org.drools.core.builder.conf.impl.JaxbConfigurationImpl;
 import org.drools.core.common.DefaultFactHandle;
 import org.drools.core.io.impl.BaseResource;
 import org.drools.core.io.impl.InputStreamResource;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.builder.Message;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.utils.KieHelper;
 
-import com.sun.tools.xjc.Options;
+import static java.util.Arrays.asList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class DroolsJaxbHelperTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DroolsJaxbHelperTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     private static final String simpleXsdRelativePath = "simple.xsd";
 
@@ -71,24 +90,23 @@ public class DroolsJaxbHelperTest {
                           "  list.add( \"Message\" );  " +
                           "end\n ";
 
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
+        List<Resource> resources = KieUtil.getResourcesFromDrls(s1);
 
         // XSD that defines "Sub" class
         InputStream simpleXsdStream = getClass().getResourceAsStream(simpleXsdRelativePath);
-        assertNotNull( "Could not find resource: " + simpleXsdRelativePath,  simpleXsdStream );
+        assertNotNull("Could not find resource: " + simpleXsdRelativePath, simpleXsdStream);
         BaseResource xsdResource = new InputStreamResource(simpleXsdStream);
+        xsdResource.setResourceType(ResourceType.XSD);
+        xsdResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + simpleXsdRelativePath);
 
         Options xjcOptions = new Options();
         xsdResource.setConfiguration(new JaxbConfigurationImpl(xjcOptions, "test-system-id"));
-        kh.addResource( xsdResource, ResourceType.XSD );
 
-        // Verify that build succeeded
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
-        assertEquals( 0, kh.verify().getMessages( Message.Level.WARNING ).size() );
+        resources.add(xsdResource);
 
-        // Run rules
-        KieSession ks = kh.build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
+        KieSession ks = kbase.newKieSession();
+
         List list = new ArrayList();
         ks.setGlobal( "list", list );
         ks.fireAllRules();

@@ -1,6 +1,21 @@
 RELEASES
 ========
 
+Clustering model
+================
+
+rel 7.54.0
+----------
+Implemented partial functionality
+
+Currently known limitation:
+
+1. _distributionBased_ models not implemented
+2. _table_ compare function not implemented
+3. Only _euclidean_ and _squaredEuclidean_ aggregation functions are implemented
+4. Input field type must be numerical (_integer_ / _double_)
+5. Target field type must be _string_
+
 Mining model
 ===============
 

@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -324,9 +323,8 @@ public class ProtobufOutputMarshaller {
         }
 
         ProtobufMessages.Agenda.FocusStack.Builder _fsb = ProtobufMessages.Agenda.FocusStack.newBuilder();
-        LinkedList<AgendaGroup> focusStack = agenda.getStackList();
-        for ( AgendaGroup group : focusStack ) {
-            _fsb.addGroupName( group.getName() );
+        for ( String groupName : agenda.getGroupsName() ) {
+            _fsb.addGroupName( groupName );
         }
         _ab.setFocusStack( _fsb.build() );
 
@@ -739,20 +737,20 @@ public class ProtobufOutputMarshaller {
 
         boolean serializeObjects = isDormient && hasNodeMemory((BaseTuple) activation);
 
-        for ( org.drools.core.spi.Tuple entry = tuple; entry != null; entry = entry.getParent() ) {
-            InternalFactHandle handle = entry.getFactHandle();
-            if ( handle != null ) {
-                 // can be null for eval, not and exists that have no right input
-                _tb.addHandleId( handle.getId() );
+        if (tuple != null) {
+            // tuple can be null if this is a rule network evaluation activation, instead of terminal node left tuple.
+            for (org.drools.core.spi.Tuple entry = tuple.skipEmptyHandles(); entry != null; entry = entry.getParent()) {
+                InternalFactHandle handle = entry.getFactHandle();
+                _tb.addHandleId(handle.getId());
 
                 if (serializeObjects) {
-                    ObjectMarshallingStrategy marshallingStrategy = context.getObjectMarshallingStrategyStore().getStrategyObject( handle.getObject() );
-                    Integer strategyIndex = context.getStrategyIndex( marshallingStrategy );
+                    ObjectMarshallingStrategy marshallingStrategy = context.getObjectMarshallingStrategyStore().getStrategyObject(handle.getObject());
+                    Integer                   strategyIndex       = context.getStrategyIndex(marshallingStrategy);
 
                     ProtobufMessages.SerializedObject.Builder _so = ProtobufMessages.SerializedObject.newBuilder();
-                    _so.setObject( serializeObject(context, marshallingStrategy, handle.getObject()) );
-                    _so.setStrategyIndex( strategyIndex );
-                    _tb.addObject( _so.build() );
+                    _so.setObject(serializeObject(context, marshallingStrategy, handle.getObject()));
+                    _so.setStrategyIndex(strategyIndex);
+                    _tb.addObject(_so.build());
                 }
             }
         }

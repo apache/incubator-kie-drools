@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-pmml-models-mining</artifactId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
@@ -32,6 +32,12 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
     <!-- TEST -->
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-commons</artifactId>
+      <scope>test</scope>
+      <classifier>tests</classifier>
+    </dependency>
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-pmml-compiler-api</artifactId>

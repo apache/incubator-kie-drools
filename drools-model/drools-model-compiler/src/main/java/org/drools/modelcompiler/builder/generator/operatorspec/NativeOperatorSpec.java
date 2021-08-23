@@ -19,18 +19,20 @@ package org.drools.modelcompiler.builder.generator.operatorspec;
 
 import java.util.Optional;
 
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.functions.Operator;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
+import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.getCoercedRightExpression;
 
 public class NativeOperatorSpec implements OperatorSpec {
     public static final NativeOperatorSpec INSTANCE = new NativeOperatorSpec();
@@ -40,6 +42,9 @@ public class NativeOperatorSpec implements OperatorSpec {
 
         String opName = pointFreeExpr.getOperator().asString();
         Operator operator = addOperatorArgument( context, methodCallExpr, opName );
+        if (operator != null && !operator.isCompatibleWithType( left.getRawClass() )) {
+            context.addCompilationError( new InvalidExpressionErrorResult( "Cannot use contains on class " + left.getRawClass() + " in expression '" + pointFreeExpr + "'" ) );
+        }
 
         methodCallExpr.addArgument( left.getExpression() );
         for (Expression rightExpr : pointFreeExpr.getRight()) {
@@ -47,8 +52,8 @@ public class NativeOperatorSpec implements OperatorSpec {
             optionalRight.ifPresent( right -> {
                 final TypedExpression coercedRight;
                 if (operator != null && operator.requiresCoercion()) {
-                    final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-                    coercedRight = coerce.getCoercedRight();
+                    final CoercedExpression.CoercedExpressionResult coerced = new CoercedExpression(left, right, false).coerce();
+                    coercedRight = getCoercedRightExpression( context.getPackageModel(), coerced );
                 } else {
                     coercedRight = right;
                 }

@@ -18,12 +18,14 @@
 package org.drools.modelcompiler.builder.generator;
 
 public class QueryParameter {
-    final String name;
-    final Class<?> type;
+    private final String name;
+    private final Class<?> type;
+    private final int index;
 
-    public QueryParameter(String name, Class<?> type) {
+    public QueryParameter(String name, Class<?> type, int index) {
         this.name = name;
         this.type = type;
+        this.index = index;
     }
 
     public String getName() {
@@ -32,5 +34,9 @@ public class QueryParameter {
 
     public Class<?> getType() {
         return type;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

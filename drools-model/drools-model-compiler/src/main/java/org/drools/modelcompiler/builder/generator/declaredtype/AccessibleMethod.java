@@ -32,17 +32,17 @@ import org.drools.core.factmodel.AccessibleFact;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStringBody;
 
-import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
+
+import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
 
 public class AccessibleMethod {
 
@@ -67,14 +67,14 @@ public class AccessibleMethod {
     public MethodDefinition getterMethod() {
         return new MethodWithStringBody(GET_VALUE, Object.class.getSimpleName(), getterSwitchStatement().toString())
                 .addParameter(String.class.getCanonicalName(), FIELD_NAME)
-                .addAnnotation(OVERRIDE);
+                .addAnnotation("Override");
     }
 
     public MethodDefinition setterMethod() {
         return new MethodWithStringBody(SET_VALUE, "void", setterSwitchStatement().toString())
                 .addParameter(String.class.getCanonicalName(), FIELD_NAME)
                 .addParameter(Object.class.getCanonicalName(), "value")
-                .addAnnotation(OVERRIDE);
+                .addAnnotation("Override");
     }
 
     private Statement getterSwitchStatement() {
@@ -82,7 +82,9 @@ public class AccessibleMethod {
 
         NodeList<SwitchEntry> switchEntries = switchStmt.getEntries();
         for (DescrFieldDefinition field : fields) {
-            switchEntries.add(getValueFromField(field));
+            if (!field.isOverride()) {
+                switchEntries.add( getValueFromField( field ) );
+            }
         }
 
         Optional<Class<?>> abstractResolvedClass = descrTypeDefinition.getAbstractResolvedClass();
@@ -103,7 +105,9 @@ public class AccessibleMethod {
 
         NodeList<SwitchEntry> entries = switchStmt.getEntries();
         for (DescrFieldDefinition field : fields) {
-            entries.add(setValueFromField(field));
+            if (!field.isOverride()) {
+                entries.add( setValueFromField( field ) );
+            }
         }
 
         Optional<Class<?>> abstractResolvedClass = descrTypeDefinition.getAbstractResolvedClass();

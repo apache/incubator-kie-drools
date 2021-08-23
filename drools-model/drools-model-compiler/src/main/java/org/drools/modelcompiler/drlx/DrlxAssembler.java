@@ -24,7 +24,7 @@ public class DrlxAssembler implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
+    public void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) throws Exception {
 
     }
 }

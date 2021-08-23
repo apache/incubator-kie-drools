@@ -65,7 +65,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
         for (int i = 0; i < fhs.length; i++) {
             fhs[i] = declarations[i] == patternDeclaration ?
                     handle :
-                    tuple.get(declarations[i].getOffset());
+                    tuple.get(declarations[i].getTupleIndex());
         }
         return fhs;
     }

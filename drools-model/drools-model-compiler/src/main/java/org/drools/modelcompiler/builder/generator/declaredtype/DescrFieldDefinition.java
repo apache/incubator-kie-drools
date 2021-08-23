@@ -36,6 +36,7 @@ public class DescrFieldDefinition implements FieldDefinition {
     private boolean createAccessors = true;
     private boolean isStatic = false;
     private boolean isFinal = false;
+    private boolean isOverride = false;
 
     private final Map<String, AnnotationDefinition> annotations = new HashMap<>();
 
@@ -111,8 +112,9 @@ public class DescrFieldDefinition implements FieldDefinition {
         return isStatic;
     }
 
-    public void setStatic(Boolean aStatic) {
+    public DescrFieldDefinition setStatic(Boolean aStatic) {
         isStatic = aStatic;
+        return this;
     }
 
     @Override
@@ -120,8 +122,18 @@ public class DescrFieldDefinition implements FieldDefinition {
         return isFinal;
     }
 
-    public void setFinal(Boolean aFinal) {
+    public DescrFieldDefinition setFinal(Boolean aFinal) {
         isFinal = aFinal;
+        return this;
+    }
+
+    public boolean isOverride() {
+        return isOverride;
+    }
+
+    public DescrFieldDefinition setOverride( boolean override ) {
+        isOverride = override;
+        return this;
     }
 
     @Override
@@ -134,6 +146,7 @@ public class DescrFieldDefinition implements FieldDefinition {
                 ", createAccessors=" + createAccessors +
                 ", isStatic=" + isStatic +
                 ", isFinal=" + isFinal +
+                ", isOverride=" + isOverride +
                 ", annotations=" + annotations +
                 '}';
     }

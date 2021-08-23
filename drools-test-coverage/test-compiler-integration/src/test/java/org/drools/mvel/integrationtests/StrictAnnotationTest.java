@@ -15,37 +15,57 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.core.common.EventFactHandle;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Results;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.definition.type.PropertyReactive;
-import org.kie.api.event.rule.AgendaEventListener;
-import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.internal.builder.conf.LanguageLevelOption;
-import org.kie.internal.runtime.conf.ForceEagerActivationOption;
-import org.kie.internal.utils.KieHelper;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+
+import org.drools.core.common.EventFactHandle;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Results;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.definition.type.PropertyReactive;
+import org.kie.api.event.rule.AgendaEventListener;
+import org.kie.api.event.rule.DefaultAgendaEventListener;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.internal.builder.conf.LanguageLevelOption;
+import org.kie.internal.runtime.conf.ForceEagerActivationOption;
 
 import static org.junit.Assert.assertEquals;
 
-public class StrictAnnotationTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class StrictAnnotationTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public StrictAnnotationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testUnknownAnnotation() {
@@ -64,7 +84,8 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                                                  .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
                                                                            LanguageLevelOption.DRL6_STRICT.toString())
                                                  .toXML());
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        Results results = kieBuilder.getResults();
         assertEquals(1, results.getMessages().size());
     }
 
@@ -86,7 +107,8 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                                                  .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
                                                                            LanguageLevelOption.DRL6_STRICT.toString())
                                                  .toXML());
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        Results results = kieBuilder.getResults();
         assertEquals(0, results.getMessages().size());
     }
 
@@ -105,18 +127,13 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 "then \n" +
                 "end  \n";
 
-        KieServices ks = KieServices.Factory.get();
-
         KieSessionConfiguration conf = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         conf.setOption(ForceEagerActivationOption.YES);
 
-        KieSession ksession = new KieHelper()
-                .setKieModuleModel(ks.newKieModuleModel()
-                                     .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
-                                                               LanguageLevelOption.DRL6_STRICT.toString()))
-                .addContent(str, ResourceType.DRL)
-                .build()
-                .newKieSession(conf, null);
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, str);
+        KieSession ksession = kbase.newKieSession(conf, null);
         try {
             final List list = new ArrayList();
 
@@ -145,13 +162,10 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 "    modify( $m ) { setValue( $m.getValue()+1 ) };\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper()
-                .setKieModuleModel(KieServices.Factory.get().newKieModuleModel()
-                                     .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
-                                                               LanguageLevelOption.DRL6_STRICT.toString()))
-                .addContent(str, ResourceType.DRL)
-                .build()
-                .newKieSession();
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, str);
+        KieSession ksession = kbase.newKieSession();
         try {
             MyClass myClass = new MyClass("test", 1);
             ksession.insert(myClass);
@@ -180,7 +194,8 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                                                  .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
                                                                            LanguageLevelOption.DRL6_STRICT.toString())
                                                  .toXML());
-        Results results = ks.newKieBuilder( kfs ).buildAll().getResults();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        Results results = kieBuilder.getResults();
         assertEquals(1, results.getMessages().size());
     }
 
@@ -198,12 +213,9 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                      "    names.add( $p.getName() );\n" +
                      "end\n";
 
-        KieBase kieBase = new KieHelper()
-                .setKieModuleModel(KieServices.Factory.get().newKieModuleModel()
-                                                      .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
-                                                                                LanguageLevelOption.DRL6_STRICT.toString()))
-                .addContent(str, ResourceType.DRL)
-                .build();
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, str);
 
         FactType factType = kieBase.getFactType("org.test", "Person");
         Object instance = factType.newInstance();
@@ -233,13 +245,10 @@ public class StrictAnnotationTest extends CommonTestMethodBase {
                 "declare " + Message.class.getCanonicalName() + "\n" +
                 "end\n";
 
-        KieSession ksession = new KieHelper()
-                .setKieModuleModel(KieServices.Factory.get().newKieModuleModel()
-                                                      .setConfigurationProperty(LanguageLevelOption.PROPERTY_NAME,
-                                                                                LanguageLevelOption.DRL6_STRICT.toString()))
-                .addContent(str, ResourceType.DRL)
-                .build()
-                .newKieSession();
+        Map<String, String> kieModuleConfigurationProperties = new HashMap<>();
+        kieModuleConfigurationProperties.put(LanguageLevelOption.PROPERTY_NAME, LanguageLevelOption.DRL6_STRICT.toString());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, kieModuleConfigurationProperties, str);
+        KieSession ksession = kbase.newKieSession();
         try {
             Message msg = new Message();
             msg.setStartTime( new Timestamp( 10000 ) );

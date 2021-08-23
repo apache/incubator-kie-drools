@@ -16,11 +16,16 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.modelcompiler.domain.Address;
 import org.drools.modelcompiler.domain.Child;
+import org.drools.modelcompiler.domain.Person;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class InTest extends BaseModelTest {
@@ -53,6 +58,32 @@ public class InTest extends BaseModelTest {
         KieSession ksession = getKieSession(str);
         ksession.insert(new Child("Ben", 10));
         assertEquals( 0, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testInWithNullComments() {
+        String str = "import org.drools.modelcompiler.domain.Child; \n" +                        "global java.util.List results; \n" +
+                "global java.util.List results; \n" +
+                "rule R when                        \n" +
+                "  $c : Child(parent in (" +
+                "   \"Gustav\", // comment\n" +
+                "   \"Alice\"\n" +
+                "))\n" +
+                "then                               \n" +
+                " results.add($c);\n" +
+                "end                                ";
+
+        KieSession ksession = getKieSession(str);
+        List<Child> results = new ArrayList<>();
+        ksession.setGlobal("results", results);
+
+        String parentName = "Gustav";
+        Person gustav = new Person(parentName);
+        Child ben = new Child("Ben", 10, parentName);
+        ksession.insert(ben);
+        ksession.insert(gustav);
+        assertEquals( 1, ksession.fireAllRules());
+        assertThat(results).containsExactly(ben);
     }
 
     @Test

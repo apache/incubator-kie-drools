@@ -20,9 +20,9 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -129,7 +129,7 @@ public class Rete extends ObjectSource
         EntryPointId entryPoint = context.getEntryPoint();
         EntryPointNode node = this.entryPoints.get( entryPoint );
         ObjectTypeConf typeConf = ((WorkingMemoryEntryPoint) workingMemory.getWorkingMemoryEntryPoint( entryPoint.getEntryPointId() ))
-                .getObjectTypeConfigurationRegistry().getObjectTypeConf( entryPoint, handle.getObject() );
+                .getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getObject() );
         node.retractObject( handle,
                             context,
                             typeConf,
@@ -164,7 +164,7 @@ public class Rete extends ObjectSource
         kBase.registeRremovedEntryNodeCache(node);
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
         throw new UnsupportedOperationException( "cannot call attach() from the root Rete node" );
     }
 
@@ -183,7 +183,7 @@ public class Rete extends ObjectSource
     }
 
     public List<ObjectTypeNode> getObjectTypeNodes() {
-        List<ObjectTypeNode> allNodes = new LinkedList<ObjectTypeNode>();
+        List<ObjectTypeNode> allNodes = new ArrayList<>();
         for ( EntryPointNode node : this.entryPoints.values() ) {
             allNodes.addAll( node.getObjectTypeNodes().values() );
         }

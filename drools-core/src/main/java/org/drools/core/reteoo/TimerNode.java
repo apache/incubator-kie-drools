@@ -44,7 +44,7 @@ public class TimerNode extends LeftTupleSource
     private Timer             timer;
     private String[]          calendarNames;
     private boolean           tupleMemoryEnabled;
-    private Declaration[][]   declarations;
+    private Declaration[][]   startEndDeclarations;
     private LeftTupleSinkNode previousTupleSinkNode;
     private LeftTupleSinkNode nextTupleSinkNode;
 
@@ -59,18 +59,20 @@ public class TimerNode extends LeftTupleSource
                      final LeftTupleSource tupleSource,
                      final Timer timer,
                      final String[] calendarNames,
-                     final Declaration[][]   declarations,
+                     final Declaration[][] startEndDeclarations,
                      final BuildContext context) {
         super(id, context);
         setLeftTupleSource(tupleSource);
+        this.setObjectCount(leftInput.getObjectCount()); // 'timer' node does increase the object count
         this.timer = timer;
         this.calendarNames = calendarNames;
-        this.declarations = declarations;
+        this.startEndDeclarations = startEndDeclarations;
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
 
         initMasks(context, tupleSource);
 
         hashcode = calculateHashCode();
+
     }
 
     public void readExternal(ObjectInput in) throws IOException,
@@ -79,7 +81,7 @@ public class TimerNode extends LeftTupleSource
         timer = (Timer) in.readObject();
         calendarNames = (String[]) in.readObject();
         tupleMemoryEnabled = in.readBoolean();
-        declarations = ( Declaration[][] ) in.readObject();
+        startEndDeclarations = ( Declaration[][] ) in.readObject();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -87,10 +89,11 @@ public class TimerNode extends LeftTupleSource
         out.writeObject(timer);
         out.writeObject( calendarNames );
         out.writeBoolean(tupleMemoryEnabled);
-        out.writeObject( declarations );
+        out.writeObject(startEndDeclarations);
     }
 
-    public void attach(BuildContext context) {
+    public void doAttach(BuildContext context) {
+        super.doAttach(context);
         this.leftInput.addTupleSink(this, context);
     }
 
@@ -106,8 +109,8 @@ public class TimerNode extends LeftTupleSource
         return this.calendarNames;
     }
 
-    public Declaration[][] getDeclarations() {
-        return this.declarations;
+    public Declaration[][] getStartEndDeclarations() {
+        return this.startEndDeclarations;
     }
 
     @Override
@@ -160,7 +163,7 @@ public class TimerNode extends LeftTupleSource
             }
         }
 
-        return Arrays.deepEquals( declarations, other.declarations ) &&
+        return Arrays.deepEquals(startEndDeclarations, other.startEndDeclarations) &&
                this.timer.equals(other.timer);
     }
 

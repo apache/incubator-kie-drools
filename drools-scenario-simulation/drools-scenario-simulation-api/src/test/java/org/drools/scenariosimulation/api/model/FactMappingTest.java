@@ -28,7 +28,7 @@ public class FactMappingTest {
 
     @Test
     public void cloneFactMapping() {
-        FactMapping original = new FactMapping("FACT_ALIAS", new FactIdentifier("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
+        FactMapping original = new FactMapping("FACT_ALIAS", FactIdentifier.create("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
         original.addExpressionElement("FIRST_STEP", String.class.getName());
         original.setExpressionAlias("EA_TEST");
         original.setGenericTypes(new ArrayList<>());
@@ -38,7 +38,7 @@ public class FactMappingTest {
 
     @Test
     public void getExpressionElementsWithoutClass() {
-        FactMapping original = new FactMapping("FACT_ALIAS", new FactIdentifier("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
+        FactMapping original = new FactMapping("FACT_ALIAS", FactIdentifier.create("FI_TEST", "com.test.Foo"), new ExpressionIdentifier("EI_TEST", FactMappingType.GIVEN));
         assertThatThrownBy(original::getExpressionElementsWithoutClass)
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("ExpressionElements malformed");

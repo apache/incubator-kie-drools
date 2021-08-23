@@ -20,14 +20,11 @@ import java.util.Collection;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieModule;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -44,7 +41,7 @@ public class PolymorphismTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test
@@ -63,8 +60,7 @@ public class PolymorphismTest {
                      "then\n" +
                      "end";
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kieBase.newKieSession();
 
         ksession.insert(1);
@@ -104,8 +100,7 @@ public class PolymorphismTest {
                      "    modify($d) { setId($id+1) };\n" +
                      "end";
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kieBase.newKieSession();
 
         ksession.insert( new X(0) );
@@ -145,8 +140,7 @@ public class PolymorphismTest {
                      "    delete($a);\n" +
                      "end";
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kieBase.newKieSession();
 
         FactHandle fh = ksession.insert( new X(0) );

@@ -632,6 +632,7 @@ public class AddRemoveRule {
 
     public static boolean flushLeftTupleIfNecessary(InternalWorkingMemory wm, SegmentMemory sm, LeftTuple leftTuple, boolean streamMode, short stagedType) {
         boolean forceFlush = streamMode || ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() );
+        // @TODO do we really need the check on ( leftTuple != null && leftTuple.getFactHandle() != null && leftTuple.getFactHandle().isEvent() ) (mdp)
         PathMemory pmem = forceFlush ?
                           sm.getPathMemories().get(0) :
                           sm.getFirstDataDrivenPathMemory();
@@ -657,21 +658,25 @@ public class AddRemoveRule {
 
         forceFlushLeftTuple( pmem, sm, wm, leftTupleSets );
 
+        forceFlushWhenRiaNode(wm, pmem);
+
+        return true;
+    }
+
+    public static void forceFlushWhenRiaNode(InternalWorkingMemory wm, PathMemory pmem) {
         if (pmem.isDataDriven() && pmem.getNodeType() == NodeTypeEnums.RightInputAdaterNode) {
             for (PathEndNode pnode : pmem.getPathEndNode().getPathEndNodes()) {
                 if ( pnode instanceof TerminalNode ) {
-                    PathMemory outPmem = wm.getNodeMemory( (TerminalNode) pnode );
+                    PathMemory outPmem = wm.getNodeMemory((TerminalNode) pnode);
                     if (outPmem.isDataDriven()) {
                         SegmentMemory outSmem = outPmem.getSegmentMemories()[0];
                         if (outSmem != null) {
-                            forceFlushLeftTuple( outPmem, outSmem, wm, new TupleSetsImpl<LeftTuple>() );
+                            forceFlushLeftTuple(outPmem, outSmem, wm, new TupleSetsImpl<LeftTuple>());
                         }
                     }
                 }
             }
         }
-
-        return true;
     }
 
     public static void forceFlushLeftTuple(PathMemory pmem, SegmentMemory sm, InternalWorkingMemory wm, TupleSets<LeftTuple> leftTupleSets) {
@@ -886,7 +891,11 @@ public class AddRemoveRule {
                         AccumulateContext accctx = (AccumulateContext) lt.getContextObject();
                         visitChild(accctx.getResultLeftTuple(), insert, wm, rule);
                     }
-                } else if (NodeTypeEnums.ExistsNode == node.getType()) {
+                } else if (NodeTypeEnums.ExistsNode == node.getType() &&
+                           !((BetaNode)node).isRightInputIsRiaNode()) { // do not process exists with subnetworks
+                    // If there is a subnetwork, then there is no populated RTM, but the LTM is populated,
+                    // so this would be procsssed in the "else".
+
                     bm = (BetaMemory) wm.getNodeMemory((MemoryFactory) node);
                     FastIterator it = bm.getRightTupleMemory().fullFastIterator(); // done off the RightTupleMemory, as exists only have unblocked tuples on the left side
                     RightTuple   rt = (RightTuple) BetaNode.getFirstTuple(bm.getRightTupleMemory(), it);

@@ -33,4 +33,10 @@ public interface DrlxParseResult {
     String getExprId(DRLIdGenerator exprIdGenerator);
 
     DrlxParseResult setOriginalDrlConstraint(String originalDrlConstraint);
+
+    String getOriginalDrlConstraint();
+
+    default boolean isOOPath() {
+        return false;
+    }
 }

@@ -464,6 +464,7 @@ public abstract class ClassUtils {
                 .orElse( null );
     }
 
+    // Don't use this method. You should probably use org.drools.core.util.MethodUtils
     private static Optional<Method> getMethod(Class<?> clazz, String name, Class<?>... parameterTypes) {
         try {
             return Optional.of( clazz.getMethod(name, parameterTypes) );

@@ -26,6 +26,7 @@ import org.drools.core.RuleBaseConfiguration;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
 import org.drools.core.reteoo.ExistsNode;
+import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftTupleSource;
 import org.drools.core.reteoo.NodeTypeEnums;
 import org.drools.core.reteoo.NotNode;
@@ -162,12 +163,14 @@ public class GroupElementBuilder
                                                                                         context.getBetaconstraints(),
                                                                                         false );
 
-                context.setTupleSource( utils.attachNode( context, context.getComponentFactory()
-                                                                          .getNodeFactoryService().buildJoinNode( context.getNextId(),
-                                                                                                                  context.getTupleSource(),
-                                                                                                                  context.getObjectSource(),
-                                                                                                                  betaConstraints,
-                                                                                                                  context) ) );
+                JoinNode joinNode = context.getComponentFactory()
+                                           .getNodeFactoryService().buildJoinNode( context.getNextId(),
+                                                                                   context.getTupleSource(),
+                                                                                   context.getObjectSource(),
+                                                                                   betaConstraints,
+                                                                                   context);
+
+                context.setTupleSource( utils.attachNode( context, joinNode));
                 context.setBetaconstraints( null );
                 context.setObjectSource( null );
             }
@@ -225,11 +228,8 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            boolean existSubNetwort = false;
             final GroupElement not = (GroupElement) rce;
 
-            // NOT must save some context info to restore it later
-            final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -261,8 +261,6 @@ public class GroupElementBuilder
                 final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
                 predicates.add( constraint );
                 context.setBetaconstraints( predicates );
-                existSubNetwort = true;
-
             }
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
@@ -275,20 +273,17 @@ public class GroupElementBuilder
             // in each case
 
 
-            NotNode node = context.getComponentFactory().getNodeFactoryService().buildNotNode( context.getNextId(),
-                                                                                               context.getTupleSource(),
-                                                                                               context.getObjectSource(),
-                                                                                               betaConstraints,
-                                                                                               context );
+            NotNode node = nfactory.buildNotNode( context.getNextId(),
+                                                  context.getTupleSource(),
+                                                  context.getObjectSource(),
+                                                  betaConstraints,
+                                                  context );
 
             node.setEmptyBetaConstraints( context.getBetaconstraints().isEmpty() );
 
             context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
-
-            // restore pattern index
-            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         public boolean requiresLeftActivation(final BuildUtils utils,
@@ -312,11 +307,8 @@ public class GroupElementBuilder
         public void build(final BuildContext context,
                           final BuildUtils utils,
                           final RuleConditionElement rce) {
-            boolean existSubNetwort = false;
             final GroupElement exists = (GroupElement) rce;
 
-            // EXISTS must save some context info to restore it later
-            final int currentPatternIndex = context.getCurrentPatternOffset();
             final LeftTupleSource tupleSource = context.getTupleSource();
 
             // get child
@@ -343,13 +335,9 @@ public class GroupElementBuilder
                 // restore tuple source from before the start of the sub network
                 context.setTupleSource( tupleSource );
 
-                // create a tuple start equals constraint and set it in the context
-                final TupleStartEqualsConstraint constraint = TupleStartEqualsConstraint.getInstance();
-                final List<BetaNodeFieldConstraint> predicates = new ArrayList<BetaNodeFieldConstraint>();
-                predicates.add( constraint );
-                context.setBetaconstraints( predicates );
-                existSubNetwort = true;
 
+                final List<BetaNodeFieldConstraint> betaConstraints = new ArrayList<>();
+                context.setBetaconstraints( betaConstraints ); // Empty list ensures EmptyBetaConstraints is assigned
             }
 
             NodeFactory nfactory = context.getComponentFactory().getNodeFactoryService();
@@ -358,11 +346,11 @@ public class GroupElementBuilder
                                                                                     context.getBetaconstraints(),
                                                                                     false );
 
-            ExistsNode node = context.getComponentFactory().getNodeFactoryService().buildExistsNode(context.getNextId(),
-                                                                                                    context.getTupleSource(),
-                                                                                                    context.getObjectSource(),
-                                                                                                    betaConstraints,
-                                                                                                    context);
+            ExistsNode node = nfactory.buildExistsNode(context.getNextId(),
+                                                       context.getTupleSource(),
+                                                       context.getObjectSource(),
+                                                       betaConstraints,
+                                                       context);
 
             // then attach the EXISTS node. It will work both as a simple exists node
             // or as subnetwork join node as the context was set appropriatelly
@@ -370,9 +358,6 @@ public class GroupElementBuilder
             context.setTupleSource( utils.attachNode( context, node ) );
             context.setBetaconstraints( null );
             context.setObjectSource( null );
-
-            // restore pattern index
-            context.setCurrentPatternOffset( currentPatternIndex );
         }
 
         /**

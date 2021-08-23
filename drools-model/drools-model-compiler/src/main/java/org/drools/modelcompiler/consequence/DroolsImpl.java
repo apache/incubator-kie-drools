@@ -16,9 +16,6 @@
 
 package org.drools.modelcompiler.consequence;
 
-import java.util.IdentityHashMap;
-import java.util.Map;
-
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalFactHandle;
@@ -44,11 +41,12 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     private final KnowledgeHelper knowledgeHelper;
     private final WorkingMemory workingMemory;
 
-    private final Map<Object, InternalFactHandle> fhLookup = new IdentityHashMap<>();
+    private final FactHandleLookup fhLookup;
 
-    DroolsImpl(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory) {
+    DroolsImpl(KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory, FactHandleLookup fhLookup) {
         this.workingMemory = workingMemory;
         this.knowledgeHelper = knowledgeHelper;
+        this.fhLookup = fhLookup;
     }
 
     @Override
@@ -135,10 +133,6 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
     @Override
     public void delete(Object object) {
         knowledgeHelper.delete( getFactHandleForObject( object ) );
-    }
-
-    void registerFactHandle(InternalFactHandle fh) {
-        fhLookup.put( fh.getObject(), fh );
     }
 
     @Override

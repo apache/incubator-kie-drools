@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-openapi</artifactId>
   
@@ -29,10 +29,6 @@
     <dependency>
       <groupId>io.smallrye</groupId>
       <artifactId>smallrye-open-api-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.eclipse.microprofile.openapi</groupId>
-      <artifactId>microprofile-openapi-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
@@ -71,8 +67,8 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>provided</scope>
     </dependency>
 

@@ -4,9 +4,9 @@ import java.util.Map;
 
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import org.assertj.core.api.Assertions;
+import org.drools.core.util.MethodUtils;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
-import org.drools.modelcompiler.util.ClassUtil;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -36,7 +36,7 @@ public class CoercedExpressionTest {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".doubleValue()", double.class);
         final TypedExpression right = expr("0", int.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("0d", double.class), coerce.getCoercedRight());
+        assertEquals(expr("0.0", double.class), coerce.getCoercedRight());
     }
 
     @Test
@@ -165,9 +165,9 @@ public class CoercedExpressionTest {
     @Test
     public void doNotCastNullLiteral() {
         final TypedExpression left = expr(THIS_PLACEHOLDER + ".isApproved()", java.lang.Boolean.class);
-        final TypedExpression right = expr("null", ClassUtil.NullType.class);
+        final TypedExpression right = expr("null", MethodUtils.NullType.class);
         final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, false).coerce();
-        assertEquals(expr("null", ClassUtil.NullType.class), coerce.getCoercedRight());
+        assertEquals(expr("null", MethodUtils.NullType.class), coerce.getCoercedRight());
     }
 
     @Test(expected = CoercedExpression.CoercedExpressionException.class)
@@ -220,5 +220,13 @@ public class CoercedExpressionTest {
         final TypedExpression right = expr("1", Integer.class);
         Assertions.assertThatThrownBy(() -> new CoercedExpression(left, right, false).coerce())
                 .isInstanceOf(CoercedExpression.CoercedExpressionException.class);
+    }
+
+    @Test
+    public void testNameExprToString() {
+        final TypedExpression left = expr(THIS_PLACEHOLDER + ".getName", String.class);
+        final TypedExpression right = expr("$maxName", Comparable.class);
+        final CoercedExpression.CoercedExpressionResult coerce = new CoercedExpression(left, right, true).coerce();
+        assertEquals(expr("(java.lang.String) $maxName", String.class), coerce.getCoercedRight());
     }
 }

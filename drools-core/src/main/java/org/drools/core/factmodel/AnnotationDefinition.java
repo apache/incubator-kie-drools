@@ -16,10 +16,6 @@
 
 package org.drools.core.factmodel;
 
-import org.kie.api.definition.type.Annotation;
-import org.kie.api.definition.type.Role;
-import org.drools.core.addon.TypeResolver;
-
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
@@ -30,6 +26,10 @@ import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+
+import org.drools.core.addon.TypeResolver;
+import org.kie.api.definition.type.Annotation;
+import org.kie.api.definition.type.Role;
 
 public class AnnotationDefinition implements Externalizable,
                                              Annotation {
@@ -167,6 +167,9 @@ public class AnnotationDefinition implements Externalizable,
             }
             return ar;
         } else if (returnType.isEnum()) {
+            if (returnType.isAssignableFrom( value.getClass() )) {
+                return value;
+            }
             try {
                 String valueStr = value.toString().trim();
                 if (valueStr.indexOf('.') > 0) {

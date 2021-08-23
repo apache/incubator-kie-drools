@@ -17,30 +17,41 @@ package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.kie.api.time.SessionPseudoClock;
 import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
-import org.kie.api.builder.Message;
-import org.kie.api.builder.Message.Level;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
 import org.kie.api.runtime.rule.EntryPoint;
+import org.kie.api.time.SessionPseudoClock;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class WindowTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public WindowTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
 
     private KieSession ksession;
 
@@ -121,26 +132,7 @@ public class WindowTest {
 
     @Before
     public void initialization() {
-        KieFileSystem kfs = KieServices.Factory.get().newKieFileSystem();
-
-        kfs.write("src/main/resources/kbase1/window_test.drl", drl);
-
-        KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kfs);
-
-        kbuilder.buildAll();
-
-        List<Message> res = kbuilder.getResults().getMessages(Level.ERROR);
-
-        assertEquals(res.toString(), 0, res.size());
-
-        KieBaseConfiguration kbconf = KnowledgeBaseFactory
-                .newKnowledgeBaseConfiguration();
-
-        kbconf.setOption(EventProcessingOption.STREAM);
-
-        KieBase kbase = KieServices.Factory.get()
-                                   .newKieContainer(kbuilder.getKieModule().getReleaseId())
-                                   .newKieBase(kbconf);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSessionConfiguration ksconfig = KnowledgeBaseFactory
                 .newKnowledgeSessionConfiguration();

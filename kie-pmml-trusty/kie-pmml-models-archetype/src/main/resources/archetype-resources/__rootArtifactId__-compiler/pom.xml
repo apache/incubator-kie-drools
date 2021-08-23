@@ -51,20 +51,19 @@
         </exclusion>
       </exclusions>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-memory-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
+    <!-- TODO MOVE TO kie-pmml-trusty/kie-pmml-dependencies/pom.xml -->
     <dependencies>
       <dependency>
         <groupId>${groupId}</groupId>
         <artifactId>kie-pmml-models-${artifactModelName}-model</artifactId>
-        <version>${version.org.kie}</version>
-      </dependency>
-      <dependency>
-        <groupId>${groupId}</groupId>
-        <artifactId>kie-pmml-compiler-commons</artifactId>
-        <classifier>tests</classifier>
         <version>${version.org.kie}</version>
       </dependency>
     </dependencies>

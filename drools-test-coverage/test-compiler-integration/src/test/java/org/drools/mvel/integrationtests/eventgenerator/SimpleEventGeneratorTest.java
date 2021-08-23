@@ -16,24 +16,41 @@
 package org.drools.mvel.integrationtests.eventgenerator;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.drools.compiler.compiler.DroolsParserException;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.integrationtests.eventgenerator.Event.EventType;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class SimpleEventGeneratorTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class SimpleEventGeneratorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SimpleEventGeneratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private final static String TEST_RULE_FILE = "test_eventGenerator.drl";
 
     @Test
     public void testEventGenerationMaxItems() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -46,7 +63,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationMaxTime() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -59,7 +76,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -73,7 +90,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationDelayedMaxItems() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -86,7 +103,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationDelayedMaxTime() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -99,7 +116,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationDelayedMaxTimeAndMaxItems() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -113,7 +130,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationGlobalMaxTime() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator
@@ -127,7 +144,7 @@ public class SimpleEventGeneratorTest extends CommonTestMethodBase {
 
     @Test
     public void testEventGenerationMultipleSources() throws DroolsParserException, IOException, Exception{
-        KieBase kbase = loadKnowledgeBase(TEST_RULE_FILE);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, TEST_RULE_FILE);
         KieSession ksession = kbase.newKieSession();
 
         // create unrestricted event generator

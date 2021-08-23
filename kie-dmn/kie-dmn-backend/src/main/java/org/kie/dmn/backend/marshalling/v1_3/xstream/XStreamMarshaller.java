@@ -368,12 +368,12 @@ public class XStreamMarshaller
         xStream.registerConverter(new ExtensionElementsConverter( xStream, extensionRegisters ) );
         xStream.registerConverter(new DiagramElementExtensionConverter(xStream, extensionRegisters));
         
-        xStream.ignoreUnknownElements();
 
         for(DMNExtensionRegister extensionRegister : extensionRegisters) {
             extensionRegister.registerExtensionConverters(xStream);
         }
 
+        xStream.ignoreUnknownElements();
         return xStream;
     }
 

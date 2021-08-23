@@ -17,18 +17,36 @@
 package org.drools.mvel.integrationtests.session;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
+
 import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static org.junit.Assert.assertEquals;
 
-public class LocaleTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class LocaleTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public LocaleTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testLatinLocale() throws Exception {
@@ -38,8 +56,8 @@ public class LocaleTest extends CommonTestMethodBase {
             // setting a locale that uses COMMA as decimal separator
             Locale.setDefault(new Locale("pt", "BR"));
 
-            final KieBase kbase = loadKnowledgeBase("test_LatinLocale.drl");
-            final KieSession ksession = createKnowledgeSession(kbase);
+            KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_LatinLocale.drl");
+            KieSession ksession = kbase.newKieSession();
 
             final List<String> results = new ArrayList<String>();
             ksession.setGlobal("results", results);

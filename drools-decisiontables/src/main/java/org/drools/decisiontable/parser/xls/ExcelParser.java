@@ -27,9 +27,11 @@ import java.util.Map;
 
 import org.apache.poi.openxml4j.util.ZipSecureFile;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.CellValue;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.ExcelNumberFormat;
 import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -208,6 +210,15 @@ public class ExcelParser
                             // don't get a double value. rely on DataFormatter
                         } else {
                             num = cell.getNumericCellValue();
+                            if (doesIgnoreNumericFormat(listeners) && !isGeneralFormat(cell)) {
+                                // If it's not GENERAL format (e.g. Percent, Currency), we don't rely on formatter
+                                newCell(listeners,
+                                        i,
+                                        cellNum,
+                                        String.valueOf(num),
+                                        mergedColStart);
+                                break;
+                            }
                         }
                     default:
                         if (num - Math.round(num) != 0) {
@@ -217,6 +228,7 @@ public class ExcelParser
                                     String.valueOf(num),
                                     mergedColStart);
                         } else {
+                            // e.g. format '42.0' to '42' for int
                             newCell(listeners,
                                     i,
                                     cellNum,
@@ -227,6 +239,12 @@ public class ExcelParser
             }
         }
         finishSheet( listeners );
+    }
+
+    private boolean isGeneralFormat(Cell cell) {
+        CellStyle style = cell.getCellStyle();
+        ExcelNumberFormat nf = ExcelNumberFormat.from(style);
+        return nf.getFormat().equalsIgnoreCase("General");
     }
 
     private String getFormulaValue( DataFormatter formatter, FormulaEvaluator formulaEvaluator, Cell cell ) {
@@ -321,6 +339,15 @@ public class ExcelParser
         for ( DataListener listener : listeners ) {
             if (listener instanceof DefaultRuleSheetListener) {
                 return ((DefaultRuleSheetListener)listener).isNumericDisabled();
+            }
+        }
+        return false;
+    }
+
+    private boolean doesIgnoreNumericFormat( List<? extends DataListener> listeners ) {
+        for ( DataListener listener : listeners ) {
+            if (listener instanceof DefaultRuleSheetListener) {
+                return ((DefaultRuleSheetListener)listener).doesIgnoreNumericFormat();
             }
         }
         return false;

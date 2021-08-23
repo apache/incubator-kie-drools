@@ -73,7 +73,7 @@ public interface AgendaItem<T extends ModedAssertion<T>> extends Activation<T> {
         List<Object> list = new ArrayList<Object>();
         while ( entry != null ) {
             if ( entry.getFactHandle() != null ) {
-                Object o = ((InternalFactHandle) entry.getFactHandle()).getObject();
+                Object o = entry.getFactHandle().getObject();
                 if (!(o instanceof QueryElementFactHandle || o instanceof InitialFact)) {
                     list.add(o);
                     list.addAll( entry.getAccumulatedObjects() );

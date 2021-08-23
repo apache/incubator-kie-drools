@@ -7,7 +7,7 @@
   <parent>
     <artifactId>kie-dmn</artifactId>
     <groupId>org.kie</groupId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-dmn-model</artifactId>
@@ -21,8 +21,8 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.jboss.spec.javax.xml.bind</groupId>
-      <artifactId>jboss-jaxb-api_2.3_spec</artifactId>
+      <groupId>jakarta.xml.bind</groupId>
+      <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <!-- Tests -->
@@ -99,5 +99,13 @@
       </plugin>
     </plugins>
   </build>
-
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the XML DTOs from duplicate statistics. These naturally presents duplication due to the representation of the several versions of the DMN standard. -->
+        <sonar.cpd.exclusions>**/kie/dmn/model/v1_*/**</sonar.cpd.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>

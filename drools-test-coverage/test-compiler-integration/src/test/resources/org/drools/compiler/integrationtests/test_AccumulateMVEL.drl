@@ -75,7 +75,7 @@ rule "Accumulate with previous Bindings" salience 60
     when
         $person      : Person( name == "Bob", $likes : likes, $age : age )
         $totalAmount : Integer() from accumulate( $cheese : Cheese( type == $likes, $price : price ),
-                                                  init( total = $age * 10; ),
+                                                  init( int total = $age * 10; ),
                                                      action( total = total + $price; ),
                                                   result( total ) );
     then

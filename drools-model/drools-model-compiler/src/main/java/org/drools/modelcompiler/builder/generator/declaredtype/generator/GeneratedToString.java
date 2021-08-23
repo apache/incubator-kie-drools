@@ -26,12 +26,11 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 
-import static java.text.MessageFormat.format;
-
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static org.drools.modelcompiler.builder.generator.declaredtype.generator.GeneratedClassDeclaration.OVERRIDE;
+import static java.text.MessageFormat.format;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 
 public class GeneratedToString {
@@ -56,9 +55,9 @@ public class GeneratedToString {
 
         final Statement toStringStatement = parseStatement(header + body + close);
 
-        final Type returnType = parseType(String.class.getSimpleName());
+        final Type returnType = toClassOrInterfaceType(String.class);
         final MethodDeclaration equals = new MethodDeclaration(nodeList(Modifier.publicModifier()), returnType, TO_STRING);
-        equals.addAnnotation(OVERRIDE);
+        equals.addAnnotation( createSimpleAnnotation(Override.class) );
         equals.setBody(new BlockStmt(nodeList(toStringStatement)));
         return equals;
     }

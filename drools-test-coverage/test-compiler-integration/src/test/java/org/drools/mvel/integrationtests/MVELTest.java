@@ -30,13 +30,10 @@ import java.util.Map;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
-import org.drools.core.spi.FieldValue;
 import org.drools.core.util.DateUtils;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Cheese;
@@ -46,18 +43,19 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.TestEnum;
 import org.drools.mvel.expr.MVELDebugHandler;
 import org.drools.mvel.extractors.MVELObjectClassFieldReader;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EqualityBehaviorOption;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.StatelessKieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 import org.mvel2.MVEL;
 import org.mvel2.ParserContext;
 
@@ -66,12 +64,25 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-public class MVELTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MVELTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MVELTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testHelloWorld() {
         // read in the source
-        final KieBase kbase = loadKnowledgeBase("test_mvel.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_mvel.drl");
         final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
@@ -108,14 +119,8 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    list.add( i ); \n";
         str += "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        assertFalse(kbuilder.hasErrors());
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.insert(5);
@@ -141,17 +146,8 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    list.add( $bd ); \n";
         str += "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            System.err.println(kbuilder.getErrors());
-        }
-        assertFalse(kbuilder.hasErrors());
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         ksession.insert(new BigDecimal(1.5));
@@ -164,7 +160,7 @@ public class MVELTest extends CommonTestMethodBase {
 
     @Test
     public void testLocalVariableMVELConsequence() {
-        final KieBase kbase = loadKnowledgeBase("test_LocalVariableMVELConsequence.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_LocalVariableMVELConsequence.drl");
         final KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
@@ -187,7 +183,7 @@ public class MVELTest extends CommonTestMethodBase {
     public void testMVELUsingGlobalsInDebugMode() {
         MVELDebugHandler.setDebugMode(true);
         try {
-            final KieBase kbase = loadKnowledgeBase("test_MVELGlobalDebug.drl");
+            KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MVELGlobalDebug.drl");
             KieSession ksession = kbase.newKieSession();
             ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, false);
             ksession.dispose();
@@ -202,9 +198,9 @@ public class MVELTest extends CommonTestMethodBase {
 
     @Test
     public void testDuplicateLocalVariableMVELConsequence() {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("test_DuplicateLocalVariableMVELConsequence.drl")), ResourceType.DRL);
-        assertTrue( kbuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "test_DuplicateLocalVariableMVELConsequence.drl");
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -224,7 +220,7 @@ public class MVELTest extends CommonTestMethodBase {
         text += "    $fact.applyValueAddPromo(1,2,3,4,\"mvel\");\n";
         text += "end";
 
-        final KieBase kieBase = loadKnowledgeBaseFromString(text.replaceAll("_mvel", "_java").replaceAll("\"mvel\"", "\"java\""), text);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, text.replaceAll("_mvel", "_java").replaceAll("\"mvel\"", "\"java\""), text);
         final StatelessKieSession statelessKieSession = kieBase.newStatelessKieSession();
 
         final List<String> list = new ArrayList<String>();
@@ -256,15 +252,8 @@ public class MVELTest extends CommonTestMethodBase {
         str += "    insert(new SensorReading()); // from org.acme.sensor.SensorReading \n";
         str += "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            throw new RuntimeException(kbuilder.getErrors().toString());
-        }
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final int result = ksession.fireAllRules();
         assertEquals(1, result);
         final Collection<? extends Object> insertedObjects = ksession.getObjects();
@@ -284,12 +273,9 @@ public class MVELTest extends CommonTestMethodBase {
         "    list.add('r1'); \n" + 
         "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
     
     
@@ -306,17 +292,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add($t.getT()); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
         final Triangle t = new Triangle(Triangle.Type.ACUTE);
@@ -339,17 +316,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -375,17 +343,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -411,8 +370,6 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof ClassFieldReader);
-            final FieldValue r = (( MVELConstraint ) constraint).getField();
-            assertEquals(p.getAddress(), r.getValue());
         }
     }         
     
@@ -430,17 +387,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -466,7 +414,6 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader );
-            assertEquals(new Address("s1"), ((MVELConstraint) constraint).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -474,7 +421,6 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) constraint).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) constraint).getField().getValue());
         }
     }    
     
@@ -493,17 +439,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -529,14 +466,12 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1"), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         constraint = alphanode.getConstraint();
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }       
     
@@ -555,17 +490,8 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
 
@@ -593,7 +519,6 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1"), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
 
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
@@ -601,7 +526,6 @@ public class MVELTest extends CommonTestMethodBase {
 
         if (constraint instanceof MVELConstraint) {
             assertTrue(((MVELConstraint) alphanode.getConstraint()).getFieldExtractor() instanceof MVELObjectClassFieldReader);
-            assertEquals(new Address("s1").getStreet(), ((MVELConstraint) alphanode.getConstraint()).getField().getValue());
         }
     }     
     
@@ -619,13 +543,10 @@ public class MVELTest extends CommonTestMethodBase {
            "    list.add('r1'); \n" + 
            "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        // This should fail as there are no generics for the List 
-        assertTrue(kbuilder.hasErrors());
-        
-    }         
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<org.kie.api.builder.Message> errors = kieBuilder.getResults().getMessages(org.kie.api.builder.Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty()); // This should fail as there are no generics for the List 
+    }
     
     public static class DMap extends HashMap {
         
@@ -699,25 +620,18 @@ public class MVELTest extends CommonTestMethodBase {
             "modify($c){ type = \"swiss";
 
         final String strEnd = "good\"};\n" + "end\n";
-        final StringBuilder failures = new StringBuilder();
         for (final String oper : operators) {
-            final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
             final String rule = strBegin + oper + strEnd;
             System.out.print(rule);
-            kbuilder.add(ResourceFactory.newByteArrayResource(rule.getBytes()), ResourceType.DRL);
-            if (kbuilder.hasErrors()) {
-                failures.append(kbuilder.getErrors().toString());
-            }
-        }
-        final String failStr = failures.toString();
-        if (failStr.length() > 0) {
-            fail(failStr);
+            KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, rule);
+            List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+            assertTrue(errors.toString(), errors.isEmpty());
         }
     }
 
     @Test
     public void testGeneratedBeansMVEL() throws IllegalAccessException, InstantiationException {
-        final KieBase kbase = loadKnowledgeBase("test_GeneratedBeansMVEL.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_GeneratedBeansMVEL.drl");
 
         // Retrieve the generated fact type
         final FactType pf = kbase.getFactType("mortgages", "Applicant");
@@ -727,7 +641,7 @@ public class MVELTest extends CommonTestMethodBase {
         pf.set(person, "creditRating", "OK");
 
         final Object application = af.newInstance();
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(person);
         ksession.insert(application);
 
@@ -752,8 +666,8 @@ public class MVELTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final FactType asgType = kbase.getFactType("org.drools.compiler", "Assignment");
         final Object asg = asgType.newInstance();
@@ -791,8 +705,8 @@ public class MVELTest extends CommonTestMethodBase {
                 "\t list.add( \"OK\" ); \n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
-        final KieSession kSession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
+        KieSession kSession = kbase.newKieSession();
 
         final List<String> list = new ArrayList<String>();
         kSession.setGlobal("list", list);
@@ -834,8 +748,8 @@ public class MVELTest extends CommonTestMethodBase {
                 "        System.out.println(\"Third Rule Fires\");\n" +
                 "end ";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
+        KieSession ksession = kbase.newKieSession();
 
         final TestFact fact = new TestFact();
         fact.setS("asdf");
@@ -884,8 +798,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testMVELSoundex() throws Exception {
         // read in the source
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("MVEL_soundex.drl"));
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "MVEL_soundex.drl");
+        KieSession ksession = kbase.newKieSession();
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
@@ -899,8 +813,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testMVELSoundexNoCharParam() throws Exception {
         // read in the source
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("MVEL_soundexNPE2500.drl"));
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "MVEL_soundexNPE2500.drl");
+        KieSession ksession = kbase.newKieSession();
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
 
@@ -920,8 +834,8 @@ public class MVELTest extends CommonTestMethodBase {
     @Test
     public void testMVELRewrite() throws Exception {
         // read in the source
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_MVELrewrite.drl"));
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MVELrewrite.drl");
+        KieSession ksession = kbase.newKieSession();
 
         ksession = SerializationHelper.getSerialisedStatefulKnowledgeSession(ksession, true);
         final List results = new ArrayList();
@@ -966,16 +880,9 @@ public class MVELTest extends CommonTestMethodBase {
                 "  list.add( \"OK\" ); \n" +
                 "end";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        final KieBaseConfiguration kbConf = KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        kbConf.setOption(EqualityBehaviorOption.EQUALITY);
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(kbConf);
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        final KieSession ksession = kbase.newKieSession();
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("list", list);
@@ -997,10 +904,9 @@ public class MVELTest extends CommonTestMethodBase {
                 "   return Integer.parseInt(obj.toString()); \n" +
                 "}\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        assertTrue(kbuilder.hasErrors());
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -1019,7 +925,9 @@ public class MVELTest extends CommonTestMethodBase {
                 "    }\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
+        KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
         ksession.insert(h);
         ksession.fireAllRules();
@@ -1043,7 +951,9 @@ public class MVELTest extends CommonTestMethodBase {
                 "    }\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
+        KieSession ksession = kbase.newKieSession();
         Human h = new Human(2);
         ksession.insert(h);
         ksession.fireAllRules();
@@ -1101,7 +1011,9 @@ public class MVELTest extends CommonTestMethodBase {
                 "        System.out.println( $fact );\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent( str, ResourceType.DRL ).build( EqualityBehaviorOption.EQUALITY ).newKieSession();
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, str);
+        KieSession ksession = kbase.newKieSession();
 
         Fact f = new Fact();
         ksession.insert(f);
@@ -1143,7 +1055,8 @@ public class MVELTest extends CommonTestMethodBase {
                      "  modify ($p) { setBigDecimal(15 * Math.round( new java.math.BigDecimal(\"49.4\") ) / 100 ) }\n" +
                      "end";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         Person p = new Person("Toshiya");
         ksession.insert(p);
         ksession.fireAllRules();
@@ -1162,7 +1075,8 @@ public class MVELTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         IntFact f = new IntFact();
         f.setA(1);
         f.setB(2);
@@ -1203,7 +1117,8 @@ public class MVELTest extends CommonTestMethodBase {
                      "then\n" +
                      "end";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL).build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
         FactA f = new FactA();
         f.setField3(new Float(15.1f));
         ksession.insert(f);

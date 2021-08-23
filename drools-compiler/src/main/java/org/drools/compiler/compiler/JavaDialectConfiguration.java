@@ -44,6 +44,10 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
         return JavaCompilerFactory.loadCompiler(CompilerType.NATIVE, DEFAULT_JAVA_VERSION, "src/main/java/");
     }
 
+    public static JavaCompiler createEclipseCompiler() {
+        return JavaCompilerFactory.loadCompiler(CompilerType.ECLIPSE, DEFAULT_JAVA_VERSION, "src/main/java/");
+    }
+
     @Override
     public void init(final KnowledgeBuilderConfigurationImpl conf) {
         this.conf = conf;

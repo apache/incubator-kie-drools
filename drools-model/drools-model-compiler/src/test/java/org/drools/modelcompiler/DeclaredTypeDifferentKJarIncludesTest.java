@@ -159,9 +159,7 @@ public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
     }
 
     private Class<? extends KieBuilder.ProjectType> buildProjectClass() {
-        if (asList(FLOW_DSL, FLOW_WITH_ALPHA_NETWORK).contains(testRunType)) {
-            return ExecutableModelFlowProject.class;
-        } else if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
+        if (asList(PATTERN_DSL, PATTERN_WITH_ALPHA_NETWORK).contains(testRunType)) {
             return ExecutableModelProject.class;
         } else {
             return DrlProject.class;

@@ -17,6 +17,7 @@
 package org.drools.testcoverage.common.util;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +25,13 @@ import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.conf.DeclarativeAgendaOption;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.conf.KieBaseOption;
 import org.kie.api.io.Resource;
 import org.kie.api.runtime.KieContainer;
-import org.kie.api.runtime.KieSession;
 
 /**
  * Util class that provides various methods related to KieBase.
@@ -45,7 +46,7 @@ public final class KieBaseUtil {
         return getDefaultKieBaseFromReleaseId(kmodule.getReleaseId());
     }
 
-    private static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
+    public static KieBase getDefaultKieBaseFromReleaseId(final ReleaseId id) {
         return getKieBaseFromReleaseIdByName(id, null);
     }
 
@@ -125,12 +126,65 @@ public final class KieBaseUtil {
         return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
     }
 
+    public static KieBase getKieBaseFromClasspathResources(final String moduleGroupId,
+                                                           final Class<?> classLoaderFromClass,
+                                                           final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                           final String... classpathResources) {
+        final List<Resource> resources = KieUtil.getClasspathResources(classLoaderFromClass, classpathResources);
+        return getKieBaseFromKieModuleFromResources(KieUtil.generateReleaseId(moduleGroupId), kieBaseTestConfiguration, resources.toArray(new Resource[]{}));
+    }
+
+    public static KieBase getKieBaseFromClasspathResourcesWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                           final Class<?> classLoaderFromClass,
+                                                           final ClassLoader classLoaderForKieBuilder,
+                                                           final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                           final String... classpathResources) {
+        final List<Resource> resources = KieUtil.getClasspathResources(classLoaderFromClass, classpathResources);
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, new HashMap<>(), resources);
+    }
+
+    public static KieBase getKieBaseFromClasspathResourcesWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                                       final Class<?> classLoaderFromClass,
+                                                                                       final ClassLoader classLoaderForKieBuilder,
+                                                                                       final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                                       final Map<String, String> kieModuleConfigurationProperties,
+                                                                                       final String... classpathResources) {
+        final List<Resource> resources = KieUtil.getClasspathResources(classLoaderFromClass, classpathResources);
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, kieModuleConfigurationProperties, resources);
+    }
+
+    public static KieBase getKieBaseFromDrlWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                        final ClassLoader classLoaderForKieBuilder,
+                                                                        final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                        final String... drls) {
+        final List<Resource> resources = KieUtil.getResourcesFromDrls(drls);
+        return getKieBaseFromResourcesWithClassLoaderForKieBuilder(moduleGroupId, classLoaderForKieBuilder, kieBaseTestConfiguration, new HashMap<>(), resources);
+    }
+
+    private static KieBase getKieBaseFromResourcesWithClassLoaderForKieBuilder(final String moduleGroupId,
+                                                                               final ClassLoader classLoaderForKieBuilder,
+                                                                               final KieBaseTestConfiguration kieBaseTestConfiguration,
+                                                                               final Map<String, String> kieModuleConfigurationProperties,
+                                                                               final List<Resource> resources) {
+        KieModuleModel kieModuleModel = KieUtil.getKieModuleModel(kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_REALTIME, kieModuleConfigurationProperties);
+        KieFileSystem kfs = KieUtil.getKieFileSystemWithKieModule(kieModuleModel, KieUtil.generateReleaseId(moduleGroupId), resources.toArray(new Resource[]{}));
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false, classLoaderForKieBuilder);
+        final KieModule kieModule = kieBuilder.getKieModule();
+        KieServices.Factory.get().getRepository().addKieModule(kieModule);
+        return getDefaultKieBaseFromReleaseId(kieModule.getReleaseId());
+    }
+
     public static KieBase newKieBaseFromKieModuleWithAdditionalOptions(final KieModule kieModule,
                                                          final KieBaseTestConfiguration kieBaseTestConfiguration, final KieBaseOption... options) {
         final KieContainer kieContainer = KieServices.get().newKieContainer(kieModule.getReleaseId());
         final KieBaseConfiguration kieBaseConfiguration = kieBaseTestConfiguration.getKieBaseConfiguration();
         Arrays.stream(options).forEach(kieBaseConfiguration::setOption);
         return kieContainer.newKieBase(kieBaseConfiguration);
+    }
+
+    public static KieBase newKieBaseFromReleaseId(final ReleaseId id, final KieBaseConfiguration kbaseConf) {
+        final KieContainer container = KieServices.Factory.get().newKieContainer(id);
+        return container.newKieBase(kbaseConf);
     }
 
     private KieBaseUtil() {

@@ -16,19 +16,19 @@
 
 package org.drools.mvel.compiler;
 
-import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.kie.api.KieServices;
-import org.kie.api.builder.KieFileSystem;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Results;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class TestUtil {
 
-    public static void assertDrlHasCompilationError( String str, int errorNr ) {
-        KieServices ks = KieServices.Factory.get();
-        KieFileSystem kfs = ks.newKieFileSystem().write( "src/main/resources/r1.drl", str );
-        org.kie.api.builder.Results results = ks.newKieBuilder( kfs ).buildAll( DrlProject.class).getResults();
+    public static void assertDrlHasCompilationError( String str, int errorNr, KieBaseTestConfiguration kieBaseTestConfiguration ) {
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        Results results = kieBuilder.getResults();
         if ( errorNr > 0 ) {
             assertEquals( errorNr, results.getMessages().size() );
         } else {

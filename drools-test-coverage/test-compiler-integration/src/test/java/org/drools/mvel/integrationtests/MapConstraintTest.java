@@ -17,41 +17,59 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.audit.WorkingMemoryConsoleLogger;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.Pet;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.mockito.ArgumentCaptor;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-public class MapConstraintTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class MapConstraintTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MapConstraintTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testMapAccess() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_MapAccess.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MapAccess.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -71,8 +89,8 @@ public class MapConstraintTest extends CommonTestMethodBase {
 
     @Test
     public void testMapAccessWithVariable() throws Exception {
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBase("test_MapAccessWithVariable.drl"));
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MapAccessWithVariable.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List list = new ArrayList();
         ksession.setGlobal("results", list);
@@ -104,16 +122,15 @@ public class MapConstraintTest extends CommonTestMethodBase {
                 "    then\n" +
                 "end\n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
-
-        assertTrue(kbuilder.hasErrors());
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
     public void testMapNullConstraint() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("test_mapNullConstraints.drl");
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_mapNullConstraints.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final org.kie.api.event.rule.AgendaEventListener ael = mock(org.kie.api.event.rule.AgendaEventListener.class);
         ksession.addEventListener(ael);
@@ -161,8 +178,8 @@ public class MapConstraintTest extends CommonTestMethodBase {
                 "then\n" +
                 "end\n";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = kbase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new MapContainerBean());
         assertEquals(4, ksession.fireAllRules());
@@ -197,8 +214,8 @@ public class MapConstraintTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         final Map<String, String> mark = new HashMap<>();
         mark.put("type", "Person");
@@ -221,9 +238,8 @@ public class MapConstraintTest extends CommonTestMethodBase {
 
     @Test
     public void testListOfMaps() {
-        final KieBase kbase = loadKnowledgeBase("test_TestMapVariableRef.drl");
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_TestMapVariableRef.drl");
+        KieSession ksession = kbase.newKieSession();
         final List<Map<String, Object>> list = new ArrayList<>();
 
         final Map mapOne = new HashMap<String, Object>();
@@ -255,8 +271,8 @@ public class MapConstraintTest extends CommonTestMethodBase {
         rule += "    System.out.println(\"hi pet\");\n";
         rule += "end";
 
-        final KieBase kbase = SerializationHelper.serializeObject(loadKnowledgeBaseFromString(rule));
-        final KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule);
+        KieSession session = kbase.newKieSession();
         assertNotNull(session);
 
         final Pet pet1 = new Pet("Toni");

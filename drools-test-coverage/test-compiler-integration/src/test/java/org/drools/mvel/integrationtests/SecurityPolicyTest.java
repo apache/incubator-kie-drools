@@ -16,13 +16,18 @@
 package org.drools.mvel.integrationtests;
 
 import java.security.Policy;
+import java.util.Collection;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -37,7 +42,20 @@ import org.mvel2.PropertyAccessException;
  * This is a sample class to launch a rule.
  */
 @Ignore( "This test causes problems to surefire, so it will be disabled for now. It works when executed by itself.")
-public class SecurityPolicyTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class SecurityPolicyTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SecurityPolicyTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Before
     public void init() {
@@ -65,15 +83,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
@@ -92,15 +103,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
@@ -112,6 +116,7 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
     
     @Test
     public void testSerializationUntrustedMvelConsequence() {
+     // kbase serialization is not supported. But leave it for standard-drl.
         String drl = "package org.foo.bar\n" +
                 "rule R1 dialect \"mvel\" when\n" +
                 "then\n" +
@@ -146,15 +151,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
@@ -174,15 +172,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
@@ -209,15 +200,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
@@ -241,15 +225,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {
@@ -280,15 +257,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.insert("foo");
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
@@ -320,15 +290,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.insert("foo");
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
@@ -358,15 +321,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (ShouldHavePrevented e) {
@@ -386,15 +342,8 @@ public class SecurityPolicyTest extends CommonTestMethodBase {
                 "end\n";
 
         try {
-            KieServices ks = KieServices.Factory.get();
-            KieFileSystem kfs = ks.newKieFileSystem().write(ResourceFactory.newByteArrayResource(drl.getBytes())
-                    .setSourcePath("org/foo/bar/r1.drl"));
-            ks.newKieBuilder(kfs).buildAll();
-
-            ReleaseId releaseId = ks.getRepository().getDefaultReleaseId();
-            KieContainer kc = ks.newKieContainer(releaseId);
-
-            KieSession ksession = kc.newKieSession();
+            KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+            KieSession ksession = kbase.newKieSession();
             ksession.fireAllRules();
             Assert.fail("The security policy for the rule should have prevented this from executing...");
         } catch (PropertyAccessException e) {

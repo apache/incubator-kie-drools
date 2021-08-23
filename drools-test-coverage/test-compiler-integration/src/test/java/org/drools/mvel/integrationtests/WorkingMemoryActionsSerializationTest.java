@@ -15,32 +15,44 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.fail;
 
 @Ignore
+@RunWith(Parameterized.class)
 public class WorkingMemoryActionsSerializationTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public WorkingMemoryActionsSerializationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
     private static final List<String> RULES = Arrays.asList("enableRecording", "saveRecord", "processEvent", "ignoreEvent"); //rules expected to be executed
     private KieSession ksession;
     private KieBase kbase;
@@ -97,13 +109,7 @@ public class WorkingMemoryActionsSerializationTest {
     public void before() {
         ruleCalls.clear();
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase( );
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         ksession = kbase.newKieSession();
 

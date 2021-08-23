@@ -20,7 +20,12 @@ import java.io.InputStream;
 import com.github.javaparser.ParseProblemException;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.Node;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -96,5 +101,27 @@ public class JavaParserUtils {
                 .getName().asString();
         String className = cu.getType(0).getName().asString();
         return packageName + "." + className;
+    }
+
+    public static MethodDeclaration parseMethod(final String method) {
+        return StaticJavaParser.parse("public class MyClass { " + method + " }")
+                .findFirst(MethodDeclaration.class)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid method provided"));
+    }
+
+    public static BlockStmt parseBlock(final String block) {
+        return StaticJavaParser.parseBlock(block);
+    }
+
+    public static Statement parseStatement(final String statement) {
+        return StaticJavaParser.parseStatement(statement);
+    }
+
+    public static Expression parseExpression(final String statement) {
+        return StaticJavaParser.parseExpression(statement);
+    }
+
+    public static boolean equalsNode(Node node1, Node node2) {
+        return node1.toString().equals(node2.toString());
     }
 }

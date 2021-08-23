@@ -288,23 +288,23 @@ public class DeclarationScopeResolver {
         return classes;
     }
 
-    public Pattern findPatternByIndex(int index) {
+    public Pattern findPatternById(int id) {
         if ( !this.buildStack.isEmpty() ) {
-            return findPatternInNestedElements( index, buildStack.get( 0 ) );
+            return findPatternInNestedElements( id, buildStack.get( 0 ) );
         }
         return null;
     }
 
-    private Pattern findPatternInNestedElements(final int index,
+    private Pattern findPatternInNestedElements(final int id,
                                                 final RuleConditionElement rce) {
         for ( RuleConditionElement element : rce.getNestedElements() ) {
             if ( element instanceof Pattern ) {
                 Pattern p = (Pattern) element;
-                if ( p.getIndex() == index ) {
+                if (p.getPatternId() == id ) {
                     return p;
                 }
             } else if ( !element.isPatternScopeDelimiter() ) {
-                Pattern p = findPatternInNestedElements( index,
+                Pattern p = findPatternInNestedElements( id,
                                                          element );
                 if ( p != null ) {
                     return p;

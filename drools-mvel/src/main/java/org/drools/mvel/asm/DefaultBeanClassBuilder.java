@@ -20,7 +20,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -461,7 +461,7 @@ public class DefaultBeanClassBuilder implements Opcodes, BeanClassBuilder, Seria
         }
 
         // Building constructor with key fields only
-        List<FieldDefinition> keys = new LinkedList<FieldDefinition>();
+        List<FieldDefinition> keys = new ArrayList<FieldDefinition>();
         for ( FieldDefinition fieldDef : classDef.getFieldsDefinitions() ) {
             if ( fieldDef.isKey() ) {
                 keys.add( fieldDef );

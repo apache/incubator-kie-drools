@@ -18,7 +18,9 @@
 package org.drools.modelcompiler.builder.generator;
 
 import java.lang.reflect.Method;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Deque;
 import java.util.HashMap;
@@ -30,15 +32,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
+import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.UnknownType;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.BaseKnowledgeBuilderResultImpl;
+import org.drools.compiler.lang.descr.AndDescr;
 import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.AttributeDescr;
 import org.drools.compiler.lang.descr.BaseDescr;
@@ -47,9 +51,11 @@ import org.drools.compiler.lang.descr.ForallDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.TypeResolver;
+import org.drools.core.base.evaluators.EvaluatorDefinition;
 import org.drools.core.ruleunit.RuleUnitDescriptionLoader;
 import org.drools.core.util.Bag;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.errors.UnknownDeclarationException;
 import org.drools.modelcompiler.builder.errors.UnknownRuleUnitException;
 import org.kie.api.definition.type.ClassReactive;
 import org.kie.api.definition.type.PropertyReactive;
@@ -62,7 +68,7 @@ import org.kie.internal.ruleunit.RuleUnitVariable;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-
+import static java.util.stream.Collectors.toList;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryArg;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isLegacyRuleUnit;
 
@@ -71,80 +77,91 @@ public class RuleContext {
     private final KnowledgeBuilderImpl kbuilder;
     private final PackageModel packageModel;
     private final TypeResolver typeResolver;
-    private DRLIdGenerator idGenerator;
-    private RuleDescr descr;
-    private final boolean generatePatternDSL;
+    private final RuleDescr ruleDescr;
+    private final int ruleIndex;
 
-    private List<DeclarationSpec> allDeclarations = new ArrayList<>();
-    private Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
-    private List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
-    private Deque<Consumer<Expression>> exprPointer = new LinkedList<>();
-    private List<Expression> expressions = new ArrayList<>();
-    private Map<String, String> namedConsequences = new HashMap<>();
+    private final DRLIdGenerator idGenerator;
 
-    private List<QueryParameter> queryParameters = new ArrayList<>();
+    private final Map<String, DeclarationSpec> allDeclarations = new LinkedHashMap<>();
+    private final Map<String, DeclarationSpec> scopedDeclarations = new LinkedHashMap<>();
+    private final List<DeclarationSpec> ooPathDeclarations = new ArrayList<>();
+    private final Deque<Consumer<Expression>> exprPointer = new ArrayDeque<>();
+    private final List<Expression> expressions = new ArrayList<>();
+    private final Map<String, String> namedConsequences = new HashMap<>();
+    private Map<String, MethodCallExpr> ooPathBindingPatternExprs;
+    private final BlockStmt ruleVariablesBlock = new BlockStmt();
+
+    private final List<QueryParameter> queryParameters = new ArrayList<>();
     private Optional<String> queryName = empty();
 
     private RuleUnitDescription ruleUnitDescr;
-    private Map<String, Class<?>> ruleUnitVars = new HashMap<>();
-    private Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVars = new HashMap<>();
+    private final Map<String, Class<?>> ruleUnitVarsOriginalType = new HashMap<>();
 
-    private Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
+    private final Map<AggregateKey, String> aggregatePatternMap = new HashMap<>();
 
     /* These are used to check if some binding used in an OR expression is used in every branch */
-    private Boolean isNestedInsideOr = false;
-    private Bag<String> bindingOr = new Bag<>();
-    private Set<String> unusableOrBinding = new HashSet<>();
+    private boolean isNestedInsideOr = false;
+    private final Bag<String> bindingOr = new Bag<>();
+    private final Set<String> unusableOrBinding = new HashSet<>();
 
     private RuleDialect ruleDialect = RuleDialect.JAVA; // assumed is java by default as per Drools manual.
 
+    private int scopeCounter = 1;
     private Scope currentScope = new Scope();
-    private Deque<Scope> scopesStack = new LinkedList<>();
-    private Map<String, String> definedVars = new HashMap<>();
+    private final Deque<Scope> scopesStack = new LinkedList<>();
+    private final Map<String, String> definedVars = new HashMap<>();
 
-    private Map<String, Type> explicitCastType = new HashMap<>();
+    private final Map<String, Type> explicitCastType = new HashMap<>();
 
     // These are used for indexing see PatternBuilder:1198
-    private Set<String> patternBindings = new HashSet<>();
+    private final Set<String> patternBindings = new HashSet<>();
 
     private int legacyAccumulateCounter = 0;
 
     private Optional<BaseDescr> currentConstraintDescr = empty();
 
+    private boolean hasCompilationError;
+
     public enum RuleDialect {
-        JAVA,
-        MVEL;
+        JAVA, MVEL
     }
 
-    public BaseDescr parentDesc = null;
+    private AndDescr parentDescr;
 
-    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, boolean generatePatternDSL) {
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr) {
+        this(kbuilder, packageModel, typeResolver, ruleDescr, -1);
+    }
+
+    public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
         this.idGenerator = packageModel.getExprIdGenerator();
         exprPointer.push( this.expressions::add );
         this.typeResolver = typeResolver;
-        this.generatePatternDSL = generatePatternDSL;
+        this.ruleDescr = ruleDescr;
+        processUnitData();
+        this.ruleIndex = ruleIndex;
     }
 
     private void findUnitDescr() {
-        if (descr == null) {
+        if (ruleDescr == null) {
             return;
         }
 
         boolean useNamingConvention = false;
-        String unitName = null;
-        AnnotationDescr unitAnn = descr.getAnnotation( "Unit" );
+        String unitName;
+        AnnotationDescr unitAnn = ruleDescr.getAnnotation( "Unit" );
         if (unitAnn != null) {
             unitName = ( String ) unitAnn.getValue();
             unitName = unitName.substring( 0, unitName.length() - ".class".length() );
-        } else if (descr.getUnit() != null) {
-            unitName = descr.getUnit().getTarget();
+        } else if (ruleDescr.getUnit() != null) {
+            unitName = ruleDescr.getUnit().getTarget();
         } else {
-            if (descr.getResource() == null) {
+            if (ruleDescr.getResource() == null) {
                 return;
             }
-            String drlFile = descr.getResource().getSourcePath();
+            String drlFile = ruleDescr.getResource().getSourcePath();
             if (drlFile != null) {
                 String drlFileName = drlFile.substring(drlFile.lastIndexOf('/')+1);
                 unitName = packageModel.getName() + '.' + drlFileName.substring(0, drlFileName.length() - ".drl".length());
@@ -179,10 +196,6 @@ public class RuleContext {
         }
     }
 
-    public boolean isPatternDSL() {
-        return generatePatternDSL;
-    }
-
     public RuleUnitDescription getRuleUnitDescr() {
         return ruleUnitDescr;
     }
@@ -191,20 +204,34 @@ public class RuleContext {
         return kbuilder;
     }
 
+    public int getRuleIndex() {
+        return ruleIndex;
+    }
+
+    public EvaluatorDefinition getEvaluatorDefinition(String opName) {
+        return kbuilder.getBuilderConfiguration().getEvaluatorRegistry().getEvaluatorDefinition( opName );
+    }
+
     public void addCompilationError( KnowledgeBuilderResult error ) {
+        hasCompilationError = true;
         if ( error instanceof BaseKnowledgeBuilderResultImpl ) {
-            (( BaseKnowledgeBuilderResultImpl ) error).setResource( descr.getResource() );
+            (( BaseKnowledgeBuilderResultImpl ) error).setResource( ruleDescr.getResource() );
         }
-        kbuilder.addBuilderResult( error );
+        synchronized (kbuilder) {
+            kbuilder.addBuilderResult(error);
+        }
+    }
+
+    public boolean hasCompilationError() {
+        return hasCompilationError;
     }
 
     public boolean hasErrors() {
         return kbuilder.hasResults( ResultSeverity.ERROR );
     }
 
-    public RuleContext addInlineCastType(String field, Type type) {
+    public void addInlineCastType(String field, Type type) {
         explicitCastType.put(field, type);
-        return this;
     }
 
     public Optional<Type> explicitCastType(String field) {
@@ -226,7 +253,7 @@ public class RuleContext {
     }
 
     public DeclarationSpec getDeclarationByIdWithException(String id) {
-        return getDeclarationById(id).orElseThrow(() -> new RuntimeException(id));
+        return getDeclarationById(id).orElseThrow(() -> new UnknownDeclarationException("Unknown declaration: " + id));
     }
 
     private String getDeclarationKey( String id ) {
@@ -235,7 +262,10 @@ public class RuleContext {
     }
 
     public void removeDeclarationById(String id) {
-        scopedDeclarations.remove( getDeclarationKey( id ) );
+        String declId = getDeclarationKey( id );
+        scopedDeclarations.remove( declId );
+        this.allDeclarations.remove( declId );
+        definedVars.remove(id);
     }
 
     public boolean hasDeclaration(String id) {
@@ -303,14 +333,19 @@ public class RuleContext {
     }
 
     private String defineVar(String var) {
-        String bindingId = currentScope.id + var;
+        String bindingId = currentScope.getBindingVar( var );
         definedVars.put(var, bindingId);
         currentScope.vars.add(var);
         return bindingId;
     }
 
+    public String getCurrentScopeSuffix() {
+        return currentScope.id;
+    }
+
     public DeclarationSpec addDeclaration(DeclarationSpec d) {
-        scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        this.scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        this.allDeclarations.putIfAbsent( d.getBindingId(), d );
         return d;
     }
 
@@ -321,6 +356,8 @@ public class RuleContext {
             removeDeclarationById(bindingId);
         }
         this.scopedDeclarations.put(d.getBindingId(), d);
+        this.allDeclarations.put(d.getBindingId(), d);
+        definedVars.put(bindingId, bindingId);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
@@ -330,12 +367,7 @@ public class RuleContext {
     }
 
     public Collection<DeclarationSpec> getAllDeclarations() {
-        if (allDeclarations.isEmpty()) {
-            return scopedDeclarations.values();
-        }
-        List declrs = new ArrayList( scopedDeclarations.values() );
-        declrs.addAll( allDeclarations );
-        return declrs;
+        return allDeclarations.values();
     }
 
     public Collection<String> getAvailableBindings() {
@@ -348,6 +380,21 @@ public class RuleContext {
 
     public void addExpression(Expression e) {
         exprPointer.peek().accept(e);
+    }
+
+    public void registerOOPathPatternExpr(String binding, MethodCallExpr patternExpr) {
+        if (ooPathBindingPatternExprs == null) {
+            ooPathBindingPatternExprs = new HashMap<>();
+        }
+        ooPathBindingPatternExprs.put( binding, patternExpr );
+    }
+
+    public void clearOOPathPatternExpr() {
+        ooPathBindingPatternExprs = null;
+    }
+
+    public MethodCallExpr getOOPathPatternExpr(String binding) {
+        return ooPathBindingPatternExprs == null ? null : ooPathBindingPatternExprs.get(binding);
     }
 
     public void pushExprPointer(Consumer<Expression> p) {
@@ -395,16 +442,11 @@ public class RuleContext {
     }
 
     public RuleDescr getRuleDescr() {
-        return descr;
-    }
-
-    public void setDescr(RuleDescr descr) {
-        this.descr = descr;
-        processUnitData();
+        return ruleDescr;
     }
 
     public String getRuleName() {
-        return descr.getName();
+        return ruleDescr.getName();
     }
 
     public RuleDialect getRuleDialect() {
@@ -415,12 +457,16 @@ public class RuleContext {
         this.ruleDialect = ruleDialect;
     }
 
-    public Optional<QueryParameter> queryParameterWithName(Predicate<? super QueryParameter> predicate) {
-        return queryParameters.stream().filter(predicate).findFirst();
+    public Optional<QueryParameter> getQueryParameterByName(String name) {
+        return queryParameters.stream().filter(p -> p.getName().equals( name )).findFirst();
     }
 
     public List<QueryParameter> getQueryParameters() {
         return queryParameters;
+    }
+
+    public void addQueryParameter(QueryParameter queryParameter) {
+        queryParameters.add(queryParameter);
     }
 
     public List<Expression> getExpressions() {
@@ -433,6 +479,10 @@ public class RuleContext {
 
     public void setQueryName(Optional<String> queryName) {
         this.queryName = queryName;
+    }
+
+    public boolean isRecurisveQuery(String queryName) {
+        return this.queryName.isPresent() && this.queryName.get().equals(queryName);
     }
 
     public boolean isQuery() {
@@ -461,16 +511,44 @@ public class RuleContext {
                                                       patternClass.getAnnotation( ClassReactive.class ) != null );
     }
 
-    public Optional<Class<?>> getFunctionType(String name) {
+    public Optional<FunctionType> getFunctionType(String name) {
         Method m = packageModel.getStaticMethod(name);
         if (m != null) {
-            return of(m.getReturnType());
+            return of(new FunctionType(m.getReturnType(), Arrays.asList(m.getParameterTypes())));
         }
 
         return packageModel.getFunctions().stream()
                 .filter( method -> method.getNameAsString().equals( name ) )
                 .findFirst()
-                .flatMap( method -> resolveType( method.getType().asString() ) );
+                .flatMap( method -> {
+                    Optional<Class<?>> returnType = resolveType(method.getType().asString());
+
+                    List<String> parametersType = method.getParameters().stream().map(Parameter::getType).map(Type::asString).collect(toList());
+                    List<Class<?>> resolvedParameterTypes = parametersType.stream()
+                            .map(this::resolveType)
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .collect(toList());
+                    return returnType.map(t -> new FunctionType(t, resolvedParameterTypes));
+                });
+    }
+
+    public static class FunctionType {
+        private final Class<?> returnType;
+        private final List<Class<?>> argumentsType;
+
+        public FunctionType(Class<?> returnType, List<Class<?>> argumentsType) {
+            this.returnType = returnType;
+            this.argumentsType = argumentsType;
+        }
+
+        public Class<?> getReturnType() {
+            return returnType;
+        }
+
+        public List<Class<?>> getArgumentsType() {
+            return argumentsType;
+        }
     }
 
     public Optional<Class<?>> resolveType(String name) {
@@ -481,11 +559,11 @@ public class RuleContext {
         }
     }
 
-    public Boolean isNestedInsideOr() {
+    public boolean isNestedInsideOr() {
         return isNestedInsideOr;
     }
 
-    public void setNestedInsideOr(Boolean nestedInsideOr) {
+    public void setNestedInsideOr(boolean nestedInsideOr) {
         isNestedInsideOr = nestedInsideOr;
     }
 
@@ -497,12 +575,24 @@ public class RuleContext {
         return unusableOrBinding;
     }
 
+    public String fromVar(String key) {
+        return key.substring( "var_".length(), key.length() - currentScope.id.length() );
+    }
+
+    public String getOutOfScopeVar( String x ) {
+        return x == null ? null : x + scopesStack.getLast().id;
+    }
+
     public Expression getVarExpr(String x) {
+        return getVarExpr( x, getVar( x ) );
+    }
+
+    public Expression getVarExpr( String x, String var ) {
         if (!isQuery()) {
-            new NameExpr( getVar( x ) );
+            new NameExpr( var );
         }
 
-        Optional<QueryParameter> optQueryParameter = queryParameterWithName(p -> p.name.equals(x));
+        Optional<QueryParameter> optQueryParameter = getQueryParameterByName(x);
         return optQueryParameter.map(qp -> {
 
             final String queryDef = getQueryName().orElseThrow(RuntimeException::new);
@@ -510,12 +600,15 @@ public class RuleContext {
             final int queryParameterIndex = getQueryParameters().indexOf(qp) + 1;
             return (Expression)new MethodCallExpr(new NameExpr(queryDef), toQueryArg(queryParameterIndex));
 
-        }).orElse(new NameExpr( getVar( x ) ));
+        }).orElse(new NameExpr( var ));
     }
 
     public String getVar( String x ) {
-        String var = x.startsWith( "sCoPe" ) ? x : definedVars.get(x);
-        return DrlxParseUtil.toVar(var != null ? var : currentScope.id + x);
+        if ( idGenerator.isGenerated( x ) || ruleUnitVars.containsKey( x ) ) {
+            return DrlxParseUtil.toVar( x );
+        }
+        String var = x.endsWith( "sCoPe" ) ? x : definedVars.get(x);
+        return DrlxParseUtil.toVar(var != null ? var : x + currentScope.id);
     }
 
     public void pushScope(ConditionalElementDescr scopeElement) {
@@ -532,34 +625,40 @@ public class RuleContext {
         return currentScope.forallFirstIdentifier;
     }
 
-    private static int scopeCounter = 1;
     private class Scope {
         private final String id;
-        private final ConditionalElementDescr scopeElement;
         private final String forallFirstIdentifier;
-        private List<String> vars = new ArrayList<>();
+        private final List<String> vars = new ArrayList<>();
 
         private Scope() {
             this( "", null );
         }
 
         private Scope( ConditionalElementDescr scopeElement ) {
-            this( "sCoPe" + scopeCounter++ + "_", scopeElement );
+            this( "_" + scopeCounter++ + "_sCoPe", scopeElement );
         }
 
         private Scope( String id, ConditionalElementDescr scopeElement ) {
             this.id = id;
-            this.scopeElement = scopeElement;
-            forallFirstIdentifier =
+            this.forallFirstIdentifier =
                 (scopeElement instanceof ForallDescr && scopeElement.getDescrs().size() == 2 && scopeElement.getDescrs().get( 0 ) instanceof PatternDescr) ?
                 (( PatternDescr ) scopeElement.getDescrs().get( 0 )).getIdentifier() : null;
         }
 
         private void clear() {
             vars.forEach( v -> {
-                definedVars.remove(v);
-                allDeclarations.add( scopedDeclarations.remove( id + v ) );
+                definedVars.remove( v );
+                scopedDeclarations.remove( getBindingVar( v ) );
             } );
+        }
+
+        private String getBindingVar( String var ) {
+            return idGenerator.isGenerated( var ) ? var : var + id;
+        }
+
+        @Override
+        public String toString() {
+            return "Scope: " + id;
         }
     }
 
@@ -607,9 +706,21 @@ public class RuleContext {
         this.currentConstraintDescr = empty();
     }
 
+    public void setParentDescr( AndDescr parentDescr ) {
+        this.parentDescr = parentDescr;
+    }
+
+    public AndDescr getParentDescr() {
+        return parentDescr;
+    }
+
+    public BlockStmt getRuleVariablesBlock() {
+        return ruleVariablesBlock;
+    }
+
     @Override
     public String toString() {
-        return "RuleContext for " + descr.getNamespace() + "." + descr.getName();
+        return "RuleContext for " + ruleDescr.getNamespace() + "." + ruleDescr.getName();
     }
 }
 

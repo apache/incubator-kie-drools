@@ -33,7 +33,7 @@ import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static com.github.javaparser.ast.Modifier.publicModifier;
 import static com.github.javaparser.ast.NodeList.nodeList;
-import static java.util.stream.Collectors.joining;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class ModelSourceClass {
@@ -184,7 +184,7 @@ public class ModelSourceClass {
         public String toGetKieModuleModelMethod() {
             MethodDeclaration methodDeclaration = new MethodDeclaration(nodeList(publicModifier()), new ClassOrInterfaceType(null, kieModuleModelCanonicalName), "getKieModuleModel");
             methodDeclaration.setBody(stmt);
-            methodDeclaration.addAnnotation( "Override" );
+            methodDeclaration.addAnnotation( createSimpleAnnotation(Override.class) );
             return methodDeclaration.toString();
         }
 
@@ -192,83 +192,20 @@ public class ModelSourceClass {
             return kBaseModels.keySet();
         }
 
-        public String toGetKieBaseMethods() {
-            return
-                    "    @Override\n" +
-                            "    public KieBase getKieBase() {\n" +
-                            ( defaultKieBaseName != null ?
-                                    "        return getKieBase(\"" + defaultKieBaseName + "\");\n" :
-                                    "        throw new UnsupportedOperationException(\"There is no default KieBase\");\n") +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieBase getKieBase(String name) {\n" +
-                            "        return kbases.computeIfAbsent(name, n -> KieBaseBuilder.createKieBaseFromModel( model.getModelsForKieBase( n ), model.getKieModuleModel().getKieBaseModels().get( n ) ));\n" +
-                            "    }\n";
+        public String getDefaultKieBaseName() {
+            return defaultKieBaseName;
         }
 
-        public String toNewKieSessionMethods() {
-            return
-                    "    @Override\n" +
-                            "    public KieSession newKieSession() {\n" +
-                            ( defaultKieSessionName != null ?
-                                    "        return newKieSession(\"" + defaultKieSessionName + "\");\n" :
-                                    "        throw new UnsupportedOperationException(\"There is no default KieSession\");\n") +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieSession newKieSession(String sessionName) {\n" +
-                            "        return newKieSession(sessionName, new org.drools.core.config.StaticRuleConfig(new org.drools.core.config.DefaultRuleEventListenerConfig()));\n" +
-                            "    }\n" +
-                            "\n" +
-                            "    @Override\n" +
-                            "    public KieSession newKieSession(String sessionName, org.kie.kogito.rules.RuleConfig ruleConfig) {\n" +
-                            "        KieBase kbase = getKieBaseForSession(sessionName);\n" +
-                            "        if (kbase == null) {\n" +
-                            "            throw new RuntimeException(\"Unknown KieSession with name '\" + sessionName + \"'\");\n" +
-                            "        }\n" +
-                            "        KieSession ksession = kbase.newKieSession(getConfForSession(sessionName), null);\n" +
-                            "        ruleConfig.ruleEventListeners().agendaListeners().forEach( ksession::addEventListener );\n" +
-                            "        ruleConfig.ruleEventListeners().ruleRuntimeListeners().forEach( ksession::addEventListener );\n" +
-                            "        return ksession;\n" +
-                            "    }\n";
+        public String getDefaultKieSessionName() {
+            return defaultKieSessionName;
         }
 
-        public String toGetKieBaseForSessionMethod() {
-            StringBuilder sb = new StringBuilder(
-                    "    private KieBase getKieBaseForSession(String sessionName) {\n" +
-                            "        switch (sessionName) {\n"
-            );
-
-            for (Map.Entry<String, String> entry : kSessionForkBase.entrySet()) {
-                sb.append( "            case \"" + entry.getKey() + "\": return getKieBase(\"" + entry.getValue() + "\");\n" );
-            }
-
-            sb.append(
-                    "        }\n" +
-                            "        return null;\n" +
-                            "    }\n" );
-            return sb.toString();
+        public Map<String, BlockStmt> getkSessionConfs() {
+            return kSessionConfs;
         }
 
-        public String toKieSessionConfMethod() {
-            StringBuilder sb = new StringBuilder(
-                    "    private org.kie.api.runtime.KieSessionConfiguration getConfForSession(String sessionName) {\n" +
-                            "        org.drools.core.SessionConfigurationImpl conf = new org.drools.core.SessionConfigurationImpl();\n" +
-                            "        switch (sessionName) {\n"
-            );
-
-            for (Map.Entry<String, BlockStmt> entry : kSessionConfs.entrySet()) {
-                sb.append( "            case \"" + entry.getKey() + "\":\n" );
-                sb.append( entry.getValue() );
-                sb.append( "                break;\n" );
-            }
-
-            sb.append(
-                    "        }\n" +
-                            "        return conf;\n" +
-                            "    }\n" );
-            return sb.toString();
+        public Map<String, String> getkSessionForkBase() {
+            return kSessionForkBase;
         }
 
         private void init() {

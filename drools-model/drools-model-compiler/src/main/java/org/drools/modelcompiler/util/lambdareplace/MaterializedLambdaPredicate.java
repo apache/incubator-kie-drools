@@ -30,8 +30,9 @@ import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.model.functions.PredicateInformation;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
-import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class MaterializedLambdaPredicate extends MaterializedLambda {
 
@@ -58,8 +59,8 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
 
     private void createTestMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("test", Modifier.Keyword.PUBLIC);
-        methodDeclaration.setThrownExceptions(NodeList.nodeList(parseClassOrInterfaceType("java.lang.Exception")));
-        methodDeclaration.addAnnotation("Override");
+        methodDeclaration.setThrownExceptions(NodeList.nodeList(toClassOrInterfaceType(java.lang.Exception.class)));
+        methodDeclaration.addAnnotation( createSimpleAnnotation("Override") );
         methodDeclaration.setType(new PrimitiveType(PrimitiveType.Primitive.BOOLEAN));
 
         setMethodParameter(methodDeclaration);
@@ -71,7 +72,7 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     private void createPredicateInformationMethod(EnumDeclaration classDeclaration) {
         MethodDeclaration methodDeclaration = classDeclaration.addMethod("predicateInformation", Modifier.Keyword.PUBLIC);
         methodDeclaration.addAnnotation("Override");
-        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) parseType(PredicateInformation.class.getCanonicalName());
+        ClassOrInterfaceType predicateInformationType = (ClassOrInterfaceType) toJPType(PredicateInformation.class);
         methodDeclaration.setType(predicateInformationType);
 
         ObjectCreationExpr newPredicateInformation = new ObjectCreationExpr(null, predicateInformationType, NodeList.nodeList(
@@ -85,6 +86,6 @@ public class MaterializedLambdaPredicate extends MaterializedLambda {
     @Override
     protected ClassOrInterfaceType functionType() {
         String type = "Predicate" + lambdaParameters.size();
-        return parseClassOrInterfaceType("org.drools.model.functions." + type);
+        return toClassOrInterfaceType("org.drools.model.functions." + type);
     }
 }

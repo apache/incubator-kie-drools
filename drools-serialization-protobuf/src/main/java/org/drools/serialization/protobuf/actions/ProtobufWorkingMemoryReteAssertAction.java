@@ -53,10 +53,7 @@ public class ProtobufWorkingMemoryReteAssertAction
         if ( this.tuple != null ) {
             ProtobufMessages.Tuple.Builder _tuple = ProtobufMessages.Tuple.newBuilder();
             for( Tuple entry = this.tuple; entry != null; entry = entry.getParent() ) {
-                if ( entry.getFactHandle() != null ) {
-                    // can be null for eval, not and exists that have no right input
-                    _tuple.addHandleId( entry.getFactHandle().getId() );
-                }
+                _tuple.addHandleId( entry.getFactHandle().getId() );
             }
             _assert.setOriginPkgName( ruleOrigin.getPackageName() )
                     .setOriginRuleName( ruleOrigin.getName() )

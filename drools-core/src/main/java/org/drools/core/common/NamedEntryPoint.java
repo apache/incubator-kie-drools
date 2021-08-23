@@ -96,21 +96,11 @@ public class NamedEntryPoint
     public NamedEntryPoint(EntryPointId entryPoint,
                            EntryPointNode entryPointNode,
                            StatefulKnowledgeSessionImpl wm) {
-        this(entryPoint,
-                entryPointNode,
-                wm,
-                new ReentrantLock());
-    }
-
-    public NamedEntryPoint(EntryPointId entryPoint,
-                           EntryPointNode entryPointNode,
-                           StatefulKnowledgeSessionImpl wm,
-                           ReentrantLock lock) {
         this.entryPoint = entryPoint;
         this.entryPointNode = entryPointNode;
         this.wm = wm;
         this.kBase = this.wm.getKnowledgeBase();
-        this.lock = lock;
+        this.lock = wm.getSessionConfiguration().isThreadSafe() ? new ReentrantLock() : null;
         this.handleFactory = this.wm.getFactHandleFactory();
 
         RuleBaseConfiguration conf = this.kBase.getConfiguration();
@@ -121,24 +111,16 @@ public class NamedEntryPoint
                 new IdentityObjectStore();
     }
 
-    protected NamedEntryPoint( EntryPointId entryPoint,
-                               StatefulKnowledgeSessionImpl wm,
-                               FactHandleFactory handleFactory,
-                               ReentrantLock lock,
-                               ObjectStore objectStore ) {
-        this.entryPoint = entryPoint;
-        this.wm = wm;
-        this.handleFactory = handleFactory;
-        this.lock = lock;
-        this.objectStore = objectStore;
-    }
-
     public void lock() {
-        lock.lock();
+        if (lock != null) {
+            lock.lock();
+        }
     }
 
     public void unlock() {
-        lock.unlock();
+        if (lock != null) {
+            lock.unlock();
+        }
     }
 
     public void reset() {
@@ -208,7 +190,7 @@ public class NamedEntryPoint
 
             InternalFactHandle handle;
             try {
-                this.lock.lock();
+                lock();
 
                 // check if the object already exists in the WM
                 handle = this.objectStore.getHandleForObject( object );
@@ -263,7 +245,7 @@ public class NamedEntryPoint
                         propagationContext );
 
             } finally {
-                this.lock.unlock();
+                unlock();
             }
             return handle;
         } finally {
@@ -351,7 +333,7 @@ public class NamedEntryPoint
                                      final BitMask mask,
                                      final Class<?> modifiedClass,
                                      final Activation activation) {
-        this.lock.lock();
+        lock();
         try {
             this.wm.startOperation();
             try {
@@ -371,7 +353,7 @@ public class NamedEntryPoint
 
                 final ObjectTypeConf typeConf = changedObject ?
                         getObjectTypeConfigurationRegistry().getOrCreateObjectTypeConf(this.entryPoint, object) :
-                        getObjectTypeConfigurationRegistry().getObjectTypeConf(this.entryPoint, object);
+                        getObjectTypeConfigurationRegistry().getObjectTypeConf(object);
 
                 if (changedObject || isEqualityBehaviour) {
                     this.objectStore.updateHandle(handle, object);
@@ -419,7 +401,7 @@ public class NamedEntryPoint
                 this.wm.endOperation();
             }
         } finally {
-            this.lock.unlock();
+            unlock();
         }
         return handle;
     }
@@ -466,7 +448,7 @@ public class NamedEntryPoint
             throw new IllegalArgumentException( "FactHandle cannot be null " );
         }
 
-        this.lock.lock();
+        lock();
         try {
             this.wm.startOperation();
             try {
@@ -499,7 +481,7 @@ public class NamedEntryPoint
                 this.wm.endOperation();
             }
         } finally {
-            this.lock.unlock();
+            unlock();
         }
     }
 
@@ -512,7 +494,7 @@ public class NamedEntryPoint
 
         final Object object = handle.getObject();
 
-        final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, object );
+        final ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( object );
 
         if( typeConf.isDynamic() ) {
             removePropertyChangeListener( handle, true );
@@ -587,7 +569,7 @@ public class NamedEntryPoint
 
     public void removeFromObjectStore(InternalFactHandle handle) {
         this.objectStore.removeHandle( handle );
-        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( this.entryPoint, handle.getObject() );
+        ObjectTypeConf typeConf = getObjectTypeConfigurationRegistry().getObjectTypeConf( handle.getObject() );
         deleteFromTMS( handle, handle.getEqualityKey(), typeConf, null );
     }
 

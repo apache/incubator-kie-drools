@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.drools.tuples;
 
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -23,8 +24,9 @@ import java.util.StringJoiner;
  *
  * @see <a href=http://dmg.org/pmml/v4-4/Scorecard.html#rankinReasongCodes>Ranking Reason Codes</a>
  */
-public class KiePMMLReasonCodeAndValue {
+public class KiePMMLReasonCodeAndValue implements Serializable {
 
+    private static final long serialVersionUID = 5978972455322748898L;
     private final String reasonCode;
     private final double value;
 

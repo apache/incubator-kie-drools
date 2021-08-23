@@ -29,11 +29,12 @@ public class BetaNodeTest {
 
     @Test
     public void testEqualsObject() {
-        final LeftTupleSource ts = new MockTupleSource( 1 );
-        final ObjectSource os = new MockObjectSource( 2 );
-
         InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+
         BuildContext buildContext = new BuildContext( kBase );
+
+        final LeftTupleSource ts = new MockTupleSource( 1, buildContext );
+        final ObjectSource os = new MockObjectSource( 2, buildContext );
         
         final BetaNode j1 = new JoinNode( 1,
                                           ts,

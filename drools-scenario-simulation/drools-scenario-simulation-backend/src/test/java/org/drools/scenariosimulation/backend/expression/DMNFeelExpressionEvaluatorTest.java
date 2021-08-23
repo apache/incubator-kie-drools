@@ -51,32 +51,32 @@ public class DMNFeelExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("not( true )", false, boolean.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(">2, >5", BigDecimal.valueOf(6), BigDecimal.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("abs(-1)", BigDecimal.valueOf(1), BigDecimal.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression("abs(-1)", BigDecimal.valueOf(-1), BigDecimal.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("max(1, ?) > 1", BigDecimal.valueOf(2), BigDecimal.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression("max(1, ?) < 1", BigDecimal.valueOf(2), BigDecimal.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("? = 2", BigDecimal.valueOf(2), BigDecimal.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression("? > 2", BigDecimal.valueOf(2), BigDecimal.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("? + 1 > ?", BigDecimal.valueOf(2), BigDecimal.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("not( true )", false, boolean.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(">2, >5", BigDecimal.valueOf(6), BigDecimal.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("abs(-1)", BigDecimal.valueOf(1), BigDecimal.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression("abs(-1)", BigDecimal.valueOf(-1), BigDecimal.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("max(1, ?) > 1", BigDecimal.valueOf(2), BigDecimal.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression("max(1, ?) < 1", BigDecimal.valueOf(2), BigDecimal.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("? = 2", BigDecimal.valueOf(2), BigDecimal.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression("? > 2", BigDecimal.valueOf(2), BigDecimal.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("? + 1 > ?", BigDecimal.valueOf(2), BigDecimal.class).isSuccessful());
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("{key_a : 1}", contextValue, Map.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression("{key_a : 2}", contextValue, Map.class).isSuccessful());
         List<BigDecimal> contextListValue = Collections.singletonList(BigDecimal.valueOf(23));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [23]").toString(), contextListValue, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [2]").toString(), contextListValue, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("23").toString(), contextListValue, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("2").toString(), contextListValue, List.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [23]").toString(), contextListValue, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("? = [2]").toString(), contextListValue, List.class).isSuccessful());
         List<BigDecimal> contextListValue2 = Arrays.asList(BigDecimal.valueOf(23), BigDecimal.valueOf(32));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32]").toString(), contextListValue2, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32]").toString(), contextListValue2, List.class).isSuccessful());
         assertFalse("Collection unary expression needs to start with ?",
                     expressionEvaluator.evaluateUnaryExpression(new TextNode("[23, 32]").toString(),
                                                                 contextListValue2,
-                                                                List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32, 123]").toString(), contextListValue2, List.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class));
+                                                                List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ? = [23, 32, 123]").toString(), contextListValue2, List.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 23").toString(), contextListValue2, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode(" ?[1] = 32").toString(), contextListValue2, List.class).isSuccessful());
 
         Map<String, Object> firstMap = new HashMap<>();
         firstMap.put("Price", new BigDecimal(2000));
@@ -87,19 +87,19 @@ public class DMNFeelExpressionEvaluatorTest {
         String firstParameter = "{Price: 2000,Name:\"PC\"}";
         String secondParameter = "{Price:3300, Name:\"CAR\"}";
         List<Map<String, Object>> context = Arrays.asList(firstMap, secondMap);
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + firstParameter + ", " + secondParameter + "]").toString(), context, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2001,Name:\"PC\"}, {Price:3301,Name:\"CAR\"}]").toString(), context, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2000, Name:\"PCA\"}, {Price:3300,Name:\"CARE\"}]").toString(), context, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Pric: 2000, Name:\"PC\"}, {Price:3300,Names:\"CARE\"}]").toString(), context, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + firstParameter + ", " + secondParameter + "]").toString(), context, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2001,Name:\"PC\"}, {Price:3301,Name:\"CAR\"}]").toString(), context, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Price: 2000, Name:\"PCA\"}, {Price:3300,Name:\"CARE\"}]").toString(), context, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[{Pric: 2000, Name:\"PC\"}, {Price:3300,Names:\"CARE\"}]").toString(), context, List.class).isSuccessful());
         /* Different order: Failure */
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + secondParameter + ", " + firstParameter + "]").toString(), context, List.class));
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("?=[" + secondParameter + ", " + firstParameter + "]").toString(), context, List.class).isSuccessful());
         /* IN operator */
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(firstParameter + " in ?").toString(), context, List.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(secondParameter + " in ?").toString(), context, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 2001,Name:\"PC\"} in ?").toString(), context, List.class));
-        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 3300,Name:\"CARE\"} in ?").toString(), context, List.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + firstParameter + " in ?) and ("+ secondParameter +" in ?)").toString(), context, List.class));
-        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + secondParameter + " in ?) and ("+ firstParameter +" in ?)").toString(), context, List.class));
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(firstParameter + " in ?").toString(), context, List.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode(secondParameter + " in ?").toString(), context, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 2001,Name:\"PC\"} in ?").toString(), context, List.class).isSuccessful());
+        assertFalse(expressionEvaluator.evaluateUnaryExpression(new TextNode("{Price: 3300,Name:\"CARE\"} in ?").toString(), context, List.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + firstParameter + " in ?) and ("+ secondParameter +" in ?)").toString(), context, List.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression(new TextNode("(" + secondParameter + " in ?) and ("+ firstParameter +" in ?)").toString(), context, List.class).isSuccessful());
 
         assertThatThrownBy(() -> expressionEvaluator.evaluateUnaryExpression("variable", null, null))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -121,7 +121,7 @@ public class DMNFeelExpressionEvaluatorTest {
         assertTrue(parsedValue.containsKey("key_a"));
         assertEquals(parsedValue.get("key_a"), BigDecimal.valueOf(1));
         List<BigDecimal> parsedValueListExpression = (List<BigDecimal>) expressionEvaluator.evaluateLiteralExpression(new TextNode("[10, 12]").toString(), List.class.getCanonicalName(), Collections.emptyList());
-        assertTrue(parsedValueListExpression.size() == 2);
+        assertEquals(2, parsedValueListExpression.size());
         assertEquals(BigDecimal.valueOf(10), parsedValueListExpression.get(0));
         assertEquals(BigDecimal.valueOf(12), parsedValueListExpression.get(1));
 
@@ -225,7 +225,7 @@ public class DMNFeelExpressionEvaluatorTest {
     public void expressionListTest() {
         String expressionCollectionJsonString = new TextNode("[ 1, 10 ]").toString();
         List<BigDecimal> result = (List<BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, List.class.getCanonicalName(), Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertEquals(BigDecimal.ONE, result.get(0));
         assertEquals(BigDecimal.TEN, result.get(1));
     }
@@ -237,7 +237,7 @@ public class DMNFeelExpressionEvaluatorTest {
                 (List<Map<String, Object>>) expressionEvaluator.convertResult(expressionCollectionJsonString,
                                                                               List.class.getCanonicalName(),
                                                                               Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertThat(result.get(0)).containsOnly(entry("age", BigDecimal.TEN));
         assertThat(result.get(1)).containsOnly(entry("name", "John"));
     }
@@ -252,7 +252,7 @@ public class DMNFeelExpressionEvaluatorTest {
     public void expressionMapTest() {
         String expressionCollectionJsonString = new TextNode("{ x : 5, y : 3 }").toString();
         Map<String, BigDecimal> result = (Map<String, BigDecimal>) expressionEvaluator.convertResult(expressionCollectionJsonString, Map.class.getCanonicalName(), Collections.EMPTY_LIST);
-        assertTrue(result.size() == 2);
+        assertEquals(2, result.size());
         assertEquals(BigDecimal.valueOf(5), result.get("x"));
         assertEquals(BigDecimal.valueOf(3), result.get("y"));
     }
@@ -267,14 +267,14 @@ public class DMNFeelExpressionEvaluatorTest {
     public void expressionListVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("10").toString();
         List<BigDecimal> contextValue = Collections.singletonList(BigDecimal.valueOf(10));
-        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, List.class).isSuccessful());
     }
 
     @Test
     public void expressionMapVerifyResultTest() {
         String expressionCollectionJsonString = new TextNode("{key_a : 1}").toString();
         Map<String, BigDecimal> contextValue = Collections.singletonMap("key_a", BigDecimal.valueOf(1));
-        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class));
+        assertTrue(expressionEvaluator.verifyResult(expressionCollectionJsonString, contextValue, Map.class).isSuccessful());
     }
 
     @Test

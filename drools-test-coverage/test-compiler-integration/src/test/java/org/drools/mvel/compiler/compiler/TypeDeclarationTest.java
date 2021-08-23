@@ -15,6 +15,7 @@
 
 package org.drools.mvel.compiler.compiler;
 
+import java.io.StringReader;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,13 +26,20 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
+import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.TypeDeclaration;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestConstants;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -54,17 +62,27 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.KnowledgeBuilderResults;
 import org.kie.internal.builder.ResultSeverity;
 import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static java.util.Arrays.asList;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class TypeDeclarationTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public TypeDeclarationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testClassNameClashing() {
@@ -74,14 +92,9 @@ public class TypeDeclarationTest {
         		"    name : String \n" +
         		"end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-           fail( kbuilder.getErrors().toString() );
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -99,6 +112,9 @@ public class TypeDeclarationTest {
         		"    @role (event) \n" +
         		"    @duration (duration) \n" +
         		"end \n";
+
+        // Note: Didn't applied new APIs because KnowledgePackageImpl.getTypeDeclaration() doesn't return an expected TypeDeclaration
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
 
         KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
@@ -175,6 +191,18 @@ public class TypeDeclarationTest {
         //just 1 package was created
         assertEquals(0, kbuilder.getKnowledgePackages().size());
 
+        // TODO: Odd behavior with new APIs (an error found for single test method. But no error for running the test class or parameterized)
+        // File a JIRA to revisit and write a valid test for new APIs and exec-model
+
+//        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str1));
+//        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1x.drl");
+//        final Resource drlResource2 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str2));
+//        drlResource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule2x.drl");
+//
+//        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource1, drlResource2);
+//        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+//        System.out.println(errors);
+//        assertFalse("Errors Expected", errors.isEmpty());
     }
 
     /**
@@ -191,18 +219,12 @@ public class TypeDeclarationTest {
         		"    lastName : String \n" +
         		"end \n";
 
-        Resource resource = ResourceFactory.newByteArrayResource( str1.getBytes());
+        final Resource drlResource = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str1));
+        drlResource.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1.drl");
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( resource, ResourceType.DRL );
-
-        kbuilder.add( resource, ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-           fail( kbuilder.getErrors().toString() );
-        }
-
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource, drlResource); // same resource
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     /**
@@ -219,18 +241,14 @@ public class TypeDeclarationTest {
         		"    name : String \n" +
         		"end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
+        final Resource drlResource1 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str1));
+        drlResource1.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule1.drl");
+        final Resource drlResource2 = KieServices.Factory.get().getResources().newReaderResource(new StringReader(str1));
+        drlResource2.setSourcePath(TestConstants.TEST_RESOURCES_FOLDER + "rule2.drl");
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-           fail( kbuilder.getErrors().toString() );
-        }
-
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromResources(kieBaseTestConfiguration, false, drlResource1, drlResource2); // different resources
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
 
@@ -242,6 +260,9 @@ public class TypeDeclarationTest {
      */
     @Test
     public void testClashingTypeDeclarationInDifferentResources() {
+        // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
+
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -268,8 +289,6 @@ public class TypeDeclarationTest {
         if (!kbuilder.hasErrors() ) {
            fail( "An error should have been generated, redefinition of ClassA is not allowed" );
         }
-
-
     }
 
     /**
@@ -282,6 +301,9 @@ public class TypeDeclarationTest {
      */
     @Test
     public void testNotSoHarmlessTypeReDeclaration() {
+        // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
+
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -338,6 +360,9 @@ public class TypeDeclarationTest {
      */
     @Test
     public void testTypeReDeclarationWithExtraField() {
+        // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
+
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -364,8 +389,6 @@ public class TypeDeclarationTest {
         if ( ! kbuilder.hasErrors() ) {
            fail( kbuilder.getErrors().toString() );
         }
-
-
     }
 
     /**
@@ -377,6 +400,9 @@ public class TypeDeclarationTest {
      */
     @Test
     public void testTypeReDeclarationWithExtraField2() {
+        // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
+
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools.mvel.compiler \n" +
@@ -403,7 +429,6 @@ public class TypeDeclarationTest {
         if (!kbuilder.hasErrors() ) {
            fail( kbuilder.getErrors().toString() );
         }
-
     }
 
 
@@ -419,14 +444,9 @@ public class TypeDeclarationTest {
                 "    age : int \n" +
                 "end \n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
-
-        if ( ! kbuilder.hasErrors() ) {
-            fail( "Two definitions with the same name are not allowed, but it was not detected! " );
-        }
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Two definitions with the same name are not allowed, but it was not detected!", errors.isEmpty());
     }
 
 
@@ -456,19 +476,11 @@ public class TypeDeclarationTest {
                 "@expires( 1s ) \n" +
                 "@KlassAnnotation( \"klass\" )" +
                 "" +
-                "    name : String @key @FieldAnnotation( prop = \"fld\" )\n" +
+                "    name : String\n" +
                 "end \n" +
                 "declare Person @role(event) end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                ResourceType.DRL );
-        System.err.println( kbuilder.getErrors() );
-        assertFalse(kbuilder.hasErrors());
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
 
         FactType bean = kBase.getFactType( "org.drools.mvel.compiler.test", "Bean" );
         FactType pers = kBase.getFactType( "org.drools", "Person" );
@@ -493,18 +505,6 @@ public class TypeDeclarationTest {
 
         FactField field = bean.getField( "name" );
         assertNotNull( field );
-        assertEquals( 2, field.getFieldAnnotations().size() );
-        Annotation fnn = field.getFieldAnnotations().get( 0 );
-        if (!fnn.getName().equals("org.drools.mvel.compiler.compiler.TypeDeclarationTest$FieldAnnotation")) {
-            fnn = field.getFieldAnnotations().get( 1 );
-        }
-        assertEquals( "org.drools.mvel.compiler.compiler.TypeDeclarationTest$FieldAnnotation", fnn.getName() );
-        assertEquals( "fld", fnn.getPropertyValue( "prop" ) );
-        assertEquals( String.class, fnn.getPropertyType( "prop" ) );
-
-        assertEquals( 1, field.getMetaData().size() );
-        assertTrue( field.getMetaData().containsKey( "key" ) );
-
     }
 
     public static class EventBar {
@@ -527,14 +527,7 @@ public class TypeDeclarationTest {
                "" +
                "rule R when Foo() then end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-        System.err.println( kbuilder.getErrors() );
-        assertFalse( kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
@@ -556,14 +549,7 @@ public class TypeDeclarationTest {
                "" +
                "rule R when Foo() then end";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( str.getBytes() ),
-                      ResourceType.DRL );
-        System.err.println( kbuilder.getErrors() );
-        assertFalse( kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-        kBase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         KieSession knowledgeSession = kBase.newKieSession();
         FactHandle handle = knowledgeSession.insert( new EventBar.Foo() );
 
@@ -572,7 +558,7 @@ public class TypeDeclarationTest {
     }
 
 
-    static class ClassC {
+    public static class ClassC {
         private String name;
         private Integer age;
 
@@ -594,66 +580,10 @@ public class TypeDeclarationTest {
     }
 
     @Test
-    public void testTypeReDeclarationPojo() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoMoreFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "    age : Integer \n" +
-                      "    address : Objet \n" +
-                      "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( ! kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-    }
-
-    @Test
-    public void testTypeReDeclarationPojoLessFields() {
-        String str1 = "" +
-                      "package org.drools \n" +
-                      "import " + TypeDeclarationTest.class.getName() + ".ClassC; \n" +
-                      "" +
-                      "declare " + TypeDeclarationTest.class.getName() + ".ClassC \n" +
-                      "    name : String \n" +
-                      "end \n";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( ! kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-    }
-
-    @Test
     public void testMultipleTypeReDeclaration() {
+        // Note: Didn't applied new APIs because KieUtil.getKieBuilderFromResources() didn't reproduce the issue.
+        // TODO: File a JIRA to revisit and write a valid test for new APIs and exec-model
+
         //same package, different resources
         String str1 = "";
         str1 += "package org.drools \n" +
@@ -680,33 +610,7 @@ public class TypeDeclarationTest {
         if ( kbuilder.hasErrors() ) {
             fail( kbuilder.getErrors().toString() );
         }
-
-
     }
-
-    @Test
-    public void testDeclaresInForeignPackages() {
-        String str1 = "" +
-                      "package org.drools \n" +
-
-                      "declare foreign.ClassC fld : foreign.ClassD end " +
-
-                      "declare foreign.ClassD end " +
-
-                      "";
-
-
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
-
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
-    }
-
 
     @Test
     public void testDeclareFieldArray() {
@@ -729,15 +633,13 @@ public class TypeDeclarationTest {
                       "declare Foo end " +
 
                       "";
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource( str1.getBytes() ),
-                      ResourceType.DRL );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-
+        InternalKieModule kieModule = (InternalKieModule)kieBuilder.getKieModule();
+        KnowledgeBuilderImpl kbuilder = (KnowledgeBuilderImpl)kieModule.getKnowledgeBuilderForKieBase(KieBaseTestConfiguration.KIE_BASE_MODEL_NAME);
 
         for( KiePackage kp : kbuilder.getKnowledgePackages() ) {
             if ( kp.getName().equals( "org.drools" ) ) {
@@ -781,6 +683,8 @@ public class TypeDeclarationTest {
 
     @Test
     public void testCrossPackageDeclares() {
+        // TODO: enable exec-model
+
         String pkg1 =
                 "package org.drools.mvel.compiler.test1; " +
                 "import org.drools.mvel.compiler.test2.GrandChild; " +
@@ -909,8 +813,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(1)\n" +
-                     "    age : int @position(0)\n" +
+                     "    name : String @Position(1)\n" +
+                     "    age : int @Position(0)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -965,8 +869,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(3)\n" +
-                     "    age : int @position(1)\n" +
+                     "    name : String @Position(3)\n" +
+                     "    age : int @Position(1)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -985,8 +889,8 @@ public class TypeDeclarationTest {
         String drl = "package org.test;\n" +
                      "global java.util.List names;\n" +
                      "declare Person\n" +
-                     "    name : String @position(1)\n" +
-                     "    age : int @position(1)\n" +
+                     "    name : String @Position(1)\n" +
+                     "    age : int @Position(1)\n" +
                      "end\n" +
                      "rule R when \n" +
                      "    $p : Person( 37, \"Mark\"; )\n" +
@@ -1000,14 +904,7 @@ public class TypeDeclarationTest {
     }
 
     private KieBuilder build(String drl) {
-        KieServices kieServices = KieServices.Factory.get();
-        KieFileSystem kfs = kieServices.newKieFileSystem();
-        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
-                              .setSourcePath( "test.drl" )
-                              .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
-        kieBuilder.buildAll();
-        return kieBuilder;
+        return KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
     }
 
     @Test
@@ -1016,25 +913,19 @@ public class TypeDeclarationTest {
         str1 += "package org.kie1 " +
                 "" +
                "declare Foo \n" +
+                "   @role(event) " +
                "    name : String " +
                "    age : int " +
                "end ";
 
-        String str2 = "";
-        str2 += "package org.kie2 " +
-               "" +
-               "declare org.kie1.Foo " +
-               "    @role(event) " +
-               "end ";
-
-        String str3 = "";
-        str3 += "package org.kie3 " +
+        String str2 = "" +
+               "package org.kie3 " +
                "" +
                "declare org.kie1.Foo " +
                "    @propertyReactive " +
                "end ";
 
-        String str4 = "" +
+        String str3 = "" +
                       "package org.kie4; " +
                       "import org.kie1.Foo; " +
                       "" +
@@ -1045,17 +936,8 @@ public class TypeDeclarationTest {
                       " modify( $f ) { setAge( 99 ); } " +
                       "end ";
 
-        KieHelper helper = new KieHelper();
-        helper.addContent( str1, ResourceType.DRL );
-        helper.addContent( str2, ResourceType.DRL );
-        helper.addContent( str3, ResourceType.DRL );
-        helper.addContent( str4, ResourceType.DRL );
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str1, str2, str3);
 
-        List<Message> msg = helper.verify().getMessages( Message.Level.ERROR );
-        System.out.println( msg );
-        assertEquals( 0, msg.size() );
-
-        KieBase kieBase = helper.build();
         FactType type = kieBase.getFactType( "org.kie1", "Foo" );
         assertEquals( 2, type.getFields().size() );
 
@@ -1079,26 +961,6 @@ public class TypeDeclarationTest {
         assertEquals( 99, type.get( foo, "age" ) );
     }
 
-
-
-    @Test()
-    public void testTraitExtendPojo() {
-        //DROOLS-697
-        final String s1 = "package test;\n" +
-
-                          "declare Poojo " +
-                          "end " +
-
-                          "declare trait Mask extends Poojo " +
-                          "end " +
-                          "";
-
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 1, kh.verify().getMessages( Message.Level.ERROR ).size() );
-    }
-
     public static interface Base {
         public Object getFld();
         public void setFld( Object x );
@@ -1107,24 +969,6 @@ public class TypeDeclarationTest {
     public static interface Ext extends Base {
         public String getFld();
         public void setFld( String s );
-    }
-
-    @Test
-    public void testRedeclareWithInterfaceExtensionAndOverride() {
-        final String s1 = "package test;\n" +
-
-                          "declare trait " + Ext.class.getCanonicalName() + " extends " + Base.class.getCanonicalName() + " " +
-                          " fld : String " +
-                          "end " +
-
-                          "declare trait " + Base.class.getCanonicalName() + " " +
-                          "end " +
-                          "";
-
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
     }
 
     @Test
@@ -1155,13 +999,9 @@ public class TypeDeclarationTest {
                           "  list.add( \"Sub\" + $f );  " +
                           "end ";
 
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1);
+        KieSession ks = kbase.newKieSession();
 
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
-        assertEquals( 0, kh.verify().getMessages( Message.Level.WARNING ).size() );
-
-        KieSession ks = kh.build().newKieSession();
         List list = new ArrayList();
         ks.setGlobal( "list", list );
         ks.fireAllRules();
@@ -1207,10 +1047,9 @@ public class TypeDeclarationTest {
 
                           "rule Check when BeanishClass() @Watch( foo ) then end ";
 
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -1223,10 +1062,9 @@ public class TypeDeclarationTest {
 
                           "rule Check when BeanishClass() @Watch( foo ) then end ";
 
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -1238,10 +1076,9 @@ public class TypeDeclarationTest {
 
                           "rule Check when BeanishClass() @watch( foo ) then end ";
 
-        KieHelper kh = new KieHelper();
-        kh.addContent( s1, ResourceType.DRL );
-
-        assertEquals( 0, kh.verify().getMessages( Message.Level.ERROR ).size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
 }

@@ -1,0 +1,35 @@
+body,
+#root {
+    margin: 0;
+    padding: 0;
+    font-family: Menlo, monospace, serif;
+}
+
+#root {
+    max-width: 1400px;
+    margin: 30px auto;
+    text-align: center;
+}
+
+#root div {
+    display: inline-block;
+    width: 25%;
+    padding: 0 30px 30px;
+    vertical-align: top;
+    background-color: #f3f3f3;
+    box-shadow: 10px 10px 0 #ccc;
+}
+
+#root textarea {
+    width: calc(100% - 20px);
+    height: 300px;
+    resize: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+#root div + div {
+    background-color: transparent;
+    box-shadow: none;
+}
+

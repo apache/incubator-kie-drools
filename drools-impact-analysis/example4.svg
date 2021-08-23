@@ -1,0 +1,25 @@
+<svg width="417px" height="44px"
+ viewBox="0.00 0.00 416.67 44.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="graph0" class="graph" transform="scale(1.0 1.0) rotate(0) translate(4 40)">
+<title>example&#45;impacted&#45;sub&#45;graph</title>
+<polygon fill="#ffffff" stroke="transparent" points="-4,4 -4,-40 412.6701,-40 412.6701,4 -4,4"/>
+<!-- StatusCheck_11 -->
+<g id="node1" class="node">
+<title>StatusCheck_11</title>
+<ellipse fill="#ffff00" stroke="#ffff00" cx="321.5779" cy="-18" rx="87.1846" ry="18"/>
+<text text-anchor="middle" x="321.5779" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">StatusCheck_11</text>
+</g>
+<!-- PriceCheck_11 -->
+<g id="node2" class="node">
+<title>PriceCheck_11</title>
+<ellipse fill="#ff0000" stroke="#ff0000" cx="81.2428" cy="-18" rx="81.4863" ry="18"/>
+<text text-anchor="middle" x="81.2428" y="-14.3" font-family="Times,serif" font-size="14.00" fill="#000000">PriceCheck_11</text>
+</g>
+<!-- PriceCheck_11&#45;&gt;StatusCheck_11 -->
+<g id="edge1" class="edge">
+<title>PriceCheck_11&#45;&gt;StatusCheck_11</title>
+<path fill="none" stroke="#000000" d="M162.6093,-18C182.2971,-18 203.5415,-18 223.8936,-18"/>
+<polygon fill="#000000" stroke="#000000" points="224.1209,-21.5001 234.1209,-18 224.1209,-14.5001 224.1209,-21.5001"/>
+</g>
+</g>
+</svg>

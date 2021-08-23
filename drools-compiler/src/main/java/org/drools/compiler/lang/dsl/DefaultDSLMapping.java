@@ -20,7 +20,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +43,7 @@ public class DefaultDSLMapping
 
     public DefaultDSLMapping(final String identifier) {
         this.identifier = identifier;
-        this.entries = new LinkedList<DSLMappingEntry>();
+        this.entries = new ArrayList<DSLMappingEntry>();
         this.options = new HashSet<String>();
     }
 
@@ -76,7 +76,7 @@ public class DefaultDSLMapping
      * @return
      */
     public List<DSLMappingEntry> getEntries(final DSLMappingEntry.Section section) {
-        final List<DSLMappingEntry> list = new LinkedList<DSLMappingEntry>();
+        final List<DSLMappingEntry> list = new ArrayList<DSLMappingEntry>();
         for ( final Iterator<DSLMappingEntry> it = this.entries.iterator(); it.hasNext(); ) {
             final DSLMappingEntry entry = it.next();
             if ( entry.getSection().equals( section ) ) {

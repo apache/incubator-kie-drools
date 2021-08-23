@@ -27,7 +27,7 @@ public class GroupByPatternImpl<T, K> extends AccumulatePatternImpl<T> implement
     private final FunctionN groupingFunction;
 
     public GroupByPatternImpl( Condition condition, Variable[] vars, Variable<K> varKey, FunctionN groupingFunction, AccumulateFunction... accumulateFunctions ) {
-        super( condition, accumulateFunctions );
+        super( condition, varKey, accumulateFunctions );
         this.vars = vars;
         this.varKey = varKey;
         this.groupingFunction = groupingFunction;

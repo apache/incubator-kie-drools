@@ -42,12 +42,6 @@ public class KieBuilderTest {
     }
 
     @Test
-    public void testFlowModelBuild() throws Exception {
-        KieSession ksession = checkKieSession( ExecutableModelFlowProject.class );
-        assertTrue( getAlphaConstraint( ksession ) instanceof LambdaConstraint );
-    }
-
-    @Test
     public void testPatternModelBuild() throws Exception {
         KieSession ksession = checkKieSession( ExecutableModelProject.class );
         assertTrue( getAlphaConstraint( ksession ) instanceof LambdaConstraint );

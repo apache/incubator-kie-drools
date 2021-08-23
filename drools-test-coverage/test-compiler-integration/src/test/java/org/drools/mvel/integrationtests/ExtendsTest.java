@@ -19,34 +19,30 @@ package org.drools.mvel.integrationtests;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.drools.mvel.DrlDumper;
 import org.drools.compiler.lang.api.DescrFactory;
 import org.drools.compiler.lang.api.PackageDescrBuilder;
 import org.drools.core.common.EventFactHandle;
 import org.drools.core.common.InternalFactHandle;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.core.io.impl.ByteArrayResource;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.DrlDumper;
 import org.drools.mvel.compiler.Cheese;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.Message;
 import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.ClassObjectFilter;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -59,12 +55,26 @@ import static org.junit.Assert.fail;
 /**
  * Test for declared bean Extension
  */
-public class ExtendsTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ExtendsTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ExtendsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testExtends() throws Exception {
         //Test Base Fact Type
-        KieSession ksession = genSession("test_Extends.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Extends.drl");
+        KieSession ksession = kbase.newKieSession();
 
         FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
         FactType eqPair = ksession.getKieBase().getFactType("defaultpkg","EqualityPair");
@@ -85,7 +95,8 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testGeneratedMethods() throws Exception {
-        KieSession ksession = genSession("test_Extends.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Extends.drl");
+        KieSession ksession = kbase.newKieSession();
 
         FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
 
@@ -132,7 +143,9 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testDeepExt() throws Exception {
-        KieSession ksession = genSession("test_Extends.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Extends.drl");
+        KieSession ksession = kbase.newKieSession();
+        
         FactType LTstudent = ksession.getKieBase().getFactType("defaultpkg","LongTermStudent");
 
         Constructor constructor = LTstudent.getFactClass().getConstructor(String.class,int.class,String.class,String.class,int.class);
@@ -151,13 +164,15 @@ public class ExtendsTest extends CommonTestMethodBase {
      @Test
     public void testIllegalExtendsLegacy() throws Exception {
         //Test Base Fact Type
-        genSession("test_ExtLegacyIllegal.drl",7);
-
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromClasspathResources(kieBaseTestConfiguration, getClass(), false, "test_ExtLegacyIllegal.drl");
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
     public void testExtendsLegacy() throws Exception {
-        KieSession ksession = genSession("test_ExtLegacy.drl",0);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExtLegacy.drl");
+        KieSession ksession = kbase.newKieSession();
 
         FactType leg = ksession.getKieBase().getFactType("org.drools.compiler","BetterLegacy");
         assertNotNull(leg);
@@ -175,17 +190,10 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     }
 
-
-
-
     @Test
      public void testExtendsAcrossFiles() throws Exception {
-        KieSession ksession = new KieHelper()
-                .addResource( ResourceFactory.newClassPathResource( "test_Ext1.drl", getClass() ), ResourceType.DRL )
-                .addResource( ResourceFactory.newClassPathResource( "test_Ext2.drl", getClass() ), ResourceType.DRL )
-                .addResource( ResourceFactory.newClassPathResource( "test_Ext3.drl", getClass() ), ResourceType.DRL )
-                .addResource( ResourceFactory.newClassPathResource( "test_Ext4.drl", getClass() ), ResourceType.DRL )
-                .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Ext1.drl", "test_Ext2.drl", "test_Ext3.drl", "test_Ext4.drl");
+        KieSession ksession = kbase.newKieSession();
 
         FactType person = ksession.getKieBase().getFactType("org.drools.mvel.compiler.ext.test","Person");
             assertNotNull(person);
@@ -213,7 +221,9 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
      public void testFieldInit() throws Exception {
-        KieSession ksession = genSession("test_ExtFieldInit.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExtFieldInit.drl");
+        KieSession ksession = kbase.newKieSession();
+
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler", "MyBean3");
 
         Object x = test.newInstance();
@@ -242,7 +252,9 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testBoxedFieldInit() throws Exception {
-        KieSession ksession = genSession("test_ExtFieldInit.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExtFieldInit.drl");
+        KieSession ksession = kbase.newKieSession();
+
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxBean");
 
         Object x = test.newInstance();
@@ -266,7 +278,8 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testExpressionFieldInit() throws Exception {
-        KieSession ksession = genSession("test_ExtFieldInit.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExtFieldInit.drl");
+        KieSession ksession = kbase.newKieSession();
         FactType test = ksession.getKieBase().getFactType("org.drools.compiler","MyBoxExpressionBean");
 
         Object x = test.newInstance();
@@ -306,22 +319,18 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertEquals(9999L,test2.get(x,"fieldlng"));
 
         System.out.println(x);
-
     }
 
     @Test
     public void testHierarchy() throws Exception {
-        KieSession ksession = genSession("test_ExtHierarchy.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_ExtHierarchy.drl");
+        KieSession ksession = kbase.newKieSession();
         ksession.setGlobal("list",new LinkedList());
 
         ksession.fireAllRules();
 
         assertEquals(1, ((List) ksession.getGlobal("list")).size());
-
-
     }
-
-
 
     @Test
     public void testExtendOverride() {
@@ -356,14 +365,8 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "end\n"
                 ;
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(new ByteArrayResource(drl.getBytes()), ResourceType.DRL);
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         List out = new ArrayList();
         ksession.setGlobal("ans",out);
@@ -376,17 +379,14 @@ public class ExtendsTest extends CommonTestMethodBase {
         assertEquals("xxx", type.get( x, "myField") );
         assertEquals(0.0, type.get( x, "moref") );
 
-
         assertTrue( x instanceof ArrayList );
     }
-
-
-
 
     @Test
     public void testRedefineDefaults() throws Exception {
         //Test Base Fact Type
-        KieSession ksession = genSession("test_Extends.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Extends.drl");
+        KieSession ksession = kbase.newKieSession();
 
         FactType person = ksession.getKieBase().getFactType("defaultpkg","Person");
         FactType student = ksession.getKieBase().getFactType("defaultpkg","Student");
@@ -401,8 +401,6 @@ public class ExtendsTest extends CommonTestMethodBase {
 
         ksession.dispose();
     }
-
-
 
     @Test
     public void testExtendFromOtherPackage() throws Exception {
@@ -447,9 +445,8 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  System.out.println( $c );\n" +
                 "end";
 
-        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
-                                             .addContent( s2, ResourceType.DRL )
-                                             .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1, s2);
+        KieSession kSession = kbase.newKieSession();
 
         assertEquals( 3, kSession.fireAllRules() );
     }
@@ -510,10 +507,8 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  System.out.println( $s1 + \" after II \" + $s1 );\n" +
                 "end";
 
-
-        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
-                                             .addContent( s2, ResourceType.DRL )
-                                             .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1, s2);
+        KieSession kSession = kbase.newKieSession();
 
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -563,8 +558,8 @@ public class ExtendsTest extends CommonTestMethodBase {
                 "  list.add( $miles );\n" +
                 "end";
 
-        KieSession kSession = new KieHelper().addContent( s1, ResourceType.DRL )
-                                             .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1);
+        KieSession kSession = kbase.newKieSession();
 
         List list = new ArrayList();
         kSession.setGlobal( "list", list );
@@ -585,11 +580,9 @@ public class ExtendsTest extends CommonTestMethodBase {
                     " foo : int @key\n" +
                     "end\n";
 
-        KieBase kBase = KnowledgeBaseFactory.newKnowledgeBase();
-
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        assertTrue( kBuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -609,12 +602,12 @@ public class ExtendsTest extends CommonTestMethodBase {
                     " foo : int @key\n" +
                     "end\n";
 
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder( );
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        assertTrue( kBuilder.hasErrors() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, s1);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
 
-        System.out.println( kBuilder.getErrors() );
-        assertTrue( kBuilder.getErrors().toString().contains( "circular" ) );
+        System.out.println( errors );
+        assertTrue( errors.toString().contains( "circular" ) );
     }
 
     @Test
@@ -629,7 +622,7 @@ public class ExtendsTest extends CommonTestMethodBase {
             .end();
         String drl = new DrlDumper().dump( pkgd.getDescr() );
 
-        KieBase kb = loadKnowledgeBaseFromString( drl );
+        KieBase kb = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         FactType bar = kb.getFactType( "org.test", "Bar" );
         try {
@@ -674,17 +667,9 @@ public class ExtendsTest extends CommonTestMethodBase {
                     "end\n" +
                     "";
 
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( s1.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-        }
-        assertFalse( kBuilder.hasErrors() );
-
-        InternalKnowledgeBase knowledgeBase = KnowledgeBaseFactory.newKnowledgeBase();
-        knowledgeBase.addPackages( kBuilder.getKnowledgePackages() );
-
-        KieSession knowledgeSession = knowledgeBase.newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, s1);
+        KieSession knowledgeSession = kbase.newKieSession();
+        
         FactHandle h = knowledgeSession.insert( new X() );
 
         assertTrue( ( (InternalFactHandle) h ).isEvent() );
@@ -697,12 +682,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                      "import org.drools.mvel.compiler.Person; \n" +
                      "declare Student extends Person end \n" +
                      "";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-        }
-        assertFalse( kBuilder.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -711,12 +694,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                      "import org.drools.mvel.integrationtests.ExtendsTest.X; \n" +
                      "declare Student extends X end \n" +
                      "";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-        }
-        assertFalse( kBuilder.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 
     @Test
@@ -725,12 +706,10 @@ public class ExtendsTest extends CommonTestMethodBase {
                      "import org.drools.mvel.integrationtests.ExtendsTest.Y; \n" +
                      "declare Student extends Y end \n" +
                      "";
-        KnowledgeBuilder kBuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(  );
-        kBuilder.add( new ByteArrayResource( drl.getBytes() ), ResourceType.DRL );
-        if ( kBuilder.hasErrors() ) {
-            System.err.println( kBuilder.getErrors() );
-        }
-        assertTrue( kBuilder.hasErrors() );
+
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertFalse("Should have an error", errors.isEmpty());
     }
 
     @Test
@@ -740,22 +719,17 @@ public class ExtendsTest extends CommonTestMethodBase {
                      "declare org.drools.extends.test.Foo end \n" +
                      "declare org.drools.extends.test.Bar extends org.drools.extends.test.Foo end \n" +
                      "";
-        KieServices kieServices = KieServices.Factory.get();
-        KieFileSystem kfs = kieServices.newKieFileSystem();
-        kfs.write( kieServices.getResources().newByteArrayResource( drl.getBytes() )
-                           .setSourcePath( "test.drl" )
-                           .setResourceType( ResourceType.DRL ) );
-        KieBuilder kieBuilder = kieServices.newKieBuilder( kfs );
-        kieBuilder.buildAll();
 
-        assertFalse( kieBuilder.getResults().hasMessages( Message.Level.ERROR ) );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
 
     }
 
     @Test
     public void testExtendsBasic() throws Exception {
-        final KieBase kbase = loadKnowledgeBase("extend_rule_test.drl");
-        final KieSession session = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "extend_rule_test.drl");
+        KieSession session = kbase.newKieSession();
 
         //Test 2 levels of inheritance, and basic rule
         List list = new ArrayList();
@@ -812,8 +786,8 @@ public class ExtendsTest extends CommonTestMethodBase {
 
     @Test
     public void testExtendsBasic2() {
-        final KieBase kbase = loadKnowledgeBase("test_RuleExtend.drl");
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_RuleExtend.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final List results = new ArrayList();
         ksession.setGlobal("results", results);

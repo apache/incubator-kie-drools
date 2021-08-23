@@ -53,9 +53,6 @@ public class ReactiveFromBuilder implements ReteooComponentBuilder {
         context.setAlphaConstraints(null);
         context.setBetaconstraints( null );
 
-        context.incrementCurrentPatternOffset();
-        int patternOffset = context.getCurrentPatternOffset();
-
         List<XpathConstraint> xpathConstraints = context.getXpathConstraints();
         for (XpathConstraint xpathConstraint : xpathConstraints) {
             for ( XpathConstraint.XpathChunk chunk : xpathConstraint.getChunks() ) {
@@ -65,8 +62,6 @@ public class ReactiveFromBuilder implements ReteooComponentBuilder {
                 build( context, utils, chunk.asFrom() );
             }
         }
-
-        context.setCurrentPatternOffset( patternOffset );
     }
 
     public boolean requiresLeftActivation(final BuildUtils utils,

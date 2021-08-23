@@ -4750,7 +4750,7 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
 
             String result = RuleModelDRLPersistenceImpl.getInstance().marshal(m);
 
-            assertTrue("result DRL : " + result, result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"dd-MMM-yyyy\");") != -1);
+            assertTrue("result DRL : " + result, result.indexOf("java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat(\"d-MMM-yyyy\");") != -1);
             assertTrue(result.indexOf("fact0.setDob( sdf.parse(\"31-Jan-2000\"") != -1);
 
             checkMarshalling(null, m);
@@ -5155,5 +5155,52 @@ public class RuleModelDRLPersistenceTest extends BaseRuleModelTest {
                 "then\n" +
                 "end\n";
         assertEqualsIgnoreWhitespace(expectedDrl, resultDrl);
+    }
+
+    @Test
+    public void testMemberOfWithVariable() {
+
+        final RuleModel ruleModel = new RuleModel();
+        ruleModel.name = "test";
+
+        addModelField("ListContainer",
+                      "list",
+                      "java.util.List",
+                      DataType.TYPE_COLLECTION);
+
+        final FactPattern containerPattern = new FactPattern("ListContainer");
+        SingleFieldConstraint listField = new SingleFieldConstraint();
+        listField.setFieldType(DataType.TYPE_COLLECTION);
+        listField.setFieldName("list");
+        listField.setFieldBinding("$list");
+        containerPattern.addConstraint(listField);
+
+        final FactPattern otherPattern = new FactPattern("Other");
+        SingleFieldConstraint inField = new SingleFieldConstraint();
+        inField.setFieldType(DataType.TYPE_STRING);
+        inField.setFieldName("item");
+        inField.setOperator("memberOf");
+        inField.setValue("$list");
+
+        final SingleFieldConstraint notInField = new SingleFieldConstraint();
+        notInField.setFieldType(DataType.TYPE_STRING);
+        notInField.setFieldName("item");
+        notInField.setOperator("not memberOf");
+        notInField.setValue("$list");
+
+        otherPattern.addConstraint(inField);
+        otherPattern.addConstraint(notInField);
+
+        ruleModel.addLhsItem(containerPattern);
+        ruleModel.addLhsItem(otherPattern);
+
+        checkMarshalling("rule \"test\"\n" +
+                                 "dialect \"mvel\"\n" +
+                                 "when\n" +
+                                 "ListContainer( $list : list)\n" +
+                                 "Other( item memberOf $list, item not memberOf $list )\n" +
+                                 "then\n" +
+                                 "end",
+                         ruleModel);
     }
 }

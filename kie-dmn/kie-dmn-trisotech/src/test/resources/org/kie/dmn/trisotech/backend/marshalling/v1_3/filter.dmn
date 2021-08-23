@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<semantic:definitions
+	xmlns:boxedext="https://www.trisotech.com/spec/DMN/20191111/EXT/"
+	xmlns:semantic="https://www.omg.org/spec/DMN/20191111/MODEL/"
+	xmlns:triso="http://www.trisotech.com/2015/triso/modeling"
+	xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/"
+	xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/"
+	xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/"
+	xmlns:trisodmn="http://www.trisotech.com/2016/triso/dmn"
+	xmlns:feel="https://www.omg.org/spec/DMN/20191111/FEEL/"
+	xmlns:tc="http://www.omg.org/spec/DMN/20160719/testcase"
+	xmlns:drools="http://www.drools.org/kie/dmn/1.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rss="http://purl.org/rss/2.0/"
+	xmlns:openapi="https://openapis.org/omg/extension/1.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns="http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5"
+	id="_3404349f-5046-4ad3-ad15-7f1e27291ab5" name="Drawing 1"
+	namespace="http://www.trisotech.com/definitions/_3404349f-5046-4ad3-ad15-7f1e27291ab5"
+	exporter="Decision Modeler" exporterVersion="6.11.4.202006100837"
+	triso:logoChoice="Default">
+	<semantic:decision
+		id="_29722adf-e996-423a-9c66-081c00e2c3e4" name="Iterator">
+		<semantic:variable name="Iterator"
+			id="_eb2d4652-e16b-4241-8323-81bfab3cc0ba" typeRef="Any" />
+		<boxedext:filter
+			id="_84c7b094-6423-4c0e-b509-edaca31211ae" typeRef="Any">
+			<boxedext:in>
+				<semantic:literalExpression
+					typeRef="Any">
+					<semantic:text>[1,2,3,4]</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:in>
+			<boxedext:match>
+				<semantic:literalExpression
+					typeRef="boolean">
+					<semantic:text>item > 2</semantic:text>
+				</semantic:literalExpression>
+			</boxedext:match>
+		</boxedext:filter>
+	</semantic:decision>
+	<dmndi:DMNDI>
+		<dmndi:DMNDiagram
+			id="_c97cc8fb-c648-43a9-a403-a91d3fe826a2"
+			triso:modelElementRef="_8797a83d-04fd-475c-b0be-a218da725a6e"
+			name="Page 1">
+			<di:extension />
+			<dmndi:Size height="1050" width="1485" />
+			<dmndi:DMNShape
+				id="_6efc901b-4958-4611-9578-bf6e30d0f70c"
+				dmnElementRef="_29722adf-e996-423a-9c66-081c00e2c3e4">
+				<dc:Bounds x="463" y="297" width="153" height="60" />
+				<dmndi:DMNLabel
+					sharedStyle="LS_3404349f-5046-4ad3-ad15-7f1e27291ab5_0"
+					trisodmn:defaultBounds="true" />
+			</dmndi:DMNShape>
+		</dmndi:DMNDiagram>
+		<dmndi:DMNStyle
+			id="LS_3404349f-5046-4ad3-ad15-7f1e27291ab5_0"
+			fontFamily="arial,helvetica,sans-serif" fontSize="11"
+			fontBold="false" fontItalic="false" fontUnderline="false"
+			fontStrikeThrough="false" />
+	</dmndi:DMNDI>
+</semantic:definitions>

@@ -15,12 +15,10 @@
 
 package org.drools.mvel.compiler.rule.builder.dialect.java;
 
-import java.io.StringReader;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.core.reteoo.BetaNode;
@@ -33,19 +31,33 @@ import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.PredicateExpression;
 import org.drools.mvel.MVELConstraint;
 import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
+@RunWith(Parameterized.class)
 public class JavaDialectTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public JavaDialectTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // This test is explicitly designed for the Java Dialect as implemented in pure drl
+        // and doesn't make any sense to try to adapt it the executable model
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
     
     @Test
     public void testEvalDetectionInAlphaNode() {
@@ -60,18 +72,8 @@ public class JavaDialectTest {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource(new StringReader(drl)),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {
@@ -89,10 +91,10 @@ public class JavaDialectTest {
         alphanode = (AlphaNode) alphanode.getObjectSinkPropagator().getSinks()[0];
         AlphaNodeFieldConstraint constraint = alphanode.getConstraint();
 
-        if (constraint instanceof MVELConstraint ) {
-            FieldValue fieldVal = (( MVELConstraint ) constraint).getField();
-            assertEquals( "xxx", fieldVal.getValue() );
-        }
+        KieSession ksession = kbase.newKieSession();
+        ksession.insert(new Person("xxx"));
+        int fired = ksession.fireAllRules();
+        assertEquals(1, fired);
     }
     
 
@@ -111,18 +113,8 @@ public class JavaDialectTest {
         drl += "then\n";
         drl += "end\n";
 
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newReaderResource( new StringReader( drl ) ),
-                      ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if ( kbuilder.hasErrors() ) {
-            fail( kbuilder.getErrors().toString() );
-        }
-        assertFalse( kbuilder.hasErrors() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        
         List<ObjectTypeNode> nodes = ((KnowledgeBaseImpl)kbase).getRete().getObjectTypeNodes();
         ObjectTypeNode node = null;
         for ( ObjectTypeNode n : nodes ) {

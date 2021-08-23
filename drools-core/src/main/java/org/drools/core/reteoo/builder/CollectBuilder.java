@@ -16,6 +16,9 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.drools.core.base.accumulators.CollectAccumulator;
 import org.drools.core.common.BetaConstraints;
 import org.drools.core.common.TupleStartEqualsConstraint;
@@ -29,9 +32,6 @@ import org.drools.core.rule.RuleConditionElement;
 import org.drools.core.rule.SingleAccumulate;
 import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.BetaNodeFieldConstraint;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CollectBuilder
     implements
@@ -58,7 +58,6 @@ public class CollectBuilder
 
         // save tuple source and pattern offset for later if needed
         final LeftTupleSource tupleSource = context.getTupleSource();
-        final int currentPatternIndex = context.getCurrentPatternOffset();
 
         // builds the source pattern
         builder.build( context,
@@ -94,11 +93,12 @@ public class CollectBuilder
                                                                        resultBetaConstraints,
                                                                        true );
 
-        CollectAccumulator accumulator = new CollectAccumulator( collect, 
-                                                                 existSubNetwort );
+        // The node needs to declare the vars it returns
+        Pattern resultPattern = collect.getResultPattern();
+
         Accumulate accumulate = new SingleAccumulate( sourcePattern,
                                                       sourcePattern.getRequiredDeclarations(),
-                                                      accumulator );
+                                                      new CollectAccumulator( collect, existSubNetwort ) );
 
         AccumulateNode accNode = context.getComponentFactory().getNodeFactoryService().buildAccumulateNode( context.getNextId(),
                                                                                                             context.getTupleSource(),
@@ -107,13 +107,11 @@ public class CollectBuilder
                                                                                                             binder, // source binder
                                                                                                             resultBinder,
                                                                                                             accumulate,
-                                                                                                            existSubNetwort,
                                                                                                             context );
         context.setTupleSource( utils.attachNode( context, accNode ) );
 
         // source pattern was bound, so nulling context
         context.setObjectSource( null );
-        context.setCurrentPatternOffset( currentPatternIndex );
         context.popRuleComponent();
     }
 

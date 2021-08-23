@@ -25,6 +25,7 @@ import java.util.Map;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.base.DroolsQuery;
 import org.drools.core.common.DoubleNonIndexSkipBetaConstraints;
+import org.drools.core.common.EmptyBetaConstraints;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.SingleBetaConstraints;
@@ -37,7 +38,6 @@ import org.drools.core.reteoo.CompositeObjectSinkAdapter;
 import org.drools.core.reteoo.JoinNode;
 import org.drools.core.reteoo.LeftInputAdapterNode;
 import org.drools.core.reteoo.NotNode;
-import org.drools.core.reteoo.ObjectSinkNodeList;
 import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ReteDumper;
 import org.drools.core.reteoo.RightTuple;
@@ -62,6 +62,7 @@ import org.kie.api.runtime.rule.Row;
 import org.kie.api.runtime.rule.Variable;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.core.util.DroolsTestUtil.rulestoMap;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -153,15 +154,15 @@ public class IndexingTest {
             assertNotNull(otn);
             final AlphaNode alphaNode1 = (AlphaNode) otn.getObjectSinkPropagator().getSinks()[0];
             final CompositeObjectSinkAdapter sinkAdapter = (CompositeObjectSinkAdapter) alphaNode1.getObjectSinkPropagator();
-            final ObjectSinkNodeList hashableSinks = sinkAdapter.getHashableSinks();
+            final List<AlphaNode> hashableSinks = sinkAdapter.getHashableSinks();
             assertNotNull(hashableSinks);
             assertEquals(2, hashableSinks.size());
 
             final AlphaNode alphaNode2 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[0];
-            assertSame(hashableSinks.getFirst(), alphaNode2);
+            assertSame(hashableSinks.get(0), alphaNode2);
 
             final AlphaNode alphaNode3 = (AlphaNode) alphaNode1.getObjectSinkPropagator().getSinks()[1];
-            assertSame(hashableSinks.getLast(), alphaNode3);
+            assertSame(hashableSinks.get(1), alphaNode3);
         } finally {
             wm.dispose();
         }
@@ -183,6 +184,7 @@ public class IndexingTest {
                         "   $p5 : Person(address.street == $p1.name)\n" + // indexed
                         "   $p6 : Person(addresses[0].street == $p1.name)\n" +  // indexed
                         "   $p7 : Person(name == $p1.address.street)\n" + //not indexed
+                        "   $p8 : Person(addresses[0].street == null)\n" +  // not indexed
                         "then\n" +
                         "end\n";
 
@@ -198,6 +200,7 @@ public class IndexingTest {
             final JoinNode j5 = (JoinNode) j4.getSinkPropagator().getSinks()[0];
             final JoinNode j6 = (JoinNode) j5.getSinkPropagator().getSinks()[0];
             final JoinNode j7 = (JoinNode) j6.getSinkPropagator().getSinks()[0];
+            final JoinNode j8 = (JoinNode) j7.getSinkPropagator().getSinks()[0];
 
             SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
             assertTrue(c.isIndexed());
@@ -232,6 +235,11 @@ public class IndexingTest {
             c = (SingleBetaConstraints) j7.getRawConstraints();
             assertFalse(c.isIndexed());
             bm = (BetaMemory) wm.getNodeMemory(j7);
+            assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
+            assertTrue(bm.getRightTupleMemory() instanceof TupleList);
+
+            assertThat(j8.getRawConstraints()).isInstanceOf(EmptyBetaConstraints.class);
+            bm = (BetaMemory) wm.getNodeMemory(j8);
             assertTrue(bm.getLeftTupleMemory() instanceof TupleList);
             assertTrue(bm.getRightTupleMemory() instanceof TupleList);
         } finally {
@@ -835,6 +843,39 @@ public class IndexingTest {
                 return Integer.MIN_VALUE;
             }
             return row;
+        }
+    }
+
+    @Test(timeout = 10000)
+    public void testBuildsIndexedMemoryWithThis() {
+        // tests indexes are correctly built
+        final String drl =
+                "package org.drools.compiler.test\n" +
+                           "import " + Person.class.getCanonicalName() + "\n" +
+                           "global java.util.List list\n" +
+                           "rule test1\n" +
+                           "when\n" +
+                           "   $p1  : Person()\n" +
+                           "   $p2 : String(this == $p1.name)\n" + //indexed
+                           "then\n" +
+                           "end\n";
+
+        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("indexing-test", kieBaseTestConfiguration, drl);
+        InternalWorkingMemory wm = (InternalWorkingMemory) kbase.newKieSession();
+
+        try {
+            final ObjectTypeNode node = KieUtil.getObjectTypeNode(wm.getKnowledgeBase(), Person.class);
+            assertNotNull(node);
+            final LeftInputAdapterNode liaNode = (LeftInputAdapterNode) node.getObjectSinkPropagator().getSinks()[0];
+            final JoinNode j2 = (JoinNode) liaNode.getSinkPropagator().getSinks()[0];
+
+            SingleBetaConstraints c = (SingleBetaConstraints) j2.getRawConstraints();
+            assertTrue(c.isIndexed());
+            BetaMemory bm = (BetaMemory) wm.getNodeMemory(j2);
+            assertTrue(bm.getLeftTupleMemory() instanceof TupleIndexHashTable);
+            assertTrue(bm.getRightTupleMemory() instanceof TupleIndexHashTable);
+        } finally {
+            wm.dispose();
         }
     }
 }

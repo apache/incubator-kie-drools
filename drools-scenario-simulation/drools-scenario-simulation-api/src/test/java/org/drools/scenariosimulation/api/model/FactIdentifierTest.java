@@ -18,9 +18,19 @@ package org.drools.scenariosimulation.api.model;
 
 import org.junit.Test;
 
+import static org.drools.scenariosimulation.api.utils.ConstantsHolder.IMPORTED_PREFIX;
 import static org.junit.Assert.assertEquals;
 
 public class FactIdentifierTest {
+
+    @Test
+    public void importedFactIdentifierTest() {
+        String importedBookName = IMPORTED_PREFIX + "." + "Book";
+        FactIdentifier factIdentifier = FactIdentifier.create(importedBookName, importedBookName, IMPORTED_PREFIX);
+        assertEquals(importedBookName, factIdentifier.getName());
+        assertEquals(importedBookName, factIdentifier.getClassName());
+        assertEquals(IMPORTED_PREFIX, factIdentifier.getImportPrefix());
+    }
 
     @Test
     public void getClassNameWithoutPackage() {
@@ -38,7 +48,7 @@ public class FactIdentifierTest {
     }
 
     private void commonGetClassNameWithoutPackage(String name, String className, String expectedClassName) {
-        FactIdentifier factIdentifier = new FactIdentifier(name, className);
+        FactIdentifier factIdentifier = FactIdentifier.create(name, className);
         assertEquals(expectedClassName, factIdentifier.getClassNameWithoutPackage());
     }
 
@@ -58,7 +68,7 @@ public class FactIdentifierTest {
     }
 
     private void commonGetPackageWithoutClassName(String name, String className, String expectedPackage) {
-        FactIdentifier factIdentifier = new FactIdentifier(name, className);
+        FactIdentifier factIdentifier = FactIdentifier.create(name, className);
         assertEquals(expectedPackage, factIdentifier.getPackageWithoutClassName());
     }
     

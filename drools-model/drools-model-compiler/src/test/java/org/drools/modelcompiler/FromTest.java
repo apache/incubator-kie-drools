@@ -39,6 +39,7 @@ import org.drools.modelcompiler.domain.PetPerson;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.ToysStore;
 import org.drools.modelcompiler.domain.Woman;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 
@@ -139,6 +140,37 @@ public class FromTest extends BaseModelTest {
         ksession.fireAllRules();
 
         Assertions.assertThat(list).containsExactlyInAnyOrder("Charles");
+    }
+
+    @Test @Ignore
+    public void testModifyWithFrom() {
+        // DROOLS-6486
+        final String str =
+                "import org.drools.modelcompiler.domain.*;\n" +
+                "\n" +
+                "rule R when\n" +
+                " Man( $wife : wife )\n" +
+                " $child: Child( age > 10 ) from $wife.children\n" +
+                "then\n" +
+                "  modify( $child ) { setName($child.getName() + \"x\") };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        final Woman alice = new Woman( "Alice", 38 );
+        final Man bob = new Man( "Bob", 40 );
+        bob.setWife( alice );
+
+        final Child charlie = new Child( "Charles", 12 );
+        final Child debbie = new Child( "Debbie", 10 );
+        alice.addChild( charlie );
+        alice.addChild( debbie );
+
+        ksession.insert( bob );
+        ksession.insert( charlie ); // object has to be in the session in order to be modified, but it's retrieved with a FromNode
+        ksession.fireAllRules();
+
+        assertEquals("Charlesx", charlie.getName());
     }
 
     public static Integer getLength(String ignoredParameter, String s, Integer offset) {
@@ -1023,5 +1055,32 @@ public class FromTest extends BaseModelTest {
 
         ksession.insert( "A" );
         assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    @Test
+    public void testFromCollectWithOr() {
+        // DROOLS-6531
+        String str =
+                "import java.util.List;\n" +
+                "rule R when\n" +
+                "        $list: List()\n" +
+                "        $values:    (\n" +
+                "            List(size > 0) from collect ( String(length < 3) ) or\n" +
+                "            List(size > 0) from collect ( String(length > 5) )\n" +
+                "        )\n" +
+                "    then\n" +
+                "        $list.addAll($values);\n" +
+                "end";
+
+        KieSession ksession = getKieSession( str );
+
+        List<String> list = new ArrayList<>();
+        ksession.insert(list);
+        ksession.insert("t");
+        ksession.insert("test");
+        ksession.insert("testtest");
+
+        ksession.fireAllRules();
+        assertEquals( 2, list.size() );
     }
 }

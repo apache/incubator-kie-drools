@@ -25,11 +25,13 @@ public interface ItemDefinition extends NamedElement {
     /**
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      */
+    @GwtIncompatible
     QName getTypeRef();
 
     /**
      * Internal Model: this is using QName as per DMN v1.1 in order to maintain internal compatibility with the engine
      */
+    @GwtIncompatible
     void setTypeRef(QName value);
 
     UnaryTests getAllowedValues();

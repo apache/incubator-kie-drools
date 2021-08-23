@@ -18,12 +18,14 @@ package org.kie.dmn.openapi;
 
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.networknt.schema.JsonSchema;
+import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.openapi.model.DMNOASResult;
+
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.networknt.schema.JsonSchema;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -72,5 +74,14 @@ public class ProcessItemTest extends BaseDMNOASTest {
 
         checkProcessItem(runtime, result);
         checkProcessItem_2(runtime, result);
+    }
+
+    @Test
+    public void test_Colliding() {
+        final DMNRuntime runtime = createRuntimeWithAdditionalResources("processItem.dmn", this.getClass(), "processItemCollidingNS.dmn");
+        Assertions.assertThatExceptionOfType(IllegalStateException.class)
+                  .isThrownBy(() -> DMNOASGeneratorFactory.generator(runtime.getModels()).build())
+                  .withMessageContaining("processItem") // name of the 1st DMN Model
+                  .withMessageContaining("processItemCollidingNS"); // name of the 2nd DMN Model
     }
 }

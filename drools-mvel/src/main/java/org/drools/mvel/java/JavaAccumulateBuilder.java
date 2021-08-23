@@ -164,7 +164,8 @@ public class JavaAccumulateBuilder
 
             return new MultiAccumulate( source,
                                         requiredDecl.toArray(new Declaration[requiredDecl.size()]),
-                                        accumulators );
+                                        accumulators,
+                                        accumulators.length);
         } else {
             AccumulateFunctionCallDescr fc = accumDescr.getFunctions().get(0);
             AccumulateFunction function = getAccumulateFunction(context, accumDescr, fc, source, declCls);

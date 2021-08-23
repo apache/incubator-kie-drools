@@ -92,7 +92,7 @@ public class SerializableActivation
 
     public Object getDeclarationValue(String variableName) {
         Declaration decl = ((RuleImpl)this.rule).getDeclaration( variableName );
-        return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getOffset())).getObject() );
+        return decl.getValue( null, ((InternalFactHandle)factHandles.get(decl.getObjectIndex())).getObject());
     }
 
     public List<String> getDeclarationIds() {

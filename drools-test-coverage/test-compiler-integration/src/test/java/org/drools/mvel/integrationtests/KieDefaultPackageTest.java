@@ -15,9 +15,15 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -27,7 +33,19 @@ import static org.junit.Assert.assertEquals;
 /**
  * Testing use of default Package.
  */
-public class KieDefaultPackageTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieDefaultPackageTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieDefaultPackageTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testAllInDefaultPackage() throws Exception {
@@ -50,7 +68,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/main/resources/model.drl", model_drl );
         kfs.write( "src/main/resources/drl.drl", drl );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
@@ -68,7 +86,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
 
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/test/java/org/jbpm/Test.java", javaClass );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
@@ -99,7 +117,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/main/resources/model.drl", model_drl );
         kfs.write( "src/main/resources/drl.drl", drl );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
@@ -128,7 +146,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/main/resources/model.drl", model_drl );
         kfs.write( "src/main/resources/drl.drl", drl );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
@@ -157,7 +175,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/main/resources/model.drl", model_drl );
         kfs.write( "src/main/resources/drl.drl", drl );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );
@@ -187,7 +205,7 @@ public class KieDefaultPackageTest extends CommonTestMethodBase {
         KieFileSystem kfs = ks.newKieFileSystem();
         kfs.write( "src/main/resources/model.drl", model_drl );
         kfs.write( "src/main/resources/drl.drl", drl );
-        KieBuilder builder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder builder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         assertEquals( 0,
                       builder.getResults().getMessages().size() );

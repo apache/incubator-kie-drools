@@ -683,7 +683,7 @@ public class TruthMaintenanceTest extends CommonTestMethodBase {
         }
     }
 
-    @Test //(timeout=10000)
+    @Test(timeout=10000)
     public void testLogicalInsertions3() throws Exception {
         KieBase kbase = loadKnowledgeBase("test_logicalInsertions3.drl");
         KieSession ksession = kbase.newKieSession();

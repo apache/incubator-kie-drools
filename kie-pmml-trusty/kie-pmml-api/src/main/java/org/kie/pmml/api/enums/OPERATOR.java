@@ -16,6 +16,7 @@
 package org.kie.pmml.api.enums;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.kie.pmml.api.exceptions.KieEnumException;
 
@@ -33,6 +34,32 @@ public enum OPERATOR {
     IS_MISSING("isMissing", ""),
     IS_NOT_MISSING("isNotMissing", "");
 
+    /**
+     * <code>OPERATOR</code>s that operates with <code>Number</code>s
+     */
+    static final List<OPERATOR> NUMBER_OPERATORS = Arrays.asList(EQUAL,
+                                                                 NOT_EQUAL,
+                                                                 LESS_THAN,
+                                                                 LESS_OR_EQUAL,
+                                                                 GREATER_THAN,
+                                                                 GREATER_OR_EQUAL);
+
+    /**
+     * <code>OPERATOR</code>s that operates <b>ONLY</b >with <code>Number</code>s
+     */
+    static final List<OPERATOR> ONLY_NUMBER_OPERATORS = Arrays.asList(LESS_THAN,
+                                                                 LESS_OR_EQUAL,
+                                                                 GREATER_THAN,
+                                                                 GREATER_OR_EQUAL);
+    /**
+     * <code>OPERATOR</code>s that operates with a <b>value</b>
+     */
+    static final List<OPERATOR> VALUE_OPERATORS = Arrays.asList(EQUAL,
+                                                                NOT_EQUAL,
+                                                                LESS_THAN,
+                                                                LESS_OR_EQUAL,
+                                                                GREATER_THAN,
+                                                                GREATER_OR_EQUAL);
     private final String name;
     private final String operator;
 
@@ -46,6 +73,18 @@ public enum OPERATOR {
                 .filter(value -> name.equals(value.name))
                 .findFirst()
                 .orElseThrow(() -> new KieEnumException("Failed to find OPERATOR with name: " + name));
+    }
+
+    /**
+     * Returns <code>true</code> if the <code>OPERATOR</code> is applicable only for <code>NUMBER</code>s
+     * @return
+     */
+    public boolean isOnlyNumberOperator() {
+        return ONLY_NUMBER_OPERATORS.contains(this);
+    }
+
+    public boolean isValueOperator() {
+        return VALUE_OPERATORS.contains(this);
     }
 
     public String getName() {

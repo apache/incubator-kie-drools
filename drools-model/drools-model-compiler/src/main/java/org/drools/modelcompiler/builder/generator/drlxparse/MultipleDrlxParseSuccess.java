@@ -17,6 +17,8 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -54,6 +56,11 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     @Override
+    public List<Expression> getNullSafeExpressions() {
+        return Collections.emptyList();
+    }
+
+    @Override
     public DrlxParseResult combineWith( DrlxParseResult other, BinaryExpr.Operator operator ) {
         throw new UnsupportedOperationException();
     }
@@ -69,8 +76,13 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     @Override
-    public boolean isValidExpression() {
-        return Stream.of(results).allMatch( DrlxParseSuccess::isValidExpression );
+    public String getOriginalDrlConstraint() {
+        return Arrays.stream(results).map(DrlxParseResult::getOriginalDrlConstraint).collect(Collectors.joining());
+    }
+
+    @Override
+    public boolean isPredicate() {
+        return Stream.of(results).allMatch( DrlxParseSuccess::isPredicate);
     }
 
     @Override

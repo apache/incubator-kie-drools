@@ -1,0 +1,17 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
+
+public class KiePMMLCharacteristicTemplate {
+
+    private KiePMMLCharacteristic getKiePMMLCharacteristic() {
+             KiePMMLCharacteristic characteristic = KiePMMLCharacteristic.builder(name, Collections.emptyList(), Arrays.asList(attribute1, attribute2))
+                            .withBaselineScore(baselineScore)
+                            .withReasonCode(reasonCode)
+                            .build();
+    }
+
+
+}

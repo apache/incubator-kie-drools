@@ -29,13 +29,13 @@ rule "Eval Tree Node @{context} - @{id} - Down Aggregate Mark"
 @includeNamed{ 'rule_meta.drlt'; attributes=attributes }
 salience $children.size() + 1
 when
-    $node : @{context}TreeNode( context == "@{context}", $id : id == "@{id}", $master : parent, $children : children )
+    $node : @{context}TreeNode( context == "@{context}", $id : id == "@{id}", $parent : parent, $children : children )
     $tok  : @{context}TreeToken( context == "@{context}", current == "@{id}", marker == null,
                                  visitMode == "AGGREGATE_NODES", @{missings}  )
 then
-//    System.out.println( " MARKING! unknown-returning subroot of an aggregand tree" + $master );
+//    System.out.println( " MARKING! unknown-returning subroot of an aggregand tree" + $parent );
     modify ( $tok ) {
-        setMarker( $master );
+        setMarker( $parent );
     }
 end
 

@@ -31,11 +31,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieModule;
+import org.kie.api.conf.KieBaseOption;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
-import org.kie.internal.utils.KieHelper;
 
 public abstract class AbstractConcurrentTest {
 
@@ -43,13 +46,15 @@ public abstract class AbstractConcurrentTest {
     protected final boolean serializeKieBase;
     protected final boolean sharedKieBase;
     protected final boolean sharedKieSession;
+    protected final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     public AbstractConcurrentTest(final boolean enforcedJitting, final boolean serializeKieBase,
-                                  final boolean sharedKieBase, final boolean sharedKieSession) {
+                                  final boolean sharedKieBase, final boolean sharedKieSession, KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.enforcedJitting = enforcedJitting;
         this.serializeKieBase = serializeKieBase;
         this.sharedKieBase = sharedKieBase;
         this.sharedKieSession = sharedKieSession;
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     interface TestWithSessionExecutor {
@@ -151,20 +156,18 @@ public abstract class AbstractConcurrentTest {
     }
 
     protected synchronized KieBase getKieBase(final String... drls) {
-        final KieHelper kieHelper = new KieHelper();
-        for (final String drl : drls) {
-            kieHelper.addContent(drl, ResourceType.DRL);
-        }
-
-        KieBase kieBase;
+     // kbase serialization is not supported
+//        if (serializeKieBase) {
+//            kieBase = serializeAndDeserializeKieBase(kieBase);
+//        }
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drls);
+        KieBaseOption[] kbOptions;
         if (enforcedJitting) {
-            kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(0));
+            kbOptions = new KieBaseOption[] {ConstraintJittingThresholdOption.get(0)};
         } else {
-            kieBase = kieHelper.build();
+            kbOptions = new KieBaseOption[] {};
         }
-        if (serializeKieBase) {
-            kieBase = serializeAndDeserializeKieBase(kieBase);
-        }
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, kbOptions);
         return kieBase;
     }
 

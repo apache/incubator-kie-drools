@@ -26,9 +26,9 @@ import java.util.function.Function;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+import org.kie.pmml.api.iinterfaces.SerializableFunction;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class KiePMMLRegressionTableTest {
@@ -38,11 +38,11 @@ public class KiePMMLRegressionTableTest {
     private static final String SECOND_NUMERIC_INPUT = "SECOND_NUMERIC_INPUT";
     private static final String FIRST_CATEGORICAL_INPUT = "FIRST_CATEGORICAL_INPUT";
     private static final String SECOND_CATEGORICAL_INPUT = "SECOND_CATEGORICAL_INPUT";
-    private static final Function<Double, Double> FIRST_NUMERIC_FUNCTION = aDouble -> 1 / aDouble;
-    private static final Function<Double, Double> SECOND_NUMERIC_FUNCTION = aDouble -> 1 - aDouble;
+    private static final SerializableFunction<Double, Double> FIRST_NUMERIC_FUNCTION = aDouble -> 1 / aDouble;
+    private static final SerializableFunction<Double, Double> SECOND_NUMERIC_FUNCTION = aDouble -> 1 - aDouble;
     private final KiePMMLRegressionTable regressionTable;
-    private final Function<Object, Double> firstCategoricalFunction;
-    private final Function<Object, Double> secondCategoricalFunction;
+    private final SerializableFunction<Object, Double> firstCategoricalFunction;
+    private final SerializableFunction<Object, Double> secondCategoricalFunction;
     private final double firstNumericalInput;
     private final double secondNumericalInput;
     private final double expectedResult;
@@ -78,9 +78,6 @@ public class KiePMMLRegressionTableTest {
         input.put(SECOND_CATEGORICAL_INPUT, "unused");
         Object retrieved = regressionTable.evaluateRegression(input);
         assertEquals(expectedResult, retrieved);
-        final Map<String, Object> outputFieldsMap = regressionTable.getOutputFieldsMap();
-        assertTrue(outputFieldsMap.containsKey(TARGET_FIELD));
-        assertEquals(expectedResult, outputFieldsMap.get(TARGET_FIELD));
     }
 
     private KiePMMLRegressionTable getKiePMMLRegressionTable() {
@@ -93,11 +90,6 @@ public class KiePMMLRegressionTableTest {
             @Override
             protected void updateResult(AtomicReference<Double> toUpdate) {
 
-            }
-
-            @Override
-            protected void populateOutputFieldsMapWithResult(Object result) {
-                outputFieldsMap.put(targetField, result);
             }
         };
         toReturn.targetField = TARGET_FIELD;

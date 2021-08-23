@@ -16,12 +16,12 @@
 
 package org.drools.core.reteoo.builder;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.LinkedList;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.List;
-import java.util.ListIterator;
-import java.util.Stack;
 
 import org.drools.core.common.BaseNode;
 import org.drools.core.common.InternalWorkingMemory;
@@ -52,39 +52,40 @@ import static org.drools.core.rule.TypeDeclaration.NEVER_EXPIRES;
 public class BuildContext {
 
     // tuple source to attach next node to
-    private LeftTupleSource                  tupleSource;
+    private LeftTupleSource tupleSource;
     // object source to attach next node to
-    private ObjectSource                     objectSource;
+    private ObjectSource objectSource;
     // object type cache to check for cross products
-    private LinkedList<Pattern>              objectType;
-    // offset of the pattern
-    private int                              currentPatternOffset;
+    private List<Pattern> patterns;
+
     // rule base to add rules to
-    private InternalKnowledgeBase            kBase;
+    private final InternalKnowledgeBase kBase;
     // rule being added at this moment
-    private RuleImpl                         rule;
-    private GroupElement                     subRule;
+    private RuleImpl rule;
+    private GroupElement subRule;
     // the rule component being processed at the moment
-    private Stack<RuleComponent>             ruleComponent;
+    private final Deque<RuleComponent> ruleComponent = new ArrayDeque<>();
     // a build stack to track nested elements
-    private LinkedList<RuleConditionElement> buildstack;
+    private Deque<RuleConditionElement> buildstack;
     // beta constraints from the last pattern attached
     private List<BetaNodeFieldConstraint>    betaconstraints;
     // alpha constraints from the last pattern attached
     private List<AlphaNodeFieldConstraint>   alphaConstraints;
     // xpath constraints from the last pattern attached
     private List<XpathConstraint>            xpathConstraints;
+
     // the current entry point
     private EntryPointId                     currentEntryPoint;
     private boolean                          tupleMemoryEnabled;
     private boolean                          objectTypeNodeMemoryEnabled;
     private boolean                          query;
 
-    private List<PathEndNode>                pathEndNodes = new ArrayList<>();
+    private final List<PathEndNode>          pathEndNodes = new ArrayList<>();
+
     /**
      * Stores the list of nodes being added that require partitionIds
      */
-    private List<BaseNode>                   nodes;
+    private List<BaseNode> nodes = new ArrayList<>();
     /**
      * Stores the id of the partition this rule will be added to
      */
@@ -108,31 +109,11 @@ public class BuildContext {
 
     public BuildContext(final InternalKnowledgeBase kBase) {
         this.kBase = kBase;
-
-        this.objectType = null;
-        this.buildstack = null;
-
-        this.tupleSource = null;
-        this.objectSource = null;
-
-        this.currentPatternOffset = 0;
-
         this.tupleMemoryEnabled = true;
-
         this.objectTypeNodeMemoryEnabled = true;
-
         this.currentEntryPoint = EntryPointId.DEFAULT;
-
-        this.nodes = new LinkedList<>();
-
-        this.partitionId = null;
-
-        this.ruleComponent = new Stack<>();
-
         this.attachPQN = true;
-
         this.componentFactory = kBase.getConfiguration().getComponentFactory();
-
         this.emptyForAllBetaConstraints = false;
     }
 
@@ -144,27 +125,14 @@ public class BuildContext {
         this.emptyForAllBetaConstraints = true;
     }
 
-    /**
-     * @return the currentPatternOffset
-     */
-    public int getCurrentPatternOffset() {
-        return this.currentPatternOffset;
-    }
-
-    /**
-     * @param currentPatternIndex the currentPatternOffset to set
-     */
-    void setCurrentPatternOffset(final int currentPatternIndex) {
-        this.currentPatternOffset = currentPatternIndex;
-        this.syncObjectTypesWithPatternOffset();
-    }
-
-    private void syncObjectTypesWithPatternOffset() {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
+    public void syncObjectTypesWithObjectCount() {
+        if (this.patterns == null) {
+            return;
         }
-        while (this.objectType.size() > this.currentPatternOffset) {
-            this.objectType.removeLast();
+        if (tupleSource != null) {
+            while (this.patterns.size() > tupleSource.getObjectCount()) {
+                this.patterns.remove(this.patterns.size()-1);
+            }
         }
     }
 
@@ -182,24 +150,15 @@ public class BuildContext {
         this.objectSource = objectSource;
     }
 
-    /**
-     * @return the objectType
-     */
-    public LinkedList<Pattern> getObjectType() {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
-        }
-        return this.objectType;
+    public List<Pattern> getPatterns() {
+        return this.patterns == null ? Collections.emptyList() : this.patterns;
     }
 
-    /**
-     * @param objectType the objectType to set
-     */
-    public void setObjectType(final LinkedList<Pattern> objectType) {
-        if (this.objectType == null) {
-            this.objectType = new LinkedList<>();
+    public void addPattern(Pattern pattern) {
+        if (this.patterns == null) {
+            this.patterns = new ArrayList<>();
         }
-        this.objectType = objectType;
+        this.patterns.add( pattern );
     }
 
     /**
@@ -214,15 +173,6 @@ public class BuildContext {
      */
     public void setTupleSource(final LeftTupleSource tupleSource) {
         this.tupleSource = tupleSource;
-    }
-
-    public void incrementCurrentPatternOffset() {
-        this.currentPatternOffset++;
-    }
-
-    public void decrementCurrentPatternOffset() {
-        this.currentPatternOffset--;
-        this.syncObjectTypesWithPatternOffset();
     }
 
     /**
@@ -263,7 +213,7 @@ public class BuildContext {
      */
     public void push(final RuleConditionElement rce) {
         if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
+            this.buildstack = new ArrayDeque<>();
         }
         this.buildstack.addLast(rce);
     }
@@ -272,9 +222,6 @@ public class BuildContext {
      * Removes the top stack element
      */
     public RuleConditionElement pop() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
         return this.buildstack.removeLast();
     }
 
@@ -282,20 +229,11 @@ public class BuildContext {
      * Returns the top stack element without removing it
      */
     public RuleConditionElement peek() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
         return this.buildstack.getLast();
     }
 
-    /**
-     * Returns a list iterator to iterate over the stacked elements
-     */
-    ListIterator<RuleConditionElement> stackIterator() {
-        if (this.buildstack == null) {
-            this.buildstack = new LinkedList<>();
-        }
-        return this.buildstack.listIterator(this.buildstack.size());
+    public Collection<RuleConditionElement> getBuildstack() {
+        return this.buildstack == null ? Collections.emptyList() : buildstack;
     }
 
     public List<BetaNodeFieldConstraint> getBetaconstraints() {

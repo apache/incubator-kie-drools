@@ -119,7 +119,7 @@ public class DRL6Lexer extends AbstractDRLLexer {
 	    }
 	    
 	    public String normalizeString( String input ) {
-	        if( input != null && input.length() >= 4 ) {
+			if( input != null && (input.length() == 2 || input.length() >= 4) ) {
 	            input = input.substring( 1, input.length() - 1 ); 
 	            input = input.replaceAll( "\'", "'" );
 	            input = input.replaceAll( "\"", "\\\"" );

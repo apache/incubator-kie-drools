@@ -18,6 +18,7 @@ package org.drools.workbench.models.testscenarios.backend.util;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
+import com.thoughtworks.xstream.security.WildcardTypePermission;
 import org.drools.workbench.models.testscenarios.shared.CollectionFieldData;
 import org.drools.workbench.models.testscenarios.shared.ExecutionTrace;
 import org.drools.workbench.models.testscenarios.shared.Expectation;
@@ -34,8 +35,8 @@ import org.drools.workbench.models.testscenarios.shared.VerifyFact;
 import org.drools.workbench.models.testscenarios.shared.VerifyField;
 import org.drools.workbench.models.testscenarios.shared.VerifyRuleFired;
 import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
-import org.kie.soup.xstream.XStreamUtils;
 import org.kie.soup.project.datamodel.imports.Imports;
+import org.kie.soup.xstream.XStreamUtils;
 
 /**
  * Persists the scenario model.
@@ -46,7 +47,12 @@ public class ScenarioXMLPersistence {
     private static final ScenarioXMLPersistence INSTANCE = new ScenarioXMLPersistence();
 
     private ScenarioXMLPersistence() {
-        xt = XStreamUtils.createTrustingXStream(new DomDriver());
+        xt = XStreamUtils.createNonTrustingXStream(new DomDriver());
+        xt.addPermission(new WildcardTypePermission( new String[] {
+                "org.drools.workbench.models.testscenarios.shared.*",
+                "org.drools.workbench.models.datamodel.imports.**"
+        }));
+
         xt.alias("scenario", Scenario.class);
         xt.alias("execution-trace", ExecutionTrace.class);
         xt.alias("expectation", Expectation.class);

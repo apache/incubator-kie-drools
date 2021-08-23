@@ -42,6 +42,10 @@ public interface FieldDefinition {
 
     boolean isFinal();
 
+    default boolean isOverride() {
+        return false;
+    }
+
     default Optional<String> overriddenGetterName() {
         return Optional.empty();
     }

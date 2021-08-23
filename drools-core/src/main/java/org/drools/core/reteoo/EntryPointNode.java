@@ -230,7 +230,7 @@ public class EntryPointNode extends ObjectSource
             log.trace("Insert {}", handle.toString());
         }
 
-        if ( partitionsEnabled ) {
+        if ( partitionsEnabled || !workingMemory.getSessionConfiguration().isThreadSafe() ) {
             // In case of multithreaded evaluation the CompositePartitionAwareObjectSinkAdapter
             // used by the OTNs will take care of enqueueing this inseretion on the propagation queues
             // of the different agendas
@@ -249,23 +249,11 @@ public class EntryPointNode extends ObjectSource
             log.trace( "Update {}", handle.toString()  );
         }
 
-        workingMemory.addPropagation(new PropagationEntry.Update(handle, pctx, objectTypeConf));
-    }
-
-    public static void propagateModify(InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm) {
-        // make a reference to the previous tuples, then null then on the handle
-        propagateModify( handle, pctx, objectTypeConf, wm, new ModifyPreviousTuples( handle.detachLinkedTuples() ) );
-    }
-
-    public static void propagateModify( InternalFactHandle handle, PropagationContext pctx, ObjectTypeConf objectTypeConf, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples ) {
-        ObjectTypeNode[] cachedNodes = objectTypeConf.getObjectTypeNodes();
-        for ( int i = 0, length = cachedNodes.length; i < length; i++ ) {
-            cachedNodes[i].modifyObject( handle, modifyPreviousTuples, pctx, wm );
-            if (i < cachedNodes.length - 1) {
-                removeRightTuplesMatchingOTN( pctx, wm, modifyPreviousTuples, cachedNodes[i], 0 );
-            }
+        if (workingMemory.getSessionConfiguration().isThreadSafe()) {
+            workingMemory.addPropagation( new PropagationEntry.Update( handle, pctx, objectTypeConf ) );
+        } else {
+            PropagationEntry.Update.execute( handle, pctx, objectTypeConf, workingMemory );
         }
-        modifyPreviousTuples.retractTuples(pctx, wm);
     }
 
     public static void removeRightTuplesMatchingOTN( PropagationContext pctx, InternalWorkingMemory wm, ModifyPreviousTuples modifyPreviousTuples, ObjectTypeNode node, int partition ) {
@@ -395,14 +383,16 @@ public class EntryPointNode extends ObjectSource
     }
 
     public void attach() {
-        attach(null);
+        doAttach(null);
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.source.addObjectSink( this );
         if (context == null ) {
             return;
         }
+        // @FIXME when is below ever called, if context is always null? (mdp)
         for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
             workingMemory.updateEntryPointsCache();
         }

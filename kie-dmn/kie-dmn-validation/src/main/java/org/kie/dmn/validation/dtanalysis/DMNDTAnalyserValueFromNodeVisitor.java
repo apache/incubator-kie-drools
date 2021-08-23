@@ -184,10 +184,12 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
                     if (params.size() == 1) {
                         return areAllSupported(params);
                     }
+                    break;
                 case YEARS_AND_MONTHS_DURATION:
                     if (params.size() == 2) {
                         return areAllSupported(params);
                     }
+                    break;
                 default:
                     return false;
             }

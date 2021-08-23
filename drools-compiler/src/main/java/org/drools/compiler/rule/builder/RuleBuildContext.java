@@ -64,6 +64,8 @@ public class RuleBuildContext extends PackageBuildContext {
 
     private int xpathChuckNr = 0;
 
+    private int xpathOffsetadjustment = 0;
+
     /**
      * Default constructor
      */
@@ -248,6 +250,18 @@ public class RuleBuildContext extends PackageBuildContext {
     }
 
     public int getXpathChuckNr() {
-        return xpathChuckNr;
+        return xpathChuckNr + xpathOffsetadjustment;
+    }
+
+    public void setXpathChuckNr(int chunkNbr) {
+        this.xpathChuckNr = chunkNbr + xpathOffsetadjustment;
+    }
+
+    public void setXpathOffsetadjustment(int xpathOffsetadjustment) {
+        this.xpathOffsetadjustment = xpathOffsetadjustment;
+    }
+
+    public int getXpathOffsetadjustment() {
+        return xpathOffsetadjustment;
     }
 }

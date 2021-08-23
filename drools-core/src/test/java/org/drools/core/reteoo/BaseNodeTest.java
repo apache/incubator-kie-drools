@@ -54,7 +54,7 @@ public class BaseNodeTest {
         public void ruleAttached() {
         }
 
-        public void attach( BuildContext context ) {
+        public void doAttach( BuildContext context ) {
 
         }
 

@@ -250,7 +250,7 @@ public class PhreakTimerNode {
                                   final LeftTuple leftTuple) {
         Object obj = leftTuple.getContextObject();
         DefaultJobHandle jobHandle = obj instanceof DefaultJobHandle ? (DefaultJobHandle) obj : null;
-        return timer.createTrigger( timestamp, leftTuple, jobHandle, calendarNames, calendars, timerNode.getDeclarations(), wm );
+        return timer.createTrigger( timestamp, leftTuple, jobHandle, calendarNames, calendars, timerNode.getStartEndDeclarations(), wm );
     }
 
     public interface Scheduler {

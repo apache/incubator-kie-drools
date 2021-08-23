@@ -1,9 +1,0 @@
-grant { 
-       permission java.util.PropertyPermission "*", "read";
-       permission java.lang.RuntimePermission "accessDeclaredMembers";
-       permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
-   
-       // Only for test purposes
-       permission java.lang.RuntimePermission "setSecurityManager";
-       
-};

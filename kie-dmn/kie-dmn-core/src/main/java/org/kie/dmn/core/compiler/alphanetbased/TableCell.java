@@ -25,10 +25,10 @@ import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.ClassExpr;
 import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.Index;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
@@ -153,7 +152,7 @@ public class TableCell {
         return input.startsWith("\"") && input.endsWith("\"");
     }
 
-    public void addNodeCreation(BlockStmt stmt, ClassOrInterfaceDeclaration alphaNetworkClass) {
+    public void addNodeCreation(BlockStmt stmt, ClassOrInterfaceDeclaration alphaNetworkCreationClass, MethodDeclaration testMethodDefinition) {
         com.github.javaparser.ast.type.Type alphaNodeType = StaticJavaParser.parseType(AlphaNode.class.getCanonicalName());
         String alphaNodeName = tableIndex.appendTableIndexSuffix("alphaNode");
         VariableDeclarationExpr variable = new VariableDeclarationExpr(alphaNodeType, alphaNodeName);
@@ -161,17 +160,14 @@ public class TableCell {
         // This is used for Alpha Sharing. It needs to have the column name to avoid collisions with same test in other cells
         String constraintIdentifier = CodegenStringUtil.escapeIdentifier(columnName + input);
 
-        String lambdaMethodName = tableIndex.appendTableIndexSuffix("test");
-        Expression methodReference = new MethodReferenceExpr(new ThisExpr(), NodeList.nodeList(), lambdaMethodName);
+        MethodDeclaration unaryTestMethod = testMethodDefinition.clone();
+        String testMethodName = tableIndex.appendTableIndexSuffix("test");
+        unaryTestMethod.setName(testMethodName);
+        Expression methodReference = new MethodReferenceExpr(new ThisExpr(), NodeList.nodeList(), testMethodName);
+        alphaNetworkCreationClass.addMember(unaryTestMethod);
 
-        MethodDeclaration unaryTestMethod = alphaNetworkClass.addMethod(lambdaMethodName);
-        unaryTestMethod.setParameters(NodeList.nodeList(new Parameter(parseType("TableContext"), "x")));
-        unaryTestMethod.setType(parseType("boolean"));
-
-        MethodCallExpr testExpression = parseExpression(format("%s.getTestInstance().apply(x.getEvalCtx(), x.getValue(%s))",
-                                                               unaryTestClassNameWithPackage,
-                                                               tableIndex.columnIndex()));
-        unaryTestMethod.setBody(new BlockStmt(NodeList.nodeList(new ReturnStmt(testExpression))));
+        unaryTestMethod.findFirst(NameExpr.class, n -> n.toString().equals("UnaryTestRXCX")).ifPresent(n -> n.replace(new NameExpr(unaryTestClassNameWithPackage)));
+        unaryTestMethod.findFirst(IntegerLiteralExpr.class, n -> n.asInt() == 99999).ifPresent(n -> n.replace(new IntegerLiteralExpr(tableIndex.columnIndex())));
 
         Expression alphaNodeCreation;
         if (tableIndex.isFirstColumn()) {

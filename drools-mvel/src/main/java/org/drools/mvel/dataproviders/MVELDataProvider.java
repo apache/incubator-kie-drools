@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -31,11 +30,13 @@ import org.drools.core.spi.DataProvider;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.ArrayIterator;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELDataProvider implements DataProvider, MVELCompileable, Externalizable {
 
@@ -44,7 +45,7 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
     private MVELCompilationUnit unit;
     private String                  id;
 
-    private Serializable            expr;
+    private MvelEvaluator<Object> evaluator;
 
     private List<MVELDataProvider>  clones;
 
@@ -91,19 +92,16 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
 
     @SuppressWarnings("unchecked")
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
         if (clones != null) {
             for (MVELDataProvider clone : clones) {
-                clone.expr = clone.unit.getCompiledExpression(runtimeData);
+                clone.evaluator = createMvelEvaluator( clone.unit.getCompiledExpression(runtimeData) );
             }
         }
-//        @TODO URGENT DO NOT FORGET!!!!
-//        Map previousDeclarations = this.unit.getFactory().getPreviousDeclarations();
-//        this.requiredDeclarations = (Declaration[]) previousDeclarations.values().toArray( new Declaration[previousDeclarations.size()] );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public Declaration[] getRequiredDeclarations() {
@@ -129,7 +127,7 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
 
     protected Object evaluate( Tuple tuple, InternalWorkingMemory wm ) {
         VariableResolverFactory factory = unit.getFactory( null, null, null, null, tuple, null, wm, wm.getGlobalResolver() );
-        return MVELSafeHelper.getEvaluator().executeExpression( this.expr, factory );
+        return evaluator.evaluate( factory );
     }
 
     protected Iterator asIterator( Object result ) {
@@ -148,7 +146,7 @@ public class MVELDataProvider implements DataProvider, MVELCompileable, External
 
     public DataProvider clone() {
         MVELDataProvider clone = new MVELDataProvider(unit.clone(), id);
-        clone.expr = expr;
+        clone.evaluator = evaluator;
         if (clones == null) {
             clones = new ArrayList<MVELDataProvider>();
         }

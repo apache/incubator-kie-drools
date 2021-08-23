@@ -37,6 +37,8 @@ import static org.junit.Assert.fail;
 
 public class MarshallingIssuesTest extends CommonTestMethodBase  {
 
+    // kbase serialization is not supported. But leave it for standard-drl
+
     @Test
     public void testJBRULES_1946() {
         KieBase kbase = loadKnowledgeBase("../Sample.drl" );

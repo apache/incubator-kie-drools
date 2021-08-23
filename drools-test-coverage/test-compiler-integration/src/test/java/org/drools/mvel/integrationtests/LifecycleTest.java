@@ -15,12 +15,18 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import org.drools.mvel.compiler.StockTick;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -40,7 +46,19 @@ import static org.junit.Assert.assertTrue;
 /**
  * Tests updating events using API.
  */
+@RunWith(Parameterized.class)
 public class LifecycleTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public LifecycleTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private KieSession kieSession;
     
@@ -74,11 +92,11 @@ public class LifecycleTest {
         
         kfs.writeKModuleXML(kmoduleModel.toXML());
         
-        KieBuilder builder = ks.newKieBuilder(kfs).buildAll();
-        assertEquals(0, builder.getResults().getMessages().size());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        assertEquals(0, kieBuilder.getResults().getMessages().size());
 
         this.kieSession = ks.newKieContainer(ks.getRepository()
-                .getDefaultReleaseId()).newKieSession();        
+                .getDefaultReleaseId()).newKieSession();
     }
 
     @After

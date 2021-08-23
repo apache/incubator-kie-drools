@@ -7,8 +7,8 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie" level="info"/>
-  <logger name="org.drools" level="info"/>
+  <logger name="org.kie" level="warn"/>
+  <logger name="org.drools" level="warn"/>
   <logger name="org.jboss.weld" level="info"/>
 
   <root level="warn">

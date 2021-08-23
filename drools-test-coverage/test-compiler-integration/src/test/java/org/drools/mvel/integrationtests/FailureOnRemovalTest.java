@@ -16,34 +16,35 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.IOException;
-import java.io.Reader;
-import java.io.StringReader;
 import java.util.Collection;
 
 import org.drools.compiler.compiler.DroolsParserException;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
+import org.kie.api.builder.KieModule;
 import org.kie.api.conf.SequentialOption;
 import org.kie.api.definition.KiePackage;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.conf.DefaultDialectOption;
 import org.kie.internal.conf.ShareAlphaNodesOption;
 import org.kie.internal.conf.ShareBetaNodesOption;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
-public class FailureOnRemovalTest extends CommonTestMethodBase {
-    
+@RunWith(Parameterized.class)
+public class FailureOnRemovalTest {
+
     private static final String  LS                   = System.getProperty( "line.separator" );
     private static final String  PACKAGE              = "failure_on_removal";
     private static final String  RULE_1               = "rule_1";
@@ -51,6 +52,17 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
     private static final String  RULE_3               = "rule_3";
     private static final boolean SHARE_BETA_NODES     = true;
     private static final boolean NOT_SHARE_BETA_NODES = false;
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FailureOnRemovalTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testWithBetaNodeSharing() throws Exception {
@@ -74,7 +86,7 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
         kbase.removeRule( PACKAGE,
                           RULE_1 );
         
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         int fired = ksession.fireAllRules();
         ksession.dispose();
         
@@ -86,14 +98,8 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
 
     private Collection<KiePackage> compileRule(String name) throws DroolsParserException,
                                                                  IOException {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder(createKnowledgeBuilderConfiguration());
         String drl = getDrl( name );
-        Reader drlReader = new StringReader( drl );
-        kbuilder.add( ResourceFactory.newReaderResource( drlReader ),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-        return kbuilder.getKnowledgePackages();
+        return KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl).getKiePackages();
     }
 
     private KnowledgeBuilderConfiguration createKnowledgeBuilderConfiguration() {
@@ -105,7 +111,8 @@ public class FailureOnRemovalTest extends CommonTestMethodBase {
 
     private KieBase createKnowledgeBase(boolean shareBetaNodes) {
         KieBaseConfiguration ruleBaseConfiguration = createKnowledgeBaseConfiguration( shareBetaNodes );
-        return KnowledgeBaseFactory.newKnowledgeBase( ruleBaseConfiguration );
+        final KieModule kieModule = KieUtil.getKieModuleFromResources("test", kieBaseTestConfiguration);
+        return KieBaseUtil.newKieBaseFromReleaseId(kieModule.getReleaseId(), ruleBaseConfiguration);
     }
 
     private KieBaseConfiguration createKnowledgeBaseConfiguration(boolean shareBetaNodes) {

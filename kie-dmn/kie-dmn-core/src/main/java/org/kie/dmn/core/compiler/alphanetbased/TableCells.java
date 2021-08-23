@@ -24,6 +24,7 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.stmt.BlockStmt;
 
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
@@ -77,9 +78,13 @@ public class TableCells {
 
             ConstructorDeclaration constructorDeclaration = alphaNodeCreationClass.findFirst(ConstructorDeclaration.class).orElseThrow(RuntimeException::new);
 
+            MethodDeclaration testMethodDefinitionTemplate = alphaNodeCreationClass.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("testRxCx"))
+                    .orElseThrow(() -> new RuntimeException("Cannot find test method template"));
+            testMethodDefinitionTemplate.remove();
+
             for (int columnIndex = 0; columnIndex < numColumns; columnIndex++) {
                 TableCell tableCell = cells[rowIndex][columnIndex];
-                tableCell.addNodeCreation(constructorDeclaration.getBody(), alphaNodeCreationClass);
+                tableCell.addNodeCreation(constructorDeclaration.getBody(), alphaNodeCreationClass, testMethodDefinitionTemplate);
             }
 
             String classNameWithPackage = TableCell.PACKAGE + "." + methodName;

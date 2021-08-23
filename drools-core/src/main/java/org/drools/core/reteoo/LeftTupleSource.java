@@ -34,7 +34,10 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-import static org.drools.core.reteoo.PropertySpecificUtil.*;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculateNegativeMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
+import static org.drools.core.reteoo.PropertySpecificUtil.getAccessibleProperties;
+import static org.drools.core.reteoo.PropertySpecificUtil.isPropertyReactive;
 
 /**
  * A source of <code>ReteTuple</code> s for a <code>TupleSink</code>.
@@ -59,7 +62,6 @@ public abstract class LeftTupleSource extends BaseNode
     /** The left input <code>TupleSource</code>. */
     protected LeftTupleSource         leftInput;
 
-
     // ------------------------------------------------------------
     // Instance members
     // ------------------------------------------------------------
@@ -69,7 +71,9 @@ public abstract class LeftTupleSource extends BaseNode
 
     private transient ObjectTypeNode.Id leftInputOtnId;
 
-    private int positionInPath;
+    private int pathIndex;
+
+    private int objectCount;
 
     // ------------------------------------------------------------
     // Constructors
@@ -88,7 +92,6 @@ public abstract class LeftTupleSource extends BaseNode
               context != null ? context.getPartitionId() : RuleBasePartitionId.MAIN_PARTITION,
               context != null && context.getKnowledgeBase().getConfiguration().isMultithreadEvaluation());
         this.sink = EmptyLeftTupleSinkAdapter.getInstance();
-
         initMemoryId( context );
     }
 
@@ -102,7 +105,8 @@ public abstract class LeftTupleSource extends BaseNode
         leftDeclaredMask = (BitMask) in.readObject();
         leftInferredMask = (BitMask) in.readObject();
         leftNegativeMask = (BitMask) in.readObject();
-        positionInPath = in.readInt();
+        pathIndex = in.readInt();
+        objectCount = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -111,11 +115,12 @@ public abstract class LeftTupleSource extends BaseNode
         out.writeObject(leftDeclaredMask);
         out.writeObject(leftInferredMask);
         out.writeObject(leftNegativeMask);
-        out.writeInt( positionInPath );
+        out.writeInt(pathIndex);
+        out.writeInt(objectCount);
     }
 
-    public int getPositionInPath() {
-        return positionInPath;
+    public int getPathIndex() {
+        return pathIndex;
     }
 
     public abstract short getType();
@@ -132,10 +137,18 @@ public abstract class LeftTupleSource extends BaseNode
 
     public final void setLeftTupleSource(LeftTupleSource leftInput) {
         this.leftInput = leftInput;
-        positionInPath = leftInput.getPositionInPath() + 1;
+        pathIndex = leftInput.getPathIndex() + 1;
     }
 
-	/**
+    public int getObjectCount() {
+        return objectCount;
+    }
+
+    public void setObjectCount(int count) {
+        objectCount = count;
+    }
+
+    /**
      * Adds the <code>TupleSink</code> so that it may receive
      * <code>Tuples</code> propagated from this <code>TupleSource</code>.
      *

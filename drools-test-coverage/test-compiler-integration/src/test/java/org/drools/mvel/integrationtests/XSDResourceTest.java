@@ -16,7 +16,6 @@
 package org.drools.mvel.integrationtests;
 
 import org.assertj.core.api.Assertions;
-import org.drools.mvel.CommonTestMethodBase;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -26,7 +25,7 @@ import org.kie.api.runtime.KieContainer;
  * Tests KIE package compilation when there is a XSD resource (BZ 1120972) - manifests only when using
  * KieClasspathContainer.
  */
-public class XSDResourceTest extends CommonTestMethodBase {
+public class XSDResourceTest {
 
     @Test
     public void testXSDResourceNotBreakingCompilation() {

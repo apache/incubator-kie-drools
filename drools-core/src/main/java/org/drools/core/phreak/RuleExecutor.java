@@ -86,8 +86,28 @@ public class RuleExecutor {
                                        AgendaFilter filter,
                                        int fireCount,
                                        int fireLimit ) {
+        InternalWorkingMemory wm = agenda.getWorkingMemory();
+
         reEvaluateNetwork( agenda );
-        return fire(agenda.getWorkingMemory(), agenda, filter, fireCount, fireLimit);
+
+        if ( wm.getSessionConfiguration().isDirectFiring() ) {
+            RuleTerminalNode rtn = (RuleTerminalNode) pmem.getPathEndNode();
+            RuleImpl rule = rtn.getRule();
+            int directFirings = tupleList.size();
+
+            for (Tuple tuple = tupleList.getFirst(); tuple != null; tuple = tupleList.getFirst()) {
+                if (cancelAndContinue(wm, rtn, rule, tuple, filter)) {
+                    directFirings--;
+                } else {
+                    innerFireActivation( wm, agenda, (Activation) tuple, ((Activation) tuple).getConsequence() );
+                }
+                removeLeftTuple( tuple );
+            }
+            ruleAgendaItem.remove();
+            return directFirings;
+        }
+
+        return fire( wm, agenda, filter, fireCount, fireLimit );
     }
 
     public void fire(InternalAgenda agenda) {
@@ -131,7 +151,7 @@ public class RuleExecutor {
 
                 AgendaItem item = (AgendaItem) tuple;
                 if (agenda.getActivationsFilter() != null && !agenda.getActivationsFilter().accept(item, wm, rtn)) {
-                    // only relevant for seralization, to not refire Matches already fired
+                    // only relevant for serialization, to not refire Matches already fired
                     continue;
                 }
 
@@ -144,7 +164,7 @@ public class RuleExecutor {
 
                 agenda.flushPropagations();
 
-                int salience = ruleAgendaItem.getSalience(); // dyanmic salience may have updated it, so get again.
+                int salience = ruleAgendaItem.getSalience(); // dynamic salience may have updated it, so get again.
                 if (queue != null && !queue.isEmpty() && salience != queue.peek().getSalience()) {
                     ruleAgendaItem.dequeue();
                     ruleAgendaItem.setSalience(queue.peek().getSalience());
@@ -382,8 +402,8 @@ public class RuleExecutor {
                 innerFireActivation( wm, agenda, activation, activation.getConsequence() );
             } finally {
                 // if the tuple contains expired events
-                for ( Tuple tuple = activation.getTuple(); tuple != null; tuple = tuple.getParent() ) {
-                    if ( tuple.getFactHandle() != null && tuple.getFactHandle().isEvent() ) {
+                for ( Tuple tuple = activation.getTuple().skipEmptyHandles(); tuple != null; tuple = tuple.getParent() ) {
+                    if ( tuple.getFactHandle().isEvent() ) {
                         // can be null for eval, not and exists that have no right input
 
                         EventFactHandle handle = ( EventFactHandle ) tuple.getFactHandle();
@@ -425,6 +445,7 @@ public class RuleExecutor {
         try {
             KnowledgeHelper knowledgeHelper = agenda.getKnowledgeHelper();
             knowledgeHelper.setActivation( activation );
+
             if ( log.isTraceEnabled() ) {
                 log.trace( "Fire event {} for rule \"{}\" \n{}", consequence.getName(), activation.getRule().getName(), activation.getTuple() );
             }

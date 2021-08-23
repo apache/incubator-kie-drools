@@ -16,32 +16,48 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Triangle;
+import java.util.Collection;
+import java.util.List;
+
 import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.mvel.compiler.Triangle;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.Results;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 /**
  * Test for declared Enums
  */
-public class EnumTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class EnumTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public EnumTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testEnums() throws Exception {
-        final KieSession ksession = genSession( "test_Enums.drl" );
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_Enums.drl");
+        KieSession ksession = kbase.newKieSession();
         final java.util.List list = new java.util.ArrayList();
         ksession.setGlobal( "list", list );
 
@@ -66,12 +82,10 @@ public class EnumTest extends CommonTestMethodBase {
                      "  field: DaysOfWeek " +
                      "end";
 
-        final KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( drl, ResourceType.DRL );
-        final Results res = kieHelper.verify();
-        assertEquals( 0, res.getMessages().size() );
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, drl);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
-
 
     @Test
     public void testQueryEnum() {
@@ -109,28 +123,17 @@ public class EnumTest extends CommonTestMethodBase {
                         "   fld : String \n" +
                         "end \n";
 
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str.getBytes()), ResourceType.DRL);
+        KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration, false, str);
+        List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
+        
+        InternalKnowledgeBase kbase = (InternalKnowledgeBase) KieBaseUtil.getDefaultKieBaseFromKieBuilder(kieBuilder);
 
-        if (kbuilder.hasErrors()) {
-            fail(kbuilder.getErrors().toString());
-        }
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
-
-        final KnowledgeBuilder kbuilder2 = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder2.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
-
-        if (kbuilder2.hasErrors()) {
-            fail(kbuilder2.getErrors().toString());
-        }
-        kbase.addPackages(kbuilder2.getKnowledgePackages());
+        Collection<KiePackage> kpkgs = KieBaseUtil.getKieBaseFromKieModuleFromDrl("tmp", kieBaseTestConfiguration, str2).getKiePackages();
+        kbase.addPackages(kpkgs);
 
         final KieSession ksession = kbase.newKieSession();
-        kbuilder.add(ResourceFactory.newByteArrayResource(str2.getBytes()), ResourceType.DRL);
         ksession.fireAllRules();
-
         ksession.dispose();
     }
 
@@ -144,8 +147,8 @@ public class EnumTest extends CommonTestMethodBase {
         rule.append( "then\n" );
         rule.append( "end\n" );
 
-        final KieBase kbase = loadKnowledgeBaseFromString(rule.toString());
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, rule.toString());
+        KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Triangle());
         final int rules = ksession.fireAllRules();

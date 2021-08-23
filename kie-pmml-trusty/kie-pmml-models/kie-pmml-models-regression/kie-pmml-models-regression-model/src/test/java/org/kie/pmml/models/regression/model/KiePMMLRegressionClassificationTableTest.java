@@ -131,10 +131,6 @@ public class KiePMMLRegressionClassificationTableTest {
                 outputFieldsMap.put(PROBABILITY_TRUE, probabilityMap.get(CASE_B));
             }
 
-            @Override
-            protected void populateOutputFieldsMapWithResult(Object result) {
-                outputFieldsMap.put("RESULT", result);
-            }
         };
         toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable(firstTableResult));
         toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable(secondTableResult));
@@ -159,10 +155,6 @@ public class KiePMMLRegressionClassificationTableTest {
 
             }
 
-            @Override
-            protected void populateOutputFieldsMapWithResult(Object result) {
-
-            }
         };
     }
 }

@@ -131,6 +131,8 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         pattern = (Pattern) in.readObject();
         internalFact = in.readBoolean();
         bindingName = (String) in.readObject();
+        xPathOffset = in.readInt();
+
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -145,6 +147,7 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         out.writeObject( pattern );
         out.writeBoolean( internalFact );
         out.writeObject( bindingName );
+        out.writeInt(xPathOffset);
     }
 
     // ------------------------------------------------------------
@@ -191,17 +194,20 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
         this.pattern = pattern;
     }
 
-    public int getOffset() {
-        return pattern.getOffset() + xPathOffset;
+    public int getObjectIndex() {
+        return pattern.getObjectIndex() + xPathOffset;
     }
 
-    @Override
-    public void setOffset(int offset) {
-        pattern.setOffset(offset);
+    public int getTupleIndex() {
+        return pattern.getTupleIndex() + xPathOffset;
     }
 
     public void setxPathOffset( int xPathOffset ) {
         this.xPathOffset = xPathOffset;
+    }
+
+    public int getxPathOffset() {
+        return xPathOffset;
     }
 
     public boolean isFromXpathChunk() {
@@ -343,15 +349,19 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
     // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     public String toString() {
-        return "(" + this.readAccessor.getValueType() + ") " + this.identifier;
+        return "(" + (this.readAccessor != null ? this.readAccessor.getValueType() : "null accessor") + ") " + this.identifier;
     }
 
     public int hashCode() {
-        int result = 29 * this.pattern.getOffset();
-        result += 31 * this.readAccessor.hashCode();
-        result += 37 * this.identifier.hashCode();
+        final int PRIME = 31;
+        int result = 1;
+        result = PRIME * result + this.pattern.getTupleIndex();
+        result = PRIME * result + this.readAccessor.hashCode();
+        result = PRIME * result + this.identifier.hashCode();
+        result = PRIME * result + this.xPathOffset;
         return result;
     }
+
 
     public boolean equals(final Object object) {
         if ( this == object ) {
@@ -364,7 +374,9 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
 
         final Declaration other = (Declaration) object;
 
-        return this.pattern.getOffset() == other.pattern.getOffset() && this.identifier.equals( other.identifier ) && this.readAccessor.equals( other.readAccessor );
+        return this.pattern.getPatternId() == other.pattern.getPatternId() &&
+               this.identifier.equals(other.identifier) && this.readAccessor.equals(other.readAccessor) &&
+               this.xPathOffset == other.xPathOffset;
     }
 
     public boolean isInternalFact() {
@@ -373,19 +385,16 @@ public class Declaration implements Externalizable, AcceptsReadAccessor, TupleVa
 
     @Override
     public Declaration clone() {
-        return new Declaration( this.identifier, this.readAccessor, this.pattern );
-    }
-
-    @Override
-    public Declaration cloneWithPattern() {
-        return cloneWithPattern( new Pattern( this.pattern.getIndex(),
-                                             this.pattern.getOffset(),
-                                             this.pattern.getObjectType(),
-                                             getIdentifier(),
-                                             isInternalFact()) );
+        Declaration declr = new Declaration( this.identifier, this.readAccessor, this.pattern );
+        declr.setBindingName(this.bindingName);
+        declr.setxPathOffset(this.xPathOffset);
+        return declr;
     }
 
     public Declaration cloneWithPattern(Pattern pattern) {
-        return new Declaration( this.identifier, this.readAccessor, pattern );
+        Declaration declr = new Declaration( this.identifier, this.readAccessor, pattern );
+        declr.setBindingName(this.bindingName);
+        declr.setxPathOffset(this.xPathOffset);
+        return declr;
     }
 }

@@ -15,29 +15,28 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.core.ClockType;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.kie.api.time.SessionPseudoClock;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.kie.api.KieBase;
-import org.kie.api.KieBaseConfiguration;
-import org.kie.api.conf.EventProcessingOption;
-import org.kie.api.definition.type.FactType;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.api.runtime.KieSessionConfiguration;
-import org.kie.api.runtime.conf.ClockTypeOption;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
-
+import java.util.Collection;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+
+import org.drools.core.ClockType;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.definition.type.FactType;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.KieSessionConfiguration;
+import org.kie.api.runtime.conf.ClockTypeOption;
+import org.kie.api.time.SessionPseudoClock;
 
 
 /**
@@ -45,7 +44,19 @@ import java.util.concurrent.TimeUnit;
  * fed into the engine by thread A while the engine had been started by
  * fireUntilHalt by thread B.
  */
+@RunWith(Parameterized.class)
 public class FireUntilHaltAccumulateTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public FireUntilHaltAccumulateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
+    }
 
     private KieSession statefulSession;
 
@@ -72,18 +83,7 @@ public class FireUntilHaltAccumulateTest {
 
     @Before
     public void setUp() {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newByteArrayResource( drl.getBytes() ), ResourceType.DRL);
-
-        if (kbuilder.hasErrors()) {
-            System.err.println(kbuilder.getErrors().toString());
-        }
-        final KieBaseConfiguration config =
-                KnowledgeBaseFactory.newKnowledgeBaseConfiguration();
-        config.setOption( EventProcessingOption.STREAM);
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase(config);
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final KieSessionConfiguration sessionConfig =
                 KnowledgeBaseFactory.newKnowledgeSessionConfiguration();

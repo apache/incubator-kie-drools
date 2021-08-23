@@ -15,6 +15,10 @@
   <dependencies>
     <!-- PMML -->
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-pmml-api</artifactId>
+    </dependency>
+    <dependency>
       <groupId>${groupId}</groupId>
       <artifactId>kie-pmml-commons</artifactId>
     </dependency>
@@ -27,18 +31,6 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement>
-    <!-- TODO MOVE TO kie-pmml-trusty/pom.xml -->
-    <dependencies>
-      <dependency>
-        <groupId>${groupId}</groupId>
-        <artifactId>kie-pmml-commons</artifactId>
-        <classifier>tests</classifier>
-        <version>${version.org.kie}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 
 </project>

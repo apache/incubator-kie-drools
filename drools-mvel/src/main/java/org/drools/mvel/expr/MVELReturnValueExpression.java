@@ -18,7 +18,6 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.common.InternalFactHandle;
@@ -29,9 +28,10 @@ import org.drools.core.rule.Declaration;
 import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.ReturnValueExpression;
 import org.drools.core.spi.Tuple;
-import org.drools.mvel.MVELSafeHelper;
 import org.drools.mvel.MVELDialectRuntimeData;
 import org.mvel2.integration.VariableResolverFactory;
+
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELReturnValueExpression
     implements
@@ -43,7 +43,7 @@ public class MVELReturnValueExpression
     private MVELCompilationUnit unit;
     private String              id;
 
-    private Serializable        expr;
+    private MvelEvaluator<Object> evaluator;
 
     public MVELReturnValueExpression() {
     }
@@ -66,11 +66,11 @@ public class MVELReturnValueExpression
     }
 
     public void compile( MVELDialectRuntimeData runtimeData) {
-        expr = unit.getCompiledExpression( runtimeData );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData ) );
     }
 
     public void compile( MVELDialectRuntimeData runtimeData, RuleImpl rule ) {
-        expr = unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() );
+        evaluator = createMvelEvaluator( unit.getCompiledExpression( runtimeData, rule.toRuleNameAndPathString() ) );
     }
 
     public Object createContext() {
@@ -100,10 +100,8 @@ public class MVELReturnValueExpression
             factory.setNextFactory( data.getFunctionFactory() );
         }
 
-
-        return workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getFieldFactory().getFieldValue( MVELSafeHelper.getEvaluator().executeExpression( this.expr,
-                                                                                               handle,
-                                                                                               factory ) );
+        Object value = evaluator.evaluate( handle, factory );
+        return workingMemory.getKnowledgeBase().getConfiguration().getComponentFactory().getFieldFactory().getFieldValue( value );
     }
 
 
@@ -115,7 +113,7 @@ public class MVELReturnValueExpression
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        if ( expr == null ) {
+        if ( evaluator == null ) {
             throw new RuntimeException( "this MVELReturnValueExpression must be compiled for hashCode" );
         }
         result = prime * result + unit.getExpression().hashCode();
@@ -128,12 +126,12 @@ public class MVELReturnValueExpression
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
 
-        if ( expr == null ) {
+        if ( evaluator == null ) {
             throw new RuntimeException( "this MVELReturnValueExpression must be compiled for equality" );
         }
 
         MVELReturnValueExpression other = (MVELReturnValueExpression) obj;
-        if ( other.expr == null ) {
+        if ( other.evaluator == null ) {
             throw new RuntimeException( "other MVELReturnValueExpression must be compiled for equality" );
         }
                 

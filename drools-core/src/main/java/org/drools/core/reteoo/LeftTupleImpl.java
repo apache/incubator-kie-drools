@@ -160,10 +160,9 @@ public class LeftTupleImpl extends BaseLeftTuple {
         StringBuilder builder = new StringBuilder();
         builder.append(String.format("%08X", System.identityHashCode(this))).append(":");
         long[] ids = new long[getIndex() + 1];
-        LeftTuple entry = this;
+        LeftTuple entry = (LeftTuple) skipEmptyHandles();
         while (entry != null) {
             if ( entry.getFactHandle() != null ) {
-                // can be null for eval, not and exists that have no right input
                 ids[entry.getIndex()] = entry.getFactHandle().getId();
             }
             entry = entry.getParent();

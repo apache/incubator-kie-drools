@@ -192,11 +192,15 @@ public class ProtobufInputMarshaller {
                                                                                  _session.getRuleData().getLastRecency() );
 
         InternalAgenda agenda = context.getKnowledgeBase().getConfiguration().getComponentFactory().getAgendaFactory().createAgenda( context.getKnowledgeBase(), false );
-        readAgenda( context, _session.getRuleData(), agenda );
 
-        return context.getKnowledgeBase().createSession( id, handleFactory,
+        StatefulKnowledgeSessionImpl session = context.getKnowledgeBase().createSession( id, handleFactory,
                                             1, // pCTx starts at 1, as InitialFact is 0
                                             config, agenda, environment );
+
+        agenda.setWorkingMemory( session );
+        readAgenda( context, _session.getRuleData(), agenda );
+
+        return session;
     }
 
     private static ProtobufMessages.KnowledgeSession loadAndParseSession( MarshallerReaderContext context) throws IOException,
@@ -408,8 +412,7 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.hasProcessInstanceId() ? _nodeInstance.getProcessInstanceId() : _nodeInstance.getProcessInstanceStringId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.getAgendaGroupsMap().put( group.getName(),
-                                             group );
+            agenda.putOnAgendaGroupsMap( group.getName(), group );
         }
         
         for ( String _groupName : _agenda.getFocusStack().getGroupNameList() ) {
@@ -426,8 +429,7 @@ public class ProtobufInputMarshaller {
                 group.addNodeInstance( _nodeInstance.getProcessInstanceId(),
                                        _nodeInstance.getNodeInstanceId() );
             }
-            agenda.getAgendaGroupsMap().put( group.getName(),
-                                             group );
+            agenda.putOnAgendaGroupsMap( group.getName(), group );
             if (group.isActive()) {
                 agenda.addAgendaGroupOnStack( agenda.getAgendaGroup( group.getName() ) );
             }
@@ -642,7 +644,7 @@ public class ProtobufInputMarshaller {
                 for ( ProtobufMessages.LogicalDependency _logicalDependency : _beliefSet.getLogicalDependencyList() ) {
                     ProtobufMessages.Activation _activation = _logicalDependency.getActivation();
                     ActivationKey activationKey = getActivationKey( context, _activation );
-                    Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey).getContextObject();
+                    Activation activation = (Activation) context.getFilter().getTuplesCache().get(activationKey);
 
                     Object object = null;
                     ObjectMarshallingStrategy strategy = null;

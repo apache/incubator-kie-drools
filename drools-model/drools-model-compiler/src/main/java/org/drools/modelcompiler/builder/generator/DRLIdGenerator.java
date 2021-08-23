@@ -16,22 +16,27 @@
 
 package org.drools.modelcompiler.builder.generator;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.model.impl.NamesGenerator.generateName;
+import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
 
 public class DRLIdGenerator {
 
-    private Map<PatternTypeDRLConstraint, String> generatedCondIds = new HashMap<>();
-    private Map<PatternTypeDRLConstraint, String> generateOOPathId = new HashMap<>();
-    private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new HashMap<>();
-    private Map<PatternTypeDRLConstraint, String> generateAccumulateBindingId = new HashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generatedCondIds = new ConcurrentHashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateOOPathId = new ConcurrentHashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateUnificationVariableId = new ConcurrentHashMap<>();
+    private Map<PatternTypeDRLConstraint, String> generateAccumulateBindingId = new ConcurrentHashMap<>();
 
     public String getExprId(Class<?> patternType, String drlConstraint) {
-        return md5Hash(patternType + drlConstraint);
+        return GENERATED_VARIABLE_PREFIX + md5Hash(patternType + drlConstraint);
+    }
+
+    public boolean isGenerated(String id) {
+        return id.startsWith( GENERATED_VARIABLE_PREFIX );
     }
 
     public String getCondId(Class<?> patternType, String drlConstraint) {

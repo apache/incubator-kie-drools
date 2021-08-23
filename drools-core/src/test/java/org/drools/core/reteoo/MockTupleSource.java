@@ -17,6 +17,7 @@
 package org.drools.core.reteoo;
 
 import org.drools.core.common.UpdateContext;
+import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.reteoo.builder.BuildContext;
 
 public class MockTupleSource extends LeftTupleSource {
@@ -27,8 +28,8 @@ public class MockTupleSource extends LeftTupleSource {
 
     private int               updated;
 
-    public MockTupleSource(final int id) {
-        super( id, null );
+    public MockTupleSource(final int id, BuildContext context) {
+        super( id, context );
     }
 
     public void attach() {
@@ -48,7 +49,7 @@ public class MockTupleSource extends LeftTupleSource {
         return true;
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
     }
 
     @Override

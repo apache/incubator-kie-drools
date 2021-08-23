@@ -279,7 +279,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         try {
             return conditionEvaluator.evaluate(handle, workingMemory, tuple);
         } catch (Exception e) {
-            throw new RuntimeException("Error evaluating constraint '" + expression + "' in " + evaluationContext, e);
+            throw new ConstraintEvaluationException(expression, evaluationContext, e);
         }
     }
 
@@ -378,8 +378,6 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
     }
 
     public FieldIndex getFieldIndex() {
-        // declaration's offset can be modified by the reteoo's PatternBuilder so modify the indexingDeclaration accordingly
-        indexingDeclaration.setOffset(declarations[0].getOffset());
         return new FieldIndex(extractor, indexingDeclaration);
     }
 
@@ -407,12 +405,22 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
                     compilationUnit.replaceDeclaration(declarations[i], newDecl);
                 }
                 declarations[i] = newDecl;
+
+                if (indexingDeclaration != null && i == 0) {
+                    // indexed MVELConstraints currently only have a single required declaration.
+                    // So this is a hack that works for this limited scenario.
+                    // It needs to clone first, due to unification otherwise you
+                    // might change the pattern incorrectly for other nodes.
+                    if (!indexingDeclaration.equals(oldDecl)) {
+                        // This is true for synthetic declarations
+                        indexingDeclaration = indexingDeclaration.clone();
+                        ((Declaration) indexingDeclaration).setPattern(newDecl.getPattern());
+                    } else {
+                        indexingDeclaration = newDecl;
+                    }
+                }
                 break;
             }
-        }
-
-        if (indexingDeclaration != null && indexingDeclaration.equals(oldDecl)) {
-            indexingDeclaration = newDecl;
         }
     }
 
@@ -685,7 +693,7 @@ public class MVELConstraint extends MutableTypeConstraint implements IndexableCo
         clone.declarations = clonedDeclarations;
         clone.operators = operators;
         if (indexingDeclaration != null) {
-            clone.indexingDeclaration = indexingDeclaration.cloneWithPattern();
+            clone.indexingDeclaration = indexingDeclaration.clone();
         }
         clone.extractor = extractor;
         clone.isUnification = isUnification;

@@ -18,8 +18,9 @@ package org.kie.dmn.api.marshalling;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.QNameMap;
+import org.kie.dmn.model.api.GwtIncompatible;
 
-
+@GwtIncompatible
 public interface DMNExtensionRegister {
 
     public void registerExtensionConverters(XStream xstream);

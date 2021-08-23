@@ -83,7 +83,8 @@ public class QueryElementBuilder
         ObjectType argsObjectType = ClassObjectType.ObjectArray_ObjectType;
         InternalReadAccessor arrayReader = new SelfReferenceClassFieldReader( Object[].class );
         Pattern pattern = new Pattern( context.getNextPatternId(),
-                                       0,
+                                       0, // tupleIndex is 0 by default
+                                       0, // patternIndex is 0 by default
                                        argsObjectType,
                                        null );
 

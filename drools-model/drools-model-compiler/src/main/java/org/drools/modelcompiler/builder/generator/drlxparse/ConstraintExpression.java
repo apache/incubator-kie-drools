@@ -17,10 +17,18 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.compiler.lang.descr.ExprConstraintDescr;
+import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.kie.api.definition.type.Position;
+
+import static java.util.Optional.empty;
+import static java.util.Optional.of;
+
+import static org.drools.core.util.StringUtils.isIdentifier;
 
 public class ConstraintExpression {
 
@@ -33,8 +41,11 @@ public class ConstraintExpression {
         this.expression = expression;
     }
 
-    public static ConstraintExpression createConstraintExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
-        String expression = parseConstraintExpression(patternType, constraint, isPositional);
+    public static ConstraintExpression createConstraintExpression( RuleContext context, Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
+        String expression = parseConstraintExpression(context, patternType, constraint, isPositional);
+        if (expression == null) {
+            return null;
+        }
 
         int unifPos = expression.indexOf( ":=" );
         if (unifPos > 0) {
@@ -48,31 +59,36 @@ public class ConstraintExpression {
             return constraintExpression;
         }
 
-        // I really hope we won't be comparing Strings with newline here.
-        String expressionWithoutNewLines = expression.replace("\n", "");
-
-        return new ConstraintExpression( expressionWithoutNewLines );
+        return new ConstraintExpression( expression );
     }
 
-    public static String parseConstraintExpression( Class<?> patternType, BaseDescr constraint, boolean isPositional) {
+    private static String parseConstraintExpression( RuleContext context, Class<?> patternType, BaseDescr constraint, boolean isPositional ) {
         if (isPositional) {
+            String expr = constraint.toString();
+            boolean isConstraint = !isIdentifier(expr) || context.getDeclarationById( expr ).isPresent();
             int position = ((ExprConstraintDescr ) constraint).getPosition();
-            return getFieldAtPosition(patternType, position) + " == " + constraint.toString();
+            Optional<String> field = getFieldAtPosition(context, patternType, position);
+
+            return field
+                    .map( f -> isConstraint ? f + " == " + expr : expr + (context.isQuery() && !expr.equals( f ) ? " := " : " : ") + f)
+                    .orElse( null );
         }
         return constraint.toString();
     }
 
-    private static String getFieldAtPosition(Class<?> patternType, int position) {
+    private static Optional<String> getFieldAtPosition( RuleContext context, Class<?> patternType, int position ) {
         for (Field field : patternType.getDeclaredFields()) {
             Position p = field.getAnnotation(Position.class);
             if (p != null && p.value() == position) {
-                return field.getName();
+                return of(field.getName());
             }
         }
         if (patternType.getSuperclass() != null && patternType.getSuperclass() != Object.class) {
-            return getFieldAtPosition(patternType.getSuperclass(), position);
+            return getFieldAtPosition(context, patternType.getSuperclass(), position);
         }
-        throw new RuntimeException("Cannot find field in position " + position + " for " + patternType);
+
+        context.addCompilationError(new InvalidExpressionErrorResult("Unable to find @Positional field " + position + " for class " + patternType.getCanonicalName(), of(context.getRuleDescr())));
+        return empty();
     }
 
     public String getExpression() {

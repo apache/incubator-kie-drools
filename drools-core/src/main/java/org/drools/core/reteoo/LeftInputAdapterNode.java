@@ -88,6 +88,7 @@ public class LeftInputAdapterNode extends LeftTupleSource
                                 final ObjectSource source,
                                 final BuildContext context) {
         super(id, context);
+        this.setObjectCount(1); // 'lia' start at 1
         this.objectSource = source;
         this.leftTupleMemoryEnabled = context.isTupleMemoryEnabled();
         ObjectSource current = source;
@@ -150,7 +151,8 @@ public class LeftInputAdapterNode extends LeftTupleSource
         return this.objectSource;
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.objectSource.addObjectSink( this );
     }
 
@@ -203,15 +205,28 @@ public class LeftInputAdapterNode extends LeftTupleSource
         LeftTupleSink sink = liaNode.getSinkPropagator().getFirstLeftTupleSink();
         LeftTuple leftTuple = sink.createLeftTuple( factHandle, useLeftMemory );
         leftTuple.setPropagationContext( context );
-        doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
 
-        if ( sm.getRootNode() != liaNode ) {
+        if ( sm.getRootNode() == liaNode ) {
+            doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+        } else {
             // sm points to lia child sm, so iterate for all remaining children
-
+            // all peer tuples must be created before propagation, or eager evaluation subnetworks have problem
+            LeftTuple peer = leftTuple;
+            SegmentMemory originaSm = sm;
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 sink =  sm.getSinkFactory();
-                leftTuple = sink.createPeer( leftTuple ); // pctx is set during peer cloning
-                doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+                peer = sink.createPeer( peer ); // pctx is set during peer cloning
+            }
+
+            sm = originaSm;
+            doInsertSegmentMemory( wm, notifySegment, lm, sm, leftTuple, liaNode.isStreamMode() );
+            if ( sm.getRootNode() != liaNode ) {
+                // sm points to lia child sm, so iterate for all remaining children
+                peer = leftTuple;
+                for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
+                    peer = peer.getPeer();
+                    doInsertSegmentMemory( wm, notifySegment, lm, sm, peer, liaNode.isStreamMode() );
+                }
             }
         }
     }
@@ -311,25 +326,24 @@ public class LeftInputAdapterNode extends LeftTupleSource
             sm = sm.getFirst(); // repoint to the child sm
         }
 
-        TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
-
-        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples, sm, liaNode.isStreamMode() );
+        doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, sm, liaNode.isStreamMode() );
 
         if (  sm.getNext() != null ) {
             // sm points to lia child sm, so iterate for all remaining children
             for ( sm = sm.getNext(); sm != null; sm = sm.getNext() ) {
                 // iterate for peers segment memory
                 leftTuple = leftTuple.getPeer();
-                leftTuples = sm.getStagedLeftTuples();
 
-                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, leftTuples, sm, liaNode.isStreamMode() );
+                doUpdateSegmentMemory(leftTuple, context, wm, linkOrNotify, lm, sm, liaNode.isStreamMode() );
             }
         }
     }
 
     private static void doUpdateSegmentMemory( LeftTuple leftTuple, PropagationContext pctx, InternalWorkingMemory wm, boolean linkOrNotify,
-                                               final LiaNodeMemory lm, TupleSets<LeftTuple> leftTuples, SegmentMemory sm, boolean streamMode ) {
+                                               final LiaNodeMemory lm, SegmentMemory sm, boolean streamMode ) {
         leftTuple.setPropagationContext( pctx );
+        TupleSets<LeftTuple> leftTuples = sm.getStagedLeftTuples();
+
         if ( leftTuple.getStagedType() == LeftTuple.NONE ) {
             if ( flushLeftTupleIfNecessary( wm, sm, leftTuple, streamMode, Tuple.UPDATE ) ) {
                 if ( linkOrNotify ) {

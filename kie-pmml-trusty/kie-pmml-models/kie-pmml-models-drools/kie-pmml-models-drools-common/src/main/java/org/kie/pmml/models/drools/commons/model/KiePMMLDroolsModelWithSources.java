@@ -18,9 +18,8 @@ package org.kie.pmml.models.drools.commons.model;
 import java.util.Collections;
 import java.util.Map;
 
-import org.drools.compiler.lang.descr.PackageDescr;
-import org.kie.pmml.commons.HasRule;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.commons.HasRule;
 
 /**
  * KIE representation of PMML model that use <b>Drools</b> for implementation
@@ -28,14 +27,20 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasRule {
 
     protected Map<String, String> sourcesMap;
+    protected Map<String, String> rulesSourceMap;
     private final String kmodulePackageName;
-    private final PackageDescr packageDescr;
+    private final String pkgUUID;
 
-    public KiePMMLDroolsModelWithSources(String name, String kmodulePackageName, Map<String, String> sourcesMap, PackageDescr packageDescr) {
+    public KiePMMLDroolsModelWithSources(String name,
+                                         String kmodulePackageName,
+                                         String pkgUUID,
+                                         Map<String, String> sourcesMap,
+                                         Map<String, String> rulesSourceMap) {
         super(name, Collections.emptyList());
         this.sourcesMap = sourcesMap;
         this.kmodulePackageName = kmodulePackageName;
-        this.packageDescr = packageDescr;
+        this.pkgUUID = pkgUUID;
+        this.rulesSourceMap = rulesSourceMap;
     }
 
     @Override
@@ -65,10 +70,12 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     @Override
     public String getPkgUUID() {
-        return packageDescr.getPreferredPkgUUID().orElseThrow(() -> new KiePMMLException("Missing required PkgUUID in generated PackageDescr"));
+        return pkgUUID;
     }
 
-    public PackageDescr getPackageDescr() {
-        return packageDescr;
+    @Override
+    public Map<String, String> getRulesSourcesMap() {
+        return rulesSourceMap;
     }
+
 }

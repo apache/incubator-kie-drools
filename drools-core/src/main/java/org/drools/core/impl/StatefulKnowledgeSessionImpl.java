@@ -26,12 +26,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -223,7 +223,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     protected InternalFactHandle initialFactHandle;
 
     private PropagationContextFactory pctxFactory;
-    private FactHandleFactory factHandleFactory;
 
     protected SessionConfiguration config;
 
@@ -231,9 +230,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private Environment environment;
 
-    // this is a counter of concurrent operations happening. When this counter is zero,
-    // the engine is idle.
-    private AtomicLong opCounter;
     // this is the timestamp of the end of the last operation, based on the session clock,
     // or -1 if there are operation being executed at this moment
     private AtomicLong lastIdleTimestamp;
@@ -251,6 +247,10 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
     private transient StatefulSessionPool pool;
     private transient boolean alive = true;
+
+    // this is a counter of concurrent operations happening. When this counter is zero,
+    // the engine is idle.
+    private AtomicInteger opCounter = new AtomicInteger(0);
 
     // ------------------------------------------------------------
     // Constructors
@@ -359,12 +359,11 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
             this.globalResolver = new MapGlobalResolver();
         }
 
-        this.kieBaseEventListeners = new LinkedList<KieBaseEventListener>();
+        this.kieBaseEventListeners = new ArrayList<KieBaseEventListener>();
         this.lock = new ReentrantLock();
 
         this.timerService = createTimerService();
 
-        this.opCounter = new AtomicLong(0);
         this.lastIdleTimestamp = new AtomicLong(-1);
     }
 
@@ -390,7 +389,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
         registerReceiveNodes(kBase.getReceiveNodes());
 
         this.pctxFactory = kBase.getConfiguration().getComponentFactory().getPropagationContextFactory();
-        this.factHandleFactory = this.kBase.getConfiguration().getComponentFactory().getFactHandleFactoryService();
 
         if (agenda == null) {
             this.agenda = kBase.getConfiguration().getComponentFactory().getAgendaFactory().createAgenda(kBase);
@@ -1105,7 +1103,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
 
         this.handleFactory.clear( 0, 0 );
         this.propagationIdCounter.set(0);
-        this.opCounter.set(0);
         this.lastIdleTimestamp.set( -1 );
 
         this.defaultEntryPoint.reset();
@@ -1138,7 +1135,6 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
                                   handleCounter);
 
         this.propagationIdCounter = new AtomicLong( propagationCounter );
-        this.opCounter.set( 0 );
         this.lastIdleTimestamp.set(-1);
 
         // TODO should these be cleared?
@@ -1207,7 +1203,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
     }
 
     public FactHandleFactory getFactHandleFactory() {
-        return factHandleFactory;
+        return handleFactory;
     }
 
     public void setGlobal(final String identifier,
@@ -1972,7 +1968,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void startOperation() {
-        if (this.opCounter.getAndIncrement() == 0) {
+        if ( getSessionConfiguration().isThreadSafe() && this.opCounter.getAndIncrement() == 0 ) {
             // means the engine was idle, reset the timestamp
             this.lastIdleTimestamp.set(-1);
         }
@@ -1993,7 +1989,7 @@ public class StatefulKnowledgeSessionImpl extends AbstractRuntime
      * multiple threads/entry-points
      */
     public void endOperation() {
-        if (this.opCounter.decrementAndGet() == 0) {
+        if ( getSessionConfiguration().isThreadSafe() && this.opCounter.decrementAndGet() == 0 ) {
             // means the engine is idle, so, set the timestamp
             this.lastIdleTimestamp.set(this.timerService.getCurrentTime());
             if (this.endOperationListener != null) {

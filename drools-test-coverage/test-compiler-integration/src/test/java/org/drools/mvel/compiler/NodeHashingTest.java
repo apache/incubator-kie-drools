@@ -16,17 +16,35 @@
 
 package org.drools.mvel.compiler;
 
-import org.junit.Test;
-import org.kie.api.io.ResourceType;
-import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class NodeHashingTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public NodeHashingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with testNodeHashTypeMismatchWithBigDecimal, testNodeHashTypeMismatchWithBigInteger, testNodeHashTypeMismatchWithPrimitiveDouble. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testNodeHashTypeMismatch() throws Exception {
@@ -45,9 +63,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setStatus( "1" );
@@ -74,9 +91,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setStatus( "1" );
@@ -103,9 +119,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setBigInteger( new BigInteger( "1" ) );
@@ -132,9 +147,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setBigInteger( new BigInteger( "1" ) );
@@ -161,9 +175,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setBigDecimal( new BigDecimal( "1.00" ) );
@@ -190,9 +203,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setBigDecimal( new BigDecimal( "1.00" ) );
@@ -220,9 +232,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setAge( 1 );
@@ -250,9 +261,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setAge( 1 );
@@ -280,9 +290,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setAge( 1 );
@@ -310,9 +319,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setAge( 1 );
@@ -340,9 +348,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         Person p1 = new Person();
         p1.setBigDecimal( new BigDecimal( 1 ) );
@@ -370,9 +377,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         Person p2 = new Person();
         p2.setBigDecimal( new BigDecimal( 1 ) );
@@ -411,9 +417,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession1 = new KieHelper().addContent( drl1, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase1 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl1);
+        KieSession ksession1 = kbase1.newKieSession();
 
         ksession1.insert( new DoubleValue(1.00) );
 
@@ -438,9 +443,8 @@ public class NodeHashingTest {
                       "then\n" +
                       "end\n";
 
-        KieSession ksession2 = new KieHelper().addContent( drl2, ResourceType.DRL )
-                                              .build()
-                                              .newKieSession();
+        KieBase kbase2 = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl2);
+        KieSession ksession2 = kbase2.newKieSession();
 
         ksession2.insert( new DoubleValue(1.00) );
 
@@ -467,8 +471,8 @@ public class NodeHashingTest {
                 "then\n" +
                 "end\n\n";
 
-        KieSession kieSession = new KieHelper().addContent( drl, ResourceType.DRL )
-                                               .build().newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession kieSession = kbase.newKieSession();
 
         kieSession.insert( new A( ) );
 

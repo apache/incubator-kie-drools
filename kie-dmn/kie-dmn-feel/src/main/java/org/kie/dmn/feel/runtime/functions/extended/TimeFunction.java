@@ -1,6 +1,7 @@
 package org.kie.dmn.feel.runtime.functions.extended;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.DateTimeException;
 import java.time.Duration;
 import java.time.LocalTime;
@@ -22,7 +23,9 @@ import org.kie.dmn.feel.runtime.functions.DateAndTimeFunction;
 import org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
 import org.kie.dmn.feel.runtime.functions.ParameterName;
+import org.kie.dmn.model.api.GwtIncompatible;
 
+@GwtIncompatible
 public class TimeFunction extends BaseFEELFunction {
     public static final TimeFunction INSTANCE = new TimeFunction();
 
@@ -100,7 +103,7 @@ public class TimeFunction extends BaseFEELFunction {
             int nanosecs = 0;
             if (seconds instanceof BigDecimal) {
                 BigDecimal secs = (BigDecimal) seconds;
-                nanosecs = secs.subtract(secs.setScale(0, BigDecimal.ROUND_DOWN)).multiply(NANO_MULT).intValue();
+                nanosecs = secs.subtract(secs.setScale(0, RoundingMode.DOWN)).multiply(NANO_MULT).intValue();
             }
 
             if (offset == null) {

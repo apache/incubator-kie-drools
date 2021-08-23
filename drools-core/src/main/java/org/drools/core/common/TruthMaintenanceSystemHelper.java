@@ -18,9 +18,10 @@ package org.drools.core.common;
 import org.drools.core.beliefsystem.BeliefSet;
 import org.drools.core.beliefsystem.ModedAssertion;
 import org.drools.core.definitions.rule.impl.RuleImpl;
-import org.drools.core.util.LinkedList;
 import org.drools.core.spi.Activation;
 import org.drools.core.spi.PropagationContext;
+import org.drools.core.spi.Tuple;
+import org.drools.core.util.LinkedList;
 
 public class TruthMaintenanceSystemHelper {
 
@@ -40,12 +41,14 @@ public class TruthMaintenanceSystemHelper {
     
     
     public static <M extends ModedAssertion<M>> void removeLogicalDependencies(final Activation<M> activation,
-                                                                               final PropagationContext context,
+                                                                               final Tuple leftTuple,
                                                                                final RuleImpl rule) {
         final LinkedList<LogicalDependency<M>> list = activation.getLogicalDependencies();
         if ( list == null || list.isEmpty() ) {
             return;
         }
+
+        PropagationContext context = leftTuple.findMostRecentPropagationContext();
 
         for ( LogicalDependency<M> node = list.getFirst(); node != null; node = node.getNext() ) {
             removeLogicalDependency( node, context );

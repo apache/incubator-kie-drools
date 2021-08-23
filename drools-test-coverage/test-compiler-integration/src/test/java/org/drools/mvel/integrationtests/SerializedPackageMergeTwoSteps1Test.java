@@ -29,6 +29,9 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 
 public class SerializedPackageMergeTwoSteps1Test {
+
+    // kpackage serialization is not supported. But leave it for standard-drl.
+
 	public static final String[] BINPKG = { System.getProperty( "java.io.tmpdir" ) + File.separator + "SerializedPackageMergeTwoSteps_1.bin", 
 			System.getProperty( "java.io.tmpdir" ) + File.separator + "SerializedPackageMergeTwoSteps_2.bin" };
 

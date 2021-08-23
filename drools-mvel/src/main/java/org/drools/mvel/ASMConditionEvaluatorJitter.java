@@ -200,8 +200,8 @@ public class ASMConditionEvaluatorJitter {
 
             int decPos = ARGUMENTS;
             for (GeneratorHelper.DeclarationMatcher declarationMatcher : declarationMatchers) {
-                int i = declarationMatcher.getOriginalIndex();
-                if (currentTuple == null || declarationMatcher.getRootDistance() > currentTuple.getIndex()) {
+                int i = declarationMatcher.getMatcherIndex();
+                if (currentTuple == null || declarationMatcher.getTupleIndex() > currentTuple.getIndex()) {
                     getFieldFromThis("declarations", Declaration[].class);
                     push(i);
                     mv.visitInsn(AALOAD); // declarations[i]
@@ -213,7 +213,7 @@ public class ASMConditionEvaluatorJitter {
                     continue;
                 }
 
-                currentTuple = traverseTuplesUntilDeclaration(currentTuple, declarationMatcher.getRootDistance(), 4);
+                currentTuple = traverseTuplesUntilDeclaration(currentTuple, declarationMatcher.getTupleIndex(), 4);
 
                 getFieldFromThis("declarations", Declaration[].class);
                 push(i);
@@ -879,6 +879,9 @@ public class ASMConditionEvaluatorJitter {
                             break;
                         case DIV:
                             invoke(operationType.getMethod("divide", operationType));
+                            break;
+                        case MOD:
+                            invoke(operationType.getMethod("remainder", operationType));
                             break;
                     }
                 } catch (NoSuchMethodException e) {

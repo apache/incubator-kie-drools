@@ -16,8 +16,10 @@
 
 package org.drools.modelcompiler;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,6 +28,8 @@ import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Pet;
 import org.drools.modelcompiler.domain.Result;
 import org.junit.Test;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.Message.Level;
 import org.kie.api.definition.type.Modifies;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
@@ -1306,5 +1310,238 @@ public class PropertyReactivityTest extends BaseModelTest {
         ksession.fireAllRules(3);
 
         assertEquals(43, p.getAge());
+    }
+
+    @Test
+    public void testMvelModifyBlockWithComma() {
+        // RHDM-1552
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R dialect \"mvel\" when\n" +
+                "    $p : Person( age < 50 )\n" +
+                "then\n" +
+                "    modify($p) { setName(\"Mario\"), age = $p.age + 1 };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules(3);
+
+        assertEquals(43, p.getAge());
+    }
+
+    public static class AssessmentContext {
+
+        private Deque<StackFrame> stackFrames;
+
+        public AssessmentContext() {
+            stackFrames = new ArrayDeque<StackFrame>(8);
+            stackFrames.push(new StackFrame());
+        }
+
+        public Long getTopQuestionGroupId() {
+            return stackFrames.peek().questionGroupId;
+        }
+
+        public int getTopPhase() {
+            return stackFrames.peek().phase;
+        }
+
+        public void setTopPhase(int i) {
+            stackFrames.peek().phase = i;
+        }
+
+        public void pushStackFrame(Long id) {
+            StackFrame sf = new StackFrame();
+            sf.questionGroupId = id;
+            sf.phase = 0;
+            stackFrames.push(sf);
+        }
+
+        public void popStackFrame() {
+            if (stackFrames.size() > 1) {
+                stackFrames.pop();
+            }
+        }
+
+        private static class StackFrame {
+            private Long questionGroupId = null;
+            private int phase = 0;
+        }
+    }
+
+    @Test
+    public void testUpdateNonPropertyInMvel() {
+        // DROOLS-6096
+        final String str =
+                "import " + AssessmentContext.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R1 \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $ac : AssessmentContext(topQuestionGroupId == 51795 , topPhase == 3)\n" +
+                "  then\n" +
+                "  $ac.popStackFrame();\n" +
+                "  update($ac);\n" +
+                "end\n" +
+                "\n" +
+                "rule R2 \n" +
+                "  dialect \"mvel\"\n" +
+                "  when\n" +
+                "    $ac : AssessmentContext(topQuestionGroupId == null, topPhase == 0)\n" +
+                "  then\n" +
+                "    $ac.setTopPhase(2);\n" +
+                "    $ac.pushStackFrame(223L);\n" +
+                "    update($ac);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        AssessmentContext ac1 = new AssessmentContext();
+        ac1.pushStackFrame(null);
+        ac1.pushStackFrame(51795L);
+        ac1.setTopPhase(3);
+        ksession.insert( ac1 );
+
+        assertEquals(2, ksession.fireAllRules(2));
+    }
+
+    @Test
+    public void testPropertyReactivityWithPublicField() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person()\n" +
+                           "then\n" +
+                           "    modify($p) { publicAge = 41 };\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "    $p : Person(name == \"John\")\n" +
+                           "then\n" +
+                           "end\n" +
+                           "rule R3 when\n" +
+                           "    $p : Person(publicAge == 41)\n" +
+                           "then\n" +
+                           "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        Person p = new Person("John");
+        p.publicAge = 40;
+        ksession.insert(p);
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(3, fired);
+        assertEquals(41, p.publicAge);
+    }
+
+    @Test
+    public void testUnknownPropertyNameInWatch() throws Exception {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                           "global java.util.List result;\n" +
+                           "rule R1 when\n" +
+                           "    $p : Person( name == \"John\" ) @watch( ageX )\n" +
+                           "then\n" +
+                           "    result.add($p.getName());\n" +
+                           "    modify($p) { setLikes(\"stilton\") }\n" +
+                           "end\n" +
+                           "rule R2 when\n" +
+                           "    $p : Person(likes == \"stilton\")\n" +
+                           "then\n" +
+                           "    modify($p) { setAge(20) }\n" +
+                           "end\n";
+
+        KieBuilder kbuilder = createKieBuilder(str);
+        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
+    }
+
+    @Test
+    public void testSetterWithoutGetter() {
+        // DROOLS-6523
+        final String str =
+                "import " + ClassWithValue.class.getCanonicalName() + ";\n" +
+                "rule R1 no-loop when\n" +
+                "        $cwv : ClassWithValue()\n" +
+                "    then\n" +
+                "        $cwv.setDoubleValue(ClassWithValue.DOUBLE_VALUE);\n" +
+                "        update($cwv);\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession(str);
+
+        ClassWithValue cwv = new ClassWithValue();
+        ksession.insert(cwv);
+        int fired = ksession.fireAllRules(10);
+
+        assertEquals(1, fired);
+        assertEquals(1, cwv.getDoubleValues().size());
+    }
+
+    public class ClassWithValue {
+
+        public static final double DOUBLE_VALUE = 5.5;
+
+        private List<Double> doubleValues = new ArrayList<>();
+
+        public List<Double> getDoubleValues() {
+            return doubleValues;
+        }
+
+        public void setDoubleValue(double doubleValue) {
+
+            this.doubleValues.clear();
+            this.doubleValues.add(doubleValue);
+        }
+
+        public void addDoubleValue(double doubleValue) {
+            this.doubleValues.add(doubleValue);
+        }
+    }
+
+    @Test
+    public void testPropertyReactivityOn2Properties() {
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ), " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+        assertEquals(1, p.getId());
+    }
+
+    @Test
+    public void testPropertyReactivityOn2PropertiesWithWrongSeparator() {
+        // DROOLS-6480
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "\n" +
+                "rule R when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    modify($p) { " +
+                "        setAge( $p.getAge()+1 ); " +
+                "        setId( 1 ) " +
+                "    };\n" +
+                "end\n";
+
+        KieBuilder kbuilder = createKieBuilder(str);
+        assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
     }
 }

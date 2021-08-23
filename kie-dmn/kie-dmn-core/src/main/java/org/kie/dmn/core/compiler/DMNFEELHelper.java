@@ -25,8 +25,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import org.antlr.v4.runtime.CommonToken;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
@@ -55,6 +53,9 @@ import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.dmn.model.api.DMNElement;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 
 public class DMNFEELHelper {
 
@@ -300,7 +301,7 @@ public class DMNFEELHelper {
 
     public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, CompilerContext compilerContext1) {
 
-        CompilationUnit compilationUnit = ((FEELImpl) feel).generateExpressionSource(input, compilerContext1);
+        CompilationUnit compilationUnit = ((FEELImpl) feel).compileExpression(input, compilerContext1).getSourceCode();
         return compilationUnit.getType(0)
                 .asClassOrInterfaceDeclaration()
                 .setStatic(true);

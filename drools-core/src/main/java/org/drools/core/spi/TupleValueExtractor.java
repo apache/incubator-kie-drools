@@ -32,8 +32,4 @@ public interface TupleValueExtractor extends Cloneable {
     default TupleValueExtractor cloneWithPattern() {
         return clone();
     }
-
-    default void setOffset( int offset ) {
-        throw new UnsupportedOperationException();
-    }
 }

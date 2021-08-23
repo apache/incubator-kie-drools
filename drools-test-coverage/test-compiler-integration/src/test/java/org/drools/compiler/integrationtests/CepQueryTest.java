@@ -43,7 +43,7 @@ public class CepQueryTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        return TestParametersUtil.getKieBaseStreamConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
     
     private final KieBaseTestConfiguration kieBaseTestConfiguration;

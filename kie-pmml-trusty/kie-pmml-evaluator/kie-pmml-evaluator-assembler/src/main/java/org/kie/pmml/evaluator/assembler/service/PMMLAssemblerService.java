@@ -53,6 +53,10 @@ public class PMMLAssemblerService implements KieAssemblerService {
     public static final String PMML_COMPILER_CACHE_KEY = "PMML_COMPILER_CACHE_KEY";
     private static final Logger logger = LoggerFactory.getLogger(PMMLAssemblerService.class);
 
+    private static final String FOLDER_SEPARATOR = "/";
+
+    private static final String WINDOWS_FOLDER_SEPARATOR = "\\";
+
     private static boolean isBuildFromMaven() {
         final String property = System.getProperty("kie-maven-plugin-launcher", "false");
         return property.equals("true");
@@ -66,7 +70,21 @@ public class PMMLAssemblerService implements KieAssemblerService {
      */
     public static String[] getFactoryClassNamePackageName(Resource resource) {
         String sourcePath = resource.getSourcePath();
-        String fileName = sourcePath.substring(sourcePath.lastIndexOf('/') + 1);
+        if (sourcePath == null || sourcePath.isEmpty()) {
+            throw new IllegalArgumentException("Missing required sourcePath in resource " + resource + " -> " + resource.getClass().getName());
+        }
+        return getFactoryClassNamePackageName(sourcePath);
+    }
+
+    /**
+     * Returns an array where the first item is the <b>factory class</b> name and the second item is the <b>package</b> name,
+     * built starting from the given <b>sourcePath</b> <code>String</code>
+     * @param sourcePath
+     * @return
+     */
+    static String[] getFactoryClassNamePackageName(String sourcePath) {
+        sourcePath = sourcePath.replace(WINDOWS_FOLDER_SEPARATOR, FOLDER_SEPARATOR);
+        String fileName = sourcePath.substring(sourcePath.lastIndexOf(FOLDER_SEPARATOR) + 1);
         fileName = fileName.replace(".pmml", "");
         String packageName = getSanitizedPackageName(fileName);
         String factoryClassName = getSanitizedClassName(fileName + "Factory");
@@ -79,7 +97,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResources(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
+    public void addResourcesAfterRules(Object kbuilder, Collection<ResourceWithConfiguration> resources, ResourceType type) {
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
             return;
@@ -96,8 +114,8 @@ public class PMMLAssemblerService implements KieAssemblerService {
     }
 
     @Override
-    public void addResource(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
-        logger.warn("invoked legacy addResource (no control on the order of the assembler compilation): {}", resource.getSourcePath());
+    public void addResourceAfterRules(Object kbuilder, Resource resource, ResourceType type, ResourceConfiguration configuration) {
+        logger.warn("invoked legacy addResourceAfterRules (no control on the order of the assembler compilation): {}", resource.getSourcePath());
         KnowledgeBuilderImpl kbuilderImpl = (KnowledgeBuilderImpl) kbuilder;
         if (isjPMMLAvailableToClassLoader(kbuilderImpl.getRootClassLoader())) {
             return;

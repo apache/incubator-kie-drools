@@ -35,4 +35,6 @@ public interface Pattern<T> extends Condition {
     Collection<Binding> getBindings();
 
     String[] getWatchedProps();
+
+    boolean isPassive();
 }

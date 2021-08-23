@@ -77,12 +77,12 @@ public class ConsequenceGenerator {
                 int[] paramsPos = new int[declarations.length];
                 // declarationMatchers is already sorted by offset with tip declarations now first
                 for (DeclarationMatcher matcher : declarationMatchers) {
-                    int i = matcher.getOriginalIndex(); // original index refers to the array position with RuleTerminalNode.getDeclarations()
+                    int i = matcher.getMatcherIndex(); // original index refers to the array position with RuleTerminalNode.getDeclarations()
                     int handlePos = objAstorePos;
                     int objPos = ++objAstorePos;
                     paramsPos[i] = handlePos;
 
-                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 3);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getTupleIndex(), 3);
 
                     // handle = tuple.getFactHandle()
                     mv.visitVarInsn(ALOAD, 3);

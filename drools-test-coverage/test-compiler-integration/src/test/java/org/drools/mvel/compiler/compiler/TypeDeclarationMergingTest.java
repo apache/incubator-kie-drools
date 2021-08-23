@@ -30,7 +30,9 @@ import static org.junit.Assert.*;
 
 
 public class TypeDeclarationMergingTest {
-    
+
+    // TODO: Fails with standard-drl after changing to new API. See DROOLS-6061
+
     @Test
     public void testMask() {
         TypeDeclaration tdeclr = new TypeDeclaration(CImpl.class.getName() );

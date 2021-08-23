@@ -15,7 +15,14 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
+
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -23,12 +30,24 @@ import org.kie.api.builder.Results;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Tests for MessageImpl
  */
+@RunWith(Parameterized.class)
 public class MessageImplTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public MessageImplTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     //See DROOLS-193 (KnowledgeBuilderResult does not always contain a Resource)
@@ -50,7 +69,7 @@ public class MessageImplTest {
                 .write( "src/main/resources/dsl.dsl", dsl )
                 .write( "src/main/resources/drl.dslr", drl );
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results results = kieBuilder.getResults();
 
         assertEquals( 3,
@@ -82,7 +101,7 @@ public class MessageImplTest {
                 .write( "src/main/resources/dsl.dsl", dsl1 )
                 .write( "src/main/resources/drl.dslr", drl1 );
 
-        KieBuilder kieBuilder = ks.newKieBuilder( kfs ).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
         Results fullBuildResults = kieBuilder.getResults();
         assertEquals( 3,
                       fullBuildResults.getMessages().size() );

@@ -33,7 +33,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
 import java.util.jar.JarOutputStream;
 
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 /**
  * This will generate a jar from a meta model.
@@ -80,7 +80,7 @@ public class Jenerator {
     }
 
     private byte[] toXML(Fact[] facts) {
-        XStream x = createTrustingXStream(new DomDriver());
+        XStream x = createNonTrustingXStream(new DomDriver());
         return x.toXML(facts).getBytes(IoUtils.UTF8_CHARSET);
 
     }
@@ -97,7 +97,7 @@ public class Jenerator {
     }
 
     private Fact[] fromXML(JarInputStream jis) {
-        XStream x = createTrustingXStream(new DomDriver());
+        XStream x = createNonTrustingXStream(new DomDriver());
         return (Fact[]) x.fromXML(jis);
 
     }

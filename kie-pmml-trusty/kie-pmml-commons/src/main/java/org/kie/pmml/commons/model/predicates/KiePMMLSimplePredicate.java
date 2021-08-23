@@ -33,6 +33,7 @@ import static org.kie.pmml.api.enums.BOOLEAN_OPERATOR.SURROGATE;
 public class KiePMMLSimplePredicate extends KiePMMLPredicate {
 
     private static final Logger logger = LoggerFactory.getLogger(KiePMMLSimplePredicate.class);
+    private static final long serialVersionUID = -572231761649957360L;
 
     private final OPERATOR operator;
     protected Object value;

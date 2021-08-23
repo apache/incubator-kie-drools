@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -222,6 +223,9 @@ public class ForExpressionNode
 
         @Override
         public BigDecimal next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
             if (cursor == null) {
                 cursor = start;
             } else {

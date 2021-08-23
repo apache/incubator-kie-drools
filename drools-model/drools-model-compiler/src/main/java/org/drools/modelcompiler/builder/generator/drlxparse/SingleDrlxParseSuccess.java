@@ -17,36 +17,26 @@
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.EnclosedExpr;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.UnaryExpr;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
 import static java.util.Optional.ofNullable;
-
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.AND;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.GREATER_EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.LESS_EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.NOT_EQUALS;
-import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
-import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
@@ -71,17 +61,20 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     private TypedExpression left;
     private TypedExpression right;
+    private TypedExpression boundExpr;
 
     private Object rightLiteral;
     private boolean isStatic;
-    private boolean isValidExpression;
+    private boolean isPredicate = false;
     private boolean skipThisAsParam;
     private boolean betaConstraint;
     private boolean requiresSplit;
     private boolean unification;
     private boolean temporal;
+    private boolean combined;
 
     private Optional<Expression> implicitCastExpression = Optional.empty();
+    private List<Expression> nullSafeExpressions = new ArrayList<>();
 
     public SingleDrlxParseSuccess(Class<?> patternType, String patternBinding, Expression expr, Type exprType) {
         this.patternType = patternType;
@@ -103,15 +96,18 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.reactOnProperties = drlx.getReactOnProperties();
         this.left = drlx.getLeft();
         this.right = drlx.getRight();
+        this.boundExpr = drlx.getBoundExpr();
         this.rightLiteral = drlx.getRightLiteral();
         this.isStatic = drlx.isStatic();
-        this.isValidExpression = drlx.isValidExpression();
+        this.isPredicate = drlx.isPredicate();
         this.skipThisAsParam = drlx.isSkipThisAsParam();
         this.betaConstraint = drlx.isBetaConstraint();
         this.requiresSplit = drlx.isRequiresSplit();
         this.unification = drlx.isUnification();
         this.temporal = drlx.isTemporal();
+        this.combined = drlx.isCombined();
         this.implicitCastExpression = drlx.getImplicitCastExpression();
+        this.nullSafeExpressions = drlx.getNullSafeExpressions();
 
         this.watchedProperties = drlx.getWatchedProperties();
     }
@@ -148,7 +144,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         this.isPatternBindingUnification = unification;
     }
 
-    public SingleDrlxParseSuccess addReactOnProperty(String reactOnProperty ) {
+    public SingleDrlxParseSuccess addReactOnProperty(String reactOnProperty) {
         if ( patternType != null && getAccessibleProperties(patternType).contains( reactOnProperty ) ) {
             if ( reactOnProperties.isEmpty() ) {
                 reactOnProperties = new HashSet<>();
@@ -158,17 +154,22 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
-    public SingleDrlxParseSuccess setLeft(TypedExpression left ) {
+    public SingleDrlxParseSuccess setLeft(TypedExpression left) {
         this.left = left;
         return this;
     }
 
-    public SingleDrlxParseSuccess setRight(TypedExpression right ) {
+    public SingleDrlxParseSuccess setRight(TypedExpression right) {
         this.right = right;
         return this;
     }
 
-    public SingleDrlxParseSuccess setRightLiteral(Object rightLiteral ) {
+    public SingleDrlxParseSuccess setBoundExpr(TypedExpression boundExpr) {
+        this.boundExpr = boundExpr;
+        return this;
+    }
+
+    public SingleDrlxParseSuccess setRightLiteral(Object rightLiteral) {
         this.rightLiteral = rightLiteral;
         return this;
     }
@@ -180,6 +181,11 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public SingleDrlxParseSuccess setTemporal(boolean temporal) {
         this.temporal = temporal;
+        return this;
+    }
+
+    public SingleDrlxParseSuccess setCombined(boolean combined) {
+        this.combined = combined;
         return this;
     }
 
@@ -210,10 +216,6 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     public String getPatternBinding() {
         return patternBinding;
-    }
-
-    public boolean hasGeneratedPatternBinding() {
-        return patternBinding != null && patternBinding.startsWith( GENERATED_VARIABLE_PREFIX );
     }
 
     public void setExpr(Expression expr) {
@@ -274,10 +276,6 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return toRawClass( exprType );
     }
 
-    public Type getLeftExprType() {
-        return left != null ? left.getType() : getExprType();
-    }
-
     public Class<?> getLeftExprRawClass() {
         return left != null ? left.getRawClass() : getExprRawClass();
     }
@@ -287,7 +285,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public com.github.javaparser.ast.type.Type getPatternJPType() {
-        return StaticJavaParser.parseClassOrInterfaceType(toNonPrimitiveType(patternType).getCanonicalName());
+        return toClassOrInterfaceType(toNonPrimitiveType(patternType));
     }
 
     public boolean isPatternBindingUnification() {
@@ -314,6 +312,10 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return right;
     }
 
+    public TypedExpression getBoundExpr() {
+        return boundExpr != null ? boundExpr : left;
+    }
+
     public Object getRightLiteral() {
         return rightLiteral;
     }
@@ -326,42 +328,25 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return temporal;
     }
 
-    public boolean isValidExpression( ) {
-        if (this.isValidExpression) {
-            return true;
-        }
-        if (expr != null) {
-            if ( getExprType() == Boolean.class || getExprType() == boolean.class ) {
-                return right != null || exprBinding == null;
-            }
-            if (expr instanceof EnclosedExpr ) {
-                return isEnclosedExprValid( (( EnclosedExpr ) expr).getInner());
-            }
-            if (expr instanceof UnaryExpr && ((UnaryExpr) expr).getOperator() == UnaryExpr.Operator.LOGICAL_COMPLEMENT) {
-                return true;
-            }
-            return right != null;
-        }
-        return false;
+    public boolean isCombined() {
+        return combined;
     }
 
-    private boolean isEnclosedExprValid( Expression expr ) {
-        if (expr instanceof BinaryExpr) {
-            BinaryExpr.Operator op = (( BinaryExpr ) expr).getOperator();
-            return op == AND || op == OR || op == EQUALS || op == NOT_EQUALS || op == LESS || op == GREATER || op == LESS_EQUALS || op == GREATER_EQUALS;
-        } else if (expr instanceof MethodCallExpr) {
-            return right != null;
-        }
-        return false;
+    // Used to decide whether we should generate an .expr or a .bind
+    // true:  .expr
+    // false: .bind
+    @Override
+    public boolean isPredicate() {
+        return this.isPredicate;
+    }
+
+    public SingleDrlxParseSuccess setIsPredicate(boolean predicate) {
+        this.isPredicate = predicate;
+        return this;
     }
 
     public boolean isSkipThisAsParam() {
         return skipThisAsParam;
-    }
-
-    public SingleDrlxParseSuccess setValidExpression(boolean validExpression ) {
-        this.isValidExpression = validExpression;
-        return this;
     }
 
     public SingleDrlxParseSuccess setBetaConstraint( boolean betaConstraint ) {
@@ -414,11 +399,18 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( this.reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
-        return new SingleDrlxParseSuccess(patternType, patternBinding, new BinaryExpr(expr, otherDrlx.expr, operator), exprType)
-                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN).setUsedDeclarations(newUsedDeclarations).setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
-                .setUnification(this.isUnification() || otherDrlx.isUnification()).setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
+        return new SingleDrlxParseSuccess(patternType, patternBinding, new EnclosedExpr( new BinaryExpr(expr, otherDrlx.expr, operator) ), exprType)
+                .setDecodeConstraintType(Index.ConstraintType.UNKNOWN)
+                .setUsedDeclarations(newUsedDeclarations)
+                .setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
+                .setUnification(this.isUnification() || otherDrlx.isUnification())
+                .setCombined( true )
+                .setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
                 .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
-                .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class));
+                .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class))
+                .setBoundExpr(left)
+                .setIsPredicate(this.isPredicate && otherDrlx.isPredicate)
+                .setExprBinding(this.exprBinding); // only left exprBinding
     }
 
     @Override
@@ -427,6 +419,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
+    @Override
     public String getOriginalDrlConstraint() {
         return originalDrlConstraint;
     }
@@ -439,6 +432,16 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     @Override
     public Optional<Expression> getImplicitCastExpression() {
         return implicitCastExpression;
+    }
+
+    @Override
+    public List<Expression> getNullSafeExpressions() {
+        return nullSafeExpressions;
+    }
+
+    public SingleDrlxParseSuccess setNullSafeExpressions(List<Expression> nullSafeExpressions) {
+        this.nullSafeExpressions = nullSafeExpressions;
+        return this;
     }
 
     @Override

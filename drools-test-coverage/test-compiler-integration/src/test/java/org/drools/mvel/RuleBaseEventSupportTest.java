@@ -17,25 +17,27 @@ package org.drools.mvel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
 import org.drools.core.base.ClassFieldAccessorStore;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.event.kiebase.AfterFunctionRemovedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseLockedEvent;
 import org.kie.api.event.kiebase.AfterKieBaseUnlockedEvent;
@@ -58,12 +60,27 @@ import org.kie.api.event.kiebase.KieBaseEventListener;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class RuleBaseEventSupportTest {
 
     private InternalKnowledgeBase kBase;
     private TestRuleBaseListener listener1;
     private TestRuleBaseListener listener2;
     private InternalKnowledgePackage pkg;
+
+    private final boolean useLambdaConstraint;
+
+    public RuleBaseEventSupportTest(boolean useLambdaConstraint) {
+        this.useLambdaConstraint = useLambdaConstraint;
+    }
+
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
 
     /* (non-Javadoc)
      * @see junit.framework.TestCase#setUp()
@@ -85,12 +102,7 @@ public class RuleBaseEventSupportTest {
         store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         store.setEagerWire( true );
 
-        final ClassFieldReader extractor = store.getReader( Cheese.class,
-                                                            "type" );
-
-        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
-
-        final MVELConstraint constraint = new MVELConstraintTestUtil("type == \"cheddar\"", field, extractor);
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "cheddar", useLambdaConstraint);
 
         pattern.addConstraint( constraint );
         rule1.addPattern( pattern );
@@ -121,9 +133,7 @@ public class RuleBaseEventSupportTest {
         final Pattern pattern2 = new Pattern( 0,
                                               cheeseObjectType2 );
 
-        final FieldValue field2 = FieldFactory.getInstance().getFieldValue( "stilton" );
-
-        final MVELConstraint constraint2 = new MVELConstraintTestUtil("type == \"stilton\"", field, extractor);
+        AlphaNodeFieldConstraint constraint2 = ConstraintTestUtil.createCheeseTypeEqualsConstraint(store, "stilton", useLambdaConstraint);
 
         pattern2.addConstraint( constraint2 );
         rule2.addPattern( pattern2 );

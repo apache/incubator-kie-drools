@@ -19,9 +19,13 @@ package org.drools.core.reteoo;
 import org.drools.core.common.NetworkNode;
 
 public interface LeftTupleNode extends NetworkNode {
-    int getPositionInPath();
+    int getPathIndex();
 
     LeftTupleSource getLeftTupleSource();
 
     LeftTupleSinkPropagator getSinkPropagator();
+
+    int getObjectCount();
+
+    void setObjectCount(int count);
 }

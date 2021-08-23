@@ -3,7 +3,7 @@ Models Archetype
 
 Usage:
 
-    cd kie-pmml-models
+    cd drools/kie-pmml-trusty/kie-pmml-models
 
     mvn archetype:generate -B \ (not interactive)
     -DarchetypeGroupId=org.kie \
@@ -13,13 +13,13 @@ Usage:
 
 N.B.
 
-For model name do follow names as defined inside PMML specs, e.g RegressionModel -> Regression, TreeModel -> Tree
+For model name do follow names as defined inside PMML specs, without trailing "Model": e.g RegressionModel -> Regression, TreeModel -> Tree, ClusteringModel -> Clustering
 
-    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-archetype -DarchetypeVersion=7.40.1-SNAPSHOT -DmodelName=NaiveBayes
+    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-archetype -DarchetypeVersion=%KIE_VERSION% -DmodelName=NaiveBayes
 
 Test:
 
-The src/test/resources/projects contains two folder to have IT tests of the archetype itself.
+The src/test/resources/projects contains two folders to have IT tests of the archetype itself.
 
 Inside such folder there is
 1. some specifications for the project to be created (archetype.pom.properties, archetype.properties)

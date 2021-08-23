@@ -19,7 +19,6 @@ package org.drools.workbench.models.guided.dtable.backend;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.drools.workbench.models.commons.backend.rule.RuleModelDRLPersistenceImpl;
 import org.drools.workbench.models.datamodel.rule.ActionExecuteWorkItem;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
@@ -74,6 +73,7 @@ import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.kie.soup.project.datamodel.oracle.DataType;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -2859,20 +2859,22 @@ public class GuidedDTDRLPersistenceTest {
         p1.getChildColumns().add(cc2);
 
         dt.setData(DataUtilities.makeDataLists(new Object[][]{
-                new Object[]{1l, "", "desc", "Pupa, Brains, \"John, Snow\"", "55, 66"},
-                new Object[]{2l, "", "desc", "", ""}
+                new Object[]{1l, "", "desc", "Pupa, Brains, \"John, Snow\", \" \"", "55, 66"},
+                new Object[]{2l, "", "desc", "Pupa, Brains, \" \", \"John, Snow\"", "55, 66"},
+                new Object[]{3l, "", "desc", "\" \", Pupa, Brains, \"John, Snow\"", "55, 66"},
+                new Object[]{4l, "", "desc", "", ""}
         }));
 
         GuidedDTDRLPersistence p = GuidedDTDRLPersistence.getInstance();
         String drl = p.marshal(dt);
 
-        int index = -1;
-        index = drl.indexOf("Smurf( name in ( \"Pupa\", \"Brains\", \"John, Snow\" ) , age in ( 55, 66 ) )");
-        assertTrue(index > -1);
-
-        index = drl.indexOf("Smurf( )",
-                            index + 1);
-        assertFalse(index > -1);
+        assertThat(drl)
+                .containsSubsequence(
+                        "Smurf( name in ( \"Pupa\", \"Brains\", \"John, Snow\", \" \" ) , age in ( 55, 66 ) )",
+                        "Smurf( name in ( \"Pupa\", \"Brains\", \" \", \"John, Snow\" ) , age in ( 55, 66 ) )",
+                        "Smurf( name in ( \" \", \"Pupa\", \"Brains\", \"John, Snow\" ) , age in ( 55, 66 ) )");
+        assertThat(drl)
+                .doesNotContain("Smurf( )");
     }
 
     @Test
@@ -5398,6 +5400,6 @@ public class GuidedDTDRLPersistenceTest {
 
     private void assertEqualsIgnoreWhitespace(final String expected,
                                               final String actual) {
-        Assertions.assertThat(expected).isEqualToIgnoringWhitespace(actual);
+        assertThat(expected).isEqualToIgnoringWhitespace(actual);
     }
 }

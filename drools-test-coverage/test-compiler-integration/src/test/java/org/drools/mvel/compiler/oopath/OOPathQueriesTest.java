@@ -15,24 +15,44 @@
 
 package org.drools.mvel.compiler.oopath;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Room;
 import org.drools.mvel.compiler.oopath.model.SensorEvent;
 import org.drools.mvel.compiler.oopath.model.Thing;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.Variable;
-import org.kie.internal.utils.KieHelper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@RunWith(Parameterized.class)
 public class OOPathQueriesTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathQueriesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testQueryFromCode() {
@@ -48,9 +68,8 @@ public class OOPathQueriesTest {
         final List<String> itemList = Arrays.asList(new String[] { "display", "keyboard", "processor" });
         itemList.stream().map(item -> new Thing(item)).forEach((thing) -> smartphone.addChild(thing));
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(smartphone);
 
         final QueryResults queryResults = ksession.getQueryResults("isContainedIn", new Object[] { smartphone, Variable.v });
@@ -97,9 +116,8 @@ public class OOPathQueriesTest {
         room.getTemperatureSensor().setValue(15);
         room.getHeating().setOn(false);
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(room);
         ksession.insert(room.getTemperatureSensor());
         ksession.insert(room.getHeating());
@@ -149,9 +167,8 @@ public class OOPathQueriesTest {
         room.getTemperatureSensor().setValue(15);
         room.getHeating().setOn(false);
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
         ksession.insert(room);
         ksession.insert(room.getTemperatureSensor());
         ksession.insert(room.getHeating());
@@ -163,5 +180,68 @@ public class OOPathQueriesTest {
         assertThat(room.getHeating().isOn()).as("Query is not reactive. Heating should still be turned on.").isTrue();
 
         ksession.dispose();
+    }
+
+    @Test
+    public void testRecursiveOOPathQuery() {
+        final String drl =
+                "import org.drools.mvel.compiler.oopath.model.Thing;\n" +
+                        "global java.util.List list\n" +
+                        "\n" +
+                        "rule \"Print all things contained in the Office\" when\n" +
+                        "    $office : Thing( name == \"office\" )\n" +
+                        "    isContainedIn( $office, thing; )\n" +
+                        "then\n" +
+                        "    list.add( thing.getName() );\n" +
+                        "end\n" +
+                        "\n" +
+                        "query isContainedIn( Thing $x, Thing $y )\n" +
+                        "    $y := /$x/children\n" +
+                        "or\n" +
+                        "    ( $z := /$x/children and isContainedIn( $z, $y; ) )\n" +
+                        "end\n";
+
+        final Thing house = new Thing( "house" );
+        final Thing office = new Thing( "office" );
+        house.addChild( office );
+        final Thing kitchen = new Thing( "kitchen" );
+        house.addChild( kitchen );
+
+        final Thing knife = new Thing( "knife" );
+        kitchen.addChild( knife );
+        final Thing cheese = new Thing( "cheese" );
+        kitchen.addChild( cheese );
+
+        final Thing desk = new Thing( "desk" );
+        office.addChild( desk );
+        final Thing chair = new Thing( "chair" );
+        office.addChild( chair );
+
+        final Thing computer = new Thing( "computer" );
+        desk.addChild( computer );
+        final Thing draw = new Thing( "draw" );
+        desk.addChild( draw );
+        final Thing key = new Thing( "key" );
+        draw.addChild( key );
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal( "list", list );
+
+        ksession.insert(house);
+        ksession.insert(office);
+        ksession.insert(kitchen);
+        ksession.insert(knife);
+        ksession.insert(cheese);
+        ksession.insert(desk);
+        ksession.insert(chair);
+        ksession.insert(computer);
+        ksession.insert(draw);
+        ksession.insert(key);
+
+        ksession.fireAllRules();
+        Assertions.assertThat(list).containsExactlyInAnyOrder("desk", "chair", "key", "draw", "computer");
     }
 }

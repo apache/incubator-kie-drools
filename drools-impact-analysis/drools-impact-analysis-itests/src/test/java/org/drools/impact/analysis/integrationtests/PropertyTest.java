@@ -50,7 +50,6 @@ public class PropertyTest extends AbstractGraphTest {
         runRule(str, new Person("John", 20, new Address()));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         // [modify ($p) {getAddress().setNumber(10)};] is parsed to modifiedProperties=[ModifiedProperty{property='address', value=null}]
         // [address.number == 10] is parsed to Constraint{type=EQUAL, property='null', value=10}
@@ -59,7 +58,7 @@ public class PropertyTest extends AbstractGraphTest {
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }
@@ -82,12 +81,11 @@ public class PropertyTest extends AbstractGraphTest {
         runRule(str, new Person("John"));
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        assertNodeLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
+        assertLink(graph, "mypkg.R1", "mypkg.R2", ReactivityType.UNKNOWN);
 
         generatePng(graph);
     }

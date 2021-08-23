@@ -141,7 +141,8 @@ public class MVELAccumulateBuilder
             if (accumDescr.isMultiFunction()) {
                 accumulate = new MultiAccumulate( source,
                                                   requiredDeclarations.toArray( new Declaration[ requiredDeclarations.size() ] ),
-                                                  accumulators );
+                                                  accumulators,
+                                                  accumulators.length);
                 int index = 0;
                 for ( Accumulator accumulator : accumulators ) {
                     data.addCompileable( ((MultiAccumulate)accumulate).new Wirer( index++ ),

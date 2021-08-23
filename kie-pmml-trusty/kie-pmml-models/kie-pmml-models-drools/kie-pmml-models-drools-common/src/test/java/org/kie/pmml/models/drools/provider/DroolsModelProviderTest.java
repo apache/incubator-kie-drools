@@ -31,6 +31,7 @@ import org.dmg.pmml.scorecard.Scorecard;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.lang.descr.CompositePackageDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
+import org.drools.modelcompiler.builder.GeneratedFile;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -101,10 +102,6 @@ public class DroolsModelProviderTest {
                 return PMML_MODEL.SCORECARD_MODEL;
             }
 
-            public PackageDescr getPackageDescr(final KiePMMLDroolsAST kiePMMLDroolsAST, final String packageName) {
-                //  Needed to avoid Mockito usage
-                return new PackageDescrTest(kiePMMLDroolsAST, packageName);
-            }
         };
     }
 
@@ -125,9 +122,8 @@ public class DroolsModelProviderTest {
         String expectedPackageName = getSanitizedPackageName(PACKAGE_NAME);
         assertEquals(expectedPackageName, retrievedTest.getKModulePackageName());
         assertEquals(PACKAGE_NAME, retrievedTest.getName());
-        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("defaultpkg").get(0);
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("packagename").get(0);
         assertTrue(packageDescr instanceof CompositePackageDescr);
-//        commonVerifyPackageDescr(packageDescr, null, expectedPackageName);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -149,12 +145,15 @@ public class DroolsModelProviderTest {
                                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelWithSources);
-        KiePMMLDroolsModelWithSources retrievedSources = (KiePMMLDroolsModelWithSources) retrieved;
-        assertEquals(SOURCE_MAP, retrievedSources.getSourcesMap());
-        assertEquals(PACKAGE_NAME, retrievedSources.getKModulePackageName());
-        assertEquals(scorecard.getModelName(), retrievedSources.getName());
-        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("defaultpkg").get(0);
-        commonVerifyPackageDescr(packageDescr, null, PACKAGE_NAME);
+        KiePMMLDroolsModelWithSources retrievedWithSources = (KiePMMLDroolsModelWithSources) retrieved;
+        assertEquals(SOURCE_MAP, retrievedWithSources.getSourcesMap());
+        assertEquals(PACKAGE_NAME, retrievedWithSources.getKModulePackageName());
+        assertEquals(scorecard.getModelName(), retrievedWithSources.getName());
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(PACKAGE_NAME).get(0);
+        commonVerifyPackageDescr(packageDescr, PACKAGE_NAME);
+        assertNotNull(retrieved);
+        final String rootPath = PACKAGE_NAME + ".";
+        commonVerifyRulesSourcesMap(retrievedWithSources.getRulesSourcesMap(), packageDescr, rootPath);
     }
 
     @Test(expected = KiePMMLException.class)
@@ -180,7 +179,7 @@ public class DroolsModelProviderTest {
     public void getPackageDescr() {
         KiePMMLDroolsAST kiePMMLDroolsAST = new KiePMMLDroolsAST(Collections.emptyList(), Collections.emptyList());
         PackageDescr retrieved = droolsModelProvider.getPackageDescr(kiePMMLDroolsAST, PACKAGE_NAME);
-        commonVerifyPackageDescr(retrieved, kiePMMLDroolsAST, PACKAGE_NAME);
+        commonVerifyPackageDescr(retrieved, PACKAGE_NAME);
     }
 
     @Test
@@ -205,17 +204,58 @@ public class DroolsModelProviderTest {
                                  scorecard.getLocalTransformations().getDerivedFields());
     }
 
-    private void commonVerifyPackageDescr(PackageDescr toVerify, KiePMMLDroolsAST kiePMMLDroolsAST,
-                                          String expectedPackageName) {
-        assertTrue(toVerify instanceof PackageDescrTest);
-        PackageDescrTest toVerifyTest = (PackageDescrTest) toVerify;
-        assertEquals(expectedPackageName, toVerifyTest.packageName);
-        if (kiePMMLDroolsAST != null) {
-            assertEquals(kiePMMLDroolsAST, toVerifyTest.kiePMMLDroolsAST);
-        } else {
-            assertNotNull(toVerifyTest.kiePMMLDroolsAST);
-            commonVerifyKiePMMLDroolsAST(toVerifyTest.kiePMMLDroolsAST, null);
-        }
+    @Test
+    public void getRulesSourceMap() {
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
+                                                       pmml.getDataDictionary(),
+                                                       pmml.getTransformationDictionary(),
+                                                       scorecard,
+                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs(PACKAGE_NAME).get(0);
+        final Map<String, String> retrieved = droolsModelProvider.getRulesSourceMap(packageDescr);
+        assertNotNull(retrieved);
+        final String rootPath = PACKAGE_NAME + ".";
+        commonVerifyRulesSourcesMap(retrieved, packageDescr, rootPath);
+    }
+
+    @Test
+    public void generateRulesFiles() {
+        KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
+        droolsModelProvider.getKiePMMLModelWithSources(PACKAGE_NAME,
+                                                       pmml.getDataDictionary(),
+                                                       pmml.getTransformationDictionary(),
+                                                       scorecard,
+                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
+        PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("PACKAGE_NAME").get(0);
+        final List<GeneratedFile> retrieved = droolsModelProvider.generateRulesFiles(packageDescr);
+        assertNotNull(retrieved);
+        final String rootPath = "PACKAGE_NAME/";
+        packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
+            String expectedPath = rootPath + typeDeclarationDescr.getTypeName() + ".java";
+            assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedPath)));
+        });
+        String pkgUUID = packageDescr.getPreferredPkgUUID().get();
+        String expectedRule = rootPath + "Rules" + pkgUUID + ".java";
+        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedRule)));
+        String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID + ".java";
+        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomain)));
+    }
+    
+    private void commonVerifyRulesSourcesMap( Map<String, String> toVerify,  PackageDescr packageDescr, String rootPath) {
+        packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
+            String expectedPath = rootPath + typeDeclarationDescr.getTypeName();
+            assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedPath)));
+        });
+        String pkgUUID = packageDescr.getPreferredPkgUUID().get();
+        String expectedRule = rootPath + "Rules" + pkgUUID;
+        assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedRule)));
+        String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID;
+        assertTrue(toVerify.keySet().stream().anyMatch(className -> className.equals(expectedDomain)));
+    }
+
+    private void commonVerifyPackageDescr(PackageDescr toVerify, String expectedPackageName) {
+        assertEquals(expectedPackageName, toVerify.getName());
     }
 
     private void commonVerifyKiePMMLDroolsAST(final KiePMMLDroolsAST toVerify, final Map<String,
@@ -348,18 +388,6 @@ public class DroolsModelProviderTest {
             this.dataDictionary = dataDictionary;
             this.model = model;
             this.fieldTypeMap = fieldTypeMap;
-        }
-    }
-
-    //  Needed to avoid Mockito usage
-    private static class PackageDescrTest extends PackageDescr {
-
-        final KiePMMLDroolsAST kiePMMLDroolsAST;
-        final String packageName;
-
-        public PackageDescrTest(KiePMMLDroolsAST kiePMMLDroolsAST, String packageName) {
-            this.kiePMMLDroolsAST = kiePMMLDroolsAST;
-            this.packageName = packageName;
         }
     }
 }

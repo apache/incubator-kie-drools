@@ -31,7 +31,7 @@ import org.kie.internal.utils.KieHelper;
 public class OOPathBenchmarkTest {
 
     private static final String RELATIONAL_DRL =
-            "import org.drools.compiler.oopath.model.*;\n" +
+            "import org.drools.mvel.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
@@ -44,7 +44,7 @@ public class OOPathBenchmarkTest {
             "end\n";
 
     private static final String FROM_DRL =
-            "import org.drools.compiler.oopath.model.*;\n" +
+            "import org.drools.mvel.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +
@@ -56,7 +56,7 @@ public class OOPathBenchmarkTest {
             "end\n";
 
     private static final String OOPATH_DRL =
-            "import org.drools.compiler.oopath.model.*;\n" +
+            "import org.drools.mvel.compiler.oopath.model.*;\n" +
             "global java.util.List list\n" +
             "\n" +
             "rule R when\n" +

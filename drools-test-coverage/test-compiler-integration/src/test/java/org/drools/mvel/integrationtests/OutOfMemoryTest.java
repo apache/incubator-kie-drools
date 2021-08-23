@@ -16,34 +16,44 @@
 
 package org.drools.mvel.integrationtests;
 
-import org.drools.mvel.compiler.Cheese;
-import org.drools.mvel.CommonTestMethodBase;
-import org.drools.mvel.compiler.Person;
+import java.io.FileWriter;
+import java.util.Collection;
+import java.util.HashMap;
+
 import org.drools.core.SessionConfiguration;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.util.debug.SessionInspector;
 import org.drools.mvel.SessionReporter;
+import org.drools.mvel.compiler.Cheese;
+import org.drools.mvel.compiler.Person;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.FileWriter;
-import java.util.HashMap;
-
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 /** Run all the tests with the ReteOO engine implementation */
-public class OutOfMemoryTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class OutOfMemoryTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OutOfMemoryTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static Logger logger = LoggerFactory.getLogger(OutOfMemoryTest.class);
     
@@ -54,7 +64,7 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     @Test
     @Ignore
     public void testStatefulSessionsCreation() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_OutOfMemoryError.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OutOfMemoryError.drl");
 
         int i = 0;
 
@@ -76,7 +86,8 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     @Test
     @Ignore
     public void testAgendaLoop() throws Exception {
-        KieBase kbase = loadKnowledgeBase("test_OutOfMemory.drl");
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_OutOfMemoryError.drl");
+
         KieSession ksession = kbase.newKieSession();
 
         ksession.insert( new Cheese( "stilton",
@@ -89,19 +100,10 @@ public class OutOfMemoryTest extends CommonTestMethodBase {
     }
     
     @Test
-    @Ignore
+    @Ignore("dump_tuples.mvel no longer seems to work")
     public void testMemoryLeak() {
-        final KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource("test_MemoryLeak.drl",
-                OutOfMemoryTest.class),
-                      ResourceType.DRL );
-        assertFalse( kbuilder.getErrors().toString(),
-                     kbuilder.hasErrors() );
-
-        final InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-
-        final KieSession ksession = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "test_MemoryLeak.drl");
+        KieSession ksession = kbase.newKieSession();
 
         final int pcount = 5;
         Person[] persons = new Person[pcount];

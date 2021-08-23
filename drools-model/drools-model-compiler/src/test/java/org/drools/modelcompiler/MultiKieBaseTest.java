@@ -217,4 +217,76 @@ public class MultiKieBaseTest extends BaseModelTest {
         ks2.insert( "test" );
         assertEquals( 1, ks2.fireAllRules() ); // only rule in org.pkg1 should fire
     }
+
+    @Test
+    public void testHelloMultiKieBasesWithSharedDeclaredType() throws Exception {
+        // DROOLS-6331
+        String drlType =
+                "package org.pkg.type\n" +
+                "declare MyType value : String end\n";
+
+        String drl1 =
+                "package org.pkg1\n" +
+                "import org.pkg.type.MyType\n" +
+                "rule R1 when\n" +
+                "   $s : String()\n" +
+                "then\n" +
+                "   insert(new MyType($s));\n" +
+                "end\n";
+
+        String drl2 =
+                "package org.pkg2\n" +
+                "import org.pkg.type.MyType\n" +
+                "rule R1 when\n" +
+                "   MyType( value.startsWith(\"Hello\") )\n" +
+                "then\n" +
+                "end\n";
+
+        String drl3 =
+                "package org.pkg3\n" +
+                "import org.pkg.type.MyType\n" +
+                "rule R1 when\n" +
+                "   MyType( value.startsWith(\"Hi\") )\n" +
+                "then\n" +
+                "end\n";
+
+        KieServices ks = KieServices.Factory.get();
+
+        KieModuleModel kproj = ks.newKieModuleModel();
+
+        kproj.newKieBaseModel("KBaseA")
+                .addPackage("org.pkg.type")
+                .addPackage("org.pkg1")
+                .addPackage("org.pkg2")
+                .newKieSessionModel("KSessionA");
+
+        kproj.newKieBaseModel("KBaseB")
+                .addPackage("org.pkg.type")
+                .addPackage("org.pkg1")
+                .addPackage("org.pkg3")
+                .newKieSessionModel("KSessionB");
+
+        // Create an in-memory jar for version 1.0.0
+        ReleaseId releaseId1 = ks.newReleaseId( "org.kie", "test-types", "1.0.0" );
+        createAndDeployJar( ks, kproj, releaseId1,
+                new KieFile( "src/main/resources/org/pkg/type/r0.drl", drlType ),
+                new KieFile( "src/main/resources/org/pkg1/r1.drl", drl1 ),
+                new KieFile( "src/main/resources/org/pkg2/r2.drl", drl2 ),
+                new KieFile( "src/main/resources/org/pkg3/r3.drl", drl3 ) );
+
+        // Create a session and fire rules
+        KieContainer kieContainer = ks.newKieContainer( releaseId1 );
+
+        KieSession ksessionA = kieContainer.newKieSession("KSessionA");
+        ksessionA.insert("Hello World");
+        assertEquals( 2, ksessionA.fireAllRules() );
+        ksessionA.insert("Hi Universe");
+        assertEquals( 1, ksessionA.fireAllRules() );
+
+        KieSession ksessionB = kieContainer.newKieSession("KSessionB");
+        ksessionB.insert("Hello World");
+        assertEquals( 1, ksessionB.fireAllRules() );
+        ksessionB.insert("Hi Universe");
+        assertEquals( 2, ksessionB.fireAllRules() );
+    }
 }

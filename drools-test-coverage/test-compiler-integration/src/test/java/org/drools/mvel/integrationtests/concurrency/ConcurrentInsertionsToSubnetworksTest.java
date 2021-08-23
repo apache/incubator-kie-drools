@@ -16,11 +16,15 @@
 
 package org.drools.mvel.integrationtests.concurrency;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -30,19 +34,32 @@ import org.kie.api.runtime.rule.FactHandle;
 @RunWith(Parameterized.class)
 public class ConcurrentInsertionsToSubnetworksTest extends AbstractConcurrentInsertionsTest {
 
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
     protected final String drl;
 
-    @Parameterized.Parameters(name = "DRL={0}")
-    public static List<String[]> getTestParameter() {
-        return Arrays.asList(
-            new String[] {"sharedSubnetworkAccumulateRule", sharedSubnetworkAccumulateRule},
-            new String[] {"noSharingSubnetworkAccumulateRule", noSharingSubnetworkAccumulateRule},
-            new String[] {"sharedSubnetworkNotRule", sharedSubnetworkNotRule},
-            new String[] {"sharedSubnetworkExistsRule", sharedSubnetworkExistsRule});
+    @Parameterized.Parameters(name = "DRL={0}, KieBase type={2}")
+    public static List<Object[]> getTestParameter() {
+        List<String[]> drlParams = Arrays.asList(
+                                                 new String[]{"sharedSubnetworkAccumulateRule", sharedSubnetworkAccumulateRule},
+                                                 new String[]{"noSharingSubnetworkAccumulateRule", noSharingSubnetworkAccumulateRule},
+                                                 new String[]{"sharedSubnetworkNotRule", sharedSubnetworkNotRule},
+                                                 new String[]{"sharedSubnetworkExistsRule", sharedSubnetworkExistsRule});
+        // TODO: EM failed with some tests. File JIRAs
+        Collection<Object[]> kbParams = TestParametersUtil.getKieBaseCloudConfigurations(false);
+        // combine
+        List<Object[]> params = new ArrayList<>();
+        for (Object[] drlParam : drlParams) {
+            for (Object[] kbParam : kbParams) {
+                params.add(new Object[]{drlParam[0], drlParam[1], kbParam[0]});
+            }
+        }
+        return params;
     }
 
-    public ConcurrentInsertionsToSubnetworksTest(final String drlName, final String drl) {
+    public ConcurrentInsertionsToSubnetworksTest(final String drlName, final String drl, final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.drl = drl;
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
     private final static String sharedSubnetworkAccumulateRule =
@@ -129,29 +146,29 @@ public class ConcurrentInsertionsToSubnetworksTest extends AbstractConcurrentIns
             "    System.out.println(\"R2\");" +
             "end\n";
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void testConcurrentInsertionsFewObjectsManyThreads() throws InterruptedException {
-        testConcurrentInsertions(drl, 1, 1000, false, false);
+        testConcurrentInsertions(drl, 1, 1000, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void testConcurrentInsertionsManyObjectsFewThreads() throws InterruptedException {
-        testConcurrentInsertions(drl, 500, 4, false, false);
+        testConcurrentInsertions(drl, 500, 4, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void testConcurrentInsertionsManyObjectsSingleThread() throws InterruptedException {
-        testConcurrentInsertions(drl, 1000, 1, false, false);
+        testConcurrentInsertions(drl, 1000, 1, false, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void testConcurrentInsertionsNewSessionEachThread() throws InterruptedException {
-        testConcurrentInsertions(drl, 10, 1000, true, false);
+        testConcurrentInsertions(drl, 10, 1000, true, false, kieBaseTestConfiguration);
     }
 
-    @Test(timeout = 40000)
+    @Test(timeout = 80000)
     public void testConcurrentInsertionsNewSessionEachThreadUpdate() throws InterruptedException {
-        testConcurrentInsertions(drl, 10, 1000, true, true);
+        testConcurrentInsertions(drl, 10, 1000, true, true, kieBaseTestConfiguration);
     }
 
     protected Callable<Boolean> getTask(

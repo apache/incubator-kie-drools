@@ -51,6 +51,7 @@ public class ExistsNode extends BetaNode {
                joinNodeBinder,
                context );
         this.tupleMemoryEnabled = context.isTupleMemoryEnabled();
+        this.setObjectCount(leftInput.getObjectCount()); // 'exists' nodes do not increase the count
     }
     
     public String toString() {

@@ -75,6 +75,8 @@ public class KieModuleModelTest {
                 .setBeliefSystem(BeliefSystemTypeOption.get("jtms"))
                 .setFileLogger("drools.log", 10, true)
                 .addCalendar("monday", "org.domain.Monday")
+                .setDirectFiring(true)
+                .setAccumulateNullPropagation(true)
                 .setDefault(true);
 
         ksession1.newListenerModel("org.domain.FirstInterface", ListenerModel.Kind.AGENDA_EVENT_LISTENER);
@@ -129,6 +131,9 @@ public class KieModuleModelTest {
         assertEquals(ClockTypeOption.REALTIME, kieSessionModelXML.getClockType());
         assertEquals(BeliefSystemTypeOption.get("jtms"), kieSessionModelXML.getBeliefSystem());
         assertEquals("org.domain.Monday", kieSessionModelXML.getCalendars().get("monday"));
+        assertTrue(kieSessionModelXML.isDirectFiring());
+        assertTrue(kieSessionModelXML.isAccumulateNullPropagation());
+        assertTrue(kieSessionModelXML.isDefault());
 
         FileLoggerModel fileLogger = kieSessionModelXML.getFileLogger();
         assertEquals("drools.log", fileLogger.getFile());

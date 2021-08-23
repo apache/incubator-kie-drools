@@ -16,24 +16,45 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.math.BigDecimal;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.integrationtests.facts.AnEnum;
 import org.drools.mvel.integrationtests.facts.FactWithEnum;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
+import org.kie.api.builder.KieModule;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.conf.ConstraintJittingThresholdOption;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 
-public class JittingTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class JittingTest {
+
+    // This test is basically written for Mvel Jitting. But it has good edge cases which are useful for testing even with exec-model.
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public JittingTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testJitConstraintInvokingConstructor() {
@@ -44,7 +65,7 @@ public class JittingTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        final KieBase kbase = loadKnowledgeBaseFromString(str);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         final KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Person("Mario", 38));
@@ -78,7 +99,7 @@ public class JittingTest extends CommonTestMethodBase {
     }
 
     private void testJitting(final String drl) {
-        final KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
 
         ksession.insert(new Person("mark", 37));
@@ -97,9 +118,8 @@ public class JittingTest extends CommonTestMethodBase {
                 " then \n" +
                 " end ";
 
-        final KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( drl, ResourceType.DRL );
-        final KieBase kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(0));
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
         final KieSession kieSession = kieBase.newKieSession();
 
         kieSession.insert(AnEnum.FIRST);
@@ -116,9 +136,8 @@ public class JittingTest extends CommonTestMethodBase {
                 " then \n" +
                 " end ";
 
-        final KieHelper kieHelper = new KieHelper();
-        kieHelper.addContent( drl, ResourceType.DRL );
-        final KieBase kieBase = kieHelper.build(ConstraintJittingThresholdOption.get(0));
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
 
         final KieSession kieSession = kieBase.newKieSession();
         kieSession.insert(new FactWithEnum(AnEnum.FIRST));
@@ -134,7 +153,9 @@ public class JittingTest extends CommonTestMethodBase {
                 + "  Person( name == \"Paul\", age > ((2*$age1)/3) )\n"
                 + "then end\n";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession ksession = kieBase.newKieSession();
 
         Person john = new Person("John", 20);
         ksession.insert(john);
@@ -178,7 +199,9 @@ public class JittingTest extends CommonTestMethodBase {
                 "  then\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession ksession = kieBase.newKieSession();
 
         int fired = ksession.fireAllRules();
 
@@ -216,7 +239,9 @@ public class JittingTest extends CommonTestMethodBase {
                 "then\n" +
                 "end";
 
-        KieSession ksession = new KieHelper().addContent(drl, ResourceType.DRL).build(ConstraintJittingThresholdOption.get(0)).newKieSession();
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession ksession = kieBase.newKieSession();
 
         Map<String, Object> valueMap = new HashMap<>();
         valueMap.put("key", useInt ? 5 : "a");
@@ -227,5 +252,61 @@ public class JittingTest extends CommonTestMethodBase {
         ksession.insert(person);
 
         assertEquals(expectedFires, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testJittingBigDecimalAdd() {
+        // RHDM-1635
+        final String drl =
+                "import " + BigDecimalFact.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $fact : BigDecimalFact( $value : (value + 10) == 20 )\n" +
+                " then \n" +
+                " end ";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
+        kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    @Test
+    public void testJittingBigDecimalRemainder() {
+        // RHDM-1635
+        final String drl =
+                "import " + BigDecimalFact.class.getCanonicalName() + ";\n" +
+                " rule R1 \n" +
+                " when \n" +
+                "    $fact : BigDecimalFact( $value : (value % 10) == 0 )\n" +
+                " then \n" +
+                " end ";
+
+        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
+        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, ConstraintJittingThresholdOption.get(0));
+        final KieSession kieSession = kieBase.newKieSession();
+
+        kieSession.insert(new BigDecimalFact(new BigDecimal(10)));
+        kieSession.insert(new BigDecimalFact(new BigDecimal(11)));
+        Assertions.assertThat(kieSession.fireAllRules()).isEqualTo(1);
+    }
+
+    public class BigDecimalFact {
+        private BigDecimal value;
+
+        public BigDecimalFact(BigDecimal value) {
+            this.value = value;
+        }
+
+        public BigDecimal getValue() {
+            return value;
+        }
+
+        public void setValue(BigDecimal value) {
+            this.value = value;
+        }
     }
 }

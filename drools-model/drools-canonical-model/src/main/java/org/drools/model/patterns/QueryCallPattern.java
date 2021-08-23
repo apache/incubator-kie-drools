@@ -20,16 +20,21 @@ import java.util.Arrays;
 
 import org.drools.model.Argument;
 import org.drools.model.Condition;
+import org.drools.model.Pattern;
 import org.drools.model.QueryDef;
 import org.drools.model.Variable;
+import org.drools.model.impl.DeclarationImpl;
 import org.drools.model.impl.ModelComponent;
 import org.drools.model.view.QueryCallViewItem;
+import org.drools.model.view.SelfPatternBiding;
 
 public class QueryCallPattern implements Condition, ModelComponent {
 
     private final QueryDef query;
     private final boolean open;
     private final Argument<?>[] arguments;
+
+    private PatternImpl resultPattern;
 
     public QueryCallPattern( QueryCallViewItem queryCallView ) {
         this(queryCallView.getQuery(), queryCallView.isOpen(), queryCallView.getArguments());
@@ -56,6 +61,18 @@ public class QueryCallPattern implements Condition, ModelComponent {
     @Override
     public Type getType() {
         return Type.QUERY;
+    }
+
+    public Pattern getResultPattern() {
+        if (resultPattern == null) {
+            resultPattern = new PatternImpl( new DeclarationImpl(Object[].class) );
+            for (Argument arg : arguments) {
+                if (arg instanceof Variable) {
+                    resultPattern.addBinding( new SelfPatternBiding( ( Variable ) arg ) );
+                }
+            }
+        }
+        return resultPattern;
     }
 
     @Override

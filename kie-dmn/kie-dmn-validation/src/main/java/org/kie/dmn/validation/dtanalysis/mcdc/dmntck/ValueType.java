@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.dmn.feel.util.Generated;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -76,6 +77,7 @@ import org.w3c.dom.Element;
  * 
  * 
  */
+@Generated("com.sun.tools.xjc.Driver")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "valueType", propOrder = {
     "value",

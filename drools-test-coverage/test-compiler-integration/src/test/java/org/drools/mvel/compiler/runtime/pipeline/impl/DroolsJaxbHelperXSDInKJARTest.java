@@ -15,11 +15,17 @@
  */
 package org.drools.mvel.compiler.runtime.pipeline.impl;
 
+import java.util.Collection;
 import java.util.List;
 
 import com.sun.tools.xjc.Language;
 import com.sun.tools.xjc.Options;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -38,7 +44,19 @@ import static org.junit.Assert.fail;
 /**
  * DROOLS-5803 RHDM-851
  */
+@RunWith(Parameterized.class)
 public class DroolsJaxbHelperXSDInKJARTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DroolsJaxbHelperXSDInKJARTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static final Logger LOG = LoggerFactory.getLogger(DroolsJaxbHelperXSDInKJARTest.class);
 
@@ -65,7 +83,7 @@ public class DroolsJaxbHelperXSDInKJARTest {
         JaxbConfiguration jaxbConfiguration = KnowledgeBuilderFactory.newJaxbConfiguration(xjcOpts, "xsd");
         kfs.write(kieResources.newClassPathResource(simpleXsdRelativePath, getClass()).setResourceType(ResourceType.XSD).setConfiguration(jaxbConfiguration));
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
 
         List<Message> errors = kieBuilder.getResults().getMessages(Message.Level.ERROR);
         if (!errors.isEmpty()) {

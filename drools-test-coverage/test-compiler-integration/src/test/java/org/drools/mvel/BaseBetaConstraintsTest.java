@@ -15,6 +15,7 @@
 package org.drools.mvel;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.RuleBaseConfiguration;
@@ -38,32 +39,70 @@ import org.drools.core.util.LinkedListEntry;
 import org.drools.core.util.index.IndexUtil.ConstraintType;
 import org.drools.core.util.index.TupleIndexHashTable;
 import org.drools.core.util.index.TupleList;
+import org.drools.model.functions.Predicate1;
+import org.drools.modelcompiler.util.EvaluationUtil;
+import org.drools.mvel.model.Cheese;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public abstract class BaseBetaConstraintsTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
 
-    protected BetaNodeFieldConstraint getConstraint(String identifier,
-                                                    Operator operator,
-                                                    String fieldName,
-                                                    Class clazz) {
-        ClassFieldAccessorStore store = new ClassFieldAccessorStore();
-        store.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
-        store.setEagerWire( true );
-        InternalReadAccessor extractor = store.getReader( clazz,
-                                                          fieldName );
-        Declaration declaration = new Declaration( identifier,
-                                                   extractor,
-                                                   new Pattern( 0,
-                                                                new ClassObjectType( clazz ) ) );
+    protected boolean useLambdaConstraint;
 
-        String expression = fieldName + " " + operator.getOperatorString() + " " + identifier;
-        return new MVELConstraintTestUtil(expression, operator.getOperatorString(), declaration, extractor);
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
+
+    protected BetaNodeFieldConstraint getCheeseTypeConstraint(final String identifier,
+                                                    Operator operator) {
+        if (useLambdaConstraint) {
+            Pattern pattern = new Pattern(0, new ClassObjectType(Cheese.class));
+
+            Predicate1<Cheese> predicate;
+            if (operator == Operator.EQUAL) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.areNullSafeEquals(_this.getType(), identifier));
+            } else if (operator == Operator.NOT_EQUAL) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> !EvaluationUtil.areNullSafeEquals(_this.getType(), identifier));
+            } else if (operator == Operator.GREATER) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterThan(_this.getType(), identifier));
+            } else if (operator == Operator.GREATER_OR_EQUAL) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.greaterOrEqual(_this.getType(), identifier));
+            } else if (operator == Operator.LESS) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessThan(_this.getType(), identifier));
+            } else if (operator == Operator.GREATER_OR_EQUAL) {
+                predicate = new Predicate1.Impl<Cheese>(_this -> EvaluationUtil.lessOrEqual(_this.getType(), identifier));
+            } else {
+                throw new RuntimeException(operator + " is not supported");
+            }
+
+            return LambdaConstraintTestUtil.createLambdaConstraint1(Cheese.class, pattern, predicate, null);
+        } else {
+            ClassFieldAccessorStore store = new ClassFieldAccessorStore();
+            store.setClassFieldAccessorCache(new ClassFieldAccessorCache(Thread.currentThread().getContextClassLoader()));
+            store.setEagerWire(true);
+            InternalReadAccessor extractor = store.getReader(Cheese.class,
+                                                             "type");
+            Declaration declaration = new Declaration(identifier,
+                                                      extractor,
+                                                      new Pattern(0,
+                                                                  new ClassObjectType(Cheese.class)));
+
+            String expression = "type " + operator.getOperatorString() + " " + identifier;
+            return new MVELConstraintTestUtil(expression, operator.getOperatorString(), declaration, extractor);
+
+        }
     }
 
     protected void checkBetaConstraints(BetaNodeFieldConstraint[] constraints,

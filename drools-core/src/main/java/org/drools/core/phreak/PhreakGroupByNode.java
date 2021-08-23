@@ -14,7 +14,6 @@
 
 package org.drools.core.phreak;
 
-import org.drools.core.common.GroupByFactHandle;
 import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.TupleSets;
@@ -40,8 +39,15 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     @Override
-    protected InternalFactHandle createFactHandle( AccumulateNode accNode, LeftTuple leftTuple, PropagationContext context, InternalWorkingMemory workingMemory, Object key, Object result ) {
-        return new GroupByFactHandle( accNode.createResultFactHandle( context, workingMemory, leftTuple, result ), key );
+    protected Object createResult( AccumulateNode accNode, Object key, Object result ) {
+        Object[] array;
+        if (accNode.getAccumulate().isMultiFunction()) {
+            array = (Object[]) result;
+            array[array.length-1] = key;
+        } else {
+            array = new Object[] {result, key};
+        }
+        return array;
     }
 
     @Override
@@ -60,23 +66,17 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
         accctx.setPropagationContext( null );
 
         GroupByContext groupByContext = (GroupByContext)accctx;
-        TupleList<AccumulateContextEntry> firstList = groupByContext.getToPropagateList();
-        TupleList<AccumulateContextEntry> lastList = null;
 
-        for (TupleList<AccumulateContextEntry> tupleList = firstList; tupleList != null; tupleList = tupleList.getNext()) {
+        for (TupleList<AccumulateContextEntry> tupleList = groupByContext.takeToPropagateList(); tupleList != null; tupleList = tupleList.getNext()) {
             AccumulateContextEntry contextEntry = tupleList.getContext();
 
             Object result = accumulate.getResult(memory.workingMemoryContext, contextEntry, leftTuple, workingMemory);
 
             propagateResult( accNode, sink, leftTuple, context, workingMemory, memory, trgLeftTuples, stagedLeftTuples,
-                             contextEntry.getKey(), result, contextEntry, propagationContext );
+                             contextEntry.getKey(), result, contextEntry, propagationContext, false ); // don't want to propagate null
 
             contextEntry.setToPropagate(false);
-
-            lastList = tupleList;
         }
-
-        groupByContext.resetToPropagateTupleList(firstList, lastList);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
                     RightTuple         rightTuple  = childMatch.getRightParent();
                     InternalFactHandle childHandle = rightTuple.getFactHandle();
                     LeftTuple          tuple       = leftTuple;
-                    if (accNode.isUnwrapRightObject()) {
+                    if (accNode.isRightInputIsRiaNode()) {
                         // if there is a subnetwork, handle must be unwrapped
                         tuple = (LeftTuple) rightTuple;
                         childHandle = rightTuple.getFactHandleForEvaluation();
@@ -141,8 +141,7 @@ public class PhreakGroupByNode extends PhreakAccumulateNode {
     }
 
     void postAccumulate(AccumulateNode accNode, Object accctx, LeftTuple match) {
-        GroupByContext context = (GroupByContext)accctx;
-        context.getLastTupleList().add(match);
+        ((GroupByContext)accctx).addMatchOnLastTupleList(match);
     }
 
 }

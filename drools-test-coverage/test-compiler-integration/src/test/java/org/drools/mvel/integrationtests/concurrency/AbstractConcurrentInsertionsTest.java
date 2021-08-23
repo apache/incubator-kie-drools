@@ -24,17 +24,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 public abstract class AbstractConcurrentInsertionsTest {
 
     protected void testConcurrentInsertions(final String drl, final int objectCount, final int threadCount,
-                                          final boolean newSessionForEachThread, final boolean updateFacts) throws InterruptedException {
+                                          final boolean newSessionForEachThread, final boolean updateFacts, KieBaseTestConfiguration kieBaseTestConfiguration) throws InterruptedException {
 
-        final KieBase kieBase = new KieHelper().addContent(drl, ResourceType.DRL).build();
+        final KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final ExecutorService executor = Executors.newFixedThreadPool(threadCount, r -> {
             final Thread t = new Thread(r);

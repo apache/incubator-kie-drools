@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.kie</groupId>
@@ -20,12 +20,15 @@
     <module>kie-dmn-api</module>
     <module>kie-dmn-model</module>
     <module>kie-dmn-feel</module>
+    <module>kie-dmn-feel-gwt-functions</module>
+    <module>kie-dmn-feel-gwt</module>
     <module>kie-dmn-backend</module>
     <module>kie-dmn-core</module>
     <module>kie-dmn-validation-bootstrap</module>
     <module>kie-dmn-validation</module>
     <module>kie-dmn-openapi</module>
     <module>kie-dmn-tck</module>
+    <module>kie-dmn-trisotech</module>
     <module>kie-dmn-signavio</module>
     <module>kie-dmn-core-osgi</module>
     <module>kie-dmn-pmml-tests-parent</module>
@@ -44,5 +47,30 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
+  
+  <profiles>
+    <profile>
+      <id>fullProfile</id>
+      <activation>
+        <property>
+          <name>full</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-dmn-feel-gwt-showcase</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+            <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kie-dmn-xls2dmn-cli</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

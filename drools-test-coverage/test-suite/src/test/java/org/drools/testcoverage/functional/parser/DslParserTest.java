@@ -23,7 +23,6 @@ import java.util.Set;
 
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
-import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runners.Parameterized.Parameters;
 import org.kie.api.KieServices;
@@ -45,7 +44,6 @@ public class DslParserTest extends ParserTest {
             final String dslPath = f.getAbsolutePath();
             final File dsl = new File(dslPath.substring(0, dslPath.length() - 1));
             set.add(new Object[] {dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY});
-            set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_FLOW});
             set.add(new Object[]{dsl, f, KieBaseTestConfiguration.CLOUD_EQUALITY_MODEL_PATTERN});
         }
 

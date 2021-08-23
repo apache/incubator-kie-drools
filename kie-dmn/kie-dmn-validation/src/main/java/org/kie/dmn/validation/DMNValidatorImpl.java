@@ -27,6 +27,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.Properties;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -120,6 +121,8 @@ public class DMNValidatorImpl implements DMNValidator {
         }
     }
 
+    private Schema overrideSchema = null;
+
     /**
      * Collect at init time the runtime issues which prevented to build the `kieContainer` correctly.
      */
@@ -132,19 +135,31 @@ public class DMNValidatorImpl implements DMNValidator {
     private InternalKnowledgeBase kb11;
     private InternalKnowledgeBase kb12;
 
-    public DMNValidatorImpl(ClassLoader cl, List<DMNProfile> dmnProfiles) {
+    public DMNValidatorImpl(ClassLoader cl, List<DMNProfile> dmnProfiles, Properties p) {
         kb11 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V11_MODEL));
         kb12 = KieBaseBuilder.createKieBaseFromModel(Arrays.asList(org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V1X_MODEL,
                                                                    org.kie.dmn.validation.bootstrap.ValidationBootstrapModels.V12_MODEL));
         ChainedProperties localChainedProperties = new ChainedProperties();
+        if (p != null) {
+            localChainedProperties.addProperties(p);
+        }
         this.dmnProfiles.addAll(DMNAssemblerService.getDefaultDMNProfiles(localChainedProperties));
         this.dmnProfiles.addAll(dmnProfiles);
         final ClassLoader classLoader = cl == null ? ClassLoaderUtil.findDefaultClassLoader() : cl;
-        this.dmnCompilerConfig = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader, localChainedProperties, this.dmnProfiles, (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        DMNCompilerConfigurationImpl dmnCompilerConfiguration = DMNAssemblerService.compilerConfigWithKModulePrefs(classLoader,
+                                                                                                                   localChainedProperties,
+                                                                                                                   this.dmnProfiles,
+                                                                                                                   (DMNCompilerConfigurationImpl) DMNFactory.newCompilerConfiguration());
+        try {
+            DMNAssemblerService.applyDecisionLogicCompilerFactory(classLoader, dmnCompilerConfiguration);
+        } catch (Exception e) {
+            throw new IllegalStateException("Unable to initialize DMNCompiler decisionlogicCompilerFactory based on parameters provided", e);
+        }
+        this.dmnCompilerConfig = dmnCompilerConfiguration;
         dmnDTValidator = InternalDMNDTAnalyserFactory.newDMNDTAnalyser(this.dmnProfiles);
     }
-    
+
     @Override
     public void dispose() {
         // since exec model, no more kieContainer to dispose
@@ -152,7 +167,7 @@ public class DMNValidatorImpl implements DMNValidator {
 
     public static class ValidatorBuilderImpl implements ValidatorBuilder {
 
-        
+
         private final EnumSet<Validation> flags;
         private final DMNValidatorImpl validator;
         private ValidatorImportReaderResolver importResolver;
@@ -165,6 +180,12 @@ public class DMNValidatorImpl implements DMNValidator {
         @Override
         public ValidatorBuilder usingImports(ValidatorImportReaderResolver r) {
             this.importResolver = r;
+            return this;
+        }
+
+        @Override
+        public ValidatorBuilder usingSchema(Schema r) {
+            validator.setOverrideSchema(r);
             return this;
         }
 
@@ -257,16 +278,6 @@ public class DMNValidatorImpl implements DMNValidator {
             return results.getMessages();
         }
 
-        private List<Definitions> unmarshallReaders(Reader... readers) {
-            List<Definitions> models = new ArrayList<>();
-            for (Reader reader : readers) {
-                Definitions dmndefs = DMNMarshallerFactory.newMarshallerWithExtensions(validator.dmnCompilerConfig.getRegisteredExtensions()).unmarshal(reader);
-                dmndefs.normalize();
-                models.add(dmndefs);
-            }
-            return models;
-        }
-
         private void validateDefinitions(List<Definitions> definitions, DMNMessageManager results) {
             List<Definitions> otherModel_Definitions = new ArrayList<>();
             List<DMNModel> otherModel_DMNModels = new ArrayList<>();
@@ -319,6 +330,14 @@ public class DMNValidatorImpl implements DMNValidator {
             List<DMNResource> sortedDmnResources = DMNResourceDependenciesSorter.sort(dmnResources);
             return sortedDmnResources.stream().map(d -> d.getDefinitions()).collect(Collectors.toList());
         }
+    }
+
+    public Schema getOverrideSchema() {
+        return overrideSchema;
+    }
+
+    public void setOverrideSchema(Schema overrideSchema) {
+        this.overrideSchema = overrideSchema;
     }
 
     public ValidatorBuilder validateUsing(Validation... options) {
@@ -494,16 +513,16 @@ public class DMNValidatorImpl implements DMNValidator {
         return problems;
     }
 
-    private List<DMNMessage> validateSchema(Source s, Schema schema) {
+    private List<DMNMessage> validateSchema(Source s, Schema s2) {
+        Schema using = overrideSchema != null ? overrideSchema : s2;
         List<DMNMessage> problems = new ArrayList<>();
         try {
-            Validator validator = schema.newValidator();
+            Validator validator = using.newValidator();
             validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
             validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
             validator.validate(s);
         } catch (SAXException | IOException e) {
             problems.add(new DMNMessageImpl(DMNMessage.Severity.ERROR, MsgUtil.createMessage(Msg.FAILED_XML_VALIDATION, e.getMessage()), Msg.FAILED_XML_VALIDATION.getType(), null, e));
-            logDebugMessages(problems);
         }
         return problems;
     }
@@ -556,13 +575,5 @@ public class DMNValidatorImpl implements DMNValidator {
     private static Stream<DMNModelInstrumentedBase> allChildren(DMNModelInstrumentedBase root) {
         return Stream.concat( Stream.of(root),
                               root.getChildren().stream().flatMap(DMNValidatorImpl::allChildren) );
-    }
-
-    private void logDebugMessages(List<DMNMessage> messages) {
-        if ( LOG.isDebugEnabled() ) {
-            for ( DMNMessage m : messages ) {
-                LOG.debug("{}", m);
-            }
-        }
     }
 }

@@ -16,14 +16,24 @@
 
 package org.drools.impact.analysis.integrationtests;
 
+import java.util.Arrays;
+import java.util.List;
+
+import org.assertj.core.api.Assertions;
 import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.ImpactAnalysisHelper;
 import org.drools.impact.analysis.graph.ModelToGraphConverter;
 import org.drools.impact.analysis.graph.Node;
+import org.drools.impact.analysis.graph.Node.Status;
+import org.drools.impact.analysis.graph.TextReporter;
 import org.drools.impact.analysis.integrationtests.domain.Order;
 import org.drools.impact.analysis.model.AnalysisModel;
 import org.drools.impact.analysis.parser.ModelBuilder;
 import org.junit.Test;
+
+import static org.drools.impact.analysis.graph.TextReporter.INDENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class ImpactAnalysisTest extends AbstractGraphTest {
 
@@ -86,12 +96,11 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
                      "end";
 
         AnalysisModel analysisModel = new ModelBuilder().build(str);
-        //System.out.println(analysisModel);
 
         ModelToGraphConverter converter = new ModelToGraphConverter();
         Graph graph = converter.toGraph(analysisModel);
 
-        generatePng(graph);
+        generatePng(graph, "_all");
 
         // Assuming that "modify" action in R2 is changed 
         Node changedNode = graph.getNodeMap().get("mypkg.R2"); // modify action in R2
@@ -102,5 +111,33 @@ public class ImpactAnalysisTest extends AbstractGraphTest {
         generatePng(impactedSubGraph, "_impactedSubGraph");
 
         generatePng(graph, "_impacted");
+
+        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R1"));
+        assertEquals(Status.CHANGED, impactedSubGraph.getNodeMap().get("mypkg.R2").getStatus());
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R3").getStatus());
+        assertNull(impactedSubGraph.getNodeMap().get("mypkg.R4"));
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R5").getStatus());
+        assertEquals(Status.IMPACTED, impactedSubGraph.getNodeMap().get("mypkg.R6").getStatus());
+
+        // TextReporter test
+
+        System.out.println("--- toHierarchyText ---");
+        String hierarchyText = TextReporter.toHierarchyText(impactedSubGraph);
+        System.out.println(hierarchyText);
+        List<String> lines = Arrays.asList(hierarchyText.split(System.lineSeparator()));
+        Assertions.assertThat(lines).containsExactlyInAnyOrder("R2[*]",
+                                                               INDENT + "R3[+]",
+                                                               INDENT + INDENT + "R6[+]",
+                                                               INDENT + INDENT + "R5[+]",
+                                                               INDENT + INDENT + INDENT + "(R3)");
+
+        System.out.println("--- toFlatText ---");
+        String flatText = TextReporter.toFlatText(impactedSubGraph);
+        System.out.println(flatText);
+        List<String> lines2 = Arrays.asList(flatText.split(System.lineSeparator()));
+        Assertions.assertThat(lines2).containsExactlyInAnyOrder("R2[*]",
+                                                                "R3[+]",
+                                                                "R6[+]",
+                                                                "R5[+]");
     }
 }

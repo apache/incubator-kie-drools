@@ -17,15 +17,32 @@
 package org.drools.mvel.compiler.oopath;
 
 import java.util.Collection;
+
 import org.assertj.core.api.Assertions;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Man;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
+@RunWith(Parameterized.class)
 public class OOPathAccumulateTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public OOPathAccumulateTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testAccumulateAverage() {
@@ -74,9 +91,8 @@ public class OOPathAccumulateTest {
                         "  kcontext.getKieRuntime().setGlobal(\"globalVar\", $accumulateResult);\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Man bob = new Man( "Bob", 40 );
         bob.addChild( new Child( "Charles", 12 ) );
@@ -104,9 +120,8 @@ public class OOPathAccumulateTest {
                         "  kcontext.getKieRuntime().setGlobal(\"globalVar\", $accumulateResult);\n" +
                         "end\n";
 
-        final KieSession ksession = new KieHelper().addContent( drl, ResourceType.DRL )
-                .build()
-                .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
 
         final Man bob = new Man( "Bob", 40 );
         bob.addChild( new Child( "Charles", 12 ) );

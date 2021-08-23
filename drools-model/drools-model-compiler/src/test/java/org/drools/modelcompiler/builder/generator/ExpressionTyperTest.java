@@ -17,6 +17,7 @@ import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.core.addon.ClassTypeResolver;
 import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.PackageModel;
+import org.drools.modelcompiler.builder.generator.expressiontyper.CannotTypeExpressionException;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 import org.drools.modelcompiler.builder.generator.expressiontyper.TypedExpressionResult;
 import org.drools.modelcompiler.domain.Overloaded;
@@ -47,10 +48,9 @@ public class ExpressionTyperTest {
     @Before
     public void setUp() throws Exception {
         imports = new HashSet<>();
-        packageModel = new PackageModel("", "", null, false, null, new DRLIdGenerator());
+        packageModel = new PackageModel("", "", null, null, new DRLIdGenerator());
         typeResolver = new ClassTypeResolver(imports, getClass().getClassLoader());
-        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, true);
-        ruleContext.setDescr(ruleDescr);
+        ruleContext = new RuleContext(knowledgeBuilder, packageModel, typeResolver, ruleDescr);
         imports.add("org.drools.modelcompiler.domain.Person");
     }
 
@@ -214,6 +214,28 @@ public class ExpressionTyperTest {
         final MethodCallExpr expected = StaticJavaParser.parseExpression("((org.drools.modelcompiler.domain.InternationalAddress)_this.getAddress()).getState()");
 
         assertEquals(expected.toString(),  toTypedExpression(expr.getExpr().toString(), Person.class).getExpression().toString());
+    }
+
+    @Test
+    public void halfBinaryOrAndAmpersand() {
+        String expected = "_this.getAge() < 15 || _this.getAge() > 20 && _this.getAge() < 30";
+        assertEquals(expected, toTypedExpression("age < 15 || > 20 && < 30", Person.class).getExpression().toString());
+    }
+
+    @Test(expected = CannotTypeExpressionException.class)
+    public void invalidHalfBinary() {
+        toTypedExpression("> 20 && < 30", Person.class).getExpression();
+    }
+
+    @Test
+    public void halfPointFreeOrAndAmpersand() {
+        String expected = "D.eval(org.drools.model.operators.StringStartsWithOperator.INSTANCE, _this.getName(), \"M\") || D.eval(org.drools.model.operators.StringEndsWithOperator.INSTANCE, _this.getName(), \"a\") && D.eval(org.drools.model.operators.StringLengthWithOperator.INSTANCE, _this.getName(), 4)";
+        assertEquals(expected, toTypedExpression("name str[startsWith] \"M\" || str[endsWith] \"a\" && str[length] 4", Person.class).getExpression().toString());
+    }
+
+    @Test(expected = CannotTypeExpressionException.class)
+    public void invalidHalfPointFree() {
+        toTypedExpression("str[endsWith] \"a\" && str[length] 4", Person.class).getExpression();
     }
 
     private TypedExpression toTypedExpression(String inputExpression, Class<?> patternType, DeclarationSpec... declarations) {

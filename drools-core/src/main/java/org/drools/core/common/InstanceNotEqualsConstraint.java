@@ -16,7 +16,6 @@
 
 package org.drools.core.common;
 
-import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.rule.Declaration;
 import org.drools.core.rule.Pattern;
@@ -88,7 +87,7 @@ public class InstanceNotEqualsConstraint
 
     public boolean isAllowedCachedRight(final Tuple tuple,
                                         final ContextEntry context) {
-        return tuple.get( this.otherPattern.getOffset() ).getObject() != ((InstanceNotEqualsConstraintContextEntry) context).right;
+        return tuple.getObject( this.otherPattern.getTupleIndex()) != ((InstanceNotEqualsConstraintContextEntry) context).right;
     }
 
     public String toString() {
@@ -162,7 +161,7 @@ public class InstanceNotEqualsConstraint
 
         public void updateFromTuple(final InternalWorkingMemory workingMemory,
                                     final Tuple tuple) {
-            this.left = tuple.getObject( this.pattern.getOffset() );
+            this.left = tuple.getObject( this.pattern.getTupleIndex());
         }
 
         public void updateFromFactHandle(final InternalWorkingMemory workingMemory,

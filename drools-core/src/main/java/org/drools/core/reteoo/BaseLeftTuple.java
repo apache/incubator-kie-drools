@@ -67,13 +67,14 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             factHandle.addTupleInPosition( this );
         }
     }
-    
+
     public BaseLeftTuple(InternalFactHandle factHandle,
                          LeftTuple leftTuple,
                          Sink sink) {
         setFactHandle( factHandle );
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple;
+        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple;
         this.sink = sink;
     }
 
@@ -81,12 +82,12 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          Sink sink,
                          PropagationContext pctx,
                          boolean leftTupleMemoryEnabled) {
-        this.index = leftTuple.getIndex();
-        this.parent = leftTuple;
+        this.index = leftTuple.getIndex() + 1;
+        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple;
         setPropagationContext( pctx );
 
         if ( leftTupleMemoryEnabled ) {
-            this.leftParent = leftTuple;
             if ( leftTuple.getLastChild() != null ) {
                 this.handlePrevious = leftTuple.getLastChild();
                 this.handlePrevious.setHandleNext( this );
@@ -95,19 +96,21 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             }
             leftTuple.setLastChild( this );
         }
-        
+
         this.sink = sink;
     }
-    
+
     public BaseLeftTuple(LeftTuple leftTuple,
                          RightTuple rightTuple,
                          Sink sink) {
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple;
+        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple;
+        this.rightParent = rightTuple;
+
         setFactHandle( rightTuple.getFactHandle() );
         setPropagationContext( rightTuple.getPropagationContext() );
 
-        this.leftParent = leftTuple;
         // insert at the end f the list
         if ( leftTuple.getLastChild() != null ) {
             this.handlePrevious = leftTuple.getLastChild();
@@ -116,9 +119,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             leftTuple.setFirstChild( this );
         }
         leftTuple.setLastChild( this );
-        
+
         // insert at the end of the list
-        this.rightParent = rightTuple;
         if ( rightTuple.getLastChild() != null ) {
             this.rightParentPrevious = rightTuple.getLastChild();
             this.rightParentPrevious.setRightParentNext( this );
@@ -127,7 +129,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         }
         rightTuple.setLastChild( this );
         this.sink = sink;
-    }    
+    }
 
     public BaseLeftTuple(LeftTuple leftTuple,
                          RightTuple rightTuple,
@@ -140,7 +142,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
               sink,
               leftTupleMemoryEnabled );
     }
-    
+
     public BaseLeftTuple(LeftTuple leftTuple,
                          RightTuple rightTuple,
                          LeftTuple currentLeftChild,
@@ -149,14 +151,14 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                          boolean leftTupleMemoryEnabled) {
         setFactHandle( rightTuple.getFactHandle() );
         this.index = leftTuple.getIndex() + 1;
-        this.parent = leftTuple;
+        this.parent = leftTuple.getNextParentWithHandle();
+        this.leftParent = leftTuple;
+        this.rightParent = rightTuple;
         setPropagationContext( rightTuple.getPropagationContext() );
 
         if ( leftTupleMemoryEnabled ) {
-            this.leftParent = leftTuple;
-            this.rightParent = rightTuple;
             if( currentLeftChild == null ) {
-                // insert at the end of the list 
+                // insert at the end of the list
                 if ( leftTuple.getLastChild() != null ) {
                     this.handlePrevious = leftTuple.getLastChild();
                     this.handlePrevious.setHandleNext( this );
@@ -175,7 +177,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                     this.handlePrevious.setHandleNext( this );
                 }
             }
-            
+
             if( currentRightChild == null ) {
                 // insert at the end of the list
                 if ( rightTuple.getLastChild() != null ) {
@@ -197,10 +199,16 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                 }
             }
         }
-        
+
         this.sink = sink;
     }
-    
+
+    @Override
+    public LeftTuple getNextParentWithHandle() {
+        // if parent is null, then we are LIAN
+        return (handle!=null) ? this : parent != null ? parent.getNextParentWithHandle() : this;
+    }
+
     @Override
     public void reAdd() {
         getFactHandle().addLastLeftTuple( this );
@@ -232,7 +240,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
 
     @Override
     public void reAddRight() {
-        // make sure we aren't already at the end        
+        // make sure we aren't already at the end
         if ( this.rightParentNext != null ) {
             if ( this.rightParentPrevious != null ) {
                 // remove the current LeftTuple from the middle of the chain
@@ -245,7 +253,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
                 }
                 this.rightParentNext.setRightParentPrevious( null );
             }
-            // re-add to end            
+            // re-add to end
             this.rightParentPrevious = this.rightParent.getLastChild();
             this.rightParentPrevious.setRightParentNext( this );
             this.rightParent.setLastChild( this );
@@ -291,7 +299,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             }
         }
 
-        this.leftParent = null;
         this.handlePrevious = null;
         this.handleNext = null;
     }
@@ -302,7 +309,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             // no right parent;
             return;
         }
-        
+
         LeftTuple previousParent = this.rightParentPrevious;
         LeftTuple nextParent = this.rightParentNext;
 
@@ -315,7 +322,7 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             this.rightParent.setFirstChild( nextParent );
             nextParent.setRightParentPrevious( null );
         } else if ( previousParent != null ) {
-            // remove from end     
+            // remove from end
             this.rightParent.setLastChild( previousParent );
             previousParent.setRightParentNext( null );
         } else {
@@ -324,7 +331,6 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
             this.rightParent.setLastChild( null );
         }
 
-        this.rightParent = null;
         this.rightParentPrevious = null;
         this.rightParentNext = null;
     }
@@ -338,8 +344,8 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public LeftTupleSink getTupleSink() {
         return (LeftTupleSink)sink;
     }
-    
-    /* Had to add the set method because sink adapters must override 
+
+    /* Had to add the set method because sink adapters must override
      * the tuple sink set when the tuple was created.
      */
     @Override
@@ -400,35 +406,40 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     @Override
     public InternalFactHandle get(int index) {
         LeftTuple entry = this;
-        while ( entry != null && ( entry.getIndex() != index || entry.getFactHandle() == null ) ) {
+        while ( entry.getIndex() != index) {
             entry = entry.getParent();
         }
-        return entry == null ? null : entry.getFactHandle();
+        return entry.getFactHandle();
     }
 
     public InternalFactHandle[] toFactHandles() {
-        InternalFactHandle[] handles = new InternalFactHandle[this.index + 1];
-        LeftTuple entry = this;
-        while ( entry != null ) {
-            if ( entry.getFactHandle() != null ) {
-                // eval, not, exists have no right input
-                handles[entry.getIndex()] = entry.getFactHandle();
-            }
+        // always use the count of the node that created join (not the sink target)
+        InternalFactHandle[] handles = new InternalFactHandle[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
+        LeftTuple                entry = (LeftTuple) skipEmptyHandles();
+        for(int i = handles.length-1; i >= 0; i--) {
+            handles[i] = entry.getFactHandle();
             entry = entry.getParent();
         }
         return handles;
     }
 
     public Object[] toObjects(boolean reverse) {
-        Object[] objs = new Object[this.index + 1];
-        LeftTuple entry = this;
-        while ( entry != null ) {
-            if ( entry.getFactHandle() != null ) {
-                // eval, not, exists have no right input
-                objs[reverse ? objs.length - entry.getIndex() - 1 : entry.getIndex()] = entry.getFactHandle().getObject();
+        // always use the count of the node that created join (not the sink target)
+        Object[] objs = new Object[((LeftTupleSinkNode)sink).getLeftTupleSource().getObjectCount()];
+        LeftTuple                entry = (LeftTuple) skipEmptyHandles();
+
+        if (!reverse) {
+            for (int i = objs.length - 1; i >= 0; i--) {
+                objs[i] = entry.getFactHandle().getObject();
+                entry = entry.getParent();
             }
-            entry = entry.getParent();
+        } else {
+            for (int i = 0; i < objs.length; i++) {
+                objs[i] = entry.getFactHandle().getObject();
+                entry = entry.getParent();
+            }
         }
+
         return objs;
     }
 
@@ -580,7 +591,9 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
         if ( elements <= this.size() ) {
             final int lastindex = elements - 1;
 
-            while ( entry.getIndex() != lastindex || entry.getFactHandle() == null ) {
+            while ( entry.getIndex() != lastindex ) {
+                // This uses getLeftParent, instead of getParent, as the subnetwork tuple
+                // parent could be any node
                 entry = entry.getParent();
             }
         }
@@ -612,12 +625,13 @@ public class BaseLeftTuple extends BaseTuple implements LeftTuple {
     public void clear() {
         super.clear();
         this.memory = null;
-    }   
-    
+    }
+
     public void initPeer(BaseLeftTuple original, LeftTupleSink sink) {
         this.index = original.index;
         this.parent = original.parent;
-        
+        this.leftParent = original.leftParent;
+
         setFactHandle( original.getFactHandle() );
         setPropagationContext( original.getPropagationContext() );
         this.sink = sink;

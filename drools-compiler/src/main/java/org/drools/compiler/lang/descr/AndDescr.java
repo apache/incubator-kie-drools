@@ -19,6 +19,7 @@ package org.drools.compiler.lang.descr;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AndDescr extends AnnotatedBaseDescr
     implements
@@ -113,7 +114,10 @@ public class AndDescr extends AnnotatedBaseDescr
         }
 
         if (descrs.size() == 1) {
-            return new AndDescr(descrs.get(0).negate());
+            BaseDescr baseDescr = descrs.get(0);
+            if (!(baseDescr instanceof ExprConstraintDescr) || !baseDescr.getText().contains("&&")) {
+                return new AndDescr(baseDescr.negate());
+            }
         }
 
         boolean allExprs = descrs.stream().allMatch( ExprConstraintDescr.class::isInstance );
@@ -121,6 +125,7 @@ public class AndDescr extends AnnotatedBaseDescr
             String expr = descrs.stream()
                     .map( ExprConstraintDescr.class::cast )
                     .map( ExprConstraintDescr::getText )
+                    .flatMap( e -> Stream.of(e.split("&&")))
                     .map( e -> "!(" + e + ")" )
                     .collect( Collectors.joining( "||" ) );
             return new AndDescr( new ExprConstraintDescr(expr) );

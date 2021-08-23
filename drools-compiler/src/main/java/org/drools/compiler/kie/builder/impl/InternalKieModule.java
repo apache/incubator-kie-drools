@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -118,16 +119,16 @@ public interface InternalKieModule extends KieModule, Serializable {
 
     KnowledgeBuilderConfiguration createBuilderConfiguration( KieBaseModel kBaseModel, ClassLoader classLoader );
 
-    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf );
+    InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf );
 
     default void afterKieBaseCreationUpdate(String name, InternalKnowledgeBase kBase) { }
 
     ClassLoader getModuleClassLoader();
 
     default ResultsImpl build() {
-        ResultsImpl messages = new ResultsImpl();
-        buildKieModule(this, messages);
-        return messages;
+        BuildContext buildContext = new BuildContext();
+        buildKieModule(this, buildContext);
+        return buildContext.getMessages();
     }
 
     default KieJarChangeSet getChanges(InternalKieModule newKieModule) {
@@ -193,9 +194,9 @@ public interface InternalKieModule extends KieModule, Serializable {
         }
     }
 
-    default void updateKieModule(InternalKieModule newKM) {
+    default void updateKieModule(InternalKieModule newKM) {}
 
-    }
+    default void addGeneratedClassNames(Set<String> classNames) {}
 
     class CompilationCache implements Serializable {
         private static final long serialVersionUID = 3812243055974412935L;

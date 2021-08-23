@@ -36,7 +36,10 @@ public class ProductFunction
         if ( list == null ) {
             return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the list cannot be null"));
         }
-        BigDecimal product = list.isEmpty() ? BigDecimal.ZERO : BigDecimal.ONE;
+        if (list.isEmpty()) {
+            return FEELFnResult.ofError(new InvalidParametersEvent(Severity.ERROR, "list", "the list cannot be empty"));
+        }
+        BigDecimal product = BigDecimal.ONE;
         for ( Object element : list ) {
             if ( element instanceof BigDecimal ) {
                 product = product.multiply( (BigDecimal) element );

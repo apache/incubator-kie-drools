@@ -68,7 +68,7 @@ public class FunctionDefinitionConverter extends ExpressionConverter {
         for (InformationItem fparam : fd.getFormalParameter()) {
             writeChildrenNode(writer, context, fparam, FORMAL_PARAMETER);
         }
-        if (fd.getExpression() != null) writeChildrenNode(writer, context, fd.getExpression(), MarshallingUtils.defineExpressionNodeName(fd.getExpression()));
+        if (fd.getExpression() != null) writeChildrenNode(writer, context, fd.getExpression(), MarshallingUtils.defineExpressionNodeName(xstream, fd.getExpression()));
     }
 
     @Override

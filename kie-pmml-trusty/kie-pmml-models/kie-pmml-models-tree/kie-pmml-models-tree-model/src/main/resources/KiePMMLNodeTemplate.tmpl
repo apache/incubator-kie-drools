@@ -1,0 +1,41 @@
+package org.kie.pmml.models.tree.model;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
+
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+import org.kie.pmml.commons.model.predicates.KiePMMLCompoundPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
+import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
+import org.kie.pmml.api.enums.PMML_MODEL;
+import org.kie.pmml.models.tree.model.KiePMMLNode;
+
+
+
+public class KiePMMLNodeTemplate extends KiePMMLNode {
+
+    public KiePMMLNodeTemplate() {
+        super(name, Collections.emptyList());
+    }
+
+    public static Object evaluateNode(final Map<String, Object> requestData) {
+            if (!predicate.evaluate(requestData)) {
+                return null;
+            }
+            final List<Function<Map<String, Object>, Object>> nodeFunctions = null;
+            final Object score = null;
+            if (nodeFunctions.isEmpty()) {
+                return score;
+            }
+            Optional<Object> nestedScore = KiePMMLNode.getNestedScore(nodeFunctions, requestData);
+            return nestedScore.orElse(score);
+    }
+
+}

@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
   <artifactId>kie-dmn-core-osgi</artifactId>
   <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
@@ -194,4 +194,13 @@
       </plugin>
     </plugins>
   </build>
+  <profiles>
+    <profile>
+      <id>sonarcloud-analysis</id>
+      <properties>
+        <!-- Excluding the entire module from coverage statistics. This module like other OSGi bundles is tested in droolsjbpm-integration and Sonar does not support cross-repos. -->
+        <sonar.coverage.exclusions>**/*</sonar.coverage.exclusions>
+      </properties>
+    </profile>
+  </profiles>
 </project>

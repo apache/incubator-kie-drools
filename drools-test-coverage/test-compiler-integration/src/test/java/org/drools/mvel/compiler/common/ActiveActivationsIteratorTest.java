@@ -16,6 +16,7 @@
 package org.drools.mvel.compiler.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.common.ActiveActivationIterator;
@@ -23,15 +24,31 @@ import org.drools.core.common.AgendaItem;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.util.Iterator;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
-import org.kie.api.io.ResourceType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.fail;
 
-public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ActiveActivationsIteratorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ActiveActivationsIteratorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        // TODO: EM failed with testActiveActivationsIteratorTest. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testActiveActivationsIteratorTest() {
@@ -74,9 +91,8 @@ public class ActiveActivationsIteratorTest extends CommonTestMethodBase {
                      "end\n" +
                      "\n";
 
-        KieSession ksession = new KieHelper().addContent(str, ResourceType.DRL)
-                                             .build()
-                                             .newKieSession();
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession ksession = kbase.newKieSession();
 
         for ( int i = 0; i < 3; i++ ) {
             ksession.insert( new String( "" + i ) );

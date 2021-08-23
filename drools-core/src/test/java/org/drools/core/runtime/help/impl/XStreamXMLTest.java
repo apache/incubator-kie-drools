@@ -15,6 +15,15 @@
  */
 package org.drools.core.runtime.help.impl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.thoughtworks.xstream.XStream;
 import org.drools.core.command.runtime.process.StartProcessCommand;
 import org.drools.core.command.runtime.rule.AgendaGroupSetFocusCommand;
@@ -34,16 +43,7 @@ import org.junit.Test;
 import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 public class XStreamXMLTest {
 
@@ -51,7 +51,7 @@ public class XStreamXMLTest {
 
     @Before
     public void setup() {
-        xstream = createTrustingXStream();
+        xstream = createNonTrustingXStream();
         xstream = XStreamXML.newXStreamMarshaller(xstream);
     }
 

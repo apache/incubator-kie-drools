@@ -17,7 +17,6 @@ package org.drools.mvel;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
-import java.io.Serializable;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,6 +73,7 @@ import org.drools.mvel.builder.MVELDialectConfiguration;
 import org.drools.mvel.expr.MVELCompilationUnit;
 import org.drools.mvel.expr.MVELCompileable;
 import org.drools.mvel.expr.MVELObjectExpression;
+import org.drools.mvel.expr.MvelEvaluator;
 import org.drools.mvel.java.JavaForMvelDialectConfiguration;
 import org.kie.api.definition.rule.Rule;
 import org.mvel2.ConversionHandler;
@@ -97,6 +97,7 @@ import static org.drools.core.rule.constraint.EvaluatorHelper.WM_ARGUMENT;
 import static org.drools.core.util.ClassUtils.convertFromPrimitiveType;
 import static org.drools.mvel.asm.AsmUtil.copyErrorLocation;
 import static org.drools.mvel.builder.MVELExprAnalyzer.analyze;
+import static org.drools.mvel.expr.MvelEvaluator.createMvelEvaluator;
 
 public class MVELConstraintBuilder implements ConstraintBuilder {
 
@@ -287,6 +288,9 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         if (operator.equals("str")) {
             return normalizeStringOperator( leftValue, rightValue, restrictionDescr );
         }
+        if (vtype.isDecimalNumber() && field.getValue() != null) {
+            expr = expr.replace( rightValue, field.getValue().toString() );
+        }
         // resolve ambiguity between mvel's "empty" keyword and constraints like: List(empty == ...)
         return normalizeEmptyKeyword( expr, operator );
     }
@@ -305,7 +309,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         return expr;
     }
 
-    public Evaluator buildLiteralEvaluator( RuleBuildContext context,
+    private Evaluator buildLiteralEvaluator( RuleBuildContext context,
                                                    InternalReadAccessor extractor,
                                                    LiteralRestrictionDescr literalRestrictionDescr,
                                                    ValueType vtype) {
@@ -321,7 +325,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
                              right );
     }
 
-    public EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
+    private EvaluatorDefinition.Target getRightTarget( final InternalReadAccessor extractor ) {
         return ( extractor.isSelfReference() &&
                  !(Date.class.isAssignableFrom( extractor.getExtractToClass() ) ||
                          Number.class.isAssignableFrom( extractor.getExtractToClass() ))) ? EvaluatorDefinition.Target.HANDLE : EvaluatorDefinition.Target.FACT;
@@ -560,42 +564,6 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         } finally {
             context.setTypesafe( typesafe );
         }
-    }
-
-    @Override
-    public TimerExpression buildTimerExpression( String expression, ClassLoader classLoader, Map<String, Declaration> decls ) {
-        if (expression == null) {
-            return null;
-        }
-
-        ParserConfiguration conf = new ParserConfiguration();
-        conf.setClassLoader( classLoader );
-
-        MVELAnalysisResult analysis = analyzeExpression( expression, conf, new BoundIdentifiers( DeclarationScopeResolver.getDeclarationClasses( decls ), null ) );
-
-        final BoundIdentifiers usedIdentifiers = analysis.getBoundIdentifiers();
-        int i = usedIdentifiers.getDeclrClasses().keySet().size();
-        Declaration[] previousDeclarations = new Declaration[i];
-        i = 0;
-        for ( String id :  usedIdentifiers.getDeclrClasses().keySet() ) {
-            previousDeclarations[i++] = decls.get( id );
-        }
-        Arrays.sort(previousDeclarations, RuleTerminalNode.SortDeclarations.instance);
-
-        MVELCompilationUnit unit = MVELDialect.getMVELCompilationUnit( expression,
-                analysis,
-                previousDeclarations,
-                null,
-                null,
-                null,
-                "drools",
-                KnowledgeHelper.class,
-                false,
-                MVELCompilationUnit.Scope.EXPRESSION );
-
-        MVELObjectExpression expr = new MVELObjectExpression( unit, "mvel" );
-        expr.compile( conf );
-        return expr;
     }
 
     @Override
@@ -852,7 +820,7 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         private ParserContext parserContext;
 
         private transient Class<?> argumentClass;
-        private transient Serializable mvelExpr;
+        private transient MvelEvaluator<Object> evaluator;
 
         public Expression() { }
 
@@ -864,23 +832,23 @@ public class MVELConstraintBuilder implements ConstraintBuilder {
         }
 
         private void init() {
-            Map<String, Class> inputs = new HashMap<String, Class>();
+            Map<String, Class> inputs = new HashMap<>();
             for (Declaration d : declarations) {
                 inputs.put(d.getBindingName(), d.getDeclarationClass());
             }
             parserContext.setInputs(inputs);
 
             this.argumentClass = MVEL.analyze( expression, parserContext );
-            this.mvelExpr = MVEL.compileExpression( expression, parserContext );
+            this.evaluator = createMvelEvaluator(MVEL.compileExpression( expression, parserContext ));
         }
 
         @Override
         public Object getValue( InternalWorkingMemory wm, LeftTuple leftTuple ) {
-            Map<String, Object> vars = new HashMap<String, Object>();
+            Map<String, Object> vars = new HashMap<>();
             for (Declaration d : declarations) {
                 vars.put(d.getBindingName(), QueryArgument.evaluateDeclaration( wm, leftTuple, d ));
             }
-            return MVELSafeHelper.getEvaluator().executeExpression( this.mvelExpr, vars );
+            return evaluator.evaluate( null, vars );
         }
 
         @Override

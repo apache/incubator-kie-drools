@@ -857,7 +857,6 @@ public class RuleNetworkEvaluator {
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if ( rightTuple.getMemory() != null ) {
-                rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
                 rtm.removeAdd(rightTuple);
                 doUpdatesReorderChildLeftTuple( rightTuple );
             }
@@ -891,7 +890,6 @@ public class RuleNetworkEvaluator {
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
             if (rightTuple.getMemory() != null) {
-                rightTuple.setTempRightTupleMemory(rightTuple.getMemory());
 
                 if (resumeFromCurrent) {
                     if (rightTuple.getBlocked() != null) {
@@ -925,8 +923,7 @@ public class RuleNetworkEvaluator {
             rtm.add( rightTuple );
 
             if (resumeFromCurrent) {
-                RightTuple tempRightTuple = rightTuple.getTempNextRightTuple();
-                if ( rightTuple.getBlocked() != null && tempRightTuple == null && rightTuple.getMemory() == rightTuple.getTempRightTupleMemory()  ) {
+                if ( rightTuple.getBlocked() != null && rightTuple.getTempNextRightTuple() == null ) {
                     // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
                     rightTuple.setTempNextRightTuple( rightTuple );
                 }
@@ -942,11 +939,11 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static boolean useLeftMemory(LeftTupleSource tupleSource, Tuple leftTuple) {
+    public static boolean useLeftMemory(LeftTupleSource tupleSource, Tuple tuple) {
         boolean useLeftMemory = true;
         if (!tupleSource.isLeftTupleMemoryEnabled()) {
             // This is a hack, to not add closed DroolsQuery objects
-            Object object = leftTuple.getRootTuple().getFactHandle().getObject();
+            Object object = tuple.getRootTuple().getFactHandle().getObject();
             if (!(object instanceof DroolsQuery) || !((DroolsQuery) object).isOpen()) {
                 useLeftMemory = false;
             }

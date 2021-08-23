@@ -1,0 +1,18 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.transformations.KiePMMLDefineFunction;
+
+public class KiePMMLDefineFunctionTemplate {
+
+
+    private KiePMMLDefineFunctionTemplate getKiePMMLDefineFunction() {
+        KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(name,
+                                                                        Collections.emptyList(),
+                                                                        opType,
+                                                                        Arrays.asList(parameterField1, parameterField2),
+                                                                        kiePMMLExpression);
+    }
+
+}

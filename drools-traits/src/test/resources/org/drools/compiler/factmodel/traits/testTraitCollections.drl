@@ -100,8 +100,7 @@ rule "Check"
 when
     ComplexTrait( ages contains 22, ages contains 18,
                   addrex.size == 1, addrex contains "here" ,
-                  nested.name == "xyz",
-                  nest2.field contains "aaa" )
+                  nested.name == "xyz" )
 then
     list.add("OK");
 end

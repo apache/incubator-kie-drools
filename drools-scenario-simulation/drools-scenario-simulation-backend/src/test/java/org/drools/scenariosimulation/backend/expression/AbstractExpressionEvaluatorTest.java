@@ -91,9 +91,9 @@ public class AbstractExpressionEvaluatorTest {
 
     @Test
     public void evaluateUnaryExpression() {
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class));
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class));
-        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class));
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, String.class).isSuccessful());
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, Map.class).isSuccessful());
+        assertTrue(expressionEvaluatorLocal.evaluateUnaryExpression(null, null, List.class).isSuccessful());
     }
 
     @Test
@@ -114,19 +114,40 @@ public class AbstractExpressionEvaluatorTest {
     @SuppressWarnings("unchecked")
     @Test
     public void convertObject() {
-        // single level
+        // Test simple list
         ObjectNode objectNode = new ObjectNode(factory);
-        objectNode.put("age", "1");
+        ObjectNode simpleValue =  new ObjectNode(factory);
+        ObjectNode simpleValue2 =  new ObjectNode(factory);
+        simpleValue.put(VALUE, "Polissena");
+        simpleValue2.put(VALUE, "Antonia");
+        objectNode.put("key1", simpleValue);
+        objectNode.put("key2", simpleValue2);
 
-        Object result = expressionEvaluatorLocal.createAndFillObject(objectNode,
-                                                                     new HashMap<>(),
-                                                                     Map.class.getCanonicalName(),
-                                                                     Collections.singletonList(String.class.getCanonicalName()));
-
+        Object result  = expressionEvaluatorLocal.createAndFillObject(objectNode,
+                                                                      new HashMap<>(),
+                                                                      Map.class.getCanonicalName(),
+                                                                      Collections.singletonList(String.class.getCanonicalName()));
         assertTrue(result instanceof Map);
         Map<String, Object> resultMap = (Map<String, Object>) result;
+        assertEquals(2, resultMap.size());
+        assertEquals("Polissena", resultMap.get("key1"));
+        assertEquals("Antonia", resultMap.get("key2"));
+
+        // single level
+        objectNode.removeAll();
+        objectNode.put("age", "1");
+        objectNode.put("name", "FS");
+        result = expressionEvaluatorLocal.createAndFillObject(objectNode,
+                                                              new HashMap<>(),
+                                                              Map.class.getCanonicalName(),
+                                                              Collections.singletonList(String.class.getCanonicalName()));
+
+        assertTrue(result instanceof Map);
+        resultMap = (Map<String, Object>) result;
 
         assertEquals("1", resultMap.get("age"));
+        assertEquals("FS", resultMap.get("name"));
+        assertEquals(2, resultMap.size());
 
         // nested object
         objectNode.removeAll();

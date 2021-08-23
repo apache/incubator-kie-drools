@@ -1,0 +1,19 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLApply;
+
+public class KiePMMLApplyTemplate {
+
+
+    private KiePMMLApply getKiePMMLApply() {
+        KiePMMLApply apply = KiePMMLApply.builder(name, Collections.emptyList(), function)
+                        .withDefaultValue(defaultValue)
+                        .withMapMissingTo(mapMissingTo)
+                        .withInvalidValueTreatmentMethod(invalidTreatmentValue)
+                        .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
+                        .build();
+    }
+
+}

@@ -40,8 +40,10 @@ import org.drools.mvel.expr.MVELConsequence;
 import org.mvel2.Macro;
 import org.mvel2.MacroProcessor;
 
+import static org.drools.core.reteoo.PropertySpecificUtil.allSetButTraitBitMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.getEmptyPropertyReactiveMask;
 import static org.drools.core.reteoo.PropertySpecificUtil.setPropertyOnMask;
+import static org.drools.core.util.StringUtils.codeAwareSplitOnChar;
 import static org.drools.core.util.StringUtils.findEndOfBlockIndex;
 import static org.drools.core.util.StringUtils.findEndOfMethodArgsIndex;
 import static org.drools.core.util.StringUtils.splitStatements;
@@ -226,7 +228,7 @@ public class MVELConsequenceBuilder
         String modifyBlock = text.substring( modifyBlockStart+1, modifyBlockEnd ).trim();
 
         StringBuilder sb = new StringBuilder();
-        for (String statement : splitStatements(modifyBlock)) {
+        for (String statement : codeAwareSplitOnChar(modifyBlock, true, ';', ',', '\n')) {
             sb.append( modified ).append( "." ).append( statement.trim() ).append( ";\n" );
         }
         sb.append( "drools.update(" ).append( modified ).append( ");\n" );
@@ -289,6 +291,10 @@ public class MVELConsequenceBuilder
                     int index = settableProperties.indexOf(propertyName);
                     if (index >= 0) {
                         modificationMask = setPropertyOnMask(modificationMask, index);
+                    } else {
+                        // I'm property reactive, but I was unable to infer which properties was modified, setting all bit in bitmask
+                        modificationMask = allSetButTraitBitMask();
+                        break;
                     }
                 }
             }

@@ -521,8 +521,8 @@ public class DMNRuntimeImpl
                     return false;
                 }
             }
-        } else {
-            if (destinationNode.getModelNamespace().equals(result.getContext().scopeNamespace().get())) {
+        } else { // this branch is: result context scopeNamespace Optional isPresent == true
+            if (destinationNode.getModelNamespace().equals(result.getContext().scopeNamespace().orElseThrow(IllegalStateException::new))) {
                 return false;
             } else {
                 Optional<String> importAlias = callerNode.getModelImportAliasFor(destinationNode.getModelNamespace(), destinationNode.getModelName());

@@ -12,7 +12,8 @@ public class NamespaceAwareNamingPolicy extends DefaultNamingPolicy {
 
     private static final Map<String, String> namespacePrefixes = new HashMap<>();
 
-    public NamespaceAwareNamingPolicy(List<DMNModel> dmnModels) {
+    public NamespaceAwareNamingPolicy(List<DMNModel> dmnModels, String refPrefix) {
+        super(refPrefix);
         for (int i = 0; i < dmnModels.size(); i++) {
             namespacePrefixes.put(dmnModels.get(i).getNamespace(), "ns" + (i + 1));
         }

@@ -42,6 +42,7 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     private Constraint constraint;
     private List<Binding> bindings;
     private Collection<String> watchedProps;
+    private boolean passive;
 
     public PatternImpl(Variable<T> variable) {
         this(variable, SingleConstraint.TRUE );
@@ -133,6 +134,14 @@ public class PatternImpl<T> extends AbstractSinglePattern implements Pattern<T>,
     @Override
     public String[] getWatchedProps() {
         return watchedProps != null ? watchedProps.toArray( new String[watchedProps.size()] ) : new String[0];
+    }
+
+    public boolean isPassive() {
+        return passive;
+    }
+
+    public void setPassive( boolean passive ) {
+        this.passive = passive;
     }
 
     private Variable[] collectInputVariables() {

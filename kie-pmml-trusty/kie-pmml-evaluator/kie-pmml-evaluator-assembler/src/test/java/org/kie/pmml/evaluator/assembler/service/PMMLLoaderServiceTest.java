@@ -18,7 +18,6 @@ package org.kie.pmml.evaluator.assembler.service;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,7 +31,9 @@ import org.drools.model.Rule;
 import org.drools.model.TypeMetaData;
 import org.drools.model.impl.GlobalImpl;
 import org.junit.Test;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.compiler.commons.factories.KiePMMLModelFactory;
 import org.kie.pmml.evaluator.assembler.rulemapping.PMMLRuleMapper;
 
@@ -46,18 +47,16 @@ public class PMMLLoaderServiceTest {
     private final String PACKAGE_NAME = "apackage";
 
     @Test
-    public void getKiePMMLModelsLoadedFromResource() {
+    public void getKiePMMLModelsLoadedFromFactory() {
         final KnowledgeBuilderImpl kbuilderImpl = new KnowledgeBuilderImpl();
         assertTrue(kbuilderImpl.getPackageNames().isEmpty());
         assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
-        final List<PMMLRuleMapper> pmmlRuleMappers = getPMMLRuleMappers();
         final KiePMMLModelFactory kiePMMLModelFactory = getKiePMMLModelFactory();
-        final List<KiePMMLModel> retrieved = PMMLLoaderService.getKiePMMLModelsLoadedFromResource(kbuilderImpl,
-                                                                                                  kiePMMLModelFactory,
-                                                                                                  pmmlRuleMappers);
+        final List<KiePMMLModel> retrieved = PMMLLoaderService.getKiePMMLModelsLoadedFromFactory(kbuilderImpl,
+                                                                                                 kiePMMLModelFactory);
         assertEquals(kiePMMLModelFactory.getKiePMMLModels(), retrieved);
-        assertEquals(1, kbuilderImpl.getPackageNames().size());
-        assertNotNull(kbuilderImpl.getPackage(PACKAGE_NAME));
+        assertTrue(kbuilderImpl.getPackageNames().isEmpty());
+        assertNull(kbuilderImpl.getPackage(PACKAGE_NAME));
     }
 
     @Test
@@ -84,79 +83,80 @@ public class PMMLLoaderServiceTest {
 
     private List<PMMLRuleMapper> getPMMLRuleMappers() {
         return IntStream.range(0, 3)
-                .mapToObj(i -> getPMMMLRuleMapper())
+                .mapToObj(i -> new PMMLRuleMapperImpl(new ModelMock(PACKAGE_NAME)))
                 .collect(Collectors.toList());
-    }
-
-    private PMMLRuleMapper getPMMMLRuleMapper() {
-        final Model model = getModel();
-        return new PMMLRuleMapper() {
-
-            final Model toReturn = model;
-
-            @Override
-            public Model getModel() {
-                return toReturn;
-            }
-        };
     }
 
     private KiePMMLModelFactory getKiePMMLModelFactory() {
         final List<KiePMMLModel> kiePMMLModels = IntStream.range(0, 3)
-                .mapToObj(i -> getKiePMMLModel("KiePMMLModel" + i))
+                .mapToObj(i -> KiePMMLTestingModel.builder("KiePMMLModel" + i,
+                                                           Collections.emptyList(),
+                                                           MINING_FUNCTION.REGRESSION).build())
                 .collect(Collectors.toList());
         return () -> kiePMMLModels;
     }
 
-    private KiePMMLModel getKiePMMLModel(final String name) {
-        return new KiePMMLModel(name, Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        };
+    private static class GlobalMock extends GlobalImpl<Double>  {
+
+        public GlobalMock(String packageName, int id) {
+            super(Double.class, packageName, "DOUBLE_GLOBAL_" + id );
+        }
     }
 
-    private Model getModel() {
-        return new Model() {
-            final String name = UUID.randomUUID().toString();
-            final List<Global> globals = IntStream.range(0, 3)
-                    .mapToObj(i -> getGlobal(i))
+    private static class ModelMock implements Model {
+
+        private final String name;
+        private final List<Global> globals;
+
+        public ModelMock(String packageName) {
+            name = UUID.randomUUID().toString();
+            globals = IntStream.range(0, 3)
+                    .mapToObj(i -> new GlobalMock(packageName, i))
                     .collect(Collectors.toList());
+        }
 
-            @Override
-            public String getName() {
-                return name;
-            }
+        @Override
+        public String getName() {
+            return name;
+        }
 
-            @Override
-            public List<Global> getGlobals() {
-                return globals;
-            }
+        @Override
+        public List<Global> getGlobals() {
+            return globals;
+        }
 
-            @Override
-            public List<Rule> getRules() {
-                return Collections.emptyList();
-            }
+        @Override
+        public List<Rule> getRules() {
+            return Collections.emptyList();
+        }
 
-            @Override
-            public List<Query> getQueries() {
-                return Collections.emptyList();
-            }
+        @Override
+        public List<Query> getQueries() {
+            return Collections.emptyList();
+        }
 
-            @Override
-            public List<TypeMetaData> getTypeMetaDatas() {
-                return Collections.emptyList();
-            }
+        @Override
+        public List<TypeMetaData> getTypeMetaDatas() {
+            return Collections.emptyList();
+        }
 
-            @Override
-            public List<EntryPoint> getEntryPoints() {
-                return Collections.emptyList();
-            }
-        };
+        @Override
+        public List<EntryPoint> getEntryPoints() {
+            return Collections.emptyList();
+        }
     }
 
-    private Global getGlobal(int id) {
-        return new GlobalImpl(Double.class, PACKAGE_NAME, "DOUBLE_GLOBAL_" + id);
+    private static class PMMLRuleMapperImpl implements PMMLRuleMapper {
+
+        private final Model model;
+
+        public PMMLRuleMapperImpl(Model model) {
+            this.model = model;
+        }
+
+        @Override
+        public Model getModel() {
+            return model;
+        }
     }
 }

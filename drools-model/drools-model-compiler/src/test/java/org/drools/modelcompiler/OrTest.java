@@ -62,6 +62,31 @@ public class OrTest extends BaseModelTest {
     }
 
     @Test
+    public void testOrWhenStringFirst() {
+        String str =
+              "import " + Person.class.getCanonicalName() + ";" +
+              "import " + Address.class.getCanonicalName() + ";" +
+              "rule R when\n" +
+              "  $s : String(this == \"Go\")\n" +
+              "  ( Person(name == \"Mark\") or \n" +
+              "     (\n" +
+              "     Person(name == \"Mario\") and\n" +
+              "     Address(city == \"London\") ) )\n" +
+              "then\n" +
+              "   System.out.println(\"Found: \" + $s.getClass());\n" +
+              "end";
+
+        KieSession ksession = getKieSession( str );
+
+        ksession.insert( "Go" );
+        ksession.insert( new Person( "Mark", 37 ) );
+        ksession.insert( new Person( "Mario", 100 ) );
+        ksession.insert( new Address( "London" ) );
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+
+    @Test
     public void testOrWithBetaIndex() {
         String str =
                 "import " + Person.class.getCanonicalName() + ";" +

@@ -29,14 +29,15 @@ import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 import org.kie.pmml.commons.model.tuples.KiePMMLValueWeight;
+import org.kie.pmml.commons.testingutility.KiePMMLTestingModel;
 import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.api.executor.PMMLRuntimeInternal;
 import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
@@ -116,10 +117,6 @@ public class PMMLMiningModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertTrue(resultVariables.containsKey(targetField));
         assertEquals(prediction, resultVariables.get(targetField));
-        outputFieldsMap.forEach((key, value) -> {
-            assertTrue(resultVariables.containsKey(key));
-            assertEquals(value, resultVariables.get(key));
-        });
     }
 
     @Test
@@ -147,10 +144,6 @@ public class PMMLMiningModelEvaluatorTest {
         final Map<String, Object> resultVariables = retrieved.getResultVariables();
         assertTrue(resultVariables.containsKey(targetField));
         assertNull(resultVariables.get(targetField));
-        outputFieldsMap.forEach((key, value) -> {
-            assertTrue(resultVariables.containsKey(key));
-            assertEquals(value, resultVariables.get(key));
-        });
     }
 
     @Test
@@ -294,12 +287,7 @@ public class PMMLMiningModelEvaluatorTest {
     @Test(expected = KiePMMLModelException.class)
     public void validateNoKiePMMLMiningModel() {
         String name = "NAME";
-        KiePMMLModel kiePMMLModel = new KiePMMLModel(name, Collections.emptyList()) {
-            @Override
-            public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-                return null;
-            }
-        };
+        KiePMMLModel kiePMMLModel = new KiePMMLTestingModel(name, Collections.emptyList());
         evaluator.validate(kiePMMLModel);
     }
 

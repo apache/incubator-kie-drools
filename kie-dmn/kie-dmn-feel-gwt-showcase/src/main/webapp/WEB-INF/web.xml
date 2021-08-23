@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+
+<servlet>
+  <servlet-name>com_google_gwt_junit_server_JUnitHostImpl</servlet-name>
+  <servlet-class>com.google.gwt.junit.server.JUnitHostImpl</servlet-class>
+</servlet>
+<servlet-mapping>
+  <servlet-name>com_google_gwt_junit_server_JUnitHostImpl</servlet-name>
+  <url-pattern>/App/junithost/*</url-pattern>
+</servlet-mapping>
+
+</web-app>

@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.drools.modelcompiler.ExecutableModelFlowProject;
 import org.drools.modelcompiler.ExecutableModelProject;
 
 /**
@@ -98,11 +97,6 @@ public final class TestParametersUtil {
         }
 
         if (testConfiguration.getExecutableModelProjectClass().isPresent()) {
-            if (testConfiguration.getExecutableModelProjectClass().get().equals(ExecutableModelFlowProject.class)
-                    && !engineTestConfigurationSet.contains(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW)) {
-                return false;
-            }
-
             if (testConfiguration.getExecutableModelProjectClass().get().equals(ExecutableModelProject.class)
                     && !engineTestConfigurationSet.contains(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN)) {
                 return false;
@@ -136,17 +130,46 @@ public final class TestParametersUtil {
      * Prepares collection of stream KieBaseTestConfiguration.
      * @return Collection of KieBaseTestConfiguration for parameterized tests.
      * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
+     * @param testEquality If true, the configurations returned contain configurations with EQUALITY_MODE instead of IDENTITY_MODE.
+     */
+    public static Collection<Object[]> getKieBaseStreamConfigurations(final boolean testAlsoExecutableModel, final boolean testEquality) {
+        return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.STREAM_MODE, testAlsoExecutableModel, testEquality);
+    }
+
+    /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
      */
     public static Collection<Object[]> getKieBaseCloudConfigurations(final boolean testAlsoExecutableModel) {
         return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.CLOUD_MODE, testAlsoExecutableModel);
     }
 
+    /**
+     * Prepares collection of stream KieBaseTestConfiguration.
+     * @return Collection of KieBaseTestConfiguration for parameterized tests.
+     * @param testAlsoExecutableModel If true, the configurations returned contain configurations with executable model.
+     * @param testEquality If true, the configurations returned contain configurations with EQUALITY_MODE instead of IDENTITY_MODE.
+     */
+    public static Collection<Object[]> getKieBaseCloudConfigurations(final boolean testAlsoExecutableModel, final boolean testEquality) {
+        return getKieBaseStreamOrCloudConfigurations(EngineTestConfiguration.CLOUD_MODE, testAlsoExecutableModel, testEquality);
+    }
+
     private static Collection<Object[]> getKieBaseStreamOrCloudConfigurations(final EngineTestConfiguration streamOrCloudConfig,
                                                                               final boolean testAlsoExecutableModel) {
+        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
+        return getKieBaseStreamOrCloudConfigurations(streamOrCloudConfig, testAlsoExecutableModel, false);
+    }
+
+    private static Collection<Object[]> getKieBaseStreamOrCloudConfigurations(final EngineTestConfiguration streamOrCloudConfig,
+                                                                              final boolean testAlsoExecutableModel, final boolean testEquality) {
         final List<EngineTestConfiguration> engineTestConfigurations = new ArrayList<>();
         engineTestConfigurations.add(streamOrCloudConfig);
-        // Testing just IDENTITY_MODE by default, leaving EQUALITY_MODE to specialized tests.
-        engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        if (testEquality) {
+            engineTestConfigurations.add(EngineTestConfiguration.EQUALITY_MODE);
+        } else {
+            engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
+        }
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_OFF);
         engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
 
@@ -155,7 +178,6 @@ public final class TestParametersUtil {
         }
 
         if (testAlsoExecutableModel) {
-            engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
             engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
         }
 
@@ -167,7 +189,6 @@ public final class TestParametersUtil {
         engineTestConfigurations.add(EngineTestConfiguration.CLOUD_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.IDENTITY_MODE);
         engineTestConfigurations.add(EngineTestConfiguration.ALPHA_NETWORK_COMPILER_FALSE);
-        engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_FLOW);
         engineTestConfigurations.add(EngineTestConfiguration.EXECUTABLE_MODEL_PATTERN);
 
         return getKieBaseConfigurations(engineTestConfigurations.toArray(new EngineTestConfiguration[]{}));
@@ -228,6 +249,66 @@ public final class TestParametersUtil {
         }
 
         return parameters;
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Equality while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getEqualityInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (!config.isIdentity()
+                    && config.isStreamMode() == orig.isStreamMode()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Equality instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Identity while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getIdentityInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (config.isIdentity()
+                    && config.isStreamMode() == orig.isStreamMode()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Identity instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Stream while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getStreamInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (config.isStreamMode()
+                    && config.isIdentity() == orig.isIdentity()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Stream instance of " + orig);
+    }
+
+    /**
+     * Returns KieBaseTestConfiguration instance with Cloud while other properties are the same as original.
+     */
+    public static KieBaseTestConfiguration getCloudInstanceOf(KieBaseTestConfiguration orig) {
+        for (final KieBaseTestConfiguration config : KieBaseTestConfiguration.values()) {
+            if (!config.isStreamMode()
+                    && config.isIdentity() == orig.isIdentity()
+                    && config.useAlphaNetworkCompiler() == orig.useAlphaNetworkCompiler()
+                    && config.getExecutableModelProjectClass().equals(orig.getExecutableModelProjectClass())) {
+                return config;
+            }
+        }
+        throw new RuntimeException("Cannot find Cloud instance of " + orig);
     }
 
     private TestParametersUtil() {

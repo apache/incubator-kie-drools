@@ -25,6 +25,8 @@ public interface AccumulatePattern<T> extends Pattern<T> {
 
     boolean isCompositePatterns();
 
+    boolean isQuerySource();
+
     Pattern getPattern();
 
     Condition getCondition();

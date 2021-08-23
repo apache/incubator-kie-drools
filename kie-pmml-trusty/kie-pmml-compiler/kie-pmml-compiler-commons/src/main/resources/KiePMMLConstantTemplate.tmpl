@@ -1,0 +1,14 @@
+package org.kie.pmml.compiler.commons;
+
+import java.util.Collections;
+
+import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
+
+public class KiePMMLConstantTemplate {
+
+
+    private KiePMMLConstant getKiePMMLConstant() {
+        KiePMMLConstant constant = new KiePMMLConstant(name, Collections.emptyList(), value);
+    }
+
+}

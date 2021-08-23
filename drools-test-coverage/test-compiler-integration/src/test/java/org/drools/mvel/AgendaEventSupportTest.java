@@ -18,14 +18,13 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
 import org.drools.core.WorkingMemory;
 import org.drools.core.base.ClassFieldAccessorCache;
-import org.drools.core.base.ClassFieldReader;
 import org.drools.core.base.ClassObjectType;
-import org.drools.core.base.FieldFactory;
 import org.drools.core.base.evaluators.EvaluatorRegistry;
 import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalFactHandle;
@@ -35,12 +34,14 @@ import org.drools.core.definitions.rule.impl.RuleImpl;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.rule.Pattern;
+import org.drools.core.spi.AlphaNodeFieldConstraint;
 import org.drools.core.spi.Consequence;
-import org.drools.core.spi.FieldValue;
 import org.drools.core.spi.KnowledgeHelper;
 import org.drools.core.test.model.Cheese;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.event.rule.AfterMatchFiredEvent;
 import org.kie.api.event.rule.AgendaEventListener;
 import org.kie.api.event.rule.AgendaGroupPoppedEvent;
@@ -58,15 +59,31 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 
+@RunWith(Parameterized.class)
 public class AgendaEventSupportTest {
 
     public static EvaluatorRegistry registry = new EvaluatorRegistry();
+
+    private final boolean useLambdaConstraint;
+
+    public AgendaEventSupportTest(boolean useLambdaConstraint) {
+        this.useLambdaConstraint = useLambdaConstraint;
+    }
+
+    @Parameterized.Parameters(name = "useLambdaConstraint={0}")
+    public static Collection<Object[]> getParameters() {
+        Collection<Object[]> parameters = new ArrayList<>();
+        parameters.add(new Object[]{false});
+        parameters.add(new Object[]{true});
+        return parameters;
+    }
 
     //    public void testIsSerializable() {
     //        assertTrue( Serializable.class.isAssignableFrom( AgendaEventSupport.class ) );
     //    }
 
-    @Test @Ignore
+    @Ignore("This test already failed before changing to LambdaConstraint")
+    @Test
     public void testAgendaEventListener() throws Exception {
         InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
 
@@ -81,12 +98,8 @@ public class AgendaEventSupportTest {
 
         pkg.setClassFieldAccessorCache( new ClassFieldAccessorCache( Thread.currentThread().getContextClassLoader() ) );
         pkg.getClassFieldAccessorStore().setEagerWire( true );
-        final ClassFieldReader extractor = pkg.getClassFieldAccessorStore().getReader(Cheese.class,
-                "type");
 
-        final FieldValue field = FieldFactory.getInstance().getFieldValue( "cheddar" );
-
-        final MVELConstraint constraint = new MVELConstraintTestUtil("type == \"cheddar\"", field, extractor);
+        AlphaNodeFieldConstraint constraint = ConstraintTestUtil.createCheeseTypeEqualsConstraint(pkg.getClassFieldAccessorStore(), "cheddar", useLambdaConstraint);
 
         pattern.addConstraint( constraint );
         rule.addPattern( pattern );

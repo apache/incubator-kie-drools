@@ -18,43 +18,29 @@
  */
 package  ${package}.${packageModelName}.model;
 
+import java.util.Collections;
+import java.util.Map;
+
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 
 public class KiePMML${modelName}Model extends KiePMMLModel {
 
-    public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.${modelNameUppercase}_MODEL;
 
-
-    public static Builder builder(String name, MINING_FUNCTION miningFunction) {
-        return new Builder(name, miningFunction);
-    }
-
-    public static PMML_MODEL getPmmlModelType() {
-        return PMML_MODEL_TYPE;
-    }
-
-    private KiePMML${modelName}Model(String modelName) {
+    public KiePMML${modelName}Model(String modelName) {
         super(modelName, Collections.emptyList());
     }
 
     @Override
-    public Object evaluate(Map<String, Object> requestData) {
+    public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         // TODO
         throw new UnsupportedOperationException();
     }
 
-    public static class Builder extends KiePMMLModel.Builder<KiePMML${modelName}Model>{
-
-        private Builder(String name,MINING_FUNCTION miningFunction){
-            super("${modelName}-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMML${modelName}(name));
-        }
-
-        @Override
-        public Builder withTargetField(String targetField){
-            return (Builder)super.withTargetField(targetField);
-        }
+    @Override
+    public Map<String, Object> getOutputFieldsMap() {
+        // TODO
+        throw new UnsupportedOperationException();
     }
+
 
 }

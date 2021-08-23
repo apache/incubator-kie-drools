@@ -18,13 +18,11 @@ package org.drools.modelcompiler.builder.generator.expression;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.Parameter;
 import com.github.javaparser.ast.expr.BinaryExpr;
@@ -42,17 +40,18 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithOptionalScope;
-import com.github.javaparser.ast.stmt.ExpressionStmt;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
 import org.drools.model.functions.PredicateInformation;
-import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
-import org.drools.modelcompiler.builder.generator.DeclarationSpec;
+import org.drools.modelcompiler.builder.generator.BoxedParameters;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
+import org.drools.modelcompiler.builder.generator.drlxparse.CoercedExpression;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
@@ -61,18 +60,14 @@ import org.drools.mvel.parser.ast.expr.BigIntegerLiteralExpr;
 import org.kie.api.io.Resource;
 
 import static java.util.Optional.ofNullable;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isThisExpression;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.INPUT_CALL;
-import static org.drools.modelcompiler.builder.generator.PrimitiveTypeConsequenceRewrite.rewriteNode;
 import static org.drools.modelcompiler.util.ClassUtil.isAccessibleProperties;
-import static org.drools.modelcompiler.util.ClassUtil.isAssignableFrom;
-import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
+import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public abstract class AbstractExpressionBuilder {
 
@@ -94,15 +89,8 @@ public abstract class AbstractExpressionBuilder {
 
     public abstract void processExpression(SingleDrlxParseSuccess drlxParseResult);
 
-    protected MethodCallExpr createInputExpression(String identifier) {
-        MethodCallExpr exprDSL = new MethodCallExpr(null, INPUT_CALL);
-        exprDSL.addArgument( context.getVarExpr(identifier) );
-
-        return exprDSL;
-    }
-
     public void processExpression(MultipleDrlxParseSuccess drlxParseResult) {
-        if ( drlxParseResult.isValidExpression() ) {
+        if ( drlxParseResult.isPredicate() ) {
             Expression dslExpr = buildExpressionWithIndexing(drlxParseResult);
             context.addExpression(dslExpr);
         }
@@ -118,23 +106,21 @@ public abstract class AbstractExpressionBuilder {
 
     public abstract MethodCallExpr buildBinding(SingleDrlxParseSuccess drlxParseResult);
 
-    protected Expression getConstraintExpression(SingleDrlxParseSuccess drlxParseResult) {
-        if (drlxParseResult.getExpr() instanceof EnclosedExpr) {
+    protected Expression getBindingExpression(SingleDrlxParseSuccess drlxParseResult) {
+        if (drlxParseResult.getExpr() instanceof EnclosedExpr && !drlxParseResult.isCombined() && !drlxParseResult.isPredicate()) {
             return buildConstraintExpression(drlxParseResult, ((EnclosedExpr) drlxParseResult.getExpr()).getInner());
         } else {
-            final TypedExpression left = drlxParseResult.getLeft();
+            final TypedExpression boundExpr = drlxParseResult.getBoundExpr();
             // Can we unify it? Sometimes expression is in the left sometimes in expression
-            final Expression e;
-            if(left != null) {
-                e = findLeftmostExpression(left.getExpression());
-            } else {
-                e = drlxParseResult.getExpr();
-            }
+            final Expression e = boundExpr != null ? findLeftmostExpression(boundExpr.getExpression()) : drlxParseResult.getExpr();
             return buildConstraintExpression(drlxParseResult, drlxParseResult.getUsedDeclarationsOnLeft(), e);
         }
     }
 
     private Expression findLeftmostExpression(Expression expression) {
+        if (expression instanceof EnclosedExpr) {
+            return findLeftmostExpression( (( EnclosedExpr ) expression).getInner() );
+        }
         if (expression instanceof BinaryExpr) {
             BinaryExpr be = (BinaryExpr) expression;
             return findLeftmostExpression(be.getLeft());
@@ -142,19 +128,13 @@ public abstract class AbstractExpressionBuilder {
         if (expression instanceof CastExpr) {
             CastExpr ce = (CastExpr) expression;
             return findLeftmostExpression(ce.getExpression());
-        } else if (expression instanceof MethodCallExpr) {
-            MethodCallExpr methodCallExpr = expression.asMethodCallExpr();
-            if(!methodCallExpr.getArguments().isEmpty()) {
-                return findLeftmostExpression(methodCallExpr.getArguments().iterator().next());
-            } else {
-                return expression;
-            }
-        } else if (expression instanceof FieldAccessExpr) {
-            return expression;
-        } else {
-            context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        }
+        if (expression instanceof MethodCallExpr || expression instanceof FieldAccessExpr) {
             return expression;
         }
+
+        context.addCompilationError(new InvalidExpressionErrorResult("Unable to Analyse Expression" + printConstraint(expression)));
+        return expression;
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Expression expr ) {
@@ -162,10 +142,9 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected Expression buildConstraintExpression(SingleDrlxParseSuccess drlxParseResult, Collection<String> usedDeclarations, Expression expr ) {
-        return drlxParseResult.isStatic() ? expr :
-                generateLambdaWithoutParameters(usedDeclarations,
-                                                expr,
-                                                drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
+        return drlxParseResult.isStatic() ?
+                expr :
+                generateLambdaWithoutParameters(usedDeclarations, expr, drlxParseResult.isSkipThisAsParam(), ofNullable(drlxParseResult.getPatternType()), context);
     }
 
     boolean shouldCreateIndex(SingleDrlxParseSuccess drlxParseResult ) {
@@ -173,42 +152,37 @@ public abstract class AbstractExpressionBuilder {
             return true;
         }
 
-        TypedExpression left = drlxParseResult.getLeft();
-
-        if(!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
+        if (!shouldIndexConstraintWithRightScopePatternBinding(drlxParseResult)) {
             return false;
         }
 
+        TypedExpression left = drlxParseResult.getLeft();
+        TypedExpression right = drlxParseResult.getRight();
         Collection<String> usedDeclarations = drlxParseResult.getUsedDeclarations();
 
-        return left != null && left.getFieldName() != null &&
+        return left != null && (left.getFieldName() != null || isThisExpression(left.getExpression())) &&
                 drlxParseResult.getDecodeConstraintType() != null &&
                 drlxParseResult.getPatternType() != null &&
-                isLeftIndexableExpression( left.getExpression() ) &&
-                areIndexableDeclaration( usedDeclarations );
+                isLeftIndexableExpression(left.getExpression()) &&
+                areIndexableDeclaration(usedDeclarations) &&
+                right != null && !right.getExpression().isArrayAccessExpr() && !right.getExpression().isNullLiteralExpr();
     }
 
-    private boolean isLeftIndexableExpression( Expression expr ) {
+    private boolean isLeftIndexableExpression(Expression expr) {
         if (expr instanceof MethodCallExpr) {
-            if ( !getMethodChainScope(( MethodCallExpr ) expr).map( DrlxParseUtil::isThisExpression ).orElse( false ) ) {
-                return false;
-            }
+            Optional<Expression> methodChainScope = DrlxParseUtil.findRootNodeViaScope(expr);
+            return methodChainScope.map(DrlxParseUtil::isThisExpression).orElse(false);
         }
-        return !isThisExpression( expr );
-    }
-
-    private Optional<Expression> getMethodChainScope(MethodCallExpr expr) {
-        Optional<Expression> scope = expr.getScope();
-        return scope.isPresent() && scope.get() instanceof MethodCallExpr ? getMethodChainScope( (MethodCallExpr) scope.get()) : scope;
+        return true;
     }
 
     private boolean areIndexableDeclaration( Collection<String> usedDeclarations ) {
         if (usedDeclarations.size() > 4) {
             return false;
         }
-        return !usedDeclarations.stream()
+        return usedDeclarations.stream()
                 .map( context::getDeclarationById )
-                .anyMatch( optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
+                .noneMatch(optDecl -> optDecl.isPresent() && optDecl.get().isGlobal() );
     }
 
     // See PatternBuilder:1198 (buildConstraintForPattern) Pattern are indexed only when the root of the right part
@@ -232,19 +206,11 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected boolean isStringToDateExpression(Expression expression) {
-        if (expression instanceof MethodCallExpr) {
-            String methodName = ((MethodCallExpr) expression).getNameAsString();
-            if (methodName.equals(PackageModel.STRING_TO_DATE_METHOD)
-                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_METHOD)
-                    || methodName.equals(PackageModel.STRING_TO_LOCAL_DATE_TIME_METHOD)) {
-                return true;
-            }
-        }
-        return false;
+        return expression instanceof NameExpr && ((NameExpr) expression).getNameAsString().startsWith( CoercedExpression.STRING_TO_DATE_FIELD_START );
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
-        return context.isPatternDSL() ? new PatternExpressionBuilder( context ) : new FlowExpressionBuilder( context );
+        return new PatternExpressionBuilder( context );
     }
 
     protected Expression narrowExpressionToType( TypedExpression right, java.lang.reflect.Type leftType ) {
@@ -274,11 +240,13 @@ public abstract class AbstractExpressionBuilder {
                 return toNewExpr(toRawClass(leftType), new StringLiteralExpr(((BigIntegerLiteralExpr) expression).asBigInteger().toString()));
             }
             if (leftType.equals(BigDecimal.class)) {
-                final BigDecimal bigDecimal = new BigDecimal( expression.toString() );
+                String expressionString = stringValue(expression);
+                final BigDecimal bigDecimal = new BigDecimal( expressionString );
                 return toNewExpr(BigDecimal.class, new StringLiteralExpr( bigDecimal.toString() ) );
             }
             if (leftType.equals(BigInteger.class)) {
-                final BigInteger bigInteger = new BigDecimal(expression.toString()).toBigInteger();
+                String expressionString = stringValue(expression);
+                final BigInteger bigInteger = new BigDecimal(expressionString).toBigInteger();
                 return toNewExpr(BigInteger.class, new StringLiteralExpr(bigInteger.toString()));
             }
 
@@ -293,11 +261,15 @@ public abstract class AbstractExpressionBuilder {
             }
         }
 
-        if ( !isAssignableFrom( leftType, right.getType() ) && isAssignableFrom( right.getType(), leftType ) ) {
-            return new CastExpr( toClassOrInterfaceType(toNonPrimitiveType(toRawClass(leftType))), expression );
-        }
-
         return expression;
+    }
+
+    private String stringValue(Expression expression) {
+        if(expression.isStringLiteralExpr()) {
+            return expression.asStringLiteralExpr().getValue();
+        } else {
+            return expression.toString();
+        }
     }
 
     private static Expression toNewExpr(Class<?> clazz, Expression initExpression) {
@@ -308,21 +280,22 @@ public abstract class AbstractExpressionBuilder {
                                            TypedExpression right,
                                            boolean leftContainsThis,
                                            MethodCallExpr indexedByDSL,
-                                           Collection<String> usedDeclarations,
-                                           java.lang.reflect.Type leftType,
-                                           SingleDrlxParseSuccess drlxParseResult) {
+                                           Collection<String> usedDeclarations) {
         LambdaExpr indexedByRightOperandExtractor = new LambdaExpr();
-        for (String declarationName : usedDeclarations) {
-            DeclarationSpec declarationById = context.getDeclarationByIdWithException( declarationName );
-            indexedByRightOperandExtractor.addParameter( new Parameter( declarationById.getBoxedType(), declarationName ) );
-        }
+
+        BlockStmt lambdaBlock = new BlockStmt();
+
+        NodeList<Parameter> parameters = new BoxedParameters(context).getBoxedParametersWithUnboxedAssignment(usedDeclarations, lambdaBlock);
+        parameters.forEach(indexedByRightOperandExtractor::addParameter);
 
         TypedExpression expression = leftContainsThis ? right : left;
         indexedByRightOperandExtractor.setEnclosingParameters(true);
-        Expression narrowed = rewriteNode( context, narrowExpressionToType(expression, leftType) );
-        indexedByRightOperandExtractor.setBody(new ExpressionStmt(narrowed));
+
+        lambdaBlock.addStatement(new ReturnStmt(expression.getExpression()));
+
+        indexedByRightOperandExtractor.setBody(lambdaBlock);
         indexedByDSL.addArgument(indexedByRightOperandExtractor);
-        indexedByDSL.addArgument(new ClassExpr(StaticJavaParser.parseType(expression.getRawClass().getCanonicalName())));
+        indexedByDSL.addArgument(new ClassExpr(toJPType(expression.getRawClass())));
     }
 
     String getIndexIdArgument(SingleDrlxParseSuccess drlxParseResult, TypedExpression left) {
@@ -344,7 +317,7 @@ public abstract class AbstractExpressionBuilder {
         }
         Expression generatedExpr = generateLambdaWithoutParameters(usedDeclarations, expr, !containsThis, Optional.ofNullable(patternType), context);
         if (generatedExpr instanceof LambdaExpr) {
-            context.getPackageModel().getLambdaReturnTypes().put((LambdaExpr) generatedExpr, typedExpression.getType());
+            context.getPackageModel().registerLambdaReturnType((LambdaExpr) generatedExpr, typedExpression.getType());
         }
         return generatedExpr;
     }
@@ -363,10 +336,7 @@ public abstract class AbstractExpressionBuilder {
             }
         }
 
-        final List<String> usedDeclarationsWithUnification = new ArrayList<>();
-        usedDeclarationsWithUnification.addAll(drlxParseResult.getUsedDeclarations());
-
-        usedDeclarationsWithUnification.stream()
+        drlxParseResult.getUsedDeclarations().stream()
                 .filter( s -> !(drlxParseResult.isSkipThisAsParam() && s.equals( drlxParseResult.getPatternBinding() ) ) )
                 .map(context::getVarExpr)
                 .forEach(exprDSL::addArgument);
@@ -398,9 +368,7 @@ public abstract class AbstractExpressionBuilder {
         if (drlxParseResult.getRight() != null) {
             if (drlxParseResult.getRight().getExpression().isNameExpr()) {
                 NameExpr name = drlxParseResult.getRight().getExpression().asNameExpr();
-                if (name.equals(new NameExpr(THIS_PLACEHOLDER))) {
-                    return true;
-                }
+                return name.equals(new NameExpr(THIS_PLACEHOLDER));
             } else {
                 return containsThis(drlxParseResult.getRight());
             }
@@ -415,10 +383,7 @@ public abstract class AbstractExpressionBuilder {
                 .map(NameExpr::getName)
                 .map(SimpleName::getIdentifier)
                 .findFirst(); // just first one
-        if (!opt.isPresent()) {
-            return false;
-        }
-        return opt.get().equals(THIS_PLACEHOLDER);
+        return opt.map(s -> s.equals(THIS_PLACEHOLDER)).orElse(false);
     }
 
     protected String createExprId(SingleDrlxParseSuccess drlxParseResult) {

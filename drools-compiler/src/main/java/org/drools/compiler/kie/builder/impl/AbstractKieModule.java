@@ -186,11 +186,11 @@ public abstract class AbstractKieModule
         return classes;
     }
 
-    public KnowledgePackagesBuildResult buildKnowledgePackages(KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages) {
+    public KnowledgePackagesBuildResult buildKnowledgePackages(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext) {
         Collection<KiePackage> pkgs = getKnowledgePackagesForKieBase(kBaseModel.getName());
 
         if ( pkgs == null ) {
-            KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, messages);
+            KnowledgeBuilder kbuilder = kieProject.buildKnowledgePackages(kBaseModel, buildContext);
             if ( kbuilder.hasErrors() ) {
                 // Messages already populated by the buildKnowlegePackages
                 return new KnowledgePackagesBuildResult(true, pkgs);
@@ -201,8 +201,8 @@ public abstract class AbstractKieModule
         return new KnowledgePackagesBuildResult(false, pkgs);
     }
 
-    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, ResultsImpl messages, KieBaseConfiguration conf ) {
-        KnowledgePackagesBuildResult knowledgePackagesBuildResult = buildKnowledgePackages(kBaseModel, kieProject, messages);
+    public InternalKnowledgeBase createKieBase( KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf ) {
+        KnowledgePackagesBuildResult knowledgePackagesBuildResult = buildKnowledgePackages(kBaseModel, kieProject, buildContext);
         if(knowledgePackagesBuildResult.hasErrors()) {
             return null;
         }

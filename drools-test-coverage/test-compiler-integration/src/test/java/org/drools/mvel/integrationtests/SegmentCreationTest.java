@@ -15,12 +15,11 @@
 
 package org.drools.mvel.integrationtests;
 
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.drools.core.reteoo.BetaMemory;
 import org.drools.core.reteoo.ConditionalBranchNode;
@@ -35,20 +34,34 @@ import org.drools.core.reteoo.PathMemory;
 import org.drools.core.reteoo.RightInputAdapterNode;
 import org.drools.core.reteoo.RuleTerminalNode;
 import org.drools.core.reteoo.SegmentMemory;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.rule.FactHandle;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class SegmentCreationTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public SegmentCreationTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
     
     @Test
     public void testSingleEmptyLhs() throws Exception {
@@ -162,13 +175,13 @@ public class SegmentCreationTest {
     
     @Test
     public void testMultiSharedPattern() throws Exception {
-        KieBase kbase = buildKnowledgeBase( " D() A() \n",
-                                                  "  D()  A() B() \n",
-                                                  "  D() A() B() C() \n");
+        KieBase kbase = buildKnowledgeBase( " X() A() \n",
+                                                  "  X()  A() B() \n",
+                                                  "  X() A() B() C() \n");
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
-        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.X.class );
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
 
         LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
@@ -181,7 +194,7 @@ public class SegmentCreationTest {
         JoinNode cNode = ( JoinNode ) bNode.getSinkPropagator().getSinks()[1];
         RuleTerminalNode rtn3 = ( RuleTerminalNode) cNode.getSinkPropagator().getSinks()[0];        
                 
-        wm.insert( new LinkingTest.D() );
+        wm.insert( new LinkingTest.X() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert(new LinkingTest.C());
@@ -262,13 +275,13 @@ public class SegmentCreationTest {
     
     @Test
     public void tesSubnetworkAfterShare() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "  D() A() \n",
-                                                  "   D() A()  not ( B() and C() ) \n" );
+        KieBase kbase = buildKnowledgeBase( "  X() A() \n",
+                                                  "   X() A()  not ( B() and C() ) \n" );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
-        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.X.class );
 
         LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
 
@@ -282,7 +295,7 @@ public class SegmentCreationTest {
         NotNode notNode = ( NotNode ) joinNode.getSinkPropagator().getSinks()[2];
         RuleTerminalNode rtn2 = ( RuleTerminalNode) notNode.getSinkPropagator().getSinks()[0];
                
-        wm.insert( new LinkingTest.D() );
+        wm.insert( new LinkingTest.X() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert( new LinkingTest.C() );
@@ -311,14 +324,14 @@ public class SegmentCreationTest {
     
     @Test
     public void tesShareInSubnetwork() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "  D() A() \n",
-                                                  "   D() A() B() C() \n",
-                                                  "   D() A()  not ( B() and C() ) \n" );
+        KieBase kbase = buildKnowledgeBase( "  X() A() \n",
+                                                  "   X() A() B() C() \n",
+                                                  "   X() A()  not ( B() and C() ) \n" );
 
         InternalWorkingMemory wm = ((InternalWorkingMemory)kbase.newKieSession());
         
         ObjectTypeNode aotn = getObjectTypeNode(kbase, LinkingTest.A.class );
-        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.D.class );
+        ObjectTypeNode dotn = getObjectTypeNode(kbase, LinkingTest.X.class );
 
         LeftInputAdapterNode lian = (LeftInputAdapterNode) dotn.getObjectSinkPropagator().getSinks()[0];
 
@@ -333,7 +346,7 @@ public class SegmentCreationTest {
         NotNode notNode = ( NotNode ) beta.getSinkPropagator().getSinks()[2];
         RuleTerminalNode rtn3 = ( RuleTerminalNode) notNode.getSinkPropagator().getSinks()[0];
                
-        wm.insert( new LinkingTest.D() );
+        wm.insert( new LinkingTest.X() );
         wm.insert( new LinkingTest.A() );
         wm.insert( new LinkingTest.B() );
         wm.insert( new LinkingTest.C() );
@@ -419,11 +432,11 @@ public class SegmentCreationTest {
 
     @Test
     public void testBranchCEMultipleSegments() throws Exception {
-        KieBase kbase = buildKnowledgeBase( "  D() $a : A() \n", // r1
-                                                  "  D()  $a : A() \n" +
+        KieBase kbase = buildKnowledgeBase( "  X() $a : A() \n", // r1
+                                                  "  X()  $a : A() \n" +
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n", // r2
-                                                  "  D() $a : A() \n"+
+                                                  "  X() $a : A() \n"+
                                                   "   if ( $a != null ) do[t1] \n" +
                                                   "   B() \n" +
                                                   "   C() \n" // r3
@@ -468,7 +481,7 @@ public class SegmentCreationTest {
         assertEquals( 1, cNodeSmem.getAllLinkedMaskTest() );
         assertEquals( 1, cNodeSmem.getLinkedNodeMask() );
 
-        wm.insert(new LinkingTest.D());
+        wm.insert(new LinkingTest.X());
         wm.insert(new LinkingTest.A());
         wm.flushPropagations();
 
@@ -492,7 +505,7 @@ public class SegmentCreationTest {
         str += "import " + LinkingTest.A.class.getCanonicalName() + "\n" ;
         str += "import " + LinkingTest.B.class.getCanonicalName() + "\n" ;
         str += "import " + LinkingTest.C.class.getCanonicalName() + "\n" ;
-        str += "import " + LinkingTest.D.class.getCanonicalName() + "\n" ;
+        str += "import " + LinkingTest.X.class.getCanonicalName() + "\n" ;
         str += "global java.util.List list \n";
 
         int i = 0;
@@ -503,16 +516,8 @@ public class SegmentCreationTest {
             str += "then[t1] \n";
             str += "end \n";            
         }
-        
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
 
-        kbuilder.add( ResourceFactory.newByteArrayResource(str.getBytes()),
-                      ResourceType.DRL );
-
-        assertFalse( kbuilder.getErrors().toString(), kbuilder.hasErrors() );
-
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
         return kbase;
     }      
 

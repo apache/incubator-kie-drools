@@ -14,11 +14,18 @@
 
 package org.drools.impact.analysis.parser.impl;
 
+import java.util.Optional;
+
 import com.github.javaparser.ast.expr.DoubleLiteralExpr;
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.LiteralExpr;
 import com.github.javaparser.ast.expr.LongLiteralExpr;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
+import org.drools.modelcompiler.builder.generator.RuleContext;
 
 public class ParserUtil {
 
@@ -54,4 +61,31 @@ public class ParserUtil {
         return null;
     }
 
+    public static String getLiteralString(RuleContext context, Expression expr) {
+        Object value = getLiteralValue(context, expr);
+        return value instanceof String ? (String) value : null;
+    }
+
+    public static Object getLiteralValue(RuleContext context, Expression expr) {
+        if (expr.isLiteralExpr()) {
+            return literalToValue(expr.asLiteralExpr());
+        } else if (expr.isMethodCallExpr()) {
+            MethodCallExpr mce = expr.asMethodCallExpr();
+            Optional<SimpleName> optString = mce.getScope()
+                                                .filter(Expression::isNameExpr)
+                                                .map(Expression::asNameExpr)
+                                                .map(NameExpr::getName)
+                                                .filter(name -> name.asString().equals("java.lang.String")); // only work with String for now
+            if (optString.isPresent() && mce.getName().asString().equals("valueOf")) {
+                return getLiteralValue(context, mce.getArgument(0));
+            }
+        } else if (expr.isNameExpr()) {
+            return ((ImpactAnalysisRuleContext)context).getBindVariableLiteralMap().get(expr.asNameExpr().getNameAsString());
+        }
+        return null;
+    }
+
+    public static boolean isLiteral(Class<?> clazz) {
+        return clazz == String.class || clazz == Integer.class || clazz == Long.class || clazz == Double.class;
+    }
 }

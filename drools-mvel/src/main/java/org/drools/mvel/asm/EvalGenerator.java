@@ -81,10 +81,10 @@ public class EvalGenerator {
 
                 Tuple currentTuple = tuple;
                 for (DeclarationMatcher matcher : declarationMatchers) {
-                    int i = matcher.getOriginalIndex();
+                    int i = matcher.getMatcherIndex();
                     declarationsParamsPos[i] = objAstorePos;
 
-                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getRootDistance(), 5);
+                    currentTuple = traverseTuplesUntilDeclaration(currentTuple, matcher.getTupleIndex(), 5);
 
                     mv.visitVarInsn(ALOAD, 2);
                     push(i);

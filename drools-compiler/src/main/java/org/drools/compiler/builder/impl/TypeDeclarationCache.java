@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -200,7 +199,7 @@ public class TypeDeclarationCache {
                                         ClassDefinition clsDef,
                                         TypeDeclaration typeDeclaration ) {
         // it's a new type declaration, so generate the @Position for it
-        Collection<Field> fields = new LinkedList<Field>();
+        Collection<Field> fields = new ArrayList<Field>();
         Class<?> tempKlass = cls;
         while (tempKlass != null && tempKlass != Object.class) {
             Collections.addAll( fields, tempKlass.getDeclaredFields() );

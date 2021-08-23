@@ -16,10 +16,6 @@
 
 package org.kie.dmn.backend.marshalling.v1_3.xstream;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.converters.MarshallingContext;
-import com.thoughtworks.xstream.io.HierarchicalStreamReader;
-import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import org.kie.dmn.model.api.AuthorityRequirement;
 import org.kie.dmn.model.api.DMNElementReference;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
@@ -29,6 +25,11 @@ import org.kie.dmn.model.api.InformationItem;
 import org.kie.dmn.model.api.InformationRequirement;
 import org.kie.dmn.model.api.KnowledgeRequirement;
 import org.kie.dmn.model.v1_3.TDecision;
+
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 
 public class DecisionConverter extends DRGElementConverter {
     public static final String QUESTION = "question";
@@ -137,7 +138,7 @@ public class DecisionConverter extends DRGElementConverter {
         }
         if (dec.getExpression() != null) {
             Expression e = dec.getExpression();
-            String nodeName = MarshallingUtils.defineExpressionNodeName(e);
+            String nodeName = MarshallingUtils.defineExpressionNodeName(xstream, e);
             writeChildrenNode(writer, context, e, nodeName);
         }
     }

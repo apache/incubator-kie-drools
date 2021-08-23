@@ -56,7 +56,7 @@ public class BindingConverter extends DMNModelInstrumentedBaseConverter {
         Binding b = (Binding) parent;
         
         writeChildrenNode(writer, context, b.getParameter(), PARAMETER);
-        if (b.getExpression() != null) writeChildrenNode(writer, context, b.getExpression(), MarshallingUtils.defineExpressionNodeName(b.getExpression()));
+        if (b.getExpression() != null) writeChildrenNode(writer, context, b.getExpression(), MarshallingUtils.defineExpressionNodeName(xstream, b.getExpression()));
     }
 
     @Override

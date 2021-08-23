@@ -22,6 +22,7 @@ public enum DMNMessageType {
     INVALID_HREF_SYNTAX( "The 'href' attribute requires the use of anchor syntax", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     DUPLICATED_PARAM( "The referenced param is duplicated", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     PARAMETER_MISMATCH( "The named parameter does not match", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
+    TYPEREF_MISMATCH( "The typeRef does not match", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     DUPLICATED_ITEM_DEF( "The referenced item definition or item component is duplicated", Tag.COMPILATION, Tag.VALIDATION, Tag.DMN_VALIDATOR, Tag.DMN_CORE ),
     DUPLICATED_RELATION_COLUMN( "The referenced relation column is duplicated", Tag.VALIDATION, Tag.DMN_VALIDATOR ),
     RELATION_CELL_NOT_LITERAL( "The referenced relation cell is not a literal expression", Tag.VALIDATION, Tag.DMN_VALIDATOR ),

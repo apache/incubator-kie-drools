@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@
 package org.drools.mvelcompiler.ast;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ import com.github.javaparser.ast.stmt.Statement;
 
 public class BlockStmtT implements TypedExpression {
 
-    private List<TypedExpression> statements = new ArrayList<>();
+    private List<TypedExpression> statements;
 
     public BlockStmtT(List<TypedExpression> statements) {
         this.statements = statements;

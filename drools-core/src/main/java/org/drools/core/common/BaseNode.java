@@ -41,14 +41,14 @@ public abstract class BaseNode
     implements
     NetworkNode {
 
-    protected int                      id;
-    protected int                      memoryId = -1;
-    protected RuleBasePartitionId      partitionId;
-    protected boolean                  partitionsEnabled;
-    protected Bag<Rule>                associations;
-    private   boolean                  streamMode;
+    protected int                 id;
+    protected int                 memoryId = -1;
+    protected RuleBasePartitionId partitionId;
+    protected boolean             partitionsEnabled;
+    protected Bag<Rule>           associations;
+    private   boolean             streamMode;
 
-    protected int hashcode;
+    protected int                 hashcode;
 
     public BaseNode() {
 
@@ -127,7 +127,15 @@ public abstract class BaseNode
     /**
      * Attaches the node into the network. Usually to the parent <code>ObjectSource</code> or <code>TupleSource</code>
      */
-    public abstract void attach(BuildContext context);
+    public void attach(BuildContext context) {
+        // do common shared code here, so it executes for all nodes
+        doAttach(context);
+        // do common shared code here, so it executes for all nodes
+    }
+
+    public void doAttach(BuildContext context) {
+
+    }
 
 
     /**

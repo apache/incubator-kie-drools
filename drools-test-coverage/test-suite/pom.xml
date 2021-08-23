@@ -8,7 +8,7 @@
   <parent>
     <groupId>org.drools.testcoverage</groupId>
     <artifactId>drools-test-coverage-parent</artifactId>
-    <version>7.51.0-SNAPSHOT</version>
+    <version>7.59.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-test-suite</artifactId>
@@ -40,7 +40,7 @@
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
-      <artifactId>drools-mvel</artifactId>
+      <artifactId>drools-legacy-test-util</artifactId>
       <type>test-jar</type>
       <scope>test</scope>
     </dependency>

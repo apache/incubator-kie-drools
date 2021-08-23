@@ -106,18 +106,6 @@ public class RuleTerminalNodeLeftTuple<T extends ModedAssertion<T>> extends Base
 
     public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
                                      final RightTuple rightTuple,
-                                     final Sink sink,
-                                     final boolean leftTupleMemoryEnabled) {
-        this( leftTuple,
-              rightTuple,
-              null,
-              null,
-              sink,
-              leftTupleMemoryEnabled );
-    }
-
-    public RuleTerminalNodeLeftTuple(final LeftTuple leftTuple,
-                                     final RightTuple rightTuple,
                                      final LeftTuple currentLeftChild,
                                      final LeftTuple currentRightChild,
                                      final Sink sink,

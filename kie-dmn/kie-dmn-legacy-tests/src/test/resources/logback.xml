@@ -23,7 +23,7 @@
     </encoder>
   </appender>
 
-  <logger name="org.kie" level="info"/>
+  <logger name="org.kie" level="warn"/>
   <logger name="org.kie.dmn.legacy.tests.core.v1_1" level="info"/> 
   
   <root level="warn">

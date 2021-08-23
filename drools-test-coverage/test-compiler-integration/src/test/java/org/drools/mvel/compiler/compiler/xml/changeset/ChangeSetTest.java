@@ -22,32 +22,51 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.compiler.kie.builder.impl.DrlProject;
 import org.drools.core.io.impl.UrlResource;
 import org.drools.core.xml.XmlChangeSetReader;
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.kie.api.KieBase;
+import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.Message;
+import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.ChangeSet;
 import org.kie.internal.builder.DecisionTableConfiguration;
 import org.kie.internal.builder.DecisionTableInputType;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderConfiguration;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.io.ResourceFactory;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ChangeSetTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class ChangeSetTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public ChangeSetTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     @Test
     public void testXmlParser() throws SAXException,
@@ -94,14 +113,11 @@ public class ChangeSetTest extends CommonTestMethodBase {
 
     @Test
     public void testIntegregation() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newClassPathResource("changeset1Test.xml",
-                getClass()),
-                      ResourceType.CHANGE_SET );
-        assertFalse( kbuilder.hasErrors() );
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages( kbuilder.getKnowledgePackages() );
-        KieSession ksession = createKnowledgeSession(kbase);
+        Resource changeSet = ResourceFactory.newClassPathResource("changeset1Test.xml", getClass());
+        changeSet.setResourceType(ResourceType.CHANGE_SET);
+        KieBase kbase = KieBaseUtil.getKieBaseFromResources(kieBaseTestConfiguration, changeSet);
+        KieSession ksession = kbase.newKieSession();
+
         List list = new ArrayList();
         ksession.setGlobal( "list",
                             list );
@@ -164,8 +180,18 @@ public class ChangeSetTest extends CommonTestMethodBase {
 
         ClassLoader classLoader = URLClassLoader.newInstance(new URL[]{jar.toURI().toURL()}, getClass().getClassLoader());
         Resource changeSet = ResourceFactory.newClassPathResource("changeset1.xml", classLoader);
-        KnowledgeBuilderConfiguration conf = KnowledgeBuilderFactory.newKnowledgeBuilderConfiguration(null, classLoader);
-        KnowledgeBuilder builder = KnowledgeBuilderFactory.newKnowledgeBuilder(conf);
-        builder.add(changeSet, ResourceType.CHANGE_SET);
+
+        changeSet.setResourceType(ResourceType.CHANGE_SET);
+        final KieModuleModel kieModuleModel = KieUtil.createKieModuleModel(kieBaseTestConfiguration.useAlphaNetworkCompiler());
+        final KieFileSystem kieFileSystem = KieUtil.getKieFileSystemWithKieModule(kieModuleModel, KieServices.get().getRepository().getDefaultReleaseId(), changeSet);
+        final KieBuilder kbuilder = KieServices.Factory.get().newKieBuilder(kieFileSystem, classLoader);
+
+        if (kieBaseTestConfiguration.getExecutableModelProjectClass().isPresent()) {
+            kbuilder.buildAll(kieBaseTestConfiguration.getExecutableModelProjectClass().get());
+        } else {
+            kbuilder.buildAll(DrlProject.class);
+        }
+        List<Message> errors = kbuilder.getResults().getMessages(Message.Level.ERROR);
+        assertTrue(errors.toString(), errors.isEmpty());
     }
 }

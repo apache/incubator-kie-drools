@@ -18,9 +18,15 @@ package org.drools.mvel.compiler.kie.builder;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -35,12 +41,26 @@ import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+@RunWith(Parameterized.class)
 public class WireChannelTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public WireChannelTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     private static final List<Object> channelMessages = new ArrayList<Object>();
     
     @Test
     public void testWireChannel() throws Exception {
+        channelMessages.clear();
+
         KieServices ks = KieServices.Factory.get();
 
         ReleaseId releaseId = ks.newReleaseId("org.kie", "listener-test", "1.0");
@@ -66,8 +86,8 @@ public class WireChannelTest {
            .writePomXML( generatePomXml(releaseId) )
            .write("src/main/resources/KBase1/rules.drl", createDRL());
 
-        KieBuilder kieBuilder = ks.newKieBuilder(kfs);
-        assertTrue(kieBuilder.buildAll().getResults().getMessages().isEmpty());
+        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs, false);
+        assertTrue(kieBuilder.getResults().getMessages().isEmpty());
     }
 
     private String createDRL() {

@@ -26,6 +26,9 @@
       <MiningField name="outlook"/>
       <MiningField name="whatIdo"/>
     </MiningSchema>
+    <Targets>
+      <Target rescaleConstant="10" />
+    </Targets>
     <Node score="will play">
       <True/>
       <Node score="will play">

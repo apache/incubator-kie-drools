@@ -150,4 +150,6 @@ public interface InternalKnowledgeBase extends KieBase {
 
     List<AsyncReceiveNode> getReceiveNodes();
     void addReceiveNode(AsyncReceiveNode node);
+
+    boolean hasMultipleAgendaGroups();
 }

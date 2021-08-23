@@ -3,7 +3,7 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
@@ -34,14 +34,14 @@ end
 
 query connect( String x, String y )
    Door(x, y;)
-   or 
+   or
    Door(y, x;)
 end
 
 query whereFood( String x, String y )
    ( Location(x, y;) and
       Edible(x;) )
-   or 
+   or
    ( Location(z, y;) and
       whereFood(x, z;) )
 end
@@ -53,13 +53,13 @@ query look(String place, List things, List food, List exits)
    exits := List() from accumulate( ?connect(place, exit;), collectList( exit ) )
 end
 
-query isContainedIn( String x, String y ) 
+query isContainedIn( String x, String y )
     Location(x, y;)
-    or 
+    or
     ( Location(z, y;) and isContainedIn(x, z;) )
 end
 
-rule reactiveLook 
+rule reactiveLook
    when
       listHolder : ListHolder()
       Here( $place : place)

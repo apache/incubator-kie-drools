@@ -1,13 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Diagram>
   <ID>MODULES</ID>
-  <OriginalElement>mdl-kie-pmml</OriginalElement>
+  <OriginalElement>mdl-kie-pmml-api</OriginalElement>
   <nodes>
-    <node x="-493.0" y="-204.0">mdl-kie-pmml</node>
+    <node x="259.5" y="167.0">mdl-kie-pmml-evaluator</node>
+    <node x="0.0" y="83.0">mdl-kie-pmml-models</node>
+    <node x="280.5" y="103.0">mdl-kie-pmml-api</node>
+    <node x="261.5" y="11.0">mdl-kie-pmml-compiler</node>
   </nodes>
-  <notes />
-  <edges />
-  <settings layout="Hierarchic Group" zoom="1.0" x="42.0" y="12.0" />
+  <notes>
+    <note x="570.5" y="156.0">
+      <node>mdl-kie-pmml-evaluator</node>
+      <value>Read objects from Kie knowledge base and use them to calculate\nPMML result based on input data.</value>
+      <edge>
+        <point x="75.0" y="-0.0" />
+        <point x="-289.5" y="-0.0" />
+      </edge>
+    </note>
+    <note x="-18.0" y="225.0">
+      <node>mdl-kie-pmml-models</node>
+      <value>Actual model implementations</value>
+      <edge>
+        <point x="69.0" y="-3.0" />
+        <point x="-136.5" y="-0.0" />
+      </edge>
+    </note>
+    <note x="701.0" y="101.0">
+      <node>mdl-kie-pmml-api</node>
+      <value>API common to all PMML submodules</value>
+      <edge>
+        <point x="54.0" y="-0.0" />
+        <point x="-159.0" y="-0.0" />
+      </edge>
+    </note>
+    <note x="521.0" y="0.0">
+      <node>mdl-kie-pmml-compiler</node>
+      <value>Use model implementations to translate original PMML model to the objects\nthat will be stored inside Kie knowledge base and used for evaluation</value>
+      <edge>
+        <point x="73.0" y="-0.0" />
+        <point x="-339.0" y="-0.0" />
+      </edge>
+    </note>
+  </notes>
+  <edges>
+    <edge source="mdl-kie-pmml-models" target="mdl-kie-pmml-api">
+      <point x="69.0" y="3.0" />
+      <point x="188.0" y="121.0" />
+      <point x="-54.0" y="6.0" />
+    </edge>
+    <edge source="mdl-kie-pmml-evaluator" target="mdl-kie-pmml-api">
+      <point x="0.0" y="-12.0" />
+      <point x="0.0" y="12.0" />
+    </edge>
+    <edge source="mdl-kie-pmml-models" target="mdl-kie-pmml-evaluator">
+      <point x="69.0" y="9.0" />
+      <point x="188.0" y="179.0" />
+      <point x="-75.0" y="-0.0" />
+    </edge>
+    <edge source="mdl-kie-pmml-models" target="mdl-kie-pmml-compiler">
+      <point x="69.0" y="-9.0" />
+      <point x="188.0" y="17.0" />
+      <point x="-73.0" y="-6.0" />
+    </edge>
+    <edge source="mdl-kie-pmml-compiler" target="mdl-kie-pmml-api">
+      <point x="-73.0" y="6.0" />
+      <point x="188.0" y="29.0" />
+      <point x="188.0" y="109.0" />
+      <point x="-54.0" y="-6.0" />
+    </edge>
+  </edges>
+  <settings layout="Hierarchic Group" zoom="1.0" x="619.0" y="83.0" />
   <SelectedNodes />
   <Categories />
 </Diagram>

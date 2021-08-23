@@ -37,7 +37,8 @@ public class QueryBuilder implements EngineElementBuilder {
                          final QueryDescr queryDescr) {
         ObjectType queryObjectType = ClassObjectType.DroolsQuery_ObjectType;
         final Pattern pattern = new Pattern( context.getNextPatternId(),
-                                             0, // offset is 0 by default
+                                             0, // tupleIndex is 0 by default
+                                             0, // patternIndex is 0 by default
                                              queryObjectType,
                                              null );
         

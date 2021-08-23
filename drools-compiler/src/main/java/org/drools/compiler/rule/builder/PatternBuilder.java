@@ -16,6 +16,7 @@
 
 package org.drools.compiler.rule.builder;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -252,6 +253,7 @@ public class PatternBuilder
 
             pattern = new Pattern(context.getNextPatternId(),
                                   0, // offset is 0 by default
+                                  0,  // offset is 0 by default
                                   objectType,
                                   patternIdentifier,
                                   patternDescr.isInternalFact(context));
@@ -261,7 +263,8 @@ public class PatternBuilder
             }
         } else {
             pattern = new Pattern(context.getNextPatternId(),
-                                  0, // offset is 0 by default
+                                  0, // tupleIndex is 0 by default
+                                  0, // patternIndex is 0 by default
                                   objectType,
                                   null);
         }
@@ -618,14 +621,14 @@ public class PatternBuilder
             ClassDefinition clsDef = tDecl.getTypeClassDef();
             if (clsDef == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
             FieldDefinition field = clsDef.getField(descr.getPosition());
             if (field == null) {
                 registerDescrBuildError(context, patternDescr,
-                                        "Unable to find @positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
+                                        "Unable to find @Positional field " + descr.getPosition() + " for class " + tDecl.getTypeName() + "\n");
                 return;
             }
 
@@ -679,6 +682,9 @@ public class PatternBuilder
                                         "More than a single oopath constraint is not allowed in the same pattern");
                 return constraints;
             }
+
+            context.setXpathOffsetadjustment(patternDescr.getXpathStartDeclaration() == null ? 0 : -1);
+
             Constraint constraint = isXPath ?
                     buildXPathDescr(context, patternDescr, pattern, (ExpressionDescr)  d, mvelCtx) :
                     buildCcdDescr(context, patternDescr, pattern, d, descr, mvelCtx);
@@ -771,6 +777,8 @@ public class PatternBuilder
         mvelCtx.setInXpath(true);
 
         try {
+            // If the OOPath is inside of a pattern it needs no adjustment, if the pattern is synthetic (i.e. a OOPath from a var)
+            // then the xpathoffset must be adjusted by -1, as pattern is not actually added to the rete network
             for (XpathAnalysis.XpathPart part : xpathAnalysis) {
                 XpathConstraint.XpathChunk xpathChunk = xpathConstraint.addChunck(patternClass, part.getField(), part.getIndex(), part.isIterate(), part.isLazy());
 
@@ -811,21 +819,27 @@ public class PatternBuilder
                         continue;
                     }
 
+                    // preserving this, as the recursive build() resets it
+                    int chunkNbr = context.getXpathChuckNr();
                     for (Constraint c : build(context, patternDescr, pattern, result, mvelCtx)) {
                         xpathChunk.addConstraint(c);
                     }
+                    context.setXpathChuckNr(chunkNbr);
                 }
+            }
+
+            xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
+            if (descr instanceof BindingDescr) {
+                Declaration pathDeclr = pattern.addDeclaration(((BindingDescr) descr).getVariable());
+                pathDeclr.setxPathOffset(context.getXpathChuckNr());
+                xpathConstraint.setDeclaration(pathDeclr);
+
             }
         } finally {
             mvelCtx.setInXpath(false);
             pattern.setBackRefDeclarations(null);
             pattern.setObjectType(originalType);
             context.resetXpathChuckNr();
-        }
-
-        xpathConstraint.setXpathStartDeclaration(patternDescr.getXpathStartDeclaration());
-        if (descr instanceof BindingDescr) {
-            xpathConstraint.setDeclaration(pattern.addDeclaration(((BindingDescr) descr).getVariable()));
         }
 
         return xpathConstraint;
@@ -1019,13 +1033,23 @@ public class PatternBuilder
     }
 
     private ExprBindings getExprBindings(RuleBuildContext context, Pattern pattern, String value) {
-        ExprBindings value1Expr = new ExprBindings();
-        ConstraintBuilder.get().setExprInputs( context, value1Expr,
+        ExprBindings valueExpr = new ExprBindings();
+        ConstraintBuilder.get().setExprInputs( context, valueExpr,
                                                (pattern.getObjectType() instanceof ClassObjectType) ?
                                                        ((ClassObjectType) pattern.getObjectType()).getClassType() :
                                                        FactTemplate.class,
                                                value);
-        return value1Expr;
+        if (!isIdentifierLiteral(value)) {
+            String identifier = StringUtils.extractFirstIdentifier(value, 0);
+            if (identifier.length() > 0) {
+                valueExpr.setWithJavaIdentifier(true);
+            }
+        }
+        return valueExpr;
+    }
+
+    private boolean isIdentifierLiteral(String expr) {
+        return expr.equals("true") || expr.equals("false") || expr.equals("null") || expr.endsWith(".class");
     }
 
     private boolean findExpressionValues(RelationalExprDescr relDescr, String[] values) {
@@ -1059,6 +1083,11 @@ public class PatternBuilder
 
         InternalReadAccessor extractor = getFieldReadAccessor(context, relDescr, pattern, value1, null, true);
         if (extractor == null) {
+            return null;
+        }
+
+        if ("contains".equals( relDescr.getOperator() ) && !isTypeCompatibleWithContainsOperator( extractor.getExtractToClass() )) {
+            registerDescrBuildError(context, relDescr, "Cannot use contains on " + extractor.getExtractToClass() + " in expression '" + expr + "'");
             return null;
         }
 
@@ -1141,6 +1170,10 @@ public class PatternBuilder
         return getConstraintBuilder().buildVariableConstraint(context, pattern, expr, declarations, value1, relDescr.getOperatorDescr(), value2, extractor, declr, relDescr, aliases);
     }
 
+    private boolean isTypeCompatibleWithContainsOperator(Class<?> type) {
+        return Collection.class.isAssignableFrom( type ) || type.isArray() || type == String.class;
+    }
+
     private Declaration[] getDeclarationsForReturnValue(RuleBuildContext context, RelationalExprDescr relDescr, String value2) {
         Pattern pattern = (Pattern) context.getDeclarationResolver().peekBuildStack();
         ReturnValueRestrictionDescr returnValueRestrictionDescr = new ReturnValueRestrictionDescr(relDescr.getOperator(), relDescr, value2);
@@ -1207,16 +1240,19 @@ public class PatternBuilder
             return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
         }
 
-        // is it an enum?
+        // is it an enum or final?
         int dotPos = rightValue.lastIndexOf('.');
         if (dotPos >= 0) {
             final String mainPart = rightValue.substring(0,
                                                          dotPos);
             String lastPart = rightValue.substring(dotPos + 1);
             try {
-                context.getDialect().getTypeResolver().resolveType(mainPart);
+                Class<?> clazz = context.getDialect().getTypeResolver().resolveType(mainPart);
                 if (lastPart.indexOf('(') < 0 && lastPart.indexOf('.') < 0 && lastPart.indexOf('[') < 0) {
-                    return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+                    Field field = ClassUtils.getField(clazz, lastPart);
+                    if (field != null && (field.isEnumConstant() || Modifier.isFinal(field.getModifiers()))) {
+                        return new LiteralRestrictionDescr(exprDescr.getOperator(), exprDescr.isNegated(), exprDescr.getParameters(), rightValue, LiteralRestrictionDescr.TYPE_STRING);
+                    }
                 }
             } catch (ClassNotFoundException e) {
                 // do nothing as this is just probing to see if it was a class, which we now know it isn't :)
@@ -1280,11 +1316,13 @@ public class PatternBuilder
         protected Set<String> globalBindings;
         protected Set<String> ruleBindings;
         protected Set<String> fieldAccessors;
+        protected boolean withJavaIdentifier;
 
         public ExprBindings() {
             this.globalBindings = new HashSet<String>();
             this.ruleBindings = new HashSet<String>();
             this.fieldAccessors = new HashSet<String>();
+            this.withJavaIdentifier = false;
         }
 
         public Set<String> getGlobalBindings() {
@@ -1299,8 +1337,16 @@ public class PatternBuilder
             return fieldAccessors;
         }
 
+        public boolean isWithJavaIdentifier() {
+            return withJavaIdentifier;
+        }
+
+        public void setWithJavaIdentifier(boolean withJavaIdentifier) {
+            this.withJavaIdentifier = withJavaIdentifier;
+        }
+
         public boolean isConstant() {
-            return this.globalBindings.isEmpty() && this.ruleBindings.isEmpty() && this.fieldAccessors.size() <= 1; // field accessors might contain the "this" reference
+            return !withJavaIdentifier && this.globalBindings.isEmpty() && this.ruleBindings.isEmpty() && this.fieldAccessors.size() <= 1; // field accessors might contain the "this" reference
         }
     }
 

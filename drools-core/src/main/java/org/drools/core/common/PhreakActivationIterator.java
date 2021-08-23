@@ -216,10 +216,10 @@ public class PhreakActivationIterator
     private static void collectFromPeers(LeftTuple peer, List<AgendaItem> agendaItems, Set<RuleTerminalNode> nodeSet, InternalWorkingMemory wm) {
         while (peer != null) {
             if ( peer.getTupleSink().getType() == NodeTypeEnums.AccumulateNode ) {
-                AccumulateContext accctx = (AccumulateContext) peer.getContextObject();
-                if (accctx != null) {
-                    // the accumulate context can be null if the lefttuple hasn't been evaluated yet
-                    collectFromLeftInput(accctx.getResultLeftTuple(), agendaItems, nodeSet, wm);
+                Object accctx = peer.getContextObject();
+                if (accctx instanceof AccumulateContext) {
+                    // lefttuple representing an accumulated value now have that value as context object (it was null before) and must be skipped here
+                    collectFromLeftInput(((AccumulateContext) accctx).getResultLeftTuple(), agendaItems, nodeSet, wm);
                 }
             } else if ( peer.getFirstChild() != null ) {
                 for (LeftTuple childLt = peer.getFirstChild(); childLt != null; childLt = childLt.getHandleNext()) {

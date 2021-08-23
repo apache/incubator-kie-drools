@@ -69,7 +69,7 @@ import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.QueryResultsRow;
 import org.kie.internal.command.CommandFactory;
 
-import static org.kie.soup.xstream.XStreamUtils.createTrustingXStream;
+import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
 
 
 public class XStreamJSon {
@@ -77,7 +77,7 @@ public class XStreamJSon {
 
     public static XStream newJSonMarshaller() {
         JettisonMappedXmlDriver jet = new JettisonMappedXmlDriver();
-        XStream xstream = createTrustingXStream( jet );
+        XStream xstream = createNonTrustingXStream( jet );
 
         XStreamHelper.setAliases( xstream );
 

@@ -16,13 +16,30 @@
 package org.drools.mvel.integrationtests;
 
 import java.io.Serializable;
+import java.util.Collection;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
-public class DroolsTest extends CommonTestMethodBase  {
+@RunWith(Parameterized.class)
+public class DroolsTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public DroolsTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
     private final static int NUM_FACTS = 20;
 
     private static int       counter;
@@ -67,9 +84,8 @@ public class DroolsTest extends CommonTestMethodBase  {
 
         counter = 0;
 
-        KieBase kbase = loadKnowledgeBaseFromString(str);
-
-        KieSession wm = createKnowledgeSession(kbase);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, str);
+        KieSession wm = kbase.newKieSession();
 
         for ( int i = 0; i < NUM_FACTS; i++ ) {
             wm.insert( new Foo( i ) );

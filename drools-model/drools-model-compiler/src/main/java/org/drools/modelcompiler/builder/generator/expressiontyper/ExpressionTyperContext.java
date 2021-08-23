@@ -37,6 +37,7 @@ public class ExpressionTyperContext {
     private boolean registerPropertyReactivity = true;
 
     private Optional<Expression> inlineCastExpression = Optional.empty();
+    private List<Expression> nullSafeExpressions = new ArrayList<>();
 
     public void addUsedDeclarations(String name) {
         usedDeclarations.add(name);
@@ -60,6 +61,14 @@ public class ExpressionTyperContext {
         return prefixExpresssions;
     }
 
+    public void addPrefixExpression(int index, Expression prefixExpresssion) {
+        prefixExpresssions.add(index, prefixExpresssion);
+    }
+
+    public void addPrefixExpression(Expression prefixExpresssion) {
+        prefixExpresssions.add(prefixExpresssion);
+    }
+
     public void setRegisterPropertyReactivity( boolean registerPropertyReactivity ) {
         this.registerPropertyReactivity = registerPropertyReactivity;
     }
@@ -74,6 +83,14 @@ public class ExpressionTyperContext {
 
     public void setInlineCastExpression(Optional<Expression> inlineCastExpression) {
         this.inlineCastExpression = inlineCastExpression;
+    }
+
+    public List<Expression> getNullSafeExpressions() {
+        return nullSafeExpressions;
+    }
+
+    public void addNullSafeExpression(int index, Expression nullSafeExpression) {
+        nullSafeExpressions.add(index, nullSafeExpression);
     }
 
     public Expression getOriginalExpression() {

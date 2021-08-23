@@ -117,7 +117,7 @@ public class JpaPersistentStatefulSessionTest {
 
         final KieBase kbase = new KieHelper().addContent(str, ResourceType.DRL).build();
 
-        KieSession ksession = KieServices.get().getStoreServices().newKieSession(kbase, null, env);
+        KieSession ksession = kbase.newKieSession();//KieServices.get().getStoreServices().newKieSession(kbase, null, env);
         List<AtomicInteger> list = new ArrayList<>();
 
         ksession.setGlobal("list", list);
@@ -136,7 +136,7 @@ public class JpaPersistentStatefulSessionTest {
         assertThat(list).hasSize(2);
         final String externalForm = atomicFH.toExternalForm();
 
-        ksession = KieServices.get().getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
+        //ksession = KieServices.get().getStoreServices().loadKieSession(ksession.getIdentifier(), kbase, null, env);
 
         atomicFH = ksession.execute(CommandFactory.fromExternalFactHandleCommand(externalForm));
 

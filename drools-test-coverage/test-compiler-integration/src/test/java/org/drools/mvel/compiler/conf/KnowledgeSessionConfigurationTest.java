@@ -19,6 +19,7 @@ import org.drools.core.BeliefSystemType;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.runtime.conf.AccumulateNullPropagationOption;
 import org.kie.api.runtime.conf.BeliefSystemTypeOption;
 import org.kie.api.runtime.KieSessionConfiguration;
 import org.kie.api.runtime.conf.ClockTypeOption;
@@ -86,5 +87,30 @@ public class KnowledgeSessionConfigurationTest {
                       config.getProperty( BeliefSystemTypeOption.PROPERTY_NAME ) );
     }
 
+    @Test
+    public void testAccumulateNullPropagation() {
+        // false by default
+        assertEquals(AccumulateNullPropagationOption.NO, config.getOption(AccumulateNullPropagationOption.class));
+        assertEquals("false", config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
 
+        config.setOption(AccumulateNullPropagationOption.YES);
+
+        assertEquals(AccumulateNullPropagationOption.YES,
+                     config.getOption(AccumulateNullPropagationOption.class));
+
+        // checking the string based getProperty() method
+        assertEquals("true",
+                     config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
+
+        // setting the options using the string based setProperty() method
+        config.setProperty(AccumulateNullPropagationOption.PROPERTY_NAME,
+                           "false");
+
+        // checking the type safe getOption() method
+        assertEquals(AccumulateNullPropagationOption.NO,
+                     config.getOption(AccumulateNullPropagationOption.class));
+        // checking the string based getProperty() method
+        assertEquals("false",
+                     config.getProperty(AccumulateNullPropagationOption.PROPERTY_NAME));
+    }
 }

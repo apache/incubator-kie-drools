@@ -39,13 +39,15 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
 import com.github.javaparser.ast.type.TypeParameter;
+import org.drools.model.view.QueryCallViewItem;
+import org.drools.model.view.QueryCallViewItemImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseBodyDeclaration;
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseImport;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
 public class QueryDefImplGenerator extends Generator {
 
@@ -219,11 +221,11 @@ public class QueryDefImplGenerator extends Generator {
         MethodDeclaration method = clazz.addMethod("call", Modifier.Keyword.PUBLIC);
         addOverride(method);
         method.addParameter("boolean", "open");
-        method.setType(parseClassOrInterfaceType("QueryCallViewItem"));
+        method.setType(toClassOrInterfaceType(QueryCallViewItem.class));
 
         BlockStmt statements = new BlockStmt();
         NodeList<Expression> arguments = nodeList();
-        ClassOrInterfaceType queryCallViewItemImpl = parseClassOrInterfaceType("QueryCallViewItemImpl");
+        ClassOrInterfaceType queryCallViewItemImpl = toClassOrInterfaceType(QueryCallViewItemImpl.class);
         ObjectCreationExpr objCreationExpr = new ObjectCreationExpr(null, queryCallViewItemImpl, arguments);
         statements.addStatement(new ReturnStmt(objCreationExpr));
         objCreationExpr.addArgument("this");

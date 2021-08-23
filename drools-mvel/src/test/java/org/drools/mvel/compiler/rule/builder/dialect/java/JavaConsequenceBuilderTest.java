@@ -204,15 +204,14 @@ public class JavaConsequenceBuilderTest {
         namedConsequences.put( "name1", name1 );
         
         setupTest( defaultCon, namedConsequences);
-        assertEquals( 1, context.getRule().getNamedConsequences().size() );
-        
+
         assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
         assertTrue( context.getRule().getConsequence() instanceof Consequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof Consequence );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof Consequence );
         
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
     }
     
     @Test
@@ -226,20 +225,19 @@ public class JavaConsequenceBuilderTest {
         namedConsequences.put( "name2", name2 );
         
         setupTest( defaultCon, namedConsequences);
-        assertEquals( 2, context.getRule().getNamedConsequences().size() );
-        
+
         assertTrue( context.getRule().getConsequence() instanceof CompiledInvoker );
         assertTrue( context.getRule().getConsequence() instanceof Consequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequences().get( "name1" ) instanceof Consequence );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequence( "name1" ) instanceof Consequence );
         
-        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof CompiledInvoker );
-        assertTrue( context.getRule().getNamedConsequences().get( "name2" ) instanceof Consequence );
+        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof CompiledInvoker );
+        assertTrue( context.getRule().getNamedConsequence( "name2" ) instanceof Consequence );
         
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name1" ) );
-        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequences().get( "name2" ) );
-        assertNotSame(  context.getRule().getNamedConsequences().get( "name1"), context.getRule().getNamedConsequences().get( "name2" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name1" ) );
+        assertNotSame( context.getRule().getConsequence(), context.getRule().getNamedConsequence( "name2" ) );
+        assertNotSame(  context.getRule().getNamedConsequence( "name1"), context.getRule().getNamedConsequence( "name2" ) );
     }
 
     private void assertEqualsIgnoreSpaces(String expected,

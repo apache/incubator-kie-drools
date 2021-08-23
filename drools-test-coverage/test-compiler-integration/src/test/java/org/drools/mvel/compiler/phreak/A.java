@@ -27,15 +27,15 @@ public class A {
         this.object = object;
     }
     
-    public static A a(Integer object) {
-        return new A( object );
+    public static org.drools.mvel.integrationtests.phreak.A a(Integer object) {
+        return new org.drools.mvel.integrationtests.phreak.A(object );
     }
 
-    public static A[] a(Integer... objects) {
-        A[] as = new A[objects.length];
+    public static org.drools.mvel.integrationtests.phreak.A[] a(Integer... objects) {
+        org.drools.mvel.integrationtests.phreak.A[] as = new org.drools.mvel.integrationtests.phreak.A[objects.length];
         int i = 0;
         for ( Integer object : objects ) {
-            as[i++] = new A( object );
+            as[i++] = new org.drools.mvel.integrationtests.phreak.A(object );
         }
         return as;
     }        
@@ -61,10 +61,10 @@ public class A {
         if ( this == obj ) return true;
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
-        A other = (A) obj;
+        org.drools.mvel.integrationtests.phreak.A other = (org.drools.mvel.integrationtests.phreak.A) obj;
         if ( object == null ) {
-            if ( other.object != null ) return false;
-        } else if ( !object.equals( other.object ) ) return false;
+            if ( other.getObject() != null ) return false;
+        } else if ( !object.equals( other.getObject() ) ) return false;
         return true;
     }
 

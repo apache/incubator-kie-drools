@@ -75,6 +75,7 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         super(id, context);
         this.dataProvider = dataProvider;
         setLeftTupleSource(tupleSource);
+        this.setObjectCount(leftInput.getObjectCount()); // 'async send' node does not increase the object count
         this.alphaConstraints = constraints;
         this.betaConstraints = (binder == null) ? EmptyBetaConstraints.getInstance() : binder;
         this.betaConstraints.init(context, getType());
@@ -353,7 +354,8 @@ public class AsyncSendNode<T extends AsyncSendNode.AsyncSendMemory> extends Left
         return leftInput.getObjectTypeNode();
     }
 
-    public void attach( BuildContext context ) {
+    public void doAttach( BuildContext context ) {
+        super.doAttach(context);
         this.leftInput.addTupleSink( this, context );
     }
 

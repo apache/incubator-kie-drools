@@ -3,7 +3,7 @@ Models Archetype
 
 Usage:
 
-    cd kie-pmml-models-drools
+    cd drools/kie-pmml-trusty/kie-pmml-models/kie-pmml-models-drools
 
     mvn archetype:generate -B \ (not interactive)
     -DarchetypeGroupId=org.kie \
@@ -13,9 +13,9 @@ Usage:
 
 N.B.
 
-For model name do follow names as defined inside PMML specs, e.g RegressionModel -> Regression, TreeModel -> Tree
+For model name do follow names as defined inside PMML specs, without trailing "Model": e.g RegressionModel -> Regression, TreeModel -> Tree, ClusteringModel -> Clustering
 
-    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-drools-archetype -DarchetypeVersion=7.40.1-SNAPSHOT -DmodelName=NaiveBayes
+    mvn archetype:generate -B -DarchetypeGroupId=org.kie -DarchetypeArtifactId=kie-pmml-models-drools-archetype -DarchetypeVersion=%KIE_VERSION% -DmodelName=NaiveBayes
 
 Test:
 

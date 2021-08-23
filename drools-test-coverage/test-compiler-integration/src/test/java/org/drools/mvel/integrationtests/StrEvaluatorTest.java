@@ -16,32 +16,42 @@
 package org.drools.mvel.integrationtests;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
-import org.drools.core.impl.InternalKnowledgeBase;
-import org.drools.core.impl.KnowledgeBaseFactory;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.RoutingMessage;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieBaseUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
-import org.kie.internal.builder.KnowledgeBuilder;
-import org.kie.internal.builder.KnowledgeBuilderError;
-import org.kie.internal.builder.KnowledgeBuilderErrors;
-import org.kie.internal.builder.KnowledgeBuilderFactory;
-import org.kie.internal.io.ResourceFactory;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class StrEvaluatorTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class StrEvaluatorTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public StrEvaluatorTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+     // TODO: EM failed with some tests. File JIRAs
+        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+    }
 
     @Test
     public void testStrStartsWith() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -65,7 +75,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     @Test
     public void testStrEndsWith() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -89,7 +99,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     @Test
     public void testStrLengthEquals() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -109,7 +119,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     @Test
     public void testStrNotStartsWith() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -129,7 +139,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     @Test
     public void testStrNotEndsWith() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -151,7 +161,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     @Test
     public void testStrLengthNoEquals() {
         KieBase kbase = readKnowledgeBase();
-        KieSession ksession = createKnowledgeSession(kbase);
+        KieSession ksession = kbase.newKieSession();
         try {
             List list = new ArrayList();
             ksession.setGlobal( "list", list );
@@ -180,7 +190,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      + " RoutingMessage( routingValue == \"R2\" || routingValue str[startsWith] \"R1\" )\n"
                      + " then\n"
                      + "end\n";
-        KieBase kbase = loadKnowledgeBaseFromString( drl );
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         try {
@@ -205,7 +215,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      " Object( this#" + Person.class.getName() + ".name str[startsWith] \"M\" ) " +
                      " then " +
                      "end ";
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         try {
@@ -225,7 +235,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
                      " Object( this#String str[startsWith] \"M\" ) " +
                      " then " +
                      "end ";
-        KieBase kbase = loadKnowledgeBaseFromString(drl);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         KieSession ksession = kbase.newKieSession();
         try {
@@ -238,18 +248,7 @@ public class StrEvaluatorTest extends CommonTestMethodBase {
     }
 
     private KieBase readKnowledgeBase() {
-        KnowledgeBuilder kbuilder = KnowledgeBuilderFactory.newKnowledgeBuilder();
-        kbuilder.add( ResourceFactory.newInputStreamResource(getClass().getResourceAsStream("strevaluator_test.drl")),
-                ResourceType.DRL );
-        KnowledgeBuilderErrors errors = kbuilder.getErrors();
-        if (errors.size() > 0) {
-            for (KnowledgeBuilderError error: errors) {
-                System.err.println(error);
-            }
-            throw new IllegalArgumentException("Could not parse knowledge." + errors.toArray());
-        }
-        InternalKnowledgeBase kbase = KnowledgeBaseFactory.newKnowledgeBase();
-        kbase.addPackages(kbuilder.getKnowledgePackages());
+        KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources(getClass(), kieBaseTestConfiguration, "strevaluator_test.drl");
         return kbase;
     }
 

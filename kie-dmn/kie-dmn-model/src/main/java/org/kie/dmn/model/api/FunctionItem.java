@@ -30,8 +30,10 @@ public interface FunctionItem extends DMNElement {
     /**
      * for consistency in the modeling, use QName
      */
+    @GwtIncompatible
     QName getOutputTypeRef();
 
+    @GwtIncompatible
     void setOutputTypeRef(QName value);
 
 }

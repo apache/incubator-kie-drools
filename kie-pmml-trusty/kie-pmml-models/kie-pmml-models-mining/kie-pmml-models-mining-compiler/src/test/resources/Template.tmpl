@@ -1,10 +1,15 @@
-public class Template {
+import java.util.Collections;
 
+import org.kie.pmml.models.mining.model.KiePMMLMiningModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
+
+
+public class Template extends KiePMMLMiningModel {
 
     public Template() {
         super(name, Collections.emptyList());
-        targetField = targetField;
-        miningFunction = miningFunction;
+        targetField = null;
+        miningFunction = null;
         pmmlMODEL = null;
         segmentation = null;
     }

@@ -18,8 +18,12 @@ package org.drools.mvel.integrationtests;
 
 import java.util.Collection;
 
-import org.drools.mvel.CommonTestMethodBase;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieFileSystem;
@@ -31,7 +35,19 @@ import org.kie.api.runtime.KieContainer;
 import static org.junit.Assert.assertEquals;
 
 // DROOLS-1044
-public class KieBaseIncludesTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class KieBaseIncludesTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
+
+    public KieBaseIncludesTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
+    }
 
     /**
      * Test the inclusion of a KieBase defined in one KJAR into the KieBase of another KJAR.
@@ -100,7 +116,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                .write("src/main/resources/rules2/rules.drl", drl2)
                                .writeKModuleXML(kmoduleContent2);
 
-        ks.newKieBuilder(kfs2).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs2, true);
 
         KieFileSystem kfs1 = ks.newKieFileSystem()
                                //.generateAndWritePomXML(releaseId1)
@@ -108,7 +124,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                .write("src/main/resources/rules/rules.drl", drl1)
                                .writeKModuleXML(kmoduleContent1);
 
-        ks.newKieBuilder(kfs1).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs1, true);
 
         KieContainer kc = ks.newKieContainer( releaseId1 );
         KieBase kieBase = kc.getKieBase();
@@ -187,7 +203,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                .write("src/main/resources/rules/rules.drl", drl2)
                                .writeKModuleXML(kmoduleContent2);
 
-        ks.newKieBuilder(kfs2).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs2, true);
 
         KieFileSystem kfs1 = ks.newKieFileSystem()
                                //.generateAndWritePomXML(releaseId1)
@@ -195,7 +211,7 @@ public class KieBaseIncludesTest extends CommonTestMethodBase {
                                .write("src/main/resources/rules/rules.drl", drl1)
                                .writeKModuleXML(kmoduleContent1);
 
-        ks.newKieBuilder(kfs1).buildAll();
+        KieUtil.getKieBuilderFromKieFileSystem(kieBaseTestConfiguration, kfs1, true);
 
         KieContainer kc = ks.newKieContainer(releaseId1);
         KieBase kieBase = kc.getKieBase();

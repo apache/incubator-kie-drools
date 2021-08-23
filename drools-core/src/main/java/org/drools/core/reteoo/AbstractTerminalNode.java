@@ -50,11 +50,14 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
 
     private PathMemSpec pathMemSpec;
 
+    private int objectCount;
+
     public AbstractTerminalNode() { }
 
     public AbstractTerminalNode(int id, RuleBasePartitionId partitionId, boolean partitionsEnabled, LeftTupleSource source, final BuildContext context) {
         super(id, partitionId, partitionsEnabled);
         this.tupleSource = source;
+        this.setObjectCount(getLeftTupleSource().getObjectCount()); // 'terminal' nodes do not increase the count
         context.addPathEndNode(this);
         initMemoryId( context );
     }
@@ -65,6 +68,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         declaredMask = (BitMask) in.readObject();
         inferredMask = (BitMask) in.readObject();
         negativeMask = (BitMask) in.readObject();
+        objectCount = in.readInt();
     }
 
     public void writeExternal(ObjectOutput out) throws IOException {
@@ -73,6 +77,7 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         out.writeObject(declaredMask);
         out.writeObject(inferredMask);
         out.writeObject(negativeMask);
+        out.writeInt(objectCount);
     }
 
     @Override
@@ -98,8 +103,16 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
         return pathEndNodes;
     }
 
-    public int getPositionInPath() {
-        return tupleSource.getPositionInPath() + 1;
+    public int getPathIndex() {
+        return tupleSource.getPathIndex() + 1;
+    }
+
+    public int getObjectCount() {
+        return objectCount;
+    }
+
+    public void setObjectCount(int count) {
+        objectCount = count;
     }
 
     protected void initDeclaredMask(BuildContext context) {
@@ -227,9 +240,9 @@ public abstract class AbstractTerminalNode extends BaseNode implements TerminalN
     }
 
     public static LeftTupleNode[] getPathNodes(PathEndNode endNode) {
-        LeftTupleNode[] pathNodes = new LeftTupleNode[endNode.getPositionInPath()+1];
+        LeftTupleNode[] pathNodes = new LeftTupleNode[endNode.getPathIndex() + 1];
         for (LeftTupleNode node = endNode; node != null; node = node.getLeftTupleSource()) {
-            pathNodes[node.getPositionInPath()] = node;
+            pathNodes[node.getPathIndex()] = node;
         }
         return pathNodes;
     }

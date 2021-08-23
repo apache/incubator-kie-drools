@@ -16,14 +16,23 @@
 
 package org.drools.mvel.compiler.simulation;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+
 import org.drools.core.fluent.impl.ExecutableBuilderImpl;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Message;
+import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
+import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
+import org.drools.testcoverage.common.util.KieUtil;
+import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 import org.kie.api.KieServices;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
-import org.kie.api.io.ResourceType;
+import org.kie.api.io.Resource;
 import org.kie.api.runtime.ExecutableRunner;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
@@ -37,7 +46,10 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
-public class BatchRunFluentTest extends CommonTestMethodBase {
+@RunWith(Parameterized.class)
+public class BatchRunFluentTest {
+
+    private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
     String header = "package org.drools.mvel.compiler\n" +
             "import " + Message.class.getCanonicalName() + "\n";
@@ -61,7 +73,23 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
             "end\n";
 
     String id = "org.kie";
-    ReleaseId releaseId = SimulateTestBase.createKJarWithMultipleResources(id, new String[]{header + drl1}, new ResourceType[]{ResourceType.DRL});
+    ReleaseId releaseId;
+
+    public BatchRunFluentTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+        this.kieBaseTestConfiguration = kieBaseTestConfiguration;
+    }
+
+    @Parameterized.Parameters(name = "KieBase type={0}")
+    public static Collection<Object[]> getParameters() {
+        return TestParametersUtil.getKieBaseStreamConfigurations(true, true);
+    }
+
+    @Before
+    public void setUp() {
+        releaseId = KieUtil.generateReleaseId(id);
+        final List<Resource> resources = KieUtil.getResourcesFromDrls(header + drl1);
+        KieUtil.getKieModuleFromResources(releaseId, kieBaseTestConfiguration, KieSessionTestConfiguration.STATEFUL_PSEUDO, new HashMap<>(), resources.toArray(new Resource[]{}));
+    }
 
     @Test
     public void testOutName() {
@@ -453,7 +481,7 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
 
         f.newApplicationContext("app1")
                 .getKieContainer(releaseId)
-                .newSession(id + ".KSession1")
+                .newSession(KieSessionTestConfiguration.KIE_SESSION_MODEL_NAME)
                 .insert("h1")
                 .fireAllRules()
                 .getGlobal("outS").out("outS1")
@@ -497,12 +525,5 @@ public class BatchRunFluentTest extends CommonTestMethodBase {
         requestContext = runner.execute(f.getExecutable());
 
         assertEquals("h1", requestContext.getOutputs().get("outS2"));
-    }
-
-    public static KieModule createAndDeployJar(KieServices ks,
-                                               ReleaseId releaseId,
-                                               String... drls) {
-        byte[] jar = createKJar(ks, releaseId, null, drls);
-        return deployJar(ks, jar);
     }
 }

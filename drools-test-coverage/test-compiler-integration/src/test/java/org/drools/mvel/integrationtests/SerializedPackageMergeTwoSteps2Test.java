@@ -40,6 +40,8 @@ import static org.junit.Assert.assertEquals;
 
 public class SerializedPackageMergeTwoSteps2Test {
 
+    // kpackage serialization is not supported. But leave it for standard-drl.
+
     @Test @Ignore("DROOLS-5620 - test failed randomly and it doesn't reproduce the original issue (DROOLS-2224) scenario on CI."+
                   "It can be tested manually")
     public void testBuildAndSerializePackagesInTwoSteps2() throws IOException, ClassNotFoundException    {        

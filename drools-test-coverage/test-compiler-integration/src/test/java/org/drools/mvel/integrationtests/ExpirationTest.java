@@ -32,15 +32,11 @@ import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.mvel.integrationtests.facts.BasicEvent;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.builder.KieModule;
-import org.kie.api.conf.EqualityBehaviorOption;
-import org.kie.api.conf.EventProcessingOption;
 import org.kie.api.definition.type.Expires;
 import org.kie.api.definition.type.Role;
 import org.kie.api.runtime.KieSession;
@@ -61,8 +57,7 @@ public class ExpirationTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM failed with testBeta, testEvalExpired, testEvalNotExpired. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
     @Test
@@ -80,8 +75,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
@@ -119,8 +113,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
@@ -160,8 +153,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
@@ -197,8 +189,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
@@ -237,8 +228,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler sessionClock = ksession.getSessionClock();
@@ -339,8 +329,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = ksession.getSessionClock();
@@ -404,8 +393,7 @@ public class ExpirationTest {
         KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kbase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         KieSession ksession = kbase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = ksession.getSessionClock();
@@ -493,8 +481,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = kieSession.getSessionClock();
@@ -563,8 +550,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = kieSession.getSessionClock();
@@ -740,8 +726,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = kieSession.getSessionClock();
@@ -785,8 +770,8 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EqualityBehaviorOption.EQUALITY, EventProcessingOption.STREAM);
+        KieBaseTestConfiguration equalityConfig = TestParametersUtil.getEqualityInstanceOf(kieBaseTestConfiguration);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", equalityConfig, drl);
         final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
 
         //clock init to current time
@@ -873,8 +858,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
 
         final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
 
@@ -970,8 +954,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = new SessionConfigurationImpl();
         sessionConfig.setOption(ClockTypeOption.get(ClockType.PSEUDO_CLOCK.getId()));
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession(sessionConfig, null);
 
         //clock init to current time
@@ -1024,8 +1007,7 @@ public class ExpirationTest {
         final KieSessionConfiguration sessionConfig = KnowledgeBaseFactory.newKnowledgeSessionConfiguration();
         sessionConfig.setOption( ClockTypeOption.get( ClockType.PSEUDO_CLOCK.getId() ) );
 
-        final KieModule kieModule = KieUtil.getKieModuleFromDrls("test", kieBaseTestConfiguration, drl);
-        final KieBase kieBase = KieBaseUtil.newKieBaseFromKieModuleWithAdditionalOptions(kieModule, kieBaseTestConfiguration, EventProcessingOption.STREAM);
+        KieBase kieBase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
         final KieSession kieSession = kieBase.newKieSession( sessionConfig, null );
 
         PseudoClockScheduler clock = kieSession.getSessionClock();
