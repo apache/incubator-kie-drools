@@ -30,10 +30,13 @@ import org.optaplanner.examples.common.experimental.api.ConsecutiveInfo;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
 /**
- * A ConsecutiveSetTree determine what value are consecutive. A sequence x1,x2,x3,...,xn
- * is understood to be consecutive by d iff x2 - x1 <= d, x3 -x2 <= d, ..., xn - x(n-1) <= d.
- * This datastructure can be thought as an interval tree that maps the point p to
- * the interval [p, p + d].
+ * A {@code ConsecutiveSetTree} determines what values are consecutive. A sequence
+ * <i>x<sub>1</sub>,&nbsp;x<sub>2</sub>,&nbsp;x<sub>3</sub>,&nbsp;...,&nbsp;x<sub>n</sub></i>
+ * is understood to be consecutive by <i>d</i> iff
+ * <i>x<sub>2</sub> &minus; x<sub>1</sub> &le; d, x<sub>3</sub> &minus; x<sub>2</sub> &le; d, ..., x<sub>n</sub> &minus;
+ * x<sub>n-1</sub> &le; d</i>.
+ * This data structure can be thought as an interval tree that maps the point <i>p</i> to
+ * the interval <i>[p, p + d]</i>.
  *
  * @param <Value_> The type of value stored (examples: shifts)
  * @param <Point_> The type of the point (examples: int, LocalDateTime)
