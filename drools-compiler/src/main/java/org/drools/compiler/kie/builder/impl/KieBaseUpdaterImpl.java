@@ -80,7 +80,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
                 }
             }
 
-            KieBaseUpdate kieBaseUpdate = createKieBaseUpdateEvent();
+            KieBaseUpdate kieBaseUpdate = createKieBaseUpdate();
             ctx.kBase.beforeIncrementalUpdate( kieBaseUpdate );
             rebuildAll(kbuilder, ckbuilder);
             ctx.kBase.afterIncrementalUpdate( kieBaseUpdate );
@@ -93,7 +93,7 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         }
     }
 
-    private KieBaseUpdate createKieBaseUpdateEvent() {
+    private KieBaseUpdate createKieBaseUpdate() {
         KieBaseUpdate kieBaseUpdate = new KieBaseUpdate();
 
         for (ResourceChangeSet changeSet : ctx.cs.getChanges().values()) {
