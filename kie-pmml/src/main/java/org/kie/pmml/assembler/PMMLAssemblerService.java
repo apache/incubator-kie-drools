@@ -62,7 +62,7 @@ import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
 /**
  * This implementation is deprecated and will be removed in future releases.
  *
- * @see  <a href="https://github.com/kiegroup/drools/tree/master/kie-pmml-trusty">PMML Trusty</a>
+ * @see  <a href="https://github.com/kiegroup/drools/tree/main/kie-pmml-trusty">PMML Trusty</a>
  */
 @Deprecated
 public class PMMLAssemblerService implements KieAssemblerService {
