@@ -82,7 +82,11 @@ public class MockRightTupleSink
         return 0;
     }
 
-    public boolean isAssociatedWith( Rule rule ) {
+    @Override public Rule[] getAssociatedRules() {
+        return new Rule[0];
+    }
+
+    public boolean isAssociatedWith(Rule rule) {
         return false;
     }
 
