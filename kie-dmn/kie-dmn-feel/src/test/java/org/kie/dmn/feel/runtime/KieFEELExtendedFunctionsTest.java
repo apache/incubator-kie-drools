@@ -80,6 +80,7 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "put({name: \"John Doe\", age: 0}, \"age\", 47)", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "put all([{name: \"John Doe\"}, {age: 47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "put all([{name: \"John Doe\", age: 0}, {age: 47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
+                { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\", \"value\":47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},

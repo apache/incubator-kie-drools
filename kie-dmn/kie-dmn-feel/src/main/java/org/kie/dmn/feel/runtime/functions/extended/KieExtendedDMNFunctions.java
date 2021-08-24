@@ -49,6 +49,7 @@ public class KieExtendedDMNFunctions {
 
                                                                          PutFunction.INSTANCE,
                                                                          PutAllFunction.INSTANCE,
+                                                                         ContextFunction.INSTANCE,
 
                                                                          // CQL based, two value logic functions
                                                                         NNAnyFunction.INSTANCE,
