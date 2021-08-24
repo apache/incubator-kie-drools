@@ -186,16 +186,14 @@ public class MeetingSchedulingConstraintProvider implements ConstraintProvider {
     protected Constraint overlappingMeetings(ConstraintFactory constraintFactory) {
         return constraintFactory.fromUnfiltered(MeetingAssignment.class)
                 .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null)
-                .join(MeetingAssignment.class,
+                .join(constraintFactory.fromUnfiltered(MeetingAssignment.class)
+                        .filter(meetingAssignment -> meetingAssignment.getStartingTimeGrain() != null),
                         greaterThan((leftAssignment) -> leftAssignment.getMeeting().getId(),
                                 (rightAssignment) -> rightAssignment.getMeeting().getId()),
                         overlapping(assignment -> assignment.getStartingTimeGrain().getGrainIndex(),
                                 assignment -> assignment.getStartingTimeGrain().getGrainIndex() +
-                                        assignment.getMeeting().getDurationInGrains()),
-                        filtering((leftAssignment, rightAssignment) -> rightAssignment.getStartingTimeGrain() != null),
-                        filtering((leftAssignment,
-                                rightAssignment) -> leftAssignment.getMeeting() != rightAssignment.getMeeting()))
-                .penalizeConfigurable("Overlapping meetings");
+                                        assignment.getMeeting().getDurationInGrains()))
+                .penalizeConfigurable("Overlapping meetings", MeetingAssignment::calculateOverlap);
     }
 
     // TODO: Unspecified bug marked in DRL

@@ -549,11 +549,11 @@ public class MeetingSchedulingConstraintProviderTest {
     @Test
     public void overlappingMeetingsPenalized() {
         TimeGrain leftTimeGrain = new TimeGrain();
-        leftTimeGrain.setGrainIndex(0);
+        leftTimeGrain.setGrainIndex(1);
 
         Meeting leftMeeting = new Meeting();
         leftMeeting.setId(1L);
-        leftMeeting.setDurationInGrains(4);
+        leftMeeting.setDurationInGrains(3);
 
         Room room = new Room();
 
@@ -564,13 +564,13 @@ public class MeetingSchedulingConstraintProviderTest {
 
         Meeting rightMeeting = new Meeting();
         rightMeeting.setId(0L);
-        rightMeeting.setDurationInGrains(4);
+        rightMeeting.setDurationInGrains(3);
 
         MeetingAssignment rightAssignment = new MeetingAssignment(1L, rightMeeting, rightTimeGrain, room);
 
         constraintVerifier.verifyThat(MeetingSchedulingConstraintProvider::overlappingMeetings)
                 .given(leftAssignment, rightAssignment)
-                .penalizesBy(1);
+                .penalizesBy(2);
     }
 
     @Test

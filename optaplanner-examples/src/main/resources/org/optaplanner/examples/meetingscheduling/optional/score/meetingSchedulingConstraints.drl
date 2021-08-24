@@ -128,13 +128,18 @@ end
 
 rule "Overlapping meetings"
     when
-        $leftAssignment : MeetingAssignment(startingTimeGrain != null)
-        $rightAssignment : MeetingAssignment(startingTimeGrain != null, meeting.getId() < $leftAssignment.getMeeting().getId(),
-            meeting != $leftAssignment.getMeeting())
+        $leftAssignment : MeetingAssignment(startingTimeGrain != null,
+            $leftMeetingId: meeting.getId(),
+            $leftMeetingStart: getStartingTimeGrain().getGrainIndex(),
+            $leftMeetingEnd: getLastTimeGrainIndex())
+        $rightAssignment : MeetingAssignment(startingTimeGrain != null,
+            meeting.getId() < $leftMeetingId,
+            $rightMeetingStart: getStartingTimeGrain().getGrainIndex(),
+            $rightMeetingEnd: getLastTimeGrainIndex(),
+            $leftMeetingStart <= $rightMeetingEnd,
+            $leftMeetingEnd >= $rightMeetingStart)
     then
-        if ($leftAssignment.calculateOverlap($rightAssignment) != 0) {
-            scoreHolder.penalize(kcontext);
-        }
+        scoreHolder.penalize(kcontext, $leftAssignment.calculateOverlap($rightAssignment));
 end
 
 rule "Assign larger rooms first"
