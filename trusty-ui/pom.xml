@@ -173,33 +173,6 @@
       <properties>
         <quarkus.package.type>native</quarkus.package.type>
       </properties>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration combine.self="override">
-                  <includes>
-                    <include>**/Native*IT.java</include>
-                  </includes>
-                  <excludes>
-                    <exclude>**/Keycloak*IT.java</exclude>
-                  </excludes>
-                  <systemProperties>
-                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                    <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-                  </systemProperties>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
     </profile>
   </profiles>
 </project>

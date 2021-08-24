@@ -188,7 +188,6 @@
                 <skip.ui.build>true</skip.ui.build>
                 <failsafe.include>**/Native*IT.java</failsafe.include>
                 <failsafe.exclude></failsafe.exclude>
-                <quarkus.package.type>native</quarkus.package.type>
                 <!-- Native building needs a fixed port for tests -->
                 <tests.quarkus.http.port>8080</tests.quarkus.http.port>
             </properties>
