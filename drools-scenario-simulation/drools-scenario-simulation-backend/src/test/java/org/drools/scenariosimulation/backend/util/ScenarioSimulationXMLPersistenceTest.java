@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.Settings;
 import org.junit.Test;
 import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
@@ -353,7 +354,12 @@ public class ScenarioSimulationXMLPersistenceTest {
     public void unmarshalPMML() throws Exception {
         String toUnmarshal = getFileContent("scesim-pmml.scesim");
         final ScenarioSimulationModel retrieved = ScenarioSimulationXMLPersistence.getInstance().unmarshal(toUnmarshal);
-        assertEquals(ScenarioSimulationModel.Type.PMML, retrieved.getSettings().getType());
+        Settings retrievedSettings = retrieved.getSettings();
+        assertEquals(ScenarioSimulationModel.Type.PMML, retrievedSettings.getType());
+        String expected = "src/test/resources/folderToTest/CategoricalVariablesRegression.pmml";
+        assertEquals(expected, retrievedSettings.getPmmlFilePath());
+        expected = "CategoricalVariablesRegression";
+        assertEquals(expected, retrievedSettings.getPmmlModelName());
         commonCheckSimulation(retrieved);
     }
 
