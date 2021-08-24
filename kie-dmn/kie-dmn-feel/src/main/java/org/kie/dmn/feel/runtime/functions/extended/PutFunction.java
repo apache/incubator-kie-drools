@@ -53,7 +53,7 @@ public class PutFunction extends BaseFEELFunction {
         return result;
     }
 
-    public FEELFnResult<Map<String, Object>> toMap(Object context) {
+    public static FEELFnResult<Map<String, Object>> toMap(Object context) {
         Map<String, Object> result;
         if (context instanceof Map) {
             result = new HashMap<>();
@@ -62,7 +62,7 @@ public class PutFunction extends BaseFEELFunction {
                 if (kv.getKey() instanceof String) {
                     result.put((String) kv.getKey(), kv.getValue());
                 } else {
-                    FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "context", "contains a key which is not a string: " + kv.getKey()));
+                    FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "found a key which is not a string: " + kv.getKey()));
                 }
             }
         } else if (BuiltInType.determineTypeFromInstance(context) == BuiltInType.UNKNOWN) {
