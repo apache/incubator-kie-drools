@@ -35,12 +35,23 @@
         <module>jobs</module>
         <module>mail</module>
         <module>persistence</module>
-        <module>process-management</module>
-        <module>process-svg</module>
-        <module>rest-exception-handler</module>
-        <module>task-management</module>
         <module>tracing</module>
         <module>knative</module>
+      </modules>
+    </profile>
+
+    <profile>
+      <id>integration-test-modules</id>
+      <activation>
+        <property>
+          <name>!excludeITModules</name>
+        </property>
+      </activation>
+      <modules>
+        <module>task-management</module>
+        <module>process-svg</module>
+        <module>rest-exception-handler</module>
+        <module>process-management</module>
       </modules>
     </profile>
   </profiles>

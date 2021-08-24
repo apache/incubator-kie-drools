@@ -1,4 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie.kogito</groupId>
@@ -17,13 +17,26 @@
   <modules>
     <module>integration-tests-quarkus-rules</module>
     <module>integration-tests-quarkus-processes</module>
-    <module>integration-tests-quarkus-processes-persistence</module>
     <module>integration-tests-quarkus-decisions</module>
     <module>integration-tests-quarkus-predictions</module>
     <module>integration-tests-quarkus-norest</module>
     <module>integration-tests-springboot</module>
     <module>integration-tests-kogito-plugin</module>
-    <module>integration-tests-quarkus-gradle</module>
   </modules>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <modules>
+        <module>integration-tests-quarkus-processes-persistence</module>
+        <module>integration-tests-quarkus-gradle</module>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>

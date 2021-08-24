@@ -77,12 +77,8 @@
       <plugin>
         <groupId>org.kie.kogito</groupId>
         <artifactId>kogito-maven-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-      </plugin>
-      <plugin>
-        <artifactId>maven-clean-plugin</artifactId>
+        <version>${project.version}</version> <!-- Needed, otherwise it would use the latest release found on Maven central -->
+        <extensions>true</extensions>
       </plugin>
     </plugins>
   </build>

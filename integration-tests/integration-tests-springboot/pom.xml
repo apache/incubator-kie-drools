@@ -17,13 +17,6 @@
       <version>${project.version}</version>
       <type>pom</type>
     </dependency>
-    <!-- why we need Quarkus BOM here? Well, kogito-test-utils depends on it and Maven needs to make it available in localRepo -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-quarkus-bom</artifactId>
-      <version>${project.version}</version>
-      <type>pom</type>
-    </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-spring-boot-bom</artifactId>
@@ -52,7 +45,7 @@
 
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-cloudevents</artifactId>
+      <artifactId>kogito-addons-springboot-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -71,24 +64,47 @@
       <artifactId>kogito-addons-springboot-monitoring-prometheus</artifactId>
     </dependency>
 
-    <!-- Persistence -->
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-infinispan</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-postgresql</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-mongodb</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-persistence-jdbc</artifactId>
-    </dependency>
   </dependencies>
+
+  <profiles>
+    <profile>
+      <id>default</id>
+      <activation>
+        <property>
+          <name>!productized</name>
+        </property>
+      </activation>
+      <dependencies>
+        <!-- Persistence -->
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-persistence-infinispan</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-persistence-postgresql</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-persistence-mongodb</artifactId>
+        </dependency>
+        <dependency>
+          <groupId>org.kie.kogito</groupId>
+          <artifactId>kogito-addons-persistence-jdbc</artifactId>
+        </dependency>
+      </dependencies>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-invoker-plugin</artifactId>
+            <configuration>
+              <pomExcludes></pomExcludes>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
 
   <build>
     <pluginManagement>
@@ -98,6 +114,7 @@
           <configuration>
             <streamLogs>true</streamLogs>
             <postBuildHookScript>verify</postBuildHookScript> <!-- no extension required -->
+            <pomExcludes>integration-tests-springboot-persistence-it/**/pom.xml</pomExcludes>
           </configuration>
         </plugin>
       </plugins>

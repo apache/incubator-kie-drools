@@ -32,12 +32,22 @@
         <module>explainability</module>
         <module>jobs</module>
         <module>mail</module>
-        <module>process-management</module>
-        <module>process-svg</module>
-        <module>rest-exception-handler</module>
-        <module>task-management</module>
         <module>task-notification</module>
         <module>tracing-decision</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>integration-test-modules</id>
+      <activation>
+        <property>
+          <name>!excludeITModules</name>
+        </property>
+      </activation>
+      <modules>
+        <module>rest-exception-handler</module>
+        <module>process-svg</module>
+        <module>process-management</module>
+        <module>task-management</module>
       </modules>
     </profile>
   </profiles>

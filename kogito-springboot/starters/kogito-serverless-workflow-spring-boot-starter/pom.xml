@@ -21,7 +21,7 @@
     <!-- Out of the box CE support -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-springboot-cloudevents</artifactId>
+      <artifactId>kogito-addons-springboot-messaging</artifactId>
     </dependency>
     <dependency>
       <groupId>org.kie.kogito</groupId>

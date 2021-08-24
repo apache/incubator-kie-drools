@@ -35,20 +35,7 @@
     <module>addons</module>
     <module>starters</module>
     <module>archetype</module>
+    <module>test</module>
   </modules>
-
-  <profiles>
-    <profile>
-      <id>default</id>
-      <activation>
-        <property>
-          <name>!productized</name>
-        </property>
-      </activation>
-      <modules>
-        <module>test</module>
-      </modules>
-    </profile>
-  </profiles>
 
 </project>

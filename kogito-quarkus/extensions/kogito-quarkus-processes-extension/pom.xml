@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>quarkus-extensions</artifactId>
@@ -11,11 +11,24 @@
 
   <artifactId>kogito-quarkus-processes-extension</artifactId>
   <name>Kogito :: Quarkus Processes Extension</name>
+  <packaging>pom</packaging>
+
   <modules>
     <module>kogito-quarkus-processes</module>
     <module>kogito-quarkus-processes-deployment</module>
-    <module>kogito-quarkus-processes-integration-test-hot-reload</module>
   </modules>
 
-  <packaging>pom</packaging>
+  <profiles>
+    <profile>
+      <id>integration-test-modules</id>
+      <activation>
+        <property>
+          <name>!excludeITModules</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-quarkus-processes-integration-test-hot-reload</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>

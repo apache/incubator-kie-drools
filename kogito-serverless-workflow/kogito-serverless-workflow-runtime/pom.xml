@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>kogito-serverless-workflow-runtime</artifactId>
-  <name>Kogito Serverless Workflow Runtime</name>
+  <name>Kogito :: Serverless Workflow :: Runtime</name>
   <description>Kogito Serverless Workflow Runtime</description>
 
   <dependencies>

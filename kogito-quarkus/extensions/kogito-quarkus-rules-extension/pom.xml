@@ -1,24 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>quarkus-extensions</artifactId>
-        <groupId>org.kie.kogito</groupId>
-        <version>2.0.0-SNAPSHOT</version>
-    </parent>
-    <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <artifactId>quarkus-extensions</artifactId>
+    <groupId>org.kie.kogito</groupId>
+    <version>2.0.0-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>kogito-quarkus-rules-extension</artifactId>
-    <name>Kogito :: Quarkus Rules Extension</name>
+  <artifactId>kogito-quarkus-rules-extension</artifactId>
+  <name>Kogito :: Quarkus Rules Extension</name>
 
-    <packaging>pom</packaging>
-    <modules>
-        <module>kogito-quarkus-rules-deployment</module>
-        <module>kogito-quarkus-rules</module>
+  <packaging>pom</packaging>
+  <modules>
+    <module>kogito-quarkus-rules-deployment</module>
+    <module>kogito-quarkus-rules</module>
+  </modules>
+
+  <profiles>
+    <profile>
+      <id>integration-test-modules</id>
+      <activation>
+        <property>
+          <name>!excludeITModules</name>
+        </property>
+      </activation>
+      <modules>
         <module>kogito-quarkus-rules-integration-test</module>
         <module>kogito-quarkus-rules-integration-test-hot-reload</module>
         <module>kogito-quarkus-rules-integration-test-session</module>
-    </modules>
+      </modules>
+    </profile>
+  </profiles>
 
 </project>
