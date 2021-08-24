@@ -39,7 +39,7 @@ public class PutAllFunction extends BaseFEELFunction {
         super("put all");
     }
 
-    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("context") List<Object> contexts) {
+    public FEELFnResult<Map<String, Object>> invoke(@ParameterName("contexts") List<Object> contexts) {
         if (contexts == null) {
             return FEELFnResult.ofError(new InvalidParametersEvent(FEELEvent.Severity.ERROR, "contexts", "cannot be null"));
         }
