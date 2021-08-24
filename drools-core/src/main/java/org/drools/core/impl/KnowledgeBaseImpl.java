@@ -1500,7 +1500,18 @@ public class KnowledgeBaseImpl
         return this.classTypeDeclaration.values();
     }
 
-    public void addRules( Collection<RuleImpl> rules ) throws InvalidPatternException {
+    @Override
+    public void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) {
+        InternalKnowledgeBase.super.beforeIncrementalUpdate(kieBaseUpdate);
+        System.out.println(kieBaseUpdate);
+    }
+
+    @Override
+    public void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) {
+        InternalKnowledgeBase.super.afterIncrementalUpdate(kieBaseUpdate);
+    }
+
+    public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
         enqueueModification( () -> internalAddRules( rules ) );
     }
 
