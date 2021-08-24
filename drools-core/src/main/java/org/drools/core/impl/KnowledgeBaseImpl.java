@@ -1502,13 +1502,10 @@ public class KnowledgeBaseImpl
 
     @Override
     public void beforeIncrementalUpdate(KieBaseUpdate kieBaseUpdate) {
-        InternalKnowledgeBase.super.beforeIncrementalUpdate(kieBaseUpdate);
-        System.out.println(kieBaseUpdate);
     }
 
     @Override
     public void afterIncrementalUpdate(KieBaseUpdate kieBaseUpdate) {
-        InternalKnowledgeBase.super.afterIncrementalUpdate(kieBaseUpdate);
     }
 
     public void addRules(Collection<RuleImpl> rules ) throws InvalidPatternException {
