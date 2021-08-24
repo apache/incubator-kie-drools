@@ -661,7 +661,11 @@ public class LeftInputAdapterNode extends LeftTupleSource
             return sink.getAssociationsSize(rule);
         }
 
-        public boolean isAssociatedWith( Rule rule ) {
+        @Override public Rule[] getAssociatedRules() {
+            return sink.getAssociatedRules();
+        }
+
+        public boolean isAssociatedWith(Rule rule) {
             return sink.isAssociatedWith( rule );
         }
     }

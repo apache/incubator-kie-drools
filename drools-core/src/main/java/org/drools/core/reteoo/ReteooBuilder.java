@@ -63,8 +63,8 @@ public class ReteooBuilder
     /** The RuleBase */
     private transient InternalKnowledgeBase  kBase;
 
-    private Map<String, BaseNode[]>     rules;
-    private Map<String, BaseNode[]>     queries;
+    private Map<String, TerminalNode[]>          rules;
+    private Map<String, QueryTerminalNode[]>     queries;
 
     private Map<String, WindowNode>     namedWindows;
 
@@ -110,10 +110,10 @@ public class ReteooBuilder
         final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
                                                                        this.kBase );
 
-        BaseNode[] nodes = terminals.toArray( new BaseNode[terminals.size()] );
+        TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
         if (rule.isQuery()) {
-            this.queries.put( rule.getName(), nodes );
+            this.queries.put( rule.getName(), terminals.toArray( new QueryTerminalNode[terminals.size()] ) );
         }
     }
 
@@ -138,20 +138,20 @@ public class ReteooBuilder
         return this.idGenerator;
     }
 
-    public synchronized BaseNode[] getTerminalNodes(final RuleImpl rule) {
+    public synchronized TerminalNode[] getTerminalNodes(final RuleImpl rule) {
         return getTerminalNodes( rule.getFullyQualifiedName() );
     }
 
-    public synchronized BaseNode[] getTerminalNodes(final String ruleName) {
+    public synchronized TerminalNode[] getTerminalNodes(final String ruleName) {
         return this.rules.get( ruleName );
     }
 
-    public synchronized BaseNode[] getTerminalNodesForQuery(final String ruleName) {
-        BaseNode[] nodes = this.queries.get( ruleName );
-        return nodes != null ? nodes : getTerminalNodes(ruleName);
+    public synchronized QueryTerminalNode[] getTerminalNodesForQuery(final String ruleName) {
+        QueryTerminalNode[] nodes = this.queries.get( ruleName );
+        return nodes;
     }
 
-    public synchronized Map<String, BaseNode[]> getTerminalNodes() {
+    public synchronized Map<String, TerminalNode[]> getTerminalNodes() {
         return this.rules;
     }
 
@@ -167,13 +167,13 @@ public class ReteooBuilder
             final RuleRemovalContext context = new RuleRemovalContext( rule );
             context.setKnowledgeBase( kBase );
 
-            BaseNode[] rulesTerminalNodes = rules.remove( rule.getFullyQualifiedName() );
+            TerminalNode[] rulesTerminalNodes = rules.remove( rule.getFullyQualifiedName() );
             if (rulesTerminalNodes == null) {
                 // there couldn't be any rule to be removed if it comes from a broken drl
                 continue;
             }
 
-            for ( BaseNode node : rulesTerminalNodes ) {
+            for ( TerminalNode node : rulesTerminalNodes ) {
                 removeTerminalNode( context, (TerminalNode) node, workingMemories );
             }
 
@@ -484,8 +484,8 @@ public class ReteooBuilder
             droolsStream = new DroolsObjectInputStream( bytes );
         }
         try {
-            this.rules = (Map<String, BaseNode[]>) droolsStream.readObject();
-            this.queries = (Map<String, BaseNode[]>) droolsStream.readObject();
+            this.rules = (Map<String, TerminalNode[]>) droolsStream.readObject();
+            this.queries = (Map<String, QueryTerminalNode[]>) droolsStream.readObject();
             this.namedWindows = (Map<String, WindowNode>) droolsStream.readObject();
             this.idGenerator = (IdGenerator) droolsStream.readObject();
         } finally {

@@ -18,6 +18,7 @@ package org.drools.core.common;
 import java.util.Map;
 
 import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.util.Iterator;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBase;
@@ -26,7 +27,7 @@ public class TerminalNodeIterator
     implements
     Iterator {
     private InternalKnowledgeBase kBase;
-    private BaseNode[][]          nodes;
+    private TerminalNode[][]      nodes;
 
     private int                   i = 0;
     private int                   j = 0;
@@ -37,8 +38,8 @@ public class TerminalNodeIterator
 
     private TerminalNodeIterator(KieBase kBase) {
         this.kBase = (InternalKnowledgeBase)kBase;
-        Map<String, BaseNode[]> rules = this.kBase.getReteooBuilder().getTerminalNodes();
-        nodes = rules.values().toArray( new BaseNode[rules.size()][] );
+        Map<String, TerminalNode[]> rules = this.kBase.getReteooBuilder().getTerminalNodes();
+        nodes = rules.values().toArray( new TerminalNode[rules.size()][] );
     }
     
     public static Iterator iterator(KieBase kBase) {
@@ -49,7 +50,7 @@ public class TerminalNodeIterator
         if ( i >= nodes.length ) {
             return null;
         }
-        BaseNode node = nodes[i][j];
+        TerminalNode node = nodes[i][j];
         
         // now set to the next node
         j++;                

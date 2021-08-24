@@ -86,6 +86,10 @@ public class MockRightTupleSink
         return false;
     }
 
+    @Override public Rule[] getAssociatedRules() {
+        return new Rule[0];
+    }
+
     public ObjectTypeNode.Id getRightInputOtnId() {
         return null;
     }

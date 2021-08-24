@@ -309,6 +309,10 @@ public class AlphaNode extends ObjectSource
             return sink.getAssociationsSize(rule);
         }
 
+        @Override public Rule[] getAssociatedRules() {
+            return sink.getAssociatedRules();
+        }
+
         public boolean isAssociatedWith(Rule rule) {
             return sink.isAssociatedWith(rule);
         }
