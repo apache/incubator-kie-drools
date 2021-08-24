@@ -26,13 +26,15 @@ public class ImmutableFPAWrappingPOJOTest {
 
     @Test
     public void testSupportRequest() {
-        ImmutableFPAWrappingPOJO fpa = new ImmutableFPAWrappingPOJO(new SupportRequest("John Doe", "47", "info@redhat.com", "+1", "somewhere", false));
+        ImmutableFPAWrappingPOJO fpa = new ImmutableFPAWrappingPOJO(new SupportRequest("John Doe", "47", "info@redhat.com", "+1", "somewhere", "tech", "app crashed", false));
 
         assertThat(fpa.getFEELProperty("full name").toOptional()).contains("John Doe");
         assertThat(fpa.getFEELProperty("account").toOptional()).contains("47");
         assertThat(fpa.getFEELProperty("email").toOptional()).contains("info@redhat.com");
         assertThat(fpa.getFEELProperty("mobile").toOptional()).contains("+1");
         assertThat(fpa.getFEELProperty("mailing address").toOptional()).contains("somewhere");
+        assertThat(fpa.getFEELProperty("area").toOptional()).contains("tech");
+        assertThat(fpa.getFEELProperty("description").toOptional()).contains("app crashed");
         assertThat(fpa.getFEELProperty("premium").toOptional()).contains(false);
 
         assertThat(fpa.getFEELProperty("priority")).isInstanceOfSatisfying(PropertyValueResult.class, x -> assertThat(x.isDefined()).isTrue()); // property exists, but it's null.
@@ -44,6 +46,8 @@ public class ImmutableFPAWrappingPOJOTest {
                                            .hasFieldOrPropertyWithValue("email", "info@redhat.com")
                                            .hasFieldOrPropertyWithValue("mobile", "+1")
                                            .hasFieldOrPropertyWithValue("mailing address", "somewhere")
+                                           .hasFieldOrPropertyWithValue("area", "tech")
+                                           .hasFieldOrPropertyWithValue("description", "app crashed")
                                            .hasFieldOrPropertyWithValue("premium", false);
     }
 }

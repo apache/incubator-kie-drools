@@ -10,12 +10,15 @@ public class SupportRequest implements java.io.Serializable {
     private String mobile;
     private String mailingAddress;
     private boolean premium;
+    private String area;
+    private String description;
     /**
-     * This is deliberately not part of the constructor
+     * This `priority` is deliberately not part of the arguments constructor
      */
     private String priority;
 
-    public SupportRequest() {}
+    public SupportRequest() {
+    }
 
     @org.kie.dmn.feel.lang.FEELProperty("full name")
     public String getFullName() {
@@ -63,19 +66,37 @@ public class SupportRequest implements java.io.Serializable {
         return this.premium;
     }
 
-    public void setPremium(boolean premium) {
+    public void setPremium(Boolean premium) {
         this.premium = premium;
     }
 
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public SupportRequest(String fullName, String account,
-                          String email, String mobile,
-                          String mailingAddress, boolean premium) {
+            String email, String mobile,
+            String mailingAddress, String area, String description, Boolean premium) {
         this.fullName = fullName;
         this.account = account;
         this.email = email;
         this.mobile = mobile;
         this.mailingAddress = mailingAddress;
         this.premium = premium;
+        this.area = area;
+        this.description = description;
     }
 
     public String getPriority() {
@@ -88,7 +109,9 @@ public class SupportRequest implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "SupportRequest [account=" + account + ", email=" + email + ", fullName=" + fullName + ", mailingAddress=" + mailingAddress + ", mobile=" + mobile + ", premium=" + premium + ", priority=" + priority +
-               "]";
+        return "SupportRequest [account=" + account + ", area=" + area + ", description=" + description + ", email="
+                + email + ", fullName=" + fullName + ", mailingAddress=" + mailingAddress + ", mobile=" + mobile
+                + ", premium=" + premium + ", priority=" + priority + "]";
     }
+
 }
