@@ -51,6 +51,7 @@ import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
 import org.optaplanner.core.api.score.calculator.IncrementalScoreCalculator;
 import org.optaplanner.core.api.score.stream.ConstraintProvider;
 import org.optaplanner.core.api.score.stream.ConstraintStreamImplType;
+import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
@@ -138,6 +139,15 @@ class OptaPlannerProcessor {
             return new DevConsoleRuntimeTemplateInfoBuildItem("solverConfigProperties",
                     new OptaPlannerDevUIPropertiesSupplier());
         }
+    }
+
+    /**
+     * The DevConsole injects the SolverFactory bean programmatically, which is not detected by ArC. As a result,
+     * the bean is removed as unused unless told otherwise via the {@link UnremovableBeanBuildItem}.
+     */
+    @BuildStep(onlyIf = IsDevelopment.class)
+    void makeSolverFactoryUnremovableInDevMode(BuildProducer<UnremovableBeanBuildItem> unremovableBeans) {
+        unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(SolverFactory.class));
     }
 
     @BuildStep
