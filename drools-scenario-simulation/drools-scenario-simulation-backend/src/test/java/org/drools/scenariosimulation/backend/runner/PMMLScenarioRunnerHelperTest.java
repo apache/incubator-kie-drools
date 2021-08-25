@@ -45,7 +45,6 @@ import org.junit.runner.RunWith;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.RequestContext;
-import org.kie.pmml.api.enums.ResultCode;
 import org.kie.pmml.api.models.PMMLModel;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -154,7 +153,6 @@ public class PMMLScenarioRunnerHelperTest {
         when(pmml4ResultMock.getResultVariables()).thenReturn(resultVariablesMock);
 
         when(requestContextMock.get(PMMLScenarioExecutableBuilder.PMML_RESULT)).thenReturn(pmml4ResultMock);
-        when(requestContextMock.get(PMMLScenarioExecutableBuilder.PMML_MODEL)).thenReturn(pmmlModelMock);
     }
 
     @Test
@@ -170,7 +168,6 @@ public class PMMLScenarioRunnerHelperTest {
         // test 2 - when requestedField contains a null value skip the steps and just do the comparison (that should be false in this case)
         when(resultVariablesMock.containsKey(anyString())).thenReturn(true);
         when(resultVariablesMock.get(anyString())).thenReturn(null);
-        when(pmml4ResultMock.getResultCode()).thenReturn(ResultCode.OK.getName());
 
         runnerHelper.verifyConditions(simulation.getScesimModelDescriptor(), scenarioRunnerData1, expressionEvaluatorFactory, requestContextMock);
         assertEquals(1, scenarioRunnerData1.getResults().size());

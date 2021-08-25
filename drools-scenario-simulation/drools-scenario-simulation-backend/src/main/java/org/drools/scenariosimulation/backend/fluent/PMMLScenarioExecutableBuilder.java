@@ -16,16 +16,17 @@
 
 package org.drools.scenariosimulation.backend.fluent;
 
+import java.nio.file.FileSystems;
 import java.util.Objects;
 
 import org.drools.core.command.RequestContextImpl;
+import org.drools.scenariosimulation.backend.exceptions.ImpossibleToFindPMMLException;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.RequestContext;
-import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.PMMLModel;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.evaluator.core.PMMLContextImpl;
@@ -37,6 +38,8 @@ public class PMMLScenarioExecutableBuilder {
     public static final String PMML_RESULT = "pmmlResult";
     public static final String PMML_MODEL = "pmmlModel";
 
+    private static final String SEPARATOR = FileSystems.getDefault().getSeparator();
+
     private final KieContainer kieContainer;
     private final PMMLRequestDataBuilder pmmlRequestDataBuilder;
     private final String pmmlFilePath;
@@ -44,7 +47,9 @@ public class PMMLScenarioExecutableBuilder {
     private PMMLScenarioExecutableBuilder(KieContainer kieContainer, String pmmlFilePath, String pmmlModelName) {
         this.kieContainer = kieContainer;
         this.pmmlFilePath = pmmlFilePath;
-        String fileName = pmmlFilePath.contains("/") ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf("/") +1) : pmmlFilePath;
+
+
+        String fileName = pmmlFilePath.contains(SEPARATOR) ? pmmlFilePath.substring(pmmlFilePath.lastIndexOf(SEPARATOR) +1) : pmmlFilePath;
         pmmlRequestDataBuilder = new PMMLRequestDataBuilder("correlationid", pmmlModelName, fileName);
     }
 
@@ -65,7 +70,7 @@ public class PMMLScenarioExecutableBuilder {
         final KieRuntimeFactory kieRuntimeFactory = KieRuntimeFactory.of(kieBase);
         final PMMLRuntime pmmlRuntime = kieRuntimeFactory.get(PMMLRuntime.class);
         final PMMLModel pmmlModel =  pmmlRuntime.getPMMLModel(pmmlRequestData.getModelName())
-                .orElseThrow(() -> new KiePMMLException("Failed to retrieve model with name " + pmmlRequestData.getModelName()));
+                .orElseThrow(() -> new ImpossibleToFindPMMLException("Failed to retrieve model with name " + pmmlRequestData.getModelName()));
         final PMML4Result pmml4Result = pmmlRuntime.evaluate(pmmlRequestData.getModelName(), new PMMLContextImpl(pmmlRequestData));
         final RequestContext toReturn = new RequestContextImpl();
         toReturn.setOutput(PMML_RESULT, pmml4Result);

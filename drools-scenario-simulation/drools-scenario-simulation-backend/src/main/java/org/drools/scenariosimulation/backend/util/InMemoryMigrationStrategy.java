@@ -237,9 +237,7 @@ public class InMemoryMigrationStrategy implements MigrationStrategy {
 
     @Override
     public ThrowingConsumer<Document> from1_8to1_9() {
-        return document -> {
-            updateVersion(document, "1.9");
-        };
+        return document -> updateVersion(document, "1.9");
     }
 
     private void replaceReference(List<Node> simulationFactMappingNodeList, Node containerNode, String referredNodeName) {
