@@ -6,7 +6,7 @@ name: Jenkins Tests
 on:
   pull_request:
     paths: 
-    - '.jenkins/**'
+    - '.ci/jenkins/**'
 
 jobs:
   dsl-tests:
@@ -22,4 +22,4 @@ jobs:
         java-version: 11
       
     - name: Test DSL
-      run: cd .jenkins/dsl && ./test.sh
+      run: cd .ci/jenkins/dsl && ./test.sh
