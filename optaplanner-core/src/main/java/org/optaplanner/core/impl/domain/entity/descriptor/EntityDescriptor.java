@@ -99,6 +99,8 @@ public class EntityDescriptor<Solution_> {
     private Map<String, GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorMap;
     private Map<String, ShadowVariableDescriptor<Solution_>> effectiveShadowVariableDescriptorMap;
     private Map<String, VariableDescriptor<Solution_>> effectiveVariableDescriptorMap;
+    // Duplicate of effectiveGenuineVariableDescriptorMap.values() for faster iteration on the hot path.
+    private List<GenuineVariableDescriptor<Solution_>> effectiveGenuineVariableDescriptorList;
 
     // ************************************************************************
     // Constructors and simple getters/setters
@@ -329,6 +331,7 @@ public class EntityDescriptor<Solution_> {
                 effectiveGenuineVariableDescriptorMap.size() + effectiveShadowVariableDescriptorMap.size());
         effectiveVariableDescriptorMap.putAll(effectiveGenuineVariableDescriptorMap);
         effectiveVariableDescriptorMap.putAll(effectiveShadowVariableDescriptorMap);
+        effectiveGenuineVariableDescriptorList = new ArrayList<>(effectiveGenuineVariableDescriptorMap.values());
     }
 
     private void createEffectiveMovableEntitySelectionFilter() {
@@ -407,13 +410,8 @@ public class EntityDescriptor<Solution_> {
         return effectiveGenuineVariableDescriptorMap;
     }
 
-    public Collection<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptors() {
-        return effectiveGenuineVariableDescriptorMap.values();
-    }
-
     public List<GenuineVariableDescriptor<Solution_>> getGenuineVariableDescriptorList() {
-        // TODO We might want to cache that list
-        return new ArrayList<>(effectiveGenuineVariableDescriptorMap.values());
+        return effectiveGenuineVariableDescriptorList;
     }
 
     public boolean hasGenuineVariableDescriptor(String variableName) {
@@ -505,7 +503,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean hasAnyChainedGenuineVariables() {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isChained()) {
                 return true;
             }
@@ -522,12 +520,12 @@ public class EntityDescriptor<Solution_> {
     }
 
     public long getGenuineVariableCount() {
-        return effectiveGenuineVariableDescriptorMap.size();
+        return effectiveGenuineVariableDescriptorList.size();
     }
 
     public long getMaximumValueCount(Solution_ solution, Object entity) {
         long maximumValueCount = 0L;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             maximumValueCount = Math.max(maximumValueCount, variableDescriptor.getValueCount(solution, entity));
         }
         return maximumValueCount;
@@ -536,7 +534,7 @@ public class EntityDescriptor<Solution_> {
 
     public long getProblemScale(Solution_ solution, Object entity) {
         long problemScale = 1L;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             problemScale *= variableDescriptor.getValueCount(solution, entity);
         }
         return problemScale;
@@ -544,7 +542,7 @@ public class EntityDescriptor<Solution_> {
 
     public int countUninitializedVariables(Object entity) {
         int count = 0;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
                 count++;
             }
@@ -553,7 +551,7 @@ public class EntityDescriptor<Solution_> {
     }
 
     public boolean isInitialized(Object entity) {
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (!variableDescriptor.isInitialized(entity)) {
                 return false;
             }
@@ -563,7 +561,7 @@ public class EntityDescriptor<Solution_> {
 
     public int countReinitializableVariables(ScoreDirector<Solution_> scoreDirector, Object entity) {
         int count = 0;
-        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorMap.values()) {
+        for (GenuineVariableDescriptor<Solution_> variableDescriptor : effectiveGenuineVariableDescriptorList) {
             if (variableDescriptor.isReinitializable(scoreDirector, entity)) {
                 count++;
             }

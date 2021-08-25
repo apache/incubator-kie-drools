@@ -174,10 +174,10 @@ public class DefaultExhaustiveSearchPhaseFactory<Solution_>
             EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
             // Keep in sync with DefaultExhaustiveSearchPhase.fillLayerList()
             // which includes all genuineVariableDescriptors
-            Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
-                    entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
-            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                    entityDescriptor.getGenuineVariableDescriptorList();
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 ChangeMoveSelectorConfig changeMoveSelectorConfig = new ChangeMoveSelectorConfig();
                 changeMoveSelectorConfig.setEntitySelectorConfig(
                         EntitySelectorConfig.newMimicSelectorConfig(mimicSelectorId));

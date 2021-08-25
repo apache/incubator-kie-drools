@@ -214,7 +214,7 @@ public abstract class AbstractPhase<Solution_> implements Phase<Solution_> {
                 if (!entityDescriptor.isEntityInitializedOrPinned(scoreDirector, entity)) {
                     String variableRef = null;
                     for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
-                            .getGenuineVariableDescriptors()) {
+                            .getGenuineVariableDescriptorList()) {
                         if (!variableDescriptor.isInitialized(entity)) {
                             variableRef = variableDescriptor.getSimpleEntityAndVariableName();
                             break;

@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -86,10 +85,10 @@ public class QueuedEntityPlacerFactory<Solution_>
         List<MoveSelectorConfig> moveSelectorConfigList_;
         if (ConfigUtils.isEmptyCollection(config.getMoveSelectorConfigList())) {
             EntityDescriptor<Solution_> entityDescriptor = entitySelector.getEntityDescriptor();
-            Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
-                    entityDescriptor.getGenuineVariableDescriptors();
-            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
-            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
+            List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                    entityDescriptor.getGenuineVariableDescriptorList();
+            List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptorList.size());
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptorList) {
                 subMoveSelectorConfigList
                         .add(buildChangeMoveSelectorConfig(configPolicy, entitySelectorConfig_.getId(), variableDescriptor));
             }

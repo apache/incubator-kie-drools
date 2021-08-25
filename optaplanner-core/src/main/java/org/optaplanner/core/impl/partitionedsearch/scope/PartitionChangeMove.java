@@ -60,7 +60,7 @@ public final class PartitionChangeMove<Solution_> extends AbstractMove<Solution_
                     entity.getClass());
             if (entityDescriptor.isMovable(scoreDirector, entity)) {
                 for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
-                        .getGenuineVariableDescriptors()) {
+                        .getGenuineVariableDescriptorList()) {
                     Object value = variableDescriptor.getValue(entity);
                     changeMap.get(variableDescriptor).add(Pair.of(entity, value));
                 }

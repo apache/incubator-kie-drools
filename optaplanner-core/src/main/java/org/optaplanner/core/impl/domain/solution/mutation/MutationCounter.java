@@ -50,7 +50,7 @@ public class MutationCounter<Solution_> {
                 Object aEntity = aIt.next();
                 Object bEntity = bIt.next();
                 for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
-                        .getGenuineVariableDescriptors()) {
+                        .getGenuineVariableDescriptorList()) {
                     // TODO broken if the value is an entity, because then it's never the same
                     // But we don't want to depend on value/entity equals() => use surrogate entity IDs to compare
                     // https://issues.redhat.com/browse/PLANNER-170
@@ -61,7 +61,7 @@ public class MutationCounter<Solution_> {
             }
             if (aEntities.size() != bEntities.size()) {
                 mutationCount += Math.abs(aEntities.size() - bEntities.size())
-                        * entityDescriptor.getGenuineVariableDescriptors().size();
+                        * entityDescriptor.getGenuineVariableDescriptorList().size();
             }
         }
         return mutationCount;

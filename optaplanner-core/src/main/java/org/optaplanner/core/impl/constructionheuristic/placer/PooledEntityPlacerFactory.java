@@ -17,7 +17,6 @@
 package org.optaplanner.core.impl.constructionheuristic.placer;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import org.optaplanner.core.config.constructionheuristic.placer.PooledEntityPlacerConfig;
@@ -105,7 +104,7 @@ public class PooledEntityPlacerFactory<Solution_>
         EntityDescriptor<Solution_> entityDescriptor = deduceEntityDescriptor(configPolicy.getSolutionDescriptor());
         EntitySelectorConfig entitySelectorConfig = buildEntitySelectorConfig(configPolicy, entityDescriptor);
 
-        Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors = entityDescriptor.getGenuineVariableDescriptors();
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptors = entityDescriptor.getGenuineVariableDescriptorList();
         List<MoveSelectorConfig> subMoveSelectorConfigList = new ArrayList<>(variableDescriptors.size());
         for (GenuineVariableDescriptor<Solution_> variableDescriptor : variableDescriptors) {
             subMoveSelectorConfigList

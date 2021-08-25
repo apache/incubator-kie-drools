@@ -239,7 +239,8 @@ public class VariableListenerSupport<Solution_> implements SupplyManager<Solutio
         List<Object> entityList = scoreDirector.getWorkingEntityList();
         for (Object entity : entityList) {
             EntityDescriptor<Solution_> entityDescriptor = solutionDescriptor.findEntityDescriptorOrFail(entity.getClass());
-            for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor.getGenuineVariableDescriptors()) {
+            for (GenuineVariableDescriptor<Solution_> variableDescriptor : entityDescriptor
+                    .getGenuineVariableDescriptorList()) {
                 beforeVariableChanged(variableDescriptor, entity);
                 // No change
                 afterVariableChanged(variableDescriptor, entity);

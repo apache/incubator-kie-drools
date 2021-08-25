@@ -90,7 +90,7 @@ public class ChangeMoveSelectorFactory<Solution_>
                 }
                 variableDescriptorList.add(onlyVariableDescriptor);
             } else {
-                variableDescriptorList.addAll(entityDescriptor.getGenuineVariableDescriptors());
+                variableDescriptorList.addAll(entityDescriptor.getGenuineVariableDescriptorList());
             }
         }
         return buildUnfoldedMoveSelectorConfig(variableDescriptorList);

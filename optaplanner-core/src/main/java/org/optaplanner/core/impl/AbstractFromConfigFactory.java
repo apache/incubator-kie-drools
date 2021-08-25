@@ -77,16 +77,16 @@ public abstract class AbstractFromConfigFactory<Solution_, Config_ extends Abstr
 
     protected GenuineVariableDescriptor<Solution_> deduceVariableDescriptor(
             EntityDescriptor<Solution_> entityDescriptor) {
-        Collection<GenuineVariableDescriptor<Solution_>> variableDescriptors =
-                entityDescriptor.getGenuineVariableDescriptors();
-        if (variableDescriptors.size() != 1) {
+        List<GenuineVariableDescriptor<Solution_>> variableDescriptorList =
+                entityDescriptor.getGenuineVariableDescriptorList();
+        if (variableDescriptorList.size() != 1) {
             throw new IllegalArgumentException("The config (" + config
                     + ") has no configured variableName for entityClass (" + entityDescriptor.getEntityClass()
                     + ") and because there are multiple variableNames ("
                     + entityDescriptor.getGenuineVariableNameSet()
                     + "), it cannot be deduced automatically.");
         }
-        return variableDescriptors.iterator().next();
+        return variableDescriptorList.iterator().next();
     }
 
     protected List<GenuineVariableDescriptor<Solution_>> deduceVariableDescriptorList(
