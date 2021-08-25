@@ -179,6 +179,7 @@ pipeline {
             steps {
                 script {
                     runMavenDeploy(getOptaplannerMavenCommand())
+                    runMavenDeploy(getOptaplannerQuickstartsMavenCommand().withOptions(['-pl', ':optaplanner-distribution']))
                     runMavenDeploy(getOptawebVehicleRoutingMavenCommand())
                     runMavenDeploy(getOptawebEmployeeRosteringMavenCommand())
                 }
@@ -414,7 +415,7 @@ MavenCommand getOptaplannerMavenCommand() {
 }
 
 MavenCommand getOptaplannerQuickstartsMavenCommand() {
-    return getMavenDefaultCommand().inDirectory(quickstartsRepository)
+    return getMavenDefaultCommand().inDirectory(quickstartsRepository).withProperty('full')
 }
 
 MavenCommand getOptawebVehicleRoutingMavenCommand() {

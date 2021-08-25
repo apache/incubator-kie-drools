@@ -468,7 +468,7 @@
       </dependency>
       <dependency>
         <groupId>org.optaplanner</groupId>
-        <artifactId>optaplanner-distribution</artifactId>
+        <artifactId>optaplanner-distribution-internal</artifactId>
         <version>${version.org.optaplanner}</version>
         <type>zip</type>
       </dependency>

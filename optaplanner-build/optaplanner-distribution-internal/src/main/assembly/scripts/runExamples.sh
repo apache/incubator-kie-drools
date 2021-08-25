@@ -4,9 +4,9 @@
 cd "$(dirname $0)" || exit
 
 # Most examples run (potentially slower) with max heap of 128 MB (so -Xmx128m), but 1 example's dataset requires 2 GB
-jvmOptions="-Xms256m -Xmx2g -Dorg.optaplanner.examples.dataDir=sources/data/"
+jvmOptions="-Xms256m -Xmx2g -Dorg.optaplanner.examples.dataDir=examples/sources/data/"
 mainClass=org.optaplanner.examples.app.OptaPlannerExamplesApp
-mainClasspath="binaries/*:../binaries/*"
+mainClasspath="examples/binaries/*"
 
 echo "Usage: ./runExamples.sh"
 echo "Notes:"
@@ -18,10 +18,10 @@ echo
 
 if [ -f $JAVA_HOME/bin/java ]; then
     echo "Starting examples app with JDK from environment variable JAVA_HOME ($JAVA_HOME)..."
-    $JAVA_HOME/bin/java ${jvmOptions} -cp ${mainClasspath} ${mainClass} "$*"
+    $JAVA_HOME/bin/java ${jvmOptions} -cp "${mainClasspath}" ${mainClass} "$*"
 else
     echo "Starting examples app with java from environment variable PATH..."
-    java ${jvmOptions} -cp ${mainClasspath} ${mainClass} "$*"
+    java ${jvmOptions} -cp "${mainClasspath}" ${mainClass} "$*"
 fi
 
 if [ $? != 0 ]; then

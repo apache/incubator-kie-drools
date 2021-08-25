@@ -5,6 +5,7 @@
 
   <id>zip-with-generated-docs</id>
   <formats>
+    <format>dir</format>
     <format>zip</format>
   </formats>
 

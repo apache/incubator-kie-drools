@@ -139,7 +139,7 @@ pipeline {
             }
         }
 
-        stage('Upload OptaPlanner documentation and distribution') {
+        stage('Upload OptaPlanner documentation') {
             when {
                 expression { return isRelease() }
             }
@@ -147,6 +147,18 @@ pipeline {
                 script {
                     getMavenCommand().inDirectory(optaplannerRepository).skipTests(true).withProperty('full').run('clean install')
                     uploadDistribution(optaplannerRepository)
+                }
+            }
+        }
+
+        stage('Upload OptaPlanner distribution from Quickstarts') {
+            when {
+                expression { return isRelease() }
+            }
+            steps {
+                script {
+                    getMavenCommand().inDirectory(quickstartsRepository).skipTests(true).withProperty('full').run('clean install')
+                    uploadDistribution(quickstartsRepository)
                 }
             }
         }
@@ -526,7 +538,7 @@ void uploadDistribution(String directory) {
                 // For testing, simulate connection via SSH:
                 // sh "ssh -i $SSH_KEY_JBOSS_FILEMGMT -oKexAlgorithms=+diffie-hellman-group1-sha1 optaplanner@filemgmt.jboss.org"
                 sh "./build/release/upload_distribution.sh ${getProjectVersion()} $SSH_KEY_JBOSS_FILEMGMT"
-                    }
+            }
         }
     } else {
         echo 'No uploadDistribution due to testing build'
