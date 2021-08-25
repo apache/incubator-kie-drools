@@ -554,7 +554,8 @@ public class ConstraintParser {
             combo = combineExpressions( leftTypedExpressionResult, combo );
         }
 
-        if (isEnclosed) {
+        boolean isPredicate = isPredicateBooleanExpression(binaryExpr);
+        if (isEnclosed && !isPredicate) {
             combo = new EnclosedExpr( combo );
         }
 
@@ -573,7 +574,7 @@ public class ConstraintParser {
                 .setRight( right )
                 .setBetaConstraint(isBetaConstraint)
                 .setRequiresSplit( requiresSplit )
-                .setIsPredicate(isPredicateBooleanExpression(binaryExpr));
+                .setIsPredicate(isPredicate);
     }
 
     private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {
