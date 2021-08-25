@@ -96,13 +96,13 @@ import static org.drools.modelcompiler.builder.generator.expressiontyper.Flatten
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
 /**
- * Parses the MVEL String Constraint and Compiles it to a Java Expression
- * There are three kinds of ConstraintParser
+ * Parses the MVEL String Constraint and compiles it to a Java Expression
+ * There are two kinds of ConstraintParser
  *
  * ConstraintParser#defaultConstraintParser
  * ConstraintParser#withoutVariableValidation
  *
- * As there are some cases (such as from, eval) in which variables are allowed in the constraint
+ * There are some cases (such as from, eval) in which variables are allowed in the constraint
  *
  */
 public class ConstraintParser {
@@ -193,18 +193,21 @@ public class ConstraintParser {
     }
 
     private Optional<DrlxParseFail> validateVariable(Expression drlxExpr, boolean hasBind) {
-        // Variables are allowed in `from` and `eval` constraints
         if (!skipVariableValidation && drlxExpr instanceof MethodCallExpr && hasBind) {
-            return drlxExpr.findAll(NameExpr.class, ne -> {
-                        String rootNode = ne.toString();
-                        return context.hasDeclaration(rootNode);
-                    }).stream().map(n -> new DrlxParseFail(new VariableUsedInBindingError(n.toString(), drlxExpr.toString())))
+            return drlxExpr.findAll(NameExpr.class, ne -> context.hasDeclaration(ne.toString()))
+                    .stream()
+                    .map(n -> new DrlxParseFail(new VariableUsedInBindingError(n.toString(), drlxExpr.toString())))
                     .findFirst();
         }
         return Optional.empty();
     }
 
-    private DrlxParseResult compileToJavaRecursive(Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr, boolean hasBind, boolean isPositional ) {
+    private DrlxParseResult compileToJavaRecursive(Class<?> patternType,
+                                                   String bindingId,
+                                                   ConstraintExpression constraint,
+                                                   Expression drlxExpr,
+                                                   boolean hasBind,
+                                                   boolean isPositional ) {
         boolean isEnclosed = false;
         SimpleName bind = null;
 
