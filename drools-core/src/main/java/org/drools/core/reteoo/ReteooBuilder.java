@@ -107,8 +107,7 @@ public class ReteooBuilder
      * @throws InvalidPatternException
      */
     public synchronized void addRule(final RuleImpl rule) {
-        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule,
-                                                                       this.kBase );
+        final List<TerminalNode> terminals = this.ruleBuilder.addRule( rule, this.kBase );
 
         TerminalNode[] nodes = terminals.toArray( new TerminalNode[terminals.size()] );
         this.rules.put( rule.getFullyQualifiedName(), nodes );
@@ -155,13 +154,14 @@ public class ReteooBuilder
         return this.rules;
     }
 
-    public synchronized void removeRules(Collection<RuleImpl> rulesToBeRemoved) {
+    public synchronized void removeRules(Collection<? extends Rule> rulesToBeRemoved) {
         // reset working memories for potential propagation
         Collection<InternalWorkingMemory> workingMemories = this.kBase.getWorkingMemories();
 
-        for (RuleImpl rule : rulesToBeRemoved) {
+        for (Rule r : rulesToBeRemoved) {
+            RuleImpl rule = (RuleImpl) r;
             if (rule.hasChildren() && !rulesToBeRemoved.containsAll( rule.getChildren() )) {
-                throw new RuntimeException("Cannot remove parent rule " + rule + " without having removed all its chikdren");
+                throw new RuntimeException("Cannot remove parent rule " + rule + " without having removed all its children");
             }
 
             final RuleRemovalContext context = new RuleRemovalContext( rule );

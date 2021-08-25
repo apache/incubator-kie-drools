@@ -628,6 +628,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     private Collection<ResourceChangeSet> calculateResourceChangeSet(Model oldModel, Model newModel) {
         ResourceChangeSet changeSet = new ResourceChangeSet(oldModel.getName(), ChangeType.UPDATED);
+        changeSet.setPackageName(oldModel.getName());
         Map<String, ResourceChangeSet> changes = new HashMap<>();
         changes.put(oldModel.getName(), changeSet);
 

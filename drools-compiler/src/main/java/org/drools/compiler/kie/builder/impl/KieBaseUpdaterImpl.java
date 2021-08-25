@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.compiler.PackageBuilderErrors;
+import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.common.InternalWorkingMemoryEntryPoint;
@@ -78,7 +79,11 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
                     ctx.newKM.addResourceToCompiler(ckbuilder, ctx.newKieBaseModel, dslFile);
                 }
             }
+
+            KieBaseUpdate kieBaseUpdate = createKieBaseUpdate();
+            ctx.kBase.beforeIncrementalUpdate( kieBaseUpdate );
             rebuildAll(kbuilder, ckbuilder);
+            ctx.kBase.afterIncrementalUpdate( kieBaseUpdate );
         }
 
         ctx.kBase.setResolvedReleaseId(ctx.newReleaseId);
@@ -86,6 +91,38 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
         for ( InternalWorkingMemory wm : ctx.kBase.getWorkingMemories() ) {
             wm.notifyWaitOnRest();
         }
+    }
+
+    private KieBaseUpdate createKieBaseUpdate() {
+        KieBaseUpdate kieBaseUpdate = new KieBaseUpdate();
+
+        for (ResourceChangeSet changeSet : ctx.cs.getChanges().values()) {
+            if (!isPackageInKieBase( ctx.newKieBaseModel, changeSet.getPackageName() )) {
+                continue;
+            }
+
+            InternalKnowledgePackage currentPkg = ctx.currentKM.getPackage( changeSet.getPackageName() );
+            InternalKnowledgePackage newPkg = ctx.newKM.getPackage( changeSet.getPackageName() );
+
+            for (ResourceChange change : changeSet.getChanges()) {
+                if (change.getType() == ResourceChange.Type.RULE) {
+                    switch (change.getChangeType()) {
+                        case ADDED:
+                            kieBaseUpdate.registerRuleToBeAdded(newPkg.getRule( change.getName() ));
+                            break;
+                        case REMOVED:
+                            kieBaseUpdate.registerRuleToBeRemoved(currentPkg.getRule( change.getName() ));
+                            break;
+                        case UPDATED:
+                            kieBaseUpdate.registerRuleToBeAdded(newPkg.getRule( change.getName() ));
+                            kieBaseUpdate.registerRuleToBeRemoved(currentPkg.getRule( change.getName() ));
+                            break;
+                    }
+                }
+            }
+        }
+
+        return kieBaseUpdate;
     }
 
     protected void removeResources(InternalKnowledgeBuilder kBuilder) {
@@ -223,6 +260,10 @@ public class KieBaseUpdaterImpl implements KieBaseUpdater {
                 }
             }
         }
+    }
+
+    protected static boolean isPackageInKieBase( KieBaseModel kieBaseModel, String pkgName ) {
+        return pkgName != null && ( kieBaseModel.getPackages().isEmpty() || KieBuilderImpl.isPackageInKieBase( kieBaseModel, pkgName ) );
     }
 }
 
