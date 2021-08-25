@@ -88,7 +88,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
      *
      * @param cls class of listener to remove
      */
-    public final synchronized void removeEventListener(final Class<?> cls) {
+    public final synchronized void removeEventListener(final Class cls) {
         for (int listenerIndex = 0; listenerIndex < this.listeners.size();) {
             E listener = this.listeners.get(listenerIndex);
             
