@@ -34,14 +34,21 @@ import org.kie.api.runtime.KieContainer;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessage.Severity;
+import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
+import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.api.DMNFactory;
+import org.kie.dmn.core.impl.DMNResultImpl;
+import org.kie.dmn.core.impl.DMNResultImplFactory;
+import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.model.api.DMNModelInstrumentedBase;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
@@ -608,5 +615,40 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("out1").getResult(), is("PASS"));
+    }
+
+    @Test
+    public void testQMarkAndNullShouldNotThrowNPEs() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("questionmarkunarytest/qmarkMatches.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_D1CF8332-8443-41C8-B214-D282B82C7632", "qmarkMatches");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        List<NullPointerException> feelNPEs = new ArrayList<>();
+        DMNRuntimeImpl runtimeImpl = (DMNRuntimeImpl) runtime;
+        runtimeImpl.setDMNResultImplFactory(new DMNResultImplFactory() {
+            @Override
+            public DMNResultImpl newDMNResultImpl(DMNModel model) {
+                return new DMNResultImpl(model) {
+                    @Override
+                    public DMNMessage addMessage(Severity severity, String message, DMNMessageType messageType, DMNModelInstrumentedBase source, FEELEvent feelEvent) {
+                        if (feelEvent.getSourceException() instanceof NullPointerException) {
+                            feelNPEs.add((NullPointerException) feelEvent.getSourceException());
+                        }
+                        return super.addMessage(severity, message, messageType, source, feelEvent);
+                    }
+                };
+            }
+        });
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("MyInput", null);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
+
+        assertThat("while it's okay to have error-ed on evaluation of FEEL, there should not be any sort of NPEs when reporting the human friendly message",
+                   feelNPEs.isEmpty(),
+                   is(true));
     }
 }

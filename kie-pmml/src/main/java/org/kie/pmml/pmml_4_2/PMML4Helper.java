@@ -71,8 +71,8 @@ import org.mvel2.templates.TemplateRuntime;
 /**
  * This implementation is deprecated and will be removed in future releases.
  *
- * @see <a href="https://github.com/kiegroup/drools/blob/master/kie-pmml-trusty/kie-pmml-api/src/main/java/org/kie/pmml/api/runtime/PMMLRuntime.java">PMML Trusty runtime</a>
- * @see <a href="https://github.com/kiegroup/drools/blob/master/kie-pmml-trusty/kie-pmml-api/src/main/java/org/kie/pmml/api/PMMLRuntimeFactory.java">PMML Trusty runtime factory</a>
+ * @see <a href="https://github.com/kiegroup/drools/blob/main/kie-pmml-trusty/kie-pmml-api/src/main/java/org/kie/pmml/api/runtime/PMMLRuntime.java">PMML Trusty runtime</a>
+ * @see <a href="https://github.com/kiegroup/drools/blob/main/kie-pmml-trusty/kie-pmml-api/src/main/java/org/kie/pmml/api/PMMLRuntimeFactory.java">PMML Trusty runtime factory</a>
  */
 @Deprecated
 public class PMML4Helper {

@@ -42,7 +42,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
 
     private static final long serialVersionUID = 510l;
 
-    private List<E> listeners = new CopyOnWriteArrayList<E>();
+    private List<E> listeners = new CopyOnWriteArrayList<>();
 
     private volatile boolean hasListeners = false;
 
@@ -88,7 +88,7 @@ public abstract class AbstractEventSupport<E extends EventListener> implements E
      *
      * @param cls class of listener to remove
      */
-    public final synchronized void removeEventListener(final Class cls) {
+    public final synchronized void removeEventListener(final Class<?> cls) {
         for (int listenerIndex = 0; listenerIndex < this.listeners.size();) {
             E listener = this.listeners.get(listenerIndex);
             

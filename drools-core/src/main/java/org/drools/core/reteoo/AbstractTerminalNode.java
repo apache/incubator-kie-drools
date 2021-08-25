@@ -36,7 +36,7 @@ import org.drools.core.util.bitmask.AllSetBitMask;
 import org.drools.core.util.bitmask.BitMask;
 import org.drools.core.util.bitmask.EmptyBitMask;
 
-public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, PathEndNode, Externalizable {
+public abstract class AbstractTerminalNode extends BaseNode implements TerminalNode, Externalizable {
 
     private LeftTupleSource tupleSource;
 

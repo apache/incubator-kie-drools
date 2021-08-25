@@ -170,7 +170,7 @@ public class UnaryTestNode
                 try {
                     return ((Range) val).includes(o);
                 } catch (Exception e) {
-                    c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), val.toString())));
+                    c.notifyEvt(astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, val)));
                     throw e;
                 }
             } else if (val instanceof Collection) {
@@ -207,7 +207,7 @@ public class UnaryTestNode
                             return false;
                         }
                     } catch ( Exception e ) {
-                        c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o.toString(), test.toString() ) ) );
+                        c.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXPRESSION_IS_RANGE_BUT_VALUE_IS_NOT_COMPARABLE, o, test ) ) );
                         throw e;
                     }
                 } else if (test instanceof Collection) {
@@ -229,7 +229,7 @@ public class UnaryTestNode
             if( right instanceof Boolean ) {
                 return (Boolean) right;
             } else {
-                context.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, left.toString(), value.toString() ) ) );
+                context.notifyEvt( astEvent(Severity.ERROR, Msg.createMessage(Msg.EXTENDED_UNARY_TEST_MUST_BE_BOOLEAN, value.getText(), right ) ) );
                 return Boolean.FALSE;
             }
         };

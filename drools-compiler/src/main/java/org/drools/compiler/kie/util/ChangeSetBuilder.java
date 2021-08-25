@@ -142,38 +142,39 @@ public class ChangeSetBuilder {
     }
 
 
-    private static ResourceChangeSet diffResource(String file, byte[] ob, byte[] cb, List<TypeDeclarationDescr> typeDeclarations) {
+    private static ResourceChangeSet diffResource(String file, byte[] originalBytes, byte[] currentBytes, List<TypeDeclarationDescr> typeDeclarations) {
         ResourceChangeSet pkgcs = new ResourceChangeSet( file, ChangeType.UPDATED );
         ResourceType type = ResourceType.determineResourceType( file );
         if( ResourceType.DRL.equals( type ) || ResourceType.GDRL.equals( type ) || ResourceType.RDRL.equals( type ) || ResourceType.TDRL.equals( type )) {
             try {
-                PackageDescr opkg = new DrlParser().parse( new ByteArrayResource( ob ) );
-                PackageDescr cpkg = new DrlParser().parse( new ByteArrayResource( cb ) );
-                String pkgName = isEmpty(cpkg.getName()) ? getDefaultPackageName() : cpkg.getName();
-                String oldPkgName = isEmpty(opkg.getName()) ? getDefaultPackageName() : opkg.getName();
+                PackageDescr originalPkg = new DrlParser().parse( new ByteArrayResource( originalBytes ) );
+                PackageDescr currentPkg = new DrlParser().parse( new ByteArrayResource( currentBytes ) );
+                String pkgName = isEmpty(currentPkg.getName()) ? getDefaultPackageName() : currentPkg.getName();
+                String oldPkgName = isEmpty(originalPkg.getName()) ? getDefaultPackageName() : originalPkg.getName();
 
                 if (!oldPkgName.equals(pkgName)) {
                     // if the package name is changed everthing has to be recreated from scratch
                     // so it is useless to further investigate other changes
                     return pkgcs;
                 }
+                pkgcs.setPackageName(pkgName);
 
-                for( RuleDescr crd : cpkg.getRules() ) {
+                for( RuleDescr crd : currentPkg.getRules() ) {
                     pkgcs.getLoadOrder().add(new ResourceChangeSet.RuleLoadOrder(pkgName, crd.getName(), crd.getLoadOrder()));
                 }
 
-                List<RuleDescr> orules = new ArrayList<>( opkg.getRules() ); // needs to be cloned
-                diffDescrs(ob, cb, pkgcs, orules, cpkg.getRules(), ResourceChange.Type.RULE, RULE_CONVERTER);
+                List<RuleDescr> orules = new ArrayList<>( originalPkg.getRules() ); // needs to be cloned
+                diffDescrs(originalBytes, currentBytes, pkgcs, orules, currentPkg.getRules(), ResourceChange.Type.RULE, RULE_CONVERTER);
 
-                List<FunctionDescr> ofuncs = new ArrayList<>( opkg.getFunctions() ); // needs to be cloned
-                diffDescrs(ob, cb, pkgcs, ofuncs, cpkg.getFunctions(), ResourceChange.Type.FUNCTION, FUNC_CONVERTER);
+                List<FunctionDescr> ofuncs = new ArrayList<>( originalPkg.getFunctions() ); // needs to be cloned
+                diffDescrs(originalBytes, currentBytes, pkgcs, ofuncs, currentPkg.getFunctions(), ResourceChange.Type.FUNCTION, FUNC_CONVERTER);
 
-                List<GlobalDescr> oglobals = new ArrayList<>( opkg.getGlobals() ); // needs to be cloned
-                diffDescrs(ob, cb, pkgcs, oglobals, cpkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
+                List<GlobalDescr> oglobals = new ArrayList<>( originalPkg.getGlobals() ); // needs to be cloned
+                diffDescrs(originalBytes, currentBytes, pkgcs, oglobals, currentPkg.getGlobals(), ResourceChange.Type.GLOBAL, GLOBAL_CONVERTER);
 
-                for (TypeDeclarationDescr typeDeclaration : cpkg.getTypeDeclarations()) {
+                for (TypeDeclarationDescr typeDeclaration : currentPkg.getTypeDeclarations()) {
                     if ( isEmpty( typeDeclaration.getNamespace()) ) {
-                        typeDeclaration.setNamespace( isEmpty( cpkg.getNamespace() ) ? DEFAULT_PACKAGE : cpkg.getNamespace() );
+                        typeDeclaration.setNamespace( isEmpty( currentPkg.getNamespace() ) ? DEFAULT_PACKAGE : currentPkg.getNamespace() );
                     }
                     typeDeclarations.add( typeDeclaration );
                 }

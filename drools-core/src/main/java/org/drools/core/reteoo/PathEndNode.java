@@ -20,7 +20,7 @@ import java.io.Serializable;
 
 import org.drools.core.phreak.SegmentUtilities;
 
-public interface PathEndNode extends LeftTupleNode {
+public interface PathEndNode extends LeftTupleSinkNode {
     LeftTupleNode[] getPathNodes();
     boolean hasPathNode(LeftTupleNode node);
 

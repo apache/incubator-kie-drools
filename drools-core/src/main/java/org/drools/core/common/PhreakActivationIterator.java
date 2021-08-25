@@ -39,6 +39,7 @@ import org.drools.core.reteoo.ObjectTypeNode;
 import org.drools.core.reteoo.ObjectTypeNode.ObjectTypeNodeMemory;
 import org.drools.core.reteoo.RightTuple;
 import org.drools.core.reteoo.RuleTerminalNode;
+import org.drools.core.reteoo.TerminalNode;
 import org.drools.core.reteoo.TupleMemory;
 import org.drools.core.spi.Tuple;
 import org.drools.core.util.FastIterator;
@@ -86,10 +87,10 @@ public class PhreakActivationIterator
 
 
     public static List<RuleTerminalNode> populateRuleTerminalNodes(InternalKnowledgeBase kbase, Set<RuleTerminalNode>  nodeSet) {
-        Collection<BaseNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
+        Collection<TerminalNode[]> nodesWithArray = kbase.getReteooBuilder().getTerminalNodes().values();
 
-        for (BaseNode[] nodeArray : nodesWithArray) {
-            for (BaseNode node : nodeArray) {
+        for (TerminalNode[] nodeArray : nodesWithArray) {
+            for (TerminalNode node : nodeArray) {
                 if (node.getType() == NodeTypeEnums.RuleTerminalNode) {
                     nodeSet.add((RuleTerminalNode) node);
                 }
