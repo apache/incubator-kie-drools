@@ -23,6 +23,8 @@ public class ResourceChangeSet {
     private final ChangeType status;
     private final List<ResourceChange> changes = new ArrayList<ResourceChange>();
     private List<RuleLoadOrder> loadOrder = new ArrayList<RuleLoadOrder>();
+    private String packageName;
+
 
     public ResourceChangeSet(String resourceName, ChangeType status) {
         this.resourceName = resourceName;
@@ -43,6 +45,14 @@ public class ResourceChangeSet {
 
     public List<RuleLoadOrder> getLoadOrder() {
         return loadOrder;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public void setPackageName(String packageName) {
+        this.packageName = packageName;
     }
 
     @Override
@@ -78,6 +88,15 @@ public class ResourceChangeSet {
         return true;
     }
 
+    @Override
+    public String toString() {
+        return "ResourceChangeSet{" +
+                "resourceName='" + resourceName + '\'' +
+                ", status=" + status +
+                ", packageName='" + packageName + '\'' +
+                '}';
+    }
+
     public static class RuleLoadOrder {
         private String pkgName;
         private String ruleName;
@@ -100,6 +119,5 @@ public class ResourceChangeSet {
         public int getLoadOrder() {
             return loadOrder;
         }
-
     }
 }
