@@ -17,9 +17,9 @@
 package org.kie.dmn.feel.runtime.functions;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -362,7 +362,15 @@ public abstract class BaseFEELFunction
 
     private Object normalizeResult(Object result) {
         // this is to normalize types returned by external functions
-        return result != null && result instanceof Number && !(result instanceof BigDecimal) ? EvalHelper.getBigDecimalOrNull( result.toString() ) : result;
+        if (result != null && result.getClass().isArray()) {
+            List<Object> objs = new ArrayList<>();
+            for (int i = 0; i < Array.getLength(result); i++) {
+                objs.add(EvalHelper.coerceNumber(Array.get(result, i)));
+            }
+            return objs;
+        } else {
+            return EvalHelper.coerceNumber(result);
+        }
     }
 
     protected boolean isCustomFunction() {
