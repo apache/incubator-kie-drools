@@ -15,49 +15,22 @@
  */
 package org.kie.kogito.it;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
-import org.apache.kafka.clients.admin.AdminClient;
-import org.apache.kafka.clients.admin.CreateTopicsResult;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.junit.jupiter.api.BeforeEach;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.test.common.QuarkusTestResource;
+import io.quarkus.test.common.ResourceArg;
 import io.quarkus.test.junit.QuarkusTest;
-import io.smallrye.common.annotation.Identifier;
+
+import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOGITO_KAFKA_TOPICS;
 
 @QuarkusTest
-@QuarkusTestResource(KafkaQuarkusTestResource.class)
+@QuarkusTestResource(value = KafkaQuarkusTestResource.class, initArgs = { @ResourceArg(name = KOGITO_KAFKA_TOPICS, value = KafkaPersistenceIT.TOPICS) })
 public class KafkaPersistenceIT extends PersistenceTest {
 
-    public static final String PROCESS_TOPIC = "kogito.process." + PersistenceTest.PROCESS_ID;
-    public static final String PROCESS_EMBEDDED_TOPIC = "kogito.process." + PersistenceTest.PROCESS_EMBEDDED_ID;
+    public static final String TOPICS = "kogito.process.hello,kogito.process.embedded";
+
     private Logger LOGGER = LoggerFactory.getLogger(KafkaPersistenceIT.class);
 
-    @Inject
-    @Identifier("default-kafka-broker")
-    Map<String, Object> kafkaConfig;
-
-    @BeforeEach
-    public void init() {
-        List<String> topics = Arrays.asList(PROCESS_TOPIC, PROCESS_EMBEDDED_TOPIC);
-        try {
-            AdminClient client = AdminClient.create(kafkaConfig);
-            List<NewTopic> newTopics = topics.stream().map(e -> new NewTopic(e, 1, (short) 1)).collect(Collectors.toList());
-            CreateTopicsResult result = client.createTopics(newTopics);
-            LOGGER.info("trying to create {}", result);
-            result.all().get(10, TimeUnit.SECONDS);
-        } catch (Exception e) {
-            LOGGER.error("Error creating {}", topics, e);
-        }
-    }
 }
