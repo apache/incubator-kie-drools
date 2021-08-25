@@ -6,8 +6,7 @@ name: Jenkins Tests
 on:
   pull_request:
     paths: 
-    - '.jenkins/**'
-    - 'Jenkinsfile*'
+    - '.ci/jenkins/**'
 
 jobs:
   jenkinsfile-tests:
@@ -31,10 +30,10 @@ jobs:
         java-version: 1.8
 
     - name: Setup pipeline env
-      run: cd $GITHUB_WORKSPACE/main/.jenkins/tests && ./setup_pipeline_env.sh
+      run: cd $GITHUB_WORKSPACE/main/.ci/jenkins/tests && ./setup_pipeline_env.sh
       
     - name: Test pipelines
-      run: cd $GITHUB_WORKSPACE/main/.jenkins/tests && mvn -B clean test
+      run: cd $GITHUB_WORKSPACE/main/.ci/jenkins/tests && mvn -B clean test
 
   dsl-tests:
     runs-on: ubuntu-latest
@@ -49,4 +48,4 @@ jobs:
         java-version: 11
       
     - name: Test DSL
-      run: cd .jenkins/dsl && ./test.sh
+      run: cd .ci/jenkins/dsl && ./test.sh

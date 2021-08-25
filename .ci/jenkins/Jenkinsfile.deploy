@@ -22,11 +22,11 @@ pipeline {
     }
 
     // parameters {
-    // For parameters, check into .jenkins/dsl/jobs.groovy file
+    // For parameters, check into ./dsl/jobs.groovy file
     // }
 
     environment {
-        // Static env is defined into .jenkins/dsl/jobs.groovy file
+        // Static env is defined into ./dsl/jobs.groovy file
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
 

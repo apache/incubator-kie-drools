@@ -295,7 +295,7 @@
         </plugins>
         <testResources>
             <testResource>
-                <directory>${project.basedir}/../..</directory>
+                <directory>${project.basedir}/..</directory>
                 <includes>
                     <include>Jenkinsfile.*</include>
                 </includes>

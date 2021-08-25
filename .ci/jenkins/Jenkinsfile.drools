@@ -16,7 +16,7 @@ pipeline {
     }
 
     environment {
-        // Some generated env is also defined into .jenkins/dsl/jobs.groovy file
+        // Some generated env is also defined into ./dsl/jobs.groovy file
 
         KOGITO_CI_EMAIL_TO = credentials("${JENKINS_EMAIL_CREDS_ID}")
         MAVEN_OPTS = '-Xms1024m -Xmx4g'
