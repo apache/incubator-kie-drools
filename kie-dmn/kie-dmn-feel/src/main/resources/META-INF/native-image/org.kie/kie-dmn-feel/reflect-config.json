@@ -612,6 +612,15 @@
         "allPublicClasses": true
     },
     {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.ContextFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
         "name": "org.kie.dmn.feel.runtime.functions.extended.DateFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
@@ -640,6 +649,24 @@
     },
     {
         "name": "org.kie.dmn.feel.runtime.functions.extended.NowFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.PutFunction",
+        "allDeclaredConstructors": true,
+        "allPublicConstructors": true,
+        "allDeclaredMethods": true,
+        "allPublicMethods": true,
+        "allDeclaredClasses": true,
+        "allPublicClasses": true
+    },
+    {
+        "name": "org.kie.dmn.feel.runtime.functions.extended.PutAllFunction",
         "allDeclaredConstructors": true,
         "allPublicConstructors": true,
         "allDeclaredMethods": true,
