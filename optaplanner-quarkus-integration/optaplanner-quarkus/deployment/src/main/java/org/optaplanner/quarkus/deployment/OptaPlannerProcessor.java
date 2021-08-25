@@ -126,9 +126,19 @@ class OptaPlannerProcessor {
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerGizmoBeanFactory.class));
     }
 
+    @BuildStep(onlyIfNot = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNotNativeBuild() {
+        return new DetermineIfNativeBuildItem(false);
+    }
+
+    @BuildStep(onlyIf = NativeBuild.class)
+    DetermineIfNativeBuildItem ifNativeBuild() {
+        return new DetermineIfNativeBuildItem(true);
+    }
+
     @BuildStep(onlyIf = IsDevelopment.class)
-    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildStep solverConfigBuildStep) {
-        SolverConfig solverConfig = solverConfigBuildStep.getSolverConfig();
+    public DevConsoleRuntimeTemplateInfoBuildItem getSolverConfig(SolverConfigBuildItem solverConfigBuildItem) {
+        SolverConfig solverConfig = solverConfigBuildItem.getSolverConfig();
         if (solverConfig != null) {
             StringWriter effectiveSolverConfigWriter = new StringWriter();
             SolverConfigIO solverConfigIO = new SolverConfigIO();
@@ -152,7 +162,8 @@ class OptaPlannerProcessor {
 
     @BuildStep
     @Record(STATIC_INIT)
-    SolverConfigBuildStep recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+    SolverConfigBuildItem recordAndRegisterBeans(OptaPlannerRecorder recorder, RecorderContext recorderContext,
+            DetermineIfNativeBuildItem determineIfNative,
             CombinedIndexBuildItem combinedIndex, Capabilities capabilities,
             BuildProducer<ReflectiveHierarchyBuildItem> reflectiveHierarchyClass,
             BuildProducer<SyntheticBeanBuildItem> syntheticBeanBuildItemBuildProducer,
@@ -172,7 +183,7 @@ class OptaPlannerProcessor {
                     + " the Jandex index by using the jandex-maven-plugin in that dependency, or by adding"
                     + "application.properties entries (quarkus.index-dependency.<name>.group-id"
                     + " and quarkus.index-dependency.<name>.artifact-id).");
-            return new SolverConfigBuildStep(null);
+            return new SolverConfigBuildItem(null);
         }
 
         // Quarkus extensions must always use getContextClassLoader()
@@ -212,6 +223,18 @@ class OptaPlannerProcessor {
                     .build());
         }
 
+        if (determineIfNative.isNative()) {
+            // DroolsAlphaNetworkCompilationEnabled is a three-state boolean (null, true, false); if it not
+            // null, ScoreDirectorFactoryFactory will throw an error if Drools isn't use (i.e. BAVET or Easy/Incremental)
+            if (solverConfig.getScoreDirectorFactoryConfig().getConstraintProviderClass() != null && solverConfig
+                    .getScoreDirectorFactoryConfig().getConstraintStreamImplType() == ConstraintStreamImplType.DROOLS) {
+                disableANC(solverConfig);
+            } else if (solverConfig.getScoreDirectorFactoryConfig().getScoreDrlList() != null
+                    || solverConfig.getScoreDirectorFactoryConfig().getScoreDrlFileList() == null) {
+                disableANC(solverConfig);
+            }
+        }
+
         Set<Class<?>> reflectiveClassSet = new LinkedHashSet<>();
 
         registerClassesFromAnnotations(indexView, reflectiveClassSet);
@@ -241,7 +264,15 @@ class OptaPlannerProcessor {
 
         additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerRuntimeConfig.class));
-        return new SolverConfigBuildStep(solverConfig);
+        return new SolverConfigBuildItem(solverConfig);
+    }
+
+    private void disableANC(SolverConfig solverConfig) {
+        if (solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled() != null
+                && solverConfig.getScoreDirectorFactoryConfig().getDroolsAlphaNetworkCompilationEnabled()) {
+            log.warn("Disabling Drools Alpha Network Compiler since this is a native build.");
+        }
+        solverConfig.getScoreDirectorFactoryConfig().setDroolsAlphaNetworkCompilationEnabled(false);
     }
 
     private void generateConstraintVerifier(SolverConfig solverConfig,

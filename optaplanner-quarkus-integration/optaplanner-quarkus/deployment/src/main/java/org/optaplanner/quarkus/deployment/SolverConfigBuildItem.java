@@ -14,26 +14,20 @@
  * limitations under the License.
  */
 
-package org.optaplanner.core.impl.score.director.drools;
+package org.optaplanner.quarkus.deployment;
 
-import java.util.function.Supplier;
+import org.optaplanner.core.config.solver.SolverConfig;
 
-import org.kie.api.KieBase;
-import org.kie.kogito.legacy.rules.KieRuntimeBuilder;
+import io.quarkus.builder.item.SimpleBuildItem;
 
-/**
- * Wraps {@link KieRuntimeBuilder} so the dependency on kogito-api is optional.
- */
-public class KieRuntimeBuilderWrapper implements Supplier<KieBase> {
+public final class SolverConfigBuildItem extends SimpleBuildItem {
+    SolverConfig solverConfig;
 
-    private final KieRuntimeBuilder kieRuntimeBuilder;
-
-    public KieRuntimeBuilderWrapper(KieRuntimeBuilder kieRuntimeBuilder) {
-        this.kieRuntimeBuilder = kieRuntimeBuilder;
+    public SolverConfigBuildItem(SolverConfig solverConfig) {
+        this.solverConfig = solverConfig;
     }
 
-    @Override
-    public KieBase get() {
-        return kieRuntimeBuilder.getKieBase();
+    public SolverConfig getSolverConfig() {
+        return solverConfig;
     }
 }

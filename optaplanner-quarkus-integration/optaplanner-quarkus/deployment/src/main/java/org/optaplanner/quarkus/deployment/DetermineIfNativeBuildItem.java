@@ -16,18 +16,16 @@
 
 package org.optaplanner.quarkus.deployment;
 
-import org.optaplanner.core.config.solver.SolverConfig;
-
 import io.quarkus.builder.item.SimpleBuildItem;
 
-public final class SolverConfigBuildStep extends SimpleBuildItem {
-    SolverConfig solverConfig;
+public final class DetermineIfNativeBuildItem extends SimpleBuildItem {
+    private final boolean isNative;
 
-    public SolverConfigBuildStep(SolverConfig solverConfig) {
-        this.solverConfig = solverConfig;
+    public DetermineIfNativeBuildItem(boolean isNative) {
+        this.isNative = isNative;
     }
 
-    public SolverConfig getSolverConfig() {
-        return solverConfig;
+    public boolean isNative() {
+        return isNative;
     }
 }

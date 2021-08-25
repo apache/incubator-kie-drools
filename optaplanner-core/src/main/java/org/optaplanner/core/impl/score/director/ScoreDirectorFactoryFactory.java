@@ -112,14 +112,17 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         AbstractScoreDirectorFactory<Solution_, Score_> scoreDirectorFactory;
         if (easyScoreDirectorFactory != null) {
             validateNoDroolsAlphaNetworkCompilation();
+            validateNoGizmoKieBaseSupplier();
             scoreDirectorFactory = easyScoreDirectorFactory;
         } else if (constraintStreamScoreDirectorFactory != null) {
             if (config.getConstraintStreamImplType() == ConstraintStreamImplType.BAVET) {
                 validateNoDroolsAlphaNetworkCompilation();
+                validateNoGizmoKieBaseSupplier();
             }
             scoreDirectorFactory = constraintStreamScoreDirectorFactory;
         } else if (incrementalScoreDirectorFactory != null) {
             validateNoDroolsAlphaNetworkCompilation();
+            validateNoGizmoKieBaseSupplier();
             scoreDirectorFactory = incrementalScoreDirectorFactory;
         } else if (droolsScoreDirectorFactory != null) {
             scoreDirectorFactory = droolsScoreDirectorFactory;
@@ -201,6 +204,16 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
         }
     }
 
+    private void validateNoGizmoKieBaseSupplier() {
+        if (config.getGizmoKieBaseSupplier() != null) {
+            throw new IllegalStateException("If there is no scoreDrl (" + config.getScoreDrlList()
+                    + "), scoreDrlFile (" + config.getScoreDrlFileList() + ") or constraintProviderClass ("
+                    + config.getConstraintProviderClass() + ") with " + ConstraintStreamImplType.DROOLS + " impl type ("
+                    + config.getConstraintStreamImplType() + "), there can be no gizmoKieBaseSupplier ("
+                    + config.getGizmoKieBaseSupplier() + ") either.");
+        }
+    }
+
     protected AbstractConstraintStreamScoreDirectorFactory<Solution_, Score_> buildConstraintStreamScoreDirectorFactory(
             SolutionDescriptor<Solution_> solutionDescriptor) {
         if (config.getConstraintProviderClass() != null) {
@@ -219,6 +232,11 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
                 case BAVET:
                     return new BavetConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider);
                 case DROOLS:
+                    if (config.getGizmoKieBaseSupplier() != null) {
+                        return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor,
+                                config.getGizmoKieBaseSupplier(),
+                                config.isDroolsAlphaNetworkCompilationEnabled());
+                    }
                     return new DroolsConstraintStreamScoreDirectorFactory<>(solutionDescriptor, constraintProvider,
                             config.isDroolsAlphaNetworkCompilationEnabled());
                 default:
@@ -292,8 +310,8 @@ public class ScoreDirectorFactoryFactory<Solution_, Score_ extends Score<Score_>
 
         try {
             KieBase kieBase;
-            if (config.getGizmoKieRuntimeBuilderWrapper() != null) {
-                kieBase = config.getGizmoKieRuntimeBuilderWrapper().extractKieBase();
+            if (config.getGizmoKieBaseSupplier() != null) {
+                kieBase = config.getGizmoKieBaseSupplier().get();
             } else {
                 // Can't put this code in KieBaseExtractor since it reference
                 // KieRuntimeBuilder, which is an optional dependency
