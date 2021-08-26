@@ -145,8 +145,6 @@ public class DMNClassloaderTest extends BaseInterpretedVsCompiledTest {
                                   "    }\n" +
                                   "}";
 
-        System.out.println(javaSource);
-
         final KieServices ks = KieServices.Factory.get();
         final ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core.classloader", "invokeJavaReturnArrayPrimitives", UUID.randomUUID().toString());
 
