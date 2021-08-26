@@ -31,13 +31,13 @@ How to retest this PR or trigger a specific build:
 </summary>
 
 * for a <b>pull request build</b> please add comment: <b>Jenkins retest this</b>
-* for a <b>specific pull request build</b> please add comment: <b>Jenkins (re)run [optaplanner|apps|examples] tests</b>
+* for a <b>specific pull request build</b> please add comment: <b>Jenkins (re)run [optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
 * for a <b>full downstream build</b> please add comment: <b>Jenkins run fdb</b>
 * for a <b>compile downstream build</b> please add comment: <b>Jenkins run cdb</b>
 * for a <b>full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 * for an <b>upstream build</b> please add comment: <b>Jenkins run upstream</b>
 * for a <b>Quarkus LTS check</b> please add comment: <b>Jenkins run LTS</b>
-* for a <b>specific Quarkus LTS check</b> please add comment: <b>Jenkins (re)run [optaplanner|apps|examples] LTS</b>
+* for a <b>specific Quarkus LTS check</b> please add comment: <b>Jenkins (re)run [optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] LTS</b>
 * for a <b>Native check</b> please add comment: <b>Jenkins run native</b>
-* for a <b>specific Native LTS check</b> please add comment: <b>Jenkins (re)run [optaplanner|apps|examples] native</b>
+* for a <b>specific Native LTS check</b> please add comment: <b>Jenkins (re)run [optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] native</b>
 </details>
