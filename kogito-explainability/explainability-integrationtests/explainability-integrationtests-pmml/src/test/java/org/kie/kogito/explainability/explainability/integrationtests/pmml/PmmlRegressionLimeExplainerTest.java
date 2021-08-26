@@ -114,7 +114,6 @@ class PmmlRegressionLimeExplainerTest {
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
         LimeConfig initialConfig = new LimeConfig()
-                .withSamples(10)
                 .withPerturbationContext(perturbationContext);
         LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
         assertThat(optimizedConfig).isNotSameAs(initialConfig);
@@ -140,7 +139,6 @@ class PmmlRegressionLimeExplainerTest {
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
         LimeConfig initialConfig = new LimeConfig()
-                .withSamples(10)
                 .withPerturbationContext(perturbationContext);
         LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
         assertThat(optimizedConfig).isNotSameAs(initialConfig);
@@ -166,7 +164,6 @@ class PmmlRegressionLimeExplainerTest {
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
         LimeConfig initialConfig = new LimeConfig()
-                .withSamples(10)
                 .withPerturbationContext(perturbationContext);
         LimeConfig optimizedConfig = limeConfigOptimizer.optimize(initialConfig, predictions, model);
         assertThat(optimizedConfig).isNotSameAs(initialConfig);

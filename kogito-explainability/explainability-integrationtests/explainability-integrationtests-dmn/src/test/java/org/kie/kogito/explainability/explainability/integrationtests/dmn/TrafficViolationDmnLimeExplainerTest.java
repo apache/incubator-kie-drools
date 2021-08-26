@@ -104,8 +104,7 @@ class TrafficViolationDmnLimeExplainerTest {
         List<PredictionOutput> predictionOutputs = model.predictAsync(samples.subList(0, 5)).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer()
-                .withSampling(false)
-                .withWeighting(false);
+                .withSampling(false);
         Random random = new Random();
         random.setSeed(0);
         PerturbationContext perturbationContext = new PerturbationContext(random, 1);
@@ -153,8 +152,6 @@ class TrafficViolationDmnLimeExplainerTest {
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
         LimeConfigOptimizer limeConfigOptimizer = new LimeConfigOptimizer()
                 .withSampling(false)
-                .withWeighting(false)
-                .withTimeLimit(60)
                 .withWeightedStability(0.4, 0.6);
 
         Random random = new Random();
