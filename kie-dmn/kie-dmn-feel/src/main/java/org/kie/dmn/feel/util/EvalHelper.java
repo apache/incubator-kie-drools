@@ -437,8 +437,8 @@ public class EvalHelper {
 
     /**
      * {@link #getDefinedValue(Object, String)} method instead.
-     * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null. 
-     * 
+     * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null.
+     *
      */
     public static Object getValue(final Object current, final String property) {
         return getDefinedValue(current, property).getValueResult().getOrElse(null);
@@ -454,8 +454,9 @@ public class EvalHelper {
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
-        String accessorQualifiedName = new StringBuilder(clazz.getCanonicalName())
-			.append(".").append(field).toString();
+        String accessorQualifiedName = getClassLoaderName(clazz.getClassLoader()) +
+                "." + clazz.getCanonicalName() +
+                "." + field;
 
         return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
         	Stream.of( clazz.getMethods() )
@@ -465,6 +466,12 @@ public class EvalHelper {
             )
             .findFirst()
             .orElse( getAccessor( clazz, field ) ));
+    }
+
+    private static String getClassLoaderName(ClassLoader classLoader) {
+        return classLoader == null
+                ? "bootstrap"
+                : classLoader.getClass().getSimpleName() + "@" + classLoader.hashCode();
     }
 
     public static void clearGenericAccessorCache() {
