@@ -14,11 +14,32 @@
  * limitations under the License.
  */
 
-package org.drools.mvel2;
+package org.drools.mvel;
 
-import java.io.Serializable;
+import java.util.Map;
 
-public interface CompiledJavaEvaluator extends Serializable{
+public class EvaluatorTemplate implements org.drools.mvel2.CompiledJavaEvaluator {
 
-    Object eval(java.util.Map map);
+    @Override
+    public Object eval(java.util.Map map) {
+        // declarations are on top
+        int usedBinding;
+
+        // binding assignment
+        {
+            usedBinding = (int) map.get("usedBinding");
+        }
+
+        // execute MVEL here
+        {
+
+        }
+
+        // repopulate map
+        {
+            map.put("usedBinding", usedBinding);
+        }
+
+        return usedBinding;
+    }
 }

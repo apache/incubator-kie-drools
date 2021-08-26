@@ -1,8 +1,23 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.drools.mvel;
 
 import java.io.InputStream;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -25,10 +40,12 @@ import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.Type;
 import org.drools.core.util.StringUtils;
 import org.drools.mvelcompiler.CompiledResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class EvaluatorGenerator {
 
-    private static final Logger LOG = Logger.getLogger(EvaluatorGenerator.class.getName());
+    private static final Logger LOG = LoggerFactory.getLogger(EvaluatorGenerator.class.getName());
 
     private CompilationUnit template;
     private ClassOrInterfaceDeclaration evaluatorClass;
@@ -79,7 +96,7 @@ public class EvaluatorGenerator {
     }
 
     private void logGenerateClass() {
-        LOG.fine(template.toString());
+        LOG.debug(template.toString());
     }
 
     // Simulate "Last expression is a return statement"
@@ -167,7 +184,7 @@ public class EvaluatorGenerator {
 
     private CompilationUnit getMethodTemplate() {
         InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream("/org/mvel/EvaluatorTemplate.java");
+                .getResourceAsStream("/org/drools/mvel/EvaluatorTemplate.java");
         return StaticJavaParser.parse(resourceAsStream);
     }
 
