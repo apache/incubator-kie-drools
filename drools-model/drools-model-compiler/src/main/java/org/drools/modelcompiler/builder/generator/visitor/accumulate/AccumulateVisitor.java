@@ -301,7 +301,7 @@ public class AccumulateVisitor {
             }
         }
 
-        SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) new ConstraintParser(context, context.getPackageModel())
+        SingleDrlxParseSuccess drlxParseResult = (SingleDrlxParseSuccess) ConstraintParser.defaultConstraintParser(context, context.getPackageModel())
                 .drlxParse(patternType, paramExprBindingId, printConstraint(parameterConverted));
 
         if (inputPattern != null) {
@@ -392,7 +392,7 @@ public class AccumulateVisitor {
     }
 
     private Optional<NewBinding> binaryExprParameter(PatternDescr basePattern, AccumulateDescr.AccumulateFunctionCallDescr function, MethodCallExpr functionDSL, String bindingId, String accumulateFunctionParameterStr) {
-        final DrlxParseResult parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
+        final DrlxParseResult parseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(Object.class, bindingId, accumulateFunctionParameterStr);
 
         Optional<NewBinding> optNewBinding = parseResult.acceptWithReturnValue(new ParseResultVisitor<Optional<NewBinding>>() {
             @Override

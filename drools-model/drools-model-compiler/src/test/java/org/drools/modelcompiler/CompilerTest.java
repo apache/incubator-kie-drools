@@ -2926,4 +2926,33 @@ public class CompilerTest extends BaseModelTest {
         assertEquals(1, list.size());
         assertEquals("DEFAULT", list.get(0));
     }
+
+    @Test
+    public void testSharedConstraintWithExtraParenthesis() {
+        // DROOLS-6548
+        final String str =
+                "package org.drools.mvel.compiler\n" +
+                "global java.util.List list;\n" +
+                "import " + Person.class.getCanonicalName() + ";" +
+                "rule r1 when\n" +
+                "    Person( ( name == \"A\" ) )\n" +
+                "then\n" +
+                "    list.add(\"r1\");" +
+                "end\n" +
+                "rule r2 when\n" +
+                "    Person( name == \"B\" )\n" +
+                "    Person( name == \"A\" )\n" +
+                "then\n" +
+                "    list.add(\"r2\");" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+        final List<String> list = new ArrayList<>();
+        ksession.setGlobal("list", list);
+
+        ksession.insert(new Person("A"));
+        ksession.fireAllRules();
+        assertEquals(1, list.size());
+        assertEquals("r1", list.get(0));
+    }
 }

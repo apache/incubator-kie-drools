@@ -90,7 +90,7 @@ public class NamedConsequenceVisitor {
             DrlxParseResult parseResult;
             if (identifier == null) { // The accumulate pattern doesn't have an identifier. Let's parse the consequence and use the acc functions
 
-                parseResult = new ConstraintParser(context, packageModel).drlxParse(Object.class, "", condition);
+                parseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(Object.class, "", condition);
                 parseResult.accept((DrlxParseSuccess parseSuccess) -> {
 
                     SingleDrlxParseSuccess parseSuccess1 = (SingleDrlxParseSuccess) parseSuccess;
@@ -111,7 +111,7 @@ public class NamedConsequenceVisitor {
             } else {
 
                 when.addArgument(context.getVarExpr(identifier));
-                parseResult = new ConstraintParser(context, packageModel).drlxParse(patternType, identifier, condition);
+                parseResult = ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(patternType, identifier, condition);
                 Collection<String> usedDeclarations = ((SingleDrlxParseSuccess)parseResult).getUsedDeclarations();
                 if (usedDeclarations.isEmpty()) { // _this
                     parseResult.accept(parseSuccess -> when.addArgument(generateLambdaWithoutParameters(Collections.emptySortedSet(), parseSuccess.getExpr())));

@@ -26,6 +26,9 @@ import java.util.Collection;
 import org.junit.runners.Parameterized;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 
+import static org.kie.dmn.feel.util.DynamicTypeUtils.entry;
+import static org.kie.dmn.feel.util.DynamicTypeUtils.mapOf;
+
 public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
 
     @Parameterized.Parameters(name = "{index}: {0} ({1}) = {2}")
@@ -73,6 +76,11 @@ public class KieFEELExtendedFunctionsTest extends BaseFEELTest {
                 { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], date(\"2018-08-25\") )", Boolean.TRUE, null },
                 { "includes( [date(\"2018-08-15\")..date(\"2018-08-31\")], [date(\"2018-08-20\")..date(\"2018-08-22\")] )", Boolean.TRUE, null },
                 { "overlaps( [date(\"2018-08-15\")..date(\"2018-08-28\")], [date(\"2018-08-20\")..date(\"2018-08-31\")] )", Boolean.TRUE, null },
+                { "put({name: \"John Doe\"}, \"age\", 47)", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
+                { "put({name: \"John Doe\", age: 0}, \"age\", 47)", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
+                { "put all([{name: \"John Doe\"}, {age: 47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
+                { "put all([{name: \"John Doe\", age: 0}, {age: 47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
+                { "context([{key: \"name\", value: \"John Doe\"},{\"key\":\"age\", \"value\":47}])", mapOf(entry("name", "John Doe"),entry("age", new BigDecimal(47))), null },
                 { "time(10, 20, 30)", LocalTime.of(10, 20, 30), null },
                 { "date( 2020, 2, 31 )", null, FEELEvent.Severity.ERROR},
                 { "date( \"2020-02-31\" )", null, FEELEvent.Severity.ERROR},
