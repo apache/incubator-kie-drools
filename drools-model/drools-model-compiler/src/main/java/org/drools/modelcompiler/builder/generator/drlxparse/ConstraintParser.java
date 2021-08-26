@@ -48,6 +48,7 @@ import org.drools.core.util.DateUtils;
 import org.drools.model.Index;
 import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.errors.ParseExpressionErrorResult;
+import org.drools.modelcompiler.builder.errors.VariableUsedInBindingError;
 import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.ModelGenerator;
@@ -82,6 +83,7 @@ import static com.github.javaparser.ast.expr.BinaryExpr.Operator.OR;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.PLUS;
 import static com.github.javaparser.ast.expr.BinaryExpr.Operator.REMAINDER;
 import static java.util.Arrays.asList;
+import static java.util.Optional.of;
 import static org.drools.core.util.StringUtils.lcFirstForBean;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createConstraintCompiler;
@@ -93,14 +95,36 @@ import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialCompar
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
+/**
+ * Parses the MVEL String Constraint and compiles it to a Java Expression
+ * There are two kinds of ConstraintParser
+ *
+ * ConstraintParser#defaultConstraintParser
+ * ConstraintParser#withoutVariableValidation
+ *
+ * There are some cases (such as from, eval) in which variables are allowed in the constraint
+ *
+ */
 public class ConstraintParser {
 
-    private RuleContext context;
-    private PackageModel packageModel;
+    private final RuleContext context;
+    private final PackageModel packageModel;
+    private final boolean skipVariableValidation;
 
-    public ConstraintParser(RuleContext context, PackageModel packageModel) {
+    private ConstraintParser(RuleContext context,
+                             PackageModel packageModel,
+                             boolean skipVariableValidation) {
         this.context = context;
         this.packageModel = packageModel;
+        this.skipVariableValidation = skipVariableValidation;
+    }
+
+    public static ConstraintParser defaultConstraintParser(RuleContext context, PackageModel packageModel) {
+        return new ConstraintParser(context, packageModel, false);
+    }
+
+    public static ConstraintParser withoutVariableValidationConstraintParser(RuleContext context, PackageModel packageModel) {
+        return new ConstraintParser(context, packageModel, true);
     }
 
     public DrlxParseResult drlxParse(Class<?> patternType, String bindingId, String expression) {
@@ -112,11 +136,12 @@ public class ConstraintParser {
     }
 
     public DrlxParseResult drlxParse(Class<?> patternType, String bindingId, ConstraintExpression constraint, boolean isPositional) {
-        DrlxExpression drlx = DrlxParseUtil.parseExpression( constraint.getExpression() );
+        String constraintExpressionString = constraint.getExpression();
+        DrlxExpression drlx = DrlxParseUtil.parseExpression(constraintExpressionString);
         boolean hasBind = drlx.getBind() != null;
         DrlxParseResult drlxParseResult =
-                getDrlxParseResult(patternType, bindingId, constraint, drlx.getExpr(), hasBind, isPositional )
-                .setOriginalDrlConstraint(constraint.getExpression());
+                compileStart(patternType, bindingId, constraint, drlx.getExpr(), hasBind, isPositional )
+                .setOriginalDrlConstraint(constraintExpressionString);
 
         drlxParseResult.accept(result -> {
             if (hasBind) {
@@ -148,7 +173,41 @@ public class ConstraintParser {
         }
     }
 
-    private DrlxParseResult getDrlxParseResult(Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr, boolean hasBind, boolean isPositional ) {
+    /*
+        This is the entry point for Constraint Transformation from a parsed MVEL constraint
+        to a Java Expression
+     */
+    private DrlxParseResult compileStart(Class<?> patternType,
+                                         String bindingId,
+                                         ConstraintExpression constraint,
+                                         Expression drlxExpr,
+                                         boolean hasBind,
+                                         boolean isPositional) {
+
+        Optional<DrlxParseFail> variableUsedInBindingFailure = validateVariable(drlxExpr, hasBind);
+        if (variableUsedInBindingFailure.isPresent()) {
+            return variableUsedInBindingFailure.get();
+        }
+
+        return compileToJavaRecursive(patternType, bindingId, constraint, drlxExpr, hasBind, isPositional);
+    }
+
+    private Optional<DrlxParseFail> validateVariable(Expression drlxExpr, boolean hasBind) {
+        if (!skipVariableValidation && drlxExpr instanceof MethodCallExpr && hasBind) {
+            return drlxExpr.findAll(NameExpr.class, ne -> context.hasDeclaration(ne.toString()))
+                    .stream()
+                    .map(n -> new DrlxParseFail(new VariableUsedInBindingError(n.toString(), drlxExpr.toString())))
+                    .findFirst();
+        }
+        return Optional.empty();
+    }
+
+    private DrlxParseResult compileToJavaRecursive(Class<?> patternType,
+                                                   String bindingId,
+                                                   ConstraintExpression constraint,
+                                                   Expression drlxExpr,
+                                                   boolean hasBind,
+                                                   boolean isPositional ) {
         boolean isEnclosed = false;
         SimpleName bind = null;
 
@@ -440,7 +499,7 @@ public class ConstraintParser {
         }
         TypedExpression typedExpression = opt.get();
 
-        SingleDrlxParseSuccess innerResult = (SingleDrlxParseSuccess) getDrlxParseResult(patternType, bindingId, constraint, unaryExpr.getExpression(), hasBind, isPositional);
+        SingleDrlxParseSuccess innerResult = (SingleDrlxParseSuccess) compileToJavaRecursive(patternType, bindingId, constraint, unaryExpr.getExpression(), hasBind, isPositional);
 
         Expression innerExpression;
         if (unaryExpr.getExpression() instanceof EnclosedExpr && !(innerResult.getExpr() instanceof EnclosedExpr)) {
@@ -461,11 +520,11 @@ public class ConstraintParser {
         BinaryExpr.Operator operator = binaryExpr.getOperator();
 
         if ( isLogicalOperator( operator ) && isCombinable( binaryExpr ) ) {
-            DrlxParseResult leftResult = getDrlxParseResult(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
+            DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
             Expression rightExpr = binaryExpr.getRight() instanceof HalfPointFreeExpr ?
                     completeHalfExpr( (( PointFreeExpr ) binaryExpr.getLeft()).getLeft(), ( HalfPointFreeExpr ) binaryExpr.getRight()) :
                     binaryExpr.getRight();
-            DrlxParseResult rightResult = getDrlxParseResult(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
+            DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
             return isMultipleResult(leftResult, operator, rightResult) ?
                     new MultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
                     leftResult.combineWith( rightResult, operator );
@@ -533,7 +592,7 @@ public class ConstraintParser {
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
         } else if (arithmeticExpr && (left.isBigDecimal())) {
-            ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, Optional.of(patternType));
+            ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, of(patternType));
             CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
 
             combo = compiledExpressionResult.getExpression();

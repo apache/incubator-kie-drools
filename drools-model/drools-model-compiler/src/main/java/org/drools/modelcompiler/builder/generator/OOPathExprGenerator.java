@@ -148,7 +148,7 @@ public class OOPathExprGenerator {
         } else {
             Class<?> finalFieldType = fieldType;
             final List<DrlxParseResult> conditionParseResult = conditions.stream().map((DrlxExpression c) ->
-                    new ConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
+                    ConstraintParser.defaultConstraintParser(context, packageModel).drlxParse(finalFieldType, bindingId, PrintUtil.printConstraint(c))
             ).collect(Collectors.toList());
             toPatternExpr(bindingId, conditionParseResult, patternParseResult, fieldType);
         }

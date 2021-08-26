@@ -50,10 +50,9 @@ import org.drools.mvel.parser.ast.expr.DrlNameExpr;
 import org.drools.mvel.parser.ast.expr.DrlxExpression;
 import org.drools.mvel.parser.printer.PrintUtil;
 
+import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
-
-import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static org.drools.core.rule.Pattern.isCompatibleWithFromReturnType;
 import static org.drools.core.util.StringUtils.splitArgumentsList;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findViaScopeWithPredicate;
@@ -280,7 +279,8 @@ public class FromVisitor {
             DeclarationSpec declarationSpec = context.getDeclarationById( bindingId ).orElseThrow( RuntimeException::new );
             Class<?> clazz = declarationSpec.getDeclarationClass();
 
-            DrlxParseResult drlxParseResult = new ConstraintParser( context, packageModel ).drlxParse( clazz, bindingId, expression );
+            DrlxParseResult drlxParseResult = ConstraintParser.withoutVariableValidationConstraintParser(context, packageModel)
+                    .drlxParse(clazz, bindingId, expression);
 
             return drlxParseResult.acceptWithReturnValue( drlxParseSuccess -> {
                 SingleDrlxParseSuccess singleResult = ( SingleDrlxParseSuccess ) drlxParseResult;

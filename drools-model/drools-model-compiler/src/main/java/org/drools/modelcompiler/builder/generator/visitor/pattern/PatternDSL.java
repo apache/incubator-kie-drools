@@ -126,7 +126,7 @@ public abstract class PatternDSL implements DSLNode {
     }
 
     private List<PatternConstraintParseResult> findAllConstraint(PatternDescr pattern, List<? extends BaseDescr> constraintDescrs, Class<?> patternType) {
-        ConstraintParser constraintParser = new ConstraintParser(context, packageModel);
+        ConstraintParser constraintParser = ConstraintParser.defaultConstraintParser(context, packageModel);
         List<PatternConstraintParseResult> patternConstraintParseResults = new ArrayList<>();
 
         for (BaseDescr constraint : constraintDescrs) {
