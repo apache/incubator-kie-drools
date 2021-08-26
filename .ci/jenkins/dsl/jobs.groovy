@@ -38,7 +38,10 @@ Map getMultijobPRConfig() {
                 repository: 'optaweb-vehicle-routing'
             ], [
                 id: 'optaplanner-quickstarts',
-                repository: 'optaplanner-quickstarts'
+                repository: 'optaplanner-quickstarts',
+                env : [
+                    BUILD_MVN_OPTS: '-Dfull'
+                ]
             ]
         ]
     ]
