@@ -26,16 +26,18 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 public class JsonPathExprSupplier implements Supplier<Expression> {
 
     private String jsonPathExpr;
+    private String paramName;
 
-    public JsonPathExprSupplier(String jsonPathExpr) {
+    public JsonPathExprSupplier(String jsonPathExpr, String paramName) {
         this.jsonPathExpr = jsonPathExpr;
+        this.paramName = paramName;
     }
 
     @Override
     public Expression get() {
         return new ObjectCreationExpr()
                 .setType(JsonPathResolver.class.getCanonicalName())
-                .addArgument(new StringLiteralExpr(jsonPathExpr));
+                .addArgument(new StringLiteralExpr(jsonPathExpr)).addArgument(new StringLiteralExpr(paramName));
     }
 
 }

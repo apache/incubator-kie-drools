@@ -39,7 +39,6 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.FieldAccessExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.SimpleName;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
@@ -112,13 +111,17 @@ public abstract class AbstractServiceTaskDescriptor implements TaskDescriptor {
                         .collect(NodeList.toNodeList()));
     }
 
+    protected boolean isEmptyResult() {
+        return false;
+    }
+
     protected MethodCallExpr completeWorkItem(BlockStmt executeWorkItemBody, MethodCallExpr callService, Collection<Class<?>> exceptions) {
         Expression results;
 
         List<DataAssociation> outAssociations = workItemNode.getOutAssociations();
-        if (outAssociations.isEmpty()) {
+        if (outAssociations.isEmpty() || isEmptyResult()) {
             executeWorkItemBody.addStatement(tryStmt(callService, exceptions));
-            results = new NullLiteralExpr();
+            results = new MethodCallExpr(new NameExpr("java.util.Collections"), "emptyMap");
         } else {
             VariableDeclarationExpr resultField = new VariableDeclarationExpr()
                     .addVariable(new VariableDeclarator(

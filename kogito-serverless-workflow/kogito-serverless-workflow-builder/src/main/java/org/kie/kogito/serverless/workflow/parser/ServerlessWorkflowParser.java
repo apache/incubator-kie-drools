@@ -104,6 +104,8 @@ public class ServerlessWorkflowParser {
         stateHandlers.values().forEach(StateHandler::handleEnd);
         stateHandlers.values().forEach(StateHandler::handleState);
         stateHandlers.values().forEach(s -> s.handleTransitions(stateHandlers));
+        stateHandlers.values().forEach(s -> s.handleErrors(stateHandlers));
+        stateHandlers.values().forEach(StateHandler::handleConnections);
         return factory.validate().getProcess();
     }
 

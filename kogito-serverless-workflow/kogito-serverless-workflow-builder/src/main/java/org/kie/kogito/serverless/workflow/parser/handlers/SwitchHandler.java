@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -40,6 +41,8 @@ public class SwitchHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
         StateHandler<SwitchState, SplitFactory<P>, P> {
 
     private static final String XORSPLITDEFAULT = "Default";
+
+    private List<Runnable> targetHandlers = new ArrayList<>();
 
     protected SwitchHandler(SwitchState state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
             NodeIdGenerator idGenerator) {
@@ -82,16 +85,16 @@ public class SwitchHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
         for (EventCondition eventCondition : conditions) {
             EventDefinition eventDefinition = ServerlessWorkflowUtils.getWorkflowEventFor(workflow,
                     eventCondition.getEventRef());
-            long targetId = stateConnection.get(eventCondition.getTransition().getNextState()).getNode().getNode()
-                    .getId();
+            StateHandler<?, ?, ?> targetState = stateConnection.get(eventCondition.getTransition().getNextState());
             long eventId = idGenerator.getId();
             ServerlessWorkflowParser.consumeEventNode(factory.eventNode(eventId), eventDefinition).done().connection(
-                    startNode.getNode().getId(), eventId).connection(eventId, targetId);
+                    startNode.getNode().getId(), eventId);
+            targetState.connect(eventId);
         }
     }
 
     private void finalizeDataBasedSwitchState(NodeFactory<?, ?> startNode, Map<String, StateHandler<?, ?, ?>> stateConnection) {
-        long splitId = startNode.getNode().getId();
+        final long splitId = startNode.getNode().getId();
         // set default connection
         if (state.getDefault() != null) {
             Transition transition = state.getDefault().getTransition();
@@ -107,20 +110,39 @@ public class SwitchHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
 
         List<DataCondition> conditions = state.getDataConditions();
         for (DataCondition condition : conditions) {
-            Optional<Long> targetId = handleTransition(condition.getTransition(), splitId, stateConnection);
-            if (!targetId.isPresent() && condition.getEnd() != null) {
-                EndNodeFactory<P> endNodeFactory = endNodeFactory(condition.getEnd().getProduceEvents());
-                endNodeFactory.done().connection(splitId, endNodeFactory.getNode().getId());
-                targetId = Optional.of(endNodeFactory.getNode().getId());
-            }
-            if (targetId.isPresent()) {
-                ((SplitFactory<?>) startNode).constraint(targetId.get(), concatId(splitId, targetId.get()),
-                        "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0,
-                        isDefaultCondition(state, condition));
-            } else {
-                throw new IllegalArgumentException("Invalid condition, not transition not end");
-            }
+            handleTransition(condition.getTransition(), splitId, stateConnection, Optional.of(new StateHandler.HandleTransitionCallBack() {
+                @Override
+                public void onStateTarget(StateHandler<?, ?, ?> targetState) {
+                    targetHandlers.add(() -> addConstraint(startNode, targetState, condition));
+                }
+
+                @Override
+                public void onIdTarget(long targetId) {
+                    addConstraint(startNode, targetId, condition);
+                }
+
+                @Override
+                public void onEmptyTarget() {
+                    if (condition.getEnd() != null) {
+                        EndNodeFactory<P> endNodeFactory = endNodeFactory(condition.getEnd().getProduceEvents());
+                        endNodeFactory.done().connection(splitId, endNodeFactory.getNode().getId());
+                        addConstraint(startNode, endNodeFactory.getNode().getId(), condition);
+                    } else {
+                        throw new IllegalArgumentException("Invalid condition, not transition not end");
+                    }
+                }
+            }));
         }
+    }
+
+    private void addConstraint(NodeFactory<?, ?> startNode, StateHandler<?, ?, ?> stateHandler, DataCondition condition) {
+        addConstraint(startNode, stateHandler.getIncomingNode().getNode().getId(), condition);
+    }
+
+    private void addConstraint(NodeFactory<?, ?> startNode, long targetId, DataCondition condition) {
+        ((SplitFactory<?>) startNode).constraint(targetId, concatId(startNode.getNode().getId(), targetId),
+                "DROOLS_DEFAULT", "java", ServerlessWorkflowUtils.conditionScript(condition.getCondition()), 0,
+                isDefaultCondition(state, condition));
     }
 
     private EndNodeFactory<P> endNodeFactory(List<ProduceEvent> produceEvents) {
@@ -147,4 +169,13 @@ public class SwitchHandler<P extends RuleFlowNodeContainerFactory<P, ?>> extends
                         || switchState.getDefault().getEnd() != null && condition.getEnd() != null);
     }
 
+    @Override
+    public void connect(long sourceId) {
+        factory.connection(sourceId, getNode().getNode().getId());
+    }
+
+    @Override
+    public void handleConnections() {
+        targetHandlers.forEach(Runnable::run);
+    }
 }

@@ -15,22 +15,28 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 
 import org.jbpm.process.instance.impl.actions.HandleMessageAction;
+import org.jbpm.ruleflow.core.Metadata;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.ActionNodeFactory;
+import org.jbpm.ruleflow.core.factory.BoundaryEventNodeFactory;
 import org.jbpm.ruleflow.core.factory.EndNodeFactory;
+import org.jbpm.ruleflow.core.factory.JoinFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
 import org.jbpm.ruleflow.core.factory.StartNodeFactory;
+import org.jbpm.workflow.core.node.Join;
 import org.kie.kogito.serverless.workflow.parser.NodeIdGenerator;
 import org.kie.kogito.serverless.workflow.parser.ServerlessWorkflowParser;
 import org.kie.kogito.serverless.workflow.parser.util.ServerlessWorkflowUtils;
 
 import io.serverlessworkflow.api.Workflow;
+import io.serverlessworkflow.api.error.Error;
 import io.serverlessworkflow.api.interfaces.State;
 import io.serverlessworkflow.api.produce.ProduceEvent;
 import io.serverlessworkflow.api.transitions.Transition;
@@ -45,8 +51,11 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
     private StartNodeFactory<P> startNodeFactory;
     private EndNodeFactory<P> endNodeFactory;
     private T node;
+    private JoinFactory<P> join;
+    private List<Long> incomingConnections = new ArrayList<>();
 
-    protected StateHandler(S state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory, NodeIdGenerator idGenerator) {
+    protected StateHandler(S state, Workflow workflow, RuleFlowNodeContainerFactory<P, ?> factory,
+            NodeIdGenerator idGenerator) {
         this.workflow = workflow;
         this.factory = factory;
         this.state = state;
@@ -68,7 +77,8 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
                 endNodeFactory.terminate(true);
             } else {
                 ServerlessWorkflowParser.sendEventNode(
-                        endNodeFactory.terminate(false).action(new HandleMessageAction(ServerlessWorkflowParser.JSON_NODE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)),
+                        endNodeFactory.terminate(false).action(new HandleMessageAction(
+                                ServerlessWorkflowParser.JSON_NODE, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)),
                         ServerlessWorkflowUtils.getWorkflowEventFor(workflow, produceEvents.get(0).getEventRef()));
             }
             endNodeFactory.done();
@@ -82,8 +92,36 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
         connectEnd();
     }
 
+    public void connect(long sourceId) {
+        incomingConnections.add(sourceId);
+    }
+
+    public void handleConnections() {
+        NodeFactory<?, P> incoming = getIncomingNode();
+        for (long sourceId : incomingConnections) {
+            factory.connection(sourceId, incoming.getNode().getId());
+        }
+    }
+
+    public void handleErrors(Map<String, StateHandler<?, ?, ?>> stateConnection) {
+        for (Error error : state.getOnErrors()) {
+            String eventType = "Error-" + node.getNode().getMetaData().get("UniqueId");
+            BoundaryEventNodeFactory<P> boundaryNode =
+                    factory.boundaryEventNode(idGenerator.getId()).attachedTo(node.getNode().getId()).metaData(
+                            "EventType", Metadata.EVENT_TYPE_ERROR).metaData("HasErrorEvent", true);
+            if (error.getCode() != null) {
+                boundaryNode.metaData("ErrorEvent", error.getCode());
+                eventType += "-" + error.getCode();
+            }
+            boundaryNode.eventType(eventType).name("Error-" + node.getNode().getName() + "-" + error.getCode());
+            factory.exceptionHandler(eventType, error.getCode());
+            handleTransition(error.getTransition(), boundaryNode.getNode().getId(), stateConnection);
+        }
+    }
+
     public void handleTransitions(Map<String, StateHandler<?, ?, ?>> stateConnection) {
-        handleTransition(state.getTransition(), getConnectionNode().getNode().getId(), stateConnection);
+        handleTransition(state.getTransition(), getOutgoingNode().getNode().getId(), stateConnection);
+
     }
 
     protected void connectStart() {
@@ -94,7 +132,7 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
 
     protected void connectEnd() {
         if (endNodeFactory != null) {
-            factory.connection(getConnectionNode().getNode().getId(), endNodeFactory.getNode().getId());
+            factory.connection(getOutgoingNode().getNode().getId(), endNodeFactory.getNode().getId());
         }
     }
 
@@ -107,21 +145,44 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
     }
 
     @SuppressWarnings("unchecked")
-    public <N extends NodeFactory<N, P>> N getConnectionNode() {
+    public <N extends NodeFactory<N, P>> N getOutgoingNode() {
         return (N) getNode();
+    }
+
+    @SuppressWarnings("unchecked")
+    public <N extends NodeFactory<N, P>> N getIncomingNode() {
+        if (join != null) {
+            return (N) join;
+        } else if (incomingConnections.size() > 1) {
+            join = factory.joinNode(idGenerator.getId()).type(Join.TYPE_OR).name("Join-" + node.getNode()
+                    .getName());
+            join.done().connection(join.getNode().getId(), node.getNode().getId());
+            return (N) join;
+        } else {
+            return (N) getNode();
+        }
     }
 
     protected abstract T makeNode();
 
-    protected Optional<Long> handleTransition(Transition transition, long sourceId, Map<String, StateHandler<?, ?, ?>> stateConnection) {
+    protected final void handleTransition(Transition transition,
+            long sourceId,
+            Map<String, StateHandler<?, ?, ?>> stateConnection) {
+        handleTransition(transition, sourceId, stateConnection, Optional.empty());
+    }
+
+    protected final void handleTransition(Transition transition,
+            long sourceId,
+            Map<String, StateHandler<?, ?, ?>> stateConnection,
+            Optional<HandleTransitionCallBack> callback) {
         if (transition != null && transition.getNextState() != null) {
-            long targetId = stateConnection.get(transition.getNextState()).getNode().getNode().getId();
+            StateHandler<?, ?, ?> targetState = stateConnection.get(transition.getNextState());
             List<ProduceEvent> produceEvents = transition.getProduceEvents();
             if (produceEvents.isEmpty()) {
-                factory.connection(sourceId, targetId);
-                return Optional.of(targetId);
+                targetState.connect(sourceId);
+                callback.ifPresent(c -> c.onStateTarget(targetState));
             } else {
-                ActionNodeFactory<P> actionNode = factory.actionNode(idGenerator.getId());
+                final ActionNodeFactory<P> actionNode = factory.actionNode(idGenerator.getId());
                 ActionNodeFactory<P> endNode = actionNode;
                 ServerlessWorkflowParser.sendEventNode(actionNode, ServerlessWorkflowUtils.getWorkflowEventFor(workflow,
                         produceEvents.get(0).getEventRef()));
@@ -137,10 +198,19 @@ public abstract class StateHandler<S extends State, T extends NodeFactory<T, P>,
                     }
                 }
                 factory.connection(sourceId, actionNode.getNode().getId());
-                factory.connection(endNode.getNode().getId(), targetId);
-                return Optional.of(actionNode.getNode().getId());
+                targetState.connect(endNode.getNode().getId());
+                callback.ifPresent(c -> c.onIdTarget(actionNode.getNode().getId()));
             }
+        } else {
+            callback.ifPresent(HandleTransitionCallBack::onEmptyTarget);
         }
-        return Optional.empty();
+    }
+
+    protected interface HandleTransitionCallBack {
+        void onStateTarget(StateHandler<?, ?, ?> targetState);
+
+        void onIdTarget(long targetId);
+
+        void onEmptyTarget();
     }
 }

@@ -53,7 +53,7 @@ public class ParallelHandler<P extends RuleFlowNodeContainerFactory<P, ?>> exten
 
     @SuppressWarnings("unchecked")
     @Override
-    public JoinFactory<P> getConnectionNode() {
+    public JoinFactory<P> getOutgoingNode() {
         return connectionNode;
     }
 }

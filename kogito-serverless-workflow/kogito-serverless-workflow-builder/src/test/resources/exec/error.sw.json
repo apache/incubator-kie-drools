@@ -1,0 +1,82 @@
+{
+  "id": "error",
+  "version": "1.0",
+  "name": "Workflow Error example",
+  "description": "An example of how to handle an exception thrown by a service",
+  "start": "checkEven",
+  "functions": [
+    {
+      "name": "isEven",
+      "metadata": {
+        "interface": "org.kie.kogito.examples.EvenService",
+        "operation": "isEven",
+        "type": "service"
+      }
+    },
+    {
+      "name": "printMessage",
+      "metadata": {
+        "type": "sysout"
+      }
+    }
+  ],
+  "states": [
+    {
+      "name": "checkEven",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "checkEvenAction",
+          "functionRef": {
+            "refName": "isEven",
+            "arguments": {
+              "number": "$.number"
+            }
+          }
+        }
+      ],
+      "transition": "even",
+      "onErrors": [
+        {
+          "error": "odd number",
+          "code": "java.lang.IllegalArgumentException",
+          "transition": "odd"
+        }
+      ]
+    },
+    {
+      "name": "even",
+      "type": "inject",
+      "data": {
+        "numberType": "even"
+      },
+      "transition": "finish"
+    },
+    {
+      "name": "odd",
+      "type": "inject",
+      "data": {
+        "numberType": "odd"
+      },
+      "transition": "finish"
+    },
+    {
+      "name": "finish",
+      "type": "operation",
+      "actions": [
+        {
+          "name": "printAction",
+          "functionRef": {
+            "refName": "printMessage",
+            "arguments": {
+              "message": "$.numberType"
+            }
+          }
+        }
+      ],
+      "end": {
+        "terminate": "true"
+      }
+    }
+  ]
+}

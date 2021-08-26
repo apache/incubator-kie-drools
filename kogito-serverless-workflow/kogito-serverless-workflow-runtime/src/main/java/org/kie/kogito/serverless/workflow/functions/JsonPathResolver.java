@@ -19,7 +19,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import org.jbpm.workflow.instance.impl.WorkItemHandlerParamResolver;
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
+import org.kie.kogito.process.workitems.impl.WorkItemHandlerParamResolver;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -37,16 +38,18 @@ public class JsonPathResolver implements WorkItemHandlerParamResolver {
             .build();
 
     private String jsonPathExpr;
+    private String paramName;
 
-    public JsonPathResolver(String jsonPathExpr) {
+    public JsonPathResolver(String jsonPathExpr, String paramName) {
         this.jsonPathExpr = jsonPathExpr;
+        this.paramName = paramName;
     }
 
     @Override
-    public Object apply(Object context) {
+    public Object apply(KogitoWorkItem workItem) {
         JsonNode node = JsonPath
                 .using(jsonPathConfig)
-                .parse(context)
+                .parse(workItem.getParameter(paramName))
                 .read(jsonPathExpr, JsonNode.class);
         return readValue(node);
     }

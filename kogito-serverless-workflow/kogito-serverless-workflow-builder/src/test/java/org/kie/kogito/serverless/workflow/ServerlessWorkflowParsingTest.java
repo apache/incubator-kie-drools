@@ -672,7 +672,7 @@ public class ServerlessWorkflowParsingTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "/examples/applicantworkflow.sw.json" })
+    @ValueSource(strings = { "/examples/applicantworkflow.sw.json", "/exec/error.sw.json" })
     public void testSpecExamplesParsing(String workflowLocation) throws JsonProcessingException {
         Workflow workflow = Workflow.fromSource(WorkflowTestUtils.readWorkflowFile(workflowLocation));
 

@@ -99,7 +99,11 @@ public class KogitoWorkItemImpl implements InternalKogitoWorkItem, Serializable 
 
     @Override
     public Object getParameter(String name) {
-        return parameters.get(name);
+        Object value = parameters.get(name);
+        if (value instanceof WorkItemHandlerParamResolver) {
+            value = ((WorkItemHandlerParamResolver) value).apply(this);
+        }
+        return value;
     }
 
     @Override

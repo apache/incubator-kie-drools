@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.serverless.workflow.parser.handlers;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,6 +23,12 @@ import java.util.Map.Entry;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.canonical.descriptors.OpenApiTaskDescriptor;
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
+import org.jbpm.process.core.datatype.DataType;
+import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
+import org.jbpm.process.core.datatype.impl.type.FloatDataType;
+import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
+import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
+import org.jbpm.process.core.datatype.impl.type.StringDataType;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
@@ -37,6 +44,8 @@ import org.kogito.workitem.openapi.JsonNodeResultHandler;
 import org.kogito.workitem.openapi.suppliers.JsonNodeParameterExprSupplier;
 import org.kogito.workitem.openapi.suppliers.JsonNodeResultHandlerExprSupplier;
 import org.kogito.workitem.rest.RestWorkItemHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -51,6 +60,8 @@ import io.serverlessworkflow.api.workflow.Functions;
 
 public abstract class CompositeContextNodeHandler<S extends State, P extends RuleFlowNodeContainerFactory<P, ?>> extends
         StateHandler<S, CompositeContextNodeFactory<P>, P> {
+
+    private static final Logger logger = LoggerFactory.getLogger(CompositeContextNodeHandler.class);
 
     private static final String SCRIPT_TYPE = "script";
     private static final String REST_TYPE = "rest";
@@ -106,7 +117,9 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
             Functions workflowFunctions,
             Action action) {
 
-        String actionName = action.getFunctionRef().getRefName();
+        FunctionRef functionRef = action.getFunctionRef();
+        JsonNode functionArgs = functionRef.getArguments();
+        String actionName = functionRef.getRefName();
         FunctionDefinition actionFunction = workflowFunctions.getFunctionDefs()
                 .stream()
                 .filter(wf -> wf.getName().equals(actionName))
@@ -119,17 +132,17 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .actionNode(idGenerator.getId())
                         .name(actionName)
                         .action(JavaDialect.ID,
-                                ServerlessWorkflowUtils.scriptFunctionScript(action.getFunctionRef()
+                                ServerlessWorkflowUtils.scriptFunctionScript(functionRef
                                         .getArguments().get(SCRIPT_TYPE_PARAM).asText()));
             case SYSOUT:
                 return embeddedSubProcess
                         .actionNode(idGenerator.getId())
                         .name(actionName)
                         .action(JavaDialect.ID,
-                                ServerlessWorkflowUtils.sysOutFunctionScript(action.getFunctionRef()
+                                ServerlessWorkflowUtils.sysOutFunctionScript(functionRef
                                         .getArguments().get(SYSOUT_TYPE_PARAM).asText()));
             case SERVICE:
-                return embeddedSubProcess
+                WorkItemNodeFactory<CompositeContextNodeFactory<P>> serviceFactory = embeddedSubProcess
                         .workItemNode(idGenerator.getId())
                         .name(actionName)
                         .metaData(TaskDescriptor.KEY_WORKITEM_TYPE, SERVICE_TASK_TYPE)
@@ -144,11 +157,18 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                         .workParameter(WORKITEM_OPERATION_IMPL, ServerlessWorkflowUtils
                                 .resolveFunctionMetadata(actionFunction, SERVICE_OPERATION_KEY,
                                         workflowAppContext))
-                        .workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE)
                         .workParameter(SERVICE_IMPL_KEY, ServerlessWorkflowUtils.resolveFunctionMetadata(
                                 actionFunction, SERVICE_IMPL_KEY, workflowAppContext, "Java"))
-                        .inMapping(WORKITEM_PARAM, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)
-                        .outMapping(WORKITEM_PARAM, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+                        .inMapping(WORKITEM_PARAM, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+
+                if (functionArgs == null || functionArgs.isEmpty()) {
+                    serviceFactory.workParameter(WORKITEM_PARAM_TYPE, ServerlessWorkflowParser.JSON_NODE)
+                            .outMapping(WORKITEM_PARAM, ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
+                } else {
+                    processArgs(serviceFactory, functionArgs, WORKITEM_PARAM);
+                }
+                return serviceFactory;
+
             case REST:
                 WorkItemNodeFactory<CompositeContextNodeFactory<P>> workItemFactory = embeddedSubProcess
                         .workItemNode(idGenerator.getId())
@@ -176,21 +196,8 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR)
                         .outMapping(RestWorkItemHandler.RESULT,
                                 ServerlessWorkflowParser.DEFAULT_WORKFLOW_VAR);
-                FunctionRef functionRef = action.getFunctionRef();
-                if (functionRef.getArguments() != null) {
-                    JsonNode arguments = functionRef.getArguments();
-                    ObjectMapper mapper = new ObjectMapper();
-                    Map<String, String> mapArguments = mapper.convertValue(arguments,
-                            new TypeReference<Map<String, String>>() {
-                            });
-
-                    if (mapArguments != null) {
-                        for (Entry<String, String> param : mapArguments.entrySet()) {
-                            // assuming param value is json string path
-                            workItemFactory.workParameter(param.getKey(), new JsonPathExprSupplier(param
-                                    .getValue()));
-                        }
-                    }
+                if (functionArgs != null && !functionArgs.isEmpty()) {
+                    processArgs(workItemFactory, functionArgs, RestWorkItemHandler.CONTENT_DATA);
                 }
                 return workItemFactory;
             case OPENAPI:
@@ -220,6 +227,51 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
                 return emptyNode(embeddedSubProcess, actionName);
         }
 
+    }
+
+    private void processArgs(WorkItemNodeFactory<CompositeContextNodeFactory<P>> workItemFactory,
+            JsonNode functionArgs, String paramName) {
+        Iterator<Entry<String, JsonNode>> iter = functionArgs.fields();
+        while (iter.hasNext()) {
+            Entry<String, JsonNode> entry = iter.next();
+            workItemFactory.workParameter(entry.getKey(), processWorkItemValue(entry.getValue(), paramName)).workParameterDefinition(entry.getKey(), from(entry.getValue()));
+        }
+    }
+
+    private DataType from(Object value) {
+        if (value instanceof String) {
+            return new StringDataType();
+        } else if (value instanceof Boolean) {
+            return new BooleanDataType();
+        } else if (value instanceof Integer) {
+            return new IntegerDataType();
+        } else if (value instanceof Number) {
+            return new FloatDataType();
+        } else {
+            return new ObjectDataType();
+        }
+
+    }
+
+    private Object processWorkItemValue(JsonNode jsonNode, String paramName) {
+        if (jsonNode.isTextual()) {
+            String str = jsonNode.asText();
+            return isJsonPathExpr(str) ? new JsonPathExprSupplier(str, paramName) : str;
+        } else if (jsonNode.isBoolean()) {
+            return jsonNode.asBoolean();
+        } else if (jsonNode.isInt()) {
+            return jsonNode.asInt();
+        } else if (jsonNode.isDouble()) {
+            return jsonNode.asDouble();
+        } else {
+            /* this code is here for backward compatibility, we probably need to throw exception directly here */
+            logger.warn("Suspicious node {}, trying to convert to string", jsonNode);
+            return new ObjectMapper().convertValue(jsonNode, String.class);
+        }
+    }
+
+    private boolean isJsonPathExpr(String str) {
+        return str.trim().startsWith("$");
     }
 
     private enum ActionType {

@@ -31,12 +31,12 @@ import org.jbpm.process.core.Process;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.instance.impl.WorkItemHandlerParamResolver;
 import org.jbpm.workflow.instance.node.WorkItemNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemHandler;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
+import org.kie.kogito.process.workitems.impl.WorkItemHandlerParamResolver;
 import org.kogito.workitem.rest.bodybuilders.DefaultWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.bodybuilders.RestWorkItemHandlerBodyBuilder;
 import org.kogito.workitem.rest.resulthandlers.DefaultRestWorkItemHandlerResult;
@@ -72,16 +72,16 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
     // package scoped to allow unit test
     static class RestUnaryOperator implements UnaryOperator<Object> {
 
-        private Object inputModel;
+        private KogitoWorkItem workItem;
 
-        public RestUnaryOperator(Object inputModel) {
-            this.inputModel = inputModel;
+        public RestUnaryOperator(KogitoWorkItem workItem) {
+            this.workItem = workItem;
         }
 
         @Override
         public Object apply(Object value) {
             return value instanceof WorkItemHandlerParamResolver
-                    ? ((WorkItemHandlerParamResolver) value).apply(inputModel)
+                    ? ((WorkItemHandlerParamResolver) value).apply(workItem)
                     : value;
         }
     }
@@ -118,7 +118,7 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
 
         logger.debug("Filtered parameters are {}", parameters);
         // create request
-        UnaryOperator<Object> resolver = new RestUnaryOperator(inputModel);
+        UnaryOperator<Object> resolver = new RestUnaryOperator(workItem);
         endPoint = resolvePathParams(endPoint, parameters, resolver);
         Optional<URL> url = getUrl(endPoint);
         String host = url.map(java.net.URL::getHost).orElse(hostProp);
@@ -224,13 +224,13 @@ public class RestWorkItemHandler implements KogitoWorkItemHandler {
             if (end == -1) {
                 throw new IllegalArgumentException("malformed endpoint should contain enclosing '}' " + endPoint);
             }
-            String key = sb.substring(start + 1, end);
-            Object value = resolver.apply(parameters.get(key));
+            final String key = sb.substring(start + 1, end);
+            final Object value = resolver.apply(parameters.get(key));
             if (value == null) {
                 throw new IllegalArgumentException("missing parameter " + key);
             }
             toRemove.add(key);
-            sb.replace(start, end + 1, resolver.apply(parameters.get(key)).toString());
+            sb.replace(start, end + 1, value.toString());
             start = sb.indexOf("{", end);
         }
         parameters.keySet().removeAll(toRemove);

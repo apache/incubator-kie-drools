@@ -13,11 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jbpm.workflow.instance.impl;
+package org.kie.kogito.process.workitems.impl;
 
-import java.util.function.UnaryOperator;
+import java.util.function.Function;
+
+import org.kie.kogito.internal.process.runtime.KogitoWorkItem;
 
 /* Added to make it easier to search for ParamResolver function implementations, 
  * see https://github.com/kiegroup/kogito-runtimes/pull/778#pullrequestreview-493382982 */
-public interface WorkItemHandlerParamResolver extends UnaryOperator<Object> {
+public interface WorkItemHandlerParamResolver extends Function<KogitoWorkItem, Object> {
 }
