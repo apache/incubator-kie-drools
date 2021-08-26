@@ -18,7 +18,6 @@ package org.kie.pmml.compiler.commons.codegenfactories;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Random;
 import java.util.Spliterator;
@@ -34,13 +33,10 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.Expression;
-import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.SimpleName;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -59,7 +55,6 @@ import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.models.OutputField;
-import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
@@ -177,12 +172,14 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "KiePMMLConstant" +
                                                                          "(\"CONSTANT_FUNCTION_Expression\", " +
                                                                          "Collections.emptyList(), " +
-                                                                         "\"CONSTANT_FUNCTION_VALUE\");\n" +
+                                                                         "\"CONSTANT_FUNCTION_VALUE\", null);\n" +
                                                                          "    KiePMMLDefineFunction CONSTANT_FUNCTION" +
                                                                          " = new KiePMMLDefineFunction" +
                                                                          "(\"CONSTANT_FUNCTION\", Collections" +
-                                                                         ".emptyList(), \"categorical\", Arrays" +
-                                                                         ".asList(CONSTANT_FUNCTION_0), " +
+                                                                         ".emptyList(), org.kie.pmml.api.enums" +
+                                                                         ".DATA_TYPE.STRING, org.kie.pmml.api.enums" +
+                                                                         ".OP_TYPE.CATEGORICAL, Arrays.asList" +
+                                                                         "(CONSTANT_FUNCTION_0), " +
                                                                          "CONSTANT_FUNCTION_Expression);\n" +
                                                                          "    KiePMMLParameterField " +
                                                                          "FIELDREF_FUNCTION_0 = KiePMMLParameterField" +
@@ -196,7 +193,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDefineFunction FIELDREF_FUNCTION" +
                                                                          " = new KiePMMLDefineFunction" +
                                                                          "(\"FIELDREF_FUNCTION\", Collections" +
-                                                                         ".emptyList(), \"continuous\", Arrays.asList" +
+                                                                         ".emptyList(), org.kie.pmml.api.enums" +
+                                                                         ".DATA_TYPE.DOUBLE, org.kie.pmml.api.enums" +
+                                                                         ".OP_TYPE.CONTINUOUS, Arrays.asList" +
                                                                          "(FIELDREF_FUNCTION_0), " +
                                                                          "FIELDREF_FUNCTION_Expression);\n" +
                                                                          "    KiePMMLParameterField APPLY_FUNCTION_0 " +
@@ -220,7 +219,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDefineFunction APPLY_FUNCTION = " +
                                                                          "new KiePMMLDefineFunction" +
                                                                          "(\"APPLY_FUNCTION\", Collections.emptyList" +
-                                                                         "(), \"continuous\", Arrays.asList" +
+                                                                         "(), org.kie.pmml.api.enums.DATA_TYPE" +
+                                                                         ".DOUBLE, org.kie.pmml.api.enums.OP_TYPE" +
+                                                                         ".CONTINUOUS, Arrays.asList" +
                                                                          "(APPLY_FUNCTION_0), " +
                                                                          "APPLY_FUNCTION_Expression);\n" +
                                                                          "    KiePMMLParameterField " +
@@ -267,8 +268,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "TEXT_INDEX_NORMALIZATION_FUNCTION = new " +
                                                                          "KiePMMLDefineFunction" +
                                                                          "(\"TEXT_INDEX_NORMALIZATION_FUNCTION\", " +
-                                                                         "Collections.emptyList(), \"continuous\", " +
-                                                                         "Arrays.asList" +
+                                                                         "Collections.emptyList(), null, org.kie.pmml" +
+                                                                         ".api.enums.OP_TYPE.CONTINUOUS, Arrays" +
+                                                                         ".asList" +
                                                                          "(TEXT_INDEX_NORMALIZATION_FUNCTION_0, " +
                                                                          "TEXT_INDEX_NORMALIZATION_FUNCTION_1), " +
                                                                          "TEXT_INDEX_NORMALIZATION_FUNCTION_Expression);\n" +
@@ -277,12 +279,14 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "new KiePMMLConstant" +
                                                                          "(\"transformationDictionaryDerivedField_0_0" +
                                                                          "\", Collections.emptyList(), " +
-                                                                         "\"CONSTANT_DERIVEDFIELD_VALUE\");\n" +
+                                                                         "\"CONSTANT_DERIVEDFIELD_VALUE\", null);\n" +
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_0 = " +
                                                                          "KiePMMLDerivedField.builder" +
                                                                          "(\"CONSTANT_DERIVEDFIELD\", Collections" +
-                                                                         ".emptyList(), \"string\", \"categorical\", " +
+                                                                         ".emptyList(), org.kie.pmml.api.enums" +
+                                                                         ".DATA_TYPE.STRING, org.kie.pmml.api.enums" +
+                                                                         ".OP_TYPE.CATEGORICAL, " +
                                                                          "transformationDictionaryDerivedField_0_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldRef " +
@@ -304,7 +308,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "transformationDictionaryDerivedField_1 = " +
                                                                          "KiePMMLDerivedField.builder" +
                                                                          "(\"APPLY_DERIVEDFIELD\", Collections" +
-                                                                         ".emptyList(), \"double\", \"continuous\", " +
+                                                                         ".emptyList(), org.kie.pmml.api.enums" +
+                                                                         ".DATA_TYPE.DOUBLE, org.kie.pmml.api.enums" +
+                                                                         ".OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_1_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldRef " +
@@ -314,8 +320,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_2 = " +
                                                                          "KiePMMLDerivedField.builder(\"BackRef\", " +
-                                                                         "Collections.emptyList(), \"double\", " +
-                                                                         "\"continuous\", " +
+                                                                         "Collections.emptyList(), org.kie.pmml.api" +
+                                                                         ".enums.DATA_TYPE.DOUBLE, org.kie.pmml.api" +
+                                                                         ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_2_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldRef " +
@@ -325,8 +332,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_3 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageOne\", " +
-                                                                         "Collections.emptyList(), \"double\", " +
-                                                                         "\"continuous\", " +
+                                                                         "Collections.emptyList(), org.kie.pmml.api" +
+                                                                         ".enums.DATA_TYPE.DOUBLE, org.kie.pmml.api" +
+                                                                         ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_3_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldRef " +
@@ -336,8 +344,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_4 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageTwo\", " +
-                                                                         "Collections.emptyList(), \"double\", " +
-                                                                         "\"continuous\", " +
+                                                                         "Collections.emptyList(), org.kie.pmml.api" +
+                                                                         ".enums.DATA_TYPE.DOUBLE, org.kie.pmml.api" +
+                                                                         ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_4_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldRef " +
@@ -347,8 +356,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_5 = " +
                                                                          "KiePMMLDerivedField.builder(\"StageThree\"," +
-                                                                         " Collections.emptyList(), \"double\", " +
-                                                                         "\"continuous\", " +
+                                                                         " Collections.emptyList(), org.kie.pmml.api" +
+                                                                         ".enums.DATA_TYPE.DOUBLE, org.kie.pmml.api" +
+                                                                         ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_5_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLFieldColumnPair " +
@@ -397,8 +407,9 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "    KiePMMLDerivedField " +
                                                                          "transformationDictionaryDerivedField_6 = " +
                                                                          "KiePMMLDerivedField.builder(\"mapvalued\", " +
-                                                                         "Collections.emptyList(), \"double\", " +
-                                                                         "\"continuous\", " +
+                                                                         "Collections.emptyList(), org.kie.pmml.api" +
+                                                                         ".enums.DATA_TYPE.DOUBLE, org.kie.pmml.api" +
+                                                                         ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_6_0)" +
                                                                          ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLTransformationDictionary " +
@@ -424,41 +435,42 @@ public class KiePMMLModelFactoryUtilsTest {
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
                                                        ".KiePMMLLocalTransformations createLocalTransformations() {\n" +
-                                                       "        KiePMMLConstant localTransformationsDerivedField_0_0 " +
-                                                       "= new KiePMMLConstant(\"localTransformationsDerivedField_0_0" +
-                                                       "\", Collections.emptyList(), " +
-                                                       "\"LOCAL_CONSTANT_DERIVEDFIELD_VALUE\");\n" +
-                                                       "        KiePMMLDerivedField " +
-                                                       "localTransformationsDerivedField_0 = KiePMMLDerivedField" +
-                                                       ".builder(\"LOCAL_CONSTANT_DERIVEDFIELD\", Collections" +
-                                                       ".emptyList(), \"string\", \"categorical\", " +
+                                                       "    KiePMMLConstant localTransformationsDerivedField_0_0 = " +
+                                                       "new KiePMMLConstant(\"localTransformationsDerivedField_0_0\"," +
+                                                       " Collections.emptyList(), " +
+                                                       "\"LOCAL_CONSTANT_DERIVEDFIELD_VALUE\", null);\n" +
+                                                       "    KiePMMLDerivedField localTransformationsDerivedField_0 = " +
+                                                       "KiePMMLDerivedField.builder(\"LOCAL_CONSTANT_DERIVEDFIELD\", " +
+                                                       "Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE" +
+                                                       ".STRING, org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL, " +
                                                        "localTransformationsDerivedField_0_0).withDisplayName(null)" +
                                                        ".build();\n" +
-                                                       "        KiePMMLFieldRef localTransformationsDerivedField_1_0 " +
-                                                       "= new KiePMMLFieldRef(\"Ref\", Collections.emptyList(), null)" +
-                                                       ";\n" +
-                                                       "        KiePMMLDerivedField " +
-                                                       "localTransformationsDerivedField_1 = KiePMMLDerivedField" +
-                                                       ".builder(\"LOCAL_Ref\", Collections.emptyList(), \"double\", " +
-                                                       "\"continuous\", localTransformationsDerivedField_1_0)" +
-                                                       ".withDisplayName(null).build();\n" +
-                                                       "        KiePMMLFieldRef localTransformationsDerivedField_2_0 " +
-                                                       "= new KiePMMLFieldRef(\"BackRef\", Collections.emptyList(), " +
+                                                       "    KiePMMLFieldRef localTransformationsDerivedField_1_0 = " +
+                                                       "new KiePMMLFieldRef(\"Ref\", Collections.emptyList(), null);" +
+                                                       "\n" +
+                                                       "    KiePMMLDerivedField localTransformationsDerivedField_1 = " +
+                                                       "KiePMMLDerivedField.builder(\"LOCAL_Ref\", Collections" +
+                                                       ".emptyList(), org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, org" +
+                                                       ".kie.pmml.api.enums.OP_TYPE.CONTINUOUS, " +
+                                                       "localTransformationsDerivedField_1_0).withDisplayName(null)" +
+                                                       ".build();\n" +
+                                                       "    KiePMMLFieldRef localTransformationsDerivedField_2_0 = " +
+                                                       "new KiePMMLFieldRef(\"BackRef\", Collections.emptyList(), " +
                                                        "null);\n" +
-                                                       "        KiePMMLDerivedField " +
-                                                       "localTransformationsDerivedField_2 = KiePMMLDerivedField" +
-                                                       ".builder(\"LOCAL_BackRef\", Collections.emptyList(), " +
-                                                       "\"double\", \"continuous\", " +
+                                                       "    KiePMMLDerivedField localTransformationsDerivedField_2 = " +
+                                                       "KiePMMLDerivedField.builder(\"LOCAL_BackRef\", Collections" +
+                                                       ".emptyList(), org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, org" +
+                                                       ".kie.pmml.api.enums.OP_TYPE.CONTINUOUS, " +
                                                        "localTransformationsDerivedField_2_0).withDisplayName(null)" +
                                                        ".build();\n" +
-                                                       "        KiePMMLLocalTransformations localTransformations = " +
+                                                       "    KiePMMLLocalTransformations localTransformations = " +
                                                        "KiePMMLLocalTransformations.builder(\"localTransformations\"," +
                                                        " Collections.emptyList()).withDerivedFields(Arrays.asList" +
                                                        "(localTransformationsDerivedField_0, " +
                                                        "localTransformationsDerivedField_1, " +
                                                        "localTransformationsDerivedField_2)).build();\n" +
-                                                       "        return localTransformations;\n" +
-                                                       "    }");
+                                                       "    return localTransformations;\n" +
+                                                       "}");
         retrieved = classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").get(0);
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
     }

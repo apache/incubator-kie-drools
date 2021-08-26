@@ -28,10 +28,11 @@ import org.dmg.pmml.OpType;
 import org.dmg.pmml.ParameterField;
 import org.junit.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLParameterFieldFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
 public class KiePMMLParameterFieldFactoryTest {
@@ -43,19 +44,22 @@ public class KiePMMLParameterFieldFactoryTest {
         parameterField.setDataType(DataType.DOUBLE);
         parameterField.setOpType(OpType.CONTINUOUS);
         parameterField.setDisplayName("displayName");
+        String dataType = getDATA_TYPEString(parameterField.getDataType());
+        String opType = getOP_TYPEString(parameterField.getOpType());
+
         BlockStmt retrieved = KiePMMLParameterFieldFactory.getParameterFieldVariableDeclaration(variableName,
                                                                                                 parameterField);
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
                                                                               "    KiePMMLParameterField %1$s" +
                                                                               " = KiePMMLParameterField.builder" +
                                                                               "(\"%1$s\", Collections" +
-                                                                              ".emptyList()).withDataType(\"%2$s\")" +
-                                                                              ".withOpType(\"%3$s\")" +
+                                                                              ".emptyList()).withDataType(%2$s)" +
+                                                                              ".withOpType(%3$s)" +
                                                                               ".withDisplayName(\"%4$s\")" +
                                                                               ".build();\n" +
                                                                               "}", variableName,
-                                                                      parameterField.getDataType().value(),
-                                                                      parameterField.getOpType().value(),
+                                                                      dataType,
+                                                                      opType,
                                                                       parameterField.getDisplayName()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLParameterField.class, Collections.class);

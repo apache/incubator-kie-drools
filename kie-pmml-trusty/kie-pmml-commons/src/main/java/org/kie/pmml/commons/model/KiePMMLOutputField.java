@@ -21,6 +21,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.StringJoiner;
 
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
@@ -35,6 +36,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     private RESULT_FEATURE resultFeature = RESULT_FEATURE.PREDICTED_VALUE;
     private String targetField = null;
     private Integer rank;
+    private DATA_TYPE dataType;
     private Object value;
     private KiePMMLExpression kiePMMLExpression;
 
@@ -93,8 +95,9 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     }
 
     public Object evaluatePredictedValue(final ProcessingDTO processingDTO) {
-        return getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
+        Object toReturn = getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
                 .orElse(null);
+        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
     }
 
     public Object evaluateReasonCodeValue(final ProcessingDTO processingDTO) {
@@ -105,14 +108,15 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
             if (index < orderedReasonCodes.size()) {
                 resultCode = orderedReasonCodes.get(index);
             }
-           return resultCode;
+            return dataType != null && resultCode != null ? dataType.getActualValue(resultCode) : resultCode;
         } else {
             return null;
         }
     }
 
     public Object evaluateTransformedValue(final ProcessingDTO processingDTO) {
-        return kiePMMLExpression != null ? kiePMMLExpression.evaluate(processingDTO) : null;
+        Object toReturn = kiePMMLExpression != null ? kiePMMLExpression.evaluate(processingDTO) : null;
+        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
     }
 
     @Override
@@ -174,6 +178,13 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
         public Builder withValue(Object value) {
             toBuild.value = value;
+            return this;
+        }
+
+        public Builder withDataType(DATA_TYPE dataType) {
+            if (dataType != null) {
+                toBuild.dataType = dataType;
+            }
             return this;
         }
 

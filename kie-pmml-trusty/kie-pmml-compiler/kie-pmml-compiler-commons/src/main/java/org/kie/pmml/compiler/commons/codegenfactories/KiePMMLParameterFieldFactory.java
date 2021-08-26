@@ -21,7 +21,6 @@ import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.body.VariableDeclarator;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.ParameterField;
@@ -32,7 +31,9 @@ import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForOpType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 
@@ -70,10 +71,10 @@ public class KiePMMLParameterFieldFactory {
                 .asMethodCallExpr();
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
         builder.setArgument(0, new StringLiteralExpr(parameterField.getName().getValue()));
-        final Expression dataTypeExpr = parameterField.getDataType() != null ? new StringLiteralExpr(parameterField.getDataType().value()) : new NullLiteralExpr();
-        getChainedMethodCallExprFrom("withDataType", initializer).setArgument(0, dataTypeExpr);
-        final Expression opTypeExpr = parameterField.getOpType() != null ? new StringLiteralExpr(parameterField.getOpType().value()) : new NullLiteralExpr();
-        getChainedMethodCallExprFrom("withOpType", initializer).setArgument(0, opTypeExpr);
+        final Expression dataTypeExpression = getExpressionForDataType(parameterField.getDataType());
+        final Expression opTypeExpression = getExpressionForOpType(parameterField.getOpType());
+        getChainedMethodCallExprFrom("withDataType", initializer).setArgument(0, dataTypeExpression);
+        getChainedMethodCallExprFrom("withOpType", initializer).setArgument(0, opTypeExpression);
         getChainedMethodCallExprFrom("withDisplayName", initializer).setArgument(0, getExpressionForObject(parameterField.getDisplayName()));
         return toReturn;
     }

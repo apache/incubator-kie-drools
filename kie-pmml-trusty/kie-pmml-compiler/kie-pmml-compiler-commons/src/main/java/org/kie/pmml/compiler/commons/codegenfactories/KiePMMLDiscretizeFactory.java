@@ -35,6 +35,7 @@ import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDiscretizeBinFactory.getDiscretizeBinVariableDeclaration;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -86,13 +87,12 @@ public class KiePMMLDiscretizeFactory {
         final Expression mapMissingToExpr = getExpressionForObject(discretize.getMapMissingTo());
         final Expression defaultValueExpr = getExpressionForObject(discretize.getDefaultValue());
 
-        final DATA_TYPE dataType = DATA_TYPE.byName(discretize.getDataType().value());
-        final NameExpr dataTypeExpr = new NameExpr(DATA_TYPE.class.getName() + "." + dataType.name());
+        final Expression dataTypeExpression = getExpressionForDataType(discretize.getDataType());
         objectCreationExpr.getArguments().set(0, nameExpr);
         objectCreationExpr.getArguments().get(2).asMethodCallExpr().setArguments(arguments);
         objectCreationExpr.getArguments().set(3, mapMissingToExpr);
         objectCreationExpr.getArguments().set(4, defaultValueExpr);
-        objectCreationExpr.getArguments().set(5, dataTypeExpr);
+        objectCreationExpr.getArguments().set(5, dataTypeExpression);
         discretizeBody.getStatements().forEach(toReturn::addStatement);
         return toReturn;
     }

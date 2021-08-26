@@ -112,7 +112,7 @@ public class KiePMMLAttributeFactoryTest {
                                                   "variableName_Predicate_2)).build();\n" +
                                                   "    KiePMMLConstant %1$s_ComplexPartialScore_0 = new " +
                                                   "KiePMMLConstant(\"%1$s_ComplexPartialScore_0\", " +
-                                                  "Collections.emptyList(), 100.0);\n" +
+                                                  "Collections.emptyList(), 100.0, null);\n" +
                                                   "    KiePMMLComplexPartialScore %1$s_ComplexPartialScore = " +
                                                   "new KiePMMLComplexPartialScore" +
                                                   "(\"%1$s_ComplexPartialScore\", Collections.emptyList(), " +

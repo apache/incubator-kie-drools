@@ -101,19 +101,19 @@ public class KiePMMLAttributeTest {
         // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(PARAM_1, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
+                                                                              DATA_TYPE.DOUBLE,
+                                                                              OP_TYPE.CONTINUOUS,
                                                                               kiePMMLConstant1)
                 .build();
         // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
         //     <Constant>5.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(PARAM_2, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
+                                                                              DATA_TYPE.DOUBLE,
+                                                                              OP_TYPE.CONTINUOUS,
                                                                               kiePMMLConstant2)
                 .build();
         return Arrays.asList(derivedField1, derivedField2);

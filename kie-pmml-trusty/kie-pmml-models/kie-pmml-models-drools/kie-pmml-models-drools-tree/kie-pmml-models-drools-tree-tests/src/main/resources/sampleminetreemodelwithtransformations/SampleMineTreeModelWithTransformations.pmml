@@ -75,7 +75,7 @@
         <FieldRef field="term"/>
       </TextIndex>
     </DefineFunction>
-    <DerivedField name="der_temperature" optype="continuous" dataType="double">
+    <DerivedField name="der_temperature" optype="continuous" dataType="float">
       <FieldRef field="temperature"/>
     </DerivedField>
     <DerivedField name="der_fun_humidity_apply" optype="continuous" dataType="double">

@@ -46,10 +46,10 @@ public class KiePMMLDerivedFieldTest {
         // <DerivedField name="CUSTOM_FIELD" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE.getName(),
-                                                                             OP_TYPE.CONTINUOUS.getName(),
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
                                                                              kiePMMLConstant1)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), new ArrayList<>());
@@ -64,8 +64,8 @@ public class KiePMMLDerivedFieldTest {
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE.getName(),
-                                                                             OP_TYPE.CONTINUOUS.getName(),
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
                                                                              kiePMMLFieldRef)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(),
@@ -88,8 +88,8 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE.getName(),
-                                                                             OP_TYPE.CONTINUOUS.getName(),
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
                                                                              kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(Collections.emptyList(), getKiePMMLNameValues());
@@ -112,8 +112,8 @@ public class KiePMMLDerivedFieldTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE.getName(),
-                                                                             OP_TYPE.CONTINUOUS.getName(),
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
                                                                              kiePMMLApply)
                 .build();
         ProcessingDTO processingDTO = getProcessingDTO(getDerivedFields(), new ArrayList<>());
@@ -130,19 +130,19 @@ public class KiePMMLDerivedFieldTest {
         // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
         //     <Constant>100.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLDerivedField derivedField1 = KiePMMLDerivedField.builder(PARAM_1, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
+                                                                              DATA_TYPE.DOUBLE,
+                                                                              OP_TYPE.CONTINUOUS,
                                                                               kiePMMLConstant1)
                 .build();
         // <DerivedField name="PARAM_1" optype="continuous" dataType="double">
         //     <Constant>5.0</Constant>
         // </DerivedField>
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         final KiePMMLDerivedField derivedField2 = KiePMMLDerivedField.builder(PARAM_2, Collections.emptyList(),
-                                                                              DATA_TYPE.DOUBLE.getName(),
-                                                                              OP_TYPE.CONTINUOUS.getName(),
+                                                                              DATA_TYPE.DOUBLE,
+                                                                              OP_TYPE.CONTINUOUS,
                                                                               kiePMMLConstant2)
                 .build();
         return Arrays.asList(derivedField1, derivedField2);

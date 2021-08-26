@@ -63,13 +63,15 @@ public class KiePMMLTransformationDictionaryFactoryTest {
         Statement expected = JavaParserUtils
                 .parseBlock("{\n" +
                                     "    KiePMMLParameterField CUSTOM_FUNCTION0_0 = KiePMMLParameterField.builder" +
-                                    "(\"PARAM_10\", Collections.emptyList()).withDataType(\"double\").withOpType" +
-                                    "(\"continuous\").withDisplayName(\"displayName10\").build();\n" +
+                                    "(\"PARAM_10\", Collections.emptyList()).withDataType(org.kie.pmml.api.enums" +
+                                    ".DATA_TYPE.DOUBLE).withOpType(org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS)" +
+                                    ".withDisplayName(\"displayName10\").build();\n" +
                                     "    KiePMMLParameterField CUSTOM_FUNCTION0_1 = KiePMMLParameterField.builder" +
-                                    "(\"PARAM_20\", Collections.emptyList()).withDataType(\"double\").withOpType" +
-                                    "(\"continuous\").withDisplayName(\"displayName20\").build();\n" +
+                                    "(\"PARAM_20\", Collections.emptyList()).withDataType(org.kie.pmml.api.enums" +
+                                    ".DATA_TYPE.DOUBLE).withOpType(org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS)" +
+                                    ".withDisplayName(\"displayName20\").build();\n" +
                                     "    KiePMMLConstant CUSTOM_FUNCTION0_Expression_0 = new KiePMMLConstant" +
-                                    "(\"CUSTOM_FUNCTION0_Expression_0\", Collections.emptyList(), 100.0);\n" +
+                                    "(\"CUSTOM_FUNCTION0_Expression_0\", Collections.emptyList(), 100.0, null);\n" +
                                     "    KiePMMLFieldRef CUSTOM_FUNCTION0_Expression_1 = new KiePMMLFieldRef" +
                                     "(\"FIELD_REF0\", Collections.emptyList(), null);\n" +
                                     "    KiePMMLApply CUSTOM_FUNCTION0_Expression = KiePMMLApply.builder" +
@@ -78,16 +80,19 @@ public class KiePMMLTransformationDictionaryFactoryTest {
                                     "(\"returnInvalid\").withKiePMMLExpressions(Arrays.asList" +
                                     "(CUSTOM_FUNCTION0_Expression_0, CUSTOM_FUNCTION0_Expression_1)).build();\n" +
                                     "    KiePMMLDefineFunction CUSTOM_FUNCTION0 = new KiePMMLDefineFunction" +
-                                    "(\"CUSTOM_FUNCTION0\", Collections.emptyList(), \"continuous\", Arrays.asList" +
+                                    "(\"CUSTOM_FUNCTION0\", Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE" +
+                                    ".DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, Arrays.asList" +
                                     "(CUSTOM_FUNCTION0_0, CUSTOM_FUNCTION0_1), CUSTOM_FUNCTION0_Expression);\n" +
                                     "    KiePMMLParameterField CUSTOM_FUNCTION1_0 = KiePMMLParameterField.builder" +
-                                    "(\"PARAM_11\", Collections.emptyList()).withDataType(\"double\").withOpType" +
-                                    "(\"continuous\").withDisplayName(\"displayName11\").build();\n" +
+                                    "(\"PARAM_11\", Collections.emptyList()).withDataType(org.kie.pmml.api.enums" +
+                                    ".DATA_TYPE.DOUBLE).withOpType(org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS)" +
+                                    ".withDisplayName(\"displayName11\").build();\n" +
                                     "    KiePMMLParameterField CUSTOM_FUNCTION1_1 = KiePMMLParameterField.builder" +
-                                    "(\"PARAM_21\", Collections.emptyList()).withDataType(\"double\").withOpType" +
-                                    "(\"continuous\").withDisplayName(\"displayName21\").build();\n" +
+                                    "(\"PARAM_21\", Collections.emptyList()).withDataType(org.kie.pmml.api.enums" +
+                                    ".DATA_TYPE.DOUBLE).withOpType(org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS)" +
+                                    ".withDisplayName(\"displayName21\").build();\n" +
                                     "    KiePMMLConstant CUSTOM_FUNCTION1_Expression_0 = new KiePMMLConstant" +
-                                    "(\"CUSTOM_FUNCTION1_Expression_0\", Collections.emptyList(), 100.0);\n" +
+                                    "(\"CUSTOM_FUNCTION1_Expression_0\", Collections.emptyList(), 100.0, null);\n" +
                                     "    KiePMMLFieldRef CUSTOM_FUNCTION1_Expression_1 = new KiePMMLFieldRef" +
                                     "(\"FIELD_REF1\", Collections.emptyList(), null);\n" +
                                     "    KiePMMLApply CUSTOM_FUNCTION1_Expression = KiePMMLApply.builder" +
@@ -96,22 +101,23 @@ public class KiePMMLTransformationDictionaryFactoryTest {
                                     "(\"returnInvalid\").withKiePMMLExpressions(Arrays.asList" +
                                     "(CUSTOM_FUNCTION1_Expression_0, CUSTOM_FUNCTION1_Expression_1)).build();\n" +
                                     "    KiePMMLDefineFunction CUSTOM_FUNCTION1 = new KiePMMLDefineFunction" +
-                                    "(\"CUSTOM_FUNCTION1\", Collections.emptyList(), \"continuous\", Arrays.asList" +
+                                    "(\"CUSTOM_FUNCTION1\", Collections.emptyList(), org.kie.pmml.api.enums.DATA_TYPE" +
+                                    ".DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, Arrays.asList" +
                                     "(CUSTOM_FUNCTION1_0, CUSTOM_FUNCTION1_1), CUSTOM_FUNCTION1_Expression);\n" +
                                     "    KiePMMLConstant transformationDictionaryDerivedField_0_0 = new " +
                                     "KiePMMLConstant(\"transformationDictionaryDerivedField_0_0\", Collections" +
-                                    ".emptyList(), 100.0);\n" +
+                                    ".emptyList(), 100.0, null);\n" +
                                     "    KiePMMLDerivedField transformationDictionaryDerivedField_0 = " +
-                                    "KiePMMLDerivedField.builder(\"PARAM_20\", Collections.emptyList(), \"double\", " +
-                                    "\"continuous\", transformationDictionaryDerivedField_0_0).withDisplayName(null)" +
-                                    ".build();\n" +
+                                    "KiePMMLDerivedField.builder(\"PARAM_20\", Collections.emptyList(), org.kie.pmml" +
+                                    ".api.enums.DATA_TYPE.DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, " +
+                                    "transformationDictionaryDerivedField_0_0).withDisplayName(null).build();\n" +
                                     "    KiePMMLConstant transformationDictionaryDerivedField_1_0 = new " +
                                     "KiePMMLConstant(\"transformationDictionaryDerivedField_1_0\", Collections" +
-                                    ".emptyList(), 100.0);\n" +
+                                    ".emptyList(), 100.0, null);\n" +
                                     "    KiePMMLDerivedField transformationDictionaryDerivedField_1 = " +
-                                    "KiePMMLDerivedField.builder(\"PARAM_21\", Collections.emptyList(), \"double\", " +
-                                    "\"continuous\", transformationDictionaryDerivedField_1_0).withDisplayName(null)" +
-                                    ".build();\n" +
+                                    "KiePMMLDerivedField.builder(\"PARAM_21\", Collections.emptyList(), org.kie.pmml" +
+                                    ".api.enums.DATA_TYPE.DOUBLE, org.kie.pmml.api.enums.OP_TYPE.CONTINUOUS, " +
+                                    "transformationDictionaryDerivedField_1_0).withDisplayName(null).build();\n" +
                                     "    KiePMMLTransformationDictionary transformationDictionary = " +
                                     "KiePMMLTransformationDictionary.builder(\"transformationDictionary\", " +
                                     "Collections.emptyList()).withDefineFunctions(Arrays.asList(CUSTOM_FUNCTION0, " +

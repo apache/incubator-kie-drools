@@ -39,19 +39,19 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
 
     private KiePMMLDerivedField(String name,
                                List<KiePMMLExtension> extensions,
-                               String dataType,
-                               String opType,
+                                DATA_TYPE dataType,
+                                OP_TYPE opType,
                                KiePMMLExpression kiePMMLExpression) {
         super(name, extensions);
-        this.dataType = DATA_TYPE.byName(dataType);
-        this.opType = OP_TYPE.byName(opType);
+        this.dataType = dataType;
+        this.opType = opType;
         this.kiePMMLExpression = kiePMMLExpression;
     }
 
     public static Builder builder(String name,
                                   List<KiePMMLExtension> extensions,
-                                  String dataType,
-                                  String opType,
+                                  DATA_TYPE dataType,
+                                  OP_TYPE opType,
                                   KiePMMLExpression kiePMMLExpression) {
         return new Builder(name, extensions, dataType, opType, kiePMMLExpression);
     }
@@ -69,15 +69,16 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
     }
 
     public Object evaluate(final ProcessingDTO processingDTO) {
-        return kiePMMLExpression.evaluate(processingDTO);
+        Object toReturn = kiePMMLExpression.evaluate(processingDTO);
+        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
     }
 
     public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLDerivedField> {
 
         private Builder(String name,
                         List<KiePMMLExtension> extensions,
-                        String dataType,
-                        String opType,
+                        DATA_TYPE dataType,
+                        OP_TYPE opType,
                         KiePMMLExpression kiePMMLExpression) {
             super("DerivedField-", () -> new KiePMMLDerivedField(name, extensions, dataType, opType, kiePMMLExpression));
         }

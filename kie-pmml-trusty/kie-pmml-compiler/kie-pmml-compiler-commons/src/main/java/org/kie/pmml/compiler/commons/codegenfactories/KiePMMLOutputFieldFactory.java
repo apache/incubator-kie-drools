@@ -26,6 +26,7 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.OutputField;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -35,6 +36,7 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_INITIALIZER_TEMPLA
 import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLExpressionFactory.getKiePMMLExpression;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -82,11 +84,13 @@ public class KiePMMLOutputFieldFactory {
         final NameExpr resultFeatureExpr = new NameExpr(RESULT_FEATURE.class.getName() + "." + resultFeature.name());
         final Expression targetFieldExpr = outputField.getTargetField() != null ? getExpressionForObject(outputField.getTargetField().getValue()) : new NullLiteralExpr();
         final Expression valueExpr = outputField.getValue() != null ? getExpressionForObject(outputField.getValue()) : new NullLiteralExpr();
+        final Expression dataTypeExpression = getExpressionForDataType(outputField.getDataType());
         final Expression rankExpr = outputField.getRank() != null ? getExpressionForObject(outputField.getRank()) : new NullLiteralExpr();
         builder.setArgument(0, nameExpr);
         getChainedMethodCallExprFrom("withResultFeature", initializer).setArgument(0, resultFeatureExpr);
         getChainedMethodCallExprFrom("withTargetField", initializer).setArgument(0, targetFieldExpr);
         getChainedMethodCallExprFrom("withValue", initializer).setArgument(0, valueExpr);
+        getChainedMethodCallExprFrom("withDataType", initializer).setArgument(0, dataTypeExpression);
         getChainedMethodCallExprFrom("withRank", initializer).setArgument(0, rankExpr);
         getChainedMethodCallExprFrom("withKiePMMLExpression", initializer).setArgument(0, expressionExpr);
 

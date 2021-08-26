@@ -58,8 +58,8 @@ public class KiePMMLApplyTest {
         String defaultValue = null;
         String mapMissingTo = null;
         String invalidTreatmentValue = null;
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1, null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2, null);
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder(name, Collections.emptyList(), function)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .withDefaultValue(defaultValue)
@@ -76,8 +76,8 @@ public class KiePMMLApplyTest {
         //      <Constant>33.0</Constant>
         //      <Constant>27.0</Constant>
         // </Apply>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value1, null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), value2, null);
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
@@ -103,8 +103,8 @@ public class KiePMMLApplyTest {
         // derivedFields
         final KiePMMLDerivedField kiePMMLDerivedField = KiePMMLDerivedField.builder(FIELD_NAME,
                                                                                     Collections.emptyList(),
-                                                                                    DATA_TYPE.DOUBLE.getName(),
-                                                                                    OP_TYPE.CONTINUOUS.getName(),
+                                                                                    DATA_TYPE.DOUBLE,
+                                                                                    OP_TYPE.CONTINUOUS,
                                                                                     kiePMMLConstant2)
                 .build();
         final List<KiePMMLDerivedField> derivedFields = Collections.singletonList(kiePMMLDerivedField);
@@ -150,8 +150,8 @@ public class KiePMMLApplyTest {
         //        <Constant>5.0</Constant>
         //      </Apply>
         // </DefineFunction>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), valueA);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), valueB);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant("NAME-1", Collections.emptyList(), valueA, null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant("NAME-1", Collections.emptyList(), valueB, null);
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
@@ -220,8 +220,8 @@ public class KiePMMLApplyTest {
         //        <Constant>5.0</Constant>
         //      </Apply>
         // </DefineFunction>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLConstant2))
                 .build();
@@ -230,7 +230,8 @@ public class KiePMMLApplyTest {
         final KiePMMLParameterField parameterField2 =
                 KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS.getName(),
+                                         null,
+                                         OP_TYPE.CONTINUOUS,
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
@@ -245,7 +246,7 @@ public class KiePMMLApplyTest {
         //        <FieldRef field="PARAM_2"/>
         //      </Apply>
         // </DefineFunction>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLFieldRef kiePMMLFieldRef = new KiePMMLFieldRef(PARAM_2, Collections.emptyList(), null);
         KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), "/")
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLConstant1, kiePMMLFieldRef))
@@ -255,7 +256,8 @@ public class KiePMMLApplyTest {
         final KiePMMLParameterField parameterField2 =
                 KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS.getName(),
+                                         null,
+                                         OP_TYPE.CONTINUOUS,
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);
@@ -280,7 +282,8 @@ public class KiePMMLApplyTest {
         final KiePMMLParameterField parameterField2 =
                 KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
         return new KiePMMLDefineFunction(OUTER_FUNCTION, Collections.emptyList(),
-                                         OP_TYPE.CONTINUOUS.getName(),
+                                         null,
+                                         OP_TYPE.CONTINUOUS,
                                          Arrays.asList(parameterField1,
                                                        parameterField2),
                                          kiePMMLApply);

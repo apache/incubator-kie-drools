@@ -122,7 +122,7 @@ public class KiePMMLOutputFieldTest {
         // <OutputField name="CUSTOM_FIELD" optype="continuous" dataType="double" feature="transformedValue">
         //     <Constant>100.0</Constant>
         // </OutputField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLOutputField outputField = KiePMMLOutputField.builder(CUSTOM_FIELD, Collections.emptyList())
                 .withKiePMMLExpression(kiePMMLConstant1)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
@@ -205,7 +205,7 @@ public class KiePMMLOutputFieldTest {
         // <OutputField name="PARAM_1" optype="continuous" dataType="double" feature="transformedValue">
         //     <Constant>100.0</Constant>
         // </OutputField>
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_1, Collections.emptyList(), value1, null);
         final KiePMMLOutputField outputField1 = KiePMMLOutputField.builder(PARAM_1, Collections.emptyList())
                 .withKiePMMLExpression(kiePMMLConstant1)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)
@@ -213,7 +213,7 @@ public class KiePMMLOutputFieldTest {
         // <OutputField name="PARAM_1" optype="continuous" dataType="double" feature="transformedValue">
         //     <Constant>5.0</Constant>
         // </OutputField>
-        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant2 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         final KiePMMLOutputField outputField2 = KiePMMLOutputField.builder(PARAM_2, Collections.emptyList())
                 .withKiePMMLExpression(kiePMMLConstant2)
                 .withResultFeature(RESULT_FEATURE.TRANSFORMED_VALUE)

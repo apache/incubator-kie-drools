@@ -84,6 +84,10 @@ public class ConverterTypeUtil {
             case "java.lang.Double":
                 toReturn = convertFromDouble(expectedClass, (Double) originalObject);
                 break;
+            case "float":
+            case "java.lang.Float":
+                toReturn = convertFromFloat(expectedClass, (Float) originalObject);
+                break;
             default:
                 throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
                                                          expectedClass.getName()));
@@ -115,6 +119,23 @@ public class ConverterTypeUtil {
             return  (long) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
         } else if (IS_FLOAT.test(expectedClass)) {
             return originalObject.floatValue();
+        } else if (IS_BYTE.test(expectedClass)) {
+            return (byte) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_SHORT.test(expectedClass)) {
+            return (short) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else {
+            throw new KiePMMLException(String.format(FAILED_CONVERSION, originalObject,
+                                                     expectedClass.getName()));
+        }
+    }
+
+    static Object convertFromFloat(Class<?> expectedClass, Float originalObject) {
+        if (IS_INTEGER.test(expectedClass)) {
+            return  (int) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_LONG.test(expectedClass)) {
+            return  (long) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
+        } else if (IS_DOUBLE.test(expectedClass)) {
+            return originalObject.doubleValue();
         } else if (IS_BYTE.test(expectedClass)) {
             return (byte) Precision.round(originalObject, 0, BigDecimal.ROUND_HALF_UP);
         } else if (IS_SHORT.test(expectedClass)) {

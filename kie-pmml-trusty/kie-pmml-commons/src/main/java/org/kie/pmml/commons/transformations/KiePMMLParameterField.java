@@ -60,16 +60,16 @@ public class KiePMMLParameterField extends AbstractKiePMMLComponent implements S
             super("ParameterField-", () -> new KiePMMLParameterField(name, extensions));
         }
 
-        public Builder withDataType(String dataType) {
+        public Builder withDataType(DATA_TYPE dataType) {
             if (dataType != null) {
-                toBuild.dataType = DATA_TYPE.byName(dataType);
+                toBuild.dataType = dataType;
             }
             return this;
         }
 
-        public Builder withOpType(String opType) {
+        public Builder withOpType(OP_TYPE opType) {
             if (opType != null) {
-                toBuild.opType = OP_TYPE.byName(opType);
+                toBuild.opType = opType;
             }
             return this;
         }

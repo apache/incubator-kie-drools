@@ -34,10 +34,11 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLDerivedFieldFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
 public class KiePMMLDerivedFieldFactoryTest {
@@ -57,19 +58,21 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(constant);
+        String dataType = getDATA_TYPEString(derivedField.getDataType());
+        String opType = getOP_TYPEString(derivedField.getOpType());
         BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLConstant variableName_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0\", Collections.emptyList(), %s);\n" +
+                                                  "(\"variableName_0\", Collections.emptyList(), %s, null);\n" +
                                                   "    KiePMMLDerivedField %s = KiePMMLDerivedField.builder" +
-                                                  "(\"%s\", Collections.emptyList(), \"%s\", \"%s\"," +
+                                                  "(\"%s\", Collections.emptyList(), %s, %s," +
                                                   " variableName_0).withDisplayName(null).build();\n" +
                                                   "}", constant.getValue(),
                                           variableName,
                                           derivedField.getName().getValue(),
-                                          derivedField.getDataType().value(),
-                                          derivedField.getOpType().value()));
+                                          dataType,
+                                          opType));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLDerivedField.class,
@@ -87,19 +90,21 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(fieldRef);
+        String dataType = getDATA_TYPEString(derivedField.getDataType());
+        String opType = getOP_TYPEString(derivedField.getOpType());
         BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLFieldRef variableName_0 = new KiePMMLFieldRef" +
                                                   "(\"%s\", Collections.emptyList(), null);\n" +
                                                   "    KiePMMLDerivedField %s = KiePMMLDerivedField.builder" +
-                                                  "(\"%s\", Collections.emptyList(), \"%s\", \"%s\"," +
+                                                  "(\"%s\", Collections.emptyList(), %s, %s," +
                                                   " variableName_0).withDisplayName(null).build();\n" +
                                                   "}", fieldRef.getField().getValue(),
                                           variableName,
                                           derivedField.getName().getValue(),
-                                          derivedField.getDataType().value(),
-                                          derivedField.getOpType().value()));
+                                          dataType,
+                                          opType));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
                                                KiePMMLDerivedField.class,
@@ -122,11 +127,13 @@ public class KiePMMLDerivedFieldFactoryTest {
         derivedField.setDataType(DataType.DOUBLE);
         derivedField.setOpType(OpType.CONTINUOUS);
         derivedField.setExpression(apply);
+        String dataType = getDATA_TYPEString(derivedField.getDataType());
+        String opType = getOP_TYPEString(derivedField.getOpType());
         BlockStmt retrieved = KiePMMLDerivedFieldFactory.getDerivedFieldVariableDeclaration(variableName, derivedField);
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLConstant variableName_0_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0_0\", Collections.emptyList(), %s);\n" +
+                                                  "(\"variableName_0_0\", Collections.emptyList(), %s, null);\n" +
                                                   "    KiePMMLFieldRef variableName_0_1 = new KiePMMLFieldRef" +
                                                   "(\"%s\", Collections.emptyList(), null);\n" +
                                                   "    KiePMMLApply variableName_0 = KiePMMLApply.builder" +
@@ -136,7 +143,7 @@ public class KiePMMLDerivedFieldFactoryTest {
                                                   ".withKiePMMLExpressions(Arrays.asList(variableName_0_0, " +
                                                   "variableName_0_1)).build();\n" +
                                                   "    KiePMMLDerivedField %s = KiePMMLDerivedField.builder" +
-                                                  "(\"%s\", Collections.emptyList(), \"%s\", \"%s\"," +
+                                                  "(\"%s\", Collections.emptyList(), %s, %s," +
                                                   " variableName_0).withDisplayName(null).build();\n" +
                                                   "}",
                                           constant.getValue(),
@@ -145,8 +152,8 @@ public class KiePMMLDerivedFieldFactoryTest {
                                           apply.getInvalidValueTreatment().value(),
                                           variableName,
                                           derivedField.getName().getValue(),
-                                          derivedField.getDataType().value(),
-                                          derivedField.getOpType().value()));
+                                          dataType,
+                                          opType));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLFieldRef.class,

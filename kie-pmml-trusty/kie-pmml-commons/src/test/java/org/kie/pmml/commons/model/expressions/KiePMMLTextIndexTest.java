@@ -62,7 +62,7 @@ public class KiePMMLTextIndexTest {
     @Test
     public void evaluateNoTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
-        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
+        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0, null);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME, TEXT_0));
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);
 
@@ -91,7 +91,7 @@ public class KiePMMLTextIndexTest {
     @Test
     public void evaluateTextIndex0Normalizations() {
         // <Constant>brown fox</Constant>
-        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0);
+        final KiePMMLConstant kiePMMLConstant = new KiePMMLConstant("NAME-1", Collections.emptyList(), TERM_0, null);
         List<KiePMMLNameValue> kiePMMLNameValues = Collections.singletonList(new KiePMMLNameValue(FIELD_NAME,
                                                                                                   NOT_NORMALIZED_TEXT_0));
         ProcessingDTO processingDTO = getProcessingDTO(kiePMMLNameValues);

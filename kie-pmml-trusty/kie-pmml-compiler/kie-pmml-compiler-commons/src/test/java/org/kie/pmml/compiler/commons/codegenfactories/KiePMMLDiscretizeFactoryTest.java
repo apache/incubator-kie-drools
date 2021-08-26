@@ -29,13 +29,13 @@ import org.dmg.pmml.FieldName;
 import org.dmg.pmml.Interval;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretize;
 import org.kie.pmml.commons.model.expressions.KiePMMLDiscretizeBin;
 import org.kie.pmml.commons.model.expressions.KiePMMLInterval;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
 public class KiePMMLDiscretizeFactoryTest {
@@ -69,8 +69,7 @@ public class KiePMMLDiscretizeFactoryTest {
 
         BlockStmt retrieved = KiePMMLDiscretizeFactory.getDiscretizeVariableDeclaration(variableName,
                                                                                     discretize);
-        String dataTypeString =
-                DATA_TYPE.class.getName() + "." + DATA_TYPE.byName(discretize.getDataType().value()).name();
+        String dataTypeString = getDATA_TYPEString(discretize.getDataType());
 
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
                                                                               "    KiePMMLInterval " +

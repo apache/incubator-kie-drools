@@ -60,7 +60,8 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
 
     private static final String CONSTANT = "constant";
     private static final String FUN_SALARY_CONSTANT = "FUN_SALARY_CONSTANT";
-    private static final String STRING_CONSTANT = "987654321";
+    private static final String STRING_CONSTANT = "9.87654321E8";
+    private static final double DOUBLE_CONSTANT = 9.87654321E8;
 
     private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.001);
     private static PMMLRuntime pmmlRuntime;
@@ -126,7 +127,7 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_CONSTANT)).isEqualTo(CONSTANT);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isEqualTo(STRING_CONSTANT);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_FIELDREF)).isEqualTo(DOUBLE_CONSTANT);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_CONSTANT)).isEqualTo(FUN_SALARY_CONSTANT);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_DER_FUN_SALARY_APPLY)).isNotNull();
