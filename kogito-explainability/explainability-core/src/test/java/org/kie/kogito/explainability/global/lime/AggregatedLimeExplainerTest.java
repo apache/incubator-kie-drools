@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.TestUtils;
-import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureFactory;
@@ -77,7 +76,7 @@ class AggregatedLimeExplainerTest {
             }
         };
 
-        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
+        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer();
         Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromMetadata(sumSkipModel, metadata).get();
         assertNotNull(explain);
         assertEquals(1, explain.size());
@@ -99,7 +98,7 @@ class AggregatedLimeExplainerTest {
         List<PredictionInput> samples = dataDistribution.sample(10);
         List<PredictionOutput> predictionOutputs = sumSkipModel.predictAsync(samples).get();
         List<Prediction> predictions = DataUtils.getPredictions(samples, predictionOutputs);
-        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer(new LimeExplainer());
+        AggregatedLimeExplainer aggregatedLimeExplainer = new AggregatedLimeExplainer();
         Map<String, Saliency> explain = aggregatedLimeExplainer.explainFromPredictions(sumSkipModel, predictions).get();
         assertNotNull(explain);
         assertEquals(1, explain.size());

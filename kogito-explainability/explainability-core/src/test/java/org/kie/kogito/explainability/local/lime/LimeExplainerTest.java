@@ -219,4 +219,24 @@ class LimeExplainerTest {
         Saliency saliency = saliencyMap.get(decisionName);
         assertThat(saliency).isNotNull();
     }
+
+    @Test
+    void testZeroSampleSize() throws ExecutionException, InterruptedException, TimeoutException {
+        LimeConfig limeConfig = new LimeConfig()
+                .withSamples(0);
+        LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
+        List<Feature> features = new ArrayList<>();
+        for (int i = 0; i < 4; i++) {
+            features.add(TestUtils.getMockedNumericFeature(i));
+        }
+        PredictionInput input = new PredictionInput(features);
+        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionOutput output = model.predictAsync(List.of(input))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
+                .get(0);
+        Prediction prediction = new SimplePrediction(input, output);
+        Map<String, Saliency> saliencyMap = limeExplainer.explainAsync(prediction, model)
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        assertNotNull(saliencyMap);
+    }
 }

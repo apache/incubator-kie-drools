@@ -90,13 +90,20 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         }
         List<Output> actualOutputs = prediction.getOutput().getOutputs();
 
+        int noOfSamples = limeConfig.getNoOfSamples();
+
+        if (noOfSamples <= 0) {
+            noOfSamples = (int) Math.pow(2, linearizedTargetInputFeatures.size());
+            LOGGER.debug("using 2^|features| samples ({})", noOfSamples);
+        }
+
         return explainRetryCycle(
                 model,
                 originalInput,
                 linearizedTargetInputFeatures,
                 actualOutputs,
                 limeConfig.getNoOfRetries(),
-                limeConfig.getNoOfSamples(),
+                noOfSamples,
                 limeConfig.getPerturbationContext());
     }
 
@@ -109,7 +116,8 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             int noOfSamples,
             PerturbationContext perturbationContext) {
 
-        List<PredictionInput> perturbedInputs = getPerturbedInputs(originalInput.getFeatures(), perturbationContext);
+        List<PredictionInput> perturbedInputs = getPerturbedInputs(originalInput.getFeatures(), perturbationContext,
+                noOfSamples);
 
         return model.predictAsync(perturbedInputs)
                 .thenCompose(predictionOutputs -> {
@@ -128,7 +136,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                                 nextPerturbationSize = Math.min(linearizedTargetInputFeatures.size() - 1, nextPerturbationSize);
                                 newPerturbationContext = new PerturbationContext(perturbationContext.getRandom(),
                                         nextPerturbationSize);
-                                newNoOfSamples = noOfSamples + limeConfig.getNoOfSamples() / limeConfig.getNoOfRetries();
+                                newNoOfSamples = noOfSamples + noOfSamples / limeConfig.getNoOfRetries();
                             } else {
                                 newPerturbationContext = perturbationContext;
                                 newNoOfSamples = noOfSamples;
@@ -277,6 +285,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                         currentOutput.getName(), currentOutput.getType(), currentOutput.getValue(), rawClassesBalance);
                 return new LimeInputs(classification, linearizedTargetInputFeatures, currentOutput, perturbedInputs, outputs);
             }
+
         } else {
             return new LimeInputs(false, linearizedTargetInputFeatures, currentOutput, emptyList(), emptyList());
         }
@@ -307,17 +316,16 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         return nullValues || equalityCheck ? 1d : 0d;
     }
 
-    private List<PredictionInput> getPerturbedInputs(List<Feature> features, PerturbationContext perturbationContext) {
+    private List<PredictionInput> getPerturbedInputs(List<Feature> features, PerturbationContext perturbationContext,
+            int size) {
         List<PredictionInput> perturbedInputs = new ArrayList<>();
-        // as per LIME paper, the dataset size should be at least |features|^2
-        double perturbedDataSize = Math.max(limeConfig.getNoOfSamples(), Math.pow(2, features.size()));
 
         // generate feature distributions, if possible
         Map<String, FeatureDistribution> featureDistributionsMap = DataUtils.boostrapFeatureDistributions(
-                limeConfig.getDataDistribution(), perturbationContext, 2 * (int) perturbedDataSize,
-                1, limeConfig.getNoOfSamples());
+                limeConfig.getDataDistribution(), perturbationContext, 2 * size,
+                1, size);
 
-        for (int i = 0; i < perturbedDataSize; i++) {
+        for (int i = 0; i < size; i++) {
             List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext, featureDistributionsMap);
             perturbedInputs.add(new PredictionInput(newFeatures));
         }

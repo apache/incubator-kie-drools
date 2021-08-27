@@ -38,6 +38,10 @@ public class AggregatedLimeExplainer implements GlobalExplainer<CompletableFutur
 
     private final LimeExplainer limeExplainer;
 
+    public AggregatedLimeExplainer() {
+        this.limeExplainer = new LimeExplainer();
+    }
+
     public AggregatedLimeExplainer(LimeExplainer limeExplainer) {
         this.limeExplainer = limeExplainer;
     }
