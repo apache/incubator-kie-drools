@@ -27,6 +27,8 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
+
 /**
  * @see <a href=http://dmg.org/pmml/v4-4/Output.html#xsdElement_OutputField>OutputField</a>
  */
@@ -95,9 +97,8 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     }
 
     public Object evaluatePredictedValue(final ProcessingDTO processingDTO) {
-        Object toReturn = getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
-                .orElse(null);
-        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
+        return commonEvaluate(getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
+                                      .orElse(null), dataType);
     }
 
     public Object evaluateReasonCodeValue(final ProcessingDTO processingDTO) {
@@ -108,7 +109,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
             if (index < orderedReasonCodes.size()) {
                 resultCode = orderedReasonCodes.get(index);
             }
-            return dataType != null && resultCode != null ? dataType.getActualValue(resultCode) : resultCode;
+            return commonEvaluate(resultCode, dataType);
         } else {
             return null;
         }
@@ -116,7 +117,7 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
 
     public Object evaluateTransformedValue(final ProcessingDTO processingDTO) {
         Object toReturn = kiePMMLExpression != null ? kiePMMLExpression.evaluate(processingDTO) : null;
-        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
+        return commonEvaluate(toReturn, dataType);
     }
 
     @Override
