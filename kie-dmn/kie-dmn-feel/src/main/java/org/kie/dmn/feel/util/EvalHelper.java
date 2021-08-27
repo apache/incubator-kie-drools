@@ -455,10 +455,10 @@ public class EvalHelper {
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
-        AccessorCacheKey accessorQualifiedName =
+        AccessorCacheKey accessorCacheKey =
                 new AccessorCacheKey( clazz.getClassLoader(), clazz.getCanonicalName(), field );
 
-        return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
+        return accessorCache.computeIfAbsent(accessorCacheKey, key ->
         	Stream.of( clazz.getMethods() )
             .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
                     .map( ann -> ann.value().equals( field ) )
