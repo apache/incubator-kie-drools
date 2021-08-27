@@ -16,9 +16,11 @@
 
 package org.kie.dmn.feel.util;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 
 import org.junit.Test;
+import org.kie.dmn.feel.lang.FEELProperty;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -52,12 +54,31 @@ public class EvalHelperTest {
         assertEquals("ab c", normalizeVariableName("ab c  "));
         assertEquals("a b", normalizeVariableName("a\u00A0b"));
     }
-    
+
     @Test
     public void testGetBigDecimalOrNull() {
         assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10d));
         assertEquals(new BigDecimal("10"), getBigDecimalOrNull(10.00000000D));
         assertEquals(new BigDecimal("10000000000.5"), getBigDecimalOrNull(10000000000.5D));
     }
-    
+
+    @Test
+    public void testGetGenericAccessor() throws NoSuchMethodException {
+        Method expectedAccessor = TestPojo.class.getMethod("getAProperty");
+
+        assertEquals("getGenericAccessor should work on Java bean accessors.",
+                     expectedAccessor,
+                     EvalHelper.getGenericAccessor(TestPojo.class, "aProperty"));
+
+        assertEquals("getGenericAccessor should work for methods annotated with '@FEELProperty'.",
+                     expectedAccessor,
+                     EvalHelper.getGenericAccessor(TestPojo.class, "feelPropertyIdentifier"));
+    }
+
+    private static class TestPojo {
+        @FEELProperty("feelPropertyIdentifier")
+        public String getAProperty() {
+            return null;
+        }
+    }
 }
