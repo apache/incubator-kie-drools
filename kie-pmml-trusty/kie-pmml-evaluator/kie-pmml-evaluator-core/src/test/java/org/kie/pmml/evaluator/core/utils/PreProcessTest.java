@@ -104,7 +104,8 @@ public class PreProcessTest {
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef1, kiePMMLFieldRef2))
                 .build();
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
-                                                                               OP_TYPE.CONTINUOUS.getName(),
+                                                                               DATA_TYPE.DOUBLE,
+                                                                               OP_TYPE.CONTINUOUS,
                                                                                Arrays.asList(kiePMMLParameterField1, kiePMMLParameterField2),
                                                                                kiePMMLApplyRef);
 
@@ -115,13 +116,13 @@ public class PreProcessTest {
         //      </Apply>
         // </DerivedField>
         final KiePMMLFieldRef kiePMMLFieldRef3 = new KiePMMLFieldRef(INPUT_FIELD, Collections.emptyList(), null);
-        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2);
+        final KiePMMLConstant kiePMMLConstant1 = new KiePMMLConstant(PARAM_2, Collections.emptyList(), value2, null);
         final KiePMMLApply kiePMMLApply = KiePMMLApply.builder("NAME", Collections.emptyList(), CUSTOM_FUNCTION)
                 .withKiePMMLExpressions(Arrays.asList(kiePMMLFieldRef3, kiePMMLConstant1))
                 .build();
         final KiePMMLDerivedField derivedField = KiePMMLDerivedField.builder(CUSTOM_REF_FIELD, Collections.emptyList(),
-                                                                             DATA_TYPE.DOUBLE.getName(),
-                                                                             OP_TYPE.CONTINUOUS.getName(),
+                                                                             DATA_TYPE.DOUBLE,
+                                                                             OP_TYPE.CONTINUOUS,
                                                                              kiePMMLApply).build();
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(

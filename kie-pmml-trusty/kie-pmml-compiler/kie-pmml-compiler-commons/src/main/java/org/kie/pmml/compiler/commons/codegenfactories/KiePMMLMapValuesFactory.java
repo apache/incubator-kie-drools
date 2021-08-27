@@ -39,6 +39,7 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLFieldColumnPairFactory.getFieldColumnPairVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLInlineTableFactory.getInlineTableVariableDeclaration;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getChainedMethodCallExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForDataType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getVariableDeclarator;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
@@ -101,13 +102,7 @@ public class KiePMMLMapValuesFactory {
         final StringLiteralExpr outputColumnExpr = new StringLiteralExpr(mapValues.getOutputColumn());
         builder.setArgument(0, nameExpr);
         builder.setArgument(2, outputColumnExpr);
-        final Expression dataTypeExpression;
-        if (mapValues.getDataType() != null) {
-            final DATA_TYPE dataType = DATA_TYPE.byName(mapValues.getDataType().value());
-            dataTypeExpression = new NameExpr(DATA_TYPE.class.getName() + "." + dataType.name());
-        } else {
-            dataTypeExpression = new NullLiteralExpr();
-        }
+        final Expression dataTypeExpression = getExpressionForDataType(mapValues.getDataType());
         getChainedMethodCallExprFrom("withDefaultValue", initializer).setArgument(0, getExpressionForObject
         (mapValues.getDefaultValue()));
         getChainedMethodCallExprFrom("withMapMissingTo", initializer).setArgument(0, getExpressionForObject

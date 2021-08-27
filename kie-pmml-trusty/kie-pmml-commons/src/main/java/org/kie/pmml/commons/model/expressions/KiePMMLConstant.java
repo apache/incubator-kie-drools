@@ -19,9 +19,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
+
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
 
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_Constant>Constant</a>
@@ -30,10 +33,12 @@ public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMML
 
     private static final long serialVersionUID = 3312643278386342170L;
     private final Object value;
+    private DATA_TYPE dataType;
 
-    public KiePMMLConstant(String name, List<KiePMMLExtension> extensions, Object value) {
+    public KiePMMLConstant(String name, List<KiePMMLExtension> extensions, Object value, DATA_TYPE dataType) {
         super(name, extensions);
         this.value = value;
+        this.dataType = dataType;
     }
 
     public Object getValue() {
@@ -42,7 +47,7 @@ public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMML
 
     @Override
     public Object evaluate(final ProcessingDTO processingDTO) {
-        return getValue();
+        return commonEvaluate(getValue(), dataType);
     }
 
     @Override

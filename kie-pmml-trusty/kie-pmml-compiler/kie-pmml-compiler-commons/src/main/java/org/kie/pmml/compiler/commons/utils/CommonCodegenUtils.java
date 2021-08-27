@@ -60,7 +60,10 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import com.github.javaparser.ast.type.Type;
+import org.dmg.pmml.DataType;
+import org.dmg.pmml.OpType;
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -635,6 +638,28 @@ public class CommonCodegenUtils {
                 .stream()
                 .filter(variableDeclarator -> variableDeclarator.getName().asString().equals(variableName))
                 .findFirst();
+    }
+
+    public static Expression getExpressionForDataType(DataType dataTypeParam) {
+        final Expression toReturn;
+        if (dataTypeParam != null) {
+            final DATA_TYPE dataType = DATA_TYPE.byName(dataTypeParam.value());
+            toReturn = new NameExpr(DATA_TYPE.class.getName() + "." + dataType.name());
+        } else {
+            toReturn = new NullLiteralExpr();
+        }
+        return toReturn;
+    }
+
+    public static Expression getExpressionForOpType(OpType opTypeParam) {
+        final Expression toReturn;
+        if (opTypeParam != null) {
+            final OP_TYPE opType = OP_TYPE.byName(opTypeParam.value());
+            toReturn = new NameExpr(OP_TYPE.class.getName() + "." + opType.name());
+        } else {
+            toReturn = new NullLiteralExpr();
+        }
+        return toReturn;
     }
 
     public static Expression getExpressionForObject(Object source) {

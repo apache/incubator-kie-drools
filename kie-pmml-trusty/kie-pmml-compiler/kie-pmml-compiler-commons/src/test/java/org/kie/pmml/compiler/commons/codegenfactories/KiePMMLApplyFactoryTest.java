@@ -31,7 +31,6 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.model.expressions.KiePMMLFieldRef;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLApplyFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
@@ -66,11 +65,11 @@ public class KiePMMLApplyFactoryTest {
                                                                               "    KiePMMLConstant variableName_0 = " +
                                                                               "new KiePMMLConstant" +
                                                                               "(\"variableName_0\", Collections" +
-                                                                              ".emptyList(), %1$s);\n" +
+                                                                              ".emptyList(), %1$s, null);\n" +
                                                                               "    KiePMMLConstant variableName_1 = " +
                                                                               "new KiePMMLConstant" +
                                                                               "(\"variableName_1\", Collections" +
-                                                                              ".emptyList(), %2$s);\n" +
+                                                                              ".emptyList(), %2$s, null);\n" +
                                                                               "    KiePMMLApply %3$s = " +
                                                                               "KiePMMLApply.builder(\"%3$s\"," +
                                                                               " Collections.emptyList(), " +

@@ -25,7 +25,6 @@ import com.github.javaparser.ast.stmt.Statement;
 import org.dmg.pmml.Constant;
 import org.junit.Test;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLConstantFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
@@ -44,7 +43,7 @@ public class KiePMMLConstantFactoryTest {
                                                                                   "KiePMMLConstant %1$s = new " +
                                                                                   "KiePMMLConstant(\"%1$s\", " +
                                                                                   "Collections" +
-                                                                                  ".emptyList(), %2$s);" +
+                                                                                  ".emptyList(), %2$s, null);" +
                                                                                   "}", variableName, value));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, Collections.class);

@@ -140,7 +140,7 @@ public class KiePMMLCharacteristicFactoryTest {
                                                   "%1$s_0_Predicate_2)).build();\n" +
                                                   "    KiePMMLConstant %1$s_0_ComplexPartialScore_0 = new " +
                                                   "KiePMMLConstant(\"%1$s_0_ComplexPartialScore_0\", " +
-                                                  "Collections.emptyList(), 100.0);\n" +
+                                                  "Collections.emptyList(), 100.0, null);\n" +
                                                   "    KiePMMLComplexPartialScore %1$s_0_ComplexPartialScore " +
                                                   "= new KiePMMLComplexPartialScore" +
                                                   "(\"%1$s_0_ComplexPartialScore\", Collections.emptyList(), " +
@@ -170,7 +170,7 @@ public class KiePMMLCharacteristicFactoryTest {
                                                   "%1$s_1_Predicate_2)).build();\n" +
                                                   "    KiePMMLConstant %1$s_1_ComplexPartialScore_0 = new " +
                                                   "KiePMMLConstant(\"%1$s_1_ComplexPartialScore_0\", " +
-                                                  "Collections.emptyList(), 100.0);\n" +
+                                                  "Collections.emptyList(), 100.0, null);\n" +
                                                   "    KiePMMLComplexPartialScore %1$s_1_ComplexPartialScore " +
                                                   "= new KiePMMLComplexPartialScore" +
                                                   "(\"%1$s_1_ComplexPartialScore\", Collections.emptyList(), " +

@@ -51,7 +51,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLConstant variableName_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0\", Collections.emptyList(), %1$s);\n" +
+                                                  "(\"variableName_0\", Collections.emptyList(), %1$s, null);\n" +
                                                   "    KiePMMLComplexPartialScore %2$s = new KiePMMLComplexPartialScore" +
                                                   "(\"%2$s\", Collections.emptyList()," +
                                                   " variableName_0);\n" +
@@ -103,7 +103,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLConstant variableName_0_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0_0\", Collections.emptyList(), %1$s);\n" +
+                                                  "(\"variableName_0_0\", Collections.emptyList(), %1$s, null);\n" +
                                                   "    KiePMMLFieldRef variableName_0_1 = new KiePMMLFieldRef" +
                                                   "(\"%2$s\", Collections.emptyList(), null);\n" +
                                                   "    KiePMMLApply variableName_0 = KiePMMLApply.builder" +
