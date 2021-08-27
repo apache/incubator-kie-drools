@@ -764,5 +764,14 @@ public class EvalHelper {
             result = 31 * result + (propertyName != null ? propertyName.hashCode() : 0);
             return result;
         }
+
+        @Override
+        public String toString() {
+            return "AccessorCacheKey{" +
+                    "classLoader=" + classLoader +
+                    ", className='" + className + '\'' +
+                    ", propertyName='" + propertyName + '\'' +
+                    '}';
+        }
     }
 }
