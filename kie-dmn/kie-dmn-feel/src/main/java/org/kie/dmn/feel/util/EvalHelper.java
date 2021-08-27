@@ -35,6 +35,7 @@ import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,7 +58,7 @@ import org.slf4j.LoggerFactory;
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
 
-    private static final Map<String, Method> accessorCache = new ConcurrentHashMap<>();
+    private static final Map<AccessorCacheKey, Method> accessorCache = new ConcurrentHashMap<>();
 
     public static String normalizeVariableName(String name) {
         // private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
@@ -454,9 +455,8 @@ public class EvalHelper {
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
-        String accessorQualifiedName = getClassLoaderName(clazz.getClassLoader()) +
-                "." + clazz.getCanonicalName() +
-                "." + field;
+        AccessorCacheKey accessorQualifiedName =
+                new AccessorCacheKey( clazz.getClassLoader(), clazz.getCanonicalName(), field );
 
         return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
         	Stream.of( clazz.getMethods() )
@@ -466,12 +466,6 @@ public class EvalHelper {
             )
             .findFirst()
             .orElse( getAccessor( clazz, field ) ));
-    }
-
-    private static String getClassLoaderName(ClassLoader classLoader) {
-        return classLoader == null
-                ? "bootstrap"
-                : classLoader.getClass().getSimpleName() + "@" + classLoader.hashCode();
     }
 
     public static void clearGenericAccessorCache() {
@@ -729,6 +723,46 @@ public class EvalHelper {
             return stringWithoutZeros;
         } else {
             return stringWithoutZeros.substring(0, stringWithoutZeros.length() - 1);
+        }
+    }
+
+    private static class AccessorCacheKey {
+        private final ClassLoader classLoader;
+        private final String className;
+        private final String propertyName;
+
+        public AccessorCacheKey(ClassLoader classLoader, String className, String propertyName) {
+            this.classLoader = classLoader;
+            this.className = className;
+            this.propertyName = propertyName;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) {
+                return true;
+            }
+            if (o == null || getClass() != o.getClass()) {
+                return false;
+            }
+
+            AccessorCacheKey that = (AccessorCacheKey) o;
+
+            if (!Objects.equals(classLoader, that.classLoader)) {
+                return false;
+            }
+            if (!Objects.equals(className, that.className)) {
+                return false;
+            }
+            return Objects.equals(propertyName, that.propertyName);
+        }
+
+        @Override
+        public int hashCode() {
+            int result = classLoader != null ? classLoader.hashCode() : 0;
+            result = 31 * result + (className != null ? className.hashCode() : 0);
+            result = 31 * result + (propertyName != null ? propertyName.hashCode() : 0);
+            return result;
         }
     }
 }
