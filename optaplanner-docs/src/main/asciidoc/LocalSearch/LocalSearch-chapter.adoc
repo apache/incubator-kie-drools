@@ -463,8 +463,8 @@ Use a lower tabu size than in a pure Tabu Search configuration.
   <localSearch>
     ...
     <acceptor>
-      <simulatedAnnealingStartingTemperature>2hard/100soft</simulatedAnnealingStartingTemperature>
       <entityTabuSize>5</entityTabuSize>
+      <simulatedAnnealingStartingTemperature>2hard/100soft</simulatedAnnealingStartingTemperature>
     </acceptor>
     <forager>
       <acceptedCountLimit>1</acceptedCountLimit>
@@ -528,8 +528,8 @@ Use a lower tabu size than in a pure Tabu Search configuration.
   <localSearch>
     ...
     <acceptor>
-      <lateAcceptanceSize>400</lateAcceptanceSize>
       <entityTabuSize>5</entityTabuSize>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
     </acceptor>
     <forager>
       <acceptedCountLimit>1</acceptedCountLimit>

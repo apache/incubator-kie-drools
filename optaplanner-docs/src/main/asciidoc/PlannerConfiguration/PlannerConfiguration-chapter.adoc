@@ -569,18 +569,18 @@ One way to deal with this is to filter the entity selector of the placer in the 
 <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
   ...
-  <constructionHeuristics>
+  <constructionHeuristic>
     <queuedEntityPlacer>
       <entitySelector id="entitySelector1">
         <filterClass>...</filterClass>
       </entitySelector>
     </queuedEntityPlacer>
     ...
-    <changeMoveselector>
-      <entitySelector mimicRef="entitySelector1" />
-    </changeMoveselector>
+    <changeMoveSelector>
+      <entitySelector mimicSelectorRef="entitySelector1" />
+    </changeMoveSelector>
     ...
-  </constructionHeuristics>
+  </constructionHeuristic>
  ...
 </solver>
 ----

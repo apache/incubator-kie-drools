@@ -407,8 +407,8 @@ The easiest way to deal with multiple entity classes is to run a separate Constr
   <constructionHeuristic>
     <queuedEntityPlacer>
       <entitySelector id="placerEntitySelector">
-        <cacheType>PHASE</cacheType>
         <entityClass>...DogEntity</entityClass>
+        <cacheType>PHASE</cacheType>
       </entitySelector>
       <changeMoveSelector>
         <entitySelector mimicSelectorRef="placerEntitySelector"/>
@@ -419,8 +419,8 @@ The easiest way to deal with multiple entity classes is to run a separate Constr
   <constructionHeuristic>
     <queuedEntityPlacer>
       <entitySelector id="placerEntitySelector">
-        <cacheType>PHASE</cacheType>
         <entityClass>...CatEntity</entityClass>
+        <cacheType>PHASE</cacheType>
       </entitySelector>
       <changeMoveSelector>
         <entitySelector mimicSelectorRef="placerEntitySelector"/>

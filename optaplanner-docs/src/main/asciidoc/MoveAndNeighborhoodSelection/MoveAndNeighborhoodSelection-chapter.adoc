@@ -566,7 +566,6 @@ Advanced configuration:
 ----
     <unionMoveSelector>
       ... <!-- Normal selector properties -->
-      <selectorProbabilityWeightFactoryClass>...ProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
       <changeMoveSelector>
         <fixedProbabilityWeight>...</fixedProbabilityWeight>
         ...
@@ -580,6 +579,7 @@ Advanced configuration:
         ...
       </...MoveSelector>
       ...
+      <selectorProbabilityWeightFactoryClass>...ProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
     </unionMoveSelector>
 ----
 
@@ -611,9 +611,9 @@ To give each individual `Move` the same selection chance (as opposed to each ``M
 [source,xml,options="nowrap"]
 ----
     <unionMoveSelector>
-      <selectorProbabilityWeightFactoryClass>org.optaplanner.core.impl.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
       <changeMoveSelector/>
       <swapMoveSelector/>
+      <selectorProbabilityWeightFactoryClass>org.optaplanner.core.impl.heuristic.selector.common.decorator.FairSelectorProbabilityWeightFactory</selectorProbabilityWeightFactoryClass>
     </unionMoveSelector>
 ----
 
@@ -642,7 +642,6 @@ Advanced configuration:
 ----
     <cartesianProductMoveSelector>
       ... <!-- Normal selector properties -->
-      <ignoreEmptyChildIterators>true</ignoreEmptyChildIterators>
       <changeMoveSelector>
         ...
       </changeMoveSelector>
@@ -653,6 +652,7 @@ Advanced configuration:
         ...
       </...MoveSelector>
       ...
+      <ignoreEmptyChildIterators>true</ignoreEmptyChildIterators>
     </cartesianProductMoveSelector>
 ----
 

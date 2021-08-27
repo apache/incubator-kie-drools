@@ -100,14 +100,14 @@ A benchmark configuration XML file looks like this:
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
+    <solver>
+      ...<!-- Common solver configuration -->
+    </solver>
     <problemBenchmarks>
       ...
       <inputSolutionFile>data/cloudbalancing/unsolved/100computers-300processes.xml</inputSolutionFile>
       <inputSolutionFile>data/cloudbalancing/unsolved/200computers-600processes.xml</inputSolutionFile>
     </problemBenchmarks>
-    <solver>
-      ...<!-- Common solver configuration -->
-    </solver>
   </inheritedSolverBenchmark>
 
   <solverBenchmark>
@@ -373,11 +373,6 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
   <benchmarkDirectory>local/data/nqueens</benchmarkDirectory>
 
   <inheritedSolverBenchmark>
-    <problemBenchmarks>
-      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
-      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
-      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
-    </problemBenchmarks>
     <solver>
       <solutionClass>org.optaplanner.examples.nqueens.domain.NQueens</solutionClass>
       <entityClass>org.optaplanner.examples.nqueens.domain.Queen</entityClass>
@@ -389,6 +384,11 @@ To quickly configure and run a benchmark for typical solver configs, use a `solv
         <minutesSpentLimit>1</minutesSpentLimit>
       </termination>
     </solver>
+    <problemBenchmarks>
+      <solutionFileIOClass>org.optaplanner.examples.nqueens.persistence.NQueensXmlSolutionFileIO</solutionFileIOClass>
+      <inputSolutionFile>data/nqueens/unsolved/32queens.xml</inputSolutionFile>
+      <inputSolutionFile>data/nqueens/unsolved/64queens.xml</inputSolutionFile>
+    </problemBenchmarks>
   </inheritedSolverBenchmark>
 
   <solverBenchmarkBluePrint>

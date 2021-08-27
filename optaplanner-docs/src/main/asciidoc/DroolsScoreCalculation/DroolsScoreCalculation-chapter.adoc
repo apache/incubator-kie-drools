@@ -70,7 +70,7 @@ Optionally, you can also set drools configuration properties:
   <scoreDirectorFactory>
     <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
     <kieBaseConfigurationProperties>
-      <drools.equalityBehavior>...</drools.equalityBehavior>
+      <property name="drools.equalityBehavior" value="..." />
     </kieBaseConfigurationProperties>
   </scoreDirectorFactory>
 ----

@@ -998,9 +998,9 @@ To try it out set the `constraintStreamImplType` to `BAVET` in your solver confi
     <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
+        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
         <!-- BAVET is experimental -->
         <constraintStreamImplType>BAVET</constraintStreamImplType>
-        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       ...
     </solver>

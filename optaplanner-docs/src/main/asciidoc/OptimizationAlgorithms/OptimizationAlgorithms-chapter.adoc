@@ -622,8 +622,8 @@ Terminations can be combined, for example: terminate after `100` steps or if a s
 ----
   <termination>
     <terminationCompositionStyle>OR</terminationCompositionStyle>
-    <stepCountLimit>100</stepCountLimit>
     <bestScoreLimit>0</bestScoreLimit>
+    <stepCountLimit>100</stepCountLimit>
   </termination>
 ----
 
@@ -633,8 +633,8 @@ Alternatively you can use `AND`, for example: terminate after reaching a feasibl
 ----
   <termination>
     <terminationCompositionStyle>AND</terminationCompositionStyle>
-    <unimprovedStepCountLimit>5</unimprovedStepCountLimit>
     <bestScoreLimit>-100</bestScoreLimit>
+    <unimprovedStepCountLimit>5</unimprovedStepCountLimit>
   </termination>
 ----
 
