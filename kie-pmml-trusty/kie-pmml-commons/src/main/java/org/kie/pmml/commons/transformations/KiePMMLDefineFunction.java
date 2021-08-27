@@ -28,6 +28,8 @@ import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
+
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Functions.html#xsdElement_DefineFunction>DefineFunction</a>
  */
@@ -78,7 +80,6 @@ public class KiePMMLDefineFunction extends AbstractKiePMMLComponent implements S
         for (KiePMMLNameValue kiePMMLNameValue : kiePMMLNameValues) {
             processingDTO.addKiePMMLNameValue(kiePMMLNameValue);
         }
-        Object toReturn = kiePMMLExpression.evaluate(processingDTO);
-        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
+        return commonEvaluate(kiePMMLExpression.evaluate(processingDTO), dataType);
     }
 }

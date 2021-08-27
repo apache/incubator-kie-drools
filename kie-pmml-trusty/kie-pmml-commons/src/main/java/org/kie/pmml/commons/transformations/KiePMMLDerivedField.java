@@ -25,6 +25,8 @@ import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 import org.kie.pmml.commons.model.expressions.KiePMMLExpression;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
+
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_DerivedField>DerivedField</a>
  */
@@ -69,8 +71,7 @@ public class KiePMMLDerivedField extends AbstractKiePMMLComponent implements Ser
     }
 
     public Object evaluate(final ProcessingDTO processingDTO) {
-        Object toReturn = kiePMMLExpression.evaluate(processingDTO);
-        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
+        return commonEvaluate(kiePMMLExpression.evaluate(processingDTO), dataType);
     }
 
     public static class Builder extends AbstractKiePMMLComponent.Builder<KiePMMLDerivedField> {

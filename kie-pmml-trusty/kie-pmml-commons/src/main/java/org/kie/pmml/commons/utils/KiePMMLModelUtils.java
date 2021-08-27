@@ -17,6 +17,8 @@ package org.kie.pmml.commons.utils;
 
 import java.util.UUID;
 
+import org.kie.pmml.api.enums.DATA_TYPE;
+
 public class KiePMMLModelUtils {
 
     private KiePMMLModelUtils() {
@@ -50,5 +52,9 @@ public class KiePMMLModelUtils {
     public static String getGeneratedClassName(final String prefix) {
         String rawName = prefix + UUID.randomUUID();
         return getSanitizedClassName(rawName);
+    }
+
+    public static Object commonEvaluate(Object rawObject, DATA_TYPE dataType) {
+        return dataType != null && rawObject != null ? dataType.getActualValue(rawObject) : rawObject;
     }
 }

@@ -24,6 +24,8 @@ import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.abstracts.AbstractKiePMMLComponent;
 
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.commonEvaluate;
+
 /**
  * @see <a href=http://dmg.org/pmml/v4-4-1/Transformations.html#xsdElement_Constant>Constant</a>
  */
@@ -45,8 +47,7 @@ public class KiePMMLConstant extends AbstractKiePMMLComponent implements KiePMML
 
     @Override
     public Object evaluate(final ProcessingDTO processingDTO) {
-        Object toReturn = getValue();
-        return dataType != null && toReturn != null ? dataType.getActualValue(toReturn) : toReturn;
+        return commonEvaluate(getValue(), dataType);
     }
 
     @Override
