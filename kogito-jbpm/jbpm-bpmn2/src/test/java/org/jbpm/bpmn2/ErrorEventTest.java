@@ -30,6 +30,7 @@ import org.jbpm.process.instance.event.listeners.RuleAwareProcessEventListener;
 import org.jbpm.process.instance.impl.demo.DoNothingWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
 import org.jbpm.workflow.instance.WorkflowProcessInstance;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
 import org.kie.kogito.internal.process.event.DefaultKogitoProcessEventListener;
@@ -323,6 +324,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testErrorBoundaryEventOnEntry() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventCatchingOnEntryException.bpmn2");
         TestWorkItemHandler handler = new TestWorkItemHandler();
@@ -335,6 +337,7 @@ public class ErrorEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testErrorBoundaryEventOnExit() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-BoundaryErrorEventCatchingOnExitException.bpmn2");
         TestWorkItemHandler handler = new TestWorkItemHandler();

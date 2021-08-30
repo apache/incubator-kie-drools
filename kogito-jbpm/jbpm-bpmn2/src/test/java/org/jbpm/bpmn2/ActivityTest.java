@@ -204,6 +204,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testScriptTaskJS() throws Exception {
         Assumptions.assumeThat(
                 new ScriptEngineManager().getEngineByName("JavaScript")
@@ -455,6 +456,7 @@ public class ActivityTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testSubProcessWithEntryExitScripts() throws Exception {
         kruntime = createKogitoProcessRuntime("subprocess/BPMN2-SubProcessWithEntryExitScripts.bpmn2");
         TestWorkItemHandler handler = new TestWorkItemHandler();

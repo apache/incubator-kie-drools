@@ -20,14 +20,23 @@ import java.util.List;
 
 import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
+import org.jbpm.workflow.core.node.ForEachNode;
+import org.jbpm.workflow.core.node.MilestoneNode;
+import org.jbpm.workflow.core.node.RuleSetNode;
 import org.jbpm.workflow.core.node.StartNode;
+import org.jbpm.workflow.core.node.SubProcessNode;
+import org.jbpm.workflow.core.node.WorkItemNode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import static java.util.Collections.singletonList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.mock;
@@ -39,7 +48,7 @@ public class RuleFlowProcessValidatorTest {
 
     private List<ProcessValidationError> errors;
 
-    private RuleFlowProcess process = mock(RuleFlowProcess.class);
+    private RuleFlowProcess process = new RuleFlowProcess();
 
     private Node node = mock(Node.class);
 
@@ -47,6 +56,12 @@ public class RuleFlowProcessValidatorTest {
     public void setUp() {
         errors = new ArrayList<>();
         validator = RuleFlowProcessValidator.getInstance();
+
+        process = new RuleFlowProcess();
+        process.setId("org.drools.core.process");
+        process.setName("Dynamic Node Process");
+        process.setPackageName("org.mycomp.myprocess");
+        process.setDynamic(false);
     }
 
     @Test
@@ -65,12 +80,6 @@ public class RuleFlowProcessValidatorTest {
 
     @Test
     void testDynamicNodeValidationInNotDynamicProcess() {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process");
-        process.setName("Dynamic Node Process");
-        process.setPackageName("org.mycomp.myprocess");
-        process.setDynamic(false);
-
         DynamicNode dynamicNode = new DynamicNode();
         dynamicNode.setName("MyDynamicNode");
         dynamicNode.setId(1);
@@ -100,10 +109,6 @@ public class RuleFlowProcessValidatorTest {
 
     @Test
     void testDynamicNodeValidationInDynamicProcess() {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process");
-        process.setName("Dynamic Node Process");
-        process.setPackageName("org.mycomp.myprocess");
         process.setDynamic(true);
 
         DynamicNode dynamicNode = new DynamicNode();
@@ -138,10 +143,6 @@ public class RuleFlowProcessValidatorTest {
 
     @Test
     void testEmptyPackageName() {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process");
-        process.setName("Empty Package Name Process");
-        process.setPackageName("");
         process.setDynamic(true);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
@@ -152,9 +153,6 @@ public class RuleFlowProcessValidatorTest {
 
     @Test
     void testNoPackageName() {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process");
-        process.setName("No Package Name Process");
         process.setDynamic(true);
 
         ProcessValidationError[] errors = validator.validateProcess(process);
@@ -165,10 +163,6 @@ public class RuleFlowProcessValidatorTest {
 
     @Test
     void testCompositeNodeNoStart() {
-        RuleFlowProcess process = new RuleFlowProcess();
-        process.setId("org.drools.core.process.process");
-        process.setName("Process");
-
         StartNode startNode = new StartNode();
         startNode.setName("Start");
         startNode.setId(1);
@@ -198,5 +192,31 @@ public class RuleFlowProcessValidatorTest {
                 errors.length);
         assertEquals("Node 'CompositeNode' [3] Composite has no start node defined.",
                 errors[0].getMessage());
+    }
+
+    //TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
+    @Test
+    void testOnEntryOnExitValidation() {
+        testNodeOnEntryOnExit(new MilestoneNode());
+        RuleSetNode ruleSetNode = new RuleSetNode();
+        ruleSetNode.setRuleType(RuleSetNode.RuleType.ruleUnit("test"));
+        testNodeOnEntryOnExit(ruleSetNode);
+        testNodeOnEntryOnExit(new SubProcessNode());
+        testNodeOnEntryOnExit(new WorkItemNode());
+        testNodeOnEntryOnExit(new ForEachNode());
+        testNodeOnEntryOnExit(new DynamicNode());
+        testNodeOnEntryOnExit(new CompositeNode());
+    }
+
+    private void testNodeOnEntryOnExit(ExtendedNodeImpl node) {
+        List<ProcessValidationError> errors = new ArrayList<>();
+        node.setName("name");
+        node.setId(1);
+        node.setActions(ExtendedNodeImpl.EVENT_NODE_ENTER, singletonList(new DroolsAction()));
+        node.setActions(ExtendedNodeImpl.EVENT_NODE_EXIT, singletonList(new DroolsAction()));
+        validator.validateNodes(new org.kie.api.definition.process.Node[] { node }, errors, process);
+        assertThat(errors).extracting("message").contains(
+                "Node 'name' [1] On Entry Action is not yet supported in Kogito",
+                "Node 'name' [1] On Exit Action is not yet supported in Kogito");
     }
 }

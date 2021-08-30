@@ -165,9 +165,12 @@ public class ProcessCodegen extends AbstractGenerator {
                     .of(validationContext)
                     .decorate();
             Optional<Exception> cause = validationContext.exception();
-            validationContext.clear();
             //rethrow exception to break the flow after decoration
-            throw new ProcessCodegenException(decorator.simpleMessage(), cause);
+            try {
+                throw new ProcessCodegenException(decorator.simpleMessage(), cause);
+            } finally {
+                validationContext.clear();
+            }
         }
     }
 

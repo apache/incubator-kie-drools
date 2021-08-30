@@ -1,6 +1,8 @@
 cases/ScriptRoleAssignmentCase.bpmn2
 cases/UserTaskWithStageCase.bpmn2
 cases/UserTaskWithStageCaseAutoStart.bpmn2
+#TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
+cases/CaseWithRolesDefinition.bpmn2
 invalid/
 messageevent/EventNodeMalformed.bpmn2
 ruletask/BusinessRuleTaskMalformed.bpmn2

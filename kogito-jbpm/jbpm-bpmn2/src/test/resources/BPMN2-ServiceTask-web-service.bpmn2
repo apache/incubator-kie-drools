@@ -22,14 +22,6 @@
       <bpmn2:terminateEventDefinition id="TerminateEventDefinition_1"/>
     </bpmn2:endEvent>
     <bpmn2:serviceTask id="ServiceTask_2" name="Service Task 2" implementation="##WebService" operationRef="_2_ServiceOperation">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>
       <bpmn2:ioSpecification id="InputOutputSpecification_1">

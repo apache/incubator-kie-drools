@@ -28,12 +28,6 @@
         <tns:metaData name="elementname">
           <tns:metaValue><![CDATA[Sub Process 1]]></tns:metaValue>
         </tns:metaData>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.out.println(&quot;sub entry&quot;);</tns:script>
-        </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.out.println(&quot;sub exit&quot;);</tns:script>
-        </tns:onExit-script>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_3</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_4</bpmn2:outgoing>

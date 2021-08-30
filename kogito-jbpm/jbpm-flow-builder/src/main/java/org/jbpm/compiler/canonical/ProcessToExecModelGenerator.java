@@ -95,23 +95,6 @@ public class ProcessToExecModelGenerator {
         return metadata;
     }
 
-    public MethodDeclaration generateMethod(WorkflowProcess process) {
-
-        CompilationUnit clazz = parse(this.getClass().getResourceAsStream("/class-templates/ProcessTemplate.java"));
-        clazz.setPackageDeclaration(process.getPackageName());
-
-        String extractedProcessId = extractProcessId(process.getId());
-
-        String packageName = clazz.getPackageDeclaration().map(NodeWithName::getNameAsString).orElse(null);
-        ProcessMetaData metadata =
-                new ProcessMetaData(process.getId(), extractedProcessId, process.getName(), process.getVersion(),
-                        packageName, "process");
-        MethodDeclaration processMethod = new MethodDeclaration();
-        processVisitor.visitProcess(process, processMethod, metadata);
-
-        return processMethod;
-    }
-
     public ModelMetaData generateModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
         String name = extractModelClassName(process.getId());
@@ -224,7 +207,7 @@ public class ProcessToExecModelGenerator {
 
     public List<UserTaskModelMetaData> generateUserTaskModel(WorkflowProcess process) {
         String packageName = process.getPackageName();
-        List<UserTaskModelMetaData> usertaskModels = new ArrayList<>();
+        List<UserTaskModelMetaData> userTaskModels = new ArrayList<>();
 
         VariableScope variableScope = (VariableScope) ((org.jbpm.process.core.Process) process).getDefaultContext(
                 VariableScope.VARIABLE_SCOPE);
@@ -237,12 +220,12 @@ public class ProcessToExecModelGenerator {
                 if (nodeVariableScope == null) {
                     nodeVariableScope = variableScope;
                 }
-                usertaskModels.add(new UserTaskModelMetaData(packageName, variableScope, nodeVariableScope,
+                userTaskModels.add(new UserTaskModelMetaData(packageName, variableScope, nodeVariableScope,
                         humanTaskNode, process.getId()));
             }
         }
 
-        return usertaskModels;
+        return userTaskModels;
     }
 
     public static String extractProcessId(String processId) {

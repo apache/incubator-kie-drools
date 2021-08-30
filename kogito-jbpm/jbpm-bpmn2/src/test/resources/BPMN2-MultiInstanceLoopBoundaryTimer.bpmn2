@@ -47,14 +47,6 @@ kcontext.setVariable("actorNameList", list);</script>
     <!-- nodes -->
     <startEvent id="_sub.start" name=""  isInterrupting="true"/>
     <userTask id="_sub.task" name="Task1" >
-      <extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.out.println("Task1 entry");</tns:script>
-        </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <tns:script>System.out.println("Task1 exit");</tns:script>
-        </tns:onExit-script>
-      </extensionElements>
       <ioSpecification>
         <dataInput id="_sub.task_TaskNameInput" name="TaskName" />
         <dataInput id="_sub.task_NodeNameInput" name="NodeName" />

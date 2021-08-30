@@ -6,14 +6,6 @@
       <bpmn2:outgoing>SequenceFlow_1</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:callActivity id="CallActivity_1" tns:waitForCompletion="true" tns:independent="false" name="Call Activity 1" calledElement="subprocess">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script scriptFormat="http://www.java.com/java">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-        <tns:onExit-script scriptFormat="http://www.java.com/java">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
     </bpmn2:callActivity>

@@ -15,14 +15,6 @@
       <bpmn2:terminateEventDefinition id="_0PtkobaXEeOzbZEBuj00bQ"/>
     </bpmn2:endEvent>
     <bpmn2:subProcess id="_095D53C7-0D75-4443-960E-87631134132B" drools:selectable="true" name="Handle Error 90277" triggeredByEvent="true">
-      <bpmn2:extensionElements>
-        <drools:onEntry-script scriptFormat="http://www.java.com/java">
-          <drools:script></drools:script>
-        </drools:onEntry-script>
-        <drools:onExit-script scriptFormat="http://www.java.com/java">
-          <drools:script></drools:script>
-        </drools:onExit-script>
-      </bpmn2:extensionElements>
       <bpmn2:startEvent id="_9C3432DE-97AF-4EDE-894F-B5BD9D68EB10" drools:bgcolor="#9acd32" drools:selectable="true" name="StartExcp">
         <bpmn2:outgoing>_A4491E9E-572A-49FD-8F35-044270B022E6</bpmn2:outgoing>
         <bpmn2:errorEventDefinition id="_0PtkoraXEeOzbZEBuj00bQ" drools:erefname="90277" errorRef="90277"/>

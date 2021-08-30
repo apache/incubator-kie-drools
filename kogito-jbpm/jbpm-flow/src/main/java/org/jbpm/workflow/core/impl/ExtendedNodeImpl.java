@@ -27,13 +27,11 @@ public class ExtendedNodeImpl extends NodeImpl {
     public static final String EVENT_NODE_ENTER = "onEntry";
     public static final String EVENT_NODE_EXIT = "onExit";
 
-    private static final String[] EVENT_TYPES =
-            new String[] { EVENT_NODE_ENTER, EVENT_NODE_EXIT };
+    private static final String[] EVENT_TYPES = new String[] { EVENT_NODE_ENTER, EVENT_NODE_EXIT };
 
     private static final long serialVersionUID = 510l;
 
-    private Map<String, List<DroolsAction>> actions =
-            new HashMap<String, List<DroolsAction>>();
+    private Map<String, List<DroolsAction>> actions = new HashMap<>();
 
     public void setActions(String type, List<DroolsAction> actions) {
         this.actions.put(type, actions);

@@ -6,16 +6,6 @@
       <outgoing>SequenceFlow_4</outgoing>
     </startEvent>
     <userTask id="UserTask_1" name="User Task">
-      <extensionElements>
-        <tns:onEntry-script scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-      </extensionElements>
-      <extensionElements>
-        <tns:onExit-script scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </extensionElements>
       <incoming>SequenceFlow_2</incoming>
       <outgoing>SequenceFlow_6</outgoing>
       <ioSpecification id="_InputOutputSpecification_6">
@@ -59,16 +49,6 @@
       </potentialOwner>
     </userTask>
     <userTask id="UserTask_2" name="User task error attached">
-      <extensionElements>
-        <tns:onEntry-script scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-      </extensionElements>
-      <extensionElements>
-        <tns:onExit-script scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </extensionElements>
       <incoming>SequenceFlow_3</incoming>
       <outgoing>SequenceFlow_5</outgoing>
       <ioSpecification id="_InputOutputSpecification_7">

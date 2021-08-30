@@ -15,7 +15,6 @@
  */
 package org.kie.kogito.codegen.process;
 
-import java.nio.file.Path;
 import java.util.Optional;
 
 import org.jbpm.compiler.canonical.ProcessMetaData;
@@ -39,8 +38,9 @@ public class ProcessExecutableModelGenerator {
     }
 
     public ProcessMetaData generate() {
-        if (processMetaData != null)
+        if (processMetaData != null) {
             return processMetaData;
+        }
         processMetaData = execModelGenerator.generate(workFlowProcess);
 
         // this is ugly, but this class will be refactored
@@ -55,19 +55,14 @@ public class ProcessExecutableModelGenerator {
     }
 
     public String className() {
-        if (processMetaData == null)
+        if (processMetaData == null) {
             generate();
+        }
         return processMetaData.getProcessClassName();
     }
 
     public String generatedFilePath() {
         return processFilePath;
-    }
-
-    private String getCompiledClassName(Path fileNameRelative) {
-        return fileNameRelative.toString()
-                .replace("/", ".")
-                .replace(".java", "");
     }
 
     public String extractedProcessId() {

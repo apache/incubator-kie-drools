@@ -74,8 +74,6 @@ public class FactoryTest extends AbstractBaseTest {
                 .outMapping("y", "x")
                 .waitForCompletion(true)
                 .timer("1s", null, "java", "")
-                .onEntryAction("java", "")
-                .onExitAction("java", "")
                 .done();
 
         factory.faultNode(4).name("Fault")

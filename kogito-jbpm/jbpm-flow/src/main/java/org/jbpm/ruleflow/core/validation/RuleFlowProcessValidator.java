@@ -37,9 +37,11 @@ import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.process.core.validation.ProcessValidator;
 import org.jbpm.process.core.validation.impl.ProcessValidationErrorImpl;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
+import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.WorkflowProcess;
 import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
+import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
 import org.jbpm.workflow.core.impl.NodeImpl;
 import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.BoundaryEventNode;
@@ -131,7 +133,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
         return errors.toArray(new ProcessValidationError[errors.size()]);
     }
 
-    private void validateNodes(org.kie.api.definition.process.Node[] nodes,
+    protected void validateNodes(org.kie.api.definition.process.Node[] nodes,
             List<ProcessValidationError> errors,
             RuleFlowProcess process) {
         String isForCompensation = "isForCompensation";
@@ -164,6 +166,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         errors);
             } else if (node instanceof RuleSetNode) {
                 final RuleSetNode ruleSetNode = (RuleSetNode) node;
+                validateOnEntryOnExitScripts(ruleSetNode, errors, process);
                 if (ruleSetNode.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                             node,
@@ -294,6 +297,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof MilestoneNode) {
                 final MilestoneNode milestone = (MilestoneNode) node;
+                validateOnEntryOnExitScripts(milestone, errors, process);
                 if (milestone.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                             node,
@@ -325,6 +329,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof SubProcessNode) {
                 final SubProcessNode subProcess = (SubProcessNode) node;
+                validateOnEntryOnExitScripts(subProcess, errors, process);
                 if (subProcess.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                             node,
@@ -415,6 +420,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof WorkItemNode) {
                 final WorkItemNode workItemNode = (WorkItemNode) node;
+                validateOnEntryOnExitScripts(workItemNode, errors, process);
                 if (workItemNode.getFrom() == null && !acceptsNoIncomingConnections(node)) {
                     addErrorMessage(process,
                             node,
@@ -454,6 +460,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                 }
             } else if (node instanceof ForEachNode) {
                 final ForEachNode forEachNode = (ForEachNode) node;
+                validateOnEntryOnExitScripts(forEachNode, errors, process);
                 String variableName = forEachNode.getVariableName();
                 if (variableName == null || "".equals(variableName)) {
                     addErrorMessage(process,
@@ -497,6 +504,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         process);
             } else if (node instanceof DynamicNode) {
                 final DynamicNode dynamicNode = (DynamicNode) node;
+                validateOnEntryOnExitScripts(dynamicNode, errors, process);
 
                 if (dynamicNode.getDefaultIncomingConnections().isEmpty() && !acceptsNoIncomingConnections(dynamicNode)) {
                     addErrorMessage(process,
@@ -523,6 +531,7 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         process);
             } else if (node instanceof CompositeNode) {
                 final CompositeNode compositeNode = (CompositeNode) node;
+                validateOnEntryOnExitScripts(compositeNode, errors, process);
                 for (Map.Entry<String, NodeAndType> inType : compositeNode.getLinkedIncomingNodes().entrySet()) {
                     if (compositeNode.getIncomingConnections(inType.getKey()).isEmpty() && !acceptsNoIncomingConnections(node)) {
                         addErrorMessage(process,
@@ -891,6 +900,20 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                     "This validator can only validate ruleflow processes!");
         }
         return validateProcess((RuleFlowProcess) process);
+    }
+
+    //TODO To be removed once https://issues.redhat.com/browse/KOGITO-2067 is fixed
+    private void validateOnEntryOnExitScripts(Node node, List<ProcessValidationError> errors, RuleFlowProcess process) {
+        if (node instanceof ExtendedNodeImpl) {
+            List<DroolsAction> actions = ((ExtendedNodeImpl) node).getActions(ExtendedNodeImpl.EVENT_NODE_ENTER);
+            if (actions != null && !actions.isEmpty()) {
+                addErrorMessage(process, node, errors, "On Entry Action is not yet supported in Kogito");
+            }
+            actions = ((ExtendedNodeImpl) node).getActions(ExtendedNodeImpl.EVENT_NODE_EXIT);
+            if (actions != null && !actions.isEmpty()) {
+                addErrorMessage(process, node, errors, "On Exit Action is not yet supported in Kogito");
+            }
+        }
     }
 
     private void validateVariables(List<ProcessValidationError> errors,

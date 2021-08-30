@@ -23,6 +23,7 @@ import java.util.Map;
 import org.jbpm.bpmn2.handler.SendTaskHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.process.instance.impl.demo.SystemOutWorkItemHandler;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
@@ -125,6 +126,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testOnEntryExitScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitScriptProcess.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
@@ -139,6 +141,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testOnEntryExitNamespacedScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitNamespacedScriptProcess.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
@@ -153,6 +156,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testOnEntryExitMixedNamespacedScript() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitMixedNamespacedScriptProcess.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",
@@ -167,6 +171,7 @@ public class EndEventTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testOnEntryExitScriptDesigner() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-OnEntryExitDesignerScriptProcess.bpmn2");
         kruntime.getKogitoWorkItemManager().registerWorkItemHandler("MyTask",

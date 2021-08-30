@@ -12,16 +12,6 @@
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="SequenceFlow_3" tns:priority="1" name="" sourceRef="ScriptTask_1" targetRef="EndEvent_2"/>
     <bpmn2:userTask id="UserTask_1" name="User Task">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-      </bpmn2:extensionElements>
-      <bpmn2:extensionElements>
-        <tns:onExit-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_6</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_2</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_InputOutputSpecification_4">
@@ -85,16 +75,6 @@
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_7" tns:priority="1" name="" sourceRef="ParallelGateway_1" targetRef="UserTask_2"/>
     <bpmn2:userTask id="UserTask_2" name="User Task with escalation">
-      <bpmn2:extensionElements>
-        <tns:onEntry-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onEntry-script>
-      </bpmn2:extensionElements>
-      <bpmn2:extensionElements>
-        <tns:onExit-script tns:scriptFormat="">
-          <tns:script></tns:script>
-        </tns:onExit-script>
-      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_8</bpmn2:outgoing>
       <bpmn2:ioSpecification id="_InputOutputSpecification_5">

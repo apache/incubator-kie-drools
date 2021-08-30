@@ -70,7 +70,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final Node node = createNode();
 
         final String id = attrs.getValue("id");
-        node.setId(new Long(id));
+        node.setId(Long.valueOf(id));
 
         final String name = attrs.getValue("name");
         node.setName(name);
@@ -95,7 +95,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final String x = element.getAttribute("x");
         if (x != null && x.length() != 0) {
             try {
-                node.setMetaData("x", new Integer(x));
+                node.setMetaData("x", Integer.valueOf(x));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'x' attribute", parser.getLocator());
             }
@@ -103,7 +103,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final String y = element.getAttribute("y");
         if (y != null && y.length() != 0) {
             try {
-                node.setMetaData("y", new Integer(y));
+                node.setMetaData("y", Integer.valueOf(y));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'y' attribute", parser.getLocator());
             }
@@ -111,7 +111,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final String width = element.getAttribute("width");
         if (width != null && width.length() != 0) {
             try {
-                node.setMetaData("width", new Integer(width));
+                node.setMetaData("width", Integer.valueOf(width));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'width' attribute", parser.getLocator());
             }
@@ -119,7 +119,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final String height = element.getAttribute("height");
         if (height != null && height.length() != 0) {
             try {
-                node.setMetaData("height", new Integer(height));
+                node.setMetaData("height", Integer.valueOf(height));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'height' attribute", parser.getLocator());
             }
@@ -127,7 +127,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         final String color = element.getAttribute("color");
         if (color != null && color.length() != 0) {
             try {
-                node.setMetaData("color", new Integer(color));
+                node.setMetaData("color", Integer.valueOf(color));
             } catch (NumberFormatException exc) {
                 throw new SAXParseException("<" + localName + "> requires an Integer 'color' attribute", parser.getLocator());
             }

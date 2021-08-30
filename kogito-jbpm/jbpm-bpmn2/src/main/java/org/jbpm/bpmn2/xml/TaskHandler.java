@@ -16,6 +16,7 @@
 package org.jbpm.bpmn2.xml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -342,7 +343,7 @@ public class TaskHandler extends AbstractNodeHandler {
             milestoneNode.setCondition(milestoneCondition);
             milestoneNode.setName(workItemNode.getName());
             milestoneNode.setParentContainer(workItemNode.getParentContainer());
-
+            Arrays.stream(workItemNode.getActionTypes()).forEach(action -> milestoneNode.setActions(action, workItemNode.getActions(action)));
             node = milestoneNode;
         }
 

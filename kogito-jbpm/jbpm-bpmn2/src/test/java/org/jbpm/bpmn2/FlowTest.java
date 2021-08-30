@@ -38,6 +38,7 @@ import org.jbpm.workflow.instance.node.ForEachNodeInstance;
 import org.jbpm.workflow.instance.node.ForEachNodeInstance.ForEachJoinNodeInstance;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Timeout;
 import org.kie.api.command.ExecutableCommand;
@@ -777,6 +778,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testInclusiveSplitWithLoopInside() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithLoopInside.bpmn2");
 
@@ -835,6 +837,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testInclusiveSplitWithLoopInsideSubprocess() throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-InclusiveGatewayWithLoopInsideSubprocess.bpmn2");
 
@@ -1156,6 +1159,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testMultiInstanceLoopCharacteristicsProcessWithOutputAndScripts()
             throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsProcessWithOutputAndScripts.bpmn2");
@@ -1177,6 +1181,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testMultiInstanceLoopCharacteristicsTaskWithOutput()
             throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutput.bpmn2");
@@ -1198,6 +1203,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition()
             throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond.bpmn2");
@@ -1219,6 +1225,7 @@ public class FlowTest extends JbpmBpmn2TestCase {
     }
 
     @Test
+    @Disabled("On Exit not supported, see https://issues.redhat.com/browse/KOGITO-2067")
     public void testMultiInstanceLoopCharacteristicsTaskWithOutputCompletionCondition2()
             throws Exception {
         kruntime = createKogitoProcessRuntime("BPMN2-MultiInstanceLoopCharacteristicsTaskWithOutputCmpCond2.bpmn2");

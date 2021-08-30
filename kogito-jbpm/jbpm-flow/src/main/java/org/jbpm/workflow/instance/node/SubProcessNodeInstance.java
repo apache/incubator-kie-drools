@@ -68,7 +68,7 @@ public class SubProcessNodeInstance extends StateBasedNodeInstance implements Ev
     private static final long serialVersionUID = 510l;
     private static final Logger logger = LoggerFactory.getLogger(SubProcessNodeInstance.class);
 
-    // NOTE: ContetxInstances are not persisted as current functionality (exception scope) does not require it
+    // NOTE: ContextInstances are not persisted as current functionality (exception scope) does not require it
     private Map<String, ContextInstance> contextInstances = new HashMap<String, ContextInstance>();
     private Map<String, List<ContextInstance>> subContextInstances = new HashMap<>();
 
