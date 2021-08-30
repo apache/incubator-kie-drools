@@ -347,6 +347,18 @@ public class ForAllTest {
         checkForallWithComplexExpression("value < 1 || value > 50");
     }
 
+    @Test
+    public void testForallWithIn() throws Exception {
+        // DROOLS-6560
+        checkForallWithComplexExpression("value in (1, 43)");
+    }
+
+    @Test
+    public void testForallWithNotIn() throws Exception {
+        // DROOLS-6560
+        checkForallWithComplexExpression("value not in (1, 42)");
+    }
+
     private void checkForallWithComplexExpression(String expression) throws Exception {
         // DROOLS-6469
         String drl =

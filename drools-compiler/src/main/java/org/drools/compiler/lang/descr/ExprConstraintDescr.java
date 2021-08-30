@@ -22,7 +22,6 @@ package org.drools.compiler.lang.descr;
 public class ExprConstraintDescr extends BaseDescr implements ExpressionDescr {
 
     private static final long serialVersionUID = 520l;
-    private boolean negated = false;
 
     public static enum Type {
         NAMED, POSITIONAL;
@@ -80,12 +79,7 @@ public class ExprConstraintDescr extends BaseDescr implements ExpressionDescr {
 
     @Override
     public BaseDescr negate() {
-        negated = true;
+        setText("!(" + getText() + ")");
         return this;
-    }
-
-    @Override
-    public boolean isNegated() {
-        return negated;
     }
 }
