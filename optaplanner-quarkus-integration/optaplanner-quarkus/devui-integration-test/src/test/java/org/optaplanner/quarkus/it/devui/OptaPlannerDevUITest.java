@@ -19,6 +19,7 @@ package org.optaplanner.quarkus.it.devui;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import javax.xml.parsers.ParserConfigurationException;
 
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.xml.sax.SAXException;
 
-import groovy.namespace.QName;
 import groovy.util.Node;
 import groovy.xml.XmlParser;
 import io.quarkus.test.QuarkusDevModeTest;
@@ -55,10 +55,7 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String solverConfig = ((Node) (node.getAt(QName.valueOf("body"))
-                .getAt(QName.valueOf("div"))
-                .getAt(QName.valueOf("pre"))
-                .get(0))).text();
+        String solverConfig = Objects.requireNonNull(findById("optaplanner-solver-config", node)).text();
         assertThat(solverConfig).isEqualToIgnoringWhitespace(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
                         + "<!--Properties that can be set at runtime are not included-->\n"
@@ -81,10 +78,7 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String model = ((Node) (node.getAt(QName.valueOf("body"))
-                .getAt(QName.valueOf("div"))
-                .getAt(QName.valueOf("div"))
-                .get(0))).toString();
+        String model = Objects.requireNonNull(findById("optaplanner-model", node)).toString();
         assertThat(model)
                 .contains("value=[Solution: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowSolution]");
         assertThat(model).contains("value=[Entity: org.optaplanner.quarkus.it.devui.domain.TestdataStringLengthShadowEntity]");
@@ -103,11 +97,23 @@ public class OptaPlannerDevUITest {
                 .asPrettyString();
         XmlParser xmlParser = new XmlParser();
         Node node = xmlParser.parseText(body);
-        String constraints = ((Node) (node.getAt(QName.valueOf("body"))
-                .getAt(QName.valueOf("div"))
-                .getAt(QName.valueOf("table"))
-                .get(0))).text();
+        String constraints = Objects.requireNonNull(findById("optaplanner-constraints", node)).text();
         assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Don't assign 2 entities the same value");
         assertThat(constraints).contains("org.optaplanner.quarkus.it.devui.domain/Maximize value length");
+    }
+
+    private Node findById(String id, Node node) {
+        if (id.equals(node.attribute("id"))) {
+            return node;
+        }
+        for (Object child : node.children()) {
+            if (child instanceof Node) {
+                Node maybeFoundNodeText = findById(id, (Node) child);
+                if (maybeFoundNodeText != null) {
+                    return maybeFoundNodeText;
+                }
+            }
+        }
+        return null;
     }
 }
