@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.cloudevents.CloudEventUtils;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
-import org.kie.kogito.test.kafka.KafkaTestClient;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.storage.api.model.BaseExplainabilityResult;

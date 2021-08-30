@@ -34,7 +34,7 @@ import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
 import org.kie.kogito.explainability.api.BaseExplainabilityResultDto;
 import org.kie.kogito.explainability.api.ModelIdentifierDto;
 import org.kie.kogito.explainability.models.BaseExplainabilityRequest;
-import org.kie.kogito.test.kafka.KafkaTestClient;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

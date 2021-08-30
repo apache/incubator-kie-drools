@@ -33,7 +33,7 @@ import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.model.ProcessInstanceState;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
-import org.kie.kogito.test.kafka.KafkaTestClient;
+import org.kie.kogito.test.quarkus.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
