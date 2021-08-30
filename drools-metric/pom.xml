@@ -17,6 +17,7 @@
 
   <properties>
     <java.module.name>org.drools.metric</java.module.name>
+    <version.io.micrometer>1.7.3</version.io.micrometer>
   </properties>
 
   <dependencies>
@@ -24,6 +25,16 @@
     <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+      <optional>true</optional>
+    </dependency>
+    <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-registry-jmx</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -53,5 +64,20 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <dependencyManagement> <!-- TODO: move to parent -->
+    <dependencies>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-core</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.micrometer</groupId>
+        <artifactId>micrometer-registry-jmx</artifactId>
+        <version>${version.io.micrometer}</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
 
 </project>

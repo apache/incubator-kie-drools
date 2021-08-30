@@ -36,7 +36,7 @@ public class PhreakNotNodeMetric extends PhreakNotNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(notNode);
+            MetricLogUtils.getInstance().startMetrics(wm, notNode);
 
             super.doNode(notNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

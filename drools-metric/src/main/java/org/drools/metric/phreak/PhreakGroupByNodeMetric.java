@@ -34,7 +34,7 @@ public class PhreakGroupByNodeMetric extends PhreakGroupByNode {
                         TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(accNode);
+            MetricLogUtils.getInstance().startMetrics(wm, accNode);
 
             super.doNode(accNode, sink, am, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

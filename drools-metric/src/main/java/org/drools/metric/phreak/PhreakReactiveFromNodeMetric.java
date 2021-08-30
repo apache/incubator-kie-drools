@@ -36,7 +36,7 @@ public class PhreakReactiveFromNodeMetric extends PhreakReactiveFromNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(fromNode);
+            MetricLogUtils.getInstance().startMetrics(wm, fromNode);
 
             super.doNode(fromNode, fm, sink, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

@@ -38,7 +38,7 @@ public class PhreakBranchNodeMetric extends PhreakBranchNode {
                        RuleExecutor executor) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(branchNode);
+            MetricLogUtils.getInstance().startMetrics(agenda.getWorkingMemory(), branchNode);
 
             super.doNode(branchNode, cbm, sink, agenda, srcLeftTuples, trgLeftTuples, stagedLeftTuples, executor);
 

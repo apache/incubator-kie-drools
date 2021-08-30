@@ -32,7 +32,7 @@ public class PhreakAsyncSendNodeMetric extends PhreakAsyncSendNode {
                        TupleSets<LeftTuple> srcLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(node);
+            MetricLogUtils.getInstance().startMetrics(wm, node);
 
             super.doNode(node, memory, wm, srcLeftTuples);
 

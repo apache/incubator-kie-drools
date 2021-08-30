@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.jmx.JmxMeterRegistry;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
 import org.drools.metric.util.MetricLogUtils;
@@ -37,6 +40,7 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
     public void setup() {
         System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
         System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
+        Metrics.globalRegistry.add(new JmxMeterRegistry(s -> null, Clock.SYSTEM));
     }
 
     @Test

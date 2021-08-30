@@ -35,7 +35,7 @@ public class PhreakAsyncReceiveNodeMetric extends PhreakAsyncReceiveNode {
                        TupleSets<LeftTuple> trgLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(node);
+            MetricLogUtils.getInstance().startMetrics(wm, node);
 
             super.doNode(node, memory, sink, wm, srcLeftTuples, trgLeftTuples);
 

@@ -40,7 +40,7 @@ public class PhreakTimerNodeMetric extends PhreakTimerNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(timerNode);
+            MetricLogUtils.getInstance().startMetrics(agenda.getWorkingMemory(), timerNode);
 
             super.doNode(timerNode, tm, pmem, smem, sink, agenda, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

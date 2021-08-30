@@ -36,7 +36,7 @@ public class PhreakQueryNodeMetric extends PhreakQueryNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(queryNode);
+            MetricLogUtils.getInstance().startMetrics(wm, queryNode);
 
             super.doNode(queryNode, qmem, stackEntry, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 
