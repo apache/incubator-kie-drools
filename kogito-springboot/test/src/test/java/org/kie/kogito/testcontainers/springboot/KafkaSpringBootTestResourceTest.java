@@ -18,7 +18,7 @@ package org.kie.kogito.testcontainers.springboot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.test.kafka.KafkaTestClient;
+import org.kie.kogito.test.springboot.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

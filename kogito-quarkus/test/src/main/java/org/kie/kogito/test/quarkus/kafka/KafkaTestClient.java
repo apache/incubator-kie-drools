@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.test.kafka;
+package org.kie.kogito.test.quarkus.kafka;
 
 import java.time.Duration;
 import java.util.Collection;

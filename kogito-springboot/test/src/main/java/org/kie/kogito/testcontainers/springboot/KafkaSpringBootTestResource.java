@@ -17,8 +17,8 @@ package org.kie.kogito.testcontainers.springboot;
 
 import java.util.Map;
 
-import org.kie.kogito.test.kafka.KafkaTestClient;
 import org.kie.kogito.test.resources.ConditionalSpringBootTestResource;
+import org.kie.kogito.test.springboot.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.event.ContextClosedEvent;
