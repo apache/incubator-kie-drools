@@ -69,7 +69,6 @@ public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAccepto
 
     protected Integer lateAcceptanceSize = null;
 
-    //    protected String greatDelugeInitialWaterLevel = null;
     protected String greatDelugeWaterLevelIncrementScore = null;
     protected Double greatDelugeWaterLevelIncrementRatio = null;
 
@@ -195,14 +194,6 @@ public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAccepto
     public void setLateAcceptanceSize(Integer lateAcceptanceSize) {
         this.lateAcceptanceSize = lateAcceptanceSize;
     }
-
-    //    public String getGreatDelugeInitialWaterLevel() {
-    //        return greatDelugeInitialWaterLevel;
-    //    }
-    //
-    //    public void setGreatDelugeInitialWaterLevel(String greatDelugeInitialWaterLevel) {
-    //        this.greatDelugeInitialWaterLevel = greatDelugeInitialWaterLevel;
-    //    }
 
     public String getGreatDelugeWaterLevelIncrementScore() {
         return greatDelugeWaterLevelIncrementScore;
@@ -363,8 +354,6 @@ public class LocalSearchAcceptorConfig extends AbstractConfig<LocalSearchAccepto
                 simulatedAnnealingStartingTemperature, inheritedConfig.getSimulatedAnnealingStartingTemperature());
         lateAcceptanceSize = ConfigUtils.inheritOverwritableProperty(lateAcceptanceSize,
                 inheritedConfig.getLateAcceptanceSize());
-        //        greatDelugeInitialWaterLevel = ConfigUtils.inheritOverwritableProperty(greatDelugeInitialWaterLevel,
-        //                inheritedConfig.getGreatDelugeInitialWaterLevel());
         greatDelugeWaterLevelIncrementScore = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementScore,
                 inheritedConfig.getGreatDelugeWaterLevelIncrementScore());
         greatDelugeWaterLevelIncrementRatio = ConfigUtils.inheritOverwritableProperty(greatDelugeWaterLevelIncrementRatio,

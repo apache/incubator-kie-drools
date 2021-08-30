@@ -571,7 +571,6 @@ Great Deluge takes as starting water level best score from construction heuristi
   <localSearch>
     ...
     <acceptor>
-      <greatDelugeInitialWaterLevel>20hard/100soft</greatDelugeInitialWaterLevel>
       <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
     </acceptor>
     <forager>
@@ -598,8 +597,7 @@ To avoid hard coding the water level increment, configure a `greatDelugeWaterLev
 </acceptor>
 ----
 
-Also `greatDelugeInitialWaterLevel` can be set as a starting water level but is recommended not to do it,
-so the algorithm takes as starting value the best score from the construction heuristic.
+The algorithm takes as starting value the best score from the construction heuristic.
 Use the Benchmarker to fine-tune tweak your configuration.
 
 [[stepCountingHillClimbing]]
