@@ -26,7 +26,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -889,12 +888,15 @@ public class PackageModel {
         lambdaReturnTypes.put(lambdaExpr, type);
     }
 
-    public void indexConstraint(String exprId, PredicateInformation predicateInformation) {
-        allConstraintsMap.put(exprId, predicateInformation);
-    }
-
-    public Optional<PredicateInformation> findConstraintWithExprId(String exprId) {
-        return ofNullable(allConstraintsMap.get(exprId));
+    public void indexConstraint(String exprId, String constraint, String ruleName, String ruleFileName) {
+        allConstraintsMap.compute(exprId, (key, info) -> {
+            if (info == null) {
+                return new PredicateInformation(constraint, ruleName, ruleFileName);
+            } else {
+                info.addRuleName(ruleName, ruleFileName);
+                return info;
+            }
+        });
     }
 
     public Map<String, PredicateInformation> getAllConstraintsMap() {

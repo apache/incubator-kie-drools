@@ -160,11 +160,13 @@ public class BuildUtils {
         if (node instanceof AlphaNode) {
             AlphaNodeFieldConstraint alphaConstraint = ((AlphaNode) node).getConstraint();
             alphaConstraint.addPackageNames(((AlphaNode) duplicate).getConstraint().getPackageNames());
+            alphaConstraint.mergeEvaluationContext(((AlphaNode) duplicate).getConstraint());
         } else if (node instanceof BetaNode) {
             BetaNodeFieldConstraint[] betaConstraints = ((BetaNode) node).getConstraints();
             int i = 0;
             for (BetaNodeFieldConstraint betaConstraint : betaConstraints) {
                 betaConstraint.addPackageNames(((BetaNode) duplicate).getConstraints()[i].getPackageNames());
+                betaConstraint.mergeEvaluationContext(((BetaNode) duplicate).getConstraints()[i]);
                 i++;
             }
         }

@@ -16,8 +16,12 @@
 
 package org.drools.model.functions;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 /**
  * Used to generate a better error message when constraints fail
@@ -27,45 +31,37 @@ public class PredicateInformation {
     public static final PredicateInformation EMPTY_PREDICATE_INFORMATION =
             new PredicateInformation("", "", "");
 
-
     // Used to generate a significant error message
     private final String stringConstraint;
-    private final String ruleName;
-    private final String ruleFileName;
+    private final Map<String, Set<String>> ruleNameMap = new HashMap<>();
+
+    public PredicateInformation(String stringConstraint) {
+        this.stringConstraint = defaultToEmptyString(stringConstraint);
+    }
 
     public PredicateInformation(String stringConstraint, String ruleName, String ruleFileName) {
         this.stringConstraint = defaultToEmptyString(stringConstraint);
-        this.ruleName = defaultToEmptyString(ruleName);
-        this.ruleFileName = defaultToEmptyString(ruleFileName);
-    }
-
-    private String defaultToEmptyString(String stringConstraint) {
-        return Optional.ofNullable(stringConstraint).orElse("");
-    }
-
-    public RuntimeException betterErrorMessage(RuntimeException originalException) {
-        if("".equals(stringConstraint)) {
-            return originalException;
-        }
-
-        String errorMessage = String.format(
-                "Error evaluating constraint '%s' in [Rule \"%s\" in %s]",
-                stringConstraint,
-                ruleName,
-                ruleFileName);
-        return new RuntimeException(errorMessage, originalException);
+        ruleName = defaultToEmptyString(ruleName);
+        ruleFileName = defaultToEmptyString(ruleFileName);
+        ruleNameMap.computeIfAbsent(ruleFileName, k -> new HashSet<>()).add(ruleName);
     }
 
     public String getStringConstraint() {
         return stringConstraint;
     }
 
-    public String getRuleName() {
-        return ruleName;
+    public Map<String, Set<String>> getRuleNameMap() {
+        return ruleNameMap;
     }
 
-    public String getRuleFileName() {
-        return ruleFileName;
+    public void addRuleName(String ruleName, String ruleFileName) {
+        ruleName = defaultToEmptyString(ruleName);
+        ruleFileName = defaultToEmptyString(ruleFileName);
+        ruleNameMap.computeIfAbsent(ruleFileName, k -> new HashSet<>()).add(ruleName);
+    }
+
+    public static String defaultToEmptyString(String str) {
+        return Optional.ofNullable(str).orElse("");
     }
 
     public boolean isEmpty() {
@@ -82,21 +78,19 @@ public class PredicateInformation {
         }
         PredicateInformation that = (PredicateInformation) o;
         return Objects.equals(stringConstraint, that.stringConstraint) &&
-                Objects.equals(ruleName, that.ruleName) &&
-                Objects.equals(ruleFileName, that.ruleFileName);
+                Objects.equals(ruleNameMap, that.ruleNameMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stringConstraint, ruleName, ruleFileName);
+        return Objects.hash(stringConstraint, ruleNameMap);
     }
 
     @Override
     public String toString() {
         return "PredicateInformation{" +
                 "stringConstraint='" + stringConstraint + '\'' +
-                ", ruleName='" + ruleName + '\'' +
-                ", ruleFileName='" + ruleFileName + '\'' +
+                ", ruleNameMap='" + ruleNameMap + '\'' +
                 '}';
     }
 }

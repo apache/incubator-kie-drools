@@ -86,6 +86,8 @@ public interface Constraint
 
     default void registerEvaluationContext(BuildContext buildContext) { }
 
+    default void mergeEvaluationContext(Constraint other) { }
+
     default Collection<String> getPackageNames() {
         return Collections.emptyList();
     }

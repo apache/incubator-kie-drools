@@ -1,0 +1,117 @@
+/*
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.drools.modelcompiler.constraints;
+
+import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.InternalKnowledgeBase;
+import org.drools.core.impl.KnowledgeBaseFactory;
+import org.drools.core.io.impl.ByteArrayResource;
+import org.drools.core.reteoo.builder.BuildContext;
+import org.drools.model.functions.PredicateInformation;
+import org.drools.modelcompiler.BaseModelTest;
+import org.drools.mvel.MVELConstraint;
+import org.junit.Test;
+import org.kie.api.io.Resource;
+
+import static org.junit.Assert.assertEquals;
+
+public class ConstraintEvaluationExceptionTest extends BaseModelTest {
+
+    private PredicateInformation predicateInformation; // exec-model
+
+    private MVELConstraint mvelConstraint; // non-exec-model
+
+    public ConstraintEvaluationExceptionTest(RUN_TYPE testRunType) {
+        super(testRunType);
+    }
+
+    @Test
+    public void testMultipleRules() {
+        initConstraintTestField("age > 20", "R1", "sample.drl");
+        addRuleToConstraintTestField("R2", "sample.drl");
+        addRuleToConstraintTestField("R3", "sample.drl");
+
+        assertMessage("Error evaluating constraint 'age > 20' in [Rule \"R1\", \"R2\", \"R3\" in sample.drl]");
+    }
+
+    @Test
+    public void testMultipleRuleFiles() {
+        initConstraintTestField("age > 20", "R1", "sample1.drl");
+        addRuleToConstraintTestField("R2", "sample1.drl");
+        addRuleToConstraintTestField("R3", "sample2.drl");
+
+        assertMessage("Error evaluating constraint 'age > 20' in [Rule \"R1\", \"R2\" in sample1.drl] [Rule \"R3\" in sample2.drl]");
+    }
+
+    @Test
+    public void testNull() {
+        initConstraintTestField("age > 20", null, "sample1.drl");
+        addRuleToConstraintTestField("R2", null);
+        addRuleToConstraintTestField(null, null);
+
+        // Irregular case. Not much useful info but doesn't throw NPE
+        assertMessage("Error evaluating constraint 'age > 20' in [Rule \"\", \"R2\" in ] [Rule \"\" in sample1.drl]");
+    }
+
+    private void initConstraintTestField(String constraint, String ruleName, String ruleFileName) {
+        if (testRunType.isExecutableModel()) {
+            predicateInformation = new PredicateInformation(constraint, ruleName, ruleFileName);
+        } else {
+            mvelConstraint = new MVELConstraint("com.example", constraint, null, null, null, null, null);
+
+            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            BuildContext buildContext = new BuildContext(kBase);
+            RuleImpl ruleImpl = new RuleImpl(ruleName);
+            Resource resource = new ByteArrayResource();
+            resource.setSourcePath(ruleFileName);
+            ruleImpl.setResource(resource);
+            buildContext.setRule(ruleImpl);
+
+            mvelConstraint.registerEvaluationContext(buildContext);
+        }
+    }
+
+    private void addRuleToConstraintTestField(String ruleName, String ruleFileName) {
+        if (testRunType.isExecutableModel()) {
+            predicateInformation.addRuleName(ruleName, ruleFileName);
+        } else {
+            // in non-exec-model, node sharing triggers merging
+            MVELConstraint otherMvelConstraint = new MVELConstraint("com.example", mvelConstraint.getExpression(), null, null, null, null, null);
+
+            InternalKnowledgeBase kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+            BuildContext buildContext = new BuildContext(kBase);
+            RuleImpl ruleImpl = new RuleImpl(ruleName);
+            Resource resource = new ByteArrayResource();
+            resource.setSourcePath(ruleFileName);
+            ruleImpl.setResource(resource);
+            buildContext.setRule(ruleImpl);
+            otherMvelConstraint.registerEvaluationContext(buildContext);
+
+            mvelConstraint.mergeEvaluationContext(otherMvelConstraint);
+        }
+    }
+
+    private void assertMessage(String expected) {
+        Exception ex;
+        if (testRunType.isExecutableModel()) {
+            ex = new org.drools.modelcompiler.constraints.ConstraintEvaluationException(predicateInformation, new RuntimeException("OriginalException"));
+        } else {
+            ex = new org.drools.mvel.ConstraintEvaluationException(mvelConstraint.getExpression(), mvelConstraint.getEvaluationContext(), new RuntimeException("OriginalException"));
+        }
+        assertEquals(expected, ex.getMessage());
+    }
+}
