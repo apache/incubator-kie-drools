@@ -23,6 +23,7 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.event.DefaultAgendaEventListener;
 import org.drools.core.impl.KnowledgeBaseFactory;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieBaseConfiguration;
@@ -47,6 +48,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testRuleFlowConstraintDialects() throws Exception {
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ConstraintDialects.rfm")));
 
@@ -290,6 +292,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testRuleFlowActionDialects() throws Exception {
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("test_ActionDialects.rfm")));
 
@@ -309,7 +312,7 @@ public class ProcessFlowControlTest extends AbstractBaseTest {
     }
 
     @Test
-    public void testLoadingRuleFlowNoPackageName() throws Exception {
+    public void testLoadingRuleFlowNoPackageName() {
         // loading a ruleflow with errors (null package name cause 3 errors)
         builder.addRuleFlow(new InputStreamReader(getClass().getResourceAsStream("error_ruleflow.rfm")));
         assertEquals(3,

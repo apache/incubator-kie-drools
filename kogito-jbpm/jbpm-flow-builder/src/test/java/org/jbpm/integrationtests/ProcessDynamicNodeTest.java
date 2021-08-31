@@ -204,7 +204,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "      <completionCondition>autocomplete</completionCondition>\n" +
                         "      <nodes>\n" +
                         "        <actionNode id=\"1\" name=\"Action\" >\n" +
-                        "          <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Action\");</action>\n" +
+                        "          <action type=\"expression\" dialect=\"java\" >System.out.println(\"Action\");</action>\n" +
                         "        </actionNode>\n" +
                         "      </nodes>\n" +
                         "      <connections>\n" +
@@ -256,7 +256,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "      <completionCondition>autocomplete</completionCondition>\n" +
                         "      <nodes>\n" +
                         "        <actionNode id=\"1\" name=\"Action\" >\n" +
-                        "          <action type=\"expression\" dialect=\"mvel\" >System.out.println(\"Action\");</action>\n" +
+                        "          <action type=\"expression\" dialect=\"java\" >System.out.println(\"Action\");</action>\n" +
                         "        </actionNode>\n" +
                         "      </nodes>\n" +
                         "      <connections>\n" +
@@ -291,7 +291,7 @@ public class ProcessDynamicNodeTest extends AbstractBaseTest {
                         "  <nodes>\n" +
                         "    <start id=\"1\" name=\"Start\" />\n" +
                         "    <actionNode id=\"2\" name=\"Action\" >\n" +
-                        "      <action type=\"expression\" dialect=\"mvel\" >System.out.println(x);</action>\n" +
+                        "      <action type=\"expression\" dialect=\"java\" >System.out.println(x);</action>\n" +
                         "    </actionNode>\n" +
                         "    <workItem id=\"3\" name=\"Work\" >\n" +
                         "      <work name=\"Human Task\" />\n" +

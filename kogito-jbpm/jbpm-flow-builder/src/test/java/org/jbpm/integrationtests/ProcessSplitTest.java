@@ -28,6 +28,7 @@ import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.jbpm.test.util.AbstractBaseTest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.KnowledgeBuilderError;
@@ -68,7 +69,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(kcontext.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -79,7 +80,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +
@@ -145,7 +146,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(kcontext.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -156,7 +157,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +
@@ -201,6 +202,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testSplitWithMVELContextConstraint() {
         Reader source = new StringReader(
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
@@ -289,7 +291,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(context.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -300,7 +302,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(context.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +
@@ -329,6 +331,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testSplitWithMVELkContextConstraint() {
         Reader source = new StringReader(
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
@@ -417,7 +420,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(kcontext.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(kcontext.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -428,7 +431,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(kcontext.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +
@@ -457,6 +460,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testSplitWithMVELVariableConstraint() {
         Reader source = new StringReader(
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
@@ -544,7 +548,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(context.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -554,7 +558,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(context.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +
@@ -583,6 +587,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testSplitWithMVELGlobalConstraint() {
         Reader source = new StringReader(
                 "<process xmlns=\"http://drools.org/drools-5.0/process\"" +
@@ -665,7 +670,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "" +
                         "  <nodes>" +
                         "    <actionNode id=\"2\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >insert(context.getProcessInstance());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >insert(context.getProcessInstance());</action>" +
                         "    </actionNode>" +
                         "    <split id=\"4\" name=\"Split\" type=\"2\" >" +
                         "      <constraints>" +
@@ -675,7 +680,7 @@ public class ProcessSplitTest extends AbstractBaseTest {
                         "    </split>" +
                         "    <end id=\"8\" name=\"End\" />" +
                         "    <actionNode id=\"6\" name=\"Action\" >" +
-                        "        <action type=\"expression\" dialect=\"mvel\" >list.add(context.getProcessInstance().getStringId());</action>" +
+                        "        <action type=\"expression\" dialect=\"java\" >list.add(context.getProcessInstance().getStringId());</action>" +
                         "    </actionNode>" +
                         "    <start id=\"1\" name=\"Start\" />" +
                         "    <end id=\"3\" name=\"End\" />" +

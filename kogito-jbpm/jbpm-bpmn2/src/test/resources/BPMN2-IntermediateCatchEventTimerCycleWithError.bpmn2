@@ -29,7 +29,7 @@
     <scriptTask id="_4" name="Event" >
       <script>System.out.println(new java.util.Date() + " Timer triggered on var x " + x.toString());
 x++;
-kcontext.getProcessInstance().setVariable("x", x);</script>
+kcontext.setVariable("x", x);</script>
     </scriptTask>
     <endEvent id="_5" name="EndProcess" />
 

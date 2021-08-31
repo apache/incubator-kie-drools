@@ -22,7 +22,9 @@ import org.jbpm.process.core.validation.ProcessValidationError;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
+import org.jbpm.workflow.core.impl.DroolsConsequenceAction;
 import org.jbpm.workflow.core.impl.ExtendedNodeImpl;
+import org.jbpm.workflow.core.node.ActionNode;
 import org.jbpm.workflow.core.node.CompositeNode;
 import org.jbpm.workflow.core.node.DynamicNode;
 import org.jbpm.workflow.core.node.EndNode;
@@ -218,5 +220,49 @@ public class RuleFlowProcessValidatorTest {
         assertThat(errors).extracting("message").contains(
                 "Node 'name' [1] On Entry Action is not yet supported in Kogito",
                 "Node 'name' [1] On Exit Action is not yet supported in Kogito");
+    }
+
+    @Test
+    void testScriptTaskDialect() {
+        StartNode startNode = new StartNode();
+        startNode.setName("Start");
+        startNode.setId(1);
+        process.addNode(startNode);
+        EndNode endNode = new EndNode();
+        endNode.setName("EndNode");
+        endNode.setId(2);
+        process.addNode(endNode);
+        ActionNode actionNode1 = new ActionNode();
+        actionNode1.setName("ActionNode1");
+        actionNode1.setAction(new DroolsConsequenceAction("mvel", "System.out.println();"));
+        actionNode1.setId(3);
+        process.addNode(actionNode1);
+        ActionNode actionNode2 = new ActionNode();
+        actionNode2.setName("ActionNode2");
+        actionNode2.setAction(new DroolsConsequenceAction("java", "System.out.println();"));
+        actionNode2.setId(4);
+        process.addNode(actionNode2);
+        new org.jbpm.workflow.core.impl.ConnectionImpl(
+                startNode,
+                Node.CONNECTION_DEFAULT_TYPE,
+                actionNode1,
+                Node.CONNECTION_DEFAULT_TYPE);
+        new org.jbpm.workflow.core.impl.ConnectionImpl(
+                actionNode1,
+                Node.CONNECTION_DEFAULT_TYPE,
+                actionNode2,
+                Node.CONNECTION_DEFAULT_TYPE);
+        new org.jbpm.workflow.core.impl.ConnectionImpl(
+                actionNode2,
+                Node.CONNECTION_DEFAULT_TYPE,
+                endNode,
+                Node.CONNECTION_DEFAULT_TYPE);
+
+        ProcessValidationError[] errors = validator.validateProcess(process);
+        assertNotNull(errors);
+        assertEquals(1,
+                errors.length);
+        assertEquals("Node 'ActionNode1' [3] mvel script language is not supported in Kogito.",
+                errors[0].getMessage());
     }
 }

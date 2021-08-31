@@ -75,7 +75,7 @@ public class ScriptTaskHandler extends AbstractNodeHandler {
             actionNode.setAction(action);
         }
         String language = element.getAttribute("scriptFormat");
-        action.setDialect(SUPPORTED_SCRIPT_FORMATS.getOrDefault(language, "mvel"));
+        action.setDialect(SUPPORTED_SCRIPT_FORMATS.getOrDefault(language, "java"));
         action.setConsequence("");
 
         dataInputs.clear();

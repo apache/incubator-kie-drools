@@ -41,7 +41,7 @@ document]]></bpmn2:documentation>
         <bpmn2:outgoing>_B0A8E8EB-19E4-4F99-ABFF-DE6B2641AEC3</bpmn2:outgoing>
         <bpmn2:outgoing>_78F7A863-F415-48DF-A9C6-E8AE825EDEB3</bpmn2:outgoing>
       </bpmn2:exclusiveGateway>
-      <bpmn2:scriptTask id="_87E64E5A-689F-4429-8DB2-7D9F60032210" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="After gate" scriptFormat="http://www.javascript.com/javascript">
+      <bpmn2:scriptTask id="_87E64E5A-689F-4429-8DB2-7D9F60032210" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="After gate" scriptFormat="java">
         <bpmn2:extensionElements>
           <drools:metaData name="elementname">
             <drools:metaValue><![CDATA[After gate]]></drools:metaValue>
@@ -49,7 +49,7 @@ document]]></bpmn2:documentation>
         </bpmn2:extensionElements>
         <bpmn2:incoming>_78F7A863-F415-48DF-A9C6-E8AE825EDEB3</bpmn2:incoming>
         <bpmn2:outgoing>_EFBAFF48-63BE-4A3F-BED5-A557888386B7</bpmn2:outgoing>
-        <bpmn2:script><![CDATA[print("After gate");]]></bpmn2:script>
+        <bpmn2:script><![CDATA[System.out.println("After gate");]]></bpmn2:script>
       </bpmn2:scriptTask>
       <bpmn2:endEvent id="_F8C393C8-B021-4912-A2CC-61AAFEC1A6AB" drools:selectable="true" color:background-color="#ff6347" color:border-color="#000000" color:color="#000000" name="">
         <bpmn2:extensionElements>
@@ -101,7 +101,7 @@ return i > 10;]]></bpmn2:conditionExpression>
       </bpmn2:extensionElements>
       <bpmn2:outgoing>_ED8CD50A-2AB2-47A4-9E62-572AEEB40C63</bpmn2:outgoing>
     </bpmn2:startEvent>
-    <bpmn2:scriptTask id="_58E1627E-F081-4216-9B3A-074F4BC64BDC" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="After subprocess" scriptFormat="http://www.javascript.com/javascript">
+    <bpmn2:scriptTask id="_58E1627E-F081-4216-9B3A-074F4BC64BDC" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="After subprocess" scriptFormat="java">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[After subprocess]]></drools:metaValue>
@@ -109,9 +109,9 @@ return i > 10;]]></bpmn2:conditionExpression>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_0B6E58EF-CECD-4C31-8E36-D52CD443C573</bpmn2:incoming>
       <bpmn2:outgoing>_26EC02A0-1EFF-4133-ABC3-164E766BF0D2</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[print("After subprocess");]]></bpmn2:script>
+      <bpmn2:script><![CDATA[System.out.println("After subprocess");]]></bpmn2:script>
     </bpmn2:scriptTask>
-    <bpmn2:scriptTask id="_029AFAF5-85DC-42BE-B7F2-312A2129FF52" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Escalated" scriptFormat="http://www.javascript.com/javascript">
+    <bpmn2:scriptTask id="_029AFAF5-85DC-42BE-B7F2-312A2129FF52" drools:selectable="true" color:background-color="#fafad2" color:border-color="#000000" color:color="#000000" name="Escalated" scriptFormat="java">
       <bpmn2:extensionElements>
         <drools:metaData name="elementname">
           <drools:metaValue><![CDATA[Escalated]]></drools:metaValue>
@@ -119,7 +119,7 @@ return i > 10;]]></bpmn2:conditionExpression>
       </bpmn2:extensionElements>
       <bpmn2:incoming>_607BEE1C-0004-411C-B0E7-E9D460163515</bpmn2:incoming>
       <bpmn2:outgoing>_6BD46A5A-FF49-4A33-A251-4C3DD68F317F</bpmn2:outgoing>
-      <bpmn2:script><![CDATA[print("Escalated");]]></bpmn2:script>
+      <bpmn2:script><![CDATA[System.out.println("Escalated");]]></bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id="_F62E280B-CEE3-4CDB-A202-6A863820851E" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_6EF04936-0F16-4F29-96A3-92C6829C9028" targetRef="_57E557DC-288A-4854-9752-C018CE7EFA5E"/>
     <bpmn2:sequenceFlow id="_ED8CD50A-2AB2-47A4-9E62-572AEEB40C63" drools:selectable="true" color:background-color="#000000" color:border-color="#000000" color:color="#000000" sourceRef="_AA1E2919-093B-4529-BEDC-8DA788ADCB4B" targetRef="_97A8E2E1-F119-4549-8021-947EBE20F3F3"/>

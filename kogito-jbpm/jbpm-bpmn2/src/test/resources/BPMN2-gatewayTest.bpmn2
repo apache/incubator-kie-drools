@@ -8,11 +8,11 @@
     <bpmn2:property id='startMessage' itemSubjectRef='startype'/>
     <bpmn2:startEvent id='_4E889155-DB85-44AB-A1F4-8C332A5555DE' name=''/>
     <bpmn2:scriptTask id='_F36C71AE-7F26-47F8-A587-F345C6563D65' name="">
-      <bpmn2:script>System.out.println("yes")</bpmn2:script>
+      <bpmn2:script>System.out.println("yes");</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id='_7617AD67-A5F9-4AD6-94D6-268582E350B1' sourceRef='_4E889155-DB85-44AB-A1F4-8C332A5555DE' targetRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873'/>
     <bpmn2:scriptTask id='_FE038F3F-EED1-4666-BE50-B9763EB3F873' name="">
-      <bpmn2:script>System.out.println(startMessage)</bpmn2:script>
+      <bpmn2:script>System.out.println(startMessage);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id='_7617AD67-A5F9-4AD6-94D6-268582E350B1' sourceRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873' targetRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after'/>
     <bpmn2:endEvent id='_5962F6E6-3F7F-46F5-B1BA-249311F7A15E' name=''/>
@@ -22,7 +22,7 @@
       <conditionExpression language='http://www.w3.org/1999/XPath'>$startMessage[@subject = 'foobar']</conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:scriptTask id='_4E734F9C-B54D-4C22-9EC1-99B81435BCD7' name="">
-      <bpmn2:script>System.out.println("no")</bpmn2:script>
+      <bpmn2:script>System.out.println("no");</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:sequenceFlow id='_045317F1-1862-48B0-B3B6-A12940335090' sourceRef='_FE038F3F-EED1-4666-BE50-B9763EB3F873_after' targetRef='_4E734F9C-B54D-4C22-9EC1-99B81435BCD7'>
       <conditionExpression language='http://www.w3.org/1999/XPath'>$startMessage[@subject = 'foobar2']</conditionExpression>

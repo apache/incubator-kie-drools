@@ -16,7 +16,7 @@
 
 <message id="MAIL" itemRef="MessageType" />
 
-<process processType="Private" tns:version="2.0" isExecutable="true" id="EventSPWithVars" name="EventSPWithVars" tns:packageName="default">
+<process processType="Private" tns:version="2.0" isExecutable="true" id="EventSPWithVars" name="EventSPWithVars" tns:packageName="org.jbpm">
 
 <startEvent id="block3" name="Inizio procedimento" isInterrupting="false"></startEvent>
 <sequenceFlow id="con_341" sourceRef="block11" targetRef="block16"></sequenceFlow>

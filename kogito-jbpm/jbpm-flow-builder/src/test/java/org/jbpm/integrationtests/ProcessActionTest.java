@@ -169,6 +169,7 @@ public class ProcessActionTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testActionContextMVEL() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -283,6 +284,7 @@ public class ProcessActionTest extends AbstractBaseTest {
     }
 
     @Test
+    @Disabled("MVEL not supported in ScriptTask")
     public void testActionVariableMVEL() {
         Reader source = new StringReader(
                 "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +

@@ -67,12 +67,10 @@ import org.jbpm.workflow.core.node.SubProcessNode;
 import org.jbpm.workflow.core.node.ThrowLinkNode;
 import org.jbpm.workflow.core.node.TimerNode;
 import org.jbpm.workflow.core.node.WorkItemNode;
-import org.jbpm.workflow.instance.impl.MVELProcessHelper;
 import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
-import org.mvel2.ErrorDetail;
 
 /**
  * Default implementation of a RuleFlow validator.
@@ -395,24 +393,12 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                 node,
                                 errors,
                                 "Action has empty action.");
-                    } else if ("mvel".equals(droolsAction.getDialect())) {
-                        try {
-                            List<ErrorDetail> mvelErrors = MVELProcessHelper.validateExpression(actionString);
-                            if (mvelErrors != null) {
-                                for (Iterator<ErrorDetail> iterator = mvelErrors.iterator(); iterator.hasNext();) {
-                                    ErrorDetail error = iterator.next();
-                                    addErrorMessage(process,
-                                            node,
-                                            errors,
-                                            "Action has invalid action: " + error.getMessage() + ".");
-                                }
-                            }
-                        } catch (Throwable t) {
-                            addErrorMessage(process,
-                                    node,
-                                    errors,
-                                    "Action has invalid action: " + t.getMessage() + ".");
-                        }
+                    }
+                    if (!"java".equals(droolsAction.getDialect())) {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                droolsAction.getDialect() + " script language is not supported in Kogito.");
                     }
                     validateCompensationIntermediateOrEndEvent(actionNode,
                             process,
