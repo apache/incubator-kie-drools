@@ -16,7 +16,6 @@
 
 package org.kie.pmml.evaluator.core.utils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -143,7 +142,7 @@ public class PreProcessTest {
         assertTrue(retrieved.isPresent());
         assertEquals(value1, retrieved.get().getValue());
 
-        ProcessingDTO processingDTO = new ProcessingDTO(kiePMMLModel, kiePMMLNameValues, new ArrayList<>());
+        ProcessingDTO processingDTO = new ProcessingDTO(kiePMMLModel, kiePMMLNameValues);
         PreProcess.executeTransformations(processingDTO, pmmlRequestData);
         mappedRequestParams = pmmlRequestData.getMappedRequestParams();
 

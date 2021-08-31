@@ -42,29 +42,38 @@ public class ProcessingDTO {
      *
      * @param model
      * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
-     * @param orderedReasonCodes a <b>mutable</b> list
+     */
+    public ProcessingDTO(final KiePMMLModel model, final List<KiePMMLNameValue> kiePMMLNameValues) {
+        this(model, kiePMMLNameValues, model.getKiePMMLOutputFields());
+    }
+
+    /**
+     *
+     * @param model
+     * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
+     * @param outputFields a <b>mutable</b> list
      */
     public ProcessingDTO(final KiePMMLModel model,
                          final List<KiePMMLNameValue> kiePMMLNameValues,
-                         final List<String> orderedReasonCodes) {
-        derivedFields = new ArrayList<>();
-        defineFunctions = new ArrayList<>();
+                         final List<KiePMMLOutputField> outputFields) {
+        this.derivedFields = new ArrayList<>();
+        this.defineFunctions = new ArrayList<>();
         if (model.getTransformationDictionary() != null) {
             if (model.getTransformationDictionary().getDerivedFields() != null) {
-                derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
+                this.derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
             }
             if (model.getTransformationDictionary().getDefineFunctions() != null) {
-                defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
+                this.defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
             }
         }
         if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
-            derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
+            this.derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
         }
-        outputFields =  model.getKiePMMLOutputFields();
-        kiePMMLTargets = model.getKiePMMLTargets();
+        this.outputFields = outputFields;
+        this.kiePMMLTargets = model.getKiePMMLTargets();
         this.kiePMMLNameValues = kiePMMLNameValues;
-        this.orderedReasonCodes = orderedReasonCodes;
-        miningFields = model.getMiningFields();
+        this.orderedReasonCodes = new ArrayList<>();
+        this.miningFields = model.getMiningFields();
     }
 
     /**

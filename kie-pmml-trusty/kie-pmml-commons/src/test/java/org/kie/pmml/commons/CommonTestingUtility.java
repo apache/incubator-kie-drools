@@ -30,8 +30,8 @@ public class CommonTestingUtility {
 
     public static ProcessingDTO getProcessingDTO(final KiePMMLModel model,
                                            final List<KiePMMLNameValue> kiePMMLNameValues,
-                                           final List<String> orderedReasonCodes) {
-        return new ProcessingDTO(model, kiePMMLNameValues, orderedReasonCodes);
+                                           final List<KiePMMLOutputField> outputFields) {
+        return new ProcessingDTO(model, kiePMMLNameValues, outputFields);
     }
 
     public static ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {
