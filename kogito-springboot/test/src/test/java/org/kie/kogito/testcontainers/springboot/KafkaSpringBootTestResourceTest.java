@@ -18,29 +18,16 @@ package org.kie.kogito.testcontainers.springboot;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.kie.kogito.test.springboot.kafka.KafkaTestClient;
 import org.kie.kogito.testcontainers.KogitoKafkaContainer;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isA;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class KafkaSpringBootTestResourceTest {
-
-    @Mock
-    private KogitoKafkaContainer container;
-
-    @Mock
-    private ConfigurableListableBeanFactory beanFactory;
 
     private KafkaSpringBootTestResource resource;
 
@@ -69,32 +56,12 @@ public class KafkaSpringBootTestResourceTest {
         thenConditionalIsEnabled();
     }
 
-    @Test
-    public void shouldAddKafkaClientInContext() {
-        givenResource();
-        givenContainer();
-        whenUpdateBeanFactory();
-        thenKafkaClientIsRegistered();
-    }
-
     private void givenConditionalResource() {
         resource = spy(new KafkaSpringBootTestResource.Conditional());
     }
 
     private void givenResource() {
         resource = spy(new KafkaSpringBootTestResource());
-    }
-
-    private void givenContainer() {
-        doReturn(container).when(resource).getTestResource();
-    }
-
-    private void whenUpdateBeanFactory() {
-        resource.updateBeanFactory(beanFactory);
-    }
-
-    private void thenKafkaClientIsRegistered() {
-        verify(beanFactory).registerSingleton(eq(KafkaTestClient.class.getName()), isA(KafkaTestClient.class));
     }
 
     private void thenConditionalIsEnabled() {

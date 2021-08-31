@@ -44,6 +44,9 @@ public class KogitoKafkaContainer extends KafkaContainer implements TestResource
         withEnv("KAFKA_CONNECTIONS_MAX_IDLE_MS", "180000");
         withEnv("KAFKA_OFFSETS_RETENTION_MINUTES", "1");
         withEnv("KAFKA_AUTO_LEADER_REBALANCE_ENABLE", "false");
+        withEnv("KAFKA_CONFLUENT_SUPPORT_METRICS_ENABLE", "false");
+        withEnv("KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR", "1");
+        withEnv("KAFKA_AUTO_CREATE_TOPICS_ENABLED", "true");
     }
 
     @Override

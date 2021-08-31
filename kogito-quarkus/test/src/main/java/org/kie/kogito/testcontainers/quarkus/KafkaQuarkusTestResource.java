@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import org.apache.kafka.clients.admin.AdminClient;
 import org.apache.kafka.clients.admin.AdminClientConfig;
@@ -63,15 +62,24 @@ public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource<Kog
     public Map<String, String> start() {
         Map<String, String> props = super.start();
         String bootstrap = props.get(KOGITO_KAFKA_PROPERTY);
-        if (bootstrap != null) {
+        if (bootstrap != null && !topics.isEmpty()) {
+            AdminClient client = null;
             try {
-                AdminClient client = AdminClient.create(singletonMap(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap));
-                List<NewTopic> newTopics = topics.stream().map(e -> new NewTopic(e, 1, (short) 1)).collect(Collectors.toList());
+                LOGGER.info("Create Kafka topics: {}", topics);
+                client = AdminClient.create(singletonMap(AdminClientConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrap));
+                List<NewTopic> newTopics = topics.stream().map(e -> new NewTopic(e, 1, (short) 1)).collect(toList());
                 CreateTopicsResult result = client.createTopics(newTopics);
-                LOGGER.info("trying to create {}", result);
                 result.all().get(10, TimeUnit.SECONDS);
             } catch (Exception e) {
-                LOGGER.error("Error creating {}", topics, e);
+                LOGGER.error("Error creating Kafka topics: {}", topics, e);
+            } finally {
+                if (client != null) {
+                    try {
+                        client.close();
+                    } catch (Exception ex) {
+                        LOGGER.error("Failed to close KafkaAdminClient {}", ex.getMessage(), ex);
+                    }
+                }
             }
         }
         return props;

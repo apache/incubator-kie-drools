@@ -15,66 +15,112 @@
  */
 package org.kie.kogito.test.springboot.kafka;
 
-import java.time.Duration;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.concurrent.CompletableFuture;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
-import java.util.stream.StreamSupport;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.clients.consumer.KafkaConsumer;
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.serialization.IntegerDeserializer;
-import org.apache.kafka.common.serialization.IntegerSerializer;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.kafka.core.ConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
+import org.springframework.kafka.listener.KafkaMessageListenerContainer;
+import org.springframework.kafka.listener.MessageListener;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFutureCallback;
 
 /**
  * Kafka client for Kogito Example tests.
  */
+@Component
+@ConditionalOnProperty(name = "spring.kafka.bootstrap-servers")
 public class KafkaTestClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestClient.class);
 
-    private final KafkaProducer<String, String> producer;
-    private final KafkaConsumer<String, String> consumer;
-    private final Object shutdownLock = new Object();
-    private boolean shutdown = false;
+    @Value("${spring.kafka.bootstrap-servers}")
+    private String kafkaBootstrapServers;
 
-    public KafkaTestClient(String hosts) {
-        this(createDefaultProducer(hosts), createDefaultConsumer(hosts));
+    private KafkaTemplate<String, String> producer;
+
+    private KafkaMessageListenerContainer<String, String> container;
+
+    @PostConstruct
+    public void setup() {
+        producer = new KafkaTemplate<>(producerFactory());
     }
 
-    public KafkaTestClient(KafkaProducer<String, String> producer, KafkaConsumer<String, String> consumer) {
+    public KafkaTestClient() {
+    }
+
+    public KafkaTestClient(KafkaTemplate<String, String> producer) {
         this.producer = producer;
-        this.consumer = consumer;
+    }
+
+    private ConsumerFactory<String, String> consumerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
+        config.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "100");
+        config.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
+        config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        config.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        config.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
+        return new DefaultKafkaConsumerFactory<>(config);
+    }
+
+    private ProducerFactory<String, String> producerFactory() {
+        Map<String, Object> config = new HashMap<>();
+        config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaBootstrapServers);
+        config.put(ProducerConfig.ACKS_CONFIG, "1");
+        config.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaTestClient.class.getName() + "Producer");
+        config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        config.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+        return new DefaultKafkaProducerFactory<>(config);
     }
 
     public void consume(Collection<String> topics, Consumer<String> callback) {
-        consumer.subscribe(topics);
+        if (container == null) {
+            ContainerProperties containerProperties = new ContainerProperties(topics.toArray(new String[] {}));
+            container = new KafkaMessageListenerContainer(consumerFactory(), containerProperties);
+            container.setupMessageListener(new MessageListener<String, String>() {
 
-        CompletableFuture.runAsync(() -> {
-            while (!shutdown) {
-                synchronized (shutdownLock) {
-                    ConsumerRecords<String, String> records = consumer.poll(Duration.ofMillis(500));
-
-                    StreamSupport.stream(records.spliterator(), true)
-                            .map(ConsumerRecord::value)
-                            .forEach(callback::accept);
-
-                    consumer.commitSync();
+                @Override
+                public void onMessage(ConsumerRecord<String, String> record) {
+                    callback.accept(record.value());
                 }
+            });
+            container.setBeanName("kafka-test-client");
+            container.start();
+            try {
+                // Needs to wait for Consumer to get started. The only way to get a callback is using an SB application
+                // event, which we're avoiding to register the container as a bean to not interfere with the SB application
+                // context from the app under test.
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-        });
+        } else {
+            container.stop();
+            container = null;
+            consume(topics, callback);
+        }
     }
 
     public void consume(String topic, Consumer<String> callback) {
@@ -82,35 +128,33 @@ public class KafkaTestClient {
     }
 
     public void produce(String data, String topic) {
-        producer.send(new ProducerRecord<>(topic, data), (m, ex) -> Optional.ofNullable(ex).ifPresent(e -> LOGGER.error("Error publishing message {}", m, ex)));
+        LOGGER.info("Publishing event with data {} for topic {}", data, topic);
+        producer.send(topic, data).addCallback(produceCallback());
+        producer.flush();
     }
 
+    public ListenableFutureCallback<SendResult<String, String>> produceCallback() {
+        return new ListenableFutureCallback<>() {
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                LOGGER.error("Event publishing failed", throwable);
+            }
+
+            @Override
+            public void onSuccess(SendResult<String, String> result) {
+                LOGGER.info("Event published {}", result.getRecordMetadata());
+            }
+        };
+    }
+
+    @PreDestroy
     public void shutdown() {
-        shutdown = true;
-        synchronized (shutdownLock) {
-            consumer.close();
+        if (producer != null) {
+            producer.destroy();
         }
-
-        producer.close();
-    }
-
-    private static KafkaConsumer<String, String> createDefaultConsumer(String hosts) {
-        Properties consumerConfig = new Properties();
-        consumerConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "true");
-        consumerConfig.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
-        consumerConfig.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        consumerConfig.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, IntegerDeserializer.class.getName());
-        consumerConfig.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerConfig.put(ConsumerConfig.GROUP_ID_CONFIG, KafkaTestClient.class.getName() + "Consumer");
-        return new KafkaConsumer<>(consumerConfig);
-    }
-
-    private static KafkaProducer<String, String> createDefaultProducer(String hosts) {
-        Properties producerConfig = new Properties();
-        producerConfig.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, hosts);
-        producerConfig.put(ProducerConfig.CLIENT_ID_CONFIG, KafkaTestClient.class.getName() + "Producer");
-        producerConfig.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, IntegerSerializer.class.getName());
-        producerConfig.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        return new KafkaProducer<>(producerConfig);
+        if (container != null) {
+            container.stop();
+        }
     }
 }
