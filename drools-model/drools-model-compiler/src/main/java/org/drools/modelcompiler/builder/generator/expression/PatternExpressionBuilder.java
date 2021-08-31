@@ -51,6 +51,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_END
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_OR_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EXPR;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
@@ -145,7 +146,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
     private Optional<MethodCallExpr> buildReactOn(SingleDrlxParseSuccess drlxParseResult) {
         if (shouldBuildReactOn(drlxParseResult)) {
-            MethodCallExpr reactOnDSL = new MethodCallExpr(null, REACT_ON_CALL);
+            MethodCallExpr reactOnDSL = createDslTopLevelMethod(REACT_ON_CALL);
             drlxParseResult.getReactOnProperties().stream()
                     .map(StringLiteralExpr::new)
                     .forEach(reactOnDSL::addArgument);
@@ -183,7 +184,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.addParameter(new Parameter(drlxParseResult.getPatternJPType(), THIS_PLACEHOLDER));
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
-            MethodCallExpr indexedByDSL = new MethodCallExpr(null, drlxParseResult.isBetaConstraint() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
+            MethodCallExpr indexedByDSL = createDslTopLevelMethod(drlxParseResult.isBetaConstraint() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
             indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
@@ -212,7 +213,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         boolean leftContainsThis = left.getExpression().toString().contains(THIS_PLACEHOLDER);
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
-        MethodCallExpr indexedByDSL = new MethodCallExpr(null, isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
+        MethodCallExpr indexedByDSL = createDslTopLevelMethod(isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
         indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
         indexedByDSL.addArgument( indexedBy_constraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );

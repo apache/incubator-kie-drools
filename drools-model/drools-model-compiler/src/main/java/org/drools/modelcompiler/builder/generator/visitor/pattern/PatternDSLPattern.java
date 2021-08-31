@@ -40,6 +40,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EX
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PASSIVE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WATCH_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 class PatternDSLPattern extends PatternDSL {
 
@@ -96,7 +97,7 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private MethodCallExpr createPatternExpression(PatternDescr pattern, DeclarationSpec declarationSpec) {
-        MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
+        MethodCallExpr dslExpr = createDslTopLevelMethod(PATTERN_CALL);
         dslExpr.addArgument( context.getVarExpr( pattern.getIdentifier()) );
         if (context.isQuery()) {
             Optional<Expression> declarationSource = declarationSpec.getDeclarationSource();

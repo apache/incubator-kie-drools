@@ -23,6 +23,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class AndVisitor {
 
@@ -39,7 +40,7 @@ public class AndVisitor {
 
         // if it's the first (implied) `and` wrapping the first level of patterns, skip adding it to the DSL.
         if (exprStackSize != 1) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
+            final MethodCallExpr andDSL = createDslTopLevelMethod(AND_CALL);
             this.context.addExpression(andDSL);
             this.context.pushExprPointer(andDSL::addArgument);
             exprStackSize++;

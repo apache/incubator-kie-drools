@@ -92,6 +92,7 @@ import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.QUERY_METHOD_PREFIX;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.ClassUtil.getAccessibleProperties;
@@ -805,7 +806,7 @@ public class PackageModel {
         varType.setTypeArguments(DrlxParseUtil.classToReferenceType(globalClass));
         Type declType = DrlxParseUtil.classToReferenceType(globalClass);
 
-        MethodCallExpr declarationOfCall = new MethodCallExpr(null, GLOBAL_OF_CALL);
+        MethodCallExpr declarationOfCall = createDslTopLevelMethod(GLOBAL_OF_CALL);
         declarationOfCall.addArgument(new ClassExpr(declType ));
         declarationOfCall.addArgument(new StringLiteralExpr(packageName));
         declarationOfCall.addArgument(new StringLiteralExpr(globalName));

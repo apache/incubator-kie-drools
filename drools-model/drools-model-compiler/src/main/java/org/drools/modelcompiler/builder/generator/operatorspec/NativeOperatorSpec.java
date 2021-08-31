@@ -32,13 +32,14 @@ import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionType
 import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EVAL_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintParser.getCoercedRightExpression;
 
 public class NativeOperatorSpec implements OperatorSpec {
     public static final NativeOperatorSpec INSTANCE = new NativeOperatorSpec();
 
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
-        MethodCallExpr methodCallExpr = new MethodCallExpr( null, EVAL_CALL );
+        MethodCallExpr methodCallExpr = createDslTopLevelMethod( EVAL_CALL );
 
         String opName = pointFreeExpr.getOperator().asString();
         Operator operator = addOperatorArgument( context, methodCallExpr, opName );

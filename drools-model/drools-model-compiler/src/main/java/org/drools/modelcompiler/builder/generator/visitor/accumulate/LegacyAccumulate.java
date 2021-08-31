@@ -58,6 +58,7 @@ import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_WITH_EXTERNAL_DECLRS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class LegacyAccumulate {
 
@@ -115,7 +116,7 @@ public class LegacyAccumulate {
         String typeWithPackage = String.format("%s.%s", packageName, generatedClassName);
 
         Expression accExpr = new MethodReferenceExpr(new NameExpr( typeWithPackage ), new NodeList<Type>(), "new");
-        MethodCallExpr accFunctionCall = new MethodCallExpr(null, ACC_FUNCTION_CALL, nodeList(accExpr));
+        MethodCallExpr accFunctionCall = createDslTopLevelMethod(ACC_FUNCTION_CALL, nodeList(accExpr));
 
         if (accumulate.getRequiredDeclarations().length > 0) {
             accFunctionCall = new MethodCallExpr(accFunctionCall, ACC_WITH_EXTERNAL_DECLRS_CALL);

@@ -58,6 +58,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateL
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class WindowReferenceGenerator {
@@ -93,7 +94,7 @@ public class WindowReferenceGenerator {
 
         final String windowName = toVar(descr.getName());
 
-        final MethodCallExpr initializer = new MethodCallExpr(null, WINDOW_CALL);
+        final MethodCallExpr initializer = createDslTopLevelMethod(WINDOW_CALL);
 
         final PatternDescr pattern = descr.getPattern();
         ParsedBehavior behavior = pattern
@@ -117,7 +118,7 @@ public class WindowReferenceGenerator {
 
         if (pattern.getSource() != null) {
             String epName = (( EntryPointDescr ) pattern.getSource()).getEntryId();
-            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
+            MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
             entryPointCall.addArgument( new StringLiteralExpr(epName) );
             initializer.addArgument( entryPointCall );
         }

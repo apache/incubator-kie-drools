@@ -70,6 +70,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.rescopeNa
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.visitor.accumulate.AccumulateVisitor.collectNamesInBlock;
 
 public class AccumulateInline {
@@ -318,7 +319,7 @@ public class AccumulateInline {
     private void addAccumulateClassInitializationToMethod(MethodCallExpr accumulateDSL, String identifier) {
         this.packageModel.addGeneratedPOJO(accumulateInlineClass);
 
-        final MethodCallExpr functionDSL = new MethodCallExpr(null, ACC_FUNCTION_CALL);
+        final MethodCallExpr functionDSL = createDslTopLevelMethod(ACC_FUNCTION_CALL);
         functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
         functionDSL.addArgument(context.getVarExpr(identifier));
 
