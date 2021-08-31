@@ -16,10 +16,10 @@ on:
       - '.ci/**'
 
 jobs:
-  concurrency:
-    group: pull_request-${{ github.head_ref }}
-    cancel-in-progress: true
   build-chain:
+    concurrency:
+      group: pull_request-${{ github.head_ref }}
+      cancel-in-progress: true
     strategy:
       matrix:
         os: [ubuntu-latest]
