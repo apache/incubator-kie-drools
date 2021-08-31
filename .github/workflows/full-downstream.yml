@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        java-version: [8, 11]
+        java-version: [11]
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Maven Build
