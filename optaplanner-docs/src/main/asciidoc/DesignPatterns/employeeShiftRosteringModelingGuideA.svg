@@ -890,7 +890,7 @@
          id="flowPara5343"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'">Planning variable is a</flowPara><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
-         id="flowPara5385">one to many relationship</flowPara></flowRoot>    <flowRoot
+         id="flowPara5385">one-to-many relationship</flowPara></flowRoot>    <flowRoot
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;line-height:125%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:end;writing-mode:lr-tb;text-anchor:end;display:inline;fill:#a40000;fill-opacity:1;stroke:none"
        id="flowRoot4616-1"
        xml:space="preserve"
@@ -943,7 +943,7 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
          id="flowPara4807">Planning variable is a</flowPara><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal'"
-         id="flowPara5387">one to many relationship</flowPara></flowRoot>    <rect
+         id="flowPara5387">one-to-many relationship</flowPara></flowRoot>    <rect
        style="display:inline;opacity:0.5;fill:#8ae234;stroke:none"
        id="rect5258"
        width="119"
@@ -1211,7 +1211,7 @@
          id="flowPara4697"
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';fill:#4e9a06">Planning variable is a</flowPara><flowPara
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';fill:#4e9a06"
-         id="flowPara5389">many to one relationship</flowPara></flowRoot>    <flowRoot
+         id="flowPara5389">many-to-one relationship</flowPara></flowRoot>    <flowRoot
        transform="translate(-211.14355,428.08382)"
        xml:space="preserve"
        id="flowRoot5240"

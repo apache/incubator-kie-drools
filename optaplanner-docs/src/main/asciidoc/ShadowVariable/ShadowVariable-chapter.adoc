@@ -43,7 +43,7 @@ So if A references B, then B references A.
 
 image::ShadowVariable/bidirectionalVariable.png[align="center"]
 
-For a non-chained planning variable, the bi-directional relationship must be a many to one relationship.
+For a non-chained planning variable, the bi-directional relationship must be a many-to-one relationship.
 To map a bi-directional relationship between two planning variables, annotate the source side (which is the genuine side) as a normal planning variable:
 
 [source,java,options="nowrap"]
@@ -88,7 +88,7 @@ Furthermore it must be a mutable `Collection` because once OptaPlanner starts in
 it will add and remove elements to the ``Collection``s of those shadow variables accordingly.
 ====
 
-For a chained planning variable, the bi-directional relationship is always a one to one relationship.
+For a chained planning variable, the bi-directional relationship is always a one-to-one relationship.
 In that case, the genuine side looks like this:
 
 [source,java,options="nowrap"]

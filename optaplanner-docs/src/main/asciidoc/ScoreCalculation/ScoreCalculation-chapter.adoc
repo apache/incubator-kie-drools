@@ -1043,7 +1043,7 @@ public class ConferenceConstraintConfiguration {
 ----
 
 There will be exactly one instance of this class per planning solution.
-The planning solution and the constraint configuration have a one to one relationship,
+The planning solution and the constraint configuration have a one-to-one relationship,
 but they serve a different purpose, so they aren't merged into a single class.
 A `@ConstraintConfiguration` class can extend a parent `@ConstraintConfiguration` class,
 which can be useful in international use cases with many regional constraints.
