@@ -145,27 +145,27 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
                                    "import org.kie.dmn.feel.lang.FEELProperty;\n" +
                                    "\n" +
                                    "public class Person {\n" +
-                                   "    private String firstName;\n" +
+                                   "    private String fullName;\n" +
                                    "    private int age;\n" +
                                    "    \n" +
-                                   "    public Person(String firstName) {\n" +
+                                   "    public Person(String fullName) {\n" +
                                    "        super();\n" +
-                                   "        this.firstName = firstName;\n" +
+                                   "        this.fullName = fullName;\n" +
                                    "    }\n" +
                                    "\n" +
-                                   "    @FEELProperty(\"first name\")\n" +
-                                   "    public String getFirstName() {\n" +
-                                   "        return firstName;\n" +
+                                   "    @FEELProperty(\"full name\")\n" +
+                                   "    public String getFullName() {\n" +
+                                   "        return fullName;\n" +
                                    "    }\n" +
                                    "    \n" +
-                                   "    public void setFirstName(String firstName) {\n" +
-                                   "        this.firstName = firstName;\n" +
+                                   "    public void setFullName(String fullName) {\n" +
+                                   "        this.fullName = fullName;\n" +
                                    "    }\n" +
                                    "\n" +
                                    "    @Override\n" +
                                    "    public String toString() {\n" +
                                    "        StringBuilder builder = new StringBuilder();\n" +
-                                   "        builder.append(\"Person [firstName=\").append(firstName).append(\"]\");\n" +
+                                   "        builder.append(\"Person [fullName=\").append(fullName).append(\"]\");\n" +
                                    "        return builder.toString();\n" +
                                    "    }\n" +
                                    "\n" +
