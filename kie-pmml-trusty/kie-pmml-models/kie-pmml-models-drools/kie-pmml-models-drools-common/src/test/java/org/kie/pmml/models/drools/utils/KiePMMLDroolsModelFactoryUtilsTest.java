@@ -58,6 +58,7 @@ import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateAssignExpr;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -95,7 +96,7 @@ public class KiePMMLDroolsModelFactoryUtilsTest {
         fieldTypeMap.put(targetFieldString, new KiePMMLOriginalTypeGeneratedType(targetFieldString,
                                                                                  getSanitizedClassName(targetFieldString)));
         String packageName = "net.test";
-        CompilationUnit retrieved = KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(dataDictionary,
+        CompilationUnit retrieved = KiePMMLDroolsModelFactoryUtils.getKiePMMLModelCompilationUnit(getFieldsFromDataDictionary(dataDictionary),
                                                                                                   model, fieldTypeMap
                 , packageName, TEMPLATE_SOURCE, TEMPLATE_CLASS_NAME);
         assertEquals(packageName, retrieved.getPackageDeclaration().get().getNameAsString());

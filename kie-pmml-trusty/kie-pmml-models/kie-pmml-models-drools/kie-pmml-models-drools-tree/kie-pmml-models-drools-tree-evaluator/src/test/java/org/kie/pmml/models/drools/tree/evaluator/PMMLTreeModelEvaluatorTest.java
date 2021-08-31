@@ -81,7 +81,7 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
-                                                pmml.getDataDictionary(),
+                                                getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                 pmml.getTransformationDictionary(),
                                                 (TreeModel) pmml.getModels().get(0),
                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));

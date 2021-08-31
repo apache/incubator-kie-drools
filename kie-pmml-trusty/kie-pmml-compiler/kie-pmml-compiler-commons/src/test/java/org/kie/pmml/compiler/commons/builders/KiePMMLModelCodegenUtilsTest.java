@@ -30,6 +30,7 @@ import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getMissingValueReplacementsMap;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
@@ -41,7 +42,7 @@ public class KiePMMLModelCodegenUtilsTest {
     public void testGetMissingValueReplacementsMap() throws IOException, JAXBException, SAXException {
         PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
 
-        Map<String, Pair<DATA_TYPE, String>> output = getMissingValueReplacementsMap(pmml.getDataDictionary(), pmml.getModels().get(0));
+        Map<String, Pair<DATA_TYPE, String>> output = getMissingValueReplacementsMap(getFieldsFromDataDictionary(pmml.getDataDictionary()), pmml.getModels().get(0));
 
         assertTrue(output.containsKey("x"));
         assertEquals(DATA_TYPE.DOUBLE, output.get("x").a);

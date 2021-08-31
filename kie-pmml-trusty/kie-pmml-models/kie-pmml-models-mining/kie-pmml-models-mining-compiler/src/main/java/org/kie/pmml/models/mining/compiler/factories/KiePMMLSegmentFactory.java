@@ -32,8 +32,11 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -71,8 +74,7 @@ public class KiePMMLSegmentFactory {
     }
 
     public static Map<String, String> getSegmentsSourcesMap(final String parentPackageName,
-                                                            final List<DerivedField> derivedFields,
-                                                            final DataDictionary dataDictionary,
+                                                            final List<Field<?>> fields,
                                                             final TransformationDictionary transformationDictionary,
                                                             final List<Segment> segments,
                                                             final HasClassLoader hasClassloader,
@@ -80,9 +82,9 @@ public class KiePMMLSegmentFactory {
         logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMap(parentPackageName,
-                                                                         derivedFields,
-                                                                         dataDictionary,
-                                                                         transformationDictionary, segment,
+                                                                         fields,
+                                                                         transformationDictionary,
+                                                                         segment,
                                                                          hasClassloader,
                                                                          nestedModels)));
 
@@ -90,8 +92,7 @@ public class KiePMMLSegmentFactory {
     }
 
     public static Map<String, String> getSegmentsSourcesMapCompiled(final String parentPackageName,
-                                                                    final List<DerivedField> derivedFields,
-                                                                    final DataDictionary dataDictionary,
+                                                                    final List<Field<?>> fields,
                                                                     final TransformationDictionary transformationDictionary,
                                                                     final List<Segment> segments,
                                                                     final HasClassLoader hasClassloader,
@@ -99,9 +100,9 @@ public class KiePMMLSegmentFactory {
         logger.debug(GET_SEGMENTS, segments);
         final Map<String, String> toReturn = new HashMap<>();
         segments.forEach(segment -> toReturn.putAll(getSegmentSourcesMapCompiled(parentPackageName,
-                                                                                 derivedFields,
-                                                                                 dataDictionary,
-                                                                                 transformationDictionary, segment,
+                                                                                 fields,
+                                                                                 transformationDictionary,
+                                                                                 segment,
                                                                                  hasClassloader,
                                                                                  nestedModels)));
 
@@ -110,8 +111,7 @@ public class KiePMMLSegmentFactory {
 
     public static Map<String, String> getSegmentSourcesMap(
             final String parentPackageName,
-            final List<DerivedField> derivedFields,
-            final DataDictionary dataDictionary,
+            final List<Field<?>> fields,
             final TransformationDictionary transformationDictionary,
             final Segment segment,
             final HasClassLoader hasClassloader,
@@ -120,18 +120,17 @@ public class KiePMMLSegmentFactory {
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelWithSources(
                 packageName,
-                dataDictionary,
+                fields,
                 transformationDictionary,
                 segment.getModel(),
                 hasClassloader)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
-        return getSegmentSourcesMapCommon(parentPackageName, derivedFields, dataDictionary, segment, nestedModels,
+        return getSegmentSourcesMapCommon(parentPackageName, fields, segment, nestedModels,
                                           nestedModel);
     }
 
     public static Map<String, String> getSegmentSourcesMapCompiled(final String parentPackageName,
-                                                                   final List<DerivedField> derivedFields,
-                                                                   final DataDictionary dataDictionary,
+                                                                   final List<Field<?>> fields,
                                                                    final TransformationDictionary transformationDictionary,
                                                                    final Segment segment,
                                                                    final HasClassLoader hasClassloader,
@@ -140,19 +139,18 @@ public class KiePMMLSegmentFactory {
         final String packageName = getSanitizedPackageName(parentPackageName + "." + segment.getId());
         final KiePMMLModel nestedModel = getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(
                 packageName,
-                dataDictionary,
+                fields,
                 transformationDictionary,
                 segment.getModel(),
                 hasClassloader)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
-        return getSegmentSourcesMapCommon(parentPackageName, derivedFields, dataDictionary, segment, nestedModels,
+        return getSegmentSourcesMapCommon(parentPackageName,fields, segment, nestedModels,
                                           nestedModel);
     }
 
     static Map<String, String> getSegmentSourcesMapCommon(
             final String parentPackageName,
-            final List<DerivedField> derivedFields,
-            final DataDictionary dataDictionary,
+            final List<Field<?>> fields,
             final Segment segment,
             final List<KiePMMLModel> nestedModels,
             final KiePMMLModel nestedModel) {
@@ -163,12 +161,11 @@ public class KiePMMLSegmentFactory {
                                                "does not implement HasSources");
         }
         nestedModels.add(nestedModel);
-        return getSegmentSourcesMap(packageName, derivedFields, dataDictionary, segment);
+        return getSegmentSourcesMap(packageName, fields, segment);
     }
 
-    static Map<String, String> getSegmentSourcesMap( final String packageName,
-                                                     final List<DerivedField> derivedFields,
-                                                     final DataDictionary dataDictionary,
+    static Map<String, String> getSegmentSourcesMap(final String packageName,
+                                                     final List<Field<?>> fields,
                                                      final Segment segment) {
         logger.debug(GET_SEGMENT, segment);
         String kiePmmlModelPackage = getSanitizedPackageName(String.format("%s.%s", packageName,
@@ -187,8 +184,7 @@ public class KiePMMLSegmentFactory {
         setConstructor(segment.getId(), className, constructorDeclaration, kiePMMLModelClass,
                        segment.getWeight().doubleValue());
         populateGetPredicateMethod(segment.getPredicate(),
-                                   derivedFields,
-                                   dataDictionary,
+                                   fields,
                                    segmentTemplate);
         toReturn.put(getFullClassName(cloneCU), cloneCU.toString());
         return toReturn;
@@ -214,10 +210,9 @@ public class KiePMMLSegmentFactory {
     }
 
     static void populateGetPredicateMethod(final Predicate predicate,
-                                           final List<DerivedField> derivedFields,
-                                           final DataDictionary dataDictionary,
+                                           final List<Field<?>> fields,
                                            final ClassOrInterfaceDeclaration segmentTemplate) {
-        BlockStmt toSet = getKiePMMLPredicate(PREDICATE, predicate, derivedFields, dataDictionary);
+        BlockStmt toSet = getKiePMMLPredicate(PREDICATE, predicate, fields);
         toSet.addStatement(new ReturnStmt(PREDICATE));
         MethodDeclaration methodDeclaration = segmentTemplate.getMethodsByName(GET_PREDICATE).get(0);
         methodDeclaration.setBody(toSet);

@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.JAXBException;
 
+import org.dmg.pmml.Field;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -37,6 +38,7 @@ import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.SEGMENTATIONNAME_TEMPLATE;
 
 public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
@@ -50,9 +52,9 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentationSourcesMap() {
         final String segmentationName = "SEGMENTATION_NAME";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMap(PACKAGE_NAME,
-                                                                                                   DERIVED_FIELDS,
-                                                                                                   DATA_DICTIONARY,
+                                                                                                   fields,
                                                                                                    TRANSFORMATION_DICTIONARY,
                                                                                                    MINING_MODEL.getSegmentation(),
                                                                                                    segmentationName,
@@ -85,12 +87,12 @@ public class KiePMMLSegmentationFactoryTest extends AbstractKiePMMLFactoryTest {
                 assertTrue(e instanceof ClassNotFoundException);
             }
         });
+
+                final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled(PACKAGE_NAME,
-                                                                                                           DERIVED_FIELDS,
-                                                                                                           DATA_DICTIONARY,
+                                                                                                           fields,
                                                                                                            TRANSFORMATION_DICTIONARY,
-                                                                                                           MINING_MODEL.getSegmentation(),
-                                                                                                           segmentationName,
+                                                                                                           MINING_MODEL,
                                                                                                            hasKnowledgeBuilderMock,
                                                                                                            nestedModels);
         assertNotNull(retrieved);

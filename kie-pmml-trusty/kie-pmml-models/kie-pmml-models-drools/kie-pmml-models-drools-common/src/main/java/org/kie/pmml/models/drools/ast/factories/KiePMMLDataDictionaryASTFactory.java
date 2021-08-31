@@ -19,8 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DataField;
+import org.dmg.pmml.Field;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -47,23 +46,23 @@ public class KiePMMLDataDictionaryASTFactory {
     }
 
     /**
-     * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>DataField</code>s,
+     * Create a <code>List&lt;KiePMMLDroolsType&gt;</code> out of original <code>Field</code>s,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
-     * @param dataDictionary
+     * @param fields
      */
-    public List<KiePMMLDroolsType> declareTypes(final DataDictionary dataDictionary) {
-        return dataDictionary.getDataFields().stream().map(this::declareType).collect(Collectors.toList());
+    public List<KiePMMLDroolsType> declareTypes(final List<Field<?>> fields) {
+        return fields.stream().map(this::declareType).collect(Collectors.toList());
     }
 
     /**
      * Create a <code>KiePMMLDroolsType</code> out of original <code>DataField</code>,
      * and <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between original field' name and <b>original type/generated type</b> tupla
-     * @param dataField
+     * @param field
      */
-    public KiePMMLDroolsType declareType(DataField dataField) {
-        String generatedType = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
-        String fieldName = dataField.getName().getValue();
-        String fieldType = dataField.getDataType().value();
+    public KiePMMLDroolsType declareType(Field field) {
+        String generatedType = getSanitizedClassName(field.getName().getValue().toUpperCase());
+        String fieldName = field.getName().getValue();
+        String fieldType = field.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));
         return new KiePMMLDroolsType(generatedType, DATA_TYPE.byName(fieldType).getMappedClass().getSimpleName());
     }

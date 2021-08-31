@@ -16,6 +16,7 @@
 package org.kie.pmml.compiler.executor;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.dmg.pmml.Model;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -119,10 +121,18 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      */
     private List<KiePMMLModel> getModels(final String packageName, final PMML pmml, final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
+        final List<Field<?>> fields = new ArrayList<>();
+        pmml.getDataDictionary().getDataFields().stream().map(Field.class::cast)
+                .forEach(fields::add);
+        TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
+        if (transformationDictionary.hasDerivedFields()) {
+            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(fields::add);
+        }
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, hasClassloader))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(packageName, fields, transformationDictionary, model, hasClassloader))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -137,10 +147,18 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      */
     private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml, final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
+        final List<Field<?>> fields = new ArrayList<>();
+        pmml.getDataDictionary().getDataFields().stream().map(Field.class::cast)
+                        .forEach(fields::add);
+        TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
+        if (transformationDictionary.hasDerivedFields()) {
+            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(fields::add);
+        }
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelWithSources(packageName, pmml.getDataDictionary(), pmml.getTransformationDictionary(), model, hasClassloader))
+                .map(model -> getFromCommonDataAndTransformationDictionaryAndModelWithSources(packageName, fields, transformationDictionary, model, hasClassloader))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());

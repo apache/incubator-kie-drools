@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -54,12 +55,12 @@ public class KiePMMLTreeModelASTFactory extends KiePMMLAbstractModelASTFactory {
      * @param types
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                        final TreeModel model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                        final List<KiePMMLDroolsType> types) {
-        logger.trace("getKiePMMLDroolsAST {} {}", dataDictionary, model);
-        DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
+        logger.trace("getKiePMMLDroolsAST {} {}", fields, model);
+        DATA_TYPE targetType = getTargetFieldType(fields, model);
         List<OutputField> outputFields =  model.getOutput() != null ? model.getOutput().getOutputFields() : Collections.emptyList();
         List<KiePMMLDroolsRule> rules = KiePMMLTreeModelNodeASTFactory.factory(fieldTypeMap, outputFields, model.getNoTrueChildStrategy(), targetType).declareRulesFromRootNode(model.getNode(), "");
         return new KiePMMLDroolsAST(types, rules);

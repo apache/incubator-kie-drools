@@ -33,7 +33,7 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class MiningWithNestedRefersTest extends AbstractPMMLTest {
 
-    private static final String FILE_NAME = "miningwithnestedrefers.pmml";
+    private static final String FILE_NAME = "MiningWithNestedRefers.pmml";
     private static final String MODEL_NAME = "MiningWithNestedRefers";
     private static final String TARGET_FIELD = "class";
     private static final String S_LEN = "s_len";
