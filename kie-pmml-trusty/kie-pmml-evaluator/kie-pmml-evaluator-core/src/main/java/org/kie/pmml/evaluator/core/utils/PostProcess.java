@@ -20,11 +20,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.tuple.Pair;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -123,21 +121,14 @@ public class PostProcess {
                                      final ProcessingDTO processingDTO,
                                      final KiePMMLModel model) {
         logger.debug("populateOutputFields {} {}", toUpdate, processingDTO);
-
         for (KiePMMLOutputField outputField : processingDTO.getOutputFields()) {
-            Optional<Pair<String, Object>> optVariablePair = outputFieldToVariable(outputField, processingDTO, model);
-            if (optVariablePair.isPresent()) {
-                String variableName = optVariablePair.get().getKey();
-                Object variableValue = optVariablePair.get().getValue();
+            Object variableValue = outputFieldToValue(outputField, processingDTO, model);
+            if (variableValue != null) {
+                String variableName = outputField.getName();
                 toUpdate.addResultVariable(variableName, variableValue);
                 processingDTO.addKiePMMLNameValue(new KiePMMLNameValue(variableName, variableValue));
             }
         }
-    }
-
-    private static Optional<Pair<String, Object>> outputFieldToVariable(KiePMMLOutputField outputField, ProcessingDTO processingDTO, KiePMMLModel model) {
-        return Optional.ofNullable(outputFieldToValue(outputField, processingDTO, model))
-                .map(value -> Pair.of(outputField.getName(), value));
     }
 
     private static Object outputFieldToValue(KiePMMLOutputField outputField, ProcessingDTO processingDTO, KiePMMLModel model) {
