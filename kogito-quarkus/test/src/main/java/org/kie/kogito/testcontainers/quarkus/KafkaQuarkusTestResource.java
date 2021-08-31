@@ -56,9 +56,7 @@ public class KafkaQuarkusTestResource extends ConditionalQuarkusTestResource<Kog
 
     @Override
     public void init(Map<String, String> initArgs) {
-        if (initArgs.containsKey(KOGITO_KAFKA_TOPICS)) {
-            topics = Arrays.stream(initArgs.getOrDefault(KOGITO_KAFKA_TOPICS, "").split(",")).collect(toList());
-        }
+        topics = Arrays.stream(initArgs.getOrDefault(KOGITO_KAFKA_TOPICS, "").split(",")).collect(toList());
     }
 
     @Override

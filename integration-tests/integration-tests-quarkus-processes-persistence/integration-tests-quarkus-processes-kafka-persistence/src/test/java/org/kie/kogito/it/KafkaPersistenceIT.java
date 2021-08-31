@@ -16,8 +16,6 @@
 package org.kie.kogito.it;
 
 import org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.quarkus.test.common.QuarkusTestResource;
 import io.quarkus.test.common.ResourceArg;
@@ -30,7 +28,5 @@ import static org.kie.kogito.testcontainers.quarkus.KafkaQuarkusTestResource.KOG
 public class KafkaPersistenceIT extends PersistenceTest {
 
     public static final String TOPICS = "kogito.process.hello,kogito.process.embedded";
-
-    private Logger LOGGER = LoggerFactory.getLogger(KafkaPersistenceIT.class);
 
 }
