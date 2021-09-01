@@ -21,6 +21,7 @@ import { MemoryRouter, Route } from 'react-router-dom';
 
 jest.mock('../../../pages/ProcessListPage/ProcessListPage');
 jest.mock('../../../pages/JobsManagementPage/JobsManagementPage');
+jest.mock('../../../pages/FormsListPage/FormsListPage');
 
 const MockedComponent = (): React.ReactElement => {
   return <></>;
@@ -82,6 +83,21 @@ describe('DevUIRoutes tests', () => {
 
     const MockedJobsManagementPage = wrapper.find('MockedJobsManagementPage');
     expect(MockedJobsManagementPage.exists()).toBeTruthy();
+  });
+
+  it('forms list page test', () => {
+    const wrapper = mount(
+      <MemoryRouter keyLength={0} initialEntries={['/Forms']}>
+        <DevUIRoutes {...props} />
+      </MemoryRouter>
+    );
+
+    expect(wrapper).toMatchSnapshot();
+    const route = wrapper.find(Route);
+    expect(route.exists()).toBeTruthy();
+
+    const MockedFormsListPage = wrapper.find('MockedFormsListPage');
+    expect(MockedFormsListPage.exists()).toBeTruthy();
   });
 
   it('no data page test', () => {

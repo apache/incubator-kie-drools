@@ -24,11 +24,13 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
@@ -37,6 +39,7 @@ import javax.enterprise.context.ApplicationScoped;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.FormsStorage;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.Form;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormConfiguration;
@@ -77,8 +80,10 @@ public class FormsStorageImpl implements FormsStorage {
     @Override
     public Collection<FormInfo> getFormInfoList(FormFilter filter) {
         if (filter != null && filter.getNames().size() > 0) {
-            return formInfoMap.entrySet().stream().filter(entry -> filter.getNames().contains(entry.getKey()))
-                    .map(entry -> entry.getValue()).collect(Collectors.toList());
+            return formInfoMap.entrySet().stream()
+                    .filter(entry -> StringUtils.containsAnyIgnoreCase(entry.getKey(), filter.getNames().toArray(new String[0])))
+                    .map(Map.Entry::getValue)
+                    .collect(Collectors.toList());
         } else {
             return formInfoMap.values();
         }
@@ -104,7 +109,7 @@ public class FormsStorageImpl implements FormsStorage {
         } else {
             throw new FileNotFoundException(formName + " dose not found");
         }
-        Form form = null;
+        Form form;
         if (formFile != null && formFile.exists()) {
             form = new Form(IOUtils.toString(new FileInputStream(formFile), StandardCharsets.UTF_8), new FormConfiguration(formConfiguration), formName);
         } else {
@@ -150,10 +155,13 @@ public class FormsStorageImpl implements FormsStorage {
     }
 
     private void reloadFormBaseInfoList() {
-        readFormBaseList().stream().filter(file -> hasConfigFile(FilenameUtils.removeExtension(file.getName()))).forEach(file -> {
-            formInfoMap.put(FilenameUtils.removeExtension(file.getName()),
-                    new FormInfo(FilenameUtils.removeExtension(file.getName()), getFormType(FilenameUtils.getExtension(file.getName())), new Date(file.lastModified())));
-        });
+        readFormBaseList().stream()
+                .filter(file -> hasConfigFile(FilenameUtils.removeExtension(file.getName())))
+                .forEach(file -> {
+                    LocalDateTime lastModified = LocalDateTime.ofInstant(Instant.ofEpochMilli(file.lastModified()), TimeZone.getDefault().toZoneId());
+                    formInfoMap.put(FilenameUtils.removeExtension(file.getName()),
+                            new FormInfo(FilenameUtils.removeExtension(file.getName()), getFormType(FilenameUtils.getExtension(file.getName())), lastModified));
+                });
     }
 
     private Collection<File> readFormBaseList() {

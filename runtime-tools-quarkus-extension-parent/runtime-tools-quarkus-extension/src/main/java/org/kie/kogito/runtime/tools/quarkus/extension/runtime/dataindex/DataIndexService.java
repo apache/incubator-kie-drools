@@ -32,6 +32,7 @@ import org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.processe
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.processes.ProcessInstancesResponse;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks.TasksResponse;
 import org.kie.kogito.runtime.tools.quarkus.extension.runtime.dataindex.tasks.UserTaskInstancesAdapter;
+import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.FormsStorage;
 
 import io.quarkus.arc.Arc;
 
@@ -96,8 +97,24 @@ public class DataIndexService {
         }
     }
 
+    @GET
+    @Path("/forms/count")
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response formsCount() {
+        try {
+            int formsCount = getFormsStorage().getFormsCount();
+            return Response.ok(formsCount).build();
+        } catch (Exception e) {
+            return Response.serverError().build();
+        }
+    }
+
     private DataIndexClient getDataIndexClient() {
         return Arc.container().instance(DataIndexClient.class,
                 RestClient.LITERAL).get();
+    }
+
+    private FormsStorage getFormsStorage() {
+        return Arc.container().instance(FormsStorage.class).get();
     }
 }

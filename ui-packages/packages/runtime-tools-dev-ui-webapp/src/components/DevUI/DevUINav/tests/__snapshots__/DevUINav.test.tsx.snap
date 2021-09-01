@@ -1,12 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
+exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
 <DevUINav
-  pathname="/JobsManagement"
+  pathname="/Forms"
 >
   <Nav
     aria-label="Nav"
-    data-ouia-navigation="true"
     onSelect={[Function]}
     onToggle={[Function]}
     ouiaSafe={true}
@@ -15,9 +14,8 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
     <nav
       aria-label="Nav"
       className="pf-c-nav"
-      data-ouia-component-id="OUIA-Generated-Nav-2"
+      data-ouia-component-id="OUIA-Generated-Nav-3"
       data-ouia-component-type="PF4/Nav"
-      data-ouia-navigation="true"
       data-ouia-safe={true}
     >
       <NavList
@@ -34,7 +32,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-4"
+              data-ouia-component-id="OUIA-Generated-NavItem-9"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
             >
@@ -60,7 +58,192 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     href="/ProcessInstances"
                     onClick={[Function]}
                   >
-                    Process Instances
+                    Processes
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="jobs-management-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-10"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="jobs-management"
+                onClick={[Function]}
+                to="/JobsManagement"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="jobs-management"
+                  href="/JobsManagement"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="jobs-management"
+                    href="/JobsManagement"
+                    onClick={[Function]}
+                  >
+                    Jobs
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="task-inbox-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-11"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="task-inbox"
+                onClick={[Function]}
+                to="/TaskInbox"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="task-inbox"
+                  href="/TaskInbox"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="task-inbox"
+                    href="/TaskInbox"
+                    onClick={[Function]}
+                  >
+                    Tasks
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={true}
+            key="forms-list-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-12"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current="page"
+                className="pf-c-nav__link pf-m-current"
+                data-ouia-navigation-name="forms-list-nav"
+                onClick={[Function]}
+                to="/Forms"
+              >
+                <LinkAnchor
+                  aria-current="page"
+                  className="pf-c-nav__link pf-m-current"
+                  data-ouia-navigation-name="forms-list-nav"
+                  href="/Forms"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current="page"
+                    className="pf-c-nav__link pf-m-current"
+                    data-ouia-navigation-name="forms-list-nav"
+                    href="/Forms"
+                    onClick={[Function]}
+                  >
+                    Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+        </ul>
+      </NavList>
+    </nav>
+  </Nav>
+</DevUINav>
+`;
+
+exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
+<DevUINav
+  pathname="/JobsManagement"
+>
+  <Nav
+    aria-label="Nav"
+    onSelect={[Function]}
+    onToggle={[Function]}
+    ouiaSafe={true}
+    theme="dark"
+  >
+    <nav
+      aria-label="Nav"
+      className="pf-c-nav"
+      data-ouia-component-id="OUIA-Generated-Nav-2"
+      data-ouia-component-type="PF4/Nav"
+      data-ouia-safe={true}
+    >
+      <NavList
+        ariaLeftScroll="Scroll left"
+        ariaRightScroll="Scroll right"
+      >
+        <ul
+          className="pf-c-nav__list"
+          onScroll={[Function]}
+        >
+          <NavItem
+            isActive={false}
+            key="process-instances-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-5"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="process-instances"
+                onClick={[Function]}
+                to="/ProcessInstances"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="process-instances"
+                  href="/ProcessInstances"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="process-instances"
+                    href="/ProcessInstances"
+                    onClick={[Function]}
+                  >
+                    Processes
                   </a>
                 </LinkAnchor>
               </Link>
@@ -72,7 +255,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-5"
+              data-ouia-component-id="OUIA-Generated-NavItem-6"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
             >
@@ -110,7 +293,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
           >
             <li
               className="pf-c-nav__item"
-              data-ouia-component-id="OUIA-Generated-NavItem-6"
+              data-ouia-component-id="OUIA-Generated-NavItem-7"
               data-ouia-component-type="PF4/NavItem"
               data-ouia-safe={true}
             >
@@ -142,6 +325,44 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
               </Link>
             </li>
           </NavItem>
+          <NavItem
+            isActive={false}
+            key="forms-list-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-8"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="forms-list-nav"
+                onClick={[Function]}
+                to="/Forms"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="forms-list-nav"
+                  href="/Forms"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="forms-list-nav"
+                    href="/Forms"
+                    onClick={[Function]}
+                  >
+                    Forms
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
         </ul>
       </NavList>
     </nav>
@@ -155,7 +376,6 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
 >
   <Nav
     aria-label="Nav"
-    data-ouia-navigation="true"
     onSelect={[Function]}
     onToggle={[Function]}
     ouiaSafe={true}
@@ -166,7 +386,6 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
       className="pf-c-nav"
       data-ouia-component-id="OUIA-Generated-Nav-1"
       data-ouia-component-type="PF4/Nav"
-      data-ouia-navigation="true"
       data-ouia-safe={true}
     >
       <NavList
@@ -209,7 +428,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     href="/ProcessInstances"
                     onClick={[Function]}
                   >
-                    Process Instances
+                    Processes
                   </a>
                 </LinkAnchor>
               </Link>
@@ -286,6 +505,44 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     onClick={[Function]}
                   >
                     Tasks
+                  </a>
+                </LinkAnchor>
+              </Link>
+            </li>
+          </NavItem>
+          <NavItem
+            isActive={false}
+            key="forms-list-nav"
+          >
+            <li
+              className="pf-c-nav__item"
+              data-ouia-component-id="OUIA-Generated-NavItem-4"
+              data-ouia-component-type="PF4/NavItem"
+              data-ouia-safe={true}
+            >
+              <Link
+                aria-current={null}
+                className="pf-c-nav__link"
+                data-ouia-navigation-name="forms-list-nav"
+                onClick={[Function]}
+                to="/Forms"
+              >
+                <LinkAnchor
+                  aria-current={null}
+                  className="pf-c-nav__link"
+                  data-ouia-navigation-name="forms-list-nav"
+                  href="/Forms"
+                  navigate={[Function]}
+                  onClick={[Function]}
+                >
+                  <a
+                    aria-current={null}
+                    className="pf-c-nav__link"
+                    data-ouia-navigation-name="forms-list-nav"
+                    href="/Forms"
+                    onClick={[Function]}
+                  >
+                    Forms
                   </a>
                 </LinkAnchor>
               </Link>

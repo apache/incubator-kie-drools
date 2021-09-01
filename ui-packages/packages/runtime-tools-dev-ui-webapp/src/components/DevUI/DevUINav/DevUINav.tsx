@@ -25,7 +25,7 @@ interface IOwnProps {
 
 const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
   return (
-    <Nav aria-label="Nav" theme="dark" data-ouia-navigation="true">
+    <Nav aria-label="Nav" theme="dark">
       <NavList>
         <NavItem
           key={'process-instances-nav'}
@@ -35,7 +35,7 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
             to="/ProcessInstances"
             {...ouiaAttribute('data-ouia-navigation-name', 'process-instances')}
           >
-            Process Instances
+            Processes
           </Link>
         </NavItem>
         <NavItem
@@ -55,6 +55,14 @@ const DevUINav: React.FC<IOwnProps> = ({ pathname }) => {
             {...ouiaAttribute('data-ouia-navigation-name', 'task-inbox')}
           >
             Tasks
+          </Link>
+        </NavItem>
+        <NavItem key={'forms-list-nav'} isActive={pathname === '/Forms'}>
+          <Link
+            to="/Forms"
+            {...ouiaAttribute('data-ouia-navigation-name', 'forms-list-nav')}
+          >
+            Forms
           </Link>
         </NavItem>
       </NavList>

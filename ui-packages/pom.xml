@@ -37,6 +37,8 @@
       packages/task-form/coverage/lcov.info,
       packages/task-inbox/coverage/lcov.info,
       packages/trusty/coverage/lcov.info,
+      packages/forms-list/coverage/lcov.info,
+      packages/form-details/coverage/lcov.info,
     </sonar.javascript.lcov.reportPaths>
   </properties>
   <build>
@@ -86,6 +88,12 @@
             </fileset>
             <fileset>
               <directory>packages/task-console-webapp/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/forms-list/node_modules</directory>
+            </fileset>
+            <fileset>
+              <directory>packages/form-details/node_modules</directory>
             </fileset>
           </filesets>
         </configuration>

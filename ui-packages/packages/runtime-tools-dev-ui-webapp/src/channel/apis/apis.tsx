@@ -22,6 +22,7 @@ import {
   ProcessInstance,
   TriggerableNode
 } from '@kogito-apps/management-console-shared';
+import { FormInfo } from '@kogito-apps/forms-list';
 import axios from 'axios';
 
 //Rest Api to Cancel multiple Jobs
@@ -288,5 +289,20 @@ export const handleNodeInstanceRetrigger = (
       .catch(error => {
         reject(JSON.stringify(error.message));
       });
+  });
+};
+
+export const getForms = (formFilter: string[]): Promise<FormInfo[]> => {
+  return new Promise((resolve, reject) => {
+    axios
+      .get('/forms/list', {
+        params: {
+          names: formFilter.join(';')
+        }
+      })
+      .then(result => {
+        resolve(result.data);
+      })
+      .catch(error => reject(error));
   });
 };

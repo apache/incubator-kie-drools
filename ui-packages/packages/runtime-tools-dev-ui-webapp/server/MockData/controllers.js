@@ -5,6 +5,7 @@ const _ = require('lodash');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
 const emptyForm = require('./forms/EmptyForm');
+const formData = require('../MockData/forms/formData');
 
 const tasksUnableToTransition = [
   '047ec38d-5d57-4330-8c8d-9bd67b53a529',
@@ -224,6 +225,10 @@ module.exports = controller = {
     console.log(
       `......ProcessId:${req.params.processId} --piId:${req.params.processId} --taskId:${req.params.taskId}`
     );
+
+    const processId = restData.process.filter(data => {
+      return data.processId === req.params.processId;
+    });
 
     const task = graphData.UserTaskInstances.find(userTask => {
       return userTask.id === req.params.taskId;

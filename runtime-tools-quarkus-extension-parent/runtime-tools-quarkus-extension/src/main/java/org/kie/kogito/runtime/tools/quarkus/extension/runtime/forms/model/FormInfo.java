@@ -15,7 +15,8 @@
  */
 package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class FormInfo {
 
@@ -36,9 +37,9 @@ public class FormInfo {
 
     private final String name;
     private final FormType type;
-    private final Date lastModified;
+    private final LocalDateTime lastModified;
 
-    public FormInfo(String name, FormType type, Date lastModified) {
+    public FormInfo(String name, FormType type, LocalDateTime lastModified) {
         this.name = name;
         this.lastModified = lastModified;
         this.type = type;
@@ -52,7 +53,7 @@ public class FormInfo {
         return type;
     }
 
-    public Date getLastModified() {
+    public LocalDateTime getLastModified() {
         return lastModified;
     }
 
@@ -67,13 +68,13 @@ public class FormInfo {
 
         FormInfo that = (FormInfo) o;
 
-        if (name != null ? !name.equals(that.name) : that.name != null) {
+        if (!Objects.equals(name, that.name)) {
             return false;
         }
         if (type != that.type) {
             return false;
         }
-        return lastModified != null ? lastModified.equals(that.lastModified) : that.lastModified == null;
+        return Objects.equals(lastModified, that.lastModified);
     }
 
     @Override

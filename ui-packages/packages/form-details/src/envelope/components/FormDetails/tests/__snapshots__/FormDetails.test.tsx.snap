@@ -1,0 +1,15 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form details tests renders form details 1`] = `
+<FormDetails
+  driver={null}
+  isEnvelopeConnectedToChannel={null}
+>
+  <div
+    data-ouia-component-type="form-details"
+    data-ouia-safe={true}
+  >
+    render form details
+  </div>
+</FormDetails>
+`;

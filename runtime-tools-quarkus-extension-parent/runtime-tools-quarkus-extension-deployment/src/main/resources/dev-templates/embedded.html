@@ -28,6 +28,11 @@
     <i class="fa fa-clock fa-fw"></i>
     Jobs <span id="jobsCount" class="badge badge-light"/>
 </a>
+<br/>
+<a href="{urlbase}/forms" class="badge badge-light">
+    <i class="fab fa-wpforms fa-fw"></i>
+    Forms <span id="formsCount" class="badge badge-light"/>
+</a>
 <script>
     const fillCount = (resourceType) => {
         fetch("http://localhost:8080/dataindex/" + resourceType + "/count")
@@ -42,4 +47,5 @@
     fillCount("processInstances");
     fillCount("tasks");
     fillCount("jobs");
+    fillCount("forms")
 </script>

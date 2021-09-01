@@ -26,6 +26,8 @@ import ProcessDetailsContextProvider from '../../../channel/ProcessDetails/Proce
 import ProcessListContextProvider from '../../../channel/ProcessList/ProcessListContextProvider';
 import TaskConsoleContextsProvider from '../../../channel/TaskInbox/TaskInboxContextProvider';
 import TaskFormContextProvider from '../../../channel/TaskForms/TaskFormContextProvider';
+import FormsListContextProvider from '../../../channel/FormsList/FormsListContextProvider';
+import FormDetailsContextProvider from '../../../channel/FormDetails/FormDetailsContextProvider';
 import DevUIAppContextProvider from '../../contexts/DevUIAppContextProvider';
 
 interface IOwnProps {
@@ -59,11 +61,15 @@ const DevUILayout: React.FC<IOwnProps> = ({
             <ProcessListContextProvider apolloClient={apolloClient}>
               <ProcessDetailsContextProvider apolloClient={apolloClient}>
                 <JobsManagementContextProvider apolloClient={apolloClient}>
-                  <MemoryRouter>
-                    <Switch>
-                      <Route path="/" render={renderPage} />
-                    </Switch>
-                  </MemoryRouter>
+                  <FormsListContextProvider>
+                    <FormDetailsContextProvider>
+                      <MemoryRouter>
+                        <Switch>
+                          <Route path="/" render={renderPage} />
+                        </Switch>
+                      </MemoryRouter>
+                    </FormDetailsContextProvider>
+                  </FormsListContextProvider>
                 </JobsManagementContextProvider>
               </ProcessDetailsContextProvider>
             </ProcessListContextProvider>

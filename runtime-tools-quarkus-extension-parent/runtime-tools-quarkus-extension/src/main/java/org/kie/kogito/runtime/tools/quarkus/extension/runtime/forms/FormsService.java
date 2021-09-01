@@ -18,11 +18,8 @@ package org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms;
 
 import java.io.FileNotFoundException;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -34,8 +31,6 @@ import org.kie.kogito.runtime.tools.quarkus.extension.runtime.forms.model.FormFi
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import io.quarkus.arc.Arc;
-
 import static javax.ws.rs.core.Response.Status.NOT_FOUND;
 
 @Path("/forms")
@@ -44,11 +39,6 @@ public class FormsService {
     private FormsStorage storage;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FormsService.class);
-
-    @PostConstruct
-    public void init() {
-        storage = Arc.container().instance(FormsStorage.class).get();
-    }
 
     @Inject
     public FormsService(FormsStorage storage) {
@@ -90,19 +80,6 @@ public class FormsService {
             return Response.status(NOT_FOUND.getStatusCode(), fe.getMessage()).build();
         } catch (Exception e) {
             LOGGER.error("Error while getting form content: ", e);
-            return Response.serverError().build();
-        }
-    }
-
-    @POST
-    @Path("/formName/{formName:\\S+}/")
-    @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateFormContent(@PathParam("formName") String formName, String formContent) {
-        try {
-            storage.updateFormContent(formContent, formName);
-            return Response.ok().build();
-        } catch (Exception e) {
             return Response.serverError().build();
         }
     }

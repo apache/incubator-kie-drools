@@ -373,6 +373,127 @@ exports[`DevUIRoutes tests Test PageNotFound route 1`] = `
 </MemoryRouter>
 `;
 
+exports[`DevUIRoutes tests forms list page test 1`] = `
+<MemoryRouter
+  initialEntries={
+    Array [
+      "/Forms",
+    ]
+  }
+  keyLength={0}
+>
+  <Router
+    history={
+      Object {
+        "action": "POP",
+        "block": [Function],
+        "canGo": [Function],
+        "createHref": [Function],
+        "entries": Array [
+          Object {
+            "hash": "",
+            "pathname": "/Forms",
+            "search": "",
+            "state": undefined,
+          },
+        ],
+        "go": [Function],
+        "goBack": [Function],
+        "goForward": [Function],
+        "index": 0,
+        "length": 1,
+        "listen": [Function],
+        "location": Object {
+          "hash": "",
+          "pathname": "/Forms",
+          "search": "",
+          "state": undefined,
+        },
+        "push": [Function],
+        "replace": [Function],
+      }
+    }
+  >
+    <DevUIRoutes
+      navigate="JobsManagement"
+    >
+      <Switch>
+        <Route
+          component={[Function]}
+          computedMatch={
+            Object {
+              "isExact": true,
+              "params": Object {},
+              "path": "/Forms",
+              "url": "/Forms",
+            }
+          }
+          exact={true}
+          location={
+            Object {
+              "hash": "",
+              "pathname": "/Forms",
+              "search": "",
+              "state": undefined,
+            }
+          }
+          path="/Forms"
+        >
+          <MockedFormsListPage
+            history={
+              Object {
+                "action": "POP",
+                "block": [Function],
+                "canGo": [Function],
+                "createHref": [Function],
+                "entries": Array [
+                  Object {
+                    "hash": "",
+                    "pathname": "/Forms",
+                    "search": "",
+                    "state": undefined,
+                  },
+                ],
+                "go": [Function],
+                "goBack": [Function],
+                "goForward": [Function],
+                "index": 0,
+                "length": 1,
+                "listen": [Function],
+                "location": Object {
+                  "hash": "",
+                  "pathname": "/Forms",
+                  "search": "",
+                  "state": undefined,
+                },
+                "push": [Function],
+                "replace": [Function],
+              }
+            }
+            location={
+              Object {
+                "hash": "",
+                "pathname": "/Forms",
+                "search": "",
+                "state": undefined,
+              }
+            }
+            match={
+              Object {
+                "isExact": true,
+                "params": Object {},
+                "path": "/Forms",
+                "url": "/Forms",
+              }
+            }
+          />
+        </Route>
+      </Switch>
+    </DevUIRoutes>
+  </Router>
+</MemoryRouter>
+`;
+
 exports[`DevUIRoutes tests jobs management page test 1`] = `
 <MemoryRouter
   initialEntries={

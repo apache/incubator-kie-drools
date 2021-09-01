@@ -30,7 +30,8 @@ import {
   handleNodeTrigger,
   handleProcessVariableUpdate,
   handleNodeInstanceRetrigger,
-  handleNodeInstanceCancel
+  handleNodeInstanceCancel,
+  getForms
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -808,5 +809,32 @@ describe('handle node instance cancel', () => {
         result = 'error';
       });
     expect(result).toEqual('error');
+  });
+
+  it('get forms query test - success', async () => {
+    mockedAxios.get.mockResolvedValue({
+      data: [
+        {
+          name: 'form1',
+          type: 'html',
+          lastModified: new Date(2020, 6, 12)
+        }
+      ]
+    });
+    const result = await getForms(['form1']);
+    expect(result).toEqual([
+      { name: 'form1', type: 'html', lastModified: new Date(2020, 6, 12) }
+    ]);
+  });
+
+  it('get forms query test - failure', async () => {
+    mockedAxios.get.mockRejectedValue({ errorMessage: 'failed to load data' });
+    try {
+      await getForms(['form1']);
+    } catch (error) {
+      expect(error).toEqual({
+        errorMessage: 'failed to load data'
+      });
+    }
   });
 });

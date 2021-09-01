@@ -39,8 +39,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FormsStorageImplTest {
 
     FormsStorage formsStorage;
-    private static String FORM_NAME = "hiring_HRInterview";
-    private static String FORM_NAME_WITH_OUT_CONDIF = "hiring_HRInterviewWithoutConfig";
+    private static final String FORM_NAME = "hiring_HRInterview";
+    private static final String PARTIAL_FORM_NAME = "hiring";
+    private static final String FORM_NAME_WITH_OUT_CONFIG = "hiring_HRInterviewWithoutConfig";
 
     @BeforeAll
     public void init() {
@@ -69,6 +70,12 @@ public class FormsStorageImplTest {
 
         Collection<FormInfo> formInfos = formsStorage.getFormInfoList(filter);
         assertEquals(1, formInfos.size());
+
+        FormFilter partialFilter = new FormFilter();
+        partialFilter.setNames(Arrays.asList(PARTIAL_FORM_NAME));
+
+        Collection<FormInfo> formInfosPartial = formsStorage.getFormInfoList(partialFilter);
+        assertEquals(2, formInfosPartial.size());
     }
 
     @Test
@@ -80,7 +87,7 @@ public class FormsStorageImplTest {
 
     @Test
     public void testGetFormContentWithoutConfig() {
-        assertThrows(FileNotFoundException.class, () -> formsStorage.getFormContent(FORM_NAME_WITH_OUT_CONDIF));
+        assertThrows(FileNotFoundException.class, () -> formsStorage.getFormContent(FORM_NAME_WITH_OUT_CONFIG));
         assertThrows(FileNotFoundException.class, () -> formsStorage.getFormContent("ERROR"));
     }
 }

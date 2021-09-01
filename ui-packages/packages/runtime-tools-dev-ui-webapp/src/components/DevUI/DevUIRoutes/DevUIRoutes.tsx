@@ -21,6 +21,8 @@ import { PageNotFound, NoData } from '@kogito-apps/consoles-common';
 import ProcessDetailsPage from '../../pages/ProcessDetailsPage/ProcessDetailsPage';
 import TaskInboxPage from '../../pages/TaskInboxPage/TaskInboxPage';
 import TaskDetailsPage from '../../pages/TaskDetailsPage/TaskDetailsPage';
+import FormsListPage from '../../pages/FormsListPage/FormsListPage';
+import FormDetailPage from '../../pages/FormDetailsPage/FormDetailsPage';
 
 interface IOwnProps {
   navigate: string;
@@ -34,6 +36,8 @@ const DevUIRoutes: React.FC<IOwnProps> = ({ navigate }) => {
       <Route exact path="/Process/:instanceID" component={ProcessDetailsPage} />
       <Route exact path="/JobsManagement" component={JobsManagementPage} />
       <Route exact path="/TaskInbox" component={TaskInboxPage} />
+      <Route exact path="/Forms" component={FormsListPage} />
+      <Route exact path="/Forms/:formName" component={FormDetailPage} />
       <Route
         exact
         path="/TaskDetails/:taskId"

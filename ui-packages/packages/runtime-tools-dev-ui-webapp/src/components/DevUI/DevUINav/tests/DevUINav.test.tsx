@@ -53,4 +53,21 @@ describe('DevUINav tests', () => {
     expect(DevUINavWrapper.exists()).toBeTruthy();
     expect(DevUINavWrapper.props().isActive).toBeTruthy();
   });
+
+  it('Snapshot testing with forms list props', () => {
+    const wrapper = mount(
+      <MemoryRouter>
+        <DevUINav pathname={'/Forms'} />
+      </MemoryRouter>
+    );
+
+    expect(wrapper.find('DevUINav')).toMatchSnapshot();
+
+    const DevUINavWrapper = wrapper.findWhere(
+      nested => nested.key() === 'forms-list-nav'
+    );
+
+    expect(DevUINavWrapper.exists()).toBeTruthy();
+    expect(DevUINavWrapper.props().isActive).toBeTruthy();
+  });
 });
