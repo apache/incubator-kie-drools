@@ -31,18 +31,15 @@ public class JavaCompilerFactory {
 
     public static JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel, String sourceFolder ) {
         JavaCompiler compiler = createCompiler( compilerType ).orElseThrow( () -> new RuntimeException("Instance of " + compilerType + " compiler cannot be created!") );
-        compiler.setJavaCompilerSettings( createSettings( compiler, compilerType, lngLevel ) );
+        compiler.setJavaCompilerSettings( createSettings( compiler, lngLevel ) );
         compiler.setSourceFolder(sourceFolder);
         return compiler;
     }
 
-    private static JavaCompilerSettings createSettings( JavaCompiler compiler, JavaConfiguration.CompilerType compilerType, String lngLevel ) {
+    private static JavaCompilerSettings createSettings( JavaCompiler compiler, String lngLevel ) {
         JavaCompilerSettings settings = compiler.createDefaultSettings();
         settings.setTargetVersion( lngLevel );
-        // FIXME: the native Java compiler doesn't work with JPMS
-        if (compilerType == JavaConfiguration.CompilerType.ECLIPSE || lngLevel.startsWith( "1." )) {
-            settings.setSourceVersion( lngLevel );
-        }
+        settings.setSourceVersion( lngLevel );
         return settings;
     }
 

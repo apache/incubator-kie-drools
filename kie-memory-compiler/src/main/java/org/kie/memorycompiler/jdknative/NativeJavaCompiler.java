@@ -116,12 +116,10 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         public static final Charset UTF8_CHARSET = Charset.forName("UTF-8");
 
         private final String content;
-        private final String name;
 
         CompilationUnit(String name, String content) {
             super(URI.create("memo:///" + name), Kind.SOURCE);
             this.content = content;
-            this.name = name;
         }
 
         CompilationUnit(String name, ResourceReader pReader) {
@@ -289,12 +287,6 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             CompilationOutput compilationOutput = new CompilationOutput(name, kind);
             outputs.add(compilationOutput);
             return compilationOutput;
-        }
-
-        @Override
-        public boolean hasLocation(Location location) {
-            // we don't care about source and other location types - not needed for compilation
-            return location == StandardLocation.CLASS_PATH || location == StandardLocation.PLATFORM_CLASS_PATH;
         }
 
         @Override

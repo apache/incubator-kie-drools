@@ -36,6 +36,14 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
         init( conf );
     }
 
+    public static CompilerType getDefaultCompilerType() {
+        return DEFAULT_JAVA_CONFIGURATION.getCompiler();
+    }
+
+    public static void setDefaultCompilerType(CompilerType compilerType) {
+        DEFAULT_JAVA_CONFIGURATION.setCompiler(compilerType);
+    }
+
     public static JavaCompiler createDefaultCompiler() {
         return JavaCompilerFactory.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION, "src/main/java/");
     }

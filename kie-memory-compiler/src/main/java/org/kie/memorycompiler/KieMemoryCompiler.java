@@ -23,6 +23,8 @@ import java.util.Map;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
 
+import static org.kie.memorycompiler.JavaConfiguration.findJavaVersion;
+
 public class KieMemoryCompiler {
 
     private KieMemoryCompiler() { }
@@ -123,7 +125,7 @@ public class KieMemoryCompiler {
         }
         JavaConfiguration javaConfiguration = new JavaConfiguration();
         javaConfiguration.setCompiler(compilerType);
-        javaConfiguration.setJavaLanguageLevel("1.8");
+        javaConfiguration.setJavaLanguageLevel(findJavaVersion());
         JavaCompiler compiler = JavaCompilerFactory.loadCompiler(javaConfiguration);
         CompilationResult res = compilerSettings == null ?
                 compiler.compile( classNames, reader, store, classLoader) :
