@@ -19,6 +19,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
+import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import javax.xml.validation.Validator;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.MarshallingContext;
@@ -27,10 +33,6 @@ import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 import com.thoughtworks.xstream.security.WildcardTypePermission;
-import javax.xml.transform.Source;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
@@ -139,7 +141,8 @@ public class KieModuleMarshaller {
         private static final Schema oldSchema = loadOldSchema();
 
         private static Schema loadSchema() {
-            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
+                    "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
             try {
                 URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/kmodule.xsd");
                 return factory.newSchema(url);
@@ -149,7 +152,8 @@ public class KieModuleMarshaller {
         }
 
         private static Schema loadOldSchema() {
-            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema");
+            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
+                    "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
             try {
                 URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/old-kmodule.xsd");
                 return url != null ? factory.newSchema(url) : null;
@@ -185,12 +189,18 @@ public class KieModuleMarshaller {
 
         private static void validate(Source source, Source duplicateSource) {
             try {
-                schema.newValidator().validate(source);
+                Validator validator = schema.newValidator();
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                validator.validate(source);
             } catch (Exception schemaException) {
                 try {
                     // For backwards compatibility, validate against the old namespace (which has 6.0.0 hardcoded)
                     if (oldSchema != null) {
-                        oldSchema.newValidator().validate( duplicateSource );
+                        Validator oldValidator = oldSchema.newValidator();
+                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+                        oldValidator.validate(duplicateSource);
                     }
                 } catch (Exception oldSchemaException) {
                     // Throw the original exception, as we want them to use that
