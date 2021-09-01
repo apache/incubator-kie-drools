@@ -13,23 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.codegen.process.persistence.proto;
+package org.kie.kogito.codegen.data;
 
-/**
- * This class is intended to cover only ReflectionProtoGeneratorTest specific tests (if any)
- *
- * NOTE: Add all tests to AbstractProtoGeneratorTest class to test both JandexProtoGenerator and ReflectionProtoGenerator
- */
-class ReflectionProtoGeneratorTest extends AbstractProtoGeneratorTest<Class<?>> {
-
-    @Override
-    protected ProtoGenerator.Builder<Class<?>, ReflectionProtoGenerator> protoGeneratorBuilder() {
-        return ReflectionProtoGenerator.builder();
+public class NotEmptyConstructor {
+    public NotEmptyConstructor(String param1, int param2) {
     }
-
-    @Override
-    protected Class<?> convertToType(Class<?> clazz) {
-        return clazz;
-    }
-
 }

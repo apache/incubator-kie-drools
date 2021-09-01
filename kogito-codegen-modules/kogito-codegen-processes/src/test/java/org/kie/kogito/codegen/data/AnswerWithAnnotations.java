@@ -17,7 +17,7 @@ package org.kie.kogito.codegen.data;
 
 import org.infinispan.protostream.annotations.ProtoEnumValue;
 
-public enum AnswerWitAnnotations {
+public enum AnswerWithAnnotations {
     @ProtoEnumValue(number = 1)
     YES,
     @ProtoEnumValue(number = 2)

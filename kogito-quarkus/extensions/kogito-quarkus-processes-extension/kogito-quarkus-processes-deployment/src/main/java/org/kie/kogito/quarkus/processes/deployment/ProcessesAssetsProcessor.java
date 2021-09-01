@@ -38,8 +38,6 @@ import org.jboss.jandex.IndexView;
 import org.jboss.jandex.Type;
 import org.kie.kogito.Model;
 import org.kie.kogito.UserTask;
-import org.kie.kogito.codegen.Generated;
-import org.kie.kogito.codegen.VariableInfo;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.GeneratedFileType;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
@@ -211,9 +209,7 @@ public class ProcessesAssetsProcessor {
         Collection<ClassInfo> modelClasses = index
                 .getAllKnownImplementors(DotName.createSimple(Model.class.getCanonicalName()));
         JandexProtoGenerator protoGenerator = JandexProtoGenerator.builder(
-                index,
-                DotName.createSimple(Generated.class.getCanonicalName()),
-                DotName.createSimple(VariableInfo.class.getCanonicalName()))
+                index)
                 .withPersistenceClass(persistenceClass)
                 .build(modelClasses);
 

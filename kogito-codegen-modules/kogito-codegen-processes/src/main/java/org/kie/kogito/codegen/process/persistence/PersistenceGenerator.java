@@ -243,7 +243,7 @@ public class PersistenceGenerator extends AbstractGenerator {
 
         MarshallerGenerator marshallerGenerator = new MarshallerGenerator(context());
 
-        String protoContent = proto.toString();
+        String protoContent = proto.serialize();
 
         List<CompilationUnit> marshallers;
         try {
@@ -252,8 +252,7 @@ public class PersistenceGenerator extends AbstractGenerator {
             throw new UncheckedIOException("Impossible to obtain marshaller CompilationUnits", e);
         }
 
-        Collection<GeneratedFile> generatedFiles = new ArrayList<>();
-        generatedFiles.addAll(protoGenerator.generateProtoFiles()); // protofiles for indexing
+        Collection<GeneratedFile> generatedFiles = new ArrayList<>(protoGenerator.generateProtoFiles()); // protofiles for indexing
 
         Collection<GeneratedFile> protoFiles = new ArrayList<>();
         try {
@@ -262,7 +261,7 @@ public class PersistenceGenerator extends AbstractGenerator {
                     typesURI,
                     IOUtils.toString(context().getClassLoader().getResourceAsStream(typesURI))));
         } catch (IOException e) {
-            throw new RuntimeException("Cannot find kogito types protobuf!", e);
+            throw new UncheckedIOException("Cannot find kogito types protobuf!", e);
         }
         // generate proto files leads to problems as it has a reverse dependency of kogito-index
         String typesURI = "META-INF/application-types.proto";

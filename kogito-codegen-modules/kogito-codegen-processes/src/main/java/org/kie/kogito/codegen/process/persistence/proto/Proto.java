@@ -29,7 +29,6 @@ public class Proto {
     private List<ProtoEnum> enums = new ArrayList<>();
 
     public Proto(String packageName, String... headers) {
-        super();
         this.packageName = packageName;
         this.headers = headers;
     }
@@ -76,25 +75,29 @@ public class Proto {
         }
     }
 
-    @Override
-    public String toString() {
+    public String serialize() {
         StringBuilder headersAsString = new StringBuilder();
 
         for (String header : headers) {
-            headersAsString.append(header + "\n");
+            headersAsString.append(header).append("\n");
         }
         StringBuilder messagesAsString = new StringBuilder();
 
-        messages.forEach(m -> messagesAsString.append(m.toString()));
-        enums.forEach(e -> messagesAsString.append(e.toString()));
+        messages.forEach(m -> messagesAsString.append(m.serialize()));
+        enums.forEach(e -> messagesAsString.append(e.serialize()));
 
         StringBuilder builder = new StringBuilder();
-        builder.append("syntax = \"" + syntax + "\"; \n");
+        builder.append("syntax = \"").append(syntax).append("\"; \n");
         if (packageName != null) {
-            builder.append("package " + packageName + "; \n");
+            builder.append("package ").append(packageName).append("; \n");
         }
-        builder.append(headersAsString.toString() + "\n" + messagesAsString.toString());
+        builder.append(headersAsString).append("\n").append(messagesAsString);
 
         return builder.toString();
+    }
+
+    @Override
+    public String toString() {
+        return serialize();
     }
 }

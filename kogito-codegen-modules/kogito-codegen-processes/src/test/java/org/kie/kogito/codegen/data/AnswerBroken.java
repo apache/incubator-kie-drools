@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus;
+package org.kie.kogito.codegen.data;
 
-class EmptyConstructor {
+import org.infinispan.protostream.annotations.ProtoEnumValue;
 
-    public EmptyConstructor() {
-
-    }
+public enum AnswerBroken {
+    @ProtoEnumValue(number = 1)
+    YES,
+    @ProtoEnumValue(number = 2)
+    MAYBE,
+    NO
 }

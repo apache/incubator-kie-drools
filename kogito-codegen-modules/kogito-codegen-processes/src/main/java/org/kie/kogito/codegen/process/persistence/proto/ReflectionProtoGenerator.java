@@ -27,6 +27,7 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Objects;
@@ -52,43 +53,11 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
     }
 
     @Override
-    public Proto protoOfDataClasses(String packageName, String... headers) {
-        try {
-            Proto proto = new Proto(packageName, headers);
-            for (Class<?> clazz : dataClasses) {
-                if (clazz.isEnum()) {
-                    enumFromClass(proto, clazz, null);
-                } else {
-                    messageFromClass(proto, clazz, null, null, null);
-                }
-            }
-            return proto;
-        } catch (Exception e) {
-            throw new RuntimeException("Error while generating proto for data model", e);
-        }
-    }
-
-    @Override
-    public Proto generate(String messageComment, String fieldComment, String packageName, Class<?> dataModel, String... headers) {
-        try {
-            Proto proto = new Proto(packageName, headers);
-            if (dataModel.isEnum()) {
-                enumFromClass(proto, dataModel, null);
-            } else {
-                messageFromClass(proto, dataModel, packageName, messageComment, fieldComment);
-            }
-            return proto;
-        } catch (Exception e) {
-            throw new RuntimeException("Error while generating proto for model class " + dataModel, e);
-        }
-    }
-
-    @Override
     public Collection<String> getPersistenceClassParams() {
         if (persistenceClass != null) {
             Class[] types = Arrays.stream(persistenceClass.getConstructors())
-                    .filter(c -> c.getParameterTypes().length > 0)
                     .map(Constructor::getParameterTypes)
+                    .filter(parameterTypes -> parameterTypes.length > 0)
                     .findFirst()
                     .orElse(new Class[0]);
             return Arrays.stream(types)
@@ -106,23 +75,22 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         }).filter(Objects::nonNull).collect(toSet());
     }
 
-    protected ProtoMessage messageFromClass(Proto proto, Class<?> clazz, String packageName, String messageComment, String fieldComment) throws Exception {
-        BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
-        String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
+    @Override
+    protected boolean isEnum(Class<?> dataModel) {
+        return dataModel.isEnum();
+    }
 
-        Generated generatedData = clazz.getAnnotation(Generated.class);
-        if (generatedData != null) {
-            name = generatedData.name().isEmpty() ? name : generatedData.name();
-            if (generatedData.hidden()) {
-                // since class is marked as hidden skip processing of that class
-                return null;
-            }
+    @Override
+    protected ProtoMessage messageFromClass(Proto proto, Set<String> alreadyGenerated, Class<?> clazz, String messageComment, String fieldComment) throws Exception {
+        String name = extractName(clazz).orElse(null);
+        if (name == null) {
+            // since class is marked as hidden skip processing of that class
+            return null;
         }
 
-        ProtoMessage message = new ProtoMessage(name, packageName == null ? clazz.getPackage().getName() : packageName);
+        ProtoMessage message = new ProtoMessage(name, clazz.getPackage().getName());
 
-        for (PropertyDescriptor pd : beanInfo.getPropertyDescriptors()) {
-
+        for (PropertyDescriptor pd : Introspector.getBeanInfo(clazz).getPropertyDescriptors()) {
             if (pd.getName().equals("class")) {
                 continue;
             }
@@ -159,11 +127,14 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             }
 
             if (protoType == null) {
-                if (fieldType.isEnum()) {
-                    protoType = enumFromClass(proto, fieldType, packageName).getName();
-                } else {
-                    protoType = messageFromClass(proto, fieldType, packageName, messageComment, fieldComment).getName();
+
+                // recursive call to visit the type
+                Optional<String> optionalProtoType = internalGenerate(proto, alreadyGenerated, messageComment, fieldComment, fieldType);
+                if (!optionalProtoType.isPresent()) {
+                    return message;
                 }
+
+                protoType = optionalProtoType.get();
             }
 
             message.addField(applicabilityByType(fieldTypeString), protoType, pd.getName()).setComment(completeFieldComment);
@@ -173,7 +144,26 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         return message;
     }
 
-    protected ProtoEnum enumFromClass(Proto proto, Class<?> clazz, String packageName) throws IntrospectionException {
+    @Override
+    protected ProtoEnum enumFromClass(Proto proto, Class<?> clazz) throws Exception {
+        try {
+            return extractName(clazz)
+                    .map(name -> {
+                        ProtoEnum modelEnum = new ProtoEnum(name, clazz.getPackage().getName());
+                        Stream.of(clazz.getDeclaredFields())
+                                .filter(f -> !f.getName().startsWith("$"))
+                                .sorted(Comparator.comparing(Field::getName))
+                                .forEach(f -> addEnumField(f, modelEnum));
+                        proto.addEnum(modelEnum);
+                        return modelEnum;
+                    }).orElse(null);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Malformed class " + clazz.getName() + " " + e.getMessage(), e);
+        }
+    }
+
+    @Override
+    protected Optional<String> extractName(Class<?> clazz) throws Exception {
         BeanInfo beanInfo = Introspector.getBeanInfo(clazz);
         String name = beanInfo.getBeanDescriptor().getBeanClass().getSimpleName();
 
@@ -182,22 +172,18 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             name = generatedData.name().isEmpty() ? name : generatedData.name();
             if (generatedData.hidden()) {
                 // since class is marked as hidden skip processing of that class
-                return null;
+                return Optional.empty();
             }
         }
-
-        ProtoEnum modelEnum = new ProtoEnum(name, packageName == null ? clazz.getPackage().getName() : packageName);
-        Stream.of(clazz.getDeclaredFields())
-                .filter(f -> !f.getName().startsWith("$"))
-                .forEach(f -> addEnumField(f, modelEnum));
-        proto.addEnum(modelEnum);
-        return modelEnum;
+        return Optional.of(name);
     }
 
     private void addEnumField(Field field, ProtoEnum pEnum) {
         ProtoEnumValue protoEnumValue = field.getAnnotation(ProtoEnumValue.class);
         Integer ordinal = null;
+        boolean sortedWithAnnotation = false;
         if (protoEnumValue != null) {
+            sortedWithAnnotation = true;
             ordinal = protoEnumValue.number();
         }
         if (ordinal == null) {
@@ -208,7 +194,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
                     .max()
                     .orElse(-1) + 1;
         }
-        pEnum.addField(field.getName(), ordinal);
+        pEnum.addField(field.getName(), ordinal, sortedWithAnnotation);
     }
 
     @Override
@@ -252,7 +238,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         @Override
         protected Collection<Class<?>> extractDataClasses(Collection<Class<?>> modelClasses) {
             if (dataClasses != null || modelClasses == null) {
-                LOGGER.info("Using provided dataClasses instead of extracting from modelClasses");
+                LOGGER.info("Using provided dataClasses instead of extracting from modelClasses. This should happen only during tests.");
                 return dataClasses;
             }
             Set<Class<?>> dataModelClasses = new HashSet<>();

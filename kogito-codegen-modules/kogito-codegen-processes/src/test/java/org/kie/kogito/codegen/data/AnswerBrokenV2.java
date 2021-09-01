@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus;
+package org.kie.kogito.codegen.data;
 
-import org.kie.kogito.codegen.Generated;
-import org.kie.kogito.codegen.VariableInfo;
+import org.infinispan.protostream.annotations.ProtoEnumValue;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-@Generated(value = { "kogito-codegen" }, reference = "generatedPerson", name = "GeneratedPerson")
-public class GeneratedPOJO {
-    @VariableInfo(tags = "test")
-    @JsonProperty("generatedProperty")
-    private Person person;
-
-    public Person getPerson() {
-        return person;
-    }
-
-    public void setPerson(Person person) {
-        this.person = person;
-    }
+public enum AnswerBrokenV2 {
+    YES,
+    MAYBE,
+    @ProtoEnumValue(number = 3)
+    NO
 }

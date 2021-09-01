@@ -16,151 +16,54 @@
 package org.kie.kogito.quarkus;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.io.UncheckedIOException;
+import java.util.Objects;
+import java.util.Optional;
 
 import org.jboss.jandex.ClassInfo;
 import org.jboss.jandex.DotName;
 import org.jboss.jandex.Index;
 import org.jboss.jandex.Indexer;
-import org.junit.jupiter.api.Test;
-import org.kie.kogito.codegen.process.persistence.proto.Proto;
+import org.junit.jupiter.api.BeforeAll;
+import org.kie.kogito.codegen.process.persistence.proto.AbstractProtoGeneratorTest;
+import org.kie.kogito.codegen.process.persistence.proto.ProtoGenerator;
 import org.kie.kogito.quarkus.processes.deployment.JandexProtoGenerator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+/**
+ * This class is intended to cover only JandexProtoGenerator specific tests (if any)
+ *
+ * NOTE: Add all tests to AbstractProtoGeneratorTest class to test both JandexProtoGenerator and ReflectionProtoGenerator
+ */
+class JandexProtoGeneratorTest extends AbstractProtoGeneratorTest<ClassInfo> {
 
-class JandexProtoGeneratorTest {
+    protected static Index indexWithAllClass;
 
-    @Test
-    void testGenerate() {
-        List<ClassInfo> dataClasses = new ArrayList<>();
-
-        DotName enumName = DotName.createComponentized(DotName.createComponentized(DotName.createComponentized(null, "com"), "acme"), "ExampleEnum");
-        ClassInfo enumClassInfo = ClassInfo.create(enumName, DotName.createSimple(Enum.class.getName()), (short) 0, new DotName[0], new HashMap<>(), false);
-        dataClasses.add(enumClassInfo);
-
-        DotName objectName = DotName.createComponentized(DotName.createComponentized(DotName.createComponentized(null, "com"), "acme"), "ExampleObject");
-        ClassInfo objectClassName = ClassInfo.create(objectName, DotName.createSimple(Object.class.getName()), (short) 0, new DotName[0], new HashMap<>(), false);
-        dataClasses.add(objectClassName);
-
-        JandexProtoGenerator generator = JandexProtoGenerator.builder(null, null, null)
-                .withDataClasses(dataClasses)
-                .build(null);
-        Proto proto = generator.protoOfDataClasses("com.acme");
-        assertEquals(1, proto.getEnums().size());
-        assertEquals(enumName.local(), proto.getEnums().get(0).getName());
-        assertEquals(1, proto.getMessages().size());
-        assertEquals(objectName.local(), proto.getMessages().get(0).getName());
-    }
-
-    @Test
-    void testGenerateComments() {
-        List<ClassInfo> dataModel = new ArrayList<>();
-
-        DotName enumName = DotName.createComponentized(DotName.createComponentized(DotName.createComponentized(null, "com"), "acme"), "ExampleEnum");
-        ClassInfo enumClassInfo = ClassInfo.create(enumName, DotName.createSimple(Enum.class.getName()), (short) 0, new DotName[0], new HashMap<>(), false);
-        dataModel.add(enumClassInfo);
-
-        DotName objectName = DotName.createComponentized(DotName.createComponentized(DotName.createComponentized(null, "com"), "acme"), "ExampleObject");
-        ClassInfo objectClassName = ClassInfo.create(objectName, DotName.createSimple(Object.class.getName()), (short) 0, new DotName[0], new HashMap<>(), false);
-        dataModel.add(objectClassName);
-
-        JandexProtoGenerator generator = JandexProtoGenerator.builder(null, null, null)
-                .withDataClasses(dataModel)
-                .build(null);
-        Proto enumProto = generator.generate("message comment", "field comment", "com.acme", enumClassInfo);
-        assertEquals(1, enumProto.getEnums().size());
-        assertEquals(enumName.local(), enumProto.getEnums().get(0).getName());
-
-        Proto objectProto = generator.generate("message comment", "field comment", "com.acme", objectClassName);
-        assertEquals(1, objectProto.getMessages().size());
-        assertEquals(objectName.local(), objectProto.getMessages().get(0).getName());
-    }
-
-    @Test
-    void builderTest() throws IOException {
+    @BeforeAll
+    protected static void indexOfTestClasses() {
         Indexer indexer = new Indexer();
-
-        ClassInfo generatedPojo = indexer.index(this.getClass().getClassLoader()
-                .getResourceAsStream(toPath(GeneratedPOJO.class)));
-        ClassInfo person = indexer.index(this.getClass().getClassLoader()
-                .getResourceAsStream(toPath(Person.class)));
-        ClassInfo address = indexer.index(this.getClass().getClassLoader()
-                .getResourceAsStream(toPath(Address.class)));
-        Index index = indexer.complete();
-
-        // empty
-        JandexProtoGenerator emptyGenerator = JandexProtoGenerator.builder(index, null, null)
-                .build(null);
-        assertNull(emptyGenerator.getPersistenceClass());
-        assertTrue(emptyGenerator.getDataClasses().isEmpty());
-        assertTrue(emptyGenerator.getModelClasses().isEmpty());
-
-        // persistence class
-        JandexProtoGenerator persistenceClassGenerator = JandexProtoGenerator.builder(index, null, null)
-                .withPersistenceClass(person)
-                .build(null);
-        assertEquals(person, persistenceClassGenerator.getPersistenceClass());
-        assertTrue(persistenceClassGenerator.getDataClasses().isEmpty());
-        assertTrue(persistenceClassGenerator.getModelClasses().isEmpty());
-
-        // explicit data class
-        JandexProtoGenerator dataClassGenerator = JandexProtoGenerator.builder(index, null, null)
-                .withDataClasses(Collections.singleton(person))
-                .build(null);
-        assertNull(dataClassGenerator.getPersistenceClass());
-        assertEquals(1, dataClassGenerator.getDataClasses().size());
-        assertTrue(dataClassGenerator.getModelClasses().isEmpty());
-
-        // retrieve data classes
-        JandexProtoGenerator modelClassGenerator = JandexProtoGenerator.builder(index, null, null)
-                .build(Collections.singleton(generatedPojo));
-        assertNull(modelClassGenerator.getPersistenceClass());
-        assertEquals(1, modelClassGenerator.getDataClasses().size());
-        assertEquals(1, modelClassGenerator.getModelClasses().size());
-
-        // explicit data classes win
-        JandexProtoGenerator dataClassAndModelClassGenerator = JandexProtoGenerator.builder(index, null, null)
-                .withDataClasses(Arrays.asList(person, address))
-                .build(Collections.singleton(generatedPojo));
-        assertNull(dataClassAndModelClassGenerator.getPersistenceClass());
-        assertEquals(2, dataClassAndModelClassGenerator.getDataClasses().size());
-        assertEquals(1, dataClassAndModelClassGenerator.getModelClasses().size());
+        testClasses.forEach(clazz -> indexClass(indexer, clazz));
+        indexWithAllClass = indexer.complete();
     }
 
-    @Test
-    void persistenceClassParams() throws IOException {
-        Indexer indexer = new Indexer();
-        JandexProtoGenerator noPersistenceClassGenerator = JandexProtoGenerator.builder(null, null, null)
-                .withPersistenceClass(null)
-                .build(null);
-        assertTrue(noPersistenceClassGenerator.getPersistenceClassParams().isEmpty());
+    @Override
+    protected ProtoGenerator.Builder<ClassInfo, JandexProtoGenerator> protoGeneratorBuilder() {
+        return JandexProtoGenerator.builder(indexWithAllClass);
+    }
 
-        ClassInfo emptyConstructor = indexer.index(this.getClass().getClassLoader()
-                .getResourceAsStream(toPath(EmptyConstructor.class)));
-        JandexProtoGenerator emptyGenerator = JandexProtoGenerator.builder(null, null, null)
-                .withPersistenceClass(emptyConstructor)
-                .build(null);
+    @Override
+    protected ClassInfo convertToType(Class<?> clazz) {
+        return Optional.ofNullable(indexWithAllClass.getClassByName(DotName.createSimple(clazz.getCanonicalName())))
+                .orElseThrow(() -> new IllegalStateException("Class " + clazz.getCanonicalName() + " not found in the index, " +
+                        "add the class to AbstractProtoGeneratorTest.testClasses collection"));
+    }
 
-        assertTrue(emptyGenerator.getPersistenceClassParams().isEmpty());
-
-        ClassInfo notEmptyConstructor = indexer.index(this.getClass().getClassLoader()
-                .getResourceAsStream(toPath(NotEmptyConstructor.class)));
-        JandexProtoGenerator notEmptyGenerator = JandexProtoGenerator.builder(null, null, null)
-                .withPersistenceClass(notEmptyConstructor)
-                .build(null);
-
-        Collection<String> notEmptyClassParams = notEmptyGenerator.getPersistenceClassParams();
-        assertFalse(notEmptyClassParams.isEmpty());
-        assertEquals(2, notEmptyClassParams.size());
-        assertEquals(Arrays.asList(String.class.getCanonicalName(), int.class.getCanonicalName()), notEmptyClassParams);
+    private static ClassInfo indexClass(Indexer indexer, Class<?> toIndex) {
+        try {
+            return indexer.index(Objects.requireNonNull(JandexProtoGenerator.class.getClassLoader()
+                    .getResourceAsStream(toPath(toIndex))));
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 
     private static String toPath(Class<?> clazz) {

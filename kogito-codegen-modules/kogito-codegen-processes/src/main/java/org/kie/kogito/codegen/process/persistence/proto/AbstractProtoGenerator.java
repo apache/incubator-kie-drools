@@ -20,8 +20,10 @@ import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.kie.kogito.codegen.api.GeneratedFile;
@@ -46,6 +48,11 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
     }
 
     @Override
+    public Proto protoOfDataClasses(String packageName, String... headers) {
+        return generate(null, null, packageName, dataClasses, headers);
+    }
+
+    @Override
     public Collection<GeneratedFile> generateProtoFiles() {
         List<GeneratedFile> generatedFiles = new ArrayList<>();
 
@@ -63,6 +70,16 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
 
         return generatedFiles;
     }
+
+    protected abstract boolean isEnum(T dataModel);
+
+    protected abstract Optional<String> extractName(T dataModel) throws Exception;
+
+    protected abstract ProtoEnum enumFromClass(Proto proto, T clazz) throws Exception;
+
+    protected abstract ProtoMessage messageFromClass(Proto proto, Set<String> alreadyGenerated, T clazz, String messageComment, String fieldComment) throws Exception;
+
+    protected abstract Optional<GeneratedFile> generateModelClassProto(T modelClazz);
 
     /**
      * Generates the proto files from the given model.
@@ -107,9 +124,50 @@ public abstract class AbstractProtoGenerator<T> implements ProtoGenerator {
         return persistenceClass;
     }
 
-    protected abstract Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers);
+    protected Proto generate(String messageComment, String fieldComment, String packageName, T dataModel, String... headers) {
+        return generate(messageComment, fieldComment, packageName, Collections.singleton(dataModel), headers);
+    }
 
-    protected abstract Optional<GeneratedFile> generateModelClassProto(T modelClazz);
+    protected Proto generate(String messageComment, String fieldComment, String packageName, Collection<T> dataModels, String... headers) {
+        Proto proto = new Proto(packageName, headers);
+        Set<String> alreadyGenerated = new HashSet<>();
+        for (T dataModel : dataModels) {
+            try {
+                internalGenerate(
+                        proto,
+                        alreadyGenerated,
+                        messageComment,
+                        fieldComment,
+                        dataModel);
+            } catch (Exception e) {
+                throw new RuntimeException("Error while generating proto for model class " + dataModel + " " + e.getMessage(), e);
+            }
+        }
+        return proto;
+    }
+
+    protected Optional<String> internalGenerate(Proto proto, Set<String> alreadyGenerated, String messageComment, String fieldComment, T dataModel) throws Exception {
+        String protoType;
+        if (isEnum(dataModel)) {
+            protoType = enumFromClass(proto, dataModel).getName();
+        } else {
+
+            Optional<String> optionalName = extractName(dataModel);
+            if (!optionalName.isPresent()) {
+                // skip if name is hidden
+                return Optional.empty();
+            }
+
+            if (alreadyGenerated.contains(optionalName.get())) {
+                // if already visited avoid infinite recursion
+                return optionalName;
+            }
+
+            alreadyGenerated.add(optionalName.get());
+            protoType = messageFromClass(proto, alreadyGenerated, dataModel, messageComment, fieldComment).getName();
+        }
+        return Optional.ofNullable(protoType);
+    }
 
     protected abstract static class AbstractProtoGeneratorBuilder<E, T extends ProtoGenerator> implements Builder<E, T> {
         protected E persistenceClass;

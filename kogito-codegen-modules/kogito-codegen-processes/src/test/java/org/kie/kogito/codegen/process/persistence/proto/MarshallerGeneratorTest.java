@@ -25,7 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
 import org.kie.kogito.codegen.data.Answer;
-import org.kie.kogito.codegen.data.AnswerWitAnnotations;
+import org.kie.kogito.codegen.data.AnswerWithAnnotations;
 import org.kie.kogito.codegen.data.Person;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
@@ -169,7 +169,7 @@ class MarshallerGeneratorTest {
 
     @Test
     void testEnumMarshallers() {
-        Stream.of(Answer.class, AnswerWitAnnotations.class).forEach(e -> {
+        Stream.of(Answer.class, AnswerWithAnnotations.class).forEach(e -> {
             ProtoGenerator generator = ReflectionProtoGenerator.builder()
                     .withDataClasses(Collections.singleton(e))
                     .build(null);

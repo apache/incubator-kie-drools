@@ -18,7 +18,7 @@ package org.kie.kogito.codegen.data;
 public class QuestionWithAnnotatedEnum {
 
     private String question;
-    private AnswerWitAnnotations answer;
+    private AnswerWithAnnotations answer;
 
     public String getQuestion() {
         return question;
@@ -28,11 +28,11 @@ public class QuestionWithAnnotatedEnum {
         this.question = question;
     }
 
-    public AnswerWitAnnotations getAnswer() {
+    public AnswerWithAnnotations getAnswer() {
         return answer;
     }
 
-    public void setAnswer(AnswerWitAnnotations answer) {
+    public void setAnswer(AnswerWithAnnotations answer) {
         this.answer = answer;
     }
 

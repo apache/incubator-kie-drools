@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.quarkus;
+package org.kie.kogito.codegen.data;
 
-class NotEmptyConstructor {
-
-    public NotEmptyConstructor(String param1, int param2) {
-
+public class EmptyConstructor {
+    public EmptyConstructor() {
     }
 }

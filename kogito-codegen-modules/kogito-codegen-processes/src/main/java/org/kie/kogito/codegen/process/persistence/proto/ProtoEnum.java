@@ -15,67 +15,40 @@
  */
 package org.kie.kogito.codegen.process.persistence.proto;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProtoEnum {
+public class ProtoEnum extends ProtoComponent {
 
-    private String name;
-    private String javaPackageOption;
-    private Map<String, Integer> fields = new HashMap<>();
-    private String comment;
+    protected Map<String, Integer> fields = new HashMap<>();
+    protected boolean sortedWithAnnotation = false;
 
     public ProtoEnum(String name, String javaPackageOption) {
-        this.name = name;
-        this.javaPackageOption = javaPackageOption;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        super(name, javaPackageOption);
     }
 
     public Map<String, Integer> getFields() {
-        return fields;
+        return Collections.unmodifiableMap(fields);
     }
 
-    public void setFields(Map<String, Integer> fields) {
-        this.fields = fields;
-    }
-
-    public String getJavaPackageOption() {
-        return javaPackageOption;
-    }
-
-    public void setJavaPackageOption(String javaPackageOption) {
-        this.javaPackageOption = javaPackageOption;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public void setComment(String comment) {
-        this.comment = comment;
-    }
-
-    public String addField(String field, Integer ordinal) {
+    public void addField(String field, Integer ordinal, boolean sortedWithAnnotation) {
+        if (fields.size() > 0 && this.sortedWithAnnotation && !sortedWithAnnotation) {
+            throw new IllegalArgumentException("Cannot mix annotation based sorting with not annotated. Field=" + field);
+        }
+        this.sortedWithAnnotation = sortedWithAnnotation;
         fields.put(field, ordinal);
-        return field;
     }
 
     @Override
-    public String toString() {
+    public String serialize() {
         StringBuilder tostring = new StringBuilder();
         if (comment != null) {
-            tostring.append("/* " + comment + " */ \n");
+            tostring.append("/* ").append(comment).append(" */ \n");
         }
-        tostring.append("enum " + name + " { \n");
+        tostring.append("enum ").append(name).append(" { \n");
         if (javaPackageOption != null) {
-            tostring.append("\toption java_package = \"" + javaPackageOption + "\";\n");
+            tostring.append("\toption java_package = \"").append(javaPackageOption).append("\";\n");
         }
         fields.forEach((value, ordinal) -> tostring
                 .append("\t")
@@ -85,29 +58,5 @@ public class ProtoEnum {
                 .append(";\n"));
         tostring.append("}\n");
         return tostring.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        ProtoEnum other = (ProtoEnum) obj;
-        if (name == null) {
-            return other.name == null;
-        } else {
-            return name.equals(other.name);
-        }
     }
 }

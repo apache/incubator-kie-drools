@@ -15,37 +15,15 @@
  */
 package org.kie.kogito.codegen.process.persistence.proto;
 
-public class ProtoField {
+public abstract class ProtoComponent {
 
-    private String applicability;
-    private String type;
-    private String name;
-    private int index;
+    protected String name;
+    protected String javaPackageOption;
+    protected String comment;
 
-    private String comment;
-
-    public ProtoField(String applicability, String type, String name, int index) {
-        super();
-        this.applicability = applicability;
-        this.type = type;
+    public ProtoComponent(String name, String javaPackageOption) {
         this.name = name;
-        this.index = index;
-    }
-
-    public String getApplicability() {
-        return applicability;
-    }
-
-    public void setApplicability(String applicability) {
-        this.applicability = applicability;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+        this.javaPackageOption = javaPackageOption;
     }
 
     public String getName() {
@@ -56,6 +34,14 @@ public class ProtoField {
         this.name = name;
     }
 
+    public String getJavaPackageOption() {
+        return javaPackageOption;
+    }
+
+    public void setJavaPackageOption(String javaPackageOption) {
+        this.javaPackageOption = javaPackageOption;
+    }
+
     public String getComment() {
         return comment;
     }
@@ -64,14 +50,7 @@ public class ProtoField {
         this.comment = comment;
     }
 
-    public String serialize() {
-        StringBuilder tostring = new StringBuilder();
-        if (comment != null) {
-            tostring.append("\t/* ").append(comment).append(" */ \n");
-        }
-        tostring.append("\t").append(applicability).append(" ").append(type).append(" ").append(name).append(" = ").append(index).append("; \n");
-        return tostring.toString();
-    }
+    public abstract String serialize();
 
     @Override
     public String toString() {
@@ -94,13 +73,11 @@ public class ProtoField {
             return false;
         if (getClass() != obj.getClass())
             return false;
-        ProtoField other = (ProtoField) obj;
+        ProtoComponent other = (ProtoComponent) obj;
         if (name == null) {
-            if (other.name != null)
-                return false;
-        } else if (!name.equals(other.name))
-            return false;
-        return true;
+            return other.name == null;
+        } else {
+            return name.equals(other.name);
+        }
     }
-
 }

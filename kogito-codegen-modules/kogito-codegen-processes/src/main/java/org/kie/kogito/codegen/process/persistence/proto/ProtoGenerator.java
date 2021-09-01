@@ -75,6 +75,6 @@ public interface ProtoGenerator {
 
         Builder<E, T> withDataClasses(Collection<E> dataClasses);
 
-        T build(Collection<E> dataClasses);
+        T build(Collection<E> modelClasses);
     }
 }
