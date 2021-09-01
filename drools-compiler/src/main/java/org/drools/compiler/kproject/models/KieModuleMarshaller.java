@@ -137,28 +137,17 @@ public class KieModuleMarshaller {
     }
 
     private static class KieModuleValidator {
-        private static final Schema schema = loadSchema();
-        private static final Schema oldSchema = loadOldSchema();
+        private static final Schema schema = loadSchema("org/kie/api/kmodule.xsd");
+        private static final Schema oldSchema = loadSchema("org/kie/api/old-kmodule.xsd");
 
-        private static Schema loadSchema() {
+        private static Schema loadSchema(String xsd) {
             SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
                     "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
             try {
-                URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/kmodule.xsd");
-                return factory.newSchema(url);
-            } catch (SAXException ex ) {
-                throw new RuntimeException( "Unable to load XSD", ex );
-            }
-        }
-
-        private static Schema loadOldSchema() {
-            SchemaFactory factory = SchemaFactory.newInstance("http://www.w3.org/2001/XMLSchema",
-                    "com.sun.org.apache.xerces.internal.jaxp.validation.XMLSchemaFactory", ClassLoader.getSystemClassLoader());
-            try {
-                URL url = KieModuleModel.class.getClassLoader().getResource("org/kie/api/old-kmodule.xsd");
+                URL url = KieModuleModel.class.getClassLoader().getResource(xsd);
                 return url != null ? factory.newSchema(url) : null;
             } catch (SAXException ex ) {
-                throw new RuntimeException( "Unable to load old XSD", ex );
+                throw new RuntimeException( "Unable to load XSD", ex );
             }
         }
 
@@ -189,18 +178,12 @@ public class KieModuleMarshaller {
 
         private static void validate(Source source, Source duplicateSource) {
             try {
-                Validator validator = schema.newValidator();
-                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-                validator.validate(source);
+                validate(source, schema);
             } catch (Exception schemaException) {
                 try {
                     // For backwards compatibility, validate against the old namespace (which has 6.0.0 hardcoded)
                     if (oldSchema != null) {
-                        Validator oldValidator = oldSchema.newValidator();
-                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-                        oldValidator.validate(duplicateSource);
+                        validate(duplicateSource, oldSchema);
                     }
                 } catch (Exception oldSchemaException) {
                     // Throw the original exception, as we want them to use that
@@ -210,6 +193,13 @@ public class KieModuleMarshaller {
                             schemaException);
                 }
             }
+        }
+
+        private static void validate(Source source, Schema schema) throws SAXException, IOException {
+            Validator validator = schema.newValidator();
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+            validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+            validator.validate(source);
         }
     }
 }
