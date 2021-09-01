@@ -1741,22 +1741,32 @@ For example in Logback, use a `SiftingAppender` in ``logback.xml``:
 [[monitoring]]
 === Monitoring
 
-OptaPlanner exposes metrics via https://micrometer.io/[Micrometer] which can be used for monitoring the Solver. OptaPlanner automatically connects to configured registries when used in Quarkus or Spring Boot. In plain Java, add the registry to the global registry:
+OptaPlanner exposes metrics via https://micrometer.io/[Micrometer] which can be used for monitoring the Solver. It'll automatically connect to configured registries when used in Quarkus or Spring Boot. In plain Java, add your favorite registry to the global registry:
 [source,java,nowrap]
 ----
-Metrics.addRegistry(new SimpleMeterRegistry());
+MeterRegistry registry;
+// Create and configure registry
+// ...
+Metrics.addRegistry(registry);
 ----
+Visit the https://micrometer.io/[Micrometer website] to see the registries available and how to configure them.
 
 The following metrics are exposed (format may differ depending on registry):
 
-- `optaplanner.solver.errors`: Count the total number of errors that occurred while solving
+- `optaplanner.solver.errors.total`:
+The total number of errors that occurred while solving since the start
+of the measuring.
 
-- `optaplanner.solver.solve-length.active-count`: The number of solvers currently active
+- `optaplanner.solver.solve-length.active-count`: The number of solvers
+currently solving.
 
-- `optaplanner.solver.solve-length.seconds-max`: Run time of the longest-running currently active solver
+- `optaplanner.solver.solve-length.seconds-max`: Run time of the
+longest-running currently active solver.
 
-- `optaplanner.solver.solve-length.seconds-duration-sum`: The sum of each active solver solve length (ex: if there are two active solvers, one running for 3 minutes and the other for 1 minute, this would be 4 minutes).
-
+- `optaplanner.solver.solve-length.seconds-duration-sum`:
+The sum of each active solvers' solve duration.
+For example, if there are two active solvers, one running for 3 minutes
+and the other for 1 minute, this would be 4 minutes.
 
 [[randomNumberGenerator]]
 === Random number generator
