@@ -100,7 +100,7 @@ public class JDBCProcessInstances implements MutableProcessInstances {
                         .filter(Boolean.FALSE::equals)
                         .map(e -> {
                             try {
-                                PreparedStatement prepareStatement = connection.prepareStatement(getQueryFromFile("create_tables"));
+                                PreparedStatement prepareStatement = connection.prepareStatement(getQueryFromFile("runtime_create"));
                                 return prepareStatement.execute();
                             } catch (SQLException e1) {
                                 LOGGER.error("Error creating process_instances table", e1);

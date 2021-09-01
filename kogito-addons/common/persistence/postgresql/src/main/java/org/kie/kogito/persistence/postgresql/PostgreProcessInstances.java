@@ -302,7 +302,7 @@ public class PostgreProcessInstances implements MutableProcessInstances {
                         .map(Iterator::next)
                         .map(row -> row.getBoolean("exists"))
                         .filter(Boolean.FALSE::equals)
-                        .map(e -> client.query(getQueryFromFile("create_tables")))
+                        .map(e -> client.query(getQueryFromFile("runtime_create")))
                         .map(q -> {
                             q.execute(getAsyncResultHandler(futureCreate));
                             LOGGER.info("Creating process_instances table.");

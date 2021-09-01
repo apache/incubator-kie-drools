@@ -11,14 +11,14 @@
             <directory>${path.to.persistence.modules}/postgresql/src/main/resources/sql</directory>
             <outputDirectory>postgresql</outputDirectory>
             <includes>
-                <include>*.sql</include>
+                <include>*_create.sql</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>${path.to.persistence.modules}/jdbc/src/main/resources/sql</directory>
             <outputDirectory>jdbc</outputDirectory>
             <includes>
-                <include>*.sql</include>
+                <include>*_create.sql</include>
             </includes>
         </fileSet>
     </fileSets>
