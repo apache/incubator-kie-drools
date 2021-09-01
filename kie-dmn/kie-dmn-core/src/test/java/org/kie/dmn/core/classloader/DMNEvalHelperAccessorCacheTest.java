@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,9 @@
 
 package org.kie.dmn.core.classloader;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
-import org.drools.reflective.classloader.ProjectClassLoader;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -51,8 +51,15 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
     @Test
     public void testClassloaderFunctionInvocation() throws Exception {
         final KieServices ks = KieServices.Factory.get();
-    {
-        
+
+        final KieContainer container1 = createKieContainer1(ks);
+        final KieContainer container2 = createKieContainer2(ks);
+
+        checkKieContainer1(container1);
+        checkKieContainer2(container2);
+    }
+
+    private KieContainer createKieContainer1(KieServices ks) {
         final String javaSource = "package org.acme;\n" +
                 "\n" +
                 "import org.kie.dmn.feel.lang.FEELProperty;\n" +
@@ -114,13 +121,13 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         kfs.write(ks.getResources().newClassPathResource("personCL.dmn", this.getClass()));
         kfs.generateAndWritePomXML(kjarReleaseId);
 
-        final ClassLoader CL1 = ProjectClassLoader.createProjectClassLoader(ProjectClassLoader.class.getClassLoader());
-        //        CL1.addClassLoader(((InternalKieModule) ks.getRepository().getKieModule(kjarReleaseId)).getModuleClassLoader());
-
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs, CL1).buildAll();
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
         assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
 
-        final KieContainer container = ks.newKieContainer(kjarReleaseId, CL1);
+        return ks.newKieContainer(kjarReleaseId);
+    }
+
+    private void checkKieContainer1(KieContainer container) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
         final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61", "personCL");
         assertThat(dmnModel, notNullValue());
@@ -138,48 +145,35 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("Decision-1"), is("Hello, John Doe"));
     }
-        // now we simulate a KieContainer on the second classloader.
-    {
+
+    private KieContainer createKieContainer2(KieServices ks) {
         final String javaSource2 = "package org.acme;\n" +
                                    "\n" +
                                    "import org.kie.dmn.feel.lang.FEELProperty;\n" +
                                    "\n" +
                                    "public class Person {\n" +
-                                   "    private String fullName;\n" +
-                                   "    private int age;\n" +
+                                   "    private String firstName;\n" +
                                    "    \n" +
-                                   "    public Person(String fullName) {\n" +
-                                   "        super();\n" +
-                                   "        this.fullName = fullName;\n" +
+                                   "    public Person(String firstName) {\n" +
+                                   "        this.firstName = firstName;\n" +
                                    "    }\n" +
                                    "\n" +
-                                   "    @FEELProperty(\"full name\")\n" +
-                                   "    public String getFullName() {\n" +
-                                   "        return fullName;\n" +
+                                   "    @FEELProperty(\"first name\")\n" +
+                                   "    public String getFirstName() {\n" +
+                                   "        return firstName;\n" +
                                    "    }\n" +
                                    "    \n" +
-                                   "    public void setFullName(String fullName) {\n" +
-                                   "        this.fullName = fullName;\n" +
+                                   "    public void setFirstName(String firstName) {\n" +
+                                   "        this.firstName = firstName;\n" +
                                    "    }\n" +
                                    "\n" +
                                    "    @Override\n" +
                                    "    public String toString() {\n" +
                                    "        StringBuilder builder = new StringBuilder();\n" +
-                                   "        builder.append(\"Person [fullName=\").append(fullName).append(\"]\");\n" +
+                                   "        builder.append(\"Person [firstName=\").append(firstName).append(\"]\");\n" +
                                    "        return builder.toString();\n" +
                                    "    }\n" +
-                                   "\n" +
-                                   "    public int getAge() {\n" +
-                                   "        return age;\n" +
-                                   "    }\n" +
-                                   "\n" +
-                                   "    public void setAge(int age) {\n" +
-                                   "        this.age = age;\n" +
-                                   "    }\n" +
-                                   "    \n" +
                                    "}";
-        final ClassLoader CL2 = ProjectClassLoader.createProjectClassLoader(ProjectClassLoader.class.getClassLoader());
-
         final ReleaseId kjarReleaseId2 = ks.newReleaseId("org.kie.dmn.core.classloader", "DMNEvalHelperAccessorCacheTest-kjar2", UUID.randomUUID().toString());
 
         final KieFileSystem kfs2 = ks.newKieFileSystem();
@@ -187,10 +181,14 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         kfs2.write(ks.getResources().newClassPathResource("personCL2.dmn", this.getClass()));
         kfs2.generateAndWritePomXML(kjarReleaseId2);
 
-        final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2, CL2).buildAll();
+        final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2).buildAll();
         assertTrue(kieBuilder2.getResults().getMessages().toString(), kieBuilder2.getResults().getMessages().isEmpty());
 
-        final KieContainer container2 = ks.newKieContainer(kjarReleaseId2, CL2);
+        final KieContainer container2 = ks.newKieContainer(kjarReleaseId2);
+        return container2;
+    }
+
+    private void checkKieContainer2(KieContainer container2) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
         final DMNRuntime runtime2 = KieRuntimeFactory.of(container2.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel2 = runtime2.getModel("ns2", "personCL2");
 
@@ -205,5 +203,5 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         final DMNContext result = dmnResult2.getContext();
         assertThat(result.get("Decision-1"), is("Hello, John Doe"));
     }
-    }
+
 }
