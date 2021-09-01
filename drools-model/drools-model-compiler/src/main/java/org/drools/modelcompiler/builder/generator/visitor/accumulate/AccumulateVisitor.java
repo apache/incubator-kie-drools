@@ -80,6 +80,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CAL
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambda;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -99,9 +100,9 @@ public class AccumulateVisitor {
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
-        final MethodCallExpr accumulateDSL = new MethodCallExpr(null, ACCUMULATE_CALL);
+        final MethodCallExpr accumulateDSL = createDslTopLevelMethod(ACCUMULATE_CALL);
         context.addExpression(accumulateDSL);
-        final MethodCallExpr accumulateExprs = new MethodCallExpr(null, AND_CALL);
+        final MethodCallExpr accumulateExprs = createDslTopLevelMethod(AND_CALL);
         accumulateDSL.addArgument(accumulateExprs);
 
         this.context.pushScope(descr);
@@ -167,7 +168,7 @@ public class AccumulateVisitor {
         context.pushExprPointer(accumulateDSL::addArgument);
 
         try {
-            final MethodCallExpr functionDSL = new MethodCallExpr( null, ACC_FUNCTION_CALL );
+            final MethodCallExpr functionDSL = createDslTopLevelMethod(ACC_FUNCTION_CALL );
 
             final String optBindingId = ofNullable( function.getBind() ).orElse( basePattern.getIdentifier() );
             final String bindingId = context.getOutOfScopeVar( ofNullable( optBindingId ).orElse( context.getOrCreateAccumulatorBindingId( function.getFunction() ) ) );
@@ -224,7 +225,7 @@ public class AccumulateVisitor {
 
         validateAccFunctionTypeAgainstPatternType(context, basePattern, accumulateFunction);
         functionDSL.addArgument(createAccSupplierExpr(accumulateFunction));
-        functionDSL.addArgument(new MethodCallExpr(null, VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
+        functionDSL.addArgument(createDslTopLevelMethod(VALUE_OF_CALL, NodeList.nodeList(accumulateFunctionParameter)));
 
         addBindingAsDeclaration(context, bindingId, accumulateFunction);
     }

@@ -87,6 +87,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.SUPPLY_C
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.UNIT_DATA_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WINDOW_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 import static org.drools.modelcompiler.util.TimerUtil.validateTimer;
@@ -220,7 +221,7 @@ public class ModelGenerator {
 
         VariableDeclarationExpr ruleVar = new VariableDeclarationExpr(toClassOrInterfaceType( Rule.class ), "rule");
 
-        MethodCallExpr ruleCall = new MethodCallExpr(null, RULE_CALL);
+        MethodCallExpr ruleCall = createDslTopLevelMethod(RULE_CALL);
         if (!ruleDescr.getNamespace().isEmpty()) {
             ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getNamespace() ) );
         }
@@ -352,7 +353,7 @@ public class ModelGenerator {
             }
 
             Expression lambda = generateLambdaWithoutParameters(expressionTyperContext.getUsedDeclarations(), expr, true, Optional.empty());
-            MethodCallExpr supplyCall = new MethodCallExpr(null, SUPPLY_CALL);
+            MethodCallExpr supplyCall = createDslTopLevelMethod(SUPPLY_CALL);
             expressionTyperContext.getUsedDeclarations().stream()
                     .map(context::getVarExpr)
                     .forEach(supplyCall::addArgument);
@@ -463,7 +464,7 @@ public class ModelGenerator {
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(unitVar.getName()), Modifier.finalModifier());
 
-        MethodCallExpr unitDataCall = new MethodCallExpr(null, UNIT_DATA_CALL);
+        MethodCallExpr unitDataCall = createDslTopLevelMethod(UNIT_DATA_CALL);
 
         unitDataCall.addArgument(new ClassExpr( declType ));
         unitDataCall.addArgument(new StringLiteralExpr(unitVar.getName()));
@@ -492,7 +493,7 @@ public class ModelGenerator {
         varType.setTypeArguments(declType);
         VariableDeclarationExpr var_ = new VariableDeclarationExpr(varType, context.getVar(declaration.getBindingId()), Modifier.finalModifier());
 
-        MethodCallExpr declarationOfCall = new MethodCallExpr(null, DECLARATION_OF_CALL);
+        MethodCallExpr declarationOfCall = createDslTopLevelMethod(DECLARATION_OF_CALL);
 
         declarationOfCall.addArgument(new ClassExpr( declaration.getBoxedType() ));
 
@@ -506,12 +507,12 @@ public class ModelGenerator {
         declaration.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
         declaration.getEntryPoint().ifPresent( ep -> {
-            MethodCallExpr entryPointCall = new MethodCallExpr(null, ENTRY_POINT_CALL);
+            MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
             entryPointCall.addArgument( new StringLiteralExpr(ep ) );
             declarationOfCall.addArgument( entryPointCall );
         } );
         for ( BehaviorDescr behaviorDescr : declaration.getBehaviors() ) {
-            MethodCallExpr windowCall = new MethodCallExpr(null, WINDOW_CALL);
+            MethodCallExpr windowCall = createDslTopLevelMethod(WINDOW_CALL);
             if ( Behavior.BehaviorType.TIME_WINDOW.matches(behaviorDescr.getSubType() ) ) {
                 windowCall.addArgument( "org.drools.model.Window.Type.TIME" );
                 windowCall.addArgument( "" + TimeUtils.parseTimeString(behaviorDescr.getParameters().get(0 ) ) );

@@ -97,7 +97,7 @@ public class ModelGeneratorVisitor implements DescrVisitor {
 
     @Override
     public void visit(OrDescr descr) {
-        orVisitor.visit(descr, OR_CALL);
+        orVisitor.visit(descr);
     }
 
     @Override

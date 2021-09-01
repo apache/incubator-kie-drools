@@ -59,7 +59,7 @@ public class ReplaceTypeInLambda {
                 }
 
                 Optional<Expression> optScope = mc.getScope();
-                if (optScope.isPresent() && optScope.get().asMethodCallExpr().getNameAsString().equals(BIND_CALL)) {
+                if (optScope.isPresent() && optScope.get().isMethodCallExpr() && optScope.get().asMethodCallExpr().getNameAsString().equals(BIND_CALL)) {
                     allLambdas.addAll(expression.findAll(LambdaExpr.class));
                 }
 

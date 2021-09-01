@@ -23,6 +23,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class OrVisitor {
 
@@ -34,12 +36,12 @@ public class OrVisitor {
         this.context = context;
     }
 
-    public void visit(ConditionalElementDescr descr, String methodName) {
-        final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
+    public void visit(ConditionalElementDescr descr) {
+        final MethodCallExpr ceDSL = createDslTopLevelMethod(OR_CALL);
         context.addExpression(ceDSL);
 
         for (BaseDescr subDescr : descr.getDescrs()) {
-            final MethodCallExpr andDSL = new MethodCallExpr(null, AND_CALL);
+            final MethodCallExpr andDSL = createDslTopLevelMethod(AND_CALL);
             context.setNestedInsideOr(true);
             context.pushExprPointer(andDSL::addArgument);
             subDescr.accept(modelGeneratorVisitor);

@@ -48,6 +48,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassF
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.StringUtil.toId;
 
 public class QueryGenerator {
@@ -64,7 +65,7 @@ public class QueryGenerator {
         parseQueryParameters(context, packageModel, queryDescr);
         ClassOrInterfaceType queryDefType = getQueryType(context.getQueryParameters());
 
-        MethodCallExpr queryCall = new MethodCallExpr(null, QUERY_CALL);
+        MethodCallExpr queryCall = createDslTopLevelMethod(QUERY_CALL);
         if (!queryDescr.getNamespace().isEmpty()) {
             queryCall.addArgument( new StringLiteralExpr(queryDescr.getNamespace() ) );
         }
