@@ -31,8 +31,6 @@ import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
-import javax.xml.XMLConstants;
 import org.drools.core.util.AbstractXStreamConverter;
 import org.drools.core.util.IoUtils;
 import org.kie.api.builder.model.KieBaseModel;
@@ -187,18 +185,12 @@ public class KieModuleMarshaller {
 
         private static void validate(Source source, Source duplicateSource) {
             try {
-                Validator validator = schema.newValidator();
-                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-                validator.validate(source);
+                schema.newValidator().validate(source);
             } catch (Exception schemaException) {
                 try {
                     // For backwards compatibility, validate against the old namespace (which has 6.0.0 hardcoded)
                     if (oldSchema != null) {
-                        Validator oldValidator = oldSchema.newValidator();
-                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-                        oldValidator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
-                        oldValidator.validate(duplicateSource);
+                        oldSchema.newValidator().validate( duplicateSource );
                     }
                 } catch (Exception oldSchemaException) {
                     // Throw the original exception, as we want them to use that
