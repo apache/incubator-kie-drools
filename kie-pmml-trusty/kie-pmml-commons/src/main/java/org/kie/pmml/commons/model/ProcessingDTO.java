@@ -44,18 +44,6 @@ public class ProcessingDTO {
      * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
      */
     public ProcessingDTO(final KiePMMLModel model, final List<KiePMMLNameValue> kiePMMLNameValues) {
-        this(model, kiePMMLNameValues, model.getKiePMMLOutputFields());
-    }
-
-    /**
-     *
-     * @param model
-     * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
-     * @param outputFields a <b>mutable</b> list
-     */
-    public ProcessingDTO(final KiePMMLModel model,
-                         final List<KiePMMLNameValue> kiePMMLNameValues,
-                         final List<KiePMMLOutputField> outputFields) {
         this.derivedFields = new ArrayList<>();
         this.defineFunctions = new ArrayList<>();
         if (model.getTransformationDictionary() != null) {
@@ -69,7 +57,7 @@ public class ProcessingDTO {
         if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
             this.derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
         }
-        this.outputFields = outputFields;
+        this.outputFields = model.getKiePMMLOutputFields();
         this.kiePMMLTargets = model.getKiePMMLTargets();
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = new ArrayList<>();

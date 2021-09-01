@@ -22,6 +22,7 @@ import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
+import org.kie.pmml.commons.model.KiePMMLOutputField;
 import org.kie.pmml.commons.model.KiePMMLTarget;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
 import org.kie.pmml.commons.transformations.KiePMMLTransformationDictionary;
@@ -51,6 +52,11 @@ public class KiePMMLTestingModel extends KiePMMLModel {
 
             private Builder(String name, List<KiePMMLExtension> extensions, MINING_FUNCTION miningFunction) {
                 super("TestingModel-", PMML_MODEL_TYPE, miningFunction, () -> new KiePMMLTestingModel(name, extensions));
+            }
+
+            public Builder withKiePMMLOutputFields(List<KiePMMLOutputField> kiePMMLOutputFields) {
+                toBuild.kiePMMLOutputFields = kiePMMLOutputFields;
+                return this;
             }
 
             public Builder withKiePMMLTargets(List<KiePMMLTarget> kiePMMLTargets) {
