@@ -26,7 +26,6 @@ import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.search.Search;
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
 import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,9 +70,9 @@ public class MetricLogUtils {
         return enabled;
     }
 
-    public void startMetrics(InternalWorkingMemory internalWorkingMemory, BaseNode baseNode) {
+    public void startMetrics(BaseNode baseNode) {
         if (enabled) {
-            nodeStats.set(new NodeStats(internalWorkingMemory, baseNode));
+            nodeStats.set(new NodeStats(baseNode));
         } else {
             logger.warn("Metrics must not be started when disabled");
         }
@@ -101,7 +100,7 @@ public class MetricLogUtils {
                     if (meterRegistry == null) { // Only log when Micrometer is not enabled.
                         logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), evalCount, elapsedTimeInMicro);
                     } else {
-                        triggerMicrometerTimer(stats.getNode(), stats.getInternalWorkingMemory(), evalCount, elapsedTimeInNanos);
+                        triggerMicrometerTimer(stats.getNode(), evalCount, elapsedTimeInNanos);
                     }
                 }
             } else {
@@ -111,8 +110,7 @@ public class MetricLogUtils {
         }
     }
 
-    private void triggerMicrometerTimer(BaseNode node, InternalWorkingMemory internalWorkingMemory, long evalCount,
-                                        long elapsedTimeInNanos) {
+    private void triggerMicrometerTimer(BaseNode node, long evalCount, long elapsedTimeInNanos) {
         // TODO This takes a long time; cache this somehow.
         Tag nodeIdTag = Tag.of("node.id", Long.toString(node.getId()));
         Stream<Tag> allTags = Stream.of(nodeIdTag);

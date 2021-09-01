@@ -36,7 +36,7 @@ public class PhreakJoinNodeMetric extends PhreakJoinNode {
                        TupleSets<LeftTuple> trgLeftTuples,
                        TupleSets<LeftTuple> stagedLeftTuples) {
         try {
-            MetricLogUtils.getInstance().startMetrics(wm, joinNode);
+            MetricLogUtils.getInstance().startMetrics(joinNode);
 
             super.doNode(joinNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

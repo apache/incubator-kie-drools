@@ -19,7 +19,6 @@ package org.drools.metric.util;
 import java.lang.ref.WeakReference;
 
 import org.drools.core.common.BaseNode;
-import org.drools.core.common.InternalWorkingMemory;
 
 public class NodeStats {
 
@@ -27,14 +26,12 @@ public class NodeStats {
     private long evalCount = 0;
     private long startTime = 0;
     private WeakReference<BaseNode> nodeRef = null;
-    private WeakReference<InternalWorkingMemory> internalWorkingMemoryRef = null;
 
-    public NodeStats(InternalWorkingMemory workingMemory, BaseNode node) {
+    public NodeStats(BaseNode node) {
         this.started = true;
         this.evalCount = 0;
         this.startTime = System.nanoTime();
         this.nodeRef = new WeakReference<>(node);
-        this.internalWorkingMemoryRef = new WeakReference<>(workingMemory);
     }
 
     public boolean isStarted() {
@@ -55,10 +52,6 @@ public class NodeStats {
 
     public BaseNode getNode() {
         return nodeRef.get();
-    }
-
-    public InternalWorkingMemory getInternalWorkingMemory() {
-        return internalWorkingMemoryRef.get();
     }
 
     @Override

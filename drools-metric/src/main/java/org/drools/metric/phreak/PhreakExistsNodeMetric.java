@@ -36,7 +36,7 @@ public class PhreakExistsNodeMetric extends PhreakExistsNode {
                        TupleSets<LeftTuple> stagedLeftTuples) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(wm, existsNode);
+            MetricLogUtils.getInstance().startMetrics(existsNode);
 
             super.doNode(existsNode, sink, bm, wm, srcLeftTuples, trgLeftTuples, stagedLeftTuples);
 

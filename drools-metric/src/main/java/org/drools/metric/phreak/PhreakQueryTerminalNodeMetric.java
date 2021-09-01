@@ -33,7 +33,7 @@ public class PhreakQueryTerminalNodeMetric extends PhreakQueryTerminalNode {
                        LinkedList<StackEntry> stack) {
 
         try {
-            MetricLogUtils.getInstance().startMetrics(agenda.getWorkingMemory(), qtnNode);
+            MetricLogUtils.getInstance().startMetrics(qtnNode);
 
             super.doNode(qtnNode, agenda, srcLeftTuples, stack);
 
