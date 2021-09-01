@@ -97,11 +97,12 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
         while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
             Phase<Solution_> phase = it.next();
             phase.solve(solverScope);
+            // If there is a next phase, it starts from the best solution, which might differ from the working solution.
+            // If there isn't, no need to planning clone the best solution to the working solution.
             if (it.hasNext()) {
                 solverScope.setWorkingSolutionFromBestSolution();
             }
         }
-        // TODO support doing round-robin of phases (only non-construction heuristics)
     }
 
     public void solvingEnded(SolverScope<Solution_> solverScope) {
