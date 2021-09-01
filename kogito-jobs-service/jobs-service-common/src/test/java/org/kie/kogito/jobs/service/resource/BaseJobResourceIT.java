@@ -194,7 +194,7 @@ public abstract class BaseJobResourceIT {
         assertGetScheduledJob(id);
 
         //guarantee the job is running
-        await().atMost(2, TimeUnit.SECONDS)
+        await().atMost(5, TimeUnit.SECONDS)
                 .untilAsserted(() -> {
                     //assert executed at least once
                     ScheduledJob scheduledJob = assertGetScheduledJob(id);
