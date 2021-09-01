@@ -24,7 +24,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
 
-import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getGeneratedClassName;
 
 /**
  * Class used to generate <code>KiePMMLDroolsType</code>s out of a <code>DataDictionary</code>
@@ -60,7 +60,7 @@ public class KiePMMLDataDictionaryASTFactory {
      * @param field
      */
     public KiePMMLDroolsType declareType(Field field) {
-        String generatedType = getSanitizedClassName(field.getName().getValue().toUpperCase());
+        String generatedType = getGeneratedClassName(field.getName().getValue());
         String fieldName = field.getName().getValue();
         String fieldType = field.getDataType().value();
         fieldTypeMap.put(fieldName, new KiePMMLOriginalTypeGeneratedType(fieldType, generatedType));

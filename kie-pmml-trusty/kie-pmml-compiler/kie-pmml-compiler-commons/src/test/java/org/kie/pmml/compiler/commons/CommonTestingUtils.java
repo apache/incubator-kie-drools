@@ -18,12 +18,12 @@ package org.kie.pmml.compiler.commons;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -46,7 +46,7 @@ public class CommonTestingUtils {
     }
 
     public static List<Field<?>> getFieldsFromTransformationDictionary(TransformationDictionary transformationDictionary) {
-        if (transformationDictionary.hasDerivedFields()) {
+        if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
             final List<Field<?>> toReturn = new ArrayList<>();
             transformationDictionary.getDerivedFields().stream().map(Field.class::cast).forEach(toReturn::add);
             return toReturn;
@@ -54,12 +54,34 @@ public class CommonTestingUtils {
             return Collections.emptyList();
         }
     }
+
+    public static List<Field<?>> getFieldsFromLocalTransformations(LocalTransformations localTransformations) {
+        if (localTransformations != null && localTransformations.hasDerivedFields()) {
+            final List<Field<?>> toReturn = new ArrayList<>();
+            localTransformations.getDerivedFields().stream().map(Field.class::cast).forEach(toReturn::add);
+            return toReturn;
+        } else {
+            return Collections.emptyList();
+        }
+    }
+
+    public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations(DataDictionary dataDictionary,
+                                                                                                               TransformationDictionary transformationDictionary,
+                                                                                                               LocalTransformations localTransformations) {
+        final List<Field<?>> toReturn = new ArrayList<>();
+        toReturn.addAll(getFieldsFromDataDictionary(dataDictionary));
+        toReturn.addAll(getFieldsFromTransformationDictionary(transformationDictionary));
+        toReturn.addAll(getFieldsFromLocalTransformations(localTransformations));
+        return toReturn;
+    }
+
     public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(DataDictionary dataDictionary, TransformationDictionary transformationDictionary) {
         final List<Field<?>> toReturn = new ArrayList<>();
         toReturn.addAll(getFieldsFromDataDictionary(dataDictionary));
         toReturn.addAll(getFieldsFromTransformationDictionary(transformationDictionary));
         return toReturn;
     }
+
 
     public static List<Field<?>> getFieldsFromDataDictionaryAndDerivedFields(DataDictionary dataDictionary, List<DerivedField> derivedFields) {
         final List<Field<?>> toReturn = new ArrayList<>();

@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
@@ -54,6 +55,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations;
 
 public class DroolsModelProviderTest {
 
@@ -122,7 +124,16 @@ public class DroolsModelProviderTest {
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLDroolsModelTest);
         KiePMMLDroolsModelTest retrievedTest = (KiePMMLDroolsModelTest) retrieved;
-        assertEquals(pmml.getDataDictionary(), retrievedTest.dataDictionary);
+        final List<DataField> originalDataFields = pmml.getDataDictionary().getDataFields();
+        final List<DataField> retrievedDataFields = retrievedTest.dataDictionary.getDataFields();
+        assertEquals(originalDataFields.size(), retrievedTest.dataDictionary.getDataFields().size());
+        originalDataFields.forEach(dataField -> {
+            Optional<DataField> optRet = retrievedDataFields.stream()
+                    .filter(retrievedDataField -> dataField.getName().equals(retrievedDataField.getName()))
+                    .findFirst();
+            assertTrue(optRet.isPresent());
+            assertEquals(dataField.getDataType(), optRet.get().getDataType());
+        });
         assertEquals(pmml.getTransformationDictionary(), retrievedTest.transformationDictionary);
         assertEquals(scorecard, retrievedTest.model);
         String expectedPackageName = getSanitizedPackageName(PACKAGE_NAME);
@@ -191,7 +202,10 @@ public class DroolsModelProviderTest {
     @Test
     public void getKiePMMLDroolsASTCommon() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST retrieved = droolsModelProvider.getKiePMMLDroolsASTCommon(getFieldsFromDataDictionary(pmml.getDataDictionary()),
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionaryAndLocalTransformations(pmml.getDataDictionary(),
+                                                                                                                    pmml.getTransformationDictionary(),
+                                                                                                                    scorecard.getLocalTransformations());
+        KiePMMLDroolsAST retrieved = droolsModelProvider.getKiePMMLDroolsASTCommon(fields,
                                                                                    scorecard,
                                                                                    fieldTypeMap);
         commonVerifyKiePMMLDroolsAST(retrieved, fieldTypeMap);
@@ -199,16 +213,6 @@ public class DroolsModelProviderTest {
                                  pmml.getTransformationDictionary().getDerivedFields(),
                                  scorecard.getLocalTransformations().getDerivedFields());
     }
-
-//    @Test
-//    public void addTransformationsDerivedFields() {
-//        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-//        droolsModelProvider.addAdditionalFields(fieldTypeMap, pmml.getTransformationDictionary(),
-//                                                scorecard.getLocalTransformations());
-//        commonVerifyFieldTypeMap(fieldTypeMap, Collections.emptyList(),
-//                                 pmml.getTransformationDictionary().getDerivedFields(),
-//                                 scorecard.getLocalTransformations().getDerivedFields());
-//    }
 
     @Test
     public void getRulesSourceMap() {
@@ -269,7 +273,17 @@ public class DroolsModelProviderTest {
         assertNotNull(toVerify);
         assertTrue(toVerify instanceof KiePMMLDroolsASTTest);
         KiePMMLDroolsASTTest toVerifyTest = (KiePMMLDroolsASTTest) toVerify;
-        assertEquals(pmml.getDataDictionary(), toVerifyTest.dataDictionary);
+
+        final List<DataField> originalDataFields = pmml.getDataDictionary().getDataFields();
+        final List<DataField> retrievedDataFields = toVerifyTest.dataDictionary.getDataFields();
+        assertEquals(originalDataFields.size(), toVerifyTest.dataDictionary.getDataFields().size());
+        originalDataFields.forEach(dataField -> {
+            Optional<DataField> optRet = retrievedDataFields.stream()
+                    .filter(retrievedDataField -> dataField.getName().equals(retrievedDataField.getName()))
+                    .findFirst();
+            assertTrue(optRet.isPresent());
+            assertEquals(dataField.getDataType(), optRet.get().getDataType());
+        });
         assertEquals(scorecard, toVerifyTest.model);
         if (fieldTypeMap != null) {
             assertEquals(fieldTypeMap, toVerifyTest.fieldTypeMap);
@@ -290,25 +304,11 @@ public class DroolsModelProviderTest {
         localTransformationsFields.forEach(derivedField -> commonVerifyTypesList(derivedField, toVerify));
     }
 
-    private void commonVerifyTypesList(DataField toVerify, final List<KiePMMLDroolsType> types) {
+    private void commonVerifyTypesList(Field<?> toVerify, final List<KiePMMLDroolsType> types) {
         assertTrue(types.stream()
                            .anyMatch(type -> {
-                               String expectedName = getSanitizedClassName(toVerify.getName().getValue().toUpperCase());
-                               if (!expectedName.equals(type.getName())) {
-                                   return false;
-                               }
-                               String expectedType =
-                                       DATA_TYPE.byName(toVerify.getDataType().value()).getMappedClass().getSimpleName();
-                               assertEquals(expectedType, type.getType());
-                               return true;
-                           }));
-    }
-
-    private void commonVerifyTypesList(DerivedField toVerify, final List<KiePMMLDroolsType> types) {
-        assertTrue(types.stream()
-                           .anyMatch(type -> {
-                               String expectedName = getSanitizedClassName(toVerify.getName().getValue().toUpperCase());
-                               if (!expectedName.equals(type.getName())) {
+                               String expectedName = getSanitizedClassName(toVerify.getName().getValue());
+                               if (!type.getName().startsWith(expectedName)) {
                                    return false;
                                }
                                String expectedType =
@@ -328,7 +328,7 @@ public class DroolsModelProviderTest {
         localTransformationsFields.forEach(derivedField -> commonVerifyFieldTypeMap(derivedField, toVerify));
     }
 
-    private void commonVerifyFieldTypeMap(DataField toVerify,
+    private void commonVerifyFieldTypeMap(Field<?> toVerify,
                                           final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
         assertTrue(fieldTypeMap.entrySet().stream()
                            .anyMatch(entry -> {
@@ -338,24 +338,8 @@ public class DroolsModelProviderTest {
                                KiePMMLOriginalTypeGeneratedType value = entry.getValue();
                                assertEquals(toVerify.getDataType().value(), value.getOriginalType());
                                String expectedGeneratedType =
-                                       getSanitizedClassName(toVerify.getName().getValue().toUpperCase());
-                               assertEquals(expectedGeneratedType, value.getGeneratedType());
-                               return true;
-                           }));
-    }
-
-    private void commonVerifyFieldTypeMap(DerivedField toVerify,
-                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        assertTrue(fieldTypeMap.entrySet().stream()
-                           .anyMatch(entry -> {
-                               if (!entry.getKey().equals(toVerify.getName().getValue())) {
-                                   return false;
-                               }
-                               KiePMMLOriginalTypeGeneratedType value = entry.getValue();
-                               assertEquals(toVerify.getDataType().value(), value.getOriginalType());
-                               String expectedGeneratedType =
-                                       getSanitizedClassName(toVerify.getName().getValue().toUpperCase());
-                               assertEquals(expectedGeneratedType, value.getGeneratedType());
+                                       getSanitizedClassName(toVerify.getName().getValue());
+                               assertTrue(value.getGeneratedType().startsWith(expectedGeneratedType));
                                return true;
                            }));
     }

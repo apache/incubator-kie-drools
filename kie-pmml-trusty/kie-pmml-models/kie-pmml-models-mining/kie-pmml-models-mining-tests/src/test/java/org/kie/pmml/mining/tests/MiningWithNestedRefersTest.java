@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -73,7 +74,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -89,8 +90,9 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         });
     }
 
+    @Ignore
     @Test
-    public void testMixedMining() throws Exception {
+    public void testMiningWithNestedRefers() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(S_LEN, sLen);
         inputData.put(S_WID, sWid);

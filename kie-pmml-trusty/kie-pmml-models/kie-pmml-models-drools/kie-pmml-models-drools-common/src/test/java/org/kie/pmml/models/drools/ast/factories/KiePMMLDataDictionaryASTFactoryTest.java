@@ -60,13 +60,13 @@ public class KiePMMLDataDictionaryASTFactoryTest {
     }
 
     private void commonVerifyTypeDeclarationDescr(DataField dataField, Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final KiePMMLDroolsType kiePMMLDroolsType) {
-        String expectedGeneratedType = getSanitizedClassName(dataField.getName().getValue().toUpperCase());
+        String expectedGeneratedType = getSanitizedClassName(dataField.getName().getValue());
         String expectedMappedOriginalType = DATA_TYPE.byName(dataField.getDataType().value()).getMappedClass().getSimpleName();
-        assertEquals(expectedGeneratedType, kiePMMLDroolsType.getName());
+        assertTrue(kiePMMLDroolsType.getName().startsWith(expectedGeneratedType));
         assertEquals(expectedMappedOriginalType, kiePMMLDroolsType.getType());
         assertTrue(fieldTypeMap.containsKey(dataField.getName().getValue()));
         KiePMMLOriginalTypeGeneratedType kiePMMLOriginalTypeGeneratedType = fieldTypeMap.get(dataField.getName().getValue());
         assertEquals(dataField.getDataType().value(), kiePMMLOriginalTypeGeneratedType.getOriginalType());
-        assertEquals(expectedGeneratedType, kiePMMLOriginalTypeGeneratedType.getGeneratedType());
+        assertTrue(kiePMMLOriginalTypeGeneratedType.getGeneratedType().startsWith(expectedGeneratedType));
     }
 }

@@ -41,7 +41,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * Method to be called for a <b>runtime</b> compilation
      *
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
@@ -58,7 +59,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * Method to be called following a <b>kie-maven-plugin</b> invocation
      *
      * @param packageName
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
      * @param hasClassloader
@@ -76,7 +78,8 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * Default implementation provided for <b>not-drools</b> models.
      *
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     *      * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return

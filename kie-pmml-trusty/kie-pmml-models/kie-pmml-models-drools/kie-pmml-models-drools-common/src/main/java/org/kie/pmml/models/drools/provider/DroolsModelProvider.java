@@ -161,6 +161,17 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         return getBaseDescr(kiePMMLDroolsAST, packageName);
     }
 
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param transformationDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @param packageName
+     * @param hasClassLoader
+     * @return
+     */
     public abstract E getKiePMMLDroolsModel(final List<Field<?>> fields,
                                             final TransformationDictionary transformationDictionary,
                                             final T model,
@@ -168,11 +179,31 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                             final String packageName,
                                             final HasClassLoader hasClassLoader);
 
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param model
+     * @param fieldTypeMap
+     * @param types
+     * @return
+     */
     public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                          final T model,
                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                          final List<KiePMMLDroolsType> types);
 
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param transformationDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @param packageName
+     * @return
+     * @throws IOException
+     */
     public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields,
                                                                         final TransformationDictionary transformationDictionary,
                                                                         final T model,
@@ -180,6 +211,13 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                                                                                 KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                                         final String packageName) throws IOException;
 
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary, DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param model
+     * @param fieldTypeMap
+     * @return
+     */
     protected KiePMMLDroolsAST getKiePMMLDroolsASTCommon(final List<Field<?>> fields,
                                                          final T model,
                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
@@ -193,18 +231,6 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         types.addAll(KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(fields));
         return getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
-//
-//    protected void addAdditionalFields(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-//                                       final List<Field<?>> fields) {
-//        KiePMMLDerivedFieldASTFactory kiePMMLDerivedFieldASTFactory =
-//                KiePMMLDerivedFieldASTFactory.factory(fieldTypeMap);
-//        if (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) {
-//            kiePMMLDerivedFieldASTFactory.declareTypes(transformationDictionary.getDerivedFields());
-//        }
-//        if (localTransformations != null && localTransformations.getDerivedFields() != null) {
-//            kiePMMLDerivedFieldASTFactory.declareTypes(localTransformations.getDerivedFields());
-//        }
-//    }
 
     protected Map<String, String> getRulesSourceMap(PackageDescr packageDescr) {
         List<GeneratedFile> generatedRuleFiles = generateRulesFiles(packageDescr);

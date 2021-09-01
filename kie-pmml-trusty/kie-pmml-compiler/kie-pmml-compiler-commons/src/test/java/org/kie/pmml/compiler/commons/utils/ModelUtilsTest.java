@@ -511,6 +511,8 @@ public class ModelUtilsTest {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
         });
+        fields.clear();
+        fields.addAll(getFieldsFromDataDictionary(dataDictionary));
         dataDictionary.getDataFields().forEach(dataField -> {
             Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromFields(fields, dataField.getName().getValue());
             assertNotNull(retrieved);
@@ -575,7 +577,7 @@ public class ModelUtilsTest {
                 .stream()
                 .map(dataField -> {
                          DerivedField toReturn = new DerivedField();
-                         toReturn.setName(dataField.getName());
+                         toReturn.setName(FieldName.create("DER_" + dataField.getName().getValue()));
                          DataType dataType = getRandomDataType();
                          while (dataType.equals(dataField.getDataType())) {
                              dataType = getRandomDataType();
@@ -595,10 +597,13 @@ public class ModelUtilsTest {
             String fieldName = dataField.getName().getValue();
             DataType retrieved = ModelUtils.getDataType(fields, fieldName);
             assertNotNull(retrieved);
-            DerivedField derivedField = derivedFields.stream()
-                    .filter(derFld -> fieldName.equals(derFld.getName().getValue()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Missing expected DerivedField " + fieldName));
+            DataType expected = dataField.getDataType();
+            assertEquals(expected, retrieved);
+        });
+        derivedFields.forEach(derivedField -> {
+            String fieldName = derivedField.getName().getValue();
+            DataType retrieved = ModelUtils.getDataType(fields, fieldName);
+            assertNotNull(retrieved);
             DataType expected = derivedField.getDataType();
             assertEquals(expected, retrieved);
         });

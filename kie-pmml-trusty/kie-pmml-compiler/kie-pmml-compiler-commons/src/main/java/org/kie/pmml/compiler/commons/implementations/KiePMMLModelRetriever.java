@@ -52,7 +52,8 @@ public class KiePMMLModelRetriever {
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
@@ -83,7 +84,8 @@ public class KiePMMLModelRetriever {
      * Read the given <code>DataDictionary</code> and <code>Model</code>> to return an <code>Optional&lt;
      * KiePMMLModel&gt;</code>
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
@@ -114,7 +116,8 @@ public class KiePMMLModelRetriever {
      * KiePMMLModel&gt;</code>
      * Method provided only to have <b>drools</b> models working when invoked by a <code>KiePMMLMiningModel</code>
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param fields
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools

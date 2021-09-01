@@ -131,13 +131,13 @@ public class ModelUtils {
      * @param model
      * @return
      */
-    public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(final List<Field<?>> fields, final  Model model) {
+    public static Map<String, DATA_TYPE> getTargetFieldsTypeMap(final List<Field<?>> fields, final Model model) {
         Map<String, DATA_TYPE> toReturn = new LinkedHashMap<>();
         if (model.getMiningSchema() != null && model.getMiningSchema().getMiningFields() != null) {
             for (MiningField miningField : model.getMiningSchema().getMiningFields()) {
                 if (MiningField.UsageType.TARGET.equals(miningField.getUsageType()) || MiningField.UsageType.PREDICTED.equals(miningField.getUsageType())) {
                     toReturn.put(miningField.getName().getValue(), getDATA_TYPE(fields,
-                                                                               miningField.getName().getValue()));
+                                                                                miningField.getName().getValue()));
                 }
             }
         }
@@ -164,7 +164,8 @@ public class ModelUtils {
     }
 
 //    /**
-//     * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from <code>DataDictionary</code>
+//     * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from
+//     <code>DataDictionary</code>
 //     * @param dataDictionary
 //     * @param fieldName
 //     * @return
@@ -172,7 +173,8 @@ public class ModelUtils {
 //    public static Optional<OP_TYPE> getOpTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
 //        if (dataDictionary != null && dataDictionary.getDataFields() != null) {
 //            return dataDictionary.getDataFields().stream()
-//                    .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField.getOpType() != null)
+//                    .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField
+//                    .getOpType() != null)
 //                    .findFirst()
 //                    .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
 //        } else {
@@ -188,10 +190,11 @@ public class ModelUtils {
      */
     public static Optional<OP_TYPE> getOpTypeFromFields(final List<Field<?>> fields,
                                                         final String fieldName) {
-        return fields.stream()
-                .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField.getOpType() != null)
-                .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()))
-                .findFirst();
+        return fields == null ? Optional.empty() :
+                fields.stream()
+                        .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField.getOpType() != null)
+                        .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()))
+                        .findFirst();
     }
 
     /**
@@ -283,7 +286,6 @@ public class ModelUtils {
                                                                                      targetFieldName)));
     }
 
-
     /**
      * Return <code>List&lt;DerivedField&gt;</code>s from the given <code>TransformationDictionary</code> and
      * <code>LocalTransformations</code>
@@ -302,7 +304,6 @@ public class ModelUtils {
         }
         return toReturn;
     }
-
 
     public static List<Object> getObjectsFromArray(Array source) {
         Array.Type type = source.getType();
@@ -367,17 +368,20 @@ public class ModelUtils {
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataType = field.getDataType() != null ?
                 DATA_TYPE.byName(field.getDataType().value()) : null;
-        final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod = toConvert.getMissingValueTreatment() != null ?
+        final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
+                toConvert.getMissingValueTreatment() != null ?
                 MISSING_VALUE_TREATMENT_METHOD.byName(toConvert.getMissingValueTreatment().value()) : null;
-        final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod = toConvert.getInvalidValueTreatment() != null ?
+        final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
+                toConvert.getInvalidValueTreatment() != null ?
                 INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()) : null;
         final String missingValueReplacement = toConvert.getMissingValueReplacement() != null ?
                 toConvert.getMissingValueReplacement().toString() : null;
         final String invalidValueReplacement = toConvert.getInvalidValueReplacement() != null ?
                 toConvert.getInvalidValueReplacement().toString() : null;
-        final List<String> allowedValues = field instanceof DataField ? convertDataFieldValues(((DataField) field).getValues()) : Collections.emptyList();
-        final List<org.kie.pmml.api.models.Interval> intervals =  field instanceof DataField ?  convertDataFieldIntervals(((DataField) field).getIntervals())  : Collections.emptyList();
-
+        final List<String> allowedValues = field instanceof DataField ?
+                convertDataFieldValues(((DataField) field).getValues()) : Collections.emptyList();
+        final List<org.kie.pmml.api.models.Interval> intervals = field instanceof DataField ?
+                convertDataFieldIntervals(((DataField) field).getIntervals()) : Collections.emptyList();
 
         return new org.kie.pmml.api.models.MiningField(name,
                                                        fieldUsageType,
@@ -421,7 +425,7 @@ public class ModelUtils {
      * @return
      */
     public static org.kie.pmml.api.models.OutputField convertToKieOutputField(final OutputField toConvert,
-                                                                              final Field<?> field ) {
+                                                                              final Field<?> field) {
         final String name = toConvert.getName() != null ? toConvert.getName().getValue() : null;
         final OP_TYPE opType = toConvert.getOpType() != null ? OP_TYPE.byName(toConvert.getOpType().value()) : null;
         final DATA_TYPE dataFieldDataType = field != null ? DATA_TYPE.byName(field.getDataType().value()) :
@@ -431,7 +435,8 @@ public class ModelUtils {
         final String targetField = toConvert.getTargetField() != null ? toConvert.getTargetField().getValue() : null;
         final RESULT_FEATURE resultFeature = toConvert.getResultFeature() != null ?
                 RESULT_FEATURE.byName(toConvert.getResultFeature().value()) : null;
-        final List<String> allowedValues = field instanceof DataField ? convertDataFieldValues(((DataField) field).getValues()) : null;
+        final List<String> allowedValues = field instanceof DataField ?
+                convertDataFieldValues(((DataField) field).getValues()) : null;
         return new org.kie.pmml.api.models.OutputField(name,
                                                        opType,
                                                        dataType,

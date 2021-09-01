@@ -24,7 +24,11 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.LocalTransformations;
+import org.dmg.pmml.Model;
+import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.exceptions.ExternalException;
@@ -121,18 +125,13 @@ public class PMMLCompilerImpl implements PMMLCompiler {
      */
     private List<KiePMMLModel> getModels(final String packageName, final PMML pmml, final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
-        final List<Field<?>> fields = new ArrayList<>();
-        pmml.getDataDictionary().getDataFields().stream().map(Field.class::cast)
-                .forEach(fields::add);
-        TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-        if (transformationDictionary.hasDerivedFields()) {
-            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
-                    .forEach(fields::add);
-        }
         return pmml
                 .getModels()
                 .stream()
-                .map(model -> getFromCommonDataAndTransformationDictionaryAndModel(packageName, fields, transformationDictionary, model, hasClassloader))
+                .map(model -> {
+                    final List<Field<?>> fields = getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmml.getDataDictionary(), pmml.getTransformationDictionary(), model);
+                    return getFromCommonDataAndTransformationDictionaryAndModel(packageName, fields, pmml.getTransformationDictionary(), model, hasClassloader);
+                })
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
@@ -162,5 +161,28 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
+    }
+
+    private List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+                                                                                       final TransformationDictionary transformationDictionary,
+                                                                                       final Model model) {
+        final List<Field<?>> toReturn = new ArrayList<>();
+        dataDictionary.getDataFields().stream().map(Field.class::cast)
+                .forEach(toReturn::add);
+        if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
+            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        LocalTransformations localTransformations = model.getLocalTransformations();
+        if (localTransformations != null && localTransformations.hasDerivedFields()) {
+            localTransformations.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        Output output =  model.getOutput();
+        if (output != null && output.hasOutputFields()) {
+            output.getOutputFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        return toReturn;
     }
 }
