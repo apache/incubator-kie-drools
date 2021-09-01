@@ -20,6 +20,7 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.junit.Test;
 import org.kie.api.builder.Message.Level;
@@ -36,6 +37,7 @@ import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 
@@ -45,16 +47,16 @@ public class CardApprovalTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(CardApprovalTest.class);
 
-    private DMNRuntime getDMNRuntimeWithCLI() throws Exception {
+    private DMNRuntime getRuntime(Consumer<String[]> command) throws Exception {
         File tempFile = File.createTempFile("xls2dmn", ".dmn");
-        new CommandLine(new App()).execute(new String[]{"src/test/resources/Card_approval.xlsx", tempFile.toString()});
+        command.accept(new String[]{"src/test/resources/Card_approval.xlsx", tempFile.toString()});
 
         List<DMNMessage> validate = DMNValidatorFactory.newValidator().validate(tempFile);
-        assertThat(validate.stream().filter(m -> m.getLevel()==Level.ERROR).count(), is(0L));
+        assertThat(validate.stream().filter(m -> m.getLevel() == Level.ERROR).count(), is(0L));
 
         Either<Exception, DMNRuntime> fromResources = DMNRuntimeBuilder.fromDefaults()
-                         .buildConfiguration()
-                         .fromResources(Arrays.asList(ResourceFactory.newFileResource(tempFile)));
+                                                                       .buildConfiguration()
+                                                                       .fromResources(Arrays.asList(ResourceFactory.newFileResource(tempFile)));
 
         LOG.info("{}", System.getProperty("java.io.tmpdir"));
         LOG.info("{}", tempFile);
@@ -62,10 +64,30 @@ public class CardApprovalTest {
         return dmnRuntime;
     }
 
+    private DMNRuntime getDMNRuntimeWithCLI() throws Exception {
+        return getRuntime(new CommandLine(new App())::execute);
+    }
+
+    private DMNRuntime getDMNRuntimeWithSameVMApp() throws Exception {
+        return getRuntime(SameVMApp::main);
+    }
+
     @Test
     public void testCLI() throws Exception {
         final DMNRuntime dmnRuntime = getDMNRuntimeWithCLI();
+        checkCardApprovalDMNModel(dmnRuntime);
+    }
+
+    @Test
+    public void testSameVMApp() throws Exception {
+        final DMNRuntime dmnRuntime = getDMNRuntimeWithSameVMApp();
+        checkCardApprovalDMNModel(dmnRuntime);
+    }
+
+    private void checkCardApprovalDMNModel(final DMNRuntime dmnRuntime) {
         DMNModel dmnModel = dmnRuntime.getModels().get(0);
+        assertThat(dmnModel.getName()).isEqualTo("Card_approval");
+        assertThat(dmnModel.getDefinitions().getId()).isNotNull();
 
         DMNContext dmnContext = dmnRuntime.newContext();
         dmnContext.set("Annual Income", 70);
@@ -76,4 +98,6 @@ public class CardApprovalTest {
         assertThat(dmnResult.getDecisionResultByName("Standard card score").getResult(), is(new BigDecimal(562)));
         assertThat(dmnResult.getDecisionResultByName("Gold card score").getResult(), is(new BigDecimal(468)));
     }
+
+
 }
