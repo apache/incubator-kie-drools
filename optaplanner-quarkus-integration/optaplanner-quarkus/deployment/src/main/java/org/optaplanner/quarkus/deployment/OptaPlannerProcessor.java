@@ -57,8 +57,9 @@ import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.io.jaxb.SolverConfigIO;
-import org.optaplanner.quarkus.OptaPlannerBeanProvider;
 import org.optaplanner.quarkus.OptaPlannerRecorder;
+import org.optaplanner.quarkus.bean.DefaultOptaPlannerBeanProvider;
+import org.optaplanner.quarkus.bean.UnavailableOptaPlannerBeanProvider;
 import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 import org.optaplanner.quarkus.deployment.config.OptaPlannerBuildTimeConfig;
 import org.optaplanner.quarkus.devui.OptaPlannerDevUIPropertiesSupplier;
@@ -183,6 +184,7 @@ class OptaPlannerProcessor {
                     + " the Jandex index by using the jandex-maven-plugin in that dependency, or by adding"
                     + "application.properties entries (quarkus.index-dependency.<name>.group-id"
                     + " and quarkus.index-dependency.<name>.artifact-id).");
+            additionalBeans.produce(new AdditionalBeanBuildItem(UnavailableOptaPlannerBeanProvider.class));
             return new SolverConfigBuildItem(null);
         }
 
@@ -262,7 +264,7 @@ class OptaPlannerProcessor {
                 .defaultBean()
                 .supplier(recorder.solverManagerConfig(solverManagerConfig)).done());
 
-        additionalBeans.produce(new AdditionalBeanBuildItem(OptaPlannerBeanProvider.class));
+        additionalBeans.produce(new AdditionalBeanBuildItem(DefaultOptaPlannerBeanProvider.class));
         unremovableBeans.produce(UnremovableBeanBuildItem.beanTypes(OptaPlannerRuntimeConfig.class));
         return new SolverConfigBuildItem(solverConfig);
     }

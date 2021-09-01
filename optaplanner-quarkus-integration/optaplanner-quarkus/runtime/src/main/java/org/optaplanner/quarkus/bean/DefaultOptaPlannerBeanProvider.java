@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.optaplanner.quarkus;
+package org.optaplanner.quarkus.bean;
 
 import javax.enterprise.inject.Produces;
 import javax.inject.Singleton;
@@ -40,7 +40,7 @@ import org.optaplanner.quarkus.config.OptaPlannerRuntimeConfig;
 
 import io.quarkus.arc.DefaultBean;
 
-public class OptaPlannerBeanProvider {
+public class DefaultOptaPlannerBeanProvider {
 
     @DefaultBean
     @Singleton
@@ -164,5 +164,4 @@ public class OptaPlannerBeanProvider {
             SolverFactory<Solution_> solverFactory) {
         return ScoreManager.create(solverFactory);
     }
-
 }
