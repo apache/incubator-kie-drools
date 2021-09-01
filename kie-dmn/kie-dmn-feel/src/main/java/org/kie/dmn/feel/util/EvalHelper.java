@@ -35,7 +35,6 @@ import java.time.temporal.TemporalQueries;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.TimeZone;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +57,7 @@ import org.slf4j.LoggerFactory;
 public class EvalHelper {
     public static final Logger LOG = LoggerFactory.getLogger( EvalHelper.class );
 
-    private static final Map<AccessorCacheKey, Method> accessorCache = new ConcurrentHashMap<>();
+    private static final Map<String, Method> accessorCache = new ConcurrentHashMap<>();
 
     public static String normalizeVariableName(String name) {
         // private static final Pattern SPACES_PATTERN = Pattern.compile( "[\\s\u00A0]+" );
@@ -438,8 +437,8 @@ public class EvalHelper {
 
     /**
      * {@link #getDefinedValue(Object, String)} method instead.
-     * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null.
-     *
+     * @deprecated this method cannot distinguish null because: 1. property undefined for current, 2. an error, 3. a properly defined property value valorized to null. 
+     * 
      */
     public static Object getValue(final Object current, final String property) {
         return getDefinedValue(current, property).getValueResult().getOrElse(null);
@@ -455,10 +454,10 @@ public class EvalHelper {
     public static Method getGenericAccessor(Class<?> clazz, String field) {
         LOG.trace( "getGenericAccessor({}, {})", clazz, field );
 
-        AccessorCacheKey accessorCacheKey =
-                new AccessorCacheKey( clazz.getClassLoader(), clazz.getCanonicalName(), field );
+        String accessorQualifiedName = new StringBuilder(clazz.getCanonicalName())
+			.append(".").append(field).toString();
 
-        return accessorCache.computeIfAbsent(accessorCacheKey, key ->
+        return accessorCache.computeIfAbsent(accessorQualifiedName, key ->
         	Stream.of( clazz.getMethods() )
             .filter( m -> Optional.ofNullable( m.getAnnotation( FEELProperty.class ) )
                     .map( ann -> ann.value().equals( field ) )
@@ -723,55 +722,6 @@ public class EvalHelper {
             return stringWithoutZeros;
         } else {
             return stringWithoutZeros.substring(0, stringWithoutZeros.length() - 1);
-        }
-    }
-
-    private static class AccessorCacheKey {
-        private final ClassLoader classLoader;
-        private final String className;
-        private final String propertyName;
-
-        public AccessorCacheKey(ClassLoader classLoader, String className, String propertyName) {
-            this.classLoader = classLoader;
-            this.className = className;
-            this.propertyName = propertyName;
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-
-            AccessorCacheKey that = (AccessorCacheKey) o;
-
-            if (!Objects.equals(classLoader, that.classLoader)) {
-                return false;
-            }
-            if (!Objects.equals(className, that.className)) {
-                return false;
-            }
-            return Objects.equals(propertyName, that.propertyName);
-        }
-
-        @Override
-        public int hashCode() {
-            int result = classLoader != null ? classLoader.hashCode() : 0;
-            result = 31 * result + (className != null ? className.hashCode() : 0);
-            result = 31 * result + (propertyName != null ? propertyName.hashCode() : 0);
-            return result;
-        }
-
-        @Override
-        public String toString() {
-            return "AccessorCacheKey{" +
-                    "classLoader=" + classLoader +
-                    ", className='" + className + '\'' +
-                    ", propertyName='" + propertyName + '\'' +
-                    '}';
         }
     }
 }
