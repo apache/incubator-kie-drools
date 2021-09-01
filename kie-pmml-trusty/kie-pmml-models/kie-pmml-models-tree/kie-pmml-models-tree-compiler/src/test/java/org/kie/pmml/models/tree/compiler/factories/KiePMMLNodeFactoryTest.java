@@ -63,6 +63,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomSimplePredicateOperator;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomValue;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromSource;
@@ -109,7 +110,9 @@ public class KiePMMLNodeFactoryTest {
 
     @Test
     public void getKiePMMLNode() {
-        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1, dataDictionary1, derivedFields1, PACKAGE_NAME,
+        final KiePMMLNode retrieved = KiePMMLNodeFactory.getKiePMMLNode(node1,
+                                                                        getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
+                                                                        PACKAGE_NAME,
                                                                         new HasClassLoaderMock());
         assertNotNull(retrieved);
         commonVerifyNode(retrieved, node1);
@@ -121,7 +124,8 @@ public class KiePMMLNodeFactoryTest {
                                                                                                  createNodeClassName(),
                                                                                                  null);
 
-        Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary1, derivedFields1,
+        Map<String, String> retrieved = KiePMMLNodeFactory.getKiePMMLNodeSourcesMap(nodeNamesDTO,
+                                                                                    getFieldsFromDataDictionaryAndDerivedFields(dataDictionary1, derivedFields1),
                                                                                     PACKAGE_NAME);
         assertNotNull(retrieved);
         commonVerifyNodeSource(retrieved, PACKAGE_NAME);
@@ -134,8 +138,8 @@ public class KiePMMLNodeFactoryTest {
         KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot,
                                                                                            createNodeClassName(), null);
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, PACKAGE_NAME);
-        KiePMMLNodeFactory.populateJavaParserDTOAndSourcesMap(toPopulate, sourcesMap, nodeNamesDTO, dataDictionary2,
-                                                              derivedFields2,
+        KiePMMLNodeFactory.populateJavaParserDTOAndSourcesMap(toPopulate, sourcesMap, nodeNamesDTO,
+                                                              getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
                                                               isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
@@ -180,14 +184,20 @@ public class KiePMMLNodeFactoryTest {
                                                                                            createNodeClassName(),
                                                                                            "PARENTNODECLASS");
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, derivedFields2, dataDictionary2, isRoot);
+        KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
+                                                nodeNamesDTO,
+                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
+                                                isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
 
         // populated node
         isRoot = true;
         nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(nodeRoot, createNodeClassName(), null);
         toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
-        KiePMMLNodeFactory.populateEvaluateNode(toPopulate, nodeNamesDTO, derivedFields2, dataDictionary2, isRoot);
+        KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
+                                                nodeNamesDTO,
+                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
+                                                isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
 
@@ -245,7 +255,9 @@ public class KiePMMLNodeFactoryTest {
     @Test
     public void populateEvaluateNodeWithPredicateFunction() {
         BlockStmt toPopulate = new BlockStmt();
-        KiePMMLNodeFactory.populateEvaluateNodeWithPredicate(toPopulate, compoundPredicateNode.getPredicate(), derivedFields2, dataDictionary2);
+        KiePMMLNodeFactory.populateEvaluateNodeWithPredicate(toPopulate,
+                                                             compoundPredicateNode.getPredicate(),
+                                                             getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2));
         Statement expected = JavaParserUtils.parseBlock("{\n" +
                                                                 "    KiePMMLSimplePredicate predicate_0 = " +
                                                                 "KiePMMLSimplePredicate.builder(\"temperature\", " +

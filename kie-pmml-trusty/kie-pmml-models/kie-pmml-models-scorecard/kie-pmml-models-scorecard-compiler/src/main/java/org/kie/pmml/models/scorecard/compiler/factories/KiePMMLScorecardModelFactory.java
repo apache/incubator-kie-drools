@@ -26,8 +26,7 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.REASONCODE_ALGORITHM;
@@ -49,7 +48,6 @@ import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap;
 
 public class KiePMMLScorecardModelFactory {
@@ -62,13 +60,13 @@ public class KiePMMLScorecardModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final DataDictionary dataDictionary,
+    public static KiePMMLScorecardModel getKiePMMLScorecardModel(final List<Field<?>> fields,
                                                                  final TransformationDictionary transformationDictionary,
                                                                  final Scorecard model,
                                                                  final String packageName,
                                                                  final HasClassLoader hasClassLoader) {
         String className = getSanitizedClassName(model.getModelName());
-        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(dataDictionary, transformationDictionary,
+        Map<String, String> sourcesMap = getKiePMMLScorecardModelSourcesMap(fields, transformationDictionary,
                                                                             model, packageName);
         String fullClassName = packageName + "." + className;
         try {
@@ -79,7 +77,7 @@ public class KiePMMLScorecardModelFactory {
         }
     }
 
-    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final DataDictionary dataDictionary,
+    public static Map<String, String> getKiePMMLScorecardModelSourcesMap(final List<Field<?>> fields,
                                                                          final TransformationDictionary transformationDictionary,
                                                                          final Scorecard model,
                                                                          final String packageName) {
@@ -91,13 +89,12 @@ public class KiePMMLScorecardModelFactory {
         String characteristicsClassName = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullCharacteristicsClassName = String.format(PACKAGE_CLASS_TEMPLATE, packageName,
                                                             characteristicsClassName);
-        final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary,
-                                                                  model.getLocalTransformations());
-        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(), derivedFields,
-                                                                           dataDictionary, characteristicsClassName,
+        Map<String, String> toReturn = getKiePMMLCharacteristicsSourcesMap(model.getCharacteristics(),
+                                                                           fields,
+                                                                           characteristicsClassName,
                                                                            packageName);
         setConstructor(model,
-                       dataDictionary,
+                       fields,
                        transformationDictionary,
                        modelTemplate,
                        fullCharacteristicsClassName);
@@ -107,12 +104,12 @@ public class KiePMMLScorecardModelFactory {
     }
 
     static void setConstructor(final Scorecard scorecardModel,
-                               final DataDictionary dataDictionary,
+                               final List<Field<?>> fields,
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String fullCharacteristicsClassName) {
         KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      dataDictionary,
+                                      fields,
                                       transformationDictionary,
                                       scorecardModel);
         final ConstructorDeclaration constructorDeclaration =
