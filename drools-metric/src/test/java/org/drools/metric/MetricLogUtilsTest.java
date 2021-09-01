@@ -48,12 +48,13 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
         System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
         this.meterRegistry = new SimpleMeterRegistry();
-        Metrics.globalRegistry.add(meterRegistry);
+        Metrics.globalRegistry.add(this.meterRegistry);
     }
 
     @After
     public void after() {
-        Metrics.globalRegistry.remove(meterRegistry);
+        Metrics.globalRegistry.remove(this.meterRegistry);
+        this.meterRegistry = null;
     }
 
     @Test

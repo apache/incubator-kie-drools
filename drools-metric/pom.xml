@@ -32,11 +32,6 @@
       <optional>true</optional>
     </dependency>
     <dependency>
-      <groupId>io.micrometer</groupId>
-      <artifactId>micrometer-registry-jmx</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-compiler</artifactId>
       <scope>test</scope>
@@ -68,20 +63,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <dependencyManagement> <!-- TODO: move to parent -->
-    <dependencies>
-      <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-core</artifactId>
-        <version>${version.io.micrometer}</version>
-      </dependency>
-      <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>micrometer-registry-jmx</artifactId>
-        <version>${version.io.micrometer}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
 </project>
