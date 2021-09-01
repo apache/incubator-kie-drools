@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Tag;
@@ -20,7 +21,7 @@ import org.kie.api.definition.rule.Rule;
  * All references to Micrometer are in this class, and therefore Micrometer is only required on the classpath when
  * this class is actually loaded.
  */
-final class MicrometerUtils {
+public final class MicrometerUtils {
 
     public static final MicrometerUtils INSTANCE = new MicrometerUtils();
 
@@ -54,7 +55,7 @@ final class MicrometerUtils {
                 node);
     }
 
-    private static <Meter_> void triggerMicrometer(Map<BaseNode, Meter_> cache, Function<Iterable<Tag>,
+    private static <Meter_ extends Meter> void triggerMicrometer(Map<BaseNode, Meter_> cache, Function<Iterable<Tag>,
             Meter_> meterConstructor, Consumer<Meter_> meterRecorder, BaseNode node) {
         Meter_ meter = cache.computeIfAbsent(node, k -> { // Meter lookups take a lot of time; we cache meters per node.
             Tag nodeIdTag = Tag.of("node.id", Long.toString(node.getId()));
@@ -70,6 +71,12 @@ final class MicrometerUtils {
         });
         // Now record the average elapsed time.
         meterRecorder.accept(meter);
+    }
+
+    public void clear() { // For testing.
+        averageElapsedTimeCache.clear();
+        elapsedTimeCache.clear();
+        evaluationCountCache.clear();
     }
 
 }

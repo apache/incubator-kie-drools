@@ -22,16 +22,10 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import io.micrometer.core.instrument.Counter;
-import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.search.Search;
-import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import org.drools.metric.util.MetricLogUtils;
-import org.drools.mvel.CommonTestMethodBase;
 import org.drools.mvel.compiler.Address;
 import org.drools.mvel.compiler.Person;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
@@ -39,48 +33,32 @@ import org.kie.api.runtime.KieSession;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
-public class MetricLogUtilsTest extends CommonTestMethodBase {
-
-    private SimpleMeterRegistry meterRegistry;
-
-    @Before
-    public void setup() {
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
-        this.meterRegistry = new SimpleMeterRegistry();
-        Metrics.globalRegistry.add(this.meterRegistry);
-    }
-
-    @After
-    public void after() {
-        Metrics.globalRegistry.remove(this.meterRegistry);
-        this.meterRegistry = null;
-    }
+public class MetricLogUtilsTest extends AbstractMetricTest {
 
     @Test
     public void testJoin() {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p1 : Person(age > 5)\n" +
-                     "  $p2 : Person(age > $p1.age)\n" +
-                     "then\n" +
-                     "end\n" +
-                     "rule R2\n" +
-                     "when\n" +
-                     "  $p1 : Person(age > 5)\n" +
-                     "  $p2 : Person(age < $p1.age)\n" +
-                     "then\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p1 : Person(age > 5)\n" +
+                        "  $p2 : Person(age > $p1.age)\n" +
+                        "then\n" +
+                        "end\n" +
+                        "rule R2\n" +
+                        "when\n" +
+                        "  $p1 : Person(age > 5)\n" +
+                        "  $p2 : Person(age < $p1.age)\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -89,19 +67,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(36, fired);
 
-        // 3 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(3);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(3);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(3);
+        assertThat(counters).hasSize(2);
     }
 
     @Test
@@ -109,26 +87,26 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p : Person()\n" +
-                     "  $a1 : Address() from $p.addresses\n" +
-                     "  $a2 : Address(suburb != \"XYZ\", zipCode == $a1.zipCode, this != $a1) from $p.addresses\n" +
-                     "then\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p : Person()\n" +
+                        "  $a1 : Address() from $p.addresses\n" +
+                        "  $a2 : Address(suburb != \"XYZ\", zipCode == $a1.zipCode, this != $a1) from $p.addresses\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .map(p -> {
-                                               p.addAddress(new Address("StreetX" + p.getAge(), "ABC", "111"));
-                                               p.addAddress(new Address("StreetY" + p.getAge(), "ABC", "111"));
-                                               p.addAddress(new Address("StreetZ" + p.getAge(), "ABC", "999"));
-                                               return p;
-                                           })
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .map(p -> {
+                    p.addAddress(new Address("StreetX" + p.getAge(), "ABC", "111"));
+                    p.addAddress(new Address("StreetY" + p.getAge(), "ABC", "111"));
+                    p.addAddress(new Address("StreetZ" + p.getAge(), "ABC", "999"));
+                    return p;
+                })
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -137,19 +115,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(20, fired);
 
-        // 2 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 1 node expected
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(2);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(1);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(2);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(1);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(2);
+        assertThat(counters).hasSize(1);
     }
 
     @Test
@@ -157,20 +135,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p1 : Person()\n" +
-                     "  $p2 : Person(this != $p1)\n" +
-                     "  not Person(this != $p1, this != $p2, (age == $p1.age || age == $p2.age))\n" +
-                     "then\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p1 : Person()\n" +
+                        "  $p2 : Person(this != $p1)\n" +
+                        "  not Person(this != $p1, this != $p2, (age == $p1.age || age == $p2.age))\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -180,15 +158,15 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         assertEquals(90, fired);
 
         // 2 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
         assertThat(timers).hasSize(2);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
         assertThat(timers2).hasSize(2);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
         assertThat(counters).hasSize(2);
@@ -199,20 +177,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p1 : Person()\n" +
-                     "  $p2 : Person(this != $p1)\n" +
-                     "  exists Person(this != $p1, this != $p2, age != $p1.age, age != $p2.age)\n" +
-                     "then\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p1 : Person()\n" +
+                        "  $p2 : Person(this != $p1)\n" +
+                        "  exists Person(this != $p1, this != $p2, age != $p1.age, age != $p2.age)\n" +
+                        "then\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -221,19 +199,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(90, fired);
 
-        // 3 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(3);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(3);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(3);
+        assertThat(counters).hasSize(2);
     }
 
     @Test
@@ -241,23 +219,23 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p1 : Person()\n" +
-                     "  accumulate ( $p2: Person ( getName().startsWith(\"J\"), this != $p1);\n" +
-                     "                $average : average($p2.getAge());\n" +
-                     "                $average > $p1.age, $average > 3\n" +
-                     "             )\n" +
-                     "then\n" +
-                     //                     "  System.out.println(\"$p1.name = \" + $p1.getName() + \", other's $average = \" + $average);\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p1 : Person()\n" +
+                        "  accumulate ( $p2: Person ( getName().startsWith(\"J\"), this != $p1);\n" +
+                        "                $average : average($p2.getAge());\n" +
+                        "                $average > $p1.age, $average > 3\n" +
+                        "             )\n" +
+                        "then\n" +
+                        //                     "  System.out.println(\"$p1.name = \" + $p1.getName() + \", other's $average = \" + $average);\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -266,19 +244,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(5, fired);
 
-        // 3 nodes expected.
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 1 node expected.
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(3);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(1);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(3);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(1);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(3);
+        assertThat(counters).hasSize(1);
     }
 
     @Test
@@ -286,22 +264,22 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "when\n" +
-                     "  $p1 : Person()\n" +
-                     "  $average  : Double(this > $p1.age, this > 3) from accumulate ( $p2: Person ( getName().startsWith(\"J\"), this != $p1);\n" +
-                     "                average($p2.getAge())\n" +
-                     "             )\n" +
-                     "then\n" +
-                     //                     "  System.out.println(\"$p1.name = \" + $p1.getName() + \", other's $average = \" + $average);\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "when\n" +
+                        "  $p1 : Person()\n" +
+                        "  $average  : Double(this > $p1.age, this > 3) from accumulate ( $p2: Person ( getName().startsWith(\"J\"), this != $p1);\n" +
+                        "                average($p2.getAge())\n" +
+                        "             )\n" +
+                        "then\n" +
+                        //                     "  System.out.println(\"$p1.name = \" + $p1.getName() + \", other's $average = \" + $average);\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -310,19 +288,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(5, fired);
 
-        // 3 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 1 node expected
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(3);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(1);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(3);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(1);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(3);
+        assertThat(counters).hasSize(1);
     }
 
     @Test
@@ -330,21 +308,21 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
 
         String str =
                 "import " + Address.class.getCanonicalName() + "\n" +
-                     "import " + Person.class.getCanonicalName() + "\n" +
-                     "rule R1\n" +
-                     "dialect \"mvel\"\n" +
-                     "when\n" +
-                     "  $p1 : Person()\n" +
-                     "  eval($p1.age > 6)" +
-                     "then\n" +
-                     //                                          "  System.out.println(\"$p1.name = \" + $p1.getName());\n" +
-                     "end\n";
+                        "import " + Person.class.getCanonicalName() + "\n" +
+                        "rule R1\n" +
+                        "dialect \"mvel\"\n" +
+                        "when\n" +
+                        "  $p1 : Person()\n" +
+                        "  eval($p1.age > 6)" +
+                        "then\n" +
+                        //                                          "  System.out.println(\"$p1.name = \" + $p1.getName());\n" +
+                        "end\n";
 
         KieBase kbase = loadKnowledgeBaseFromString(str);
 
         List<Person> personList = IntStream.range(0, 10)
-                                           .mapToObj(i -> new Person("John" + i, i))
-                                           .collect(Collectors.toList());
+                .mapToObj(i -> new Person("John" + i, i))
+                .collect(Collectors.toList());
 
         KieSession ksession = kbase.newKieSession();
         personList.stream().forEach(ksession::insert);
@@ -353,18 +331,18 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         ksession.dispose();
         assertEquals(3, fired);
 
-        // 2 nodes expected
-        Collection<Timer> timers = Search.in(meterRegistry)
+        // 1 node expected
+        Collection<Timer> timers = Search.in(registry)
                 .name("org.drools.metric.elapsed.time.per.evaluation")
                 .timers();
-        assertThat(timers).hasSize(2);
-        Collection<Timer> timers2 = Search.in(meterRegistry)
+        assertThat(timers).hasSize(1);
+        Collection<Timer> timers2 = Search.in(registry)
                 .name("org.drools.metric.elapsed.time")
                 .timers();
-        assertThat(timers2).hasSize(2);
-        Collection<Counter> counters = Search.in(meterRegistry)
+        assertThat(timers2).hasSize(1);
+        Collection<Counter> counters = Search.in(registry)
                 .name("org.drools.metric.evaluation.count")
                 .counters();
-        assertThat(counters).hasSize(2);
+        assertThat(counters).hasSize(1);
     }
 }
