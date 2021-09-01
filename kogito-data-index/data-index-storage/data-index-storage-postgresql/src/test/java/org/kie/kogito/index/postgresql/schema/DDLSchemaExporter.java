@@ -61,7 +61,7 @@ public class DDLSchemaExporter {
             SchemaExport schemaExport = new SchemaExport();
             schemaExport.setDelimiter(";");
             schemaExport.setFormat(true);
-            schemaExport.setOutputFile("src/main/resources/create.sql");
+            schemaExport.setOutputFile("src/main/resources/data_index_create.sql");
             schemaExport.createOnly(EnumSet.of(TargetType.SCRIPT), metadata);
             schemaExport.getExceptions().forEach(System.err::println);
         } catch (Exception ex) {

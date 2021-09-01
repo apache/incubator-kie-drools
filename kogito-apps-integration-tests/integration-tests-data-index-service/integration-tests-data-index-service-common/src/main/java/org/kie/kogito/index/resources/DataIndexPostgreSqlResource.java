@@ -47,7 +47,7 @@ public class DataIndexPostgreSqlResource implements TestResource {
         LOGGER.debug("Starting PostgreSQL Quarkus test resource");
         properties.clear();
         Network network = Network.newNetwork();
-        postgresql.withInitScript("create.sql");
+        postgresql.withInitScript("data_index_create.sql");
         postgresql.withNetwork(network);
         postgresql.withNetworkAliases("postgresql");
         postgresql.waitingFor(Wait.forListeningPort());

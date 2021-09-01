@@ -112,7 +112,7 @@
                 <resource>
                   <directory>${project.root.dir}/data-index/data-index-storage/data-index-storage-postgresql/src/main/resources</directory>
                   <includes>
-                    <include>create.sql</include>
+                    <include>data_index_create.sql</include>
                   </includes>
                 </resource>
               </resources>
@@ -128,7 +128,7 @@
               <directory>${project.basedir}/src/main/resources/</directory>
               <includes>
                 <include>**/*.bpmn</include>
-                <include>create.sql</include>
+                <include>*create.sql</include>
               </includes>
             </fileset>
           </filesets>
