@@ -16,31 +16,44 @@
 
 package org.drools.metric;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
-import io.micrometer.jmx.JmxMeterRegistry;
-import org.drools.mvel.compiler.Address;
-import org.drools.mvel.compiler.Person;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.search.Search;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import org.drools.metric.util.MetricLogUtils;
 import org.drools.mvel.CommonTestMethodBase;
+import org.drools.mvel.compiler.Address;
+import org.drools.mvel.compiler.Person;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 
 public class MetricLogUtilsTest extends CommonTestMethodBase {
+
+    private SimpleMeterRegistry meterRegistry;
 
     @Before
     public void setup() {
         System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
         System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
-        Metrics.globalRegistry.add(new JmxMeterRegistry(s -> null, Clock.SYSTEM));
+        this.meterRegistry = new SimpleMeterRegistry();
+        Metrics.globalRegistry.add(meterRegistry);
+    }
+
+    @After
+    public void after() {
+        Metrics.globalRegistry.remove(meterRegistry);
     }
 
     @Test
@@ -74,6 +87,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(36, fired);
+
+        // 3 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(3);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(3);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(3);
     }
 
     @Test
@@ -108,6 +135,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(20, fired);
+
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(2);
     }
 
     @Test
@@ -136,6 +177,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(90, fired);
+
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(2);
     }
 
     @Test
@@ -164,6 +219,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(90, fired);
+
+        // 3 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(3);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(3);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(3);
     }
 
     @Test
@@ -195,6 +264,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(5, fired);
+
+        // 3 nodes expected.
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(3);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(3);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(3);
     }
 
     @Test
@@ -225,6 +308,20 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(5, fired);
+
+        // 3 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(3);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(3);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(3);
     }
 
     @Test
@@ -254,5 +351,19 @@ public class MetricLogUtilsTest extends CommonTestMethodBase {
         int fired = ksession.fireAllRules();
         ksession.dispose();
         assertEquals(3, fired);
+
+        // 2 nodes expected
+        Collection<Timer> timers = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time.per.evaluation")
+                .timers();
+        assertThat(timers).hasSize(2);
+        Collection<Timer> timers2 = Search.in(meterRegistry)
+                .name("org.drools.metric.elapsed.time")
+                .timers();
+        assertThat(timers2).hasSize(2);
+        Collection<Counter> counters = Search.in(meterRegistry)
+                .name("org.drools.metric.evaluation.count")
+                .counters();
+        assertThat(counters).hasSize(2);
     }
 }
