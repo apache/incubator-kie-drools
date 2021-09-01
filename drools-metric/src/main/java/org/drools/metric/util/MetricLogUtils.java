@@ -16,17 +16,7 @@
 
 package org.drools.metric.util;
 
-import java.time.Duration;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Metrics;
-import io.micrometer.core.instrument.Tag;
-import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.search.Search;
 import org.drools.core.common.BaseNode;
-import org.kie.api.definition.rule.Rule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +26,7 @@ public class MetricLogUtils {
 
     public static final String METRIC_LOGGER_ENABLED = "drools.metric.logger.enabled";
     private boolean enabled = Boolean.parseBoolean(System.getProperty(METRIC_LOGGER_ENABLED, "false"));
-    private MeterRegistry meterRegistry = getMicrometerRegistryIfEnabled();
+    private boolean micrometerAvailable = isMicrometerAvailable();
 
     public static final String METRIC_LOGGER_THRESHOLD = "drools.metric.logger.threshold";
     private int threshold = Integer.parseInt(System.getProperty(METRIC_LOGGER_THRESHOLD, "500")); // microseconds
@@ -45,12 +35,13 @@ public class MetricLogUtils {
 
     private static final MetricLogUtils INSTANCE = new MetricLogUtils();
 
-    private static MeterRegistry getMicrometerRegistryIfEnabled() {
+    private static boolean isMicrometerAvailable() {
         try {
             Class.forName("io.micrometer.core.instrument.Tag");
-            return Metrics.globalRegistry;
+            return true;
         } catch (Exception e) {
-            return null;
+            logger.trace("Micrometer not found on the classpath.");
+            return false;
         }
     }
 
@@ -97,10 +88,10 @@ public class MetricLogUtils {
                 long elapsedTimeInNanos = (System.nanoTime() - stats.getStartTime());
                 long elapsedTimeInMicro = elapsedTimeInNanos / 1000;
                 if (evalCount > 0 && elapsedTimeInMicro > threshold) {
-                    if (meterRegistry == null) { // Only log when Micrometer is not enabled.
+                    if (micrometerAvailable) {
+                        MicrometerUtils.INSTANCE.triggerMicrometer(stats.getNode(), evalCount, elapsedTimeInNanos);
+                    } else {  // Only log when Micrometer is not enabled.
                         logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), evalCount, elapsedTimeInMicro);
-                    } else {
-                        triggerMicrometerTimer(stats.getNode(), evalCount, elapsedTimeInNanos);
                     }
                 }
             } else {
@@ -108,30 +99,6 @@ public class MetricLogUtils {
             }
             nodeStats.remove();
         }
-    }
-
-    private void triggerMicrometerTimer(BaseNode node, long evalCount, long elapsedTimeInNanos) {
-        // TODO This takes a long time; cache this somehow.
-        Tag nodeIdTag = Tag.of("node.id", Long.toString(node.getId()));
-        Stream<Tag> allTags = Stream.of(nodeIdTag);
-        for (Rule rule : node.getAssociatedRules()) {
-            String ruleName = rule.getPackageName() + "." + rule.getName(); // TODO sanitize rule names (whitespace etc.)
-            Tag ruleTag = Tag.of("rule", ruleName);
-            allTags = Stream.concat(allTags, Stream.of(ruleTag));
-        }
-        Iterable<Tag> tagsIterable = allTags.collect(Collectors.toSet()); // TODO Somehow identify the session/kiebase too.
-        // Look up the timer in the registry.
-        // TODO This takes a long time; cache this somehow.
-        Timer registeredTimer = Search.in(meterRegistry)
-                .tags(tagsIterable)
-                .timer();
-        if (registeredTimer == null) { // If timer does not exist, create one.
-            registeredTimer = Timer.builder("org.drools.metric.time.elapsed")
-                    .tags(tagsIterable)
-                    .register(meterRegistry);
-        }
-        // Now record the average elapsed time.
-        registeredTimer.record(Duration.ofNanos(elapsedTimeInNanos / evalCount));
     }
 
 }
