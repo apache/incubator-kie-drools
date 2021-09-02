@@ -17,7 +17,6 @@
 package org.kie.dmn.xls2dmn.cli;
 
 import java.io.File;
-import java.util.Arrays;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -25,15 +24,13 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
 import org.kie.dmn.api.core.DMNRuntime;
-import org.kie.dmn.core.internal.utils.DMNRuntimeBuilder;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
-import org.kie.dmn.feel.util.Either;
-import org.kie.internal.io.ResourceFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.kie.dmn.xls2dmn.cli.TestUtils.validateRuntime;
 
 public class XLS2DMNParserTest {
 
@@ -45,13 +42,7 @@ public class XLS2DMNParserTest {
         File tempFile = File.createTempFile("xls2dmn", ".dmn");
         new XLS2DMNParser(tempFile).parseFile(this.getClass().getResourceAsStream("/Loan_approvals.xlsx"));
 
-        Either<Exception, DMNRuntime> fromResources = DMNRuntimeBuilder.fromDefaults()
-                         .buildConfiguration()
-                         .fromResources(Arrays.asList(ResourceFactory.newFileResource(tempFile)));
-
-        LOG.info("{}", System.getProperty("java.io.tmpdir"));
-        DMNRuntime dmnRuntime = fromResources.getOrElseThrow(RuntimeException::new);
-        return dmnRuntime;
+        return validateRuntime(tempFile);
     }
 
     @Before
