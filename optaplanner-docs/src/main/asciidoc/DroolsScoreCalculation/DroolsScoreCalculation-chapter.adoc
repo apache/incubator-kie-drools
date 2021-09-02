@@ -22,9 +22,6 @@ Every score constraint is written as one or more score rules.
 ** Flexibility to augment your score constraints by
 *** Defining them in decision tables
 **** Excel (XLS) spreadsheet
-**** KIE Workbench WebUI
-*** Translate them into natural language with DSL
-*** Store and release in the KIE Workbench repository
 ** Performance optimizations in future versions for free
 *** In every release, the Drools rule engine tends to become faster
 * Disadvantages:
