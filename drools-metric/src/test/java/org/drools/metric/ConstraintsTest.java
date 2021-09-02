@@ -20,22 +20,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.drools.mvel.compiler.Person;
-import org.drools.metric.util.MetricLogUtils;
-import org.drools.mvel.CommonTestMethodBase;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 
 import static org.junit.Assert.assertEquals;
 
-public class ConstraintsTest extends CommonTestMethodBase {
-
-    @Before
-    public void setup() {
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
-    }
+public class ConstraintsTest extends AbstractMetricTest {
 
     @Test
     public void testDoubleBetaConstraints() {
