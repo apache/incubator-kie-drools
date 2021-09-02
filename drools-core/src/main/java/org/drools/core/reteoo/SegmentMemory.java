@@ -166,7 +166,7 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
             for (int i = 0, length = pathMemories.size(); i < length; i++) {
                 // do not use foreach, don't want Iterator object creation
                 PathMemory pmem = pathMemories.get(i);
-                pmem.linkNodeWithoutRuleNotify(segmentPosMaskBit);
+                pmem.linkSegmentWithoutRuleNotify(segmentPosMaskBit);
                 dataDrivePmemLinked |= ( pmem.isDataDriven() && pmem.isRuleLinked() );
             }
         }
@@ -260,6 +260,9 @@ public class SegmentMemory extends LinkedList<SegmentMemory>
 
     public void addPathMemory(PathMemory pathMemory) {
         pathMemories.add(pathMemory);
+        if (isSegmentLinked()) {
+            pathMemory.linkSegmentWithoutRuleNotify(segmentPosMaskBit);
+        }
         if (pathMemory.isDataDriven()) {
             if (dataDrivenPathMemories == null) {
                 dataDrivenPathMemories = new ArrayList<>();
