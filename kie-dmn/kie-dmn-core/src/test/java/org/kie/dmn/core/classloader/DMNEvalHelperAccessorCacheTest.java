@@ -16,7 +16,6 @@
 
 package org.kie.dmn.core.classloader;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -114,20 +113,11 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
                 "    }\n" +
                 "    \n" +
                 "}";
-        final ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core.classloader", "DMNEvalHelperAccessorCacheTest-kjar1", UUID.randomUUID().toString());
 
-        final KieFileSystem kfs = ks.newKieFileSystem();
-        kfs.write("src/main/java/org/acme/Person.java", javaSource);
-        kfs.write(ks.getResources().newClassPathResource("personCL.dmn", this.getClass()));
-        kfs.generateAndWritePomXML(kjarReleaseId);
-
-        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
-        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
-
-        return ks.newKieContainer(kjarReleaseId);
+        return createKieContainer(ks, javaSource, "DMNEvalHelperAccessorCacheTest-kjar1", "personCL.dmn");
     }
 
-    private void checkKieContainer1(KieContainer container) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    private void checkKieContainer1(KieContainer container) throws Exception {
         final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_78BDCBE4-32EA-486E-9D81-CCC0D2378C61", "personCL");
         assertThat(dmnModel, notNullValue());
@@ -135,15 +125,7 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
 
         final Object johnDoePerson = container.getClassLoader().loadClass("org.acme.Person").getConstructor(String.class, String.class).newInstance("John", "Doe");
 
-        final DMNContext context = DMNFactory.newContext();
-        context.set("my person", johnDoePerson);
-
-        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
-        LOG.info("{}", dmnResult);
-        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
-
-        final DMNContext result = dmnResult.getContext();
-        assertThat(result.get("Decision-1"), is("Hello, John Doe"));
+        checkDMNEvaluation(runtime, dmnModel, johnDoePerson);
     }
 
     private KieContainer createKieContainer2(KieServices ks) {
@@ -174,11 +156,16 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
                                    "        return builder.toString();\n" +
                                    "    }\n" +
                                    "}";
-        final ReleaseId kjarReleaseId2 = ks.newReleaseId("org.kie.dmn.core.classloader", "DMNEvalHelperAccessorCacheTest-kjar2", UUID.randomUUID().toString());
+
+        return createKieContainer(ks, javaSource2, "DMNEvalHelperAccessorCacheTest-kjar2", "personCL2.dmn");
+    }
+
+    private KieContainer createKieContainer(KieServices ks, String javaSourcePerson, String artifactID, String dmnModelFileName) {
+        final ReleaseId kjarReleaseId2 = ks.newReleaseId("org.kie.dmn.core.classloader", artifactID, UUID.randomUUID().toString());
 
         final KieFileSystem kfs2 = ks.newKieFileSystem();
-        kfs2.write("src/main/java/org/acme/Person.java", javaSource2);
-        kfs2.write(ks.getResources().newClassPathResource("personCL2.dmn", this.getClass()));
+        kfs2.write("src/main/java/org/acme/Person.java", javaSourcePerson);
+        kfs2.write(ks.getResources().newClassPathResource(dmnModelFileName, this.getClass()));
         kfs2.generateAndWritePomXML(kjarReleaseId2);
 
         final KieBuilder kieBuilder2 = ks.newKieBuilder(kfs2).buildAll();
@@ -188,16 +175,23 @@ public class DMNEvalHelperAccessorCacheTest extends BaseInterpretedVsCompiledTes
         return container2;
     }
 
-    private void checkKieContainer2(KieContainer container2) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
+    private void checkKieContainer2(KieContainer container2) throws Exception {
         final DMNRuntime runtime2 = KieRuntimeFactory.of(container2.getKieBase()).get(DMNRuntime.class);
         final DMNModel dmnModel2 = runtime2.getModel("ns2", "personCL2");
+        assertThat(dmnModel2, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel2.getMessages()), dmnModel2.hasErrors(), is(false));
 
         final Object johnDoePerson2 = container2.getClassLoader().loadClass("org.acme.Person").getConstructor(String.class).newInstance("John Doe");
+
+        checkDMNEvaluation(runtime2, dmnModel2, johnDoePerson2);
+    }
+
+    private void checkDMNEvaluation(final DMNRuntime runtime2, final DMNModel dmnModel2, final Object johnDoePerson) {
         final DMNContext context2 = DMNFactory.newContext();
-        context2.set("my person", johnDoePerson2);
+        context2.set("my person", johnDoePerson);
 
         final DMNResult dmnResult2 = runtime2.evaluateAll(dmnModel2, context2);
-        LOG.info("{}", dmnResult2);
+        LOG.debug("{}", dmnResult2);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult2.getMessages()), dmnResult2.hasErrors(), is(false));
 
         final DMNContext result = dmnResult2.getContext();
