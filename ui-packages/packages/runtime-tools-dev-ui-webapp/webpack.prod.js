@@ -3,6 +3,7 @@ const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = merge(common, {
   mode: 'production',
@@ -14,6 +15,11 @@ module.exports = merge(common, {
     new MiniCssExtractPlugin({
       filename: '[name].css',
       chunkFilename: '[name].bundle.css'
+    }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'resources', 'iframe.html'),
+      favicon: 'src/favicon.ico',
+      chunks: ['app']
     })
   ],
   module: {

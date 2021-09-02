@@ -1,6 +1,7 @@
 const path = require('path');
 const merge = require('webpack-merge');
 const common = require('./webpack.common.js');
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const HOST = process.env.HOST || 'localhost';
 const PORT = process.env.PORT || '9000';
@@ -24,8 +25,15 @@ module.exports = merge(common, {
           secure: false,
           changeOrigin: true
       },
-    }
+    },
   },
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, 'resources', 'index.html'),
+      favicon: 'src/favicon.ico',
+      chunks: ['app']
+    })
+  ],
   module: {
     rules: [
       {

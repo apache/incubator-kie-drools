@@ -13,11 +13,6 @@ module.exports = {
     envelope: path.resolve(__dirname, 'src', 'standalone', 'EnvelopeApp.ts')
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, 'resources', 'iframe.html'),
-      favicon: 'src/favicon.ico',
-      chunks: ['app']
-    }),
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Runtime tools dev-ui'
@@ -31,7 +26,7 @@ module.exports = {
       events: {
         onEnd: {
           copy: [
-            { source: './dist/envelope.js', destination: './dist/resources/resources/webapp/envelope.js' },
+            { source: './dist/envelope.js', destination: './dist/resources/webapp/envelope.js' },
           ]
         },
       },
