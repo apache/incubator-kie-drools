@@ -13,7 +13,7 @@
    inkscape:export-xdpi="96"
    inkscape:export-filename="chainedThroughTimeAutomaticDelayUntilLastLoop.png"
    sodipodi:docname="chainedThroughTimeAutomaticDelayUntilLastLoop.svg"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.0.2 (e86c870879, 2021-01-15)"
    version="1.1"
    id="svg2"
    height="600"
@@ -623,10 +623,10 @@
      inkscape:snap-bbox="true"
      inkscape:snap-grids="true"
      inkscape:window-maximized="1"
-     inkscape:window-y="34"
-     inkscape:window-x="0"
-     inkscape:window-height="1009"
-     inkscape:window-width="1920"
+     inkscape:window-y="27"
+     inkscape:window-x="2560"
+     inkscape:window-height="1376"
+     inkscape:window-width="2560"
      gridtolerance="10"
      borderlayer="true"
      width="800px"
@@ -668,7 +668,7 @@
             <dc:title>www.optaplanner.org</dc:title>
           </cc:Agent>
         </dc:creator>
-        <dc:title />
+        <dc:title></dc:title>
         <dc:rights>
           <cc:Agent>
             <dc:title>www.optaplanner.org</dc:title>
@@ -731,7 +731,7 @@
            width="740.00006"
            id="rect4306-3" /></flowRegion><flowPara
          style="font-size:14px;line-height:1.25"
-         id="flowPara4308-6">Loop detection is critical with more than once group of simultaneous tasks. It must be deterministic</flowPara></flowRoot>
+         id="flowPara4308-6">Loop detection is critical with more than one group of simultaneous tasks. It must be deterministic.</flowPara></flowRoot>
     <path
        sodipodi:nodetypes="cc"
        inkscape:connector-curvature="0"
@@ -1678,16 +1678,16 @@
        id="rect1065"
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;vector-effect:none;fill:url(#linearGradient1067);fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:0.999997;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate" />
     <flowRoot
-       transform="translate(382.02944,146.7668)"
+       transform="translate(382.02944,124.7668)"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:21.3333px;line-height:0.01%;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';text-align:center;writing-mode:lr-tb;text-anchor:middle;display:inline;fill:#a40000;fill-opacity:1;stroke:none"
        id="flowRoot1706"
        xml:space="preserve"><flowRegion
          id="flowRegion1702"
          style="font-size:21.3333px;fill:#a40000"><rect
-           style="font-size:21.33333397px;fill:#a40000;"
+           style="font-size:21.3333px;fill:#a40000"
            y="333.23318"
            x="-352.02945"
-           height="100.00002"
+           height="124.00002"
            width="740"
            id="rect1700" /></flowRegion><flowPara
          style="font-weight:normal;font-size:21.3333px;line-height:1.25;fill:#a40000"
@@ -1695,6 +1695,8 @@
          style="font-weight:normal;font-size:21.3333px;line-height:1.25;fill:#a40000"
          id="flowPara1708">regardless of the source of the VariableListener.</flowPara><flowPara
          style="font-weight:normal;font-size:21.3333px;line-height:1.25;fill:#a40000"
-         id="flowPara1710">Therefore, put all shadow variables involved to arrivalTime null (never).</flowPara></flowRoot>
+         id="flowPara1710">To do that, set all shadow variables affected by the loop to null</flowPara><flowPara
+         style="font-weight:normal;font-size:21.3333px;line-height:1.25;fill:#a40000"
+         id="flowPara3601">and penalize them with hard score.</flowPara></flowRoot>
   </g>
 </svg>
