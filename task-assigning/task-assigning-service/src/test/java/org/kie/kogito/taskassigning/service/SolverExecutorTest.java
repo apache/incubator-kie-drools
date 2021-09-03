@@ -126,11 +126,11 @@ class SolverExecutorTest extends RunnableBaseTest<SolverExecutor> {
         verify(eventListener).bestSolutionChanged(event);
 
         runnableBase.stop();
+        verify(solver).terminateEarly();
 
         runnableBase.destroy();
         future.get();
         assertThat(runnableBase.isDestroyed()).isTrue();
-        verify(solver).terminateEarly();
     }
 
     @Test
