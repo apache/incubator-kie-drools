@@ -45,9 +45,10 @@ public class ReactiveFromNodeLeftTuple extends FromNodeLeftTuple {
                                      final boolean leftTupleMemoryEnabled) {
         super(leftTuple, rightTuple, currentLeftChild, currentRightChild, sink, leftTupleMemoryEnabled);
 
-        objects = new Object[leftTuple.getIndex() + 2];
-        System.arraycopy( leftTuple.toObjects(), 0, objects, 0, leftTuple.getIndex()+1 );
-        objects[leftTuple.getIndex()+1] = rightTuple.getFactHandle().getObject();
+        Object[] leftObjects = leftTuple.toObjects();
+        objects = new Object[leftObjects.length + 1];
+        System.arraycopy( leftObjects, 0, objects, 0, leftObjects.length );
+        objects[leftObjects.length] = rightTuple.getFactHandle().getObject();
         hash = Arrays.hashCode( objects );
     }
 
