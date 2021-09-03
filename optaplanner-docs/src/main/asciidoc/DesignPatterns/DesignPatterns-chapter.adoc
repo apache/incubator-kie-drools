@@ -184,7 +184,7 @@ In this pattern, the planning entities are <<chainedPlanningVariable,chained>>.
 The anchor determines the starting time of its first planning entity.
 The second entity's starting time is calculated based on the starting time and duration of the first entity.
 For example, in task assignment, Beth (the anchor) starts working at 8:00, thus her first task starts at 8:00.
-It lasts 52 mins, therefore her second task starts at 8:52.
+It lasts 52 minutes, therefore her second task starts at 8:52.
 The starting time of an entity is usually <<shadowVariable,a shadow variable>>.
 
 An anchor has only one chain.
@@ -213,7 +213,7 @@ if those two customers ordered from the same restaurant around the same time and
 
 image::DesignPatterns/chainedThroughTimeAutomaticCollapse.png[align="center"]
 
-Implement the automatic collapse in the <<customVariableListener,customer variable listener>>
+Implement the automatic collapse in the <<customVariableListener,custom variable listener>>
 that calculates the start and end times of each task.
 
 
@@ -229,7 +229,7 @@ For example when assembling furniture, assembling a bed is a two-person job.
 
 image::DesignPatterns/chainedThroughTimeAutomaticDelayUntilLast.png[align="center"]
 
-Implement the automatic delay in the <<customVariableListener,customer variable listener>>
+Implement the automatic delay in the <<customVariableListener,custom variable listener>>
 that calculates the arrival, start and end times of each task.
 *Separate the arrival time from the start time.*
 Additionally, add loop detection to avoid an infinite loop:
