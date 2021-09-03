@@ -1544,4 +1544,33 @@ public class PropertyReactivityTest extends BaseModelTest {
         KieBuilder kbuilder = createKieBuilder(str);
         assertTrue(kbuilder.getResults().hasMessages(Level.ERROR));
     }
+
+    @Test
+    public void testMvelModifyAfterSingleQuote() {
+        // DROOLS-6542
+        final String str =
+                "import " + Person.class.getCanonicalName() + ";\n" +
+                "dialect \"mvel\"\n" +
+                "\n" +
+                "rule R1 when\n" +
+                "    $p : Person( name == \"Mario\" )\n" +
+                "then\n" +
+                "    System.out.println(\"Mario isn't young\");\n" +
+                "    modify($p) { age = $p.age+1 };\n" +
+                "end\n" +
+                "rule R2 when\n" +
+                "    Person( age == 41 )\n" +
+                "then\n" +
+                "    insert(\"ok\");\n" +
+                "end\n";
+
+        KieSession ksession = getKieSession( str );
+
+        Person p = new Person("Mario", 40);
+        ksession.insert( p );
+        ksession.fireAllRules();
+
+        assertEquals(41, p.getAge());
+        assertEquals(1, ksession.getObjects((Object object) -> object.equals("ok")).size());
+    }
 }

@@ -15,6 +15,8 @@
 
 package org.drools.core.util;
 
+import java.util.List;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
@@ -22,6 +24,7 @@ import org.kie.api.builder.ReleaseId;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.core.util.StringUtils.indexOfOutOfQuotes;
 import static org.drools.core.util.StringUtils.md5Hash;
+import static org.drools.core.util.StringUtils.splitStatements;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
@@ -320,6 +323,18 @@ public class StringUtilsTest {
         public boolean isSnapshot() {
             return snapshot;
         }
+    }
 
+    @Test
+    public void testSplitStatements() {
+        String text =
+                "System.out.println(\"'\");" +
+                "$visaApplication.setValidation( Validation.FAILED );" +
+                "drools.update($visaApplication);";
+        List<String> statements = splitStatements(text);
+        assertEquals(3, statements.size());
+        assertEquals("System.out.println(\"'\")", statements.get(0));
+        assertEquals("$visaApplication.setValidation( Validation.FAILED )", statements.get(1));
+        assertEquals("drools.update($visaApplication)", statements.get(2));
     }
 }
