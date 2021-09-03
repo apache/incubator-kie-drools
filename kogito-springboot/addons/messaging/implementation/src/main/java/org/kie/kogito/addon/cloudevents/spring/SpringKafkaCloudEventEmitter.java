@@ -42,8 +42,6 @@ public class SpringKafkaCloudEventEmitter implements EventEmitter {
 
     @Autowired
     org.springframework.kafka.core.KafkaTemplate<String, String> emitter;
-    @Value(value = "${spring.kafka.bootstrap-servers}")
-    String kafkaBootstrapAddress;
     @Value(value = "${kogito.addon.cloudevents.kafka." + KogitoEventStreams.OUTGOING + ":" + KogitoEventStreams.OUTGOING + "}")
     String defaultTopicName;
     @Autowired
