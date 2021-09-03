@@ -28,19 +28,15 @@ import org.drools.mvel.compiler.Person;
 import org.drools.mvel.compiler.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
 import org.drools.testcoverage.common.util.KieBaseUtil;
-import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.KieUtil;
 import org.drools.testcoverage.common.util.TestParametersUtil;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.KieBase;
-import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
-import org.kie.api.builder.KieModule;
 import org.kie.api.builder.Message.Level;
-import org.kie.api.builder.ReleaseId;
-import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
@@ -59,9 +55,7 @@ public class NamedConsequencesTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-        // TODO: EM failed with testIfElseWithMvelAccessor, testInheritance, testMVELBreak, testMVELNoBreak, testMultipleIfAfterEval
-        // testMultipleIfElseInARow, testMvelInsertWithNamedConsequence, testNonCompilingIFAfterOR, testWrongConsequenceName. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test
@@ -225,6 +219,7 @@ public class NamedConsequencesTest {
         assertTrue( results.contains( "stilton" ) );
     }
 
+    @Ignore("Moved to EdgeCaseNonExecModelTest")
     @Test
     public void testNamedConsequencesInsideOR1() {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
@@ -248,6 +243,7 @@ public class NamedConsequencesTest {
         assertTrue( results.contains( "stilton" ) );
     }
 
+    @Ignore("Moved to EdgeCaseNonExecModelTest")
     @Test
     public void testNamedConsequencesInsideOR2() {
         String str = "import org.drools.mvel.compiler.Cheese;\n " +
