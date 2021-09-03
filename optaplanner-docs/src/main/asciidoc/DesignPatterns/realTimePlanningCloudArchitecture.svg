@@ -669,7 +669,7 @@
            style="font-size:21.33333397px;line-height:1.25"
            id="flowPara1387">Container image</flowPara><flowPara
            id="flowPara1826"
-           style="font-size:21.33333397px;line-height:1.25">my-vehicle-rostering</flowPara></flowRoot>    </g>
+           style="font-size:21.33333397px;line-height:1.25">my-vehicle-routing</flowPara></flowRoot>    </g>
     <path
        style="color:#000000;display:inline;overflow:visible;visibility:visible;opacity:1;fill:none;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;marker:none;enable-background:accumulate"
        d="m 360,189.99995 10,10 -10,10"
@@ -715,7 +715,7 @@
            y="150.00014"
            style="font-size:14px;text-align:center;text-anchor:middle" /></flowRegion><flowPara
          id="flowPara4308-6"
-         style="font-size:14px;line-height:1.25">A statefull architecture that runs the solver in deamon mode.</flowPara></flowRoot>    <rect
+         style="font-size:14px;line-height:1.25">A stateful architecture that runs the solver in daemon mode.</flowPara></flowRoot>    <rect
        ry="4.9999995"
        rx="5"
        y="220.50005"
