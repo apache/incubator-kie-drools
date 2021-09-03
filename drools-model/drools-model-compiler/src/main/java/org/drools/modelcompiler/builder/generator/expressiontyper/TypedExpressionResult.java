@@ -63,6 +63,10 @@ public class TypedExpressionResult {
         return expressionTyperContext.getNullSafeExpressions();
     }
 
+    public Optional<Expression> getInlineCastExpression() {
+        return expressionTyperContext.getInlineCastExpression();
+    }
+
     @Override
     public String toString() {
         return "{" +

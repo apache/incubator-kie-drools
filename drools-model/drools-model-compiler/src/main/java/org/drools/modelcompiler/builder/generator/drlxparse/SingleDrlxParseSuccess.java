@@ -34,6 +34,7 @@ import org.drools.model.Index;
 import org.drools.modelcompiler.builder.generator.DRLIdGenerator;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
+import org.drools.modelcompiler.util.StreamUtils;
 
 import static java.util.Optional.ofNullable;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
@@ -399,6 +400,20 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         newReactOnProperties.addAll( this.reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
+        List<Expression> newNullSafeExpressions = new ArrayList<>();
+        if (operator == BinaryExpr.Operator.OR) {
+            // NullSafeExpressions are combined here because the order is complex
+            this.expr = combinePredicatesWithAnd(this.expr, this.nullSafeExpressions);
+            otherDrlx.expr = combinePredicatesWithAnd(otherDrlx.expr, otherDrlx.nullSafeExpressions);
+            // Also combine implicitCast earlier than null-check
+            this.expr = combinePredicatesWithAnd(this.expr, StreamUtils.optionalToList(this.implicitCastExpression));
+            otherDrlx.expr = combinePredicatesWithAnd(otherDrlx.expr, StreamUtils.optionalToList(otherDrlx.implicitCastExpression));
+        } else {
+            // NullSafeExpressions will be added by PatternDSL.addNullSafeExpr
+            newNullSafeExpressions.addAll(this.nullSafeExpressions);
+            newNullSafeExpressions.addAll(otherDrlx.nullSafeExpressions);
+        }
+
         return new SingleDrlxParseSuccess(patternType, patternBinding, new EnclosedExpr( new BinaryExpr(expr, otherDrlx.expr, operator) ), exprType)
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN)
                 .setUsedDeclarations(newUsedDeclarations)
@@ -410,7 +425,16 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class))
                 .setBoundExpr(left)
                 .setIsPredicate(this.isPredicate && otherDrlx.isPredicate)
+                .setNullSafeExpressions(newNullSafeExpressions)
                 .setExprBinding(this.exprBinding); // only left exprBinding
+    }
+
+    private Expression combinePredicatesWithAnd(Expression mainPredicate, List<Expression> prefixPredicates) {
+        Expression combo = mainPredicate;
+        for (Expression e : prefixPredicates) {
+            combo = new BinaryExpr( e, combo, BinaryExpr.Operator.AND );
+        }
+        return combo;
     }
 
     @Override
