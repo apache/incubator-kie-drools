@@ -15,6 +15,8 @@
 package org.kie.memorycompiler;
 
 
+import java.nio.file.Path;
+
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -32,7 +34,7 @@ import org.kie.memorycompiler.resources.ResourceStore;
  */
 public interface JavaCompiler {
 
-    default void setSourceFolder( String sourceFolder ) { }
+    default void setSourceFolder( Path sourceFolder ) { }
 
     /**
      * factory method to create the underlying default settings
@@ -44,12 +46,12 @@ public interface JavaCompiler {
     /**
      * uses the default compiler settings and the current classloader
      */
-    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore );
+    CompilationResult compile( Path[] resourcePaths, final ResourceReader pReader, final ResourceStore pStore );
 
     /**
      * uses the default compiler settings
      */
-    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader );
+    CompilationResult compile( Path[] resourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader );
 
     /**
      * Compiles the java resources "some/path/to/MyJava.java"
@@ -70,6 +72,6 @@ public interface JavaCompiler {
      * @param pSettings
      * @return always a CompilationResult
      */
-    CompilationResult compile( final String[] pResourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader, final JavaCompilerSettings pSettings );
+    CompilationResult compile(Path[] resourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader, final JavaCompilerSettings pSettings );
 
 }

@@ -15,13 +15,13 @@
 
 package org.drools.compiler.rule.builder.dialect;
 
+import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
 import org.drools.compiler.builder.DroolsAssemblerContext;
-import org.kie.memorycompiler.resources.ResourceReader;
 import org.drools.compiler.lang.descr.ImportDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.compiler.rule.builder.RuleBuildContext;
@@ -29,8 +29,10 @@ import org.drools.compiler.rule.builder.dialect.java.parser.JavaBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaCatchBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaContainerBlockDescr;
 import org.drools.compiler.rule.builder.dialect.java.parser.JavaTryBlockDescr;
+import org.kie.memorycompiler.resources.ResourceReader;
 
 import static org.drools.core.util.ClassUtils.findClass;
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
 
 public final class DialectUtil {
 
@@ -51,19 +53,21 @@ public final class DialectUtil {
             return newName + Math.abs(seed);
         }
 
-        final String fileName = packageName.replace('.', '/') + "/" + newName;
+        final Path filePath = string2Path(packageName, '.');
 
-        if (src == null || !src.isAvailable(fileName + "." + ext)) return newName;
+        if (src == null || !src.isAvailable(filePath.resolve(newName + "." + ext))) {
+            return newName;
+        }
 
         // make sure the class name does not exist, if it does increase the counter
         int counter = -1;
         while (true) {
 
             counter++;
-            final String actualName = fileName + "_" + counter + "." + ext;
+            final Path actualPath = filePath.resolve(newName + "_" + counter + "." + ext);
 
             //MVEL:test null to Fix failing test on MVELConsequenceBuilderTest.testImperativeCodeError()
-            if (!src.isAvailable(actualName)) break;
+            if (!src.isAvailable(actualPath)) break;
         }
         // we have duplicate file names so append counter
         return newName + "_" + counter;

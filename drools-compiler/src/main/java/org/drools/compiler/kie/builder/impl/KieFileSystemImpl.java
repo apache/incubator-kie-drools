@@ -15,13 +15,12 @@
 
 package org.drools.compiler.kie.builder.impl;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.io.UncheckedIOException;
+import java.nio.file.Path;
 import java.util.Properties;
 
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -37,8 +36,9 @@ import org.kie.internal.io.ResourceTypeImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.JAVA_ROOT;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.RESOURCES_ROOT;
+import static org.kie.memorycompiler.resources.PathUtils.JAVA_ROOT;
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
 
 public class KieFileSystemImpl
         implements
@@ -57,17 +57,28 @@ public class KieFileSystemImpl
         this.mfs = mfs;
     }
 
+    @Override
     public KieFileSystem write(String path, byte[] content) {
+        return write(string2Path( path ), content);
+    }
+
+    public KieFileSystem write(Path path, byte[] content) {
         mfs.write( path, content, true );
         return this;
     }
 
+    @Override
     public KieFileSystem write(String path, String text) {
         return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
+    public KieFileSystem write(Path path, String text) {
+        return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
+    }
+
+    @Override
     public KieFileSystem write(String path, Resource resource) {
-        mfs.write( path, resource );
+        mfs.write( string2Path( path ), resource );
         return this;
     }
 
@@ -75,7 +86,7 @@ public class KieFileSystemImpl
         try {
             String target = resource.getTargetPath() != null ? resource.getTargetPath() : resource.getSourcePath();
             if( target != null ) {
-                String prefix = resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT : RESOURCES_ROOT;
+                String prefix = (resource.getResourceType() == ResourceType.JAVA ? JAVA_ROOT.toString() : RESOURCES_ROOT.toString()) + File.separator;
                 int prefixPos = target.indexOf( prefix );
                 String path = prefixPos >= 0 ? target.substring( prefixPos ) : prefix + target;
                 if (resource.getResourceType() == ResourceType.XSD) {
@@ -140,34 +151,5 @@ public class KieFileSystemImpl
 
     public MemoryFileSystem getMfs() {
         return mfs;
-    }
-
-    public KieFileSystem clone() {
-        try {
-            final ByteArrayOutputStream byteArray = writeToByteArray( this );
-            return readFromByteArray( byteArray );
-        } catch ( IOException | ClassNotFoundException ioe ) {
-            logger.warn( "Unable to clone KieFileSystemImpl", ioe );
-            return null;
-        }
-    }
-
-    private KieFileSystem readFromByteArray( final ByteArrayOutputStream byteArrayOutputStream ) throws IOException, ClassNotFoundException {
-        final byte[] byteArray = byteArrayOutputStream.toByteArray();
-        final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream( byteArray );
-        final ObjectInputStream inputStream = new ObjectInputStream( byteArrayInputStream );
-
-        return (KieFileSystem) inputStream.readObject();
-    }
-
-    private ByteArrayOutputStream writeToByteArray( final KieFileSystemImpl obj ) throws IOException {
-        final ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        final ObjectOutputStream outputStream = new ObjectOutputStream( byteArrayOutputStream );
-
-        outputStream.writeObject( obj );
-        outputStream.flush();
-        outputStream.close();
-
-        return byteArrayOutputStream;
     }
 }

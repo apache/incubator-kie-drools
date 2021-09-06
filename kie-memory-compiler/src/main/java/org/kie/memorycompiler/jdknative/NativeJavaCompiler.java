@@ -27,6 +27,8 @@ import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -64,7 +66,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
     }
 
     @Override
-    public CompilationResult compile( String[] pResourcePaths,
+    public CompilationResult compile( Path[] resourcePaths,
                                       ResourceReader pReader,
                                       ResourceStore pStore,
                                       ClassLoader pClassLoader,
@@ -85,7 +87,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
             try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
                 final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
-                for (final String sourcePath : pResourcePaths) {
+                for (final Path sourcePath : resourcePaths) {
                     units.add( new CompilationUnit( sourcePath, pReader ) );
                 }
 
@@ -93,7 +95,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
                 if ( compiler.getTask( null, fileManager, diagnostics, options, null, units ).call() ) {
                     for (CompilationOutput compilationOutput : fileManager.getOutputs()) {
-                        pStore.write( compilationOutput.getBinaryName().replace( '.', '/' ) + ".class", compilationOutput.toByteArray() );
+                        pStore.write( Paths.get(compilationOutput.getBinaryName().replace( '.', File.separatorChar ) + ".class"), compilationOutput.toByteArray() );
                     }
                     return new CompilationResult( new CompilationProblem[0] );
                 }
@@ -117,13 +119,13 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         private final String content;
 
-        CompilationUnit(String name, String content) {
-            super(URI.create("memo:///" + name), Kind.SOURCE);
+        CompilationUnit(Path path, String content) {
+            super(URI.create("memo:///" + path), Kind.SOURCE);
             this.content = content;
         }
 
-        CompilationUnit(String name, ResourceReader pReader) {
-            this(name, new String(pReader.getBytes(name), UTF8_CHARSET));
+        CompilationUnit(Path path, ResourceReader pReader) {
+            this(path, new String(pReader.getBytes(path), UTF8_CHARSET));
         }
 
         @Override

@@ -14,6 +14,7 @@
 
 package org.kie.memorycompiler;
 
+import java.nio.file.Path;
 import java.util.Optional;
 
 /**
@@ -26,13 +27,15 @@ public class JavaCompilerFactory {
     }
 
     public static JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel ) {
-        return loadCompiler( compilerType, lngLevel, "" );
+        return loadCompiler( compilerType, lngLevel, null );
     }
 
-    public static JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel, String sourceFolder ) {
+    public static JavaCompiler loadCompiler( JavaConfiguration.CompilerType compilerType, String lngLevel, Path sourceFolder ) {
         JavaCompiler compiler = createCompiler( compilerType ).orElseThrow( () -> new RuntimeException("Instance of " + compilerType + " compiler cannot be created!") );
         compiler.setJavaCompilerSettings( createSettings( compiler, lngLevel ) );
-        compiler.setSourceFolder(sourceFolder);
+        if (sourceFolder != null) {
+            compiler.setSourceFolder(sourceFolder);
+        }
         return compiler;
     }
 

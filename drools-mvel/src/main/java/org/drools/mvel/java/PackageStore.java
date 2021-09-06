@@ -14,6 +14,7 @@
 
 package org.drools.mvel.java;
 
+import java.nio.file.Path;
 import java.util.List;
 
 import org.kie.memorycompiler.resources.ResourceStore;
@@ -40,38 +41,41 @@ public class PackageStore
         this.javaDialectRuntimeData = javaDialectRuntimeData;
     }
 
-    public void write(final String resourceName,
-                      final byte[] clazzData) {
+    public void write(String resourceName, final byte[] clazzData) {
         try {
-            this.javaDialectRuntimeData.write( resourceName,
-                                               clazzData );
+            this.javaDialectRuntimeData.write( resourceName, clazzData );
         } catch ( final Exception e ) {
-            e.printStackTrace();
             this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName + "'" ) );
         }
     }
 
-    public void write(final String resourceName,
-                      final byte[] clazzData,
-                      boolean createFolder) {
-        write(resourceName, clazzData);
+    @Override
+    public void write(Path resourcePath, final byte[] clazzData) {
+        write(resourcePath.toString(), clazzData);
     }
 
-    public byte[] read(final String resourceName) {
+    @Override
+    public void write(Path resourcePath, byte[] clazzData, boolean createFolder) {
+        write(resourcePath, clazzData);
+    }
+
+    @Override
+    public byte[] read(Path resourcePath) {
         byte[] clazz = null;
         try {
-            clazz = this.javaDialectRuntimeData.read( resourceName );
+            clazz = this.javaDialectRuntimeData.read( resourcePath.toString() );
         } catch ( final Exception e ) {
-            this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourceName + "'" ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourcePath.toString() + "'" ) );
         }
         return clazz;
     }
 
-    public void remove(final String resourceName) {
+    @Override
+    public void remove(Path resourcePath) {
         try {
-            this.javaDialectRuntimeData.remove( resourceName );
+            this.javaDialectRuntimeData.remove( resourcePath.toString() );
         } catch ( final Exception e ) {
-            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'"  ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourcePath.toString() + "'"  ) );
         }
     }
 

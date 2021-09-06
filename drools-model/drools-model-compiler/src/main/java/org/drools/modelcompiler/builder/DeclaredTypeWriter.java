@@ -17,6 +17,8 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
+
 import com.github.javaparser.ast.body.TypeDeclaration;
 
 public class DeclaredTypeWriter {
@@ -39,8 +41,8 @@ public class DeclaredTypeWriter {
                 generatedPojo);
     }
 
-    public String getName() {
-        return pkgModel.getPathName() + "/" + name + ".java";
+    public Path getPath() {
+        return pkgModel.getPath().resolve( name + ".java" );
     }
 
     public String getClassName() {

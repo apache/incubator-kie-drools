@@ -14,13 +14,15 @@
 
 package org.drools.ecj;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.Test;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
-import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -28,8 +30,8 @@ public class JavaCompilerI18NTest {
 
     @Test
     public void testi18NFile () throws Exception {
-        String fileStr = "com/myspace/test/あ.java";
-        List<String> classes = new ArrayList<>();
+        Path fileStr = Paths.get("com", "myspace", "test", "あ.java");
+        List<Path> classes = new ArrayList<>();
         classes.add(fileStr);
 
         MemoryResourceReader reader = new MemoryResourceReader();
@@ -41,8 +43,8 @@ public class JavaCompilerI18NTest {
         EclipseJavaCompilerSettings settings = new EclipseJavaCompilerSettings();
         settings.setSourceVersion( "1.5" );
         settings.setTargetVersion( "1.5" );
-        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, "" );
-        CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), reader, store );
+        EclipseJavaCompiler compiler = new EclipseJavaCompiler( settings, Paths.get("") );
+        CompilationResult res = compiler.compile( classes.toArray( new Path[classes.size()] ), reader, store );
         assertEquals(res.getErrors().length, 0);
 	}
 }

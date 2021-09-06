@@ -16,18 +16,20 @@
 
 package org.kie.dmn.api.core;
 
+import java.nio.file.Path;
+
 public class GeneratedSource {
 
-    private final String fileName;
+    private final Path filePath;
     private final String sourceContent;
 
-    public GeneratedSource(String fileName, String sourceContent) {
-        this.fileName = fileName;
+    public GeneratedSource(Path filePath, String sourceContent) {
+        this.filePath = filePath;
         this.sourceContent = sourceContent;
     }
 
-    public String getFileName() {
-        return fileName;
+    public Path getFilePath() {
+        return filePath;
     }
 
     public String getSourceContent() {
@@ -37,7 +39,7 @@ public class GeneratedSource {
     @Override
     public String toString() {
         return "GeneratedSource{" +
-                "fileName='" + fileName + '\'' +
+                "fileName='" + filePath + '\'' +
                 ", sourceContent='" + sourceContent + '\'' +
                 '}';
     }

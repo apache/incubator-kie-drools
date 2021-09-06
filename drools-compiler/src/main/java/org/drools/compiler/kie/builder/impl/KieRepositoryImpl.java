@@ -144,7 +144,7 @@ public class KieRepositoryImpl
     private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
-        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH );
+        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH.toString() );
         if (kmoduleUrl == null) {
             return null;
         }

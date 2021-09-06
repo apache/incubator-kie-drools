@@ -17,6 +17,9 @@
 
 package org.drools.modelcompiler.util.lambdareplace;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -43,8 +46,8 @@ public class CreatedClass {
         return String.format("%s.%s", packageName, className);
     }
 
-    public String getClassNamePath() {
-        return String.format("%s/%s.java", packageName.replace(".", "/"), className);
+    public Path getClassNamePath() {
+        return Paths.get(packageName.replace('.', File.separatorChar), className + ".java");
     }
 
     @Override

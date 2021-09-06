@@ -37,7 +37,6 @@ import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.core.util.IoUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
@@ -82,11 +81,7 @@ public class GenerateModel {
         MemoryFileSystem mfs = ((MemoryKieModule) ((CanonicalKieModule) kieModule).getInternalKieModule()).getMemoryFileSystem();
         for (String generatedFile : generatedFiles) {
             final MemoryFile f = (MemoryFile) mfs.getFile(generatedFile);
-            final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(),
-                                           "target",
-                                           "generated-sources",
-                                           "bootstrap",
-                                           f.getPath().toPortableString());
+            final Path newFile = Paths.get(kieDmnValidationBaseDir.getAbsolutePath(), "target", "generated-sources", "bootstrap").resolve( f.getPath() );
 
             try {
                 Files.deleteIfExists(newFile); //NOSONAR javasecurity:S2083 base dir kieDmnValidationBaseDir is provided as configuration by design, static analysis exclusion applies to these 3 lines
@@ -101,17 +96,19 @@ public class GenerateModel {
         byte[] droolsModelFileContent = mfs.getMap()
                                            .entrySet()
                                            .stream()
-                                           .filter(kv -> kv.getKey().startsWith(CanonicalKieModule.MODEL_FILE_DIRECTORY) &&
+                                           .filter(kv -> kv.getKey().startsWith(CanonicalKieModule.MODEL_FILE_PATH) &&
                                                          kv.getKey().endsWith(CanonicalKieModule.MODEL_FILE_NAME))
                                            .map(Map.Entry::getValue)
                                            .findFirst()
                                            .orElseThrow(RuntimeException::new);
         List<String> lines = new BufferedReader(new StringReader(new String(droolsModelFileContent))).lines().collect(Collectors.toList());
+
         lines.forEach(LOG::debug);
-        String vbMain = new String(IoUtils.readBytesFromInputStream(ValidationBootstrapMain.class.getResourceAsStream("ValidationBootstrapModels.java")));
         String v1x = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1x.Rules")).findFirst().orElseThrow(RuntimeException::new);
         String v11 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_1.Rules")).findFirst().orElseThrow(RuntimeException::new);
         String v12 = lines.stream().filter(x -> x.startsWith("org.kie.dmn.validation.DMNv1_2.Rules")).findFirst().orElseThrow(RuntimeException::new);
+
+        String vbMain = new String(IoUtils.readBytesFromInputStream(ValidationBootstrapMain.class.getResourceAsStream("ValidationBootstrapModels.java")));
         vbMain = vbMain.replaceAll("\\$V1X_MODEL\\$", v1x);
         vbMain = vbMain.replaceAll("\\$V11_MODEL\\$", v11);
         vbMain = vbMain.replaceAll("\\$V12_MODEL\\$", v12);

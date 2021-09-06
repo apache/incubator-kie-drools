@@ -17,6 +17,7 @@
 package org.drools.modelcompiler.builder;
 
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Objects;
 
 public class GeneratedFile {
@@ -36,23 +37,23 @@ public class GeneratedFile {
         PMML;
     }
 
-    private final String path;
+    private final Path path;
     private final byte[] data;
     private final Type type;
 
-    public GeneratedFile(String path, String data) {
+    public GeneratedFile(Path path, String data) {
         this(Type.RULE, path, data);
     }
 
-    private GeneratedFile(String path, byte[] data) {
+    private GeneratedFile(Path path, byte[] data) {
         this(Type.RULE, path, data);
     }
 
-    public GeneratedFile(Type type, String path, String data) {
+    public GeneratedFile(Type type, Path path, String data) {
         this(type, path, data.getBytes(StandardCharsets.UTF_8));
     }
 
-    private GeneratedFile(Type type, String path, byte[] data) {
+    private GeneratedFile(Type type, Path path, byte[] data) {
         this.type = type;
         this.path = path;
         this.data = data;
@@ -62,7 +63,7 @@ public class GeneratedFile {
         return data;
     }
 
-    public String getPath() {
+    public Path getPath() {
         return path;
     }
 

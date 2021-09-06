@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -28,11 +29,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.BuildContext;
-import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -81,7 +81,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         ModelWriter modelWriter = new ModelWriter();
         Collection<String> modelFiles = new HashSet<>();
-        Collection<String> sourceFiles = new HashSet<>();
+        Collection<Path> sourceFiles = new HashSet<>();
 
         Map<String, List<String>> modelsByKBase = new HashMap<>();
         for (Map.Entry<String, ModelBuilderImpl> modelBuilder : modelBuilders.entrySet()) {
@@ -97,13 +97,13 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
         InternalKieModule kieModule = getInternalKieModule();
         ModelSourceClass modelSourceClass = new ModelSourceClass( kieModule.getReleaseId(), kieModule.getKieModuleModel().getKieBaseModels(), modelsByKBase, hasDynamicClassLoader() );
-        String projectSourcePath = modelWriter.getBasePath() + "/" + modelSourceClass.getName();
+        Path projectSourcePath = modelWriter.getBasePath().resolve( modelSourceClass.getName() );
         srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
-        Set<String> origFileNames = new HashSet<>(trgMfs.getFileNames());
+        Set<Path> origFileNames = new HashSet<>(trgMfs.getFilePaths());
 
-        String[] sources = sourceFiles.toArray(new String[sourceFiles.size()]);
+        Path[] sources = sourceFiles.toArray(new Path[sourceFiles.size()]);
         if (sources.length != 0) {
             CompilationResult res = getCompiler().compile(sources, srcMfs, trgMfs, getClassLoader());
 
@@ -123,9 +123,9 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
         }
 
         if (ProjectClassLoader.isEnableStoreFirst()) {
-            Set<String> generatedClassPaths = new HashSet<>(trgMfs.getFileNames());
+            Set<Path> generatedClassPaths = new HashSet<>(trgMfs.getFilePaths());
             generatedClassPaths.removeAll(origFileNames);
-            Set<String> generatedClassNames = generatedClassPaths.stream().map(ClassUtils::convertResourceToClassName).collect(Collectors.toSet());
+            Set<String> generatedClassNames = generatedClassPaths.stream().map(ClassUtils::convertPathToClassName).collect(Collectors.toSet());
             modelWriter.writeGeneratedClassNamesFile(generatedClassNames, trgMfs, getInternalKieModule().getReleaseId());
         }
 

@@ -17,6 +17,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -28,18 +29,19 @@ import org.drools.core.util.Drools;
 import org.kie.api.builder.ReleaseId;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
-import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.CanonicalKieModule.getGeneratedClassNamesFile;
+import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
+import static org.kie.memorycompiler.resources.PathUtils.JAVA_ROOT;
 
 public class ModelWriter {
 
-    private final String basePath;
+    private final Path basePath;
 
     public ModelWriter() {
-        this("src/main/java");
+        this(JAVA_ROOT);
     }
 
-    public ModelWriter(String basePath) {
+    public ModelWriter(Path basePath) {
         this.basePath = basePath;
     }
 
@@ -52,9 +54,9 @@ public class ModelWriter {
             modelFiles.addAll( pkgSources.getModelNames() );
         }
 
-        List<String> sourceFiles = new ArrayList<>();
+        List<Path> sourceFiles = new ArrayList<>();
         for (GeneratedFile generatedFile : generatedFiles) {
-            String path = basePath + "/" + generatedFile.getPath();
+            Path path = basePath.resolve( generatedFile.getPath() );
             sourceFiles.add(path);
             srcMfs.write(path, generatedFile.getData());
         }
@@ -66,7 +68,7 @@ public class ModelWriter {
         return basePath + "/" + folderName + "/" + nameAsString + ".java";
     }
 
-    public String getBasePath() {
+    public Path getBasePath() {
         return basePath;
     }
 
@@ -92,15 +94,15 @@ public class ModelWriter {
 
     public static class Result {
 
-        private final List<String> sourceFiles;
+        private final List<Path> sourceFiles;
         private final List<String> modelFiles;
 
-        public Result(List<String> sourceFiles, List<String> modelFiles) {
+        public Result(List<Path> sourceFiles, List<String> modelFiles) {
             this.sourceFiles = sourceFiles;
             this.modelFiles = modelFiles;
         }
 
-        public List<String> getSourceFiles() {
+        public List<Path> getSourceFiles() {
             return sourceFiles;
         }
 

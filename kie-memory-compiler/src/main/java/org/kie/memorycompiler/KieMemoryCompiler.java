@@ -16,6 +16,7 @@
 
 package org.kie.memorycompiler;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,8 @@ import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
 
 import static org.kie.memorycompiler.JavaConfiguration.findJavaVersion;
+import static org.kie.memorycompiler.resources.PathUtils.toClassName;
+import static org.kie.memorycompiler.resources.PathUtils.toJavaSourcePath;
 
 public class KieMemoryCompiler {
 
@@ -115,12 +118,12 @@ public class KieMemoryCompiler {
     public static Map<String, byte[]> compileNoLoad(Map<String, String> classNameSourceMap, ClassLoader classLoader, JavaCompilerSettings compilerSettings, JavaConfiguration.CompilerType compilerType) {
         MemoryResourceReader reader = new MemoryResourceReader();
         MemoryResourceStore store = new MemoryResourceStore();
-        String[] classNames = new String[classNameSourceMap.size()];
+        Path[] classPaths = new Path[classNameSourceMap.size()];
 
         int i = 0;
         for (Map.Entry<String, String> entry : classNameSourceMap.entrySet()) {
-            classNames[i] = toJavaSource( entry.getKey() );
-            reader.add( classNames[i], entry.getValue().getBytes());
+            classPaths[i] = toJavaSourcePath( entry.getKey() );
+            reader.add( classPaths[i], entry.getValue().getBytes());
             i++;
         }
         JavaConfiguration javaConfiguration = new JavaConfiguration();
@@ -128,34 +131,19 @@ public class KieMemoryCompiler {
         javaConfiguration.setJavaLanguageLevel(findJavaVersion());
         JavaCompiler compiler = JavaCompilerFactory.loadCompiler(javaConfiguration);
         CompilationResult res = compilerSettings == null ?
-                compiler.compile( classNames, reader, store, classLoader) :
-                compiler.compile( classNames, reader, store, classLoader, compilerSettings);
+                compiler.compile( classPaths, reader, store, classLoader) :
+                compiler.compile( classPaths, reader, store, classLoader, compilerSettings);
 
         if (res.getErrors().length > 0) {
             throw new KieMemoryCompilerException(Arrays.toString( res.getErrors() ));
         }
 
         Map<String, byte[]> toReturn = new HashMap<>();
-        for (Map.Entry<String, byte[]> entry : store.getResources().entrySet()) {
+        for (Map.Entry<Path, byte[]> entry : store.getResources().entrySet()) {
             toReturn.put(toClassName( entry.getKey() ), entry.getValue());
         }
 
         return toReturn;
-    }
-
-    private static String toJavaSource( String s ) {
-        return s.replace( '.', '/' ) + ".java";
-    }
-
-    private static String toClassSource( String s ) {
-        return s.replace( '.', '/' ) + ".class";
-    }
-
-    private static String toClassName( String s ) {
-        if (s.endsWith(".class")) {
-            s = s.substring(0, s.length()-6);
-        }
-        return s.replace( '/', '.' );
     }
 
     public static class MemoryCompilerClassLoader extends ClassLoader {

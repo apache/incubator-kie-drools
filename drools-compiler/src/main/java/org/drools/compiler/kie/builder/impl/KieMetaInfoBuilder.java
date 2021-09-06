@@ -14,6 +14,7 @@
 
 package org.drools.compiler.kie.builder.impl;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,7 +23,6 @@ import java.util.Map;
 import java.util.Set;
 
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.factmodel.ClassDefinition;
@@ -36,8 +36,10 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 import static org.drools.core.util.Drools.hasMvel;
+import static org.kie.memorycompiler.resources.PathUtils.toClassSourcePath;
 
 public class KieMetaInfoBuilder {
 
@@ -81,11 +83,12 @@ public class KieMetaInfoBuilder {
                     }
 
                     String className = factType.getName();
-                    String internalName = className.replace('.', '/') + ".class";
+                    Path internalPathName = toClassSourcePath(className);
+                    String internalName = internalPathName.toString();
                     if (trgMfs != null) {
                         byte[] bytes = runtimeData.getBytecode( internalName );
                         if ( bytes != null ) {
-                            trgMfs.write( internalName, bytes, true );
+                            trgMfs.write( internalPathName, bytes, true );
                         }
                     }
                     types.add( internalName );

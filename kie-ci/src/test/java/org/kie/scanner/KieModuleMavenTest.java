@@ -18,6 +18,7 @@ package org.kie.scanner;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -189,10 +190,10 @@ public class KieModuleMavenTest extends AbstractKieCiTest {
         def.addField(new FieldDefinition("text", String.class.getName()));
         byte[] messageClazz = new DefaultBeanClassBuilder(true).buildClass(def,null);
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.write(pojoNS.replace('.', '/') + "/" + className+".class", messageClazz);
+        mfs.write(Paths.get(pojoNS.replace('.', File.separatorChar), className + ".class"), messageClazz);
         byte[] pomContent = generatePomXml(pojoID).getBytes();
-        mfs.write("META-INF/maven/" + pojoID.getGroupId() + "/" + pojoID.getArtifactId() + "/pom.xml", pomContent);
-        mfs.write("META-INF/maven/" + pojoID.getGroupId() + "/" + pojoID.getArtifactId() + "/pom.properties", generatePomProperties(pojoID).getBytes());
+        mfs.write(Paths.get("META-INF", "maven", pojoID.getGroupId(), pojoID.getArtifactId(), "pom.xml"), pomContent);
+        mfs.write(Paths.get("META-INF", "maven", pojoID.getGroupId(), pojoID.getArtifactId(), "pom.properties"), generatePomProperties(pojoID).getBytes());
         byte[] pojojar = mfs.writeAsBytes();
         MavenRepository.getMavenRepository().installArtifact(pojoID, pojojar, pomContent);
 

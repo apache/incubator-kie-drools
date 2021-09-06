@@ -15,6 +15,7 @@
 
 package org.drools.compiler.compiler;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -141,7 +142,7 @@ public interface Dialect {
 
     default boolean isJava() { return true; }
 
-    default void addSrc(String resourceName, byte[] content) {
+    default void addSrc(Path resourcePath, byte[] content) {
         throw new UnsupportedOperationException();
     }
 

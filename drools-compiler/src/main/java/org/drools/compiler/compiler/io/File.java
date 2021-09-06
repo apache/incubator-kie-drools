@@ -29,6 +29,4 @@ public interface File extends FileSystemItem {
     void setContents(InputStream is) throws IOException;
 
     void create(InputStream is) throws IOException;
-    
-    Path getPath();
 }

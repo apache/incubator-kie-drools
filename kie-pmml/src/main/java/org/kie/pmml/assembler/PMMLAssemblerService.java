@@ -17,6 +17,7 @@ package org.kie.pmml.assembler;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -58,6 +59,7 @@ import org.kie.pmml.pmml_4_2.PMMLResource;
 import static org.kie.api.pmml.PMMLConstants.LEGACY;
 import static org.kie.internal.pmml.PMMLImplementationsUtil.isjPMMLAvailableToClassLoader;
 import static org.kie.internal.pmml.PMMLImplementationsUtil.toEnable;
+import static org.kie.memorycompiler.resources.PathUtils.JAVA_ROOT;
 
 /**
  * This implementation is deprecated and will be removed in future releases.
@@ -70,7 +72,6 @@ public class PMMLAssemblerService implements KieAssemblerService {
     private ClassLoader rootClassLoader;
     private KnowledgeBuilderConfigurationImpl configuration;
     private KnowledgeBuilderImpl kbuilder;
-    private static final String JAVA_ROOT = "src/main/java/";
     private static final PMML4Compiler pmmlCompiler = new PMML4Compiler();
 
     @Override
@@ -222,17 +223,17 @@ public class PMMLAssemblerService implements KieAssemblerService {
             }
 
             ResourceReader src = ((KieFileSystemImpl) javaSource).asMemoryFileSystem();
-            List<String> javaFileNames = getJavaFileNames(src);
-            if (javaFileNames != null && !javaFileNames.isEmpty()) {
+            List<Path> javaFilePaths = getJavaFilePaths(src);
+            if (javaFilePaths != null && !javaFilePaths.isEmpty()) {
                 ClassLoader classLoader = rootClassLoader;
                 KnowledgeBuilderConfigurationImpl kconf = new KnowledgeBuilderConfigurationImpl(classLoader);
                 JavaDialectConfiguration javaConf = (JavaDialectConfiguration) kconf.getDialectConfiguration("java");
                 MemoryFileSystem trgMfs = new MemoryFileSystem();
-                compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
+                compileJavaClasses(javaConf, rootClassLoader, javaFilePaths, JAVA_ROOT, src, trgMfs);
                 Map<String, byte[]> classesMap = new HashMap<>();
 
-                for (String name : trgMfs.getFileNames()) {
-                    classesMap.put(name, trgMfs.getBytes(name));
+                for (Path path : trgMfs.getFilePaths()) {
+                    classesMap.put(path.toString(), trgMfs.getBytes(path));
                 }
                 if (!classesMap.isEmpty()) {
                     ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
@@ -245,29 +246,29 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private List<String> getJavaFileNames(ResourceReader src) {
-        List<String> javaFileNames = new ArrayList<>();
-        for (String fname : src.getFileNames()) {
-            if (fname.endsWith(".java")) {
+    private List<Path> getJavaFilePaths(ResourceReader src) {
+        List<Path> javaFileNames = new ArrayList<>();
+        for (Path fname : src.getFilePaths()) {
+            if (fname.toString().endsWith(".java")) {
                 javaFileNames.add(fname);
             }
         }
         return javaFileNames;
     }
 
-    private void compileJavaClasses( JavaDialectConfiguration javaConf, ClassLoader classLoader, List<String> javaFiles,
-                                     String rootFolder, ResourceReader source, MemoryFileSystem trgMfs) {
+    private void compileJavaClasses( JavaDialectConfiguration javaConf, ClassLoader classLoader, List<Path> javaFiles,
+                                     Path rootFolder, ResourceReader source, MemoryFileSystem trgMfs) {
         if (!javaFiles.isEmpty()) {
-            String[] sourceFiles = javaFiles.toArray(new String[javaFiles.size()]);
+            Path[] sourceFiles = javaFiles.toArray(new Path[javaFiles.size()]);
             File dumpDir = javaConf.getPackageBuilderConfiguration().getDumpDir();
             if (dumpDir != null) {
                 String dumpDirName;
                 try {
                     dumpDirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath()
                             : dumpDir.getCanonicalPath() + "/";
-                    for (String srcFile : sourceFiles) {
-                        String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.substring(JAVA_ROOT.length())
-                                : srcFile).replaceAll("/", ".");
+                    for (Path srcFile : sourceFiles) {
+                        String baseName = (srcFile.startsWith(JAVA_ROOT) ? srcFile.subpath(JAVA_ROOT.getNameCount(), srcFile.getNameCount()) : srcFile)
+                                .toString().replace(File.separatorChar, '.');
 
                         String fname = dumpDirName + baseName;
                         byte[] srcData = source.getBytes(srcFile);
@@ -294,7 +295,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         }
     }
 
-    private JavaCompiler createCompiler( JavaConfiguration javaConf, String sourceFolder ) {
+    private JavaCompiler createCompiler( JavaConfiguration javaConf, Path sourceFolder ) {
         JavaCompiler javaCompiler = JavaCompilerFactory.loadCompiler( javaConf );
         javaCompiler.setSourceFolder( sourceFolder );
         return javaCompiler;

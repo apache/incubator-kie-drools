@@ -17,6 +17,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,20 +65,21 @@ public class PackageModelWriter {
 
     public static class DomainClassesMetadata {
 
-        private final String name, source;
+        private final String source;
+        private final Path path;
 
         DomainClassesMetadata(PackageModel packageModel) {
-            this(packageModel.getPathName() + "/" + DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + ".java",
+            this(packageModel.getPath().resolve( DOMAIN_CLASSESS_METADATA_FILE_NAME + packageModel.getPackageUUID() + ".java" ),
                     packageModel.getDomainClassesMetadataSource());
         }
 
-        DomainClassesMetadata(String name, String source) {
-            this.name = name;
+        DomainClassesMetadata(Path path, String source) {
+            this.path = path;
             this.source = source;
         }
 
-        public String getName() {
-            return name;
+        public Path getPath() {
+            return path;
         }
 
         public String getSource() {

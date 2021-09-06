@@ -15,6 +15,8 @@
 package org.kie.memorycompiler;
 
 
+import java.nio.file.Path;
+
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -26,7 +28,7 @@ public abstract class AbstractJavaCompiler implements JavaCompiler {
 
     private JavaCompilerSettings javaCompilerSettings;
 
-    public CompilationResult compile( final String[] pClazzNames, final ResourceReader pReader, final ResourceStore pStore ) {
+    public CompilationResult compile( Path[] resourcePaths, final ResourceReader pReader, final ResourceStore pStore ) {
 
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
@@ -34,11 +36,11 @@ public abstract class AbstractJavaCompiler implements JavaCompiler {
             classLoader = this.getClass().getClassLoader();
         }
 
-        return compile(pClazzNames, pReader, pStore, classLoader, createDefaultSettings());
+        return compile(resourcePaths, pReader, pStore, classLoader, createDefaultSettings());
     }
 
-    public CompilationResult compile( final String[] pClazzNames, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader ) {
-        return compile(pClazzNames, pReader, pStore, pClassLoader, javaCompilerSettings != null ? javaCompilerSettings : createDefaultSettings());
+    public CompilationResult compile(Path[] resourcePaths, final ResourceReader pReader, final ResourceStore pStore, final ClassLoader pClassLoader ) {
+        return compile(resourcePaths, pReader, pStore, pClassLoader, javaCompilerSettings != null ? javaCompilerSettings : createDefaultSettings());
     }
 
     public void setJavaCompilerSettings( JavaCompilerSettings javaCompilerSettings ) {

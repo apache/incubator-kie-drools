@@ -14,34 +14,35 @@
 
 package org.kie.memorycompiler.resources;
 
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MemoryResourceStore implements ResourceStore {
 
-    private final Map<String, byte[]> resources = new HashMap<>();
+    private final Map<Path, byte[]> resources = new HashMap<>();
 
     @Override
-    public void write( String pResourceName, byte[] pResourceData ) {
-        resources.put( pResourceName, pResourceData );
+    public void write(Path resourcePath, byte[] pResourceData ) {
+        resources.put( resourcePath, pResourceData );
     }
 
     @Override
-    public void write( String pResourceName, byte[] pResourceData, boolean createFolder ) {
-        resources.put( pResourceName, pResourceData );
+    public void write( Path resourcePath, byte[] pResourceData, boolean createFolder ) {
+        resources.put( resourcePath, pResourceData );
     }
 
     @Override
-    public byte[] read( String pResourceName ) {
-        return resources.get( pResourceName );
+    public byte[] read( Path resourcePath ) {
+        return resources.get( resourcePath );
     }
 
     @Override
-    public void remove( String pResourceName ) {
-        resources.remove( pResourceName );
+    public void remove( Path resourcePath ) {
+        resources.remove( resourcePath );
     }
 
-    public Map<String, byte[]> getResources() {
+    public Map<Path, byte[]> getResources() {
         return resources;
     }
 }

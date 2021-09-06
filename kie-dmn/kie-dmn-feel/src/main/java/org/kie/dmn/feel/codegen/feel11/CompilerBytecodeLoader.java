@@ -16,6 +16,9 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -44,6 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parse;
 import static org.drools.compiler.compiler.JavaDialectConfiguration.createNativeCompiler;
+import static org.kie.memorycompiler.resources.PathUtils.toClassName;
 
 public class CompilerBytecodeLoader {
 
@@ -73,8 +77,8 @@ public class CompilerBytecodeLoader {
                 throw new UnsupportedOperationException("Cannot jit classload on this platform.");
             }
             Class<?> loadedClass = null;
-            for (Entry<String, byte[]> kv : pStore.getMap().entrySet() ) {
-                final String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
+            for (Entry<Path, byte[]> kv : pStore.getMap().entrySet() ) {
+                final String className = toClassName( kv.getKey() );
                 final Class<?> definedClass = defineClass(className, kv.getValue(), 0, kv.getValue().length);
                 if (string.equals(className)) {
                     loadedClass = definedClass;
@@ -109,10 +113,11 @@ public class CompilerBytecodeLoader {
     public  <T> T compileUnit(String cuPackage, String cuClass, CompilationUnit cu) {
         try {
             MemoryResourceReader pReader = new MemoryResourceReader();
-            pReader.add(cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java", cu.toString().getBytes());
+            Path sourcePath = Paths.get(cuPackage.replace('.', File.separatorChar), cuClass + ".java");
+            pReader.add(sourcePath, cu.toString().getBytes());
             JavaCompiler compiler = createNativeCompiler();
             MemoryFileSystem pStore = new MemoryFileSystem();
-            CompilationResult compilationResult = compiler.compile(new String[]{cuPackage.replaceAll("\\.", "/") + "/" + cuClass + ".java"},
+            CompilationResult compilationResult = compiler.compile(new Path[]{sourcePath},
                                                                    pReader,
                                                                    pStore,
                                                                    this.getClass().getClassLoader());

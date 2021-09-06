@@ -16,6 +16,7 @@
 package org.drools.compiler.compiler.io;
 
 
+import java.nio.file.Path;
 
 public interface FileSystem {
     Folder getRootFolder();

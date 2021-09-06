@@ -15,7 +15,10 @@
 package org.drools.serialization.protobuf.kie;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -25,7 +28,6 @@ import java.util.Set;
 
 import com.google.protobuf.ByteString;
 import org.drools.compiler.builder.InternalKnowledgeBuilder;
-import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieMetaInfoBuilder;
@@ -39,6 +41,7 @@ import org.kie.api.definition.KiePackage;
 import org.kie.api.definition.rule.Rule;
 import org.kie.api.definition.type.FactType;
 import org.kie.internal.builder.KnowledgeBuilder;
+import org.kie.memorycompiler.resources.ResourceStore;
 
 public class MarshallingKieMetaInfoBuilder extends KieMetaInfoBuilder {
 
@@ -69,11 +72,11 @@ public class MarshallingKieMetaInfoBuilder extends KieMetaInfoBuilder {
                     }
 
                     String className = factType.getName();
-                    String internalName = className.replace('.', '/') + ".class";
+                    String internalName = className.replace('.', File.separatorChar) + ".class";
                     if (trgMfs != null) {
                         byte[] bytes = runtimeData.getBytecode( internalName );
                         if ( bytes != null ) {
-                            trgMfs.write( internalName, bytes, true );
+                            trgMfs.write( Paths.get(internalName), bytes, true );
                         }
                     }
                     types.add( internalName );
@@ -129,7 +132,7 @@ public class MarshallingKieMetaInfoBuilder extends KieMetaInfoBuilder {
         try {
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             KieModuleCacheHelper.writeToStreamWithHeader( out, _kmoduleCache );
-            String compilatonDataPath = "META-INF/" + kieBaseName.replace( '.', '/' ) + "/kbase.cache";
+            Path compilatonDataPath = Paths.get("META-INF", kieBaseName.replace( '.', File.separatorChar ), "kbase.cache");
             trgMfs.write( compilatonDataPath, out.toByteArray(), true );
         } catch ( IOException e ) {
             // what to do here?

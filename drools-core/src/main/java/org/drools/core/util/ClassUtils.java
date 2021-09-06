@@ -29,6 +29,7 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.file.Path;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.security.ProtectionDomain;
@@ -126,7 +127,11 @@ public final class ClassUtils {
      * org/my/Class.xxx -> org.my.Class
      */
     public static String convertResourceToClassName(final String pResourceName) {
-        return stripExtension(pResourceName).replace('/', '.');
+        return stripExtension(pResourceName).replace(File.separatorChar, '.');
+    }
+
+    public static String convertPathToClassName(final Path resourcePath) {
+        return convertResourceToClassName(resourcePath.toString());
     }
 
     /**
@@ -138,8 +143,7 @@ public final class ClassUtils {
     }
 
     public static String convertClassToResourcePath(final String pName) {
-        return pName.replace( '.',
-                              '/' ) + ".class";
+        return pName.replace( '.', File.separatorChar ) + ".class";
     }
 
     /**

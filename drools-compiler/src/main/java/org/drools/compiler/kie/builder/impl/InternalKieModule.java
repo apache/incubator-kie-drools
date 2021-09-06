@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -84,6 +85,13 @@ public interface InternalKieModule extends KieModule, Serializable {
     
     boolean hasResource( String fileName );
     InternalResource getResource( String fileName );
+
+    default boolean hasResource( Path filePath ) {
+        return hasResource(filePath.toString());
+    }
+    default InternalResource getResource( Path filePath ) {
+        return getResource(filePath.toString());
+    }
 
     ResourceConfiguration getResourceConfiguration( String fileName );
     
@@ -165,7 +173,7 @@ public interface InternalKieModule extends KieModule, Serializable {
             return null;
         }
         try (ZipFile zipFile = new ZipFile(jar)) {
-            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH.toString());
             if (zipEntry != null) {
                 return internalCreateKieModule( releaseId, jar, zipFile, zipEntry );
             }

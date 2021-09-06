@@ -17,6 +17,8 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
+
 import com.github.javaparser.ast.body.TypeDeclaration;
 
 public class AccumulateClassWriter {
@@ -42,7 +44,7 @@ public class AccumulateClassWriter {
                 generatedClassWithPackage.getGeneratedClass());
     }
 
-    public String getName() {
-        return pkgModel.getPathName() + "/" + name + ".java";
+    public Path getPath() {
+        return pkgModel.getPath().resolve( name + ".java" );
     }
 }

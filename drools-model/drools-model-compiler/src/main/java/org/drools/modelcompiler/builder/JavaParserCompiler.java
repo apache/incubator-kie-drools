@@ -16,6 +16,9 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
@@ -79,7 +82,7 @@ public class JavaParserCompiler {
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
 
-        String[] resources = writeModel(classes, srcMfs);
+        Path[] resources = writeModel(classes, srcMfs);
         CompilationResult resultCompilation = createDefaultCompiler().compile(resources, srcMfs, trgMfs, classLoader);
         CompilationProblem[] errors = resultCompilation.getErrors();
         if (errors.length != 0) {
@@ -108,9 +111,9 @@ public class JavaParserCompiler {
 
     private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
         List<String> classNames = new ArrayList<>();
-        for (Map.Entry<String, byte[]> entry : trgMfs.getMap().entrySet()) {
-            String fileName = entry.getKey();
-            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
+        for (Map.Entry<Path, byte[]> entry : trgMfs.getMap().entrySet()) {
+            String fileName = entry.getKey().toString();
+            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( File.separatorChar, '.' );
             classNames.add(className);
             if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {
                 ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());
@@ -119,19 +122,19 @@ public class JavaParserCompiler {
         return classNames;
     }
 
-    private static String[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {
-        List<String> sources = new ArrayList<>();
+    private static Path[] writeModel(List<GeneratedClassWithPackage> classes, MemoryFileSystem srcMfs ) {
+        List<Path> sources = new ArrayList<>();
 
         for (GeneratedClassWithPackage generatedPojo : classes) {
             final String pkgName = generatedPojo.getPackageName();
-            final String folderName = pkgName.replace( '.', '/' );
+            final String folderName = pkgName.replace( '.', File.separatorChar );
             final TypeDeclaration generatedClass = generatedPojo.getGeneratedClass();
-            final String varsSourceName = String.format("src/main/java/%s/%s.java", folderName, generatedClass.getName());
-            srcMfs.write(varsSourceName, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes());
-            sources.add( varsSourceName );
+            final Path varsSourcePath = Paths.get("src", "main", "java", folderName, generatedClass.getName() + ".java");
+            srcMfs.write(varsSourcePath, toPojoSource(pkgName, generatedPojo.getImports(), generatedPojo.getStaticImports(), generatedClass).getBytes());
+            sources.add( varsSourcePath );
         }
 
-        return sources.toArray( new String[sources.size()] );
+        return sources.toArray( new Path[sources.size()] );
     }
 
     public static String toPojoSource(String pkgName, Collection<String> imports, Collection<String> staticImports, TypeDeclaration pojo) {
@@ -160,7 +163,7 @@ public class JavaParserCompiler {
                 return super.loadClass( className );
             } catch (ClassNotFoundException cnfe) { }
 
-            String fileName = className.replace( '.', '/' ) + ".class";
+            String fileName = className.replace( '.', File.separatorChar ) + ".class";
             byte[] bytes = mfs.getBytes(fileName);
 
             if (bytes == null) {

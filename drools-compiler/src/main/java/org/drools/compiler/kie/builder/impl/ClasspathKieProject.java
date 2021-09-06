@@ -27,6 +27,7 @@ import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.nio.file.Path;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -107,13 +108,13 @@ public class ClasspathKieProject extends AbstractKieProject {
     }
 
     public void discoverKieModules() {
-        String[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
-        for ( String configFile : configFiles) {
+        Path[] configFiles = {KieModuleModelImpl.KMODULE_JAR_PATH, KieModuleModelImpl.KMODULE_SPRING_JAR_PATH};
+        for ( Path configFile : configFiles) {
             final Set<URL> resources = new HashSet<>();
             try {
                 ClassLoader currentClassLoader = classLoader;
                 while (currentClassLoader != null) {
-                    Enumeration<URL> list = currentClassLoader.getResources(configFile);
+                    Enumeration<URL> list = currentClassLoader.getResources(configFile.toString());
                     while (list.hasMoreElements()) {
                         resources.add(list.nextElement());
                     }
@@ -409,7 +410,7 @@ public class ClasspathKieProject extends AbstractKieProject {
         } else {
             if (url.toString().contains("-spring.xml")){
                 urlPath = urlPath.substring( 0, urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_SPRING_JAR_PATH).length() );
-            } else if (url.toString().endsWith(KieModuleModelImpl.KMODULE_JAR_PATH)) {
+            } else if (url.toString().endsWith(KieModuleModelImpl.KMODULE_FILE_NAME)) {
                 urlPath = urlPath.substring( 0,
                         urlPath.length() - ("/" + KieModuleModelImpl.KMODULE_JAR_PATH).length() );
             }

@@ -22,6 +22,8 @@ import org.kie.memorycompiler.JavaConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.memorycompiler.resources.PathUtils.JAVA_ROOT;
+
 public class JavaDialectConfiguration extends JavaConfiguration implements DialectConfiguration {
     private static final Logger logger = LoggerFactory.getLogger(JavaDialectConfiguration.class);
 
@@ -45,15 +47,15 @@ public class JavaDialectConfiguration extends JavaConfiguration implements Diale
     }
 
     public static JavaCompiler createDefaultCompiler() {
-        return JavaCompilerFactory.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION, "src/main/java/");
+        return JavaCompilerFactory.loadCompiler(DEFAULT_JAVA_CONFIGURATION.getCompiler(), DEFAULT_JAVA_VERSION, JAVA_ROOT);
     }
 
     public static JavaCompiler createNativeCompiler() {
-        return JavaCompilerFactory.loadCompiler(CompilerType.NATIVE, DEFAULT_JAVA_VERSION, "src/main/java/");
+        return JavaCompilerFactory.loadCompiler(CompilerType.NATIVE, DEFAULT_JAVA_VERSION, JAVA_ROOT);
     }
 
     public static JavaCompiler createEclipseCompiler() {
-        return JavaCompilerFactory.loadCompiler(CompilerType.ECLIPSE, DEFAULT_JAVA_VERSION, "src/main/java/");
+        return JavaCompilerFactory.loadCompiler(CompilerType.ECLIPSE, DEFAULT_JAVA_VERSION, JAVA_ROOT);
     }
 
     @Override

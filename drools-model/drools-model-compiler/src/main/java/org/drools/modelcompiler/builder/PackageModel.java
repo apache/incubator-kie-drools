@@ -16,7 +16,10 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.io.File;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -209,7 +212,11 @@ public class PackageModel {
     }
 
     public String getPathName() {
-        return name.replace('.', '/');
+        return name.replace('.', File.separatorChar);
+    }
+
+    public Path getPath() {
+        return Paths.get(getPathName());
     }
 
     public String getRulesFileNameWithPackage() {

@@ -16,110 +16,47 @@
 package org.drools.compiler.compiler.io.memory;
 
 import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 
 import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.FileSystemItem;
-import org.drools.core.util.StringUtils;
+import org.drools.compiler.compiler.io.Folder;
 
-public class MemoryFolder
-        implements
-        Folder,
-        Serializable {
+import static org.drools.compiler.compiler.io.memory.MemoryFileSystem.ROOT_PATH;
+
+public class MemoryFolder implements Folder, Serializable {
     private MemoryFileSystem mfs;
 
-    private String           path;
+    private Path path;
     
-    private MemoryPath       mPath;
-    
-    private MemoryFolder     pFolder;
-
-    public MemoryFolder(MemoryFileSystem mfs,
-                        String path) {
+    public MemoryFolder(MemoryFileSystem mfs, Path path) {
         this.mfs = mfs;
-        this.path = path;
+        this.path = path != null ? path : ROOT_PATH;
     }
     
     public String getName() {
-        int lastSlash = path.lastIndexOf( '/' );
-        if ( lastSlash >= 0 ) {
-            return path.substring( lastSlash+1 );
-        } else {
-            return path;
-        }
+        return path.getFileName().toString();
     }
 
     public Path getPath() {
-        if ( mPath == null ) {
-            mPath = new MemoryPath( path );
-        }
-        return mPath;
+        return path;
     }
 
     public File getFile(String name) {
-        if ( !StringUtils.isEmpty( path )) {
-            return mfs.getFile( path + "/" + name );
-        } else {
-            return mfs.getFile( name );
-        }
+        return mfs.getFile( path.resolve(name) );
     }
 
     public Folder getFolder(String name) {
-        if ( !StringUtils.isEmpty( path )) {
-            return mfs.getFolder( path + "/" + name );
-        } else {
-            return mfs.getFolder( name );
-        }
+        return mfs.getFolder( path.resolve(name) );
     }
 
-    public Folder getParent() {
-        if ( pFolder == null ) {
-            String p = trimLeadingAndTrailing( path );
-            
-            if ( p.indexOf( '/' ) == -1 ) {
-                pFolder = new MemoryFolder( mfs,
-                                         "" );            
-            } else {           
-                String[] elements = p.split( "/" );
-        
-                String newPath = "";
-                boolean first = true;
-                for ( int i = 0; i < elements.length - 1; i++ ) {
-                    if ( !StringUtils.isEmpty( elements[i] ) ) {
-                        if ( !first ) {
-                            newPath = newPath + "/";
-                        }
-                        newPath = newPath + elements[i];
-                        first = false;
-                    }
-                }
-                pFolder = new MemoryFolder( mfs,
-                                            newPath );
-            }
-        }
-        
-        return pFolder;
+    public MemoryFolder getParent() {
+        Path parent = path.getParent();
+        return new MemoryFolder(mfs, parent != null ? parent : ROOT_PATH);
     }
     
-    
-    public static String trimLeadingAndTrailing(String p) {
-        if (p.isEmpty()) {
-            return p;
-        }
-        while ( p.charAt( 0 ) == '/') {
-            p = p.substring( 1 );
-        }
-
-        while ( p.charAt( p.length() -1 ) == '/') {
-            p = p.substring( 0, p.length() -1 );
-        } 
-        
-        return p;
-    }
-
     public Collection<? extends FileSystemItem> getMembers() {
         Collection<? extends FileSystemItem> members = mfs.getMembers( this );
         return members != null ? members : Collections.emptyList();
@@ -130,7 +67,6 @@ public class MemoryFolder
     }
 
     public boolean create() {
-        path = trimLeadingAndTrailing( path );
         mfs.createFolder( this );
         return true;
     }

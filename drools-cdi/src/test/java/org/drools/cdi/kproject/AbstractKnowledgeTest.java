@@ -18,22 +18,13 @@ package org.drools.cdi.kproject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.jdknative.NativeJavaCompiler;
-import org.drools.compiler.compiler.io.File;
-import org.drools.compiler.compiler.io.FileSystemItem;
-import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.util.FileManager;
-import org.drools.core.util.IoUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.kie.api.KieBase;
@@ -281,96 +272,5 @@ public class AbstractKnowledgeTest {
                 "        return kBase3kSession4;\n" +
                 "    }\n" +
                 "}\n";
-    }
-
-    public List<String> compile(KieModuleModel kproj,
-                                MemoryFileSystem srcMfs,
-                                MemoryFileSystem trgMfs,
-                                List<String> classes) {
-        for ( KieBaseModel kbase : kproj.getKieBaseModels().values() ) {
-            Folder srcFolder = srcMfs.getFolder( "src/main/resources/" + kbase.getName() );
-            Folder trgFolder = trgMfs.getFolder(kbase.getName());
-
-            copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
-        }
-
-        Folder srcFolder = srcMfs.getFolder( "META-INF" );
-        Folder trgFolder = trgMfs.getFolder( "META-INF" );
-        trgFolder.create();
-
-        copyFolder( srcMfs, srcFolder, trgMfs, trgFolder, kproj );
-
-        JavaCompiler compiler = new NativeJavaCompiler();
-        CompilationResult res = compiler.compile( classes.toArray( new String[classes.size()] ), trgMfs, trgMfs );
-
-        if ( res.getErrors().length > 0 ) {
-            fail( res.getErrors()[0].getMessage() );
-        }
-
-        List<String> classes2 = new ArrayList<String>( classes.size() );
-        for ( String str : classes ) {
-            classes2.add( filenameToClassname( str ) );
-        }
-
-        return classes2;
-    }
-
-    public static String filenameToClassname(String filename) {
-        return filename.substring( 0, filename.lastIndexOf( ".java" ) ).replace( '/', '.' ).replace( '\\', '.' );
-    }
-
-    public void copyFolder(MemoryFileSystem srcMfs,
-                           Folder srcFolder,
-                           MemoryFileSystem trgMfs,
-                           Folder trgFolder,
-                           KieModuleModel kproj) {
-        if ( !trgFolder.exists() ) {
-            trgMfs.getFolder( trgFolder.getPath() ).create();
-        }
-
-        Collection<FileSystemItem> col = (Collection<FileSystemItem>) srcFolder.getMembers();
-        if (col == null) {
-            return;
-        }
-
-        for ( FileSystemItem rs : col ) {
-            if ( rs instanceof Folder ) {
-                copyFolder( srcMfs, (Folder) rs, trgMfs, trgFolder.getFolder( ((Folder) rs).getName() ), kproj );
-            } else {
-                MemoryFile trgFile = (MemoryFile) trgFolder.getFile( ((File) rs).getName() );
-
-                try {
-                    trgMfs.setFileContents( trgFile, srcMfs.getFileContents( (MemoryFile) rs ) );
-                } catch ( IOException e ) {
-                    throw new RuntimeException( e );
-                }
-            }
-        }
-    }
-
-    public void writeFs(String outFilename, MemoryFileSystem mfs) {
-        java.io.File file = fileManager.newFile( outFilename );
-        file.mkdir();
-        writeFs(mfs, mfs.getRootFolder(), file);
-    }
-
-    public void writeFs(MemoryFileSystem mfs,
-                        Folder f,
-                        java.io.File file1) {
-        for ( FileSystemItem rs : f.getMembers() ) {
-            if ( rs instanceof Folder ) {
-                java.io.File file2 = new java.io.File( file1, ((Folder) rs).getName());
-                file2.mkdir();
-                writeFs( mfs, (Folder) rs, file2 );
-            } else {
-                byte[] bytes = mfs.getFileContents( (MemoryFile) rs );
-
-                try {
-                    IoUtils.write(new java.io.File(file1, ((File) rs).getName()), bytes);
-                } catch ( IOException e ) {
-                    fail( "Unable to write project to file system\n" + e.getMessage() );
-                }
-            }
-        }
     }
 }

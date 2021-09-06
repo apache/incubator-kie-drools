@@ -513,7 +513,7 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
     private void addPackageFromScoreCard(final String pmmlString, final String fileName) throws DroolsParserException, IOException  {
         final File dumpDir = this.configuration.getDumpDir();
         if (dumpDir != null) {
-            final String dirName = dumpDir.getCanonicalPath().endsWith("/") ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + "/";
+            final String dirName = dumpDir.getCanonicalPath().endsWith(File.separator) ? dumpDir.getCanonicalPath() : dumpDir.getCanonicalPath() + File.separator;
             final String outputPath = dirName + fileName;
             try (final FileOutputStream fos = new FileOutputStream(outputPath)) {
                 fos.write(pmmlString.getBytes());

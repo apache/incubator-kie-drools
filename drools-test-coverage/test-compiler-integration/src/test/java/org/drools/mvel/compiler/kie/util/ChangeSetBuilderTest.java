@@ -253,7 +253,7 @@ public class ChangeSetBuilderTest {
                 when( kieJar.getBytes( fileName ) ).thenReturn( drls[i].getBytes() );
             }
         }
-        when( kieJar.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH ) ).thenReturn( createKieProjectWithPackages(ks, releaseId).toXML().getBytes() );
+        when( kieJar.getBytes( KieModuleModelImpl.KMODULE_JAR_PATH.toString() ) ).thenReturn( createKieProjectWithPackages(ks, releaseId).toXML().getBytes() );
         when( kieJar.getFileNames() ).thenReturn( drlFs );
         return ( InternalKieModule ) kieJar;
     }

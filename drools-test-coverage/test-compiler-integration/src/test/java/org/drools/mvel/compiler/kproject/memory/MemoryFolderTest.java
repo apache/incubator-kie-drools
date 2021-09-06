@@ -17,6 +17,7 @@ package org.drools.mvel.compiler.kproject.memory;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
@@ -28,29 +29,30 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
 
 public class MemoryFolderTest {
     
     @Test
     public void testGetParentWithLeadingAndTrailingSlash() {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        assertEquals( "", new MemoryFolder( mfs, "/src" ).getParent().getPath().toPortableString() );
+        assertEquals( "/", new MemoryFolder( mfs, string2Path("/src") ).getParent().getPath().toString() );
         
-        assertEquals( "", new MemoryFolder( mfs, "src/" ).getParent().getPath().toPortableString() );
+        assertEquals( "", new MemoryFolder( mfs, string2Path("src/") ).getParent().getPath().toString() );
         
-        assertEquals( "", new MemoryFolder( mfs, "/src/" ).getParent().getPath().toPortableString() );
+        assertEquals( "/", new MemoryFolder( mfs, string2Path("/src/") ).getParent().getPath().toString() );
         
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().toPortableString() );
+        assertEquals( "/src", new MemoryFolder( mfs, string2Path("/src/main") ).getParent().getPath().toString() );
         
-        assertEquals( "src", new MemoryFolder( mfs, "src/main/" ).getParent().getPath().toPortableString() );
+        assertEquals( "src", new MemoryFolder( mfs, string2Path("src/main/") ).getParent().getPath().toString() );
         
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().toPortableString() ); 
+        assertEquals( "/src", new MemoryFolder( mfs, string2Path("/src/main/") ).getParent().getPath().toString() );
         
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().toPortableString() );
+        assertEquals( "/src/main", new MemoryFolder( mfs, string2Path("/src/main/java") ).getParent().getPath().toString() );
         
-        assertEquals( "src/main", new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().toPortableString() );
+        assertEquals( "src/main", new MemoryFolder( mfs, string2Path("src/main/java/") ).getParent().getPath().toString() );
         
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().toPortableString() );                
+        assertEquals( "/src/main", new MemoryFolder( mfs, string2Path("/src/main/java/") ).getParent().getPath().toString() );
     }
     
     
@@ -77,80 +79,11 @@ public class MemoryFolderTest {
         Folder mres = fs.getFolder( "src/main/resources" );
         mres.create();
         
-        assertEquals( "src/main", mres.getParent().getPath().toPortableString() );
+        assertEquals( "src/main", mres.getParent().getPath().toString() );
         
-        assertEquals( "src", mres.getParent().getParent().getPath().toPortableString() );
+        assertEquals( "src", mres.getParent().getParent().getPath().toString() );
         
     }    
-    
-    @Test
-    public void testNestedRelativePath() {
-        FileSystem fs = new MemoryFileSystem();
-        
-        Folder f1 = fs.getFolder( "src/main/java" );
-        Folder f2 = fs.getFolder( "src/main/java/org" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "org", f2.getPath().toRelativePortableString( f1.getPath() ) );
-        
-        fs = new MemoryFileSystem();
-        
-        f1 = fs.getFolder( "src/main/java" );
-        f2 = fs.getFolder( "src/main/java/org/drools/reteoo" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "org/drools/reteoo", f2.getPath().toRelativePortableString( f1.getPath() ) );                
-    }    
-    
-    @Test
-    public void testNestedRelativePathReverseArguments() {
-        FileSystem fs = new MemoryFileSystem();
-        
-        Folder f1 = fs.getFolder( "src/main/java/org" );
-        Folder f2 = fs.getFolder( "src/main/java/" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "..", f2.getPath().toRelativePortableString( f1.getPath() ) );
-        
-        fs = new MemoryFileSystem();
-        
-        f1 = fs.getFolder( "src/main/java/org/drools/reteoo" );
-        f2 = fs.getFolder( "src/main/java" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "../../..", f2.getPath().toRelativePortableString( f1.getPath() ) );                
-    }
-    
-    @Test
-    public void testNestedRelativeDifferentPath() {
-        FileSystem fs = new MemoryFileSystem();
-        
-        Folder f1 = fs.getFolder( "src/main/java" );
-        Folder f2 = fs.getFolder( "src/main/resources" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "../resources", f2.getPath().toRelativePortableString( f1.getPath() ) );
-        
-        fs = new MemoryFileSystem();
-        
-        f1 = fs.getFolder( "src/main/java/org/drools" );
-        f2 = fs.getFolder( "src/main/resources/org/drools/reteoo" );
-        
-        f1.create();
-        f2.create();
-        
-        assertEquals( "../../../resources/org/drools/reteoo", f2.getPath().toRelativePortableString( f1.getPath() ) );                
-    }     
     
     @Test
     public void testFolderRemoval() throws IOException {
@@ -194,20 +127,12 @@ public class MemoryFolderTest {
     }
 
     @Test
-    public void trimLeadingAndTrailing() {
-        assertEquals("", MemoryFolder.trimLeadingAndTrailing(""));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main"));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("src/main/"));
-        assertEquals("src/main", MemoryFolder.trimLeadingAndTrailing("/src/main/"));
-    }
-
-    @Test
     public void testCreateAndCopyFolder() {
         MemoryFileSystem memoryFileSystem = new MemoryFileSystem();
 
         // this also creates a folder if it doesn't exist
         final Folder emptyFolder = memoryFileSystem.getFolder("emptyfolder");
-        final MemoryFolder destinationFolder = new MemoryFolder(memoryFileSystem, "destinationfolder");
+        final MemoryFolder destinationFolder = new MemoryFolder(memoryFileSystem, Paths.get("destinationfolder"));
         memoryFileSystem.createFolder(destinationFolder);
         memoryFileSystem.copyFolder(emptyFolder, memoryFileSystem, destinationFolder);
     }

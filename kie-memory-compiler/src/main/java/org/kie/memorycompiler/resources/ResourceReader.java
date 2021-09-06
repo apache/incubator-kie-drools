@@ -14,6 +14,7 @@
 
 package org.kie.memorycompiler.resources;
 
+import java.nio.file.Path;
 import java.util.Collection;
 
 /**
@@ -21,10 +22,10 @@ import java.util.Collection;
  */
 public interface ResourceReader {
 
-    boolean isAvailable( final String pResourceName );
-    byte[] getBytes( final String pResourceName );
-    Collection<String> getFileNames();
+    boolean isAvailable( Path resourcePath );
+    byte[] getBytes( Path resourcePath );
+    Collection<Path> getFilePaths();
 
     void mark();
-    Collection<String> getModifiedResourcesSinceLastMark();
+    Collection<Path> getModifiedResourcesSinceLastMark();
 }

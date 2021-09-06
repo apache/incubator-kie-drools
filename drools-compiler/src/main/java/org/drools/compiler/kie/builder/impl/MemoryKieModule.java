@@ -25,7 +25,9 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -76,7 +78,17 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
+    public boolean isAvailable(Path path) {
+        return mfs.existsFile( path );
+    }
+
+    @Override
     public byte[] getBytes(String path) {
+        return mfs.getBytes( path );
+    }
+
+    @Override
+    public byte[] getBytes(Path path) {
         return mfs.getBytes( path );
     }
 
@@ -86,8 +98,13 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
+    public Collection<Path> getFilePaths() {
+        return mfs.getFilePaths();
+    }
+
+    @Override
     public Collection<String> getFileNames() {
-        return mfs.getFileNames();
+        return getFilePaths().stream().map(Path::toString).collect(Collectors.toList());
     }
 
     public MemoryFileSystem getMemoryFileSystem() {
@@ -98,7 +115,7 @@ public class MemoryKieModule extends AbstractKieModule
         mfs.mark();
     }
 
-    public Collection<String> getModifiedResourcesSinceLastMark() {
+    public Collection<Path> getModifiedResourcesSinceLastMark() {
         return mfs.getModifiedResourcesSinceLastMark();
     }
 
@@ -314,7 +331,7 @@ public class MemoryKieModule extends AbstractKieModule
             if (members != null) {
                 for (FileSystemItem resource : members) {
                     // take just the name of the member, no the whole path
-                    sb.append(resource.getPath().toRelativePortableString(folder.getPath()));
+                    sb.append(folder.getPath().relativize(resource.getPath()));
                     // append "\n" to be in sync with the JDK's ClassLoader (returns "\n" even on Windows)
                     sb.append("\n");
                 }

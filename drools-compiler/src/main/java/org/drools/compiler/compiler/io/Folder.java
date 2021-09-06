@@ -28,8 +28,6 @@ public interface Folder extends FileSystemItem {
     
     Folder getFolder(String name);
     
-    Path getPath();
-    
     Folder getParent();
     
     Collection<? extends FileSystemItem> getMembers();

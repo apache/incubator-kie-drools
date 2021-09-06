@@ -17,6 +17,8 @@ package org.drools.compiler.kproject.models;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,10 +32,11 @@ import static org.drools.compiler.kproject.models.KieModuleMarshaller.MARSHALLER
 public class KieModuleModelImpl implements KieModuleModel {
 
     public static final String KMODULE_FILE_NAME = "kmodule.xml";
-    public static final String KMODULE_JAR_PATH = "META-INF/" + KMODULE_FILE_NAME;
-    public static final String KMODULE_INFO_JAR_PATH = "META-INF/kmodule.info";
-    public static final String KMODULE_SRC_PATH = "src/main/resources/" + KMODULE_JAR_PATH;
-    public static final String KMODULE_SPRING_JAR_PATH = "META-INF/kmodule-spring.xml";
+    public static final String KMODULE_INFO_FILE_NAME = "kmodule.info";
+    public static final Path KMODULE_JAR_PATH = Paths.get("META-INF", KMODULE_FILE_NAME);
+    public static final Path KMODULE_INFO_JAR_PATH = Paths.get("META-INF", KMODULE_INFO_FILE_NAME);
+    public static final Path KMODULE_SRC_PATH = Paths.get("src", "main", "resources", "META-INF", KMODULE_FILE_NAME);;
+    public static final Path KMODULE_SPRING_JAR_PATH = Paths.get("META-INF", "kmodule-spring.xml");;
 
     private Map<String, String> confProps = new HashMap<String, String>();
     private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();

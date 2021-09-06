@@ -74,7 +74,7 @@ public class JavaDialectRuntimeData
 
     private final Map<String, byte[]>      classLookups = new ConcurrentHashMap<>();
 
-    private Map<String, byte[]>            store = new HashMap<String, byte[]>();
+    private final Map<String, byte[]>      store = new HashMap<>();
 
     private transient ClassLoader          classLoader;
 

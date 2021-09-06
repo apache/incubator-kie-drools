@@ -17,17 +17,22 @@
 package org.drools.compiler.runtime.pipeline.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.StringReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
 
 import com.sun.codemodel.CodeWriter;
 import com.sun.codemodel.JCodeModel;
@@ -37,10 +42,7 @@ import com.sun.tools.xjc.ErrorReceiver;
 import com.sun.tools.xjc.ModelLoader;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.model.Model;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.drools.compiler.compiler.Dialect;
 import org.drools.compiler.compiler.PackageRegistry;
 import org.drools.compiler.compiler.ProjectJavaCompiler;
@@ -74,6 +76,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.help.DroolsJaxbHelperProvider;
+import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXParseException;
 
@@ -148,8 +151,8 @@ public class DroolsJaxbHelperProviderImpl
 
         boolean useProjectClassLoader = kBuilder.getRootClassLoader() instanceof ProjectClassLoader;
 
-        List<String> classNames = new ArrayList<String>();
-        List<String> srcNames = new ArrayList<String>();
+        List<String> classNames = new ArrayList<>();
+        List<Path> srcNames = new ArrayList<>();
 
         for ( Entry<String, byte[]> entry : codeWriter.getMap().entrySet() ) {
             String name = entry.getKey();
@@ -173,12 +176,12 @@ public class DroolsJaxbHelperProviderImpl
             }
 
             if (useProjectClassLoader) {
-                String srcName = convertToResource( entry.getKey() );
-                src.add( srcName, entry.getValue() );
-                srcNames.add( srcName );
+                Path srcPath = convertToResourcePath( entry.getKey() );
+                src.add( srcPath, entry.getValue() );
+                srcNames.add( srcPath );
             } else {
                 Dialect dialect = pkgReg.getDialectCompiletimeRegistry().getDialect( "java" );
-                dialect.addSrc( convertToResource( entry.getKey() ), entry.getValue() );
+                dialect.addSrc( convertToResourcePath( entry.getKey() ), entry.getValue() );
             }
         }
 
@@ -259,12 +262,9 @@ public class DroolsJaxbHelperProviderImpl
         }
     }
 
-    private static String convertToResource(String string) {
+    private static Path convertToResourcePath(String string) {
         int lastDot = string.lastIndexOf( '.' );
-        return string.substring( 0,
-                                 lastDot ).replace( '.',
-                                                    '/' ) + string.substring( lastDot,
-                                                                              string.length() );
+        return Paths.get(string.substring( 0, lastDot ).replace( '.', File.separatorChar ) + string.substring( lastDot ));
     }
 
     public static class MapVfsCodeWriter extends CodeWriter {

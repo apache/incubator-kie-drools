@@ -17,6 +17,8 @@
 package org.kie.pmml.models.drools.provider;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -230,16 +232,16 @@ public class DroolsModelProviderTest {
         PackageDescr packageDescr = knowledgeBuilder.getPackageDescrs("PACKAGE_NAME").get(0);
         final List<GeneratedFile> retrieved = droolsModelProvider.generateRulesFiles(packageDescr);
         assertNotNull(retrieved);
-        final String rootPath = "PACKAGE_NAME/";
+        final Path rootPath = Paths.get("PACKAGE_NAME");
         packageDescr.getTypeDeclarations().forEach(typeDeclarationDescr -> {
-            String expectedPath = rootPath + typeDeclarationDescr.getTypeName() + ".java";
+            Path expectedPath = rootPath.resolve( typeDeclarationDescr.getTypeName() + ".java" );
             assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedPath)));
         });
         String pkgUUID = packageDescr.getPreferredPkgUUID().get();
-        String expectedRule = rootPath + "Rules" + pkgUUID + ".java";
-        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedRule)));
-        String expectedDomain = rootPath + "DomainClassesMetadata" + pkgUUID + ".java";
-        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomain)));
+        Path expectedRulePath = rootPath.resolve( "Rules" + pkgUUID + ".java" );
+        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedRulePath)));
+        Path expectedDomainPath = rootPath.resolve( "DomainClassesMetadata" + pkgUUID + ".java" );
+        assertTrue(retrieved.stream().anyMatch(generatedFile -> generatedFile.getPath().equals(expectedDomainPath)));
     }
     
     private void commonVerifyRulesSourcesMap( Map<String, String> toVerify,  PackageDescr packageDescr, String rootPath) {

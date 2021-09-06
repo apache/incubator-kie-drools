@@ -16,6 +16,7 @@
 
 package org.drools.ancompiler;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Collection;
@@ -36,7 +37,7 @@ public class ObjectTypeNodeCompiler {
 
     private static final String NEWLINE = "\n";
     private static final String PACKAGE_NAME = "org.drools.ancompiler";
-    private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', '/');
+    private static final String BINARY_PACKAGE_NAME = PACKAGE_NAME.replace('.', File.separatorChar);
     /**
      * This field hold the fully qualified class name that the {@link ObjectTypeNode} is representing.
      */
@@ -209,21 +210,12 @@ public class ObjectTypeNodeCompiler {
     }
 
     /**
-     * Returns the fully qualified binary name of the generated subclass of {@link CompiledNetwork}
-     *
-     * @return binary name of generated class
-     */
-    private String getBinaryName() {
-        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".class";
-    }
-
-    /**
      * Returns the fully qualified source name of the generated subclass of {@link CompiledNetwork}
      *
      * @return binary name of generated class
      */
     private String getSourceName() {
-        return BINARY_PACKAGE_NAME + "/" + generatedClassSimpleName + ".java";
+        return BINARY_PACKAGE_NAME + File.separatorChar + generatedClassSimpleName + ".java";
     }
 
     private String getPackageName() {

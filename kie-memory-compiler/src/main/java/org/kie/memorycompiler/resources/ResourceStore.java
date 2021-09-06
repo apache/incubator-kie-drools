@@ -14,13 +14,15 @@
 
 package org.kie.memorycompiler.resources;
 
+import java.nio.file.Path;
+
 /**
  * A Store is where the compilers are storing the results
  */
 public interface ResourceStore {
 
-    void write( final String pResourceName, final byte[] pResourceData );
-    void write( final String pResourceName, final byte[] pResourceData, boolean createFolder );
-    byte[] read( final String pResourceName );
-    void remove( final String pResourceName );
+    void write( Path resourcePath, byte[] pResourceData );
+    void write( Path resourcePath, byte[] pResourceData, boolean createFolder );
+    byte[] read( Path resourcePath );
+    void remove( Path resourcePath );
 }

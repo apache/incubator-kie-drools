@@ -22,10 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.PrintStream;
 import java.io.Serializable;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -40,20 +41,21 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
-import org.kie.memorycompiler.resources.ResourceReader;
-import org.kie.memorycompiler.resources.ResourceStore;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.FileSystem;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
 import org.kie.api.io.Resource;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
 
 public class MemoryFileSystem
     implements
@@ -64,36 +66,34 @@ public class MemoryFileSystem
 
     private static final Logger log = LoggerFactory.getLogger( MemoryFileSystem.class );
 
-    private final MemoryFolder               folder;
+    static final Path ROOT_PATH = Paths.get("");
 
-    private final Map<String, Set<FileSystemItem>> folders = new HashMap<>();
+    private final MemoryFolder folder;
 
-    private final Map<String, Folder>        folderMap = new HashMap<>();
+    private final Map<Path, Set<FileSystemItem>> folders = new HashMap<>();
 
-    private final Map<String, InternalResource> fileContents = new HashMap<>();
+    private final Map<Path, Folder> folderMap = new HashMap<>();
 
-    private Set<String>                      modifiedFilesSinceLastMark;
+    private final Map<Path, InternalResource> fileContents = new HashMap<>();
+
+    private Set<Path> modifiedFilesSinceLastMark;
 
     public MemoryFileSystem() {
-        folder = new MemoryFolder( this, "" );
-        folders.put( "", new HashSet<FileSystemItem>() );
+        folder = new MemoryFolder( this, ROOT_PATH );
+        folders.put( ROOT_PATH, new HashSet<>() );
     }
 
     public Folder getRootFolder() {
         return folder;
     }
 
-    public File getFile(Path path) {
-        return getFile( path.toPortableString() );
-    }
-
-    public Collection<String> getFileNames() {
+    public Collection<Path> getFilePaths() {
         return fileContents.keySet();
     }
 
-    public Map<String, byte[]> getMap() {
-        Map<String, byte[]> bytesMap = new HashMap<>();
-        for (Entry<String, InternalResource> kv : fileContents.entrySet() ) {
+    public Map<Path, byte[]> getMap() {
+        Map<Path, byte[]> bytesMap = new HashMap<>();
+        for (Entry<Path, InternalResource> kv : fileContents.entrySet() ) {
             bytesMap.put( kv.getKey(), resourceToBytes( kv.getValue() ) );
         }
         return bytesMap;
@@ -102,41 +102,29 @@ public class MemoryFileSystem
     private byte[] resourceToBytes(Resource resource) {
         return resource != null ? (( InternalResource )resource).getBytes() : null;
     }
-    
-    public File getFile(String path) {   
-        path = MemoryFolder.trimLeadingAndTrailing( path );
-        int lastSlashPos = path.lastIndexOf( '/' );
-        if ( lastSlashPos >= 0 ) {
-            Folder folder = getFolder( path.substring( 0,
-                                                       lastSlashPos ) );
-            String name = path.substring( lastSlashPos + 1 );
-            return new MemoryFile( this,
-                                   name,
-                                   folder );
-        } else {
-            // path is already at root
-            Folder folder = getRootFolder();
-            return new MemoryFile( this,
-                                   path,
-                                   folder );
-        }
+
+    public File getFile(Path path) {
+        return new MemoryFile( this, path.toFile().getName(), getFolder(path.getParent()) );
+    }
+
+    public File getFile(String path) {
+        return getFile(string2Path(path));
     }
 
     public Folder getFolder(Path path) {
-        return getFolder( path.toPortableString() );
+        return folderMap.computeIfAbsent(path, p -> new MemoryFolder( this, p ));
     }
 
     public Folder getFolder(String path) {
-        Folder folder = folderMap.get(path);
-        if (folder == null) {
-            folder = new MemoryFolder( this, path );
-            folderMap.put( path, folder );
-        }
-        return folder;
+        return getFolder(string2Path(path));
     }
 
     public Set< ? extends FileSystemItem> getMembers( Folder folder) {
-        return folders.get( folder.getPath().toPortableString() );
+        return folders.get( folder.getPath() );
+    }
+
+    public byte[] getFileContents(Path path) {
+        return resourceToBytes( getResource(path) );
     }
 
     public byte[] getFileContents(MemoryFile file) {
@@ -144,77 +132,84 @@ public class MemoryFileSystem
     }
 
     public InternalResource getResource(MemoryFile file) {
-        return fileContents.get( file.getPath().toPortableString() );
+        return getResource( file.getPath() );
     }
 
-    public void setFileContents(MemoryFile file, byte[] contents) throws IOException {
+    public InternalResource getResource(Path path) {
+        return fileContents.get( path );
+    }
+
+    public void setFileContents(MemoryFile file, byte[] contents) {
         setFileContents(file, new ByteArrayResource( contents ));
     }
 
-    public void setFileContents(MemoryFile file, Resource resource) throws IOException {
+    public void setFileContents(MemoryFile file, Resource resource) {
         if ( !existsFolder( (MemoryFolder) file.getFolder() ) ) {
             createFolder( (MemoryFolder) file.getFolder() );
         }
 
-        String fileName = file.getPath().toPortableString();
+        Path filePath = file.getPath();
         if (modifiedFilesSinceLastMark != null) {
             byte[] contents = resourceToBytes( resource );
-            byte[] oldContent = resourceToBytes( fileContents.get( fileName ) );
+            byte[] oldContent = resourceToBytes( fileContents.get( filePath ) );
             if (oldContent == null || !Arrays.equals(oldContent, contents)) {
-                modifiedFilesSinceLastMark.add(fileName);
+                modifiedFilesSinceLastMark.add(filePath);
             }
         }
-        fileContents.put( fileName, (InternalResource) resource );
-        resource.setSourcePath( file.getPath().toPortableString() );
-        folders.get( file.getFolder().getPath().toPortableString() ).add( file );
+        fileContents.put( filePath, (InternalResource) resource );
+        resource.setSourcePath( file.getPath().toString() );
+        folders.get( file.getFolder().getPath() ).add( file );
     }
 
+    @Override
     public void mark() {
-        modifiedFilesSinceLastMark = new HashSet<String>();
+        modifiedFilesSinceLastMark = new HashSet<>();
     }
 
-    public Collection<String> getModifiedResourcesSinceLastMark() {
+    @Override
+    public Collection<Path> getModifiedResourcesSinceLastMark() {
         return modifiedFilesSinceLastMark;
     }
 
     public boolean existsFolder(MemoryFolder folder) {
-        return existsFolder( folder.getPath().toPortableString() );
+        return existsFolder( folder.getPath() );
+    }
+
+    public boolean existsFolder(Path path) {
+        return folders.containsKey(path);
     }
 
     public boolean existsFolder(String path) {
-        if (path == null) {
-            throw new NullPointerException("Folder path can not be null!");
-        }
-        return folders.get(MemoryFolder.trimLeadingAndTrailing(path)) != null;
+        return existsFolder(Paths.get(path));
+    }
+
+    public boolean existsFile(Path path) {
+        return fileContents.containsKey(path);
     }
 
     public boolean existsFile(String path) {
-        if (path == null) {
-            throw new NullPointerException("File path can not be null!");
-        }
-        return fileContents.containsKey(MemoryFolder.trimLeadingAndTrailing(path));
+        return existsFile(Paths.get(path));
     }
 
     public void createFolder(MemoryFolder folder) {
         // create current, if it does not exist.
         if ( !existsFolder( folder ) ) {
+            MemoryFolder prentFolder = folder.getParent();
             // create parent if it does not exist
-            if ( !existsFolder( ( MemoryFolder) folder.getParent() ) ) {
-                createFolder( (MemoryFolder) folder.getParent() );
+            if ( !existsFolder( prentFolder ) ) {
+                createFolder( prentFolder );
             }
 
-            folders.put( folder.getPath().toPortableString(),
-                         new HashSet<FileSystemItem>() );
-
-            Folder parent = folder.getParent();
-            folders.get( parent.getPath().toPortableString() ).add( folder );
+            folders.put( folder.getPath(), new HashSet<>() );
+            folders.get( prentFolder.getPath() ).add( folder );
         }
     }
 
+    @Override
     public boolean remove(Folder folder) {
         if ( folder.exists() ) {
-            remove( folders.get( folder.getPath().toPortableString() ) );
-            folders.remove( folder.getPath().toPortableString() );
+            remove( folders.get( folder.getPath() ) );
+            folders.remove( folder.getPath() );
             return true;
         } else {
             return false;
@@ -225,26 +220,27 @@ public class MemoryFileSystem
         for (Iterator<FileSystemItem> it = members.iterator(); it.hasNext(); ) {
             FileSystemItem res = it.next();
             if ( res instanceof Folder ) {
-                remove( folders.get( res.getPath().toPortableString() ) );
+                remove( folders.get( res.getPath() ) );
             } else {
-                String fileName = res.getPath().toPortableString();
-                fileContents.remove( fileName );
+                Path filePath = res.getPath();
+                fileContents.remove( filePath );
                 if (modifiedFilesSinceLastMark != null) {
-                    modifiedFilesSinceLastMark.add( fileName );
+                    modifiedFilesSinceLastMark.add( filePath );
                 }
             }
             it.remove();
         }
     }
 
+    @Override
     public boolean remove(File file) {
         if ( file.exists() ) {
-            String fileName = file.getPath().toPortableString();
-            fileContents.remove( fileName );
+            Path filePath = file.getPath();
+            fileContents.remove( filePath );
             if (modifiedFilesSinceLastMark != null) {
-                modifiedFilesSinceLastMark.add( fileName );
+                modifiedFilesSinceLastMark.add( filePath );
             }
-            folders.get( ((MemoryFile) file).getFolder().getPath().toPortableString() ).remove( file );
+            folders.get( ((MemoryFile) file).getFolder().getPath() ).remove( file );
             return true;
         } else {
             return false;
@@ -298,12 +294,8 @@ public class MemoryFileSystem
                     }
 
                     if ( accept ) {
-                        try {
-                            trgMfs.setFileContents( trgFile, srcMfs.getResource( (MemoryFile) rs ) );
-                            count++;
-                        } catch ( IOException e ) {
-                            throw new RuntimeException( e );
-                        }
+                        trgMfs.setFileContents( trgFile, srcMfs.getResource( (MemoryFile) rs ) );
+                        count++;
                     }
                 }
             }
@@ -340,27 +332,14 @@ public class MemoryFileSystem
         return "MemoryFileSystem [folder=" + folder + ", folders=" + folders + ", fileContents=" + fileContents + "]";
     }
 
-    public void printFs(PrintStream out) {
-        printFs( getRootFolder(),
-                 out );
-
+    @Override
+    public boolean isAvailable(Path resoucePath) {
+        return existsFile( resoucePath );
     }
 
-    public void printFs(Folder f,
-                        PrintStream out) {
-        for ( FileSystemItem rs : f.getMembers() ) {
-            out.println( rs );
-            if ( rs instanceof Folder ) {
-                printFs( (Folder) rs,
-                         out );
-            } else {
-                out.println( new String( getFileContents( (MemoryFile) rs ), IoUtils.UTF8_CHARSET ) );
-            }
-        }
-    }
-
-    public boolean isAvailable(String pResourceName) {
-        return existsFile( pResourceName );
+    @Override
+    public byte[] getBytes(Path path) {
+        return getFileContents(path);
     }
 
     public byte[] getBytes(String pResourceName) {
@@ -371,46 +350,45 @@ public class MemoryFileSystem
         return getResource((MemoryFile) getFile(pResourceName));
     }
 
-    public void write(String pResourceName, byte[] pResourceData) {
-        write( pResourceName, pResourceData, false );
+    @Override
+    public void write(Path resourcePath, byte[] pResourceData) {
+        write( resourcePath, pResourceData, false );
     }
 
-    public void write(String pResourceName, byte[] pResourceData, boolean createFolder) {
-        write( pResourceName, new ByteArrayResource( pResourceData ), createFolder );
+    @Override
+    public void write(Path resourcePath, byte[] pResourceData, boolean createFolder) {
+        write( resourcePath, new ByteArrayResource( pResourceData ), createFolder );
     }
 
-    public void write(String pResourceName, Resource resource) {
-        write( pResourceName, resource, false );
+    public void write(Path resourcePath, Resource resource) {
+        write( resourcePath, resource, false );
     }
 
-    public void write(String pResourceName, Resource resource, boolean createFolder) {
-        pResourceName = pResourceName.replace( java.io.File.separatorChar, '/' );
-
-        if (pResourceName.endsWith( "/" )) {
-            // avoid to create files for empty folders
-            return;
-        }
-
-        MemoryFile memoryFile = (MemoryFile) getFile( pResourceName );
+    public void write(Path resourcePath, Resource resource, boolean createFolder) {
+        MemoryFile memoryFile = (MemoryFile) getFile( resourcePath );
         if ( createFolder ) {
-            String folderPath = memoryFile.getFolder().getPath().toPortableString();
+            Path folderPath = memoryFile.getFolder().getPath();
             if ( !existsFolder( folderPath ) ) {
                 memoryFile.getFolder().create();
             }
         }
-        try {
-            setFileContents( memoryFile, resource );
-        } catch ( IOException e ) {
-            throw new RuntimeException( e );
-        }
+        setFileContents( memoryFile, resource );
     }
 
     public byte[] read(String pResourceName) {
         return getBytes( pResourceName );
     }
 
+    public byte[] read(Path resourcePath) {
+        return getBytes( resourcePath );
+    }
+
     public void remove(String pResourceName) {
         remove(getFile(pResourceName));
+    }
+
+    public void remove(Path resourcePath) {
+        remove(getFile(resourcePath));
     }
 
     public byte[] writeAsBytes() {
@@ -433,23 +411,10 @@ public class MemoryFileSystem
     }
 
     private void zip(OutputStream outputStream) {
-        ZipOutputStream out = null;
-        try {
-            out = new ZipOutputStream( outputStream );
-
-            writeJarEntries( getRootFolder(),
-                             out );
-            out.close();
+        try (ZipOutputStream out = new ZipOutputStream( outputStream )) {
+            writeJarEntries( getRootFolder(), out );
         } catch ( IOException e ) {
             throw new RuntimeException( e );
-        } finally {
-            try {
-                if (out != null) {
-                    out.close();
-                }
-            } catch ( IOException e ) {
-                log.error(e.getMessage(), e);
-            }
         }
     }
 
@@ -480,7 +445,7 @@ public class MemoryFileSystem
     private void writeJarEntries(Folder f,
                                  ZipOutputStream out) throws IOException {
         for ( FileSystemItem rs : f.getMembers() ) {
-            String rname = rs.getPath().toPortableString();
+            String rname = rs.getPath().toString();
             if ( rs instanceof Folder ) {
                 rname = rname.endsWith("/") ? rname : rname + "/"; // a folder name must end with / according to ZIP spec
                 ZipEntry entry = new ZipEntry( rname );
@@ -544,7 +509,7 @@ public class MemoryFileSystem
                 while( (b = zipFile.read()) != -1 ) {
                     content.write( b );
                 }
-                mfs.write( entry.getName(), content.toByteArray(), true );
+                mfs.write( Paths.get(entry.getName()), content.toByteArray(), true );
             }
         } catch ( IOException e ) {
             throw new RuntimeException( e );
@@ -553,8 +518,8 @@ public class MemoryFileSystem
     }
 
     public String findPomProperties() {
-        for( Entry<String, InternalResource> content : fileContents.entrySet() ) {
-            if ( content.getKey().endsWith( "pom.properties" ) && content.getKey().startsWith( "META-INF/maven/" ) ) {
+        for( Entry<Path, InternalResource> content : fileContents.entrySet() ) {
+            if ( content.getKey().endsWith( Paths.get("pom.properties") ) && content.getKey().startsWith( Paths.get("META-INF", "maven" ) ) ) {
                 try (InputStream resourceStream = content.getValue().getInputStream()) {
                     return StringUtils.readFileAsString( new InputStreamReader( resourceStream, IoUtils.UTF8_CHARSET ) );
                 } catch (IOException ioe) {
@@ -567,7 +532,7 @@ public class MemoryFileSystem
 
     public MemoryFileSystem clone() {
         MemoryFileSystem clone = new MemoryFileSystem();
-        for (Map.Entry<String, InternalResource> entry : fileContents.entrySet()) {
+        for (Map.Entry<Path, InternalResource> entry : fileContents.entrySet()) {
             clone.write(entry.getKey(), entry.getValue());
         }
         return clone;
@@ -583,13 +548,14 @@ public class MemoryFileSystem
         public ByteClassLoader(ClassLoader parent, MemoryFileSystem memoryFileSystem) {
             super(new URL[0], parent);
             memoryFileSystem
-                    .getFileNames()
+                    .getFilePaths()
                     .stream()
+                    .map(Path::toString)
                     .filter(fn -> fn.endsWith(".class"))
                     .forEach(f -> {
                         MemoryFile file = (MemoryFile) memoryFileSystem.getFile(f);
                         byte[] fileContents = memoryFileSystem.getFileContents(file);
-                        String className = f.replace("/", ".").replace(".class", "");
+                        String className = f.replace(java.io.File.separatorChar, '.').substring(0, f.length() - ".class".length());
                         extraClassDefs.put(className, fileContents);
                     });
         }

@@ -42,7 +42,7 @@ public class PackageSources {
 
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
         for (DeclaredTypeWriter declaredType : packageModelWriter.getDeclaredTypes()) {
-            sources.pojoSources.add(new GeneratedFile( GeneratedFile.Type.DECLARED_TYPE, declaredType.getName(), logSource( declaredType.getSource() )));
+            sources.pojoSources.add(new GeneratedFile( GeneratedFile.Type.DECLARED_TYPE, declaredType.getPath(), logSource( declaredType.getSource() )));
         }
 
         RuleWriter rules = writeRules( pkgModel, sources, packageModelWriter );
@@ -52,14 +52,14 @@ public class PackageSources {
 
     protected static RuleWriter writeRules( PackageModel pkgModel, PackageSources sources, PackageModelWriter packageModelWriter ) {
         for (AccumulateClassWriter accumulateClassWriter : packageModelWriter.getAccumulateClasses()) {
-            sources.accumulateSources.add(new GeneratedFile(accumulateClassWriter.getName(), logSource( accumulateClassWriter.getSource() )));
+            sources.accumulateSources.add(new GeneratedFile(accumulateClassWriter.getPath(), logSource( accumulateClassWriter.getSource() )));
         }
 
         RuleWriter rules = packageModelWriter.getRules();
-        sources.mainSource = new GeneratedFile(rules.getName(), logSource( rules.getMainSource() ));
+        sources.mainSource = new GeneratedFile(rules.getPath(), logSource( rules.getMainSource() ));
 
         for (RuleWriter.RuleFileSource ruleSource : rules.getRuleSources()) {
-            sources.ruleSources.add(new GeneratedFile(ruleSource.getName(), logSource( ruleSource.getSource() )));
+            sources.ruleSources.add(new GeneratedFile(ruleSource.getPath(), logSource( ruleSource.getSource() )));
         }
 
         pkgModel.getLambdaClasses()
@@ -69,7 +69,7 @@ public class PackageSources {
                 .forEach(sources.lambdaClasses::add);
 
         PackageModelWriter.DomainClassesMetadata domainClassesMetadata = packageModelWriter.getDomainClassesMetadata();
-        sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getName(), logSource( domainClassesMetadata.getSource() ));
+        sources.domainClassSource = new GeneratedFile(domainClassesMetadata.getPath(), logSource( domainClassesMetadata.getSource() ));
         return rules;
     }
 

@@ -14,10 +14,13 @@
 package org.drools.ecj;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Locale;
@@ -27,12 +30,6 @@ import java.util.StringTokenizer;
 import org.drools.core.factmodel.ClassBuilderFactory;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
-import org.kie.memorycompiler.AbstractJavaCompiler;
-import org.kie.memorycompiler.CompilationProblem;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompilerSettings;
-import org.kie.memorycompiler.resources.ResourceReader;
-import org.kie.memorycompiler.resources.ResourceStore;
 import org.eclipse.jdt.core.compiler.IProblem;
 import org.eclipse.jdt.internal.compiler.ClassFile;
 import org.eclipse.jdt.internal.compiler.Compiler;
@@ -47,48 +44,51 @@ import org.eclipse.jdt.internal.compiler.env.INameEnvironment;
 import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
+import org.kie.memorycompiler.AbstractJavaCompiler;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompilerSettings;
+import org.kie.memorycompiler.resources.ResourceReader;
+import org.kie.memorycompiler.resources.ResourceStore;
+
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
+import static org.kie.memorycompiler.resources.PathUtils.toClassSourcePath;
+import static org.kie.memorycompiler.resources.PathUtils.toJavaSourcePath;
 
 /**
  * Eclipse compiler implementation
  */
 public final class EclipseJavaCompiler extends AbstractJavaCompiler {
     
-    private String sourceFolder = "";
+    private Path sourceFolder;
 
     private final EclipseJavaCompilerSettings defaultSettings;
 
     public EclipseJavaCompiler() {
-        this(new EclipseJavaCompilerSettings(), "");
+        this(new EclipseJavaCompilerSettings(), Paths.get(""));
     }
 
     public EclipseJavaCompiler( final Map pSettings ) {
-        defaultSettings = new EclipseJavaCompilerSettings(pSettings);
+        this(new EclipseJavaCompilerSettings(pSettings), Paths.get(""));
     }
 
-    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings, String sourceFolder ) {
-        defaultSettings = pSettings;
+    public EclipseJavaCompiler( final EclipseJavaCompilerSettings pSettings, Path sourceFolder ) {
+        this.defaultSettings = pSettings;
         this.sourceFolder = sourceFolder;
     }
 
     @Override
-    public void setSourceFolder( String sourceFolder ) {
+    public void setSourceFolder( Path sourceFolder ) {
         this.sourceFolder = sourceFolder;
     }
 
-    public String getPathName(String fullPath) {
-        if ( sourceFolder.length() == 0 ) {
-            return fullPath;
-        }
-        
-        if ( fullPath.charAt( 0 )  == '/') {
-             return fullPath.substring( sourceFolder.length() + 1 );
-        } else {
-            return fullPath.substring( sourceFolder.length() );
-        }
+    public String getPathName(Path fullPath) {
+        return sourceFolder.relativize(fullPath).toString();
     }
 
     final class CompilationUnit implements ICompilationUnit {
 
+        final private Path sourcePath;
         final private String fsFileName;
         final private String clazzName;
         final private String fileName;
@@ -96,14 +96,13 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         final private char[][] packageName;
         final private ResourceReader reader;
 
-        CompilationUnit( final ResourceReader pReader, final String pSourceFile ) {
-            reader = pReader;
-
-            fsFileName = pSourceFile;
-
-            clazzName = ClassUtils.convertResourceToClassName( decode(getPathName( pSourceFile )) );
+        CompilationUnit( final ResourceReader pReader, final Path sourcePath ) {
+            this.sourcePath = sourcePath;
+            this.reader = pReader;
+            this.fsFileName = sourcePath.toString();
+            this.clazzName = ClassUtils.convertResourceToClassName( decode(getPathName( sourcePath )) );
             
-            fileName = decode(pSourceFile);
+            fileName = decode(fsFileName);
             int dot = clazzName.lastIndexOf('.');
             if (dot > 0) {
                 typeName = clazzName.substring(dot + 1).toCharArray();
@@ -131,7 +130,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         }
 
         public char[] getContents() {
-            final byte[] content = reader.getBytes(fsFileName);
+            final byte[] content = reader.getBytes(sourcePath);
 
             if (content == null) {
                 return null;
@@ -153,9 +152,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
         }
     }
 
-
+    @Override
     public CompilationResult compile(
-            final String[] pSourceFiles,
+            final Path[] resourcePaths,
             final ResourceReader pReader,
             final ResourceStore pStore,
             final ClassLoader pClassLoader,
@@ -165,12 +164,12 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final Collection problems = new ArrayList();
 
-        final ICompilationUnit[] compilationUnits = new ICompilationUnit[pSourceFiles.length];
+        final ICompilationUnit[] compilationUnits = new ICompilationUnit[resourcePaths.length];
         for (int i = 0; i < compilationUnits.length; i++) {
-            final String sourceFile = pSourceFiles[i];
+            final Path sourcePath = resourcePaths[i];
 
-            if (pReader.isAvailable(sourceFile)) {
-                compilationUnits[i] = new CompilationUnit(pReader, sourceFile);
+            if (pReader.isAvailable(sourcePath)) {
+                compilationUnits[i] = new CompilationUnit(pReader, sourcePath);
             } else {
                 // log.error("source not found " + sourceFile);
 
@@ -185,11 +184,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
 
                     public String getFileName() {
-                        return sourceFile;
+                        return sourcePath.toString();
                     }
 
                     public String getMessage() {
-                        return "Source " + sourceFile + " could not be found";
+                        return "Source " + sourcePath + " could not be found";
                     }
 
                     public int getStartColumn() {
@@ -248,7 +247,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
             private NameEnvironmentAnswer findType( final String pClazzName ) {
 
-                final String resourceName = ClassUtils.convertClassToResourcePath( pClazzName);
+                final Path resourceName = toClassSourcePath( pClazzName);
 
                 final byte[] clazzBytes = pStore.read( resourceName );
                 if (clazzBytes != null) {
@@ -259,7 +258,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
                 }
 
-                try (InputStream is = pClassLoader.getResourceAsStream(resourceName)) {
+                try (InputStream is = pClassLoader.getResourceAsStream(resourceName.toString())) {
                     if (is == null) {
                         return null;
                     }
@@ -298,10 +297,8 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             }
 
             private boolean isSourceAvailable(final String pClazzName, final ResourceReader pReader) {
-                // FIXME: this should not be tied to the extension
-                final String javaSource = pClazzName.replace('.', '/') + ".java";
-                final String classSource = pClazzName.replace('.', '/') + ".class";
-                return pReader.isAvailable( sourceFolder + javaSource ) || pReader.isAvailable( sourceFolder + classSource );
+                return pReader.isAvailable( sourceFolder.resolve(toJavaSourcePath(pClazzName)) ) ||
+                        pReader.isAvailable( sourceFolder.resolve(toClassSourcePath(pClazzName)) );
             }
 
             private boolean isPackage( final String pClazzName ) {
@@ -363,11 +360,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     final StringBuilder clazzName = new StringBuilder();
                     for (int j = 0; j < compoundName.length; j++) {
                         if (j != 0) {
-                            clazzName.append('.');
+                            clazzName.append(File.separatorChar);
                         }
                         clazzName.append(compoundName[j]);
                     }
-                    pStore.write(clazzName.toString().replace('.', '/') + ".class", clazzFile.getBytes());
+                    pStore.write(Paths.get( clazzName + ".class" ), clazzFile.getBytes());
                 }
             }
         };
@@ -391,10 +388,9 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
     private void dumpUnits( ICompilationUnit[] compilationUnits, ResourceReader reader ) {
         for (ICompilationUnit unit : compilationUnits) {
-            String name = ( (CompilationUnit) unit ).fileName;
-            String source = new String( reader.getBytes( name ) );
+            Path path = ( (CompilationUnit) unit ).sourcePath;
             try {
-                IoUtils.write( new java.io.File(name.replace( '/', '.' )), reader.getBytes( name ) );
+                IoUtils.write( new java.io.File(path.toString().replace(File.separatorChar, '.' )), reader.getBytes( path ) );
             } catch (IOException e) {
                 throw new RuntimeException( e );
             }

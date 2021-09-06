@@ -19,12 +19,11 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
+import java.nio.file.Path;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
 import org.drools.core.io.impl.InputStreamResource;
-import org.drools.core.util.StringUtils;
 
 public class MemoryFile implements File,
                                    Serializable {
@@ -50,23 +49,15 @@ public class MemoryFile implements File,
     }
     
     public Path getPath() {
-        return getRelativePath();
+        return folder.getPath().resolve(name);
     }            
-    
-    public Path getRelativePath() {
-        if ( !StringUtils.isEmpty( folder.getPath().toPortableString() ) ) {
-            return new MemoryPath( folder.getPath().toPortableString() + "/" + name );
-        } else {
-            return new MemoryPath( name );
-        }
-    }    
     
     public Folder getFolder() {
         return this.folder;
     }
     
     public boolean exists() {
-        return mfs.existsFile( getRelativePath().toPortableString() );
+        return mfs.existsFile( getPath() );
     }        
 
 

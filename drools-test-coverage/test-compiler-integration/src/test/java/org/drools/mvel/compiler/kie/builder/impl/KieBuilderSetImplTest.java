@@ -16,6 +16,7 @@
 
 package org.drools.mvel.compiler.kie.builder.impl;
 
+import java.nio.file.Paths;
 import java.util.Collection;
 
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
@@ -60,7 +61,7 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
         final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl( kieBuilder( ks, kfs ) );
 
-        kieBuilderSet.setFiles( new String[]{ "src/main/resources/rule%201.drl" } );
+        kieBuilderSet.setFiles( Paths.get( "src", "main", "resources", "rule%201.drl" ) );
 
         final IncrementalResults build = kieBuilderSet.build();
 
@@ -79,7 +80,7 @@ public class KieBuilderSetImplTest extends CommonTestMethodBase {
 
         final KieBuilderSetImpl kieBuilderSet = new KieBuilderSetImpl(kieBuilder(ks, kfs));
 
-        kieBuilderSet.setFiles(new String[]{"src/main/resources/my rule 100% okay.rdrl"});
+        kieBuilderSet.setFiles( Paths.get( "src", "main", "resources", "my rule 100% okay.rdrl" ) );
 
         final IncrementalResults build = kieBuilderSet.build();
 

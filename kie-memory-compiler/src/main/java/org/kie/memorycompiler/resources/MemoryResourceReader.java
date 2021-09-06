@@ -14,6 +14,7 @@
 
 package org.kie.memorycompiler.resources;
 
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -26,57 +27,43 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map<String, byte[]> resources = new ConcurrentHashMap<>();
+    private final Map<Path, byte[]> resources = new ConcurrentHashMap<>();
 
-    private Set<String> modifiedResourcesSinceLastMark;
+    private Set<Path> modifiedResourcesSinceLastMark;
 
-    public boolean isAvailable( final String pResourceName ) {
-        if (resources == null) {
-            return false;
-        }
-
-        return resources.containsKey(pResourceName);
+    @Override
+    public boolean isAvailable( Path resourcePath ) {
+        return resources.containsKey(resourcePath);
     }
     
-    public void add( final String pResourceName, final byte[] pContent ) {
-        resources.put(pResourceName, pContent);
+    public void add( Path resourcePath, byte[] pContent ) {
+        resources.put(resourcePath, pContent);
         if (modifiedResourcesSinceLastMark != null) {
-            modifiedResourcesSinceLastMark.add(pResourceName);
-        }
-    }
-    
-    public void remove( final String pResourceName ) {
-        if (resources != null) {
-            resources.remove(pResourceName);
+            modifiedResourcesSinceLastMark.add(resourcePath);
         }
     }
 
+    @Override
     public void mark() {
-        modifiedResourcesSinceLastMark = new HashSet<String>();
+        modifiedResourcesSinceLastMark = new HashSet<>();
     }
 
-    public Collection<String> getModifiedResourcesSinceLastMark() {
+    @Override
+    public Collection<Path> getModifiedResourcesSinceLastMark() {
         return modifiedResourcesSinceLastMark;
     }
 
-    public byte[] getBytes( final String pResourceName ) {
-        return (byte[]) resources.get(pResourceName);
+    @Override
+    public byte[] getBytes( Path resourcePath ) {
+        return resources.get(resourcePath);
     }
 
-    public Collection<String> getFileNames() {
+    @Override
+    public Collection<Path> getFilePaths() {
         if ( resources == null ) {
             return Collections.emptySet();
         }
         
         return resources.keySet();       
-    }
-    /**
-     * @deprecated
-     */
-    public String[] list() {
-        if (resources == null) {
-            return new String[0];
-        }
-        return (String[]) resources.keySet().toArray(new String[resources.size()]);
     }
 }

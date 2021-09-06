@@ -17,6 +17,7 @@
 
 package org.drools.modelcompiler.builder;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -54,8 +55,8 @@ public class RuleWriter {
         this.pkgModel = pkgModel;
     }
 
-    public String getName() {
-        return pkgModel.getPathName() + "/" + rulesFileName + ".java";
+    public Path getPath() {
+        return pkgModel.getPath().resolve( rulesFileName + ".java" );
     }
 
     public Collection<String> getClassNames() {
@@ -119,8 +120,8 @@ public class RuleWriter {
             this.source = source;
         }
 
-        public String getName() {
-            return pkgModel.getPathName() + "/" + name + ".java";
+        public Path getPath() {
+            return pkgModel.getPath().resolve( name + ".java" );
         }
 
         public String getSource() {

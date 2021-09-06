@@ -18,6 +18,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -155,7 +157,7 @@ public class JavaDialect
     private final InternalKnowledgePackage pkg;
     private final ClassLoader rootClassLoader;
     private final KnowledgeBuilderConfigurationImpl pkgConf;
-    private final List<String> generatedClassList;
+    private final List<Path> generatedClassList;
     private final MemoryResourceReader src;
     private final PackageStore packageStoreWrapper;
     private final Map<String, ErrorHandler> errorHandlers;
@@ -174,12 +176,12 @@ public class JavaDialect
 
         this.configuration = ( JavaForMvelDialectConfiguration ) pkgConf.getDialectConfiguration("java");
 
-        this.errorHandlers = new ConcurrentHashMap<String, ErrorHandler>();
-        this.results = new ArrayList<KnowledgeBuilderResult>();
+        this.errorHandlers = new ConcurrentHashMap<>();
+        this.results = new ArrayList<>();
 
         this.src = new MemoryResourceReader();
 
-        this.generatedClassList = Collections.synchronizedList(new ArrayList<String>());
+        this.generatedClassList = Collections.synchronizedList(new ArrayList<>());
 
         JavaDialectRuntimeData data = (JavaDialectRuntimeData) pkg.getDialectRuntimeRegistry().getDialectData(ID);
 
@@ -406,13 +408,12 @@ public class JavaDialect
             this.errorHandlers.clear();
             return;
         }
-        final String[] classes = new String[this.generatedClassList.size()];
+        final Path[] classes = new Path[this.generatedClassList.size()];
         this.generatedClassList.toArray(classes);
 
         File dumpDir = this.configuration.getPackageBuilderConfiguration().getDumpDir();
         if (dumpDir != null) {
-            dumpResources(classes,
-                          dumpDir);
+            dumpResources(classes, dumpDir);
         }
 
         final CompilationResult result = this.compiler.compile(classes,
@@ -449,11 +450,9 @@ public class JavaDialect
      * @throws IOException
      * @throws FileNotFoundException
      */
-    private void dumpResources(final String[] classes,
-                               File dumpDir) {
-        for (String aClass : classes) {
-            File target = new File(dumpDir,
-                                   aClass);
+    private void dumpResources(final Path[] classes, File dumpDir) {
+        for (Path aClass : classes) {
+            File target = new File(dumpDir, aClass.toString());
             FileOutputStream out = null;
             try {
                 File parent = target.getParentFile();
@@ -494,7 +493,6 @@ public class JavaDialect
 
         // The compilation result is for the entire rule, so difficult to associate with any descr
         addClassCompileTask(this.pkg.getName() + "." + ruleDescr.getClassName(),
-                            ruleDescr,
                             ruleClass,
                             this.src,
                             new RuleErrorHandler(ruleDescr,
@@ -516,7 +514,6 @@ public class JavaDialect
 
             final BaseDescr descr = context.getDescrLookup(className);
             addClassCompileTask(className,
-                                descr,
                                 text,
                                 this.src,
                                 new RuleInvokerErrorHandler(descr,
@@ -556,7 +553,6 @@ public class JavaDialect
                                                               this.results);
 
         addClassCompileTask(functionClassName,
-                            functionDescr,
                             functionSrc,
                             this.src,
                             new FunctionErrorHandler(functionDescr,
@@ -585,14 +581,12 @@ public class JavaDialect
     }
 
     @Override
-    public void addSrc(String resourceName, byte[] content) {
+    public void addSrc(Path resourcePath, byte[] content) {
+        src.add(resourcePath, content);
 
-        src.add(resourceName, content);
-
-        this.errorHandlers.put(resourceName,
-                               new SrcErrorHandler("Src compile error"));
-
-        addClassName(resourceName);
+        String resourceName = resourcePath.toString();
+        this.errorHandlers.put(resourceName, new SrcErrorHandler("Src compile error"));
+        addClassName(resourcePath);
     }
 
     /**
@@ -603,38 +597,32 @@ public class JavaDialect
      * element that caused it.
      */
     public void addClassCompileTask(final String className,
-                                    final BaseDescr descr,
                                     final String text,
                                     final MemoryResourceReader src,
                                     final ErrorHandler handler) {
-        final String fileName = className.replace('.',
-                                                  '/') + ".java";
+        String fileName = className.replace('.', File.separatorChar) + ".java";
+        Path filePath = Paths.get(fileName);
 
         if (src != null) {
-            src.add(fileName,
-                    text.getBytes(IoUtils.UTF8_CHARSET));
+            src.add(filePath, text.getBytes(IoUtils.UTF8_CHARSET));
         } else {
-            this.src.add(fileName,
-                         text.getBytes(IoUtils.UTF8_CHARSET));
+            this.src.add(filePath, text.getBytes(IoUtils.UTF8_CHARSET));
         }
 
-        this.errorHandlers.put(fileName,
-                               handler);
-
-        addClassName(fileName);
+        this.errorHandlers.put(fileName, handler);
+        addClassName(filePath);
     }
 
-    public void addClassName(final String className) {
+    public void addClassName(Path resourcePath) {
         boolean found = false;
         if (pkgConf.isPreCompiled()) {
             // recover bytecode from cache 
             Map<String, List<CompilationCacheEntry>> cache = pkgConf.getCompilationCache().getCacheForDialect(ID);
             if (cache != null) {
-                String resourceName = className.replace(".java", ".class");
+                String resourceName = resourcePath.toString().replace(".java", ".class");
                 List<CompilationCacheEntry> bytecodes = cache.get(resourceName);
                 if (bytecodes != null) {
                     for (CompilationCacheEntry entry : bytecodes) {
-                        //System.out.println("Found in cache = "+entry.className);
                         this.packageStoreWrapper.write(entry.className, entry.bytecode);
                     }
                     found = true;
@@ -643,8 +631,7 @@ public class JavaDialect
         }
         if (!found) {
             // compile as usual
-            //System.out.println("compiling = "+className);
-            this.generatedClassList.add(className);
+            this.generatedClassList.add(resourcePath);
         }
     }
 

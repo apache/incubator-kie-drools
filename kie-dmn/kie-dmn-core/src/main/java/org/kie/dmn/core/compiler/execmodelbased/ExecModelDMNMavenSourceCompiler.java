@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,10 +61,10 @@ public class ExecModelDMNMavenSourceCompiler extends ExecModelDMNEvaluatorCompil
     public AbstractModelEvaluator generateEvaluator( DMNCompilerContext ctx, DTableModel dTableModel ) {
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
-        String[] fileNames = new String[GeneratorsEnum.values().length];
+        Path[] filePaths = new Path[GeneratorsEnum.values().length];
         List<GeneratedSource> generatedSources = new ArrayList<>();
 
-        generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
+        generateSources(ctx, dTableModel, srcMfs, filePaths, generatedSources);
 
         for(AfterGeneratingSourcesListener listener : afterGeneratingSourcesListeners) {
             listener.accept(generatedSources);

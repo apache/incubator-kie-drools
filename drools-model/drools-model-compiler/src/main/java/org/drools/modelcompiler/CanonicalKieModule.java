@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -109,7 +111,7 @@ import static org.kie.api.io.ResourceType.determineResourceType;
 public class CanonicalKieModule implements InternalKieModule {
 
     public static final String PROJECT_MODEL_CLASS = "org.drools.project.model.ProjectModel";
-    public static final String MODEL_FILE_DIRECTORY = "META-INF/kie/";
+    public static final Path MODEL_FILE_PATH = Paths.get("META-INF", "kie");
     public static final String MODEL_FILE_NAME = "drools-model";
     public static final String ANC_FILE_NAME = "alpha-network-compiler";
     public static final String GENERATED_CLASS_NAMES = "generated-class-names";
@@ -190,16 +192,16 @@ public class CanonicalKieModule implements InternalKieModule {
         return kbConf;
     }
 
-    public static String getModelFileWithGAV(ReleaseId releaseId) {
-        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + MODEL_FILE_NAME;
+    public static Path getModelFileWithGAV(ReleaseId releaseId) {
+        return MODEL_FILE_PATH.resolve( Paths.get(releaseId.getGroupId(), releaseId.getArtifactId(), MODEL_FILE_NAME ) );
     }
 
-    public static String getANCFile(ReleaseId releaseId) {
-        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + ANC_FILE_NAME;
+    public static Path getANCFile(ReleaseId releaseId) {
+        return MODEL_FILE_PATH.resolve( Paths.get(releaseId.getGroupId(), releaseId.getArtifactId(), ANC_FILE_NAME ) );
     }
 
-    public static String getGeneratedClassNamesFile(ReleaseId releaseId) {
-        return MODEL_FILE_DIRECTORY + releaseId.getGroupId() + "/" + releaseId.getArtifactId() + "/" + GENERATED_CLASS_NAMES;
+    public static Path getGeneratedClassNamesFile(ReleaseId releaseId) {
+        return MODEL_FILE_PATH.resolve( Paths.get(releaseId.getGroupId(), releaseId.getArtifactId(), GENERATED_CLASS_NAMES ) );
     }
 
     @Override
@@ -311,12 +313,12 @@ public class CanonicalKieModule implements InternalKieModule {
                 InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
                 if (includeModule == null) {
                     String text = "Unable to build KieBase, could not find include: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.toString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 if (!(includeModule instanceof CanonicalKieModule)) {
                     String text = "It is not possible to mix drl based and executable model based projects. Found a drl project: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.toString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = (KieBaseModelImpl) kieProject.getKieBaseModel(include);
@@ -491,18 +493,15 @@ public class CanonicalKieModule implements InternalKieModule {
     }
 
     private Set<String> findGeneratedClassNamesWithDependencies() {
-        Set<String> generatedClassNames = new HashSet<>();
-        generatedClassNames.addAll(findGeneratedClassNames(internalKieModule));
+        Set<String> generatedClassNames = new HashSet<>(findGeneratedClassNames(internalKieModule));
 
         Map<ReleaseId, InternalKieModule> kieDependencies = internalKieModule.getKieDependencies();
-        kieDependencies.values().forEach(depKieModule -> {
-            generatedClassNames.addAll(findGeneratedClassNames(depKieModule));
-        });
+        kieDependencies.values().forEach(depKieModule -> generatedClassNames.addAll(findGeneratedClassNames(depKieModule)));
         return generatedClassNames;
     }
 
     private Set<String> findGeneratedClassNames(InternalKieModule kieModule) {
-        String generatedClassNamesFile = getGeneratedClassNamesFile(kieModule.getReleaseId());
+        Path generatedClassNamesFile = getGeneratedClassNamesFile(kieModule.getReleaseId());
         if (!kieModule.hasResource(generatedClassNamesFile)) {
             return new HashSet<>();
         }
@@ -514,11 +513,11 @@ public class CanonicalKieModule implements InternalKieModule {
         return Stream.of(lines).collect(Collectors.toSet());
     }
 
-    private String readExistingResourceWithName(String fileName) {
+    private String readExistingResourceWithName(Path fileName) {
         return readExistingResourceWithName(internalKieModule, fileName);
     }
 
-    private String readExistingResourceWithName(InternalKieModule kieModule, String fileName) {
+    private String readExistingResourceWithName(InternalKieModule kieModule, Path fileName) {
         String modelFiles;
         try {
             Resource modelFile = kieModule.getResource(fileName);
@@ -529,8 +528,8 @@ public class CanonicalKieModule implements InternalKieModule {
         return modelFiles;
     }
 
-    private boolean resourceFileExists(String fileName) {
-        Resource modelFile = internalKieModule.getResource(fileName);
+    private boolean resourceFileExists(Path filePath) {
+        Resource modelFile = internalKieModule.getResource(filePath);
         return modelFile != null;
     }
 

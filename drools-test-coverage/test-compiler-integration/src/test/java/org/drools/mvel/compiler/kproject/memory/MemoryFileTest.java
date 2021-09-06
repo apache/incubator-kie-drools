@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.memorycompiler.resources.PathUtils.string2Path;
 
 public class MemoryFileTest {
 
@@ -90,31 +91,7 @@ public class MemoryFileTest {
         Folder mres = fs.getFolder( "src/main/java/org/domain" );  
         
         File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "src/main/java/org/domain/MyClass.java",
-                      f1.getPath().toPortableString() );
+        assertEquals( string2Path("src/main/java/org/domain/MyClass.java"),
+                      f1.getPath() );
     }
-
-    @Test
-    public void testRelativeToParentFilePath() {
-        FileSystem fs = new MemoryFileSystem();
-        
-        Folder mres = fs.getFolder( "src/main/java/org/domain" );
-        Folder f2 = fs.getFolder( "src/main/java/org/domain/f1/f2/" );
-        
-        File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "../../MyClass.java",
-                      f1.getPath().toRelativePortableString( f2.getPath() ) );
-    }
-
-    @Test
-    public void testRelativeToBranchFilePath() {
-        FileSystem fs = new MemoryFileSystem();
-        
-        Folder mres = fs.getFolder( "src/main/java/org/domain" );
-        Folder f2 = fs.getFolder( "src/main/resources/org/domain/" );
-        
-        File f1 = mres.getFile( "MyClass.java" );
-        assertEquals( "../../../java/org/domain/MyClass.java",
-                      f1.getPath().toRelativePortableString( f2.getPath() ) );
-    }     
 }

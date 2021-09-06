@@ -15,6 +15,7 @@
 
 package org.drools.compiler.compiler;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -24,15 +25,15 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.errors.ErrorHandler;
 import org.drools.compiler.builder.impl.errors.SrcErrorHandler;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
+import org.drools.reflective.classloader.ProjectClassLoader;
+import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.internal.jci.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
-import org.drools.reflective.classloader.ProjectClassLoader;
-import org.kie.internal.builder.KnowledgeBuilderResult;
-import org.kie.internal.jci.CompilationProblem;
 
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 
@@ -49,7 +50,7 @@ public class ProjectJavaCompiler {
     }
 
     public List<KnowledgeBuilderResult> compileAll( ProjectClassLoader projectClassLoader,
-                                                    List<String> classList,
+                                                    List<Path> classList,
                                                     MemoryResourceReader src) {
 
         List<KnowledgeBuilderResult> results = new ArrayList<KnowledgeBuilderResult>();
@@ -57,7 +58,7 @@ public class ProjectJavaCompiler {
         if ( classList.isEmpty() ) {
             return results;
         }
-        final String[] classes = new String[classList.size()];
+        final Path[] classes = new Path[classList.size()];
         classList.toArray( classes );
 
         CompilationResult result = compiler.compile( classes,
@@ -97,23 +98,24 @@ public class ProjectJavaCompiler {
         }
 
         @Override
-        public void write(String pResourceName, byte[] pResourceData) {
-            projectClassLoader.defineClass(convertResourceToClassName(pResourceName), pResourceName, pResourceData);
+        public void write(Path resourcePath, byte[] pResourceData) {
+            String resourceName = resourcePath.toString();
+            projectClassLoader.defineClass(convertResourceToClassName(resourceName), resourceName, pResourceData);
         }
 
         @Override
-        public void write(final String resourceName, final byte[] clazzData, boolean createFolder) {
-            write(resourceName, clazzData);
+        public void write(Path resourcePath, final byte[] clazzData, boolean createFolder) {
+            write(resourcePath, clazzData);
         }
 
         @Override
-        public byte[] read(String pResourceName) {
-            return projectClassLoader.getBytecode(pResourceName);
+        public byte[] read(Path resourcePath) {
+            return projectClassLoader.getBytecode(resourcePath.toString());
         }
 
         @Override
-        public void remove(String pResourceName) {
-            throw new UnsupportedOperationException("org.drools.compiler.compiler.ProjectJavaCompiler.ProjectResourceStore.remove -> TODO");
+        public void remove(Path pResourceName) {
+            throw new UnsupportedOperationException();
         }
     }
 }

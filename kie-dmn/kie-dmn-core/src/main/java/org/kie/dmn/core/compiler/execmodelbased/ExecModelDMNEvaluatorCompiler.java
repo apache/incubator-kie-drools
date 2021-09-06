@@ -16,6 +16,8 @@
 
 package org.kie.dmn.core.compiler.execmodelbased;
 
+import java.io.File;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -49,6 +51,7 @@ import static java.util.stream.Collectors.joining;
 
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
+import static org.kie.memorycompiler.resources.PathUtils.JAVA_ROOT;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
@@ -121,25 +124,25 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
         MemoryFileSystem srcMfs = new MemoryFileSystem();
         MemoryFileSystem trgMfs = new MemoryFileSystem();
-        String[] fileNames = new String[getGenerators().length];
+        Path[] filePaths = new Path[getGenerators().length];
         List<GeneratedSource> generatedSources = new ArrayList<>();
 
-        generateSources(ctx, dTableModel, srcMfs, fileNames, generatedSources);
+        generateSources(ctx, dTableModel, srcMfs, filePaths, generatedSources);
 
-        compileGeneratedClass(srcMfs, trgMfs, fileNames);
+        compileGeneratedClass(srcMfs, trgMfs, filePaths);
         defineClassInClassLoader(trgMfs);
         return createInvoker(pkgName, clasName);
     }
 
-    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, String[] fileNames, List<GeneratedSource> generatedSources) {
-        for (int i = 0; i < fileNames.length; i++) {
+    protected void generateSources(DMNCompilerContext ctx, DTableModel dTableModel, MemoryFileSystem srcMfs, Path[] filePaths, List<GeneratedSource> generatedSources) {
+        for (int i = 0; i < filePaths.length; i++) {
             GeneratorsEnum generator = getGenerators()[i];
             String className = dTableModel.getGeneratedClassName(generator);
-            String fileName = "src/main/java/" + className.replace('.', '/') + ".java";
+            Path filePath = JAVA_ROOT.resolve( className.replace('.', File.separatorChar) + ".java" );
             String javaSource = generator.sourceGenerator.generate(ctx, ctx.getFeelHelper(), dTableModel);
-            fileNames[i] = fileName;
-            generatedSources.add(new GeneratedSource(fileName, javaSource));
-            srcMfs.write(fileNames[i], javaSource.getBytes());
+            filePaths[i] = filePath;
+            generatedSources.add(new GeneratedSource(filePath, javaSource));
+            srcMfs.write(filePaths[i], javaSource.getBytes());
         }
     }
 
@@ -157,11 +160,16 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     private void defineClassInClassLoader(MemoryFileSystem trgMfs) {
-        trgMfs.getFileNames().stream().forEach(f -> projectClassLoader.defineClass(f.replace('/', '.').substring(0, f.length() - ".class".length()), trgMfs.getBytes(f)));
+        trgMfs.getFilePaths().stream().forEach(f -> projectClassLoader.defineClass(asClassName(f), trgMfs.getBytes(f)));
     }
 
-    private void compileGeneratedClass(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, String[] fileNames) {
-        CompilationResult res = getCompiler().compile(fileNames, srcMfs, trgMfs, projectClassLoader);
+    private String asClassName(Path path) {
+        String name = path.toString();
+        return name.replace('/', '.').substring(0, name.length() - ".class".length());
+    }
+
+    private void compileGeneratedClass(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, Path[] filePaths) {
+        CompilationResult res = getCompiler().compile(filePaths, srcMfs, trgMfs, projectClassLoader);
 
         CompilationProblem[] errors = res.getErrors();
         if (errors != null && errors.length > 0) {
