@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package $Package$;
+package org.kie.kogito.addon.quarkus.messaging.common.message;
 
-
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.eclipse.microprofile.reactive.messaging.Channel;
-import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.reactive.messaging.Message;
+import org.junit.jupiter.api.Test;
 
-import org.kie.kogito.addon.quarkus.messaging.common.AbstractQuarkusCloudEventEmitter;
+import io.quarkus.reactivemessaging.http.runtime.OutgoingHttpMetadata;
 
-import io.quarkus.runtime.Startup;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Startup
-@ApplicationScoped
-@Named("$BeanName$")
-public class $Trigger$EventEmitter extends AbstractQuarkusCloudEventEmitter {
-    @Inject
-    @Channel("$Trigger$")
-    Emitter<String> emitter;
+class CloudEventHttpOutgoingMessageDecoratorTest {
 
-    @Override
-    protected void emit (Message<String> message) {
-        emitter.send(message);
+    @Test
+    void verifyDecorateAndSend() {
+        final String payload = "any message";
+        final Message<String> message = new CloudEventHttpOutgoingDecorator().decorate(payload);
+        assertThat(message).isNotNull();
+        assertThat(message.getMetadata(OutgoingHttpMetadata.class)).isPresent();
     }
 }

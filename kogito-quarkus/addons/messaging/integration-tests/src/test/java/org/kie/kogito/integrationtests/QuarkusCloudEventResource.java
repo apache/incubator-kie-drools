@@ -21,7 +21,7 @@ import java.util.concurrent.CompletionStage;
 import javax.ws.rs.Path;
 import javax.ws.rs.core.Response;
 
-import org.kie.kogito.addon.cloudevents.quarkus.http.AbstractQuarkusCloudEventResource;
+import org.kie.kogito.addon.quarkus.messaging.common.http.AbstractQuarkusCloudEventResource;
 
 import io.cloudevents.CloudEvent;
 

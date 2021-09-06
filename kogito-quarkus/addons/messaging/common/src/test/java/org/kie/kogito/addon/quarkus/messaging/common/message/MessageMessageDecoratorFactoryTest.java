@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.app;
+package org.kie.kogito.addon.quarkus.messaging.common.message;
 
-import javax.ws.rs.Path;
+import org.junit.jupiter.api.Test;
 
-import org.kie.kogito.addon.quarkus.messaging.common.http.AbstractQuarkusCloudEventResource;
+import static org.assertj.core.api.Assertions.assertThat;
 
-@Path("/")
-public class CloudEventListenerResource extends AbstractQuarkusCloudEventResource {
+class MessageMessageDecoratorFactoryTest {
 
+    @Test
+    void verifyCloudEventHttpIsOnClasspath() {
+        final MessageDecorator decorator = MessageDecoratorFactory.newInstance();
+        assertThat(decorator).isNotNull().isInstanceOf(CloudEventHttpOutgoingDecorator.class);
+    }
 }

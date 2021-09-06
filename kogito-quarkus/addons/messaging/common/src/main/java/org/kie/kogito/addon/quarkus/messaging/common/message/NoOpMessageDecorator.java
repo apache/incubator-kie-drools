@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.app;
+package org.kie.kogito.addon.quarkus.messaging.common.message;
 
-import javax.ws.rs.Path;
+import org.eclipse.microprofile.reactive.messaging.Message;
 
-import org.kie.kogito.addon.quarkus.messaging.common.http.AbstractQuarkusCloudEventResource;
+/**
+ * Creates a Microprofile message without adding any metadata on top of the given payload.
+ */
+public class NoOpMessageDecorator implements MessageDecorator {
 
-@Path("/")
-public class CloudEventListenerResource extends AbstractQuarkusCloudEventResource {
-
+    @Override
+    public <T> Message<T> decorate(T payload) {
+        return Message.of(payload);
+    }
 }

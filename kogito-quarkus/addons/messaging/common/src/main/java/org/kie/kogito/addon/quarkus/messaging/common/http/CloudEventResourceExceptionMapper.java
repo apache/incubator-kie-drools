@@ -13,13 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.kogito.app;
+package org.kie.kogito.addon.quarkus.messaging.common.http;
 
-import javax.ws.rs.Path;
+import javax.enterprise.context.Dependent;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.Provider;
 
-import org.kie.kogito.addon.quarkus.messaging.common.http.AbstractQuarkusCloudEventResource;
+@Provider
+@Dependent
+public class CloudEventResourceExceptionMapper implements ExceptionMapper<CloudEventResourceException> {
 
-@Path("/")
-public class CloudEventListenerResource extends AbstractQuarkusCloudEventResource {
-
+    @Override
+    public Response toResponse(final CloudEventResourceException exception) {
+        return Responses.errorProcessingCloudEvent(exception);
+    }
 }
