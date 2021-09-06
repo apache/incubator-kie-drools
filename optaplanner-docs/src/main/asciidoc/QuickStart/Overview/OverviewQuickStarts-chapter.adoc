@@ -5,13 +5,13 @@
 Each _quick start_ gets you up and running with OptaPlanner quickly.
 Pick the quick start that best aligns with your requirements:
 
-* <<plainJavaQuickStart,*Java*>> (plain Java SE)
-** Build a console Java application that uses OptaPlanner to optimize a school timetable for students and teachers.
+* <<helloWorldJavaQuickStart,*Hello World Java*>>
+** Build a simple Java application that uses OptaPlanner to optimize a school timetable for students and teachers.
 * <<quarkusJavaQuickStart, *Quarkus Java*>> (recommended)
 ** Build a REST application that uses OptaPlanner to optimize a school timetable for students and teachers.
 ** https://quarkus.io[Quarkus] is an extremely fast platform in the Java ecosystem.
 It is ideal for rapid incremental development, as well as deployment into the cloud. It also supports native compilation.
-It offers increase performance for OptaPlanner, due to build time optimizations.
+It also offers increased performance for OptaPlanner, due to build time optimizations.
 * <<springBootJavaQuickStart, *Spring Boot Java*>>
 ** Build a REST application that uses OptaPlanner to optimize a school timetable for students and teachers.
 ** Spring Boot is another platform in the Java ecosystem.

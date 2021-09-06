@@ -1,0 +1,129 @@
+= Define the constraints and calculate the score
+:imagesdir: ../..
+
+A _score_ represents the quality of a specific solution.
+The higher the better.
+OptaPlanner looks for the best solution, which is the solution with the highest score found in the available time.
+It might be the _optimal_ solution.
+
+Because this use case has hard and soft constraints,
+use the `HardSoftScore` class to represent the score:
+
+* Hard constraints must not be broken. For example: _A room can have at most one lesson at the same time._
+* Soft constraints should not be broken. For example: _A teacher prefers to teach in a single room._
+
+Hard constraints are weighted against other hard constraints.
+Soft constraints are weighted too, against other soft constraints.
+*Hard constraints always outweigh soft constraints*, regardless of their respective weights.
+
+To calculate the score, you could implement an `EasyScoreCalculator` class:
+
+[source,java]
+----
+public class TimeTableEasyScoreCalculator implements EasyScoreCalculator<TimeTable, HardSoftScore> {
+
+    @Override
+    public HardSoftScore calculateScore(TimeTable timeTable) {
+        List<Lesson> lessonList = timeTable.getLessonList();
+        int hardScore = 0;
+        for (Lesson a : lessonList) {
+            for (Lesson b : lessonList) {
+                if (a.getTimeslot() != null && a.getTimeslot().equals(b.getTimeslot())
+                        && a.getId() < b.getId()) {
+                    // A room can accommodate at most one lesson at the same time.
+                    if (a.getRoom() != null && a.getRoom().equals(b.getRoom())) {
+                        hardScore--;
+                    }
+                    // A teacher can teach at most one lesson at the same time.
+                    if (a.getTeacher().equals(b.getTeacher())) {
+                        hardScore--;
+                    }
+                    // A student can attend at most one lesson at the same time.
+                    if (a.getStudentGroup().equals(b.getStudentGroup())) {
+                        hardScore--;
+                    }
+                }
+            }
+        }
+        int softScore = 0;
+        // Soft constraints are only implemented in the optaplanner-quickstarts code
+        return HardSoftScore.of(hardScore, softScore);
+    }
+
+}
+----
+
+Unfortunately **that does not scale well**, because it is non-incremental:
+every time a lesson is assigned to a different time slot or room,
+all lessons are re-evaluated to calculate the new score.
+
+Instead, create a `src/main/java/org/acme/schooltimetabling/solver/TimeTableConstraintProvider.java` class
+to perform incremental score calculation.
+It uses OptaPlanner's ConstraintStream API which is inspired by Java Streams and SQL:
+
+[source,java]
+----
+package org.acme.schooltimetabling.solver;
+
+import org.acme.schooltimetabling.domain.Lesson;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+import org.optaplanner.core.api.score.stream.Constraint;
+import org.optaplanner.core.api.score.stream.ConstraintFactory;
+import org.optaplanner.core.api.score.stream.ConstraintProvider;
+import org.optaplanner.core.api.score.stream.Joiners;
+
+public class TimeTableConstraintProvider implements ConstraintProvider {
+
+    @Override
+    public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+        return new Constraint[] {
+                // Hard constraints
+                roomConflict(constraintFactory),
+                teacherConflict(constraintFactory),
+                studentGroupConflict(constraintFactory),
+                // Soft constraints are only implemented in the optaplanner-quickstarts code
+        };
+    }
+
+    private Constraint roomConflict(ConstraintFactory constraintFactory) {
+        // A room can accommodate at most one lesson at the same time.
+
+        // Select a lesson ...
+        return constraintFactory
+                .from(Lesson.class)
+                // ... and pair it with another lesson ...
+                .join(Lesson.class,
+                        // ... in the same timeslot ...
+                        Joiners.equal(Lesson::getTimeslot),
+                        // ... in the same room ...
+                        Joiners.equal(Lesson::getRoom),
+                        // ... and the pair is unique (different id, no reverse pairs) ...
+                        Joiners.lessThan(Lesson::getId))
+                // ... then penalize each pair with a hard weight.
+                .penalize("Room conflict", HardSoftScore.ONE_HARD);
+    }
+
+    private Constraint teacherConflict(ConstraintFactory constraintFactory) {
+        // A teacher can teach at most one lesson at the same time.
+        return constraintFactory.from(Lesson.class)
+                .join(Lesson.class,
+                        Joiners.equal(Lesson::getTimeslot),
+                        Joiners.equal(Lesson::getTeacher),
+                        Joiners.lessThan(Lesson::getId))
+                .penalize("Teacher conflict", HardSoftScore.ONE_HARD);
+    }
+
+    private Constraint studentGroupConflict(ConstraintFactory constraintFactory) {
+        // A student can attend at most one lesson at the same time.
+        return constraintFactory.from(Lesson.class)
+                .join(Lesson.class,
+                        Joiners.equal(Lesson::getTimeslot),
+                        Joiners.equal(Lesson::getStudentGroup),
+                        Joiners.lessThan(Lesson::getId))
+                .penalize("Student group conflict", HardSoftScore.ONE_HARD);
+    }
+
+}
+----
+
+The `ConstraintProvider` scales an order of magnitude better than the `EasyScoreCalculator`: __O__(n) instead of __O__(n²).

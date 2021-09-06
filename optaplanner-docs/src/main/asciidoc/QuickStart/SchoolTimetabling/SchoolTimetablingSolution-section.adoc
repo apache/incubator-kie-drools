@@ -1,0 +1,115 @@
+= Gather the domain objects in a planning solution
+:imagesdir: ../..
+
+A `TimeTable` wraps all `Timeslot`, `Room`, and `Lesson` instances of a single dataset.
+Furthermore, because it contains all lessons, each with a specific planning variable state,
+it is a _planning solution_ and it has a score:
+
+* If lessons are still unassigned, then it is an _uninitialized_ solution,
+for example, a solution with the score `-4init/0hard/0soft`.
+* If it breaks hard constraints, then it is an _infeasible_ solution,
+for example, a solution with the score `-2hard/-3soft`.
+* If it adheres to all hard constraints, then it is a _feasible_ solution,
+for example, a solution with the score `0hard/-7soft`.
+
+Create the `src/main/java/org/acme/schooltimetabling/domain/TimeTable.java` class:
+
+[source,java]
+----
+package org.acme.schooltimetabling.domain;
+
+import java.util.List;
+
+import org.optaplanner.core.api.domain.solution.PlanningEntityCollectionProperty;
+import org.optaplanner.core.api.domain.solution.PlanningScore;
+import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.domain.solution.ProblemFactCollectionProperty;
+import org.optaplanner.core.api.domain.valuerange.ValueRangeProvider;
+import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
+
+@PlanningSolution
+public class TimeTable {
+
+    @ValueRangeProvider(id = "timeslotRange")
+    @ProblemFactCollectionProperty
+    private List<Timeslot> timeslotList;
+    @ValueRangeProvider(id = "roomRange")
+    @ProblemFactCollectionProperty
+    private List<Room> roomList;
+    @PlanningEntityCollectionProperty
+    private List<Lesson> lessonList;
+
+    @PlanningScore
+    private HardSoftScore score;
+
+    public TimeTable() {
+    }
+
+    public TimeTable(List<Timeslot> timeslotList, List<Room> roomList, List<Lesson> lessonList) {
+        this.timeslotList = timeslotList;
+        this.roomList = roomList;
+        this.lessonList = lessonList;
+    }
+
+    public List<Timeslot> getTimeslotList() {
+        return timeslotList;
+    }
+
+    public List<Room> getRoomList() {
+        return roomList;
+    }
+
+    public List<Lesson> getLessonList() {
+        return lessonList;
+    }
+
+    public HardSoftScore getScore() {
+        return score;
+    }
+
+}
+----
+
+The `TimeTable` class has an `@PlanningSolution` annotation,
+so OptaPlanner knows that this class contains all of the input and output data.
+
+Specifically, this class is the input of the problem:
+
+* A `timeslotList` field with all time slots
+** This is a list of problem facts, because they do not change during solving.
+* A `roomList` field with all rooms
+** This is a list of problem facts, because they do not change during solving.
+* A `lessonList` field with all lessons
+** This is a list of planning entities, because they change during solving.
+** Of each `Lesson`:
+*** The values of the `timeslot` and `room` fields are typically still `null`, so unassigned.
+They are planning variables.
+***  The other fields, such as `subject`, `teacher` and `studentGroup`, are filled in.
+These fields are problem properties.
+
+However, this class is also the output of the solution:
+
+* A `lessonList` field for which each `Lesson` instance has non-null `timeslot` and `room` fields after solving
+* A `score` field that represents the quality of the output solution, for example, `0hard/-5soft`
+
+== The value range providers
+
+The `timeslotList` field is a value range provider.
+It holds the `Timeslot` instances which OptaPlanner can pick from to assign to the `timeslot` field of `Lesson` instances.
+The `timeslotList` field has an `@ValueRangeProvider` annotation to connect the `@PlanningVariable` with the `@ValueRangeProvider`,
+by matching the value of the `id` property with the value of the `valueRangeProviderRefs` property of the `@PlanningVariable` annotation in the `Lesson` class.
+
+Following the same logic, the `roomList` field also has an `@ValueRangeProvider` annotation.
+
+== The problem fact and planning entity properties
+
+Furthermore, OptaPlanner needs to know which `Lesson` instances it can change
+as well as how to retrieve the `Timeslot` and `Room` instances used for score calculation
+by your `TimeTableConstraintProvider`.
+
+The `timeslotList` and `roomList` fields have an `@ProblemFactCollectionProperty` annotation,
+so your `TimeTableConstraintProvider` can select _from_ those instances.
+
+The `lessonList` has an `@PlanningEntityCollectionProperty` annotation,
+so OptaPlanner can change them during solving
+and your `TimeTableConstraintProvider` can select _from_ those too.

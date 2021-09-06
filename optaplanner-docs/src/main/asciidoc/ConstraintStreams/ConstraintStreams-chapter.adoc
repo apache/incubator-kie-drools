@@ -114,7 +114,7 @@ Add the following code to your solver configuration:
     <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
-        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.acme.schooltimetabling.solver.TimeTableConstraintProvider</constraintProviderClass>
       </scoreDirectorFactory>
       ...
     </solver>
@@ -998,7 +998,7 @@ To try it out set the `constraintStreamImplType` to `BAVET` in your solver confi
     <solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
       <scoreDirectorFactory>
-        <constraintProviderClass>com.example.MyConstraintProvider</constraintProviderClass>
+        <constraintProviderClass>org.acme.schooltimetabling.solver.TimeTableConstraintProvider</constraintProviderClass>
         <!-- BAVET is experimental -->
         <constraintStreamImplType>BAVET</constraintStreamImplType>
       </scoreDirectorFactory>

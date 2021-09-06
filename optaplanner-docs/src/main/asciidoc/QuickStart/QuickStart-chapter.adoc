@@ -9,7 +9,7 @@
 
 include::Overview/OverviewQuickStarts-chapter.adoc[leveloffset=+1]
 
-include::PlainJava/PlainJavaQuickStart-chapter.adoc[leveloffset=+1]
+include::HelloWorld/HelloWorldQuickStart-chapter.adoc[leveloffset=+1]
 
 include::Quarkus/QuarkusQuickStart-chapter.adoc[leveloffset=+1]
 
