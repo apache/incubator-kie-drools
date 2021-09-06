@@ -23,12 +23,7 @@ import java.util.Map.Entry;
 import org.drools.mvel.java.JavaDialect;
 import org.jbpm.compiler.canonical.descriptors.OpenApiTaskDescriptor;
 import org.jbpm.compiler.canonical.descriptors.TaskDescriptor;
-import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.ruleflow.core.RuleFlowNodeContainerFactory;
 import org.jbpm.ruleflow.core.factory.CompositeContextNodeFactory;
 import org.jbpm.ruleflow.core.factory.NodeFactory;
@@ -234,23 +229,8 @@ public abstract class CompositeContextNodeHandler<S extends State, P extends Rul
         Iterator<Entry<String, JsonNode>> iter = functionArgs.fields();
         while (iter.hasNext()) {
             Entry<String, JsonNode> entry = iter.next();
-            workItemFactory.workParameter(entry.getKey(), processWorkItemValue(entry.getValue(), paramName)).workParameterDefinition(entry.getKey(), from(entry.getValue()));
+            workItemFactory.workParameter(entry.getKey(), processWorkItemValue(entry.getValue(), paramName)).workParameterDefinition(entry.getKey(), DataTypeResolver.fromObject(entry.getValue()));
         }
-    }
-
-    private DataType from(Object value) {
-        if (value instanceof String) {
-            return new StringDataType();
-        } else if (value instanceof Boolean) {
-            return new BooleanDataType();
-        } else if (value instanceof Integer) {
-            return new IntegerDataType();
-        } else if (value instanceof Number) {
-            return new FloatDataType();
-        } else {
-            return new ObjectDataType();
-        }
-
     }
 
     private Object processWorkItemValue(JsonNode jsonNode, String paramName) {

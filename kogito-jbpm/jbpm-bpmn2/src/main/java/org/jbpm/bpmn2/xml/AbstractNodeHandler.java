@@ -41,11 +41,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.DroolsAction;
 import org.jbpm.workflow.core.Node;
@@ -109,6 +105,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
         this.validPeers.add(Association.class);
     }
 
+    @Override
     public Object start(final String uri, final String localName, final Attributes attrs,
             final ExtensibleXmlParser parser) throws SAXException {
         parser.startElementBuilder(localName, attrs);
@@ -135,7 +132,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
                         newId = n.getId();
                     }
                 }
-                ((Node) node).setId(++newId);
+                node.setId(++newId);
             }
         } else {
             AtomicInteger idGen = (AtomicInteger) parser.getMetaData().get("idGen");
@@ -146,6 +143,7 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
 
     protected abstract Node createNode(Attributes attrs);
 
+    @Override
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
@@ -480,33 +478,13 @@ public abstract class AbstractNodeHandler extends BaseAbstractHandler implements
     }
 
     protected DataType getDataType(String itemSubjectRef, Map<String, ItemDefinition> itemDefinitions, ClassLoader cl) {
-        DataType dataType = new ObjectDataType();
+        DataType dataType = DataTypeResolver.defaultDataType;
         if (itemDefinitions == null) {
             return dataType;
         }
         ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
         if (itemDefinition != null) {
-            String structureRef = itemDefinition.getStructureRef();
-
-            if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
-                dataType = new BooleanDataType();
-
-            } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
-                dataType = new IntegerDataType();
-
-            } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
-                dataType = new FloatDataType();
-
-            } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
-                dataType = new StringDataType();
-
-            } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
-                dataType = new ObjectDataType(structureRef);
-
-            } else {
-                dataType = new ObjectDataType(structureRef, cl);
-            }
-
+            dataType = DataTypeResolver.fromType(itemDefinition.getStructureRef(), cl);
         }
         return dataType;
     }

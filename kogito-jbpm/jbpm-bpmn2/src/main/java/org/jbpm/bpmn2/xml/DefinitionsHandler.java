@@ -31,11 +31,7 @@ import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.context.variable.Variable;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
-import org.jbpm.process.core.datatype.impl.type.BooleanDataType;
-import org.jbpm.process.core.datatype.impl.type.FloatDataType;
-import org.jbpm.process.core.datatype.impl.type.IntegerDataType;
-import org.jbpm.process.core.datatype.impl.type.ObjectDataType;
-import org.jbpm.process.core.datatype.impl.type.StringDataType;
+import org.jbpm.process.core.datatype.DataTypeResolver;
 import org.jbpm.process.core.datatype.impl.type.UndefinedDataType;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.workflow.core.NodeContainer;
@@ -62,6 +58,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         }
     }
 
+    @Override
     public Object start(final String uri, final String localName,
             final Attributes attrs, final ExtensibleXmlParser parser)
             throws SAXException {
@@ -69,6 +66,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         return new Definitions();
     }
 
+    @Override
     public Object end(final String uri, final String localName,
             final ExtensibleXmlParser parser) throws SAXException {
         final Element element = parser.endElementBuilder();
@@ -89,6 +87,7 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
         return definitions;
     }
 
+    @Override
     public Class<?> generateNodeFor() {
         return Definitions.class;
     }
@@ -168,31 +167,10 @@ public class DefinitionsHandler extends BaseAbstractHandler implements Handler {
 
         String itemSubjectRef = (String) variable.getMetaData("ItemSubjectRef");
         if (UndefinedDataType.getInstance().equals(variable.getType()) && itemDefinitions != null && itemSubjectRef != null) {
-            DataType dataType = new ObjectDataType();
+            DataType dataType = DataTypeResolver.defaultDataType;
             ItemDefinition itemDefinition = itemDefinitions.get(itemSubjectRef);
             if (itemDefinition != null) {
-                String structureRef = itemDefinition.getStructureRef();
-
-                if ("java.lang.Boolean".equals(structureRef) || "Boolean".equals(structureRef)) {
-                    dataType = new BooleanDataType();
-
-                } else if ("java.lang.Integer".equals(structureRef) || "Integer".equals(structureRef)) {
-                    dataType = new IntegerDataType();
-
-                } else if ("java.lang.Float".equals(structureRef) || "Float".equals(structureRef)) {
-                    dataType = new FloatDataType();
-
-                } else if ("java.lang.String".equals(structureRef) || "String".equals(structureRef)) {
-                    dataType = new StringDataType();
-
-                } else if ("java.lang.Object".equals(structureRef) || "Object".equals(structureRef)) {
-                    // use FQCN of Object
-                    dataType = new ObjectDataType("java.lang.Object");
-
-                } else {
-                    dataType = new ObjectDataType(structureRef, cl);
-                }
-
+                dataType = DataTypeResolver.fromType(itemDefinition.getStructureRef(), cl);
             }
             variable.setType(dataType);
         }
