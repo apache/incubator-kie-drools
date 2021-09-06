@@ -51,6 +51,7 @@ import static org.drools.modelcompiler.builder.JavaParserCompiler.compileAll;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ADD_ANNOTATION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ANNOTATION_VALUE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.TYPE_META_DATA_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class POJOGenerator {
 
@@ -154,7 +155,7 @@ public class POJOGenerator {
             typeMetaDataCall = new MethodCallExpr(typeMetaDataCall, ADD_ANNOTATION_CALL);
             typeMetaDataCall.addArgument(new StringLiteralExpr(ann.getName()));
             for (Map.Entry<String, Object> entry : ann.getValueMap().entrySet()) {
-                MethodCallExpr annotationValueCall = new MethodCallExpr(null, ANNOTATION_VALUE_CALL);
+                MethodCallExpr annotationValueCall = createDslTopLevelMethod(ANNOTATION_VALUE_CALL);
                 annotationValueCall.addArgument(new StringLiteralExpr(entry.getKey()));
                 String expr = entry.getValue().toString();
                 if (hasMvel() && exprAnnotations.contains(ann.getName()) && ConstraintBuilder.get().analyzeExpression(type, expr) == null) {
@@ -169,7 +170,7 @@ public class POJOGenerator {
     }
 
     private static MethodCallExpr registerTypeMetaData(String className) {
-        MethodCallExpr typeMetaDataCall = new MethodCallExpr(null, TYPE_META_DATA_CALL);
+        MethodCallExpr typeMetaDataCall = createDslTopLevelMethod(TYPE_META_DATA_CALL);
         typeMetaDataCall.addArgument(className + ".class");
         return typeMetaDataCall;
     }

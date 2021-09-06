@@ -315,10 +315,7 @@ public class ConstraintParser {
     }
 
     private Expression combineExpressions( TypedExpressionResult leftTypedExpressionResult, Expression combo ) {
-        List<Expression> allPrefixExpressions = new ArrayList<>();
-        allPrefixExpressions.addAll(leftTypedExpressionResult.getNullSafeExpressions());
-        allPrefixExpressions.addAll(leftTypedExpressionResult.getPrefixExpressions());
-        for (Expression e : allPrefixExpressions) {
+        for (Expression e : leftTypedExpressionResult.getPrefixExpressions()) {
             combo = new BinaryExpr( e, combo, BinaryExpr.Operator.AND );
         }
         return combo;
@@ -518,6 +515,7 @@ public class ConstraintParser {
     private DrlxParseResult parseBinaryExpr(BinaryExpr binaryExpr, Class<?> patternType, String bindingId, ConstraintExpression constraint, Expression drlxExpr,
                                             boolean hasBind, boolean isPositional, boolean isEnclosed) {
         BinaryExpr.Operator operator = binaryExpr.getOperator();
+        boolean isOrBinary = operator == BinaryExpr.Operator.OR;
 
         if ( isLogicalOperator( operator ) && isCombinable( binaryExpr ) ) {
             DrlxParseResult leftResult = compileToJavaRecursive(patternType, bindingId, constraint, binaryExpr.getLeft(), hasBind, isPositional );
@@ -543,7 +541,7 @@ public class ConstraintParser {
         List<String> usedDeclarationsOnLeft = hasBind ? new ArrayList<>( expressionTyperContext.getUsedDeclarations() ) : null;
 
         List<Expression> leftPrefixExpresssions = new ArrayList<>();
-        if (isLogicalOperator(operator)) {
+        if (isOrBinary) {
             leftPrefixExpresssions.addAll(expressionTyperContext.getNullSafeExpressions());
             expressionTyperContext.getNullSafeExpressions().clear();
             leftPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
@@ -563,7 +561,7 @@ public class ConstraintParser {
                 return new DrlxParseFail( new ParseExpressionErrorResult( drlxExpr ) );
             }
             right = optRight.get();
-            if (isLogicalOperator(operator)) {
+            if (isOrBinary) {
                 rightPrefixExpresssions.addAll(expressionTyperContext.getNullSafeExpressions());
                 expressionTyperContext.getNullSafeExpressions().clear();
                 rightPrefixExpresssions.addAll(expressionTyperContext.getPrefixExpresssions());
@@ -607,10 +605,10 @@ public class ConstraintParser {
             right = requiresSplit ? right : specialComparisonResult.coercedRight;
         }
 
-        if (isLogicalOperator(operator)) {
-            combo = combineExpressions( leftPrefixExpresssions, rightPrefixExpresssions, combo );
+        if (isOrBinary) {
+            combo = combineExpressions( leftPrefixExpresssions, rightPrefixExpresssions, combo ); // NullSafeExpressions are combined here because the order is complex
         } else {
-            combo = combineExpressions( leftTypedExpressionResult, combo );
+            combo = combineExpressions( leftTypedExpressionResult, combo ); // NullSafeExpressions will be added later by PatternDSL.addNullSafeExpr() which will be separated AlphaNodes
         }
 
         boolean isPredicate = isPredicateBooleanExpression(binaryExpr);
@@ -633,7 +631,9 @@ public class ConstraintParser {
                 .setRight( right )
                 .setBetaConstraint(isBetaConstraint)
                 .setRequiresSplit( requiresSplit )
-                .setIsPredicate(isPredicate);
+                .setIsPredicate(isPredicate)
+                .setImplicitCastExpression(leftTypedExpressionResult.getInlineCastExpression())
+                .setNullSafeExpressions(leftTypedExpressionResult.getNullSafeExpressions()); // This would be empty if NullSafeExpressions were combined earlier
     }
 
     private boolean isMultipleResult(DrlxParseResult leftResult, BinaryExpr.Operator operator, DrlxParseResult rightResult) {

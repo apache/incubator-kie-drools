@@ -22,6 +22,8 @@ import org.drools.compiler.lang.descr.ConditionalElementDescr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
+
 public class ConditionalElementVisitor {
 
     private final RuleContext context;
@@ -33,7 +35,7 @@ public class ConditionalElementVisitor {
     }
 
     public void visit(ConditionalElementDescr descr, String methodName) {
-        final MethodCallExpr ceDSL = new MethodCallExpr(null, methodName);
+        final MethodCallExpr ceDSL = createDslTopLevelMethod(methodName);
         this.context.addExpression(ceDSL);
         this.context.pushScope(descr);
         this.context.pushExprPointer(ceDSL::addArgument );

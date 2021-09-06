@@ -84,6 +84,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.BREAKING
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXECUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GET_CHANNEL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ON_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.ClassUtil.asJavaSourceName;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
 
@@ -296,7 +297,7 @@ public class Consequence {
         MethodCallExpr onCall = null;
 
         if (!usedArguments.isEmpty()) {
-            onCall = new MethodCallExpr(null, ON_CALL);
+            onCall = createDslTopLevelMethod(ON_CALL);
             usedArguments.stream().map(context::getVar).forEach(onCall::addArgument);
         }
         return onCall;

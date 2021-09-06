@@ -16,9 +16,6 @@
 
 package org.drools.metric;
 
-import org.drools.metric.util.MetricLogUtils;
-import org.drools.mvel.CommonTestMethodBase;
-import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieSession;
@@ -26,16 +23,10 @@ import org.kie.internal.utils.KieHelper;
 
 import static org.junit.Assert.assertEquals;
 
-public class CloneTest extends CommonTestMethodBase {
-
-    @Before
-    public void setup() {
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_ENABLED, "true");
-        System.setProperty(MetricLogUtils.METRIC_LOGGER_THRESHOLD, "-1");
-    }
+public class CloneTest extends AbstractMetricTest {
 
     @Test
-    public void testComplexEval() throws Exception {
+    public void testComplexEval() {
         String drl =
                 "rule R1 when\n" +
                      "    $s : String()\n" +

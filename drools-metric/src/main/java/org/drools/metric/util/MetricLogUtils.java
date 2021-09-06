@@ -26,6 +26,7 @@ public class MetricLogUtils {
 
     public static final String METRIC_LOGGER_ENABLED = "drools.metric.logger.enabled";
     private boolean enabled = Boolean.parseBoolean(System.getProperty(METRIC_LOGGER_ENABLED, "false"));
+    private boolean micrometerAvailable = isMicrometerAvailable();
 
     public static final String METRIC_LOGGER_THRESHOLD = "drools.metric.logger.threshold";
     private int threshold = Integer.parseInt(System.getProperty(METRIC_LOGGER_THRESHOLD, "500")); // microseconds
@@ -33,6 +34,16 @@ public class MetricLogUtils {
     private final ThreadLocal<NodeStats> nodeStats = new ThreadLocal<>();
 
     private static final MetricLogUtils INSTANCE = new MetricLogUtils();
+
+    private static boolean isMicrometerAvailable() {
+        try {
+            Class.forName("io.micrometer.core.instrument.Tag");
+            return true;
+        } catch (Exception e) {
+            logger.trace("Micrometer not found on the classpath.");
+            return false;
+        }
+    }
 
     public static MetricLogUtils getInstance() {
         return MetricLogUtils.INSTANCE;
@@ -65,7 +76,7 @@ public class MetricLogUtils {
                 stats.incrementEvalCount();
             }
         } else {
-            logger.warn("Metrics must not be excuted when disabled");
+            logger.warn("Metrics must not be executed when disabled");
         }
     }
 
@@ -73,9 +84,15 @@ public class MetricLogUtils {
         if (enabled) {
             NodeStats stats = nodeStats.get();
             if (stats != null && stats.isStarted()) {
-                long elapsedTimeInMicro = (System.nanoTime() - stats.getStartTime()) / 1000;
-                if (stats.getEvalCount() > 0 && elapsedTimeInMicro > threshold) {
-                    logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), stats.getEvalCount(), elapsedTimeInMicro);
+                long evalCount = stats.getEvalCount();
+                long elapsedTimeInNanos = (System.nanoTime() - stats.getStartTime());
+                long elapsedTimeInMicro = elapsedTimeInNanos / 1000;
+                if (evalCount > 0 && elapsedTimeInMicro > threshold) {
+                    if (micrometerAvailable) {
+                        MicrometerUtils.INSTANCE.triggerMicrometer(stats.getNode(), evalCount, elapsedTimeInNanos);
+                    } else {  // Only log when Micrometer is not enabled.
+                        logger.trace("{}, evalCount:{}, elapsedMicro:{}", stats.getNode(), evalCount, elapsedTimeInMicro);
+                    }
                 }
             } else {
                 logger.warn("nodeStats has to be initialized. Call startMetrics() beforehand : stats = {}", stats);
@@ -83,4 +100,5 @@ public class MetricLogUtils {
             nodeStats.remove();
         }
     }
+
 }

@@ -42,6 +42,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CAL
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.QUERY_INVOCATION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.QueryGenerator.toQueryDef;
 
 class Query implements DSLNode {
@@ -120,7 +121,7 @@ class Query implements DSLNode {
 
     private void addQueryArg( List<QueryParameter> queryParams, Expression[] queryArgs, String itemText, int i ) {
         if ( isLiteral( itemText ) ) {
-            MethodCallExpr valueOfMethod = new MethodCallExpr( null, VALUE_OF_CALL );
+            MethodCallExpr valueOfMethod = createDslTopLevelMethod( VALUE_OF_CALL );
             valueOfMethod.addArgument( new NameExpr( itemText ) );
             queryArgs[i] = valueOfMethod;
         } else {
@@ -137,11 +138,11 @@ class Query implements DSLNode {
     }
 
     private MethodCallExpr createFromExpr(String variableName, Expression expr) {
-        MethodCallExpr dslExpr = new MethodCallExpr(null, PATTERN_CALL);
+        MethodCallExpr dslExpr = createDslTopLevelMethod(PATTERN_CALL);
         dslExpr.addArgument( context.getVarExpr( variableName ) );
         context.addExpression(dslExpr);
 
-        MethodCallExpr fromExpr = new MethodCallExpr(null, FROM_CALL);
+        MethodCallExpr fromExpr = createDslTopLevelMethod(FROM_CALL);
 
         LambdaExpr lambdaExpr = new LambdaExpr();
         lambdaExpr.setEnclosingParameters(true);

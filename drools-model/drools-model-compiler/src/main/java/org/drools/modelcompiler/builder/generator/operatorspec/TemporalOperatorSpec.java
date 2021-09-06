@@ -29,6 +29,7 @@ import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 
 public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
@@ -42,7 +43,7 @@ public class TemporalOperatorSpec implements OperatorSpec {
             }
         }
 
-        return pointFreeExpr.isNegated() ? new MethodCallExpr( null, NOT_CALL ).addArgument( methodCallExpr ) : methodCallExpr;
+        return pointFreeExpr.isNegated() ? createDslTopLevelMethod( NOT_CALL ).addArgument( methodCallExpr ) : methodCallExpr;
     }
 
     @Override

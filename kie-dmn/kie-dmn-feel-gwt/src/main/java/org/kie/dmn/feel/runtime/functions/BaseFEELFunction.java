@@ -16,11 +16,13 @@
 
 package org.kie.dmn.feel.runtime.functions;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalAccessor;
 import java.time.temporal.TemporalAmount;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -592,7 +594,15 @@ public abstract class BaseFEELFunction implements FEELFunction {
 
     private Object normalizeResult(Object result) {
         // this is to normalize types returned by external functions
-        return result != null && result instanceof Number && !(result instanceof BigDecimal) ? EvalHelper.getBigDecimalOrNull(result.toString()) : result;
+        if (result != null && result.getClass().isArray()) {
+            List<Object> objs = new ArrayList<>();
+            for (int i = 0; i < Array.getLength(result); i++) {
+                objs.add(EvalHelper.coerceNumber(Array.get(result, i)));
+            }
+            return objs;
+        } else {
+            return EvalHelper.coerceNumber(result);
+        }
     }
 
     protected boolean isCustomFunction() {

@@ -84,7 +84,7 @@ public class XLS2DMNParser implements DecisionTableParser {
     @Override
     public void parseFile(InputStream inStream) {
         try {
-            parseWorkbook(WorkbookFactory.create(inStream));
+            parseWorkbook("xls2dmn", WorkbookFactory.create(inStream));
         } catch (IOException e) {
             throw new DecisionTableParseException(
                     "Failed to open Excel stream, " + "please check that the content is xls97 format.", e);
@@ -94,14 +94,14 @@ public class XLS2DMNParser implements DecisionTableParser {
     @Override
     public void parseFile(File file) {
         try {
-            parseWorkbook(WorkbookFactory.create(file, (String) null, true));
+            parseWorkbook(removeTrailingExtension(file.getName()), WorkbookFactory.create(file, (String) null, true));
         } catch (IOException e) {
             throw new DecisionTableParseException(
                     "Failed to open Excel stream, " + "please check that the content is xls97 format.", e);
         }
     }
 
-    public void parseWorkbook(Workbook workbook) {
+    public void parseWorkbook(String dmnModelName, Workbook workbook) {
         Map<String, List<String>> overview = new HashMap<>();
         DataFormatter formatter = new DataFormatter();
         for (int s = 0; s < workbook.getNumberOfSheets(); s++) {
@@ -129,7 +129,8 @@ public class XLS2DMNParser implements DecisionTableParser {
         headerInfos.entrySet().forEach(e -> LOG.info("{}", e));
         Definitions definitions = new TDefinitions();
         setDefaultNSContext(definitions);
-        definitions.setName("xls2dmn");
+        definitions.setId("dmnid_" + dmnModelName);
+        definitions.setName(dmnModelName);
         String namespace = "xls2dmn_" + UUID.randomUUID();
         definitions.setNamespace(namespace);
         definitions.getNsContext().put(XMLConstants.DEFAULT_NS_PREFIX, namespace);
@@ -269,4 +270,11 @@ public class XLS2DMNParser implements DecisionTableParser {
         return result;
     }
     
+    public static String removeTrailingExtension(String filename) {
+        if (filename.endsWith(".xls") || filename.endsWith(".xlsx") ) {
+            return filename.substring(0, filename.lastIndexOf("."));
+        }
+        return filename;
+    }
+
 }

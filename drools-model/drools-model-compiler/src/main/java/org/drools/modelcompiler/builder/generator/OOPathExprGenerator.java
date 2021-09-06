@@ -48,6 +48,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FROM_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACTIVE_FROM_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.kie.internal.ruleunit.RuleUnitUtil.isDataSource;
 
 public class OOPathExprGenerator {
@@ -119,7 +120,7 @@ public class OOPathExprGenerator {
     }
 
     private MethodCallExpr createFromExpr(String previousBind, Expression accessorLambda, boolean passive) {
-        final MethodCallExpr reactiveFrom = new MethodCallExpr(null, passive ? FROM_CALL : REACTIVE_FROM_CALL);
+        final MethodCallExpr reactiveFrom = createDslTopLevelMethod(passive ? FROM_CALL : REACTIVE_FROM_CALL);
         reactiveFrom.addArgument(context.getVarExpr(previousBind));
         reactiveFrom.addArgument(accessorLambda);
         return reactiveFrom;
@@ -177,7 +178,7 @@ public class OOPathExprGenerator {
     }
 
     private void toPatternExpr(String bindingId, List<DrlxParseResult> list, DrlxParseSuccess patternParseResult, Class<?> fieldType) {
-        MethodCallExpr patternExpr = new MethodCallExpr( null, PATTERN_CALL );
+        MethodCallExpr patternExpr = createDslTopLevelMethod(PATTERN_CALL);
         patternExpr.addArgument( context.getVar( bindingId ) );
 
         SingleDrlxParseSuccess oopathConstraint = null;

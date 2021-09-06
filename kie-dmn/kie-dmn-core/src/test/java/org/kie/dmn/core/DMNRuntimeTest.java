@@ -45,6 +45,7 @@ import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNDecisionResult.DecisionEvaluationStatus;
 import org.kie.dmn.api.core.DMNMessage;
+import org.kie.dmn.api.core.DMNMessage.Severity;
 import org.kie.dmn.api.core.DMNMessageType;
 import org.kie.dmn.api.core.DMNModel;
 import org.kie.dmn.api.core.DMNResult;
@@ -3001,5 +3002,21 @@ public class DMNRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult);
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
         assertThat(dmnResult.getDecisionResultByName("ExpressionTest").getResult(), is(new BigDecimal("-3")));
+    }
+
+    @Test
+    public void testInvokeJavaReturnArray() {
+        final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("invokeJavaReturnArray.dmn", this.getClass());
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_C90046D5-8581-4B16-992D-0472F840EFAF", "invokeJavaReturnArray");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext emptyContext = DMNFactory.newContext();
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, emptyContext);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.getMessages(Severity.WARN).isEmpty(), is(true));
+        assertThat(dmnResult.getDecisionResultByName("Decision1").getResult(), is(notNullValue()));
+        assertThat(dmnResult.getDecisionResultByName("Decision2").getResult(), is("cd"));
     }
 }

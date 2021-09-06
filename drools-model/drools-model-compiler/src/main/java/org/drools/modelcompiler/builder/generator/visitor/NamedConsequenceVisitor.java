@@ -43,6 +43,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getClassF
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ELSE_WHEN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.THEN_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.WHEN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.builder.generator.ModelGenerator.createVariables;
 
 public class NamedConsequenceVisitor {
@@ -81,7 +82,7 @@ public class NamedConsequenceVisitor {
     }
 
     private MethodCallExpr whenThenDSL(ConditionalBranchDescr desc, PatternDescr patternRelated, Class<?> patternType, String callMethod, MethodCallExpr parentExpression) {
-        MethodCallExpr when = new MethodCallExpr(parentExpression, callMethod);
+        MethodCallExpr when = parentExpression == null ? createDslTopLevelMethod(callMethod) : new MethodCallExpr(parentExpression, callMethod);
         final String condition = desc.getCondition().toString();
         if (!condition.equals("true")) { // Default case
             when.addArgument(new StringLiteralExpr(context.getConditionId(patternType, condition)));

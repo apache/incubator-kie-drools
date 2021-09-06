@@ -130,6 +130,7 @@ public abstract class PatternDSL implements DSLNode {
         List<PatternConstraintParseResult> patternConstraintParseResults = new ArrayList<>();
 
         for (BaseDescr constraint : constraintDescrs) {
+            List<PatternConstraintParseResult> patternConstraintParseResultsPerConstraintDescr = new ArrayList<>();
             String patternIdentifier = pattern.getIdentifier();
 
             boolean isPositional = isPositional(constraint);
@@ -152,20 +153,23 @@ public abstract class PatternDSL implements DSLNode {
                 BinaryExpr expr = ((DrlxParseSuccess) drlxParseResult).getExpr().asBinaryExpr();
                 String leftExpression = printConstraint(((SingleDrlxParseSuccess) drlxParseResult).getLeft().getExpression());
                 DrlxParseResult leftExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, leftExpression, isPositional);
-                patternConstraintParseResults.add(new PatternConstraintParseResult(leftExpression, patternIdentifier, leftExpressionReparsed));
+                patternConstraintParseResultsPerConstraintDescr.add(new PatternConstraintParseResult(leftExpression, patternIdentifier, leftExpressionReparsed));
 
                 String rightExpression = printConstraint(((SingleDrlxParseSuccess) drlxParseResult).getRight().getExpression());
                 DrlxParseResult rightExpressionReparsed = constraintParser.drlxParse(patternType, patternIdentifier, rightExpression, isPositional);
                 DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(rightExpressionReparsed);
-                patternConstraintParseResults.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, normalizedParseResult));
+                patternConstraintParseResultsPerConstraintDescr.add(new PatternConstraintParseResult(rightExpression, patternIdentifier, normalizedParseResult));
             } else {
                 DrlxParseResult normalizedParseResult = ConstraintUtil.normalizeConstraint(drlxParseResult);
-                patternConstraintParseResults.add(new PatternConstraintParseResult(expression, patternIdentifier, normalizedParseResult));
+                patternConstraintParseResultsPerConstraintDescr.add(new PatternConstraintParseResult(expression, patternIdentifier, normalizedParseResult));
             }
-        }
 
-        addImplicitCastExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResults);
-        addNullSafeExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResults);
+            // Cast-check should be placed earlier than Null-check (calling the add method later means pushing the constraint earlier)
+            addNullSafeExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResultsPerConstraintDescr);
+            addImplicitCastExpr(constraintParser, pattern.getIdentifier(), patternConstraintParseResultsPerConstraintDescr);
+
+            patternConstraintParseResults.addAll(patternConstraintParseResultsPerConstraintDescr);
+        }
 
         return patternConstraintParseResults;
     }
@@ -225,11 +229,21 @@ public abstract class PatternDSL implements DSLNode {
                                              }).stream())
                                              .collect(Collectors.toList());
 
-        nullSafeExpressions.forEach(expr -> {
+        List<Expression> newNullSafeExpressions = reverseDistinct(nullSafeExpressions);
+
+        newNullSafeExpressions.forEach(expr -> {
             String nullSafeExpression = printConstraint(expr);
             DrlxParseResult nullSafeExpressionParsed = constraintParser.drlxParse(patternType, patternIdentifier, nullSafeExpression, false);
             patternConstraintParseResults.add(0, new PatternConstraintParseResult(nullSafeExpression, patternIdentifier, nullSafeExpressionParsed));
         });
+    }
+
+    private List<Expression> reverseDistinct(List<Expression> nullSafeExpressions) {
+        // distinct from the end of the list
+        Collections.reverse(nullSafeExpressions);
+        List<Expression> newNullSafeExpressions = nullSafeExpressions.stream().distinct().collect(Collectors.toList());
+        Collections.reverse(newNullSafeExpressions);
+        return newNullSafeExpressions;
     }
 
     void buildConstraint(PatternDescr pattern, Class<?> patternType, PatternConstraintParseResult patternConstraintParseResult) {

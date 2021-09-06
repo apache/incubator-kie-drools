@@ -110,6 +110,7 @@ import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 import static org.drools.core.util.MethodUtils.findMethod;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.isDslTopLevelNamespace;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper.findLeftLeafOfNameExprTraversingParent;
 import static org.drools.modelcompiler.util.ClassUtil.toRawClass;
 import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
@@ -398,10 +399,13 @@ public class DrlxParseUtil {
         } else if (expr instanceof NodeWithTraversableScope) {
             final NodeWithTraversableScope exprWithScope = (NodeWithTraversableScope) expr;
 
-            return exprWithScope.traverseScope().map((Expression scope) -> {
+            return exprWithScope.traverseScope().flatMap((Expression scope) -> {
+                if (isDslTopLevelNamespace(scope)) {
+                    return empty();
+                }
                 Expression sanitizedExpr = DrlxParseUtil.transformDrlNameExprToNameExpr(expr);
                 acc.addLast(sanitizedExpr.clone());
-                return findRootNodeViaScopeRec(scope, acc);
+                return of(findRootNodeViaScopeRec(scope, acc));
             }).orElse(new RemoveRootNodeResult(Optional.of(expr), expr, acc.isEmpty() ? expr : acc.getLast()));
         } else if (expr instanceof NameExpr) {
             if(!acc.isEmpty() && acc.getLast() instanceof NodeWithOptionalScope<?>) {
