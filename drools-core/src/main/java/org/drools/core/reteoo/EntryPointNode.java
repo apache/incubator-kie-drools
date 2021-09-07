@@ -110,10 +110,10 @@ public class EntryPointNode extends ObjectSource
                999,
                999); // irrelevant for this node, since it overrides sink management
         this.entryPoint = entryPoint;
-        this.objectTypeNodes = new ConcurrentHashMap<ObjectType, ObjectTypeNode>();
+        this.objectTypeNodes = new ConcurrentHashMap<>();
 
         hashcode = calculateHashCode();
-        typeConfReg = new ObjectTypeConfigurationRegistry( (( Rete ) objectSource).getKnowledgeBase() );
+        typeConfReg = new ObjectTypeConfigurationRegistry( objectSource.getKnowledgeBase() );
     }
 
     // ------------------------------------------------------------
@@ -153,24 +153,6 @@ public class EntryPointNode extends ObjectSource
     void setEntryPoint(EntryPointId entryPoint) {
         this.entryPoint = entryPoint;
     }
-
-    public void assertQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
-    public void retractQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-    }
-
-    public void modifyQuery(final InternalFactHandle factHandle,
-                            final PropagationContext context,
-                            final InternalWorkingMemory workingMemory) {
-        throw new UnsupportedOperationException("rete only");
-     }
 
     public ObjectTypeNode getQueryNode() {
         if ( queryNode == null ) {
@@ -389,12 +371,10 @@ public class EntryPointNode extends ObjectSource
     public void doAttach( BuildContext context ) {
         super.doAttach(context);
         this.source.addObjectSink( this );
-        if (context == null ) {
-            return;
-        }
-        // @FIXME when is below ever called, if context is always null? (mdp)
-        for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
-            workingMemory.updateEntryPointsCache();
+        if (context != null ) {
+            for ( InternalWorkingMemory workingMemory : context.getWorkingMemories() ) {
+                workingMemory.updateEntryPointsCache();
+            }
         }
     }
 
@@ -417,8 +397,7 @@ public class EntryPointNode extends ObjectSource
             return true;
         }
 
-        return this == object ||
-                (object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
+        return (object instanceof EntryPointNode && this.hashCode() == object.hashCode() &&
                  this.entryPoint.equals( ( (EntryPointNode) object ).entryPoint ) );
     }
 

@@ -26,10 +26,6 @@ import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.drools.core.phreak.AbstractReactiveObject;
 import org.drools.core.phreak.ReactiveSet;
-import org.drools.model.Model;
-import org.drools.model.impl.ModelImpl;
-import org.drools.modelcompiler.builder.KieBaseBuilder;
-import org.drools.modelcompiler.dsl.pattern.D;
 import org.drools.mvel.compiler.oopath.model.Adult;
 import org.drools.mvel.compiler.oopath.model.Child;
 import org.drools.mvel.compiler.oopath.model.Group;
@@ -39,7 +35,6 @@ import org.drools.mvel.compiler.oopath.model.TMDirectory;
 import org.drools.mvel.compiler.oopath.model.TMFile;
 import org.drools.mvel.compiler.oopath.model.TMFileSet;
 import org.drools.mvel.compiler.oopath.model.TMFileWithParentObj;
-import org.drools.mvel.compiler.oopath.model.Thing;
 import org.drools.mvel.compiler.oopath.model.Toy;
 import org.drools.mvel.compiler.oopath.model.Woman;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -1251,4 +1246,91 @@ public class OOPathTest {
             this.children = children;
         }
     }
+
+    @Test
+    public void testOopathAfterNot() {
+        // DROOLS-6541
+        final String drl =
+                "import "+ Pojo1.class.getCanonicalName() +";\n" +
+                "import "+ Pojo2.class.getCanonicalName() +";\n" +
+                "import "+ Pojo3.class.getCanonicalName() +";\n" +
+                "rule R1 when\n" +
+                "    a : Pojo1() \n" +
+                "    not( b : Pojo2( field == \"val\" ) from a.getPojo2List() ) \n  " +
+                "    c : Pojo2( /pojo3List[firstName == \"Bob\"] ) from a.getPojo2List() \n" +
+                "then\n" +
+                "end";
+
+        KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("test", kieBaseTestConfiguration, drl);
+        KieSession ksession = kbase.newKieSession();
+
+        Pojo3 bob = new Pojo3();
+        bob.setFirstName("Bob");
+
+        List<Pojo3> pojo3List = new ArrayList<>();
+        pojo3List.add(bob);
+
+        Pojo2 pojo2 = new Pojo2();
+        pojo2.setField("not_val");
+        pojo2.setPojo3List(pojo3List);
+
+        List<Pojo2> pojo2List = new ArrayList<>();
+        pojo2List.add(pojo2);
+
+        Pojo1 pojo1 = new Pojo1();
+        pojo1.setPojo2List(pojo2List);
+
+        ksession.insert(pojo1);
+        assertEquals( 1, ksession.fireAllRules() );
+    }
+
+    public static class Pojo1 {
+
+        private List<Pojo2> pojo2List = new ArrayList<>();
+
+        public List<Pojo2> getPojo2List() {
+            return pojo2List;
+        }
+
+        public void setPojo2List(List<Pojo2> pojo2List) {
+            this.pojo2List = pojo2List;
+        }
+    }
+
+    public static class Pojo2 {
+
+        public String field;
+
+        public String getField() {
+            return field;
+        }
+
+        public void setField(String field) {
+            this.field = field;
+        }
+
+        private List<Pojo3> pojo3List = new ArrayList<>();
+
+        public List<Pojo3> getPojo3List() {
+            return pojo3List;
+        }
+
+        public void setPojo3List(List<Pojo3> pojo3List) {
+            this.pojo3List = pojo3List;
+        }
+    }
+
+    public static class Pojo3 {
+
+        private String firstName;
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+    }
+
 }
