@@ -1739,34 +1739,59 @@ For example in Logback, use a `SiftingAppender` in ``logback.xml``:
 ====
 
 [[monitoring]]
-=== Monitoring
+=== Monitoring the solver
 
-OptaPlanner exposes metrics via https://micrometer.io/[Micrometer] which can be used for monitoring the Solver. It'll automatically connect to configured registries when used in Quarkus or Spring Boot. In plain Java, add your favorite registry to the global registry:
+OptaPlanner exposes metrics through https://micrometer.io/[Micrometer] which you can use to monitor the solver. OptaPlanner automatically connects to configured registries when it is used in Quarkus or Spring Boot. If you use OptaPlanner with plain Java, you must add the metrics registry to the global registry.
+
+.Prerequisites
+* You have a plain Java OptaPlanner project.
+* You have configured a Mircometer registry. For information about configuring Micrometer registries, see the https://micrometer.io[Micrometer] web site.
+
+.Procedure
+. Add configuration information for the Mircometer registry for your desired monitoring system to the global registry.
+. Add the following line below the configuration information, where `<REGISTRY>` is the name of the registry that you configured:
++
 [source,java,nowrap]
 ----
-MeterRegistry registry;
-// Create and configure registry
-// ...
-Metrics.addRegistry(registry);
+Metrics.addRegistry(<REGISTRY>);
 ----
-Visit the https://micrometer.io/[Micrometer website] to see the registries available and how to configure them.
+The following example shows how to add the Prometheus registry:
++
+[source,java,nowrap]
+----
+PrometheusMeterRegistry prometheusRegistry = new PrometheusMeterRegistry(PrometheusConfig.DEFAULT);
 
-The following metrics are exposed (format may differ depending on registry):
+try {
+    HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    server.createContext("/prometheus", httpExchange -> {
+        String response = prometheusRegistry.scrape(); (1)
+        httpExchange.sendResponseHeaders(200, response.getBytes().length);
+        try (OutputStream os = httpExchange.getResponseBody()) {
+            os.write(response.getBytes());
+        }
+    });
 
-- `optaplanner.solver.errors.total`:
-The total number of errors that occurred while solving since the start
+    new Thread(server::start).start();
+} catch (IOException e) {
+    throw new RuntimeException(e);
+}
+
+Metrics.addRegistry(prometheusRegistry);
+----
+
+. Open your monitoring system to view the metrics for your OptaPlanner project. The following metrics are exposed:
++
+[NOTE]
+====
+The names and format of the metrics vary depending on the registry.
+====
++
+* `optaplanner.solver.errors.total`: the total number of errors that occurred while solving since the start
 of the measuring.
-
-- `optaplanner.solver.solve-length.active-count`: The number of solvers
-currently solving.
-
-- `optaplanner.solver.solve-length.seconds-max`: Run time of the
+* `optaplanner.solver.solve-length.active-count`: the number of solvers currently solving.
+* `optaplanner.solver.solve-length.seconds-max`: run time of the
 longest-running currently active solver.
-
-- `optaplanner.solver.solve-length.seconds-duration-sum`:
-The sum of each active solvers' solve duration.
-For example, if there are two active solvers, one running for 3 minutes
-and the other for 1 minute, this would be 4 minutes.
+* `optaplanner.solver.solve-length.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
 
 [[randomNumberGenerator]]
 === Random number generator
