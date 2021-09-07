@@ -25,6 +25,7 @@ import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -143,7 +144,8 @@ public class PostProcess {
      * the field is not implemented. It is up to the caller to handle the null case.
      */
     private static Object outputFieldToValue(KiePMMLOutputField outputField, ProcessingDTO processingDTO, KiePMMLModel model) {
-        switch (outputField.getResultFeature()) {
+        RESULT_FEATURE resultFeature = RESULT_FEATURE.getOrDefault(outputField.getResultFeature());
+        switch (resultFeature) {
             case PREDICTED_VALUE:
                 return outputField.evaluatePredictedValue(processingDTO);
 
@@ -166,7 +168,7 @@ public class PostProcess {
                 return model.getAffinity();
 
             default:
-                logger.warn("OutputField with feature \"{}\" is currently not implemented and will be ignored.", outputField.getResultFeature().getName());
+                logger.warn("OutputField with feature \"{}\" is currently not implemented and will be ignored.", resultFeature.getName());
                 return null;
         }
     }

@@ -49,14 +49,20 @@ public enum RESULT_FEATURE {
     LIFT("lift"),
     LEVERAGE("leverage");
 
-    private String name;
+    public static final RESULT_FEATURE DEFAULT = PREDICTED_VALUE;
+
+    private final String name;
 
     RESULT_FEATURE(String name) {
         this.name = name;
     }
 
     public static RESULT_FEATURE byName(String name) {
-        return Arrays.stream(RESULT_FEATURE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find REGRESSION_NORMALIZATION_METHOD with name: " + name));
+        return Arrays.stream(RESULT_FEATURE.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find RESULT_FEATURE with name: " + name));
+    }
+
+    public static RESULT_FEATURE getOrDefault(RESULT_FEATURE input) {
+        return input == null ? DEFAULT : input;
     }
 
     public String getName() {
