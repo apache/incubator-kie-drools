@@ -31,6 +31,8 @@ import org.kie.kogito.index.service.DataIndexServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import io.quarkus.security.credential.TokenCredential;
+import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
 import io.vertx.ext.web.client.HttpResponse;
@@ -50,11 +52,13 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
     private Vertx vertx;
+    private SecurityIdentity identity;
     protected Map<String, WebClient> serviceWebClientMap = new HashMap<>();
 
     @Inject
-    public KogitoRuntimeClientImpl(Vertx vertx) {
+    public KogitoRuntimeClientImpl(Vertx vertx, SecurityIdentity identity) {
         this.vertx = vertx;
+        this.identity = identity;
     }
 
     protected WebClient getWebClient(String runtimeServiceUrl) {
@@ -161,6 +165,9 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     }
 
     protected String getAuthHeader() {
+        if (identity != null && identity.getCredential(TokenCredential.class) != null) {
+            return "Bearer " + identity.getCredential(TokenCredential.class).getToken();
+        }
         return "";
     }
 }

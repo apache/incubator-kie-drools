@@ -24,9 +24,10 @@ import org.kie.kogito.index.TestUtils;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import io.quarkus.security.credential.TokenCredential;
+import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
@@ -45,9 +46,11 @@ import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTA
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RETRY_PROCESS_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.SKIP_PROCESS_INSTANCE_PATH;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,16 +58,21 @@ import static org.mockito.Mockito.when;
 public class KogitoRuntimeClientTest {
 
     private static int ACTIVE = 1;
-    private static int ABORTED = 4;
     private static int ERROR = 5;
     private static String SERVICE_URL = "http://runtimeURL.com";
     private static String PROCESS_INSTANCE_ID = "pId";
 
+    private static String AUTHORIZED_TOKEN = "authToken";
+
     @Mock
     public Vertx vertx;
 
-    @Spy
-    private KogitoRuntimeClientImpl client = new KogitoRuntimeClientImpl(vertx);
+    @Mock
+    private SecurityIdentity identityMock;
+
+    private TokenCredential tokenCredential;
+
+    private KogitoRuntimeClientImpl client;
 
     private WebClient webClientMock;
     private HttpRequest httpRequestMock;
@@ -73,13 +81,15 @@ public class KogitoRuntimeClientTest {
     public void setup() {
         webClientMock = mock(WebClient.class);
         httpRequestMock = mock(HttpRequest.class);
+
+        client = spy(new KogitoRuntimeClientImpl(vertx, identityMock));
         client.serviceWebClientMap.put(SERVICE_URL, webClientMock);
     }
 
     @Test
     public void testAbortProcessInstance() {
+        setupIdentityMock();
         when(webClientMock.delete(any())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ACTIVE);
 
@@ -89,6 +99,7 @@ public class KogitoRuntimeClientTest {
                 "ABORT ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -100,8 +111,8 @@ public class KogitoRuntimeClientTest {
 
     @Test
     public void testRetryProcessInstance() {
+        setupIdentityMock();
         when(webClientMock.post(any())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
         client.retryProcessInstance(SERVICE_URL, pI);
@@ -110,6 +121,7 @@ public class KogitoRuntimeClientTest {
                 "RETRY ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -121,8 +133,8 @@ public class KogitoRuntimeClientTest {
 
     @Test
     public void testSkipProcessInstance() {
+        setupIdentityMock();
         when(webClientMock.post(any())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -132,6 +144,7 @@ public class KogitoRuntimeClientTest {
                 "SKIP ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -143,8 +156,8 @@ public class KogitoRuntimeClientTest {
 
     @Test
     public void testGetProcessInstanceDiagram() {
+        setupIdentityMock();
         when(webClientMock.get(any())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -155,6 +168,7 @@ public class KogitoRuntimeClientTest {
                 null);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -166,8 +180,8 @@ public class KogitoRuntimeClientTest {
 
     @Test
     public void testGetProcessInstanceNodeDefinitions() {
+        setupIdentityMock();
         when(webClientMock.get(any())).thenReturn(httpRequestMock);
-        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
 
         ProcessInstance pI = createProcessInstance(PROCESS_INSTANCE_ID, ERROR);
 
@@ -178,6 +192,7 @@ public class KogitoRuntimeClientTest {
                 List.class);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
+        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
@@ -219,6 +234,21 @@ public class KogitoRuntimeClientTest {
         assertThat(client.getWebClientToURLOptions("malformedURL")).isNull();
     }
 
+    @Test
+    public void testGetAuthHeader() {
+        tokenCredential = mock(TokenCredential.class);
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
+        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+
+        String token = client.getAuthHeader();
+        verify(identityMock, times(2)).getCredential(TokenCredential.class);
+        assertThat(token).isEqualTo("Bearer " + AUTHORIZED_TOKEN);
+
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(null);
+        token = client.getAuthHeader();
+        assertThat(token).isEqualTo("");
+    }
+
     private AsyncResult createResponseMocks(HttpResponse response, boolean succeed, int statusCode) {
         AsyncResult asyncResultMock = mock(AsyncResult.class);
         when(asyncResultMock.succeeded()).thenReturn(succeed);
@@ -229,6 +259,13 @@ public class KogitoRuntimeClientTest {
 
     private ProcessInstance createProcessInstance(String processInstanceId, int status) {
         return TestUtils.getProcessInstance("travels", processInstanceId, status, null, null);
+    }
+
+    protected void setupIdentityMock() {
+        tokenCredential = mock(TokenCredential.class);
+        when(identityMock.getCredential(TokenCredential.class)).thenReturn(tokenCredential);
+        when(tokenCredential.getToken()).thenReturn(AUTHORIZED_TOKEN);
+        when(httpRequestMock.putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN))).thenReturn(httpRequestMock);
     }
 
 }
