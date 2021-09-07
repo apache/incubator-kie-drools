@@ -131,6 +131,17 @@ public class PostProcess {
         }
     }
 
+    /**
+     * This method extract the value of the specified output field either from
+     * the processing DTO or the model, depending from the field type.
+     *
+     * @param outputField
+     * @param processingDTO
+     * @param model
+     *
+     * @return the correct value as Object if the field is implemented or null if
+     * the field is not implemented. It is up to the caller to handle the null case.
+     */
     private static Object outputFieldToValue(KiePMMLOutputField outputField, ProcessingDTO processingDTO, KiePMMLModel model) {
         switch (outputField.getResultFeature()) {
             case PREDICTED_VALUE:
@@ -155,6 +166,7 @@ public class PostProcess {
                 return model.getAffinity();
 
             default:
+                logger.warn("OutputField with feature \"{}\" is currently not implemented and will be ignored.", outputField.getResultFeature().getName());
                 return null;
         }
     }
