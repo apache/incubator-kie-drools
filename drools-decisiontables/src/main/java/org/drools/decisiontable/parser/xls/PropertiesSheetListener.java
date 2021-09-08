@@ -123,9 +123,49 @@ public class PropertiesSheetListener implements DataListener {
 
     @SuppressWarnings("serial")
     public static class CaseInsensitiveMap extends HashMap<String,List<String[]>> {
+        private static final String badConstantNaming = "bad bad bad";
 
         private List<String[]> getPropertyCell(String key) {
             return super.get( key.toLowerCase() );
+        }
+
+
+        private void addProperty6( String key, String[] value ){
+            key = key.toLowerCase();
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null ){
+                r = new ArrayList<String[]>();
+            }
+            r.add( value );
+            super.put( key, r );
+        }
+
+        public void addProperty5( String key, String[] value ){
+
+        }
+
+        public void addProperty4( String key, String[] value ){
+            int i = 1;
+            int j = 1;
+            int z = i - j;
+            z = (i + j) / z;
+        }
+
+        public void addProperty3( String key, String[] value ){
+            String bad = null;
+            if (bad.equals("not good")) {
+                return;
+            }
+        }
+
+        public void addProperty2( String key, String[] value ){
+            /*key = key.toLowerCase();
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null ){
+                r = new ArrayList<String[]>();
+            }
+            r.add( value );*/
+            super.put( key, new ArrayList<String[]>() );
         }
 
         public void addProperty( String key, String[] value ){
