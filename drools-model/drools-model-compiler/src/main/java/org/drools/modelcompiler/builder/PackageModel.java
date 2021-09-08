@@ -211,12 +211,8 @@ public class PackageModel {
         return name;
     }
 
-    public String getPathName() {
-        return name.replace('.', File.separatorChar);
-    }
-
     public Path getPath() {
-        return Paths.get(getPathName());
+        return Paths.get(name.replace('.', File.separatorChar));
     }
 
     public String getRulesFileNameWithPackage() {
