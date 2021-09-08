@@ -147,7 +147,7 @@ public class PropertiesSheetListener implements DataListener {
 
         public void addProperty3( String key, String[] value ){
             String bad;
-            if (bad.equals("not good") {
+            if (bad.equals("not good")) {
                 return;
             }
         }
