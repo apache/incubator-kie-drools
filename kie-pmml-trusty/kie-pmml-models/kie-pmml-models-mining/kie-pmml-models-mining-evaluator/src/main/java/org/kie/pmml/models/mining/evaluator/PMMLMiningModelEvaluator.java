@@ -92,8 +92,15 @@ public class PMMLMiningModelEvaluator implements PMMLModelEvaluator<KiePMMLMinin
         toReturn.addResultVariable(toEvaluate.getTargetField(), prediction);
         toReturn.setResultObjectName(toEvaluate.getTargetField());
         toReturn.setResultCode(resultCode.getName());
+        toEvaluate.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
+
+//    protected void populateOutputFieldsMapWithProbability(final Map.Entry<String, Double> predictedEntry, final LinkedHashMap<String, Double> probabilityMap) {
+//        outputFieldsMap.put("Probability_setosa", probabilityMap.get("setosa"));
+//        outputFieldsMap.put("Probability_versicolor", probabilityMap.get("versicolor"));
+//        outputFieldsMap.put("Probability_virginica", probabilityMap.get("virginica"));
+//    }
 
     /**
      * Retrieve the <code>PMMLRuntime</code> to be used for the given <b>segment</b>

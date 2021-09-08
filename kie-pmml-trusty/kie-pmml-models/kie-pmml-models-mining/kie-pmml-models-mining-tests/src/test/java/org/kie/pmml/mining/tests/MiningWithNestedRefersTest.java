@@ -82,7 +82,7 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {6.9, 3.1, 5.1, 2.3, "virginica", 0.0, 0.023333333333333334, 0.9766666666666667},
+                {6.9f, 3.1f, 5.1f, 2.3f, 0.0, 0.023333333333333334, 0.9766666666666667, "virginica"},
 //                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.0, 0.9966666666666667, 0.0033333333333333335},
 //                {5.7, 3.0, 4.2, 1.2, "versicolor", 0.0, 1.0, 0.0},
 //                {5.0, 3.3, 1.4, 0.2, "setosa", 1.0, 0.0, 0.0},
@@ -90,7 +90,6 @@ public class MiningWithNestedRefersTest extends AbstractPMMLTest {
         });
     }
 
-    @Ignore
     @Test
     public void testMiningWithNestedRefers() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();

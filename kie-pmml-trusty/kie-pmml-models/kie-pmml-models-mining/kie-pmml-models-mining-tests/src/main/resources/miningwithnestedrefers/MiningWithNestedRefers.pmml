@@ -42,7 +42,7 @@
         <FieldRef field="s_len"/>
       </DerivedField>
     </LocalTransformations>
-    <Segmentation multipleModelMethod="average">
+    <Segmentation multipleModelMethod="selectFirst">
       <Segment id="1">
         <True/>
         <RegressionModel functionName="classification" targetFieldName="Species">
