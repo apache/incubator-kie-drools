@@ -16,12 +16,14 @@
 package org.jbpm.bpmn2;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.jbpm.bpmn2.objects.ExceptionOnPurposeHandler;
 import org.jbpm.bpmn2.objects.TestWorkItemHandler;
 import org.jbpm.bpmn2.xml.XmlBPMNProcessDumper;
 import org.jbpm.process.instance.LightProcessRuntime;
+import org.jbpm.process.instance.LightProcessRuntimeServiceProvider;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.jbpm.test.util.NodeLeftCountDownProcessEventListener;
@@ -407,7 +409,7 @@ public class ProcessFactoryTest extends JbpmBpmn2TestCase {
 
         final RuleFlowProcess process = factory.validate().getProcess();
 
-        final LightProcessRuntime processRuntime = LightProcessRuntime.ofProcess(process);
+        final LightProcessRuntime processRuntime = LightProcessRuntime.of(null, Collections.singletonList(process), new LightProcessRuntimeServiceProvider());
 
         processRuntime.getKogitoWorkItemManager().registerWorkItemHandler(task, new ExceptionOnPurposeHandler());
 

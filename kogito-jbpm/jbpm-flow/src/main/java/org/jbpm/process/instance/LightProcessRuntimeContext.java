@@ -16,24 +16,28 @@
 package org.jbpm.process.instance;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.drools.core.common.WorkingMemoryAction;
 import org.jbpm.process.core.ContextContainer;
+import org.jbpm.process.core.ProcessSupplier;
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.ruleflow.instance.RuleFlowProcessInstance;
 import org.kie.api.definition.process.Process;
 import org.kie.api.event.rule.DefaultAgendaEventListener;
 import org.kie.internal.process.CorrelationKey;
+import org.kie.kogito.Application;
+import org.kie.kogito.process.Processes;
 
 public class LightProcessRuntimeContext implements ProcessRuntimeContext {
 
-    private final List<Process> processes;
+    private Processes allProcesses;
+    private Collection<Process> processes;
 
-    public LightProcessRuntimeContext(List<Process> processes) {
+    public LightProcessRuntimeContext(Application app, Collection<Process> processes) {
+        this.allProcesses = app != null ? app.get(Processes.class) : null;
         this.processes = processes;
     }
 
@@ -44,7 +48,11 @@ public class LightProcessRuntimeContext implements ProcessRuntimeContext {
 
     @Override
     public Optional<Process> findProcess(String id) {
-        return processes.stream().filter(p -> p.getId().equals(id)).findFirst();
+        Optional<Process> result = processes.stream().filter(p -> p.getId().equals(id)).findAny();
+        if (result.isEmpty() && allProcesses != null) {
+            result = Optional.ofNullable(((ProcessSupplier) allProcesses.processById(id)).get());
+        }
+        return result;
     }
 
     @Override

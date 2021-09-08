@@ -23,7 +23,6 @@ import org.drools.core.common.InternalAgenda;
 import org.drools.core.common.InternalKnowledgeRuntime;
 import org.drools.core.common.WorkingMemoryAction;
 import org.drools.core.impl.EnvironmentImpl;
-import org.drools.core.runtime.process.InternalProcessRuntime;
 import org.drools.core.time.TimerService;
 import org.jbpm.workflow.instance.impl.CodegenNodeInstanceFactoryRegistry;
 import org.kie.api.KieBase;
@@ -103,7 +102,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KogitoProcessEventSupport getProcessEventSupport() {
-        return ((org.jbpm.process.instance.InternalProcessRuntime) processRuntime).getProcessEventSupport();
+        return processRuntime.getProcessEventSupport();
     }
 
     @Override
@@ -116,6 +115,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
         return environment;
     }
 
+    @Override
     public JobsService getJobsService() {
         return null;
     }
@@ -273,7 +273,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KogitoProcessInstance createProcessInstance(String processId, Map<String, Object> parameters) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.createProcessInstance(processId, null, parameters);
     }
 
     @Override
@@ -282,10 +282,12 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     }
 
+    @Override
     public KogitoProcessInstance startProcessInstance(String processInstanceId) {
         return null;
     }
 
+    @Override
     public KogitoProcessInstance startProcessInstance(String processInstanceId, String trigger) {
         return null;
     }
@@ -301,6 +303,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     }
 
+    @Override
     public void signalEvent(String type, Object event, String processInstanceId) {
 
     }
@@ -338,14 +341,17 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
         return (WorkItemManager) getKogitoWorkItemManager();
     }
 
+    @Override
     public KogitoProcessInstance getProcessInstance(String processInstanceId) {
         return null;
     }
 
+    @Override
     public KogitoProcessInstance getProcessInstance(String processInstanceId, boolean readonly) {
         return null;
     }
 
+    @Override
     public void abortProcessInstance(String processInstanceId) {
 
     }

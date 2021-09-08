@@ -20,8 +20,15 @@ import java.util.Collections;
 import org.jbpm.ruleflow.core.RuleFlowProcess;
 import org.jbpm.ruleflow.core.RuleFlowProcessFactory;
 import org.junit.jupiter.api.Test;
+import org.kie.kogito.Application;
+import org.kie.kogito.Model;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcess;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class LightProcessRuntimeTest {
 
@@ -50,8 +57,30 @@ public class LightProcessRuntimeTest {
                 new LightProcessRuntimeServiceProvider();
 
         MyProcess myProcess = new MyProcess();
-        LightProcessRuntimeContext rtc = new LightProcessRuntimeContext(
-                Collections.singletonList(myProcess.process));
+        LightProcessRuntimeContext rtc = new LightProcessRuntimeContext(null, Collections.singletonList(myProcess.process));
+
+        LightProcessRuntime rt = new LightProcessRuntime(rtc, services);
+
+        rt.startProcess(myProcess.process.getId());
+
+        assertEquals("Hello!", myProcess.result);
+
+    }
+
+    @Test
+    public <T extends Model> void testInstantiationAnother() {
+        LightProcessRuntimeServiceProvider services =
+                new LightProcessRuntimeServiceProvider();
+
+        MyProcess myProcess = new MyProcess();
+        Application app = mock(Application.class);
+        Processes processes = mock(Processes.class);
+        AbstractProcess process = mock(AbstractProcess.class);
+        when(processes.processById(anyString())).thenReturn(process);
+        when(process.get()).thenReturn(myProcess.process);
+        when(app.get(Processes.class)).thenReturn(processes);
+
+        LightProcessRuntimeContext rtc = new LightProcessRuntimeContext(app, Collections.emptyList());
 
         LightProcessRuntime rt = new LightProcessRuntime(rtc, services);
 
