@@ -21,7 +21,6 @@ import java.util.List;
 import org.jboss.jandex.DotName;
 
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarningBuildItem;
@@ -30,11 +29,6 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveHierarchyIgnoreWarn
  * Main class of the Kogito decisions extension
  */
 public class DecisionsAssetsProcessor {
-
-    @BuildStep
-    CapabilityBuildItem capability() {
-        return new CapabilityBuildItem("kogito-decisions");
-    }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {

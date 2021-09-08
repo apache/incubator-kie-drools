@@ -16,18 +16,12 @@
 package org.kie.kogito.quarkus.serverless.workflow.deployment;
 
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 /**
  * Main class of the Kogito Serverless Workflow extension
  */
 public class ServerlessWorkflowAssetsProcessor {
-
-    @BuildStep
-    CapabilityBuildItem capability() {
-        return new CapabilityBuildItem("kogito-serverless-workflow");
-    }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {

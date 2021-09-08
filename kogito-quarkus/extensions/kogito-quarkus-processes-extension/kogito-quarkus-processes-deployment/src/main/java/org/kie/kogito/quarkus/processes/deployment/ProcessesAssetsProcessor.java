@@ -56,7 +56,6 @@ import io.quarkus.bootstrap.model.AppDependency;
 import io.quarkus.deployment.annotations.BuildProducer;
 import io.quarkus.deployment.annotations.BuildStep;
 import io.quarkus.deployment.builditem.ArchiveRootBuildItem;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.CombinedIndexBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.GeneratedResourceBuildItem;
@@ -98,11 +97,6 @@ public class ProcessesAssetsProcessor {
     LiveReloadBuildItem liveReload;
     @Inject
     CurateOutcomeBuildItem curateOutcomeBuildItem;
-
-    @BuildStep
-    CapabilityBuildItem capability() {
-        return new CapabilityBuildItem("kogito-processes");
-    }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {

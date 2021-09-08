@@ -26,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.NativeImageResourceBuildItem;
 import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
@@ -37,11 +36,6 @@ import io.quarkus.deployment.builditem.nativeimage.ReflectiveClassBuildItem;
 public class PredictionsAssetsProcessor {
 
     private static final Logger logger = LoggerFactory.getLogger(PredictionsAssetsProcessor.class);
-
-    @BuildStep
-    CapabilityBuildItem capability() {
-        return new CapabilityBuildItem("kogito-predictions");
-    }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {

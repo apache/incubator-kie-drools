@@ -47,8 +47,10 @@
                         </goals>
                         <phase>compile</phase>
                         <configuration>
-                            <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}
-                            </deployment>
+                            <deployment>${project.groupId}:${project.artifactId}-deployment:${project.version}</deployment>
+                            <capabilities>
+                                <provides>kogito-predictions</provides>
+                            </capabilities>
                         </configuration>
                     </execution>
                 </executions>

@@ -16,18 +16,12 @@
 package org.kie.kogito.quarkus.rules.deployment;
 
 import io.quarkus.deployment.annotations.BuildStep;
-import io.quarkus.deployment.builditem.CapabilityBuildItem;
 import io.quarkus.deployment.builditem.FeatureBuildItem;
 
 /**
  * Main class of the Kogito rules extension
  */
 public class RulesAssetsProcessor {
-
-    @BuildStep
-    CapabilityBuildItem capability() {
-        return new CapabilityBuildItem("kogito-rules");
-    }
 
     @BuildStep
     FeatureBuildItem featureBuildItem() {
