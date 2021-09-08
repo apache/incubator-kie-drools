@@ -34,6 +34,7 @@ import org.kie.kogito.codegen.data.EmptyConstructor;
 import org.kie.kogito.codegen.data.GeneratedPOJO;
 import org.kie.kogito.codegen.data.NotEmptyConstructor;
 import org.kie.kogito.codegen.data.Person;
+import org.kie.kogito.codegen.data.PersonSubClass;
 import org.kie.kogito.codegen.data.PersonVarInfo;
 import org.kie.kogito.codegen.data.PersonWithAddress;
 import org.kie.kogito.codegen.data.PersonWithAddresses;
@@ -67,7 +68,8 @@ public abstract class AbstractProtoGeneratorTest<T> {
             PersonWithList.class,
             Question.class,
             QuestionWithAnnotatedEnum.class,
-            Travels.class);
+            Travels.class,
+            PersonSubClass.class);
 
     protected abstract ProtoGenerator.Builder<T, ? extends AbstractProtoGenerator<T>> protoGeneratorBuilder();
 
@@ -773,5 +775,50 @@ public abstract class AbstractProtoGeneratorTest<T> {
 
         Proto proto = generator.protoOfDataClasses("defaultPkg");
         assertThat(proto).isNotNull();
+    }
+
+    @Test
+    void fieldFromClassHierarchy() {
+        AbstractProtoGenerator<T> generator = protoGeneratorBuilder()
+                .withDataClasses(Arrays.asList(convertToType(Person.class), convertToType(PersonSubClass.class)))
+                .build(null);
+
+        Proto proto = generator.protoOfDataClasses("org.kie.kogito.test.persons");
+        assertThat(proto).isNotNull();
+
+        assertThat(proto.getPackageName()).isEqualTo("org.kie.kogito.test.persons");
+        assertThat(proto.getSyntax()).isEqualTo("proto2");
+        assertThat(proto.getMessages()).hasSize(2);
+
+        ProtoMessage person = proto.getMessages().get(0);
+        assertThat(person).isNotNull();
+        assertThat(person.getName()).isEqualTo("Person");
+        assertThat(person.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
+        assertThat(person.getFields()).hasSize(5);
+
+        ProtoMessage personSubClass = proto.getMessages().get(1);
+        assertThat(personSubClass).isNotNull();
+        assertThat(personSubClass.getName()).isEqualTo("PersonSubClass");
+        assertThat(personSubClass.getJavaPackageOption()).isEqualTo("org.kie.kogito.codegen.data");
+        assertThat(personSubClass.getFields()).hasSize(6);
+
+        assertClassIsIncludedInSubclass(person, personSubClass);
+    }
+
+    private void assertClassIsIncludedInSubclass(ProtoMessage superClass, ProtoMessage subClass) {
+        for (ProtoField field : superClass.getFields()) {
+            assertThat(field).isNotNull();
+
+            boolean found = false;
+            for (ProtoField subClassField : subClass.getFields()) {
+                assertThat(subClassField).isNotNull();
+                if (field.getName().equals(subClassField.getName())) {
+                    assertThat(field.getType()).isEqualTo(subClassField.getType());
+                    found = true;
+                    break;
+                }
+            }
+            assertThat(found).withFailMessage("Impossible to find field " + field.getName() + " in subclass").isTrue();
+        }
     }
 }

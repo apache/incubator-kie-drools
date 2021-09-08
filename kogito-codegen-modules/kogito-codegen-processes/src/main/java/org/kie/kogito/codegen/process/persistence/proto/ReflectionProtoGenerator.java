@@ -94,8 +94,10 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             if (pd.getName().equals("class")) {
                 continue;
             }
+
+            Field propertyField = getFieldFromClass(clazz, pd.getName());
             // ignore static and/or transient fields
-            int mod = clazz.getDeclaredField(pd.getName()).getModifiers();
+            int mod = propertyField.getModifiers();
             if (Modifier.isStatic(mod) || Modifier.isTransient(mod)) {
                 continue;
             }
@@ -103,7 +105,7 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             // By default, only index id field from Model generated class
             String completeFieldComment = "id".equals(pd.getName()) && Model.class.isAssignableFrom(clazz) ? fieldComment.replace("Index.NO", "Index.YES") : fieldComment;
 
-            VariableInfo varInfo = clazz.getDeclaredField(pd.getName()).getAnnotation(VariableInfo.class);
+            VariableInfo varInfo = propertyField.getAnnotation(VariableInfo.class);
             if (varInfo != null) {
                 completeFieldComment = fieldComment + "\n @VariableInfo(tags=\"" + varInfo.tags() + "\")";
             }
@@ -113,14 +115,13 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
             String protoType;
             if (Collection.class.isAssignableFrom(pd.getPropertyType())) {
                 fieldTypeString = "Collection";
-                Field f = clazz.getDeclaredField(pd.getName());
-                Type type = f.getGenericType();
+                Type type = propertyField.getGenericType();
                 if (type instanceof ParameterizedType) {
                     ParameterizedType ptype = (ParameterizedType) type;
                     fieldType = (Class<?>) ptype.getActualTypeArguments()[0];
                     protoType = protoType(fieldType.getCanonicalName());
                 } else {
-                    throw new IllegalArgumentException("Field " + f.getName() + " of class " + clazz + " uses collection without type information");
+                    throw new IllegalArgumentException("Field " + propertyField.getName() + " of class " + clazz + " uses collection without type information");
                 }
             } else {
                 protoType = protoType(fieldTypeString);
@@ -142,6 +143,18 @@ public class ReflectionProtoGenerator extends AbstractProtoGenerator<Class<?>> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    private Field getFieldFromClass(Class<?> clazz, String name) {
+        try {
+            return clazz.getDeclaredField(name);
+        } catch (Exception e) {
+            if (clazz.getSuperclass() != null && !clazz.getSuperclass().equals(Object.class)) {
+                return getFieldFromClass(clazz.getSuperclass(), name);
+            } else {
+                throw new IllegalArgumentException("Impossible to find field " + name + " in class " + clazz.getName());
+            }
+        }
     }
 
     @Override

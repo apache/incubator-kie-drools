@@ -53,6 +53,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
     private static final DotName ENUM_VALUE_ANNOTATION = DotName.createSimple(ProtoEnumValue.class.getName());
     private static final DotName generatedAnnotation = DotName.createSimple(Generated.class.getCanonicalName());
     private static final DotName variableInfoAnnotation = DotName.createSimple(VariableInfo.class.getCanonicalName());
+    private static final DotName objectClass = DotName.createSimple(Object.class.getCanonicalName());
     private static final DotName modelClazz = DotName.createSimple(Model.class.getCanonicalName());
     private final IndexView index;
 
@@ -117,7 +118,7 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         String name = optionalName.get();
 
         ProtoMessage message = new ProtoMessage(name, clazz.name().prefix().toString());
-        for (FieldInfo pd : clazz.fields()) {
+        for (FieldInfo pd : extractAllFields(clazz)) {
             // ignore static and/or transient fields
             if (Modifier.isStatic(pd.flags()) || Modifier.isTransient(pd.flags())) {
                 continue;
@@ -172,6 +173,21 @@ public class JandexProtoGenerator extends AbstractProtoGenerator<ClassInfo> {
         message.setComment(messageComment);
         proto.addMessage(message);
         return message;
+    }
+
+    /**
+     * ClassInfo.fields() returns only fields of current class so this method fetch fields from all hierarchy
+     * 
+     * @param clazz
+     * @return
+     */
+    private Collection<FieldInfo> extractAllFields(ClassInfo clazz) {
+        Collection<FieldInfo> toReturn = new ArrayList<>(clazz.fields());
+        DotName superClass = clazz.superName();
+        if (superClass != null && !superClass.equals(objectClass)) {
+            toReturn.addAll(extractAllFields(index.getClassByName(superClass)));
+        }
+        return toReturn;
     }
 
     @Override

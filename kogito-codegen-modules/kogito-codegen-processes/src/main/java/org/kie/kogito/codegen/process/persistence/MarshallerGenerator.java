@@ -36,6 +36,7 @@ import org.infinispan.protostream.descriptors.Option;
 import org.infinispan.protostream.impl.SerializationContextImpl;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
 import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
+import org.kie.kogito.codegen.api.template.InvalidTemplateException;
 import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 
@@ -77,12 +78,6 @@ public class MarshallerGenerator {
         this.context = context;
     }
 
-    public List<CompilationUnit> generateFromClasspath(String protoFile) throws IOException {
-        FileDescriptorSource proto = FileDescriptorSource.fromResources(protoFile);
-
-        return generate(proto);
-    }
-
     public List<CompilationUnit> generate(String content) throws IOException {
         FileDescriptorSource proto = FileDescriptorSource.fromString(UUID.randomUUID().toString(), content);
         return generate(proto);
@@ -121,30 +116,35 @@ public class MarshallerGenerator {
                 String javaType = packageFromOption(d, msg) + "." + msg.getName();
 
                 clazzFile.setPackageDeclaration(d.getPackage());
-                ClassOrInterfaceDeclaration clazz = clazzFile.findFirst(ClassOrInterfaceDeclaration.class, sl -> true).orElseThrow(() -> new RuntimeException("No class found"));
+                ClassOrInterfaceDeclaration clazz = clazzFile.findFirst(ClassOrInterfaceDeclaration.class, sl -> true)
+                        .orElseThrow(() -> new InvalidTemplateException(generator, "No class found"));
                 clazz.setName(msg.getName() + "MessageMarshaller");
                 clazz.getImplementedTypes(0).setTypeArguments(NodeList.nodeList(new ClassOrInterfaceType(null, javaType)));
 
                 MethodDeclaration getJavaClassMethod =
-                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getJavaClass")).orElseThrow(() -> new RuntimeException("No getJavaClass method found"));
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getJavaClass"))
+                                .orElseThrow(() -> new InvalidTemplateException(generator, "No getJavaClass method found"));
                 getJavaClassMethod.setType(new ClassOrInterfaceType(null, new SimpleName(Class.class.getName()), NodeList.nodeList(new ClassOrInterfaceType(null, javaType))));
                 BlockStmt getJavaClassMethodBody = new BlockStmt();
                 getJavaClassMethodBody.addStatement(new ReturnStmt(new NameExpr(javaType + ".class")));
                 getJavaClassMethod.setBody(getJavaClassMethodBody);
 
                 MethodDeclaration getTypeNameMethod =
-                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getTypeName")).orElseThrow(() -> new RuntimeException("No getTypeName method found"));
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("getTypeName"))
+                                .orElseThrow(() -> new InvalidTemplateException(generator, "No getTypeName method found"));
                 BlockStmt getTypeNameMethodBody = new BlockStmt();
                 getTypeNameMethodBody.addStatement(new ReturnStmt(new StringLiteralExpr(msg.getFullName())));
                 getTypeNameMethod.setBody(getTypeNameMethodBody);
 
                 MethodDeclaration readFromMethod =
-                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("readFrom")).orElseThrow(() -> new RuntimeException("No readFrom method found"));
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("readFrom"))
+                                .orElseThrow(() -> new InvalidTemplateException(generator, "No readFrom method found"));
                 readFromMethod.setType(javaType);
                 readFromMethod.setBody(new BlockStmt());
 
                 MethodDeclaration writeToMethod =
-                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("writeTo")).orElseThrow(() -> new RuntimeException("No writeTo method found"));
+                        clazz.findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals("writeTo"))
+                                .orElseThrow(() -> new InvalidTemplateException(generator, "No writeTo method found"));
                 writeToMethod.getParameter(1).setType(javaType);
                 writeToMethod.setBody(new BlockStmt());
 
@@ -262,18 +262,6 @@ public class MarshallerGenerator {
         }
 
         return units;
-    }
-
-    protected String packageNameForMessage(FileDescriptor d, String messageName) {
-        List<Descriptor> messages = d.getMessageTypes();
-
-        for (Descriptor msg : messages) {
-            if (messageName.equals(msg.getName())) {
-                return packageFromOption(d, msg) + "." + messageName;
-            }
-        }
-
-        throw new IllegalArgumentException("No message found with name" + messageName);
     }
 
     protected String packageFromOption(FileDescriptor d, Descriptor msg) {
