@@ -15,7 +15,7 @@ with https://www.optaplanner.org/[OptaPlanner]'s constraint solving Artificial I
 
 == What you will build
 
-You will build a command line application that optimizes a school timetable for students and teachers:
+You will build a command-line application that optimizes a school timetable for students and teachers:
 
 ----
 ...
@@ -40,7 +40,7 @@ INFO  |------------|------------|------------|------------|
 ----
 
 Your application will assign `Lesson` instances to `Timeslot` and `Room` instances automatically
-by using AI to adhere to hard and soft scheduling _constraints_, such as the following examples:
+by using AI to adhere to hard and soft scheduling _constraints_, for example:
 
 * A room can have at most one lesson at the same time.
 * A teacher can teach at most one lesson at the same time.
@@ -53,26 +53,27 @@ Mathematically speaking, school timetabling is an _NP-hard_ problem.
 This means it is difficult to scale.
 Simply brute force iterating through all possible combinations takes millions of years
 for a non-trivial dataset, even on a supercomputer.
-Luckily, AI constraint solvers such as OptaPlanner have advanced algorithms
+Fortunately, AI constraint solvers such as OptaPlanner have advanced algorithms
 that deliver a near-optimal solution in a reasonable amount of time.
 
 == Solution source code
 
 Follow the instructions in the next sections to create the application step by step (recommended).
 
-Alternatively, you can also skip right to the completed example:
+Alternatively, review the completed example:
 
-. Clone the Git repository:
+. Complete one of the following tasks:
+.. Clone the Git repository:
 +
 [source,shell,subs=attributes+]
 ----
 $ git clone {quickstartsCloneUrl}
 ----
 +
-or download an {quickstartsArchiveUrl}[archive].
+.. Download an {quickstartsArchiveUrl}[archive].
 
-. Find the solution in {helloWorldJavaQuickstartUrl}[the `hello-world` directory]
-and run it (see its README file).
+. Find the solution in {helloWorldJavaQuickstartUrl}[the `hello-world` directory].
+. Follow the instrucions in the README file to run the application.
 
 == Prerequisites
 
@@ -218,14 +219,14 @@ include::../SchoolTimetabling/SchoolTimetablingSolution-section.adoc[leveloffset
 == Create the application
 
 Now you are ready to put everything together and create a Java application.
-The `main()` method:
+The `main()` method performs the following tasks:
 
 . Creates the `SolverFactory` to build a `Solver` per dataset.
 . Loads a dataset.
 . Solves it with `Solver.solve()`.
 . Visualizes the solution for that dataset.
 
-Typically, an application has a singleton `SolverFactory`
+Typically, an application has a single `SolverFactory`
 to build a new `Solver` instance for each problem dataset to solve.
 A `SolverFactory` is thread-safe, but a `Solver` is not.
 In this case, there is only one dataset, so only one `Solver` instance.
@@ -397,13 +398,13 @@ SolverFactory<TimeTable> solverFactory = SolverFactory.create(new SolverConfig()
         .withTerminationSpentLimit(Duration.ofSeconds(5)));
 ----
 
-It registers the `@PlanningSolution` class, the `@PlanningEntity` classes
+This registers the `@PlanningSolution` class, the `@PlanningEntity` classes,
 and the `ConstraintProvider` class, all of which you created earlier.
 
 Without a termination setting or a `terminationEarly()` event, the solver runs forever.
-To avoid that, it limits the solving time to five seconds.
+To avoid that, the solver limits the solving time to five seconds.
 
-Then the `main()` method loads the problem, solves it and prints the solution:
+After five seconds, the `main()` method loads the problem, solves it, and prints the solution:
 
 [source,java]
 ----
@@ -418,8 +419,7 @@ Then the `main()` method loads the problem, solves it and prints the solution:
         printTimetable(solution);
 ----
 
-The `solve()` doesn't return instantly: it runs for 5 seconds
-before returning the best solution.
+The `solve()` method doesn't return instantl. It runs for five seconds before returning the best solution.
 
 OptaPlanner returns _the best solution_ found in the available termination time.
 Due to <<doesPlannerFindTheOptimalSolution,the nature of NP-hard problems>>,
@@ -429,11 +429,11 @@ Increase the termination time to potentially find a better solution.
 The `generateDemoData()` method generates the school timetable problem to solve.
 
 The `printTimetable()` method pretty prints the timetable to the console,
-so it's easy to verify visually if it's a good schedule.
+so it's easy to determine visually whether or not it's a good schedule.
 
 === Configure logging
 
-To see any output in the console, the logging needs to be configured properly.
+To see any output in the console, logging must be configured properly.
 
 Create the `src/main/resource/logback.xml` file:
 
@@ -495,7 +495,7 @@ A good application includes test coverage.
 ==== Test the constraints
 
 To test each constraint in isolation, use a `ConstraintVerifier` in unit tests.
-It tests each constraint's corner cases in isolation from the other tests,
+This tests each constraint's corner cases in isolation from the other tests,
 which lowers maintenance when adding a new constraint with proper test coverage.
 
 Create the `src/test/java/org/acme/schooltimetabling/solver/TimeTableConstraintProviderTest.java` class:
@@ -536,10 +536,9 @@ class TimeTableConstraintProviderTest {
 }
 ----
 
-This test verifies that the constraint `TimeTableConstraintProvider::roomConflict`,
-when given three lessons in the same room, where two lessons have the same timeslot,
-it penalizes with a  match weight of `1`.
-So with a constraint weight of `10hard` it would reduce the score by `-10hard`.
+This test verifies that the constraint `TimeTableConstraintProvider::roomConflict` penalizes with a  match weight of `1`
+when given three lessons in the same room, where two lessons have the same timeslot.
+Therefore, a constraint weight of `10hard` would reduce the score by `-10hard`.
 
 Notice how `ConstraintVerifier` ignores the constraint weight during testing - even
 if those constraint weights are hard coded in the `ConstraintProvider` - because

@@ -61,10 +61,10 @@ public class Timeslot {
 ----
 
 Because no `Timeslot` instances change during solving, a `Timeslot` is called a _problem fact_.
-Such classes do not require any OptaPlanner specific annotations.
+Such classes do not require any OptaPlanner-specific annotations.
 
 Notice the `toString()` method keeps the output short,
-so it is easier to read OptaPlanner's `DEBUG` or `TRACE` log, as shown later.
+so it is easier to read the OptaPlanner `DEBUG` or `TRACE` log, as shown later.
 
 == Room
 
