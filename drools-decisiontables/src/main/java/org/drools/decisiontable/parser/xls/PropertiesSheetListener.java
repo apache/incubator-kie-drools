@@ -139,23 +139,17 @@ public class PropertiesSheetListener implements DataListener {
         }
 
         public void addProperty4( String key, String[] value ){
-            key = key.toLowerCase();
-            List<String[]> r  = getPropertyCell( key );
-            if( r == null ){
-                r = new ArrayList<String[]>();
-            }
-            r.add( value );
-            super.put( key, r );
+            int i = 1;
+            int j = 1;
+            int z = i - j;
+            return (i + j) / z;
         }
 
         public void addProperty3( String key, String[] value ){
-            key = key.toLowerCase();
-            List<String[]> r  = getPropertyCell( key );
-            if( r == null ){
-                r = new ArrayList<String[]>();
+            String bad;
+            if (bad.equals("not good") {
+                return;
             }
-            r.add( value );
-            super.put( key, r );
         }
 
         public void addProperty2( String key, String[] value ){
