@@ -142,7 +142,7 @@ public class PropertiesSheetListener implements DataListener {
             int i = 1;
             int j = 1;
             int z = i - j;
-            return (i + j) / z;
+            z = (i + j) / z;
         }
 
         public void addProperty3( String key, String[] value ){
