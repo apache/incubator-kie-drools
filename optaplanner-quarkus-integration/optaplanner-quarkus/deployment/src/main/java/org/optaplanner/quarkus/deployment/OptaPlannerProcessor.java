@@ -495,6 +495,12 @@ class OptaPlannerProcessor {
                                 + "\nMaybe use a " + ConstraintProvider.class.getSimpleName() + " instead of the scoreDRL.");
             }
         }
+
+        if (solverConfig.getScoreDirectorFactoryConfig().getKieBaseConfigurationProperties() != null) {
+            throw new IllegalStateException("Using kieBaseConfigurationProperties ("
+                    + solverConfig.getScoreDirectorFactoryConfig().getKieBaseConfigurationProperties()
+                    + ") in Quarkus, which is unsupported.");
+        }
     }
 
     private boolean isClassDefined(String className) {

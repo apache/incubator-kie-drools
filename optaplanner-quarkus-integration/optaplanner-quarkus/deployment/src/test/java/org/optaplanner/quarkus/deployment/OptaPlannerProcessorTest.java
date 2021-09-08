@@ -100,6 +100,28 @@ class OptaPlannerProcessorTest {
                 .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
     }
 
+    @Test
+    void error_if_kie_base_configuration_properties_is_present() {
+        ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
+        scoreDirectorFactoryConfig.setKieBaseConfigurationProperties(Collections.emptyMap());
+        SolverConfig solverConfig = new SolverConfig().withScoreDirectorFactory(scoreDirectorFactoryConfig);
+        OptaPlannerProcessor optaPlannerProcessor = mockOptaPlannerProcessor();
+        when(optaPlannerProcessor.constraintsDrl()).thenReturn(Optional.empty());
+        when(optaPlannerProcessor.defaultConstraintsDrl())
+                .thenReturn(Optional.of(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL));
+
+        Capabilities capabilities = new Capabilities(Collections.singleton("kogito-rules"));
+        assertThatCode(() -> optaPlannerProcessor.applyScoreDirectorFactoryProperties(mock(IndexView.class), solverConfig,
+                capabilities))
+                        .isInstanceOf(IllegalStateException.class)
+                        .hasMessage(
+                                "Using kieBaseConfigurationProperties ("
+                                        + scoreDirectorFactoryConfig.getKieBaseConfigurationProperties()
+                                        + ") in Quarkus, which is unsupported.");
+        assertThat(scoreDirectorFactoryConfig.getScoreDrlList())
+                .containsExactly(OptaPlannerBuildTimeConfig.DEFAULT_CONSTRAINTS_DRL_URL);
+    }
+
     private OptaPlannerProcessor mockOptaPlannerProcessor() {
         OptaPlannerProcessor optaPlannerProcessor = mock(OptaPlannerProcessor.class);
         doCallRealMethod().when(optaPlannerProcessor).applyScoreDirectorFactoryProperties(any(), any(), any());
