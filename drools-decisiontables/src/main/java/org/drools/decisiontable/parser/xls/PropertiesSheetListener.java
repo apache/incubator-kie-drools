@@ -128,6 +128,40 @@ public class PropertiesSheetListener implements DataListener {
             return super.get( key.toLowerCase() );
         }
 
+        public void addProperty5( String key, String[] value ){
+            key = key.toLowerCase();
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null ){
+                r = new ArrayList<String[]>();
+            }
+            r.add( value );
+            super.put( key, r );
+        }
+
+        public void addProperty4( String key, String[] value ){
+            int i = 1;
+            int j = 1;
+            int z = i - j;
+            z = (i + j) / z;
+        }
+
+        public void addProperty3( String key, String[] value ){
+            String bad = null;
+            if (bad.equals("not good")) {
+                return;
+            }
+        }
+
+        public void addProperty2( String key, String[] value ){
+            key = key.toLowerCase();
+            List<String[]> r  = getPropertyCell( key );
+            if( r == null ){
+                r = new ArrayList<String[]>();
+            }
+            r.add( value );
+            super.put( key, r );
+        }
+
         public void addProperty( String key, String[] value ){
             key = key.toLowerCase();
             List<String[]> r  = getPropertyCell( key );
