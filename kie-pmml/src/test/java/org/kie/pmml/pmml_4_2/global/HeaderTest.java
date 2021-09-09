@@ -18,7 +18,6 @@ package org.kie.pmml.pmml_4_2.global;
 
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 
@@ -43,7 +42,7 @@ public class HeaderTest extends DroolsAbstractPMMLTest {
 
     @Test
     public void testPMMLHeader() {
-        String source = PMML4Helper.pmmlDefaultPackageName().replace( ".", File.separator ) + File.separator + "test_header.xml";
+        String source = PMML4Helper.pmmlDefaultPackageName().replace( '.', '/' ) + "/" + "test_header.xml";
 
         boolean header = false;
         boolean timestamp = false;

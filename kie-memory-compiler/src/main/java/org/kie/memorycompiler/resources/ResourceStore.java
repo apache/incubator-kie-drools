@@ -19,8 +19,23 @@ package org.kie.memorycompiler.resources;
  */
 public interface ResourceStore {
 
-    void write( final String pResourceName, final byte[] pResourceData );
-    void write( final String pResourceName, final byte[] pResourceData, boolean createFolder );
-    byte[] read( final String pResourceName );
-    void remove( final String pResourceName );
+    void write( KiePath resourcePath, byte[] pResourceData );
+    default void write( String resourceName, byte[] pResourceData ) {
+        write( KiePath.of(resourceName), pResourceData );
+    }
+
+    void write( KiePath resourcePath, byte[] pResourceData, boolean createFolder );
+    default void write( String resourceName, byte[] pResourceData, boolean createFolder ) {
+        write( KiePath.of(resourceName), pResourceData, createFolder );
+    }
+
+    byte[] read( KiePath resourcePath );
+    default byte[] read( String resourceName ) {
+        return read( KiePath.of(resourceName) );
+    }
+
+    void remove( KiePath resourcePath );
+    default void remove( String resourceName ) {
+        remove( KiePath.of(resourceName) );
+    }
 }
