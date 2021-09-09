@@ -37,6 +37,9 @@ public class ProcessingDTO {
     private final List<KiePMMLNameValue> kiePMMLNameValues;
     private final List<String> orderedReasonCodes;
     private final List<MiningField> miningFields;
+    private Object predictedDisplayValue;
+    private Object entityId;
+    private Object affinity;
 
     /**
      *
@@ -62,6 +65,9 @@ public class ProcessingDTO {
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = new ArrayList<>();
         this.miningFields = model.getMiningFields();
+        this.predictedDisplayValue = model.getPredictedDisplayValue();
+        this.entityId = model.getEntityId();
+        this.affinity = model.getAffinity();
     }
 
     /**
@@ -88,6 +94,9 @@ public class ProcessingDTO {
         this.miningFields =  miningFields;
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = orderedReasonCodes;
+        this.predictedDisplayValue = null;
+        this.entityId = null;
+        this.affinity = null;
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
@@ -131,5 +140,29 @@ public class ProcessingDTO {
 
     public List<MiningField> getMiningFields() {
         return Collections.unmodifiableList(miningFields);
+    }
+
+    public Object getPredictedDisplayValue() {
+        return predictedDisplayValue;
+    }
+
+    public void setPredictedDisplayValue(Object predictedDisplayValue) {
+        this.predictedDisplayValue = predictedDisplayValue;
+    }
+
+    public Object getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(Object entityId) {
+        this.entityId = entityId;
+    }
+
+    public Object getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Object affinity) {
+        this.affinity = affinity;
     }
 }

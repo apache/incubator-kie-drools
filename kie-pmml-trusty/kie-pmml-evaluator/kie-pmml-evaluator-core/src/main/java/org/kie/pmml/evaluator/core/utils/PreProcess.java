@@ -41,6 +41,12 @@ public class PreProcess {
         // Avoid instantiation
     }
 
+    /**
+     * Method to create a <code>ProcessingDTO</code> with <b>fix</b> values from the given <code>KiePMMLModel</code>
+     * @param model
+     * @param context
+     * @return
+     */
     public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
         addMissingValuesReplacements(model, context);
         final PMMLRequestData requestData = context.getRequestData();
