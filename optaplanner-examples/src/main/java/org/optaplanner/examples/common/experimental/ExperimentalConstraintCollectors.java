@@ -40,22 +40,22 @@ import org.optaplanner.examples.common.experimental.impl.Interval;
 import org.optaplanner.examples.common.experimental.impl.IntervalTree;
 
 /**
- * A collection of experimental constraint collectors
- * subject to change in future versions.
+ * A collection of experimental constraint collectors subject to change in future versions.
  */
 public class ExperimentalConstraintCollectors {
     /**
-     * Creates a constraint collector that returns {@link ConsecutiveInfo} about the first
-     * fact.
+     * Creates a constraint collector that returns {@link ConsecutiveInfo} about the first fact.
      *
-     * For instance ${@code [Shift slot=1] [Shift slot=2] [Shift slot=4] [Shift slot=6]}
-     * returns the following infomation
+     * For instance, {@code [Shift slot=1] [Shift slot=2] [Shift slot=4] [Shift slot=6]}
+     * returns the following information:
      *
-     * ${@code
-     * Consecutive Lengths: 2 1 1
-     * Break Lengths: 1 2
-     * Consecutive Items [[Shift slot=1] [Shift slot=2]], [[Shift slot=4]] [[Shift slot=6]]
+     * <pre>
+     * {@code
+     * Consecutive Lengths: 2, 1, 1
+     * Break Lengths: 1, 2
+     * Consecutive Items: [[Shift slot=1] [Shift slot=2]], [[Shift slot=4]], [[Shift slot=6]]
      * }
+     * </pre>
      *
      * @param indexMap Maps the fact to its position in the sequence
      * @param <A> type of the first mapped fact
@@ -77,7 +77,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     * As defined by {@link #consecutive(ToIntFunction)}.
      *
      * @param resultMap Maps both facts to an item in the sequence
      * @param indexMap Maps the item to its position in the sequence
@@ -102,7 +102,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     * As defined by {@link #consecutive(ToIntFunction)}.
      *
      * @param resultMap Maps the three facts to an item in the sequence
      * @param indexMap Maps the item to its position in the sequence
@@ -127,7 +127,7 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * As defined by {@link #consecutive(ToIntFunction)} (Function, Function, BinaryOperator)}.
+     * As defined by {@link #consecutive(ToIntFunction)}.
      *
      * @param resultMap Maps the four facts to an item in the sequence
      * @param indexMap Maps the item to its position in the sequence
@@ -153,16 +153,17 @@ public class ExperimentalConstraintCollectors {
     }
 
     /**
-     * Creates a constraint collector that returns {@link ConsecutiveIntervalInfo} about the first
-     * fact.
+     * Creates a constraint collector that returns {@link ConsecutiveIntervalInfo} about the first fact.
      *
-     * For instance ${@code [Shift from=2, to=4] [Shift from=3, to=5] [Shift from=6, to=7] [Shift from=7, to=8]}
-     * returns the following information
+     * For instance, {@code [Shift from=2, to=4] [Shift from=3, to=5] [Shift from=6, to=7] [Shift from=7, to=8]}
+     * returns the following information:
      *
-     * ${@code
-     * IntervalClusters [[Shift from=2, to=4] [Shift from=3, to=5]], [[Shift from=6, to=7] [Shift from=7, to=8]]
-     * Breaks [[Break from=5, to=6, length=1]]
+     * <pre>
+     * {@code
+     * IntervalClusters: [[Shift from=2, to=4] [Shift from=3, to=5]], [[Shift from=6, to=7] [Shift from=7, to=8]]
+     * Breaks: [[Break from=5, to=6, length=1]]
      * }
+     * </pre>
      *
      * @param startMap Maps the fact to its start
      * @param endMap Maps the fact to its end
