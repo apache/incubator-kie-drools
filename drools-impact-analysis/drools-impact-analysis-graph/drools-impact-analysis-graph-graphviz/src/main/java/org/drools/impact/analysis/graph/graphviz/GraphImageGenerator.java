@@ -42,12 +42,13 @@ import org.slf4j.LoggerFactory;
 import static guru.nidi.graphviz.model.Factory.graph;
 import static guru.nidi.graphviz.model.Factory.node;
 import static guru.nidi.graphviz.model.Factory.to;
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
 
 public class GraphImageGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphImageGenerator.class);
 
-    private static final String DEFAULT_OUTPUT_DIR = "target" + File.separator + "graph-output";
+    private static final String DEFAULT_OUTPUT_DIR = "target/graph-output";
 
     private String graphName;
     private int width = 0; // when 0, auto-sized
@@ -87,7 +88,7 @@ public class GraphImageGenerator {
     }
 
     public void setOutputDir(String outputDir) {
-        this.outputDir = outputDir;
+        this.outputDir = normalizePath(outputDir);
     }
 
     public int getWidth() {
@@ -163,7 +164,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".dot";
+            String filePath = outputDir + "/" + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
             logger.info("--- Graph dot format is generated to " + filePath);
         } catch (IOException e) {
@@ -175,7 +176,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".png";
+            String filePath = outputDir + "/" + graphName + ".png";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
             logger.info("--- Graph png image is generated to " + filePath);
         } catch (IOException e) {
@@ -187,7 +188,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".svg";
+            String filePath = outputDir + "/" + graphName + ".svg";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
             logger.info("--- Graph svg image is generated to " + filePath);
         } catch (IOException e) {

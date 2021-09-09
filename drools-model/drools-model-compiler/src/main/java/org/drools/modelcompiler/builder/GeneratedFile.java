@@ -19,6 +19,8 @@ package org.drools.modelcompiler.builder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
 public class GeneratedFile {
 
     public enum Type {
@@ -54,7 +56,7 @@ public class GeneratedFile {
 
     private GeneratedFile(Type type, String path, byte[] data) {
         this.type = type;
-        this.path = path;
+        this.path = normalizePath(path);
         this.data = data;
     }
 

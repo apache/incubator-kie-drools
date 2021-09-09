@@ -57,6 +57,8 @@ import org.kie.memorycompiler.StoreClassLoader;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
 public class NativeJavaCompiler extends AbstractJavaCompiler {
 
     public JavaCompilerSettings createDefaultSettings() {
@@ -78,7 +80,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {
                 jFileManager.setLocation( StandardLocation.CLASS_PATH, pSettings.getClasspathLocations() );
-                jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target" + File.separator + "classes")) );
+                jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target/classes")) );
             } catch (IOException e) {
                 // ignore if cannot set the classpath
             }
@@ -86,7 +88,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
                 final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
                 for (final String sourcePath : pResourcePaths) {
-                    units.add( new CompilationUnit( sourcePath, pReader ) );
+                    units.add( new CompilationUnit( normalizePath(sourcePath), pReader ) );
                 }
 
                 Iterable<String> options = new NativeJavaCompilerSettings( pSettings ).toOptionsList();

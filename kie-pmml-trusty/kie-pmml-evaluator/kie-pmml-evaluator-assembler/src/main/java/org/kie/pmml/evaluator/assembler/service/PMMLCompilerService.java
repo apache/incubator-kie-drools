@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +36,7 @@ import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory;
 import org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory;
 import org.kie.pmml.evaluator.assembler.implementations.HasKnowledgeBuilderImpl;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMapperFactory.KIE_PMML_RULE_MAPPER_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.factories.PMMLRuleMappersFactory.KIE_PMML_RULE_MAPPERS_CLASS_NAME;
 import static org.kie.pmml.evaluator.assembler.service.PMMLAssemblerService.PMML_COMPILER_CACHE_KEY;
@@ -181,10 +181,8 @@ public class PMMLCompilerService {
     }
 
     static String getFileName(final String fullPath) {
-        String toReturn = fullPath;
-        if (fullPath.contains(File.separator)) {
-            toReturn = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
-        } else if (fullPath.contains("/")) {
+        String toReturn = normalizePath(fullPath);
+        if (fullPath.contains("/")) {
             toReturn = fullPath.substring(fullPath.lastIndexOf('/') + 1);
         }
         return toReturn;

@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.models.drools.provider;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -56,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
@@ -212,8 +210,7 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         List<GeneratedFile> generatedRuleFiles = generateRulesFiles(packageDescr);
         return generatedRuleFiles.stream()
                 .collect(Collectors.toMap(generatedFile -> generatedFile.getPath()
-                                                  .replace(File.separatorChar, '.')
-                                                  .replace('/', '.') // some drools path are hardcoded to "/"
+                                                  .replace('/', '.')
                                                   .replace(".java", ""),
                                           generatedFile -> new String(generatedFile.getData())));
     }

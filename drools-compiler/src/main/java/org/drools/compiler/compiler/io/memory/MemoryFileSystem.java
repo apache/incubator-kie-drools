@@ -55,6 +55,8 @@ import org.kie.api.io.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
 public class MemoryFileSystem
     implements
     FileSystem,
@@ -76,7 +78,7 @@ public class MemoryFileSystem
 
     public MemoryFileSystem() {
         folder = new MemoryFolder( this, "" );
-        folders.put( "", new HashSet<FileSystemItem>() );
+        folders.put( "", new HashSet<>() );
     }
 
     public Folder getRootFolder() {
@@ -170,7 +172,7 @@ public class MemoryFileSystem
     }
 
     public void mark() {
-        modifiedFilesSinceLastMark = new HashSet<String>();
+        modifiedFilesSinceLastMark = new HashSet<>();
     }
 
     public Collection<String> getModifiedResourcesSinceLastMark() {
@@ -203,8 +205,7 @@ public class MemoryFileSystem
                 createFolder( (MemoryFolder) folder.getParent() );
             }
 
-            folders.put( folder.getPath().toPortableString(),
-                         new HashSet<FileSystemItem>() );
+            folders.put( folder.getPath().toPortableString(), new HashSet<>() );
 
             Folder parent = folder.getParent();
             folders.get( parent.getPath().toPortableString() ).add( folder );
@@ -384,7 +385,7 @@ public class MemoryFileSystem
     }
 
     public void write(String pResourceName, Resource resource, boolean createFolder) {
-        pResourceName = pResourceName.replace( java.io.File.separatorChar, '/' );
+        pResourceName = normalizePath(pResourceName);
 
         if (pResourceName.endsWith( "/" )) {
             // avoid to create files for empty folders

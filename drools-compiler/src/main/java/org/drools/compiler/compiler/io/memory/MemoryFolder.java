@@ -18,6 +18,7 @@ package org.drools.compiler.compiler.io.memory;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Objects;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
@@ -25,11 +26,11 @@ import org.drools.compiler.compiler.io.Path;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.core.util.StringUtils;
 
-public class MemoryFolder
-        implements
-        Folder,
-        Serializable {
-    private MemoryFileSystem mfs;
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
+public class MemoryFolder implements Folder, Serializable {
+
+    private final MemoryFileSystem mfs;
 
     private String           path;
     
@@ -80,8 +81,7 @@ public class MemoryFolder
             String p = trimLeadingAndTrailing( path );
             
             if ( p.indexOf( '/' ) == -1 ) {
-                pFolder = new MemoryFolder( mfs,
-                                         "" );            
+                pFolder = new MemoryFolder( mfs, "" );
             } else {           
                 String[] elements = p.split( "/" );
         
@@ -96,8 +96,7 @@ public class MemoryFolder
                         first = false;
                     }
                 }
-                pFolder = new MemoryFolder( mfs,
-                                            newPath );
+                pFolder = new MemoryFolder( mfs, newPath );
             }
         }
         
@@ -109,6 +108,8 @@ public class MemoryFolder
         if (p.isEmpty()) {
             return p;
         }
+        p = normalizePath(p);
+
         while ( p.charAt( 0 ) == '/') {
             p = p.substring( 1 );
         }
@@ -149,10 +150,7 @@ public class MemoryFolder
         if ( obj == null ) return false;
         if ( getClass() != obj.getClass() ) return false;
         MemoryFolder other = (MemoryFolder) obj;
-        if ( path == null ) {
-            if ( other.path != null ) return false;
-        } else if ( !path.equals( other.path ) ) return false;
-        return true;
+        return Objects.equals(path, other.path);
     }
 
     @Override

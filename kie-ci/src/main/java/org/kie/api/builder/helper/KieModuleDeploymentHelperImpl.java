@@ -494,7 +494,7 @@ final class KieModuleDeploymentHelperImpl extends FluentKieModuleDeploymentHelpe
                 try {
                     kjarResources.addAll(internalLoadResources(filePath, false));
                 } catch (FileNotFoundException fnfe) {
-                    throw new RuntimeException("No file found at '" + filePath + "' -- if it's a directory, please add a " + File.separator + " to the end of the path.");
+                    throw new RuntimeException("No file found at '" + filePath + "' -- if it's a directory, please add a / to the end of the path.");
                 } catch (Exception e) {
                     throw new RuntimeException("Unable to load resource from '" + filePath + "'", e);
                 }

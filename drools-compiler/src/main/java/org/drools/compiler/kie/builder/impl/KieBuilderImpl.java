@@ -294,9 +294,8 @@ public class KieBuilderImpl
 
     private void addKBasesFilesToTrg() {
         for ( String fileName : srcMfs.getFileNames() ) {
-            String normalizedName = fileName.replace( File.separatorChar, '/' );
-            if ( normalizedName.startsWith( RESOURCES_ROOT ) ) {
-                copySourceToTarget( normalizedName );
+            if ( fileName.startsWith( RESOURCES_ROOT ) ) {
+                copySourceToTarget( fileName );
             }
         }
     }
@@ -701,7 +700,6 @@ public class KieBuilderImpl
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
                     && notVetoedByFilter( classFilter, fileName ) ) {
-                fileName = fileName.replace( File.separatorChar, '/' );
 
                 if ( !fileName.startsWith( JAVA_ROOT ) && !fileName.startsWith( JAVA_TEST_ROOT ) ) {
                     results.addMessage( Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"" );

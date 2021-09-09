@@ -31,6 +31,7 @@ import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
 
 public abstract class BaseResource
         implements
@@ -111,18 +112,18 @@ public abstract class BaseResource
     }
 
     public InternalResource setSourcePath(String path) {
-        this.sourcePath = path;
+        this.sourcePath = normalizePath( path );
         return this;
     }
 
     public InternalResource setTargetPath(String path) {
-        this.targetPath = path;
+        this.targetPath = normalizePath( path );
         return this;
     }
 
     public List<String> getCategories() {
         if ( categories == null ) {
-            categories = new ArrayList<String>();
+            categories = new ArrayList<>();
         }
         return categories;
     }

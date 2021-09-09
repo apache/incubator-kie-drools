@@ -1,7 +1,5 @@
 package org.drools.core.command.runtime.rule;
 
-import java.io.File;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -12,6 +10,8 @@ import org.kie.api.command.ExecutableCommand;
 import org.kie.api.runtime.Context;
 import org.kie.api.runtime.KieSession;
 import org.kie.internal.command.RegistryContext;
+
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
 
 @XmlRootElement
 @XmlAccessorType( XmlAccessType.NONE )
@@ -30,7 +30,7 @@ public class EnableAuditLogCommand implements ExecutableCommand<Void> {
         this.filename = filename;
 
         if ( directory != null ) {
-            auditLogFile = directory + File.separator + filename;
+            auditLogFile = normalizePath(directory + '/' + filename);
         }
 
     }

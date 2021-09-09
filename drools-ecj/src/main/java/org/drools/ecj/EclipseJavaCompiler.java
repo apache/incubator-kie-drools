@@ -48,6 +48,8 @@ import org.eclipse.jdt.internal.compiler.env.NameEnvironmentAnswer;
 import org.eclipse.jdt.internal.compiler.impl.CompilerOptions;
 import org.eclipse.jdt.internal.compiler.problem.DefaultProblemFactory;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
 /**
  * Eclipse compiler implementation
  */
@@ -167,7 +169,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
 
         final ICompilationUnit[] compilationUnits = new ICompilationUnit[pSourceFiles.length];
         for (int i = 0; i < compilationUnits.length; i++) {
-            final String sourceFile = pSourceFiles[i];
+            final String sourceFile = normalizePath(pSourceFiles[i]);
 
             if (pReader.isAvailable(sourceFile)) {
                 compilationUnits[i] = new CompilationUnit(pReader, sourceFile);

@@ -20,6 +20,8 @@ import org.drools.compiler.lang.descr.BaseDescr;
 import org.drools.verifier.data.VerifierComponent;
 import org.drools.verifier.report.components.Cause;
 
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
+
 public class Field extends VerifierComponent<BaseDescr>
     implements
     Cause {
@@ -45,9 +47,7 @@ public class Field extends VerifierComponent<BaseDescr>
     
     @Override
     public String getPath() {
-        return String.format( "%s/field[@name='%s']",
-                              getObjectTypePath(),
-                              getName() );
+        return normalizePath( String.format( "%s/field[@name='%s']", getObjectTypePath(), getName() ) );
     }
 
     public VerifierComponentType getVerifierComponentType() {

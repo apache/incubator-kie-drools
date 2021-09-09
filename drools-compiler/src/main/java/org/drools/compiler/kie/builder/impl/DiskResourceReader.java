@@ -28,23 +28,26 @@ import java.util.Set;
 import org.kie.memorycompiler.resources.ResourceReader;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
+import static org.kie.memorycompiler.resources.PathUtils.normalizePath;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;
+    private final String rootPath;
 
     private Map<String, Integer> filesHashing;
 
-    public DiskResourceReader( final File pRoot ) {
-        root = pRoot;        
+    public DiskResourceReader( final File root ) {
+        this.root = root;
+        this.rootPath = normalizePath(root.getAbsolutePath());
     }
     
     public boolean isAvailable( final String pResourceName ) {
-        return new File(root, pResourceName).exists();
+        return new File(rootPath, normalizePath(pResourceName)).exists();
     }
 
     public byte[] getBytes( final String pResourceName ) {
         try {
-            return readBytesFromInputStream(new FileInputStream(new File(root, pResourceName)));
+            return readBytesFromInputStream(new FileInputStream(new File(rootPath, normalizePath(pResourceName))));
         } catch(Exception e) {
             return null;
         }
@@ -107,7 +110,7 @@ public class DiskResourceReader implements ResourceReader {
                 list(directoryFiles[i], pFiles);
             }
         } else {
-            pFiles.add(pFile.getAbsolutePath().substring(root.getAbsolutePath().length()+1));
+            pFiles.add( normalizePath( pFile.getAbsolutePath().substring(rootPath.length()+1) ) );
         }
     }   
     
