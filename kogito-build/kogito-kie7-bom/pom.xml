@@ -96,6 +96,11 @@
             </dependency>
             <dependency>
                 <groupId>org.kie</groupId>
+                <artifactId>kie-dmn-feel</artifactId>
+                <version>${version.org.kie7}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.kie</groupId>
                 <artifactId>kie-dmn-core</artifactId>
                 <version>${version.org.kie7}</version>
             </dependency>
