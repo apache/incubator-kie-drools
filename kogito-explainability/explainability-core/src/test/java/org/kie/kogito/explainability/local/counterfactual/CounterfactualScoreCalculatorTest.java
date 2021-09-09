@@ -215,7 +215,8 @@ class CounterfactualScoreCalculatorTest {
             CounterFactualScoreCalculator.outputDistance(ox, oy);
         });
 
-        assertEquals("Features must have the same type, got categorical and number", exception.getMessage());
+        assertEquals("Features must have the same type. Feature 'x', has type 'categorical' and 'number'",
+                exception.getMessage());
     }
 
     @Test
@@ -230,7 +231,7 @@ class CounterfactualScoreCalculatorTest {
             CounterFactualScoreCalculator.outputDistance(ox, oy);
         });
 
-        assertEquals("Feature type time not supported", exception.getMessage());
+        assertEquals("Feature 'x' has unsupported type 'time'", exception.getMessage());
     }
 
     /**
