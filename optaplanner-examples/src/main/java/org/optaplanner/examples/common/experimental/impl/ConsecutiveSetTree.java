@@ -194,6 +194,17 @@ public final class ConsecutiveSetTree<Value_, Point_ extends Comparable<Point_>,
     }
 
     // Protected API
+    Break<Value_, Difference_> getBreakBefore(Value_ item) {
+        return startItemToPreviousBreak.get(item);
+    }
+
+    Break<Value_, Difference_> getBreakAfter(Value_ item) {
+        Map.Entry<Value_, BreakImpl<Value_, Difference_>> entry = startItemToPreviousBreak.higherEntry(item);
+        if (entry != null) {
+            return entry.getValue();
+        }
+        return null;
+    }
 
     NavigableSet<Value_> getItemSet() {
         return (NavigableSet<Value_>) itemToCountMap.keySet();

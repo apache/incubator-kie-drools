@@ -518,33 +518,52 @@ public class NurseRosteringConstraintProviderTest {
         // ShiftAssignment shift6 = getShiftAssignment(5, employee);
         ShiftAssignment shift7 = getShiftAssignment(6, employee);
 
+        NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
+
+        nurseRosterParametrization.setId(idSupplier.incrementAndGet());
+        nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
+        nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
+        nurseRosterParametrization.setLastShiftDate(getShiftDate(6));
+
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
                 .given(contract.getContractLineList().get(0),
                         employee,
+                        nurseRosterParametrization,
                         shift1, shift7)
                 .penalizesBy(8);
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
                 .given(contract.getContractLineList().get(0),
                         employee,
+                        nurseRosterParametrization,
                         shift1, shift3)
-                .penalizesBy(2);
+                .penalizesBy(6);
 
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
                 .given(contract.getContractLineList().get(0),
                         employee,
+                        nurseRosterParametrization,
                         shift1, shift5)
                 .penalizesBy(0);
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
                 .given(contract.getContractLineList().get(0),
                         employee,
+                        nurseRosterParametrization,
                         shift1, shift4)
                 .penalizesBy(0);
         constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
                 .given(contract.getContractLineList().get(0),
                         employee,
+                        nurseRosterParametrization,
                         shift1, shift4, shift7)
                 .penalizesBy(0);
+
+        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDays)
+                .given(contract.getContractLineList().get(0),
+                        employee,
+                        nurseRosterParametrization,
+                        shift7)
+                .penalizesBy(12);
     }
 
     @Test
@@ -570,86 +589,6 @@ public class NurseRosteringConstraintProviderTest {
                         employeeNoShifts, employeeWithShifts,
                         shift, nurseRosterParametrization)
                 .penalizesBy(5);
-    }
-
-    @Test
-    public void consecutiveFreeDaysFirstBreak() {
-        Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_FREE_DAYS)
-                .withMinimum(2)
-                .withMaximum(3)
-                .withMinimumWeight(2)
-                .withMaximumWeight(4)
-                .build();
-
-        Employee employee = getEmployee(contract);
-
-        // ShiftAssignment shift1 = getShiftAssignment(0, employee);
-        ShiftAssignment shift2 = getShiftAssignment(1, employee);
-        ShiftAssignment shift3 = getShiftAssignment(2, employee);
-        // ShiftAssignment shift4 = getShiftAssignment(3, employee);
-        ShiftAssignment shift5 = getShiftAssignment(4, employee);
-        NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
-
-        nurseRosterParametrization.setId(idSupplier.incrementAndGet());
-        nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
-        nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
-        nurseRosterParametrization.setLastShiftDate(getShiftDate(5));
-
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFirstBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift2, nurseRosterParametrization)
-                .penalizesBy(2);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFirstBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift5, nurseRosterParametrization)
-                .penalizesBy(4);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFirstBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift3, shift5, nurseRosterParametrization)
-                .penalizesBy(0);
-    }
-
-    @Test
-    public void consecutiveFreeDaysFinalBreak() {
-        Contract contract = new MinMaxContractBuilder(ContractLineType.CONSECUTIVE_FREE_DAYS)
-                .withMinimum(2)
-                .withMaximum(3)
-                .withMinimumWeight(2)
-                .withMaximumWeight(4)
-                .build();
-
-        Employee employee = getEmployee(contract);
-
-        ShiftAssignment shift1 = getShiftAssignment(0, employee);
-        ShiftAssignment shift2 = getShiftAssignment(1, employee);
-        // ShiftAssignment shift3 = getShiftAssignment(2, employee);
-        ShiftAssignment shift4 = getShiftAssignment(3, employee);
-        ShiftAssignment shift5 = getShiftAssignment(4, employee);
-        NurseRosterParametrization nurseRosterParametrization = new NurseRosterParametrization();
-
-        nurseRosterParametrization.setId(idSupplier.incrementAndGet());
-        nurseRosterParametrization.setPlanningWindowStart(getShiftDate(0));
-        nurseRosterParametrization.setFirstShiftDate(getShiftDate(0));
-        nurseRosterParametrization.setLastShiftDate(getShiftDate(5));
-
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFinalBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift5, nurseRosterParametrization)
-                .penalizesBy(2);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFinalBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift2, nurseRosterParametrization)
-                .penalizesBy(4);
-        constraintVerifier.verifyThat(NurseRosteringConstraintProvider::consecutiveFreeDaysFinalBreak)
-                .given(contract.getContractLineList().get(0),
-                        employee,
-                        shift1, shift4, nurseRosterParametrization)
-                .penalizesBy(0);
     }
 
     @Test

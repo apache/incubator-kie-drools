@@ -36,6 +36,20 @@ public interface Break<Value_, Difference_ extends Comparable<Difference_>> {
     Sequence<Value_, Difference_> getNextSequence();
 
     /**
+     * @return true if and only if this is the first break
+     */
+    default boolean isFirst() {
+        return getPreviousSequence().isFirst();
+    }
+
+    /**
+     * @return true if and only if this is the last break
+     */
+    default boolean isLast() {
+        return getNextSequence().isLast();
+    }
+
+    /**
      * Return the end of the sequence before this break. For the
      * break between 6 and 10, this will return 6.
      * 

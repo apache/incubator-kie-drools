@@ -20,6 +20,7 @@ import java.util.NavigableSet;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.optaplanner.examples.common.experimental.api.Break;
 import org.optaplanner.examples.common.experimental.api.Sequence;
 
 final class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>> implements Sequence<Value_, Difference_> {
@@ -52,6 +53,26 @@ final class SequenceImpl<Value_, Difference_ extends Comparable<Difference_>> im
     @Override
     public Value_ getLastItem() {
         return lastItem;
+    }
+
+    @Override
+    public Break<Value_, Difference_> getPreviousBreak() {
+        return sourceTree.getBreakBefore(firstItem);
+    }
+
+    @Override
+    public Break<Value_, Difference_> getNextBreak() {
+        return sourceTree.getBreakAfter(lastItem);
+    }
+
+    @Override
+    public boolean isFirst() {
+        return firstItem == sourceTree.getItemSet().first();
+    }
+
+    @Override
+    public boolean isLast() {
+        return lastItem == sourceTree.getItemSet().last();
     }
 
     @Override
