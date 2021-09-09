@@ -16,13 +16,9 @@
 
 package org.kie.kogito.integrationtests.quarkus;
 
-import javax.inject.Inject;
-
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.KogitoGAV;
-import org.kie.kogito.conf.ConfigBean;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -32,15 +28,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 public class MonitoringIT {
+
+    private static final String ARTIFACT_ID = "integration-tests-quarkus-processes";
+    private static final String VERSION = System.getProperty("kogito.version");
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
-
-    @Inject
-    ConfigBean configBean;
 
     @Test
     public void test() {
@@ -59,12 +55,10 @@ public class MonitoringIT {
                 .statusCode(200)
                 .extract().body().asString();
 
-        KogitoGAV kogitoGAV = configBean.getGav().get();
-
         assertThat(response).contains(format("kogito_process_instance_started_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
-                kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                ARTIFACT_ID, VERSION));
         assertThat(response).contains(format("kogito_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
-                kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                ARTIFACT_ID, VERSION));
 
         String taskId = given()
                 .contentType(ContentType.JSON)
@@ -96,24 +90,24 @@ public class MonitoringIT {
                 .statusCode(200)
                 .extract().body().asString();
 
-        assertThat(response).contains(format("kogito_work_item_duration_seconds_max{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+        assertThat(response).contains(format("kogito_work_item_duration_seconds_max{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", ARTIFACT_ID, VERSION));
         assertThat(response)
-                .contains(format("kogito_work_item_duration_seconds_count{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",} 1.0", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
-        assertThat(response).contains(format("kogito_work_item_duration_seconds_sum{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                .contains(format("kogito_work_item_duration_seconds_count{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",} 1.0", ARTIFACT_ID, VERSION));
+        assertThat(response).contains(format("kogito_work_item_duration_seconds_sum{artifactId=\"%s\",name=\"MonitoringTask\",version=\"%s\",}", ARTIFACT_ID, VERSION));
 
         assertThat(response)
                 .contains(format(
                         "kogito_process_instance_completed_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",node_name=\"2\",process_id=\"monitoring\",version=\"%s\",} 1.0",
-                        kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                        ARTIFACT_ID, VERSION));
         assertThat(response).contains(format("kogito_process_instance_running_total{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 0.0",
-                kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                ARTIFACT_ID, VERSION));
         assertThat(response).contains(format("kogito_process_instance_duration_seconds_max{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
-                kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                ARTIFACT_ID, VERSION));
         assertThat(response)
                 .contains(format("kogito_process_instance_duration_seconds_count{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",} 1.0",
-                        kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                        ARTIFACT_ID, VERSION));
         assertThat(response).contains(format("kogito_process_instance_duration_seconds_sum{app_id=\"default-process-monitoring-listener\",artifactId=\"%s\",process_id=\"monitoring\",version=\"%s\",}",
-                kogitoGAV.getArtifactId(), kogitoGAV.getVersion()));
+                ARTIFACT_ID, VERSION));
     }
 
 }

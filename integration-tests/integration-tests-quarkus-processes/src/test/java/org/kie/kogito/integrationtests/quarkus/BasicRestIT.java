@@ -20,44 +20,48 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import javax.inject.Inject;
-
 import org.acme.travels.Traveller;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.kie.kogito.integrationtests.UnitOfWorkTestEventListener;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class BasicRestIT {
 
     static {
         RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
     }
 
-    @Inject
-    UnitOfWorkTestEventListener uowEventListener;
-
     @BeforeEach
     void resetEventListener() {
-        uowEventListener.reset();
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .delete("/events")
+                .then()
+                .statusCode(204);
     }
 
     void assertExpectedUnitOfWorkEvents(Integer events) {
-        assertThat(uowEventListener.getStartEvents()).hasSize(events);
-        assertThat(uowEventListener.getEndEvents()).hasSize(events);
-        assertThat(uowEventListener.getAbortEvents()).isEmpty();
+        given()
+                .contentType(ContentType.JSON)
+                .when()
+                .get("/events")
+                .then()
+                .body("start", is(events))
+                .body("end", is(events))
+                .body("abort", is(0))
+                .statusCode(200);
     }
 
     @Test

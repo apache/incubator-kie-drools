@@ -129,11 +129,6 @@ public class KogitoAssetsProcessor {
         return Optional.of(indexBuildItems(context, generatedBeanBuildItems));
     }
 
-    @BuildStep
-    public ReflectiveClassBuildItem reflectionJobsManagement() {
-        return new ReflectiveClassBuildItem(true, true, "org.kie.kogito.jobs.api.Job");
-    }
-
     private void registerDataEventsForReflection(Optional<IndexView> optionalIndex, KogitoBuildContext context, BuildProducer<ReflectiveClassBuildItem> reflectiveClass) {
         reflectiveClass.produce(
                 new ReflectiveClassBuildItem(true, true, "org.kie.kogito.event.AbstractDataEvent"));

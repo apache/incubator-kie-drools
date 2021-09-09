@@ -37,9 +37,6 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-failsafe-plugin</artifactId>
         <configuration>
-          <excludes>
-            <exclude>**/Native*IT.java</exclude>
-          </excludes>
           <systemPropertyVariables combine.children="append">
             <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
             <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
@@ -48,20 +45,6 @@
             <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
           </systemPropertyVariables>
         </configuration>
-        <executions>
-          <execution>
-            <id>default</id>
-            <goals>
-              <goal>integration-test</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>verify</id>
-            <goals>
-              <goal>verify</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>
@@ -82,30 +65,22 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-failsafe-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>integration-test</goal>
-                  <goal>verify</goal>
-                </goals>
-                <configuration combine.self="override">
-                  <useModulePath>false</useModulePath>
-                  <includes>
-                    <include>**/Native*IT.java</include>
-                  </includes>
-                  <excludes>
-                    <exclude></exclude>
-                  </excludes>
-                  <systemPropertyVariables>
-                    <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
-                    <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
-                    <container.image.kafka>${container.image.kafka}</container.image.kafka>
-                    <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
-                    <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
-                  </systemPropertyVariables>
-                </configuration>
-              </execution>
-            </executions>
+            <configuration combine.self="override">
+              <useModulePath>false</useModulePath>
+              <includes>
+                <include>**/Native*IT.java</include>
+              </includes>
+              <excludes>
+                <exclude></exclude>
+              </excludes>
+              <systemPropertyVariables>
+                <container.image.keycloak>${container.image.keycloak}</container.image.keycloak>
+                <container.image.infinispan>${container.image.infinispan}</container.image.infinispan>
+                <container.image.kafka>${container.image.kafka}</container.image.kafka>
+                <native.image.path>${project.build.directory}/${project.build.finalName}-runner</native.image.path>
+                <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+              </systemPropertyVariables>
+            </configuration>
           </plugin>
         </plugins>
       </build>

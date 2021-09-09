@@ -24,7 +24,7 @@ import org.acme.examples.model.MovieGenre;
 import org.acme.examples.model.Rating;
 import org.junit.jupiter.api.Test;
 
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
@@ -34,7 +34,7 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.emptyOrNullString;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 class EnumsIT {
 
     static {
@@ -47,6 +47,7 @@ class EnumsIT {
         Map<String, Object> params = new HashMap<>();
         Movie movie = new Movie().setGenre(MovieGenre.COMEDY).setName("The Holy Grail").setReleaseYear(1975).setRating(Rating.UR);
         params.put("movie", movie);
+        params.put("rating", movie.getRating());
 
         String pid = given()
                 .contentType(ContentType.JSON)
@@ -58,8 +59,8 @@ class EnumsIT {
                 .body("id", not(emptyOrNullString()))
                 .body("movie.name", equalTo(movie.getName()))
                 .body("movie.genre", equalTo(movie.getGenre().name()))
-                .body("movie.rating", equalTo(movie.getRating().name()))
                 .body("movie.releaseYear", equalTo(movie.getReleaseYear()))
+                .body("rating", equalTo(movie.getRating().name()))
                 .extract()
                 .path("id");
 
@@ -82,6 +83,6 @@ class EnumsIT {
                 .post("/cinema/{pid}/ReviewRatingTask/{taskId}", pid, taskId)
                 .then()
                 .statusCode(200)
-                .body("movie.rating", equalTo(Rating.PG_13.name()));
+                .body("rating", equalTo(Rating.PG_13.name()));
     }
 }

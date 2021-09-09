@@ -26,14 +26,14 @@ import org.junit.jupiter.api.Test;
 import org.kie.kogito.integrationtests.quarkus.utils.DataIndexWiremock;
 
 import io.quarkus.test.common.QuarkusTestResource;
-import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.junit.QuarkusIntegrationTest;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-@QuarkusTest
+@QuarkusIntegrationTest
 @QuarkusTestResource(DataIndexWiremock.class)
 public class ProcessSvgAddonIT {
 
@@ -43,7 +43,7 @@ public class ProcessSvgAddonIT {
 
     public static String readFileContent(String file) throws URISyntaxException, IOException {
         Path path = Paths.get(Thread.currentThread().getContextClassLoader().getResource(file).toURI());
-        return new String(Files.readAllBytes(path));
+        return Files.readString(path);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}", "approvals")
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("META-INF/processSVG/approvals.svg")));
+                .body(equalTo(readFileContent("processSVG/approvals-expected.svg")));
 
         String pId = given()
                 .contentType(ContentType.JSON)
@@ -79,7 +79,7 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
+                .body(equalTo(readFileContent("processSVG/approvals-instance-expected.svg")));
 
         given()
                 .contentType(ContentType.JSON)
@@ -92,6 +92,6 @@ public class ProcessSvgAddonIT {
                 .get("/svg/processes/{processId}/instances/{processInstanceId}", "approvals", pId)
                 .then()
                 .statusCode(200)
-                .body(equalTo(readFileContent("META-INF/processSVG/approvals-expected.svg")));
+                .body(equalTo(readFileContent("processSVG/approvals-instance-expected.svg")));
     }
 }

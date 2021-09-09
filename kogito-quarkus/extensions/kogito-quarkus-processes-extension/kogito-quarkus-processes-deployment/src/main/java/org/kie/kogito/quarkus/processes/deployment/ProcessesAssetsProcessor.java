@@ -126,8 +126,13 @@ public class ProcessesAssetsProcessor {
     }
 
     @BuildStep
-    public ReflectiveClassBuildItem reflectionRestWorkItemHandler() {
-        return new ReflectiveClassBuildItem(true, true, "org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder");
+    public ReflectiveClassBuildItem reflectionProcess() {
+        return new ReflectiveClassBuildItem(true, true,
+                "org.kogito.workitem.rest.bodybuilders.ParamsRestWorkItemHandlerBodyBuilder",
+                "org.kie.kogito.process.impl.BaseWorkItem",
+                "org.kie.kogito.event.Topic",
+                "org.kie.kogito.event.CloudEventMeta",
+                "org.kie.kogito.jobs.api.Job");
     }
 
     /**
