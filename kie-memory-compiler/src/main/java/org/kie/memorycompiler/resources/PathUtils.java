@@ -21,7 +21,7 @@ public class PathUtils {
     private static final boolean IS_WINDOWS_SEPARATOR = File.separatorChar == '\\';
 
     public static String normalizePath(String s) {
-        return IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s;
+        return IS_WINDOWS_SEPARATOR && s != null ? s.replace('\\', '/') : s;
     }
 
 }
