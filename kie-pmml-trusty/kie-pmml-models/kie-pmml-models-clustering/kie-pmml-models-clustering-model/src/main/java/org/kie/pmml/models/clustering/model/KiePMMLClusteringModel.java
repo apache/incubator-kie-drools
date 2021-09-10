@@ -17,6 +17,7 @@ package  org.kie.pmml.models.clustering.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,6 +78,11 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         setAffinity(aggregates[selectedIndex]);
 
         return clusters.get(selectedIndex).getId().orElseGet(() -> Integer.toString(selectedEntityId));
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return new LinkedHashMap<>();
     }
 
     private double computeAdjustmentFactor(Map<String, Object> requestData) {
