@@ -17,7 +17,9 @@ package org.kie.pmml.commons.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -40,6 +42,7 @@ public class ProcessingDTO {
     private Object predictedDisplayValue;
     private Object entityId;
     private Object affinity;
+    private Map<String, Double> probabilityMap;
 
     /**
      *
@@ -68,6 +71,7 @@ public class ProcessingDTO {
         this.predictedDisplayValue = model.getPredictedDisplayValue();
         this.entityId = model.getEntityId();
         this.affinity = model.getAffinity();
+        this.probabilityMap = model.getProbabilityMap();
     }
 
     /**
@@ -97,6 +101,7 @@ public class ProcessingDTO {
         this.predictedDisplayValue = null;
         this.entityId = null;
         this.affinity = null;
+        this.probabilityMap = new LinkedHashMap<>();
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
@@ -164,5 +169,13 @@ public class ProcessingDTO {
 
     public void setAffinity(Object affinity) {
         this.affinity = affinity;
+    }
+
+    public Map<String, Double> getProbabilityMap() {
+        return probabilityMap;
+    }
+
+    public void setProbabilityMap(Map<String, Double> probabilityMap) {
+        this.probabilityMap = probabilityMap;
     }
 }

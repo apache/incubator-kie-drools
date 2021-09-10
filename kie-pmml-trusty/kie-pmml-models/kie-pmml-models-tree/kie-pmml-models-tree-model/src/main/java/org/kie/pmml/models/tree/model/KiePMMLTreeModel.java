@@ -16,9 +16,11 @@
 package  org.kie.pmml.models.tree.model;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.KiePMMLModel;
 
 public class KiePMMLTreeModel extends KiePMMLModel {
@@ -34,6 +36,11 @@ public class KiePMMLTreeModel extends KiePMMLModel {
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         return nodeFunction.apply(requestData);
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return new LinkedHashMap<>();
     }
 
 }

@@ -90,6 +90,8 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
         switch (resultFeature) {
             case PREDICTED_VALUE:
                 return evaluatePredictedValue(processingDTO);
+            case PROBABILITY:
+                return evaluateProbabilityValue(processingDTO);
             case REASON_CODE:
                 return evaluateReasonCodeValue(processingDTO);
             case TRANSFORMED_VALUE:
@@ -112,6 +114,10 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     public Object evaluatePredictedValue(final ProcessingDTO processingDTO) {
         return commonEvaluate(getValueFromKiePMMLNameValuesByVariableName(targetField, processingDTO.getKiePMMLNameValues())
                                       .orElse(null), dataType);
+    }
+
+    public Object evaluateProbabilityValue(final ProcessingDTO processingDTO) {
+        return processingDTO.getProbabilityMap() != null ? processingDTO.getProbabilityMap().get(value) : null;
     }
 
     public Object evaluateReasonCodeValue(final ProcessingDTO processingDTO) {

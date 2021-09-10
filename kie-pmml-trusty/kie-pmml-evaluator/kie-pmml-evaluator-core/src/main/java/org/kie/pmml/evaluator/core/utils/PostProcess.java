@@ -76,6 +76,7 @@ public class PostProcess {
         toPopulate.setAffinity(model.getAffinity());
         toPopulate.setEntityId(model.getEntityId());
         toPopulate.setPredictedDisplayValue(model.getPredictedDisplayValue());
+        toPopulate.setProbabilityMap(model.getProbabilityMap());
     }
 
     /**
