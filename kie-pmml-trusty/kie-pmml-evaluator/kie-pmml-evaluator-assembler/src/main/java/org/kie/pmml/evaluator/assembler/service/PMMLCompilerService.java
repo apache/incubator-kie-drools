@@ -182,8 +182,8 @@ public class PMMLCompilerService {
 
     static String getFileName(final String fullPath) {
         String toReturn = normalizePath(fullPath);
-        if (fullPath.contains("/")) {
-            toReturn = fullPath.substring(fullPath.lastIndexOf('/') + 1);
+        if (toReturn.contains("/")) {
+            toReturn = toReturn.substring(toReturn.lastIndexOf('/') + 1);
         }
         return toReturn;
     }
