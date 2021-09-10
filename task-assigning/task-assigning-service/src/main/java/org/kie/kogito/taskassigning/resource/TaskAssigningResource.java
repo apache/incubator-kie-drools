@@ -22,6 +22,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
+import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.service.ServiceStatus;
 import org.kie.kogito.taskassigning.service.ServiceStatusInfo;
 import org.kie.kogito.taskassigning.service.TaskAssigningException;
@@ -47,5 +48,12 @@ public class TaskAssigningResource {
         } catch (Exception e) {
             throw new TaskAssigningException(e.getMessage(), e);
         }
+    }
+
+    @GET
+    @Path("/service/solution")
+    @Produces(MediaType.APPLICATION_JSON)
+    public TaskAssigningSolution getSolution() {
+        return service.getCurrentSolution();
     }
 }

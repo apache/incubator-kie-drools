@@ -640,6 +640,10 @@ public class TaskAssigningService {
         return context;
     }
 
+    public TaskAssigningSolution getCurrentSolution() {
+        return currentSolution.get();
+    }
+
     TaskAssigningServiceContext createContext() {
         return new TaskAssigningServiceContext();
     }

@@ -826,6 +826,14 @@ class TaskAssigningServiceTest {
         assertThat(planningExecutor).isNotNull();
     }
 
+    @Test
+    void getCurrentSolution() throws Exception {
+        prepareStart();
+        TaskAssigningSolution solution = new TaskAssigningSolution("1", new ArrayList<>(), new ArrayList<>());
+        taskAssigningService.executeSolutionChange(solution);
+        assertThat(taskAssigningService.getCurrentSolution()).isEqualTo(solution);
+    }
+
     private void verifyDestroy() {
         verify(solverExecutor).destroy();
         verify(planningExecutor).destroy();

@@ -24,6 +24,8 @@ import org.optaplanner.core.api.domain.variable.PlanningVariable;
 import org.optaplanner.core.api.domain.variable.PlanningVariableGraphType;
 import org.optaplanner.core.api.domain.variable.PlanningVariableReference;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 /**
  * TaskAssignment is the only planning entity that will be changed during the problem solving, and we have only one
  * PlanningVariable.
@@ -97,6 +99,7 @@ public class TaskAssignment extends ChainElement {
     /**
      * Planning variable: changes during planning, between score calculations.
      */
+    @JsonIgnore
     @PlanningVariable(valueRangeProviderRefs = { USER_RANGE, TASK_ASSIGNMENT_RANGE },
             graphType = PlanningVariableGraphType.CHAINED)
     private ChainElement previousElement;
@@ -104,6 +107,7 @@ public class TaskAssignment extends ChainElement {
     /**
      * Shadow variable, let all Tasks have a reference to the anchor of the chain, the assigned user.
      */
+    @JsonIgnore
     @AnchorShadowVariable(sourceVariableName = PREVIOUS_ELEMENT)
     private User user;
 

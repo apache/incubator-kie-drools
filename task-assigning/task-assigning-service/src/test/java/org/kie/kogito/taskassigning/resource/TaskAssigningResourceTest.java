@@ -19,6 +19,7 @@ package org.kie.kogito.taskassigning.resource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.kie.kogito.taskassigning.core.model.TaskAssigningSolution;
 import org.kie.kogito.taskassigning.service.ServiceMessage;
 import org.kie.kogito.taskassigning.service.ServiceStatus;
 import org.kie.kogito.taskassigning.service.ServiceStatusInfo;
@@ -50,18 +51,25 @@ class TaskAssigningResourceTest {
     @BeforeEach
     void setUp() {
         context = new TaskAssigningServiceContext();
-        doReturn(context).when(service).getContext();
         resource = new TaskAssigningResource();
         resource.service = service;
     }
 
     @Test
     void getServiceStatus() throws Exception {
+        doReturn(context).when(service).getContext();
         context.setStatus(ServiceStatus.READY, ServiceMessage.info(SERVICE_MESSAGE_VALUE));
         String json = resource.getServiceStatus();
         ServiceStatusInfo result = OBJECT_MAPPER.readValue(json, ServiceStatusInfo.class);
         assertThat(result.getStatus()).isEqualTo(ServiceStatus.READY);
         assertThat(result.getStatusMessage().getValue()).isEqualTo(SERVICE_MESSAGE_VALUE);
         assertThat(result.getStatusMessage().getTime()).isEqualTo(context.getStatusInfo().getStatusMessage().getTime());
+    }
+
+    @Test
+    void getSolution() {
+        TaskAssigningSolution solution = new TaskAssigningSolution();
+        doReturn(solution).when(service).getCurrentSolution();
+        assertThat(resource.getSolution()).isSameAs(solution);
     }
 }
