@@ -1788,10 +1788,10 @@ The names and format of the metrics vary depending on the registry.
 +
 * `optaplanner.solver.errors.total`: the total number of errors that occurred while solving since the start
 of the measuring.
-* `optaplanner.solver.solve-length.active-count`: the number of solvers currently solving.
-* `optaplanner.solver.solve-length.seconds-max`: run time of the
+* `optaplanner.solver.solve.duration.active-count`: the number of solvers currently solving.
+* `optaplanner.solver.solve.duration.seconds-max`: run time of the
 longest-running currently active solver.
-* `optaplanner.solver.solve-length.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
+* `optaplanner.solver.solve.duration.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
 
 [[randomNumberGenerator]]
 === Random number generator

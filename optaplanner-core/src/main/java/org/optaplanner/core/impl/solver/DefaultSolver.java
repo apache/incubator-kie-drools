@@ -76,7 +76,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
-        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve-length");
+        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve.duration");
         this.errorCounter = Metrics.counter("optaplanner.solver.errors");
     }
 
