@@ -19,6 +19,8 @@
   <modules>
     <module>kogito-events-api</module>
     <module>kogito-api</module>
+    <module>kogito-api-incubation-common</module>
+    <module>kogito-api-incubation-application</module>
     <module>kogito-services</module>
     <module>kogito-timer</module>
     <module>kogito-legacy-api</module>
