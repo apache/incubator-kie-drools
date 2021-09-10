@@ -1,0 +1,64 @@
+[[bedAllocation]]
+= Hospital bed planning (PAS - Patient Admission Scheduling)
+:imagesdir: ../..
+
+
+[[bedAllocationProblemDescription]]
+== Problem description
+
+Assign each patient (that will come to the hospital) into a bed for each night that the patient will stay in the hospital.
+Each bed belongs to a room and each room belongs to a department.
+The arrival and departure dates of the patients is fixed: only a bed needs to be assigned for each night.
+
+This problem features <<overconstrainedPlanning,overconstrained>> datasets.
+
+image::use-cases-and-examples/bed-allocation/patientAdmissionScheduleUseCase.png[align="center"]
+
+Hard constraints:
+
+* Two patients must not be assigned to the same bed in the same night. Weight: ``-1000hard * conflictNightCount``.
+* A room can have a gender limitation: only females, only males, the same gender in the same night or no gender limitation at all. Weight: ``-50hard * nightCount``.
+* A department can have a minimum or maximum age. Weight: ``-100hard * nightCount``.
+* A patient can require a room with specific equipment(s). Weight: ``-50hard * nightCount``.
+
+Medium constraints:
+
+* Assign every patient to a bed, unless the dataset is overconstrained. Weight: ``-1medium * nightCount``.
+
+Soft constraints:
+
+* A patient can prefer a maximum room size, for example if he/she wants a single room. Weight: ``-8soft * nightCount``.
+* A patient is best assigned to a department that specializes in his/her problem. Weight: ``-10soft * nightCount``.
+* A patient is best assigned to a room that specializes in his/her problem. Weight: ``-20soft * nightCount``.
+** That room speciality should be priority 1. Weight: ``-10soft * (priority - 1) * nightCount``.
+* A patient can prefer a room with specific equipment(s). Weight: ``-20soft * nightCount``.
+
+The problem is a variant on https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho's Patient Scheduling] and the datasets come from real world hospitals.
+
+
+[[bedAllocationProblemSize]]
+== Problem size
+
+[source,options="nowrap"]
+----
+overconstrained01 has 6 specialisms, 4 equipments, 1 departments,  25 rooms,  69 beds, 14 nights,  519 patients and  519 admissions with a search space of 10^958.
+testdata01        has 4 specialisms, 2 equipments, 4 departments,  98 rooms, 286 beds, 14 nights,  652 patients and  652 admissions with a search space of 10^1603.
+testdata02        has 6 specialisms, 2 equipments, 6 departments, 151 rooms, 465 beds, 14 nights,  755 patients and  755 admissions with a search space of 10^2015.
+testdata03        has 5 specialisms, 2 equipments, 5 departments, 131 rooms, 395 beds, 14 nights,  708 patients and  708 admissions with a search space of 10^1840.
+testdata04        has 6 specialisms, 2 equipments, 6 departments, 155 rooms, 471 beds, 14 nights,  746 patients and  746 admissions with a search space of 10^1995.
+testdata05        has 4 specialisms, 2 equipments, 4 departments, 102 rooms, 325 beds, 14 nights,  587 patients and  587 admissions with a search space of 10^1476.
+testdata06        has 4 specialisms, 2 equipments, 4 departments, 104 rooms, 313 beds, 14 nights,  685 patients and  685 admissions with a search space of 10^1711.
+testdata07        has 6 specialisms, 4 equipments, 6 departments, 162 rooms, 472 beds, 14 nights,  519 patients and  519 admissions with a search space of 10^1389.
+testdata08        has 6 specialisms, 4 equipments, 6 departments, 148 rooms, 441 beds, 21 nights,  895 patients and  895 admissions with a search space of 10^2368.
+testdata09        has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 28 nights, 1400 patients and 1400 admissions with a search space of 10^3490.
+testdata10        has 4 specialisms, 4 equipments, 4 departments, 104 rooms, 308 beds, 56 nights, 1575 patients and 1575 admissions with a search space of 10^3922.
+testdata11        has 4 specialisms, 4 equipments, 4 departments, 107 rooms, 318 beds, 91 nights, 2514 patients and 2514 admissions with a search space of 10^6295.
+testdata12        has 4 specialisms, 4 equipments, 4 departments, 105 rooms, 310 beds, 84 nights, 2750 patients and 2750 admissions with a search space of 10^6856.
+testdata13        has 5 specialisms, 4 equipments, 5 departments, 125 rooms, 368 beds, 28 nights,  907 patients and 1109 admissions with a search space of 10^2847.
+----
+
+
+[[bedAllocationDomainModel]]
+== Domain model
+
+image::use-cases-and-examples/bed-allocation/hospitalBedAllocationClassDiagram.png[align="center"]

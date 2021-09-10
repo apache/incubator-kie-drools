@@ -1,0 +1,772 @@
+[[localSearch]]
+= Local search
+:doctype: book
+:imagesdir: ..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+
+[[localSearchOverview]]
+== Overview
+
+Local Search starts from an initial solution and evolves that single solution into a mostly better and better solution.
+It uses a single search path of solutions, not a search tree.
+At each solution in this path it evaluates a number of moves on the solution and applies the most suitable move to take the step to the next solution.
+It does that for a high number of iterations until it's terminated (usually because its time has run out).
+
+Local Search acts a lot like a human planner: it uses a single search path and moves facts around to find a good feasible solution.
+Therefore it's pretty natural to implement.
+
+**Local Search needs to start from an initialized solution**, therefore it's usually required to configure a Construction Heuristic phase before it.
+
+
+[[localSearchConcepts]]
+== Local search concepts
+
+
+[[localSearchStepByStep]]
+=== Step by step
+
+A step is the winning ``Move``.
+Local Search tries a number of moves on the current solution and picks the best accepted move as the step:
+
+.Decide the next step at step 0 (four queens example)
+image::local-search/decideNextStepNQueens04.png[align="center"]
+
+Because the move _B0 to B3_ has the highest score (``-3``), it is picked as the next step.
+If multiple moves have the same highest score, one is picked randomly, in this case __B0 to B3__.
+Note that _C0 to C3_ (not shown) could also have been picked because it also has the score ``-3``.
+
+The step is applied on the solution.
+From that new solution, Local Search tries every move again, to decide the next step after that.
+It continually does this in a loop, and we get something like this:
+
+.All steps (four queens example)
+image::local-search/allStepsNQueens04.png[align="center"]
+
+Notice that Local Search doesn't use a search tree, but a search path.
+The search path is highlighted by the green arrows.
+At each step it tries all selected moves, but unless it's the step, it doesn't investigate that solution further.
+This is one of the reasons why Local Search is very scalable.
+
+As shown above, Local Search solves the four queens problem by starting with the starting solution and make the following steps sequentially:
+
+. _B0 to B3_
+. _D0 to D2_
+. _A0 to A1_
+
+Turn on `debug` logging for the category `org.optaplanner` to show those steps in the log:
+
+[source,options="nowrap"]
+----
+INFO  Solving started: time spent (0), best score (-6), environment mode (REPRODUCIBLE), random (JDK with seed 0).
+DEBUG     LS step (0), time spent (20), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (Queen-1 {Row-0 -> Row-3}).
+DEBUG     LS step (1), time spent (31), score (-1), new best score (-1), accepted/selected move count (12/12), picked move (Queen-3 {Row-0 -> Row-2}).
+DEBUG     LS step (2), time spent (40), score (0), new best score (0), accepted/selected move count (12/12), picked move (Queen-0 {Row-0 -> Row-1}).
+INFO  Local Search phase (0) ended: time spent (41), best score (0), score calculation speed (5000/sec), step total (3).
+INFO  Solving ended: time spent (41), best score (0), score calculation speed (5000/sec), phase total (1), environment mode (REPRODUCIBLE).
+----
+
+Notice that a log message includes the `toString()` method of the `Move` implementation which returns for example $$"$$``Queen-1 {Row-0 -> Row-3}``".
+
+A naive Local Search configuration solves the four queens problem in three steps, by evaluating only 37 possible solutions (three steps with 12 moves each + one starting solution), which is only a fraction of all 256 possible solutions.
+It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.
+By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's even a lot more efficient.
+
+
+[[localSearchConceptsDecideTheNextStep]]
+=== Decide the next step
+
+Local Search decides the next step with the aid of three configurable components:
+
+* A `MoveSelector` which selects the possible moves of the current solution. See the chapter <<moveAndNeighborhoodSelection,move and neighborhood selection>>.
+* An `Acceptor` which filters out unacceptable moves.
+* A `Forager` which gathers accepted moves and picks the next step from them.
+
+The solver phase configuration looks like this:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <unionMoveSelector>
+      ...
+    </unionMoveSelector>
+    <acceptor>
+      ...
+    </acceptor>
+    <forager>
+      ...
+    </forager>
+  </localSearch>
+----
+
+In the example below, the `MoveSelector` generated the moves shown with the blue lines, the `Acceptor` accepted all of them and the `Forager` picked the move __B0 to B3__.
+
+image::local-search/decideNextStepNQueens04.png[align="center"]
+
+<<logging,Turn on `trace` logging>> to show the decision making in the log:
+
+[source,options="nowrap"]
+----
+INFO  Solver started: time spent (0), score (-6), new best score (-6), random (JDK with seed 0).
+TRACE         Move index (0) not doable, ignoring move (Queen-0 {Row-0 -> Row-0}).
+TRACE         Move index (1), score (-4), accepted (true), move (Queen-0 {Row-0 -> Row-1}).
+TRACE         Move index (2), score (-4), accepted (true), move (Queen-0 {Row-0 -> Row-2}).
+TRACE         Move index (3), score (-4), accepted (true), move (Queen-0 {Row-0 -> Row-3}).
+...
+TRACE         Move index (6), score (-3), accepted (true), move (Queen-1 {Row-0 -> Row-3}).
+...
+TRACE         Move index (9), score (-3), accepted (true), move (Queen-2 {Row-0 -> Row-3}).
+...
+TRACE         Move index (12), score (-4), accepted (true), move (Queen-3 {Row-0 -> Row-3}).
+DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted/selected move count (12/12), picked move (Queen-1 {Row-0 -> Row-3}).
+...
+----
+
+Because the last solution can degrade (for example in Tabu Search), the `Solver` remembers the best solution it has encountered through the entire search path.
+Each time the current solution is better than the last best solution, the current solution is <<cloningASolution,cloned>> and referenced as the new best solution.
+
+image::local-search/localSearchScoreOverTime.png[align="center"]
+
+
+[[localSearchAcceptor]]
+=== Acceptor
+
+An `Acceptor` is used (together with a ``Forager``) to active Tabu Search, Simulated Annealing, Late Acceptance, ... For each move it checks whether it is accepted or not.
+
+By changing a few lines of configuration, you can easily switch from Tabu Search to Simulated Annealing or Late Acceptance and back.
+
+You can implement your own ``Acceptor``, but the built-in acceptors should suffice for most needs.
+You can also combine multiple acceptors.
+
+
+[[localSearchForager]]
+=== Forager
+
+A `Forager` gathers all accepted moves and picks the move which is the next step.
+Normally it picks the accepted move with the highest score.
+If several accepted moves have the highest score, one is picked randomly to break the tie.
+Breaking ties randomly leads to better results.
+
+[NOTE]
+====
+It is possible to disable breaking ties randomly by explicitly setting `breakTieRandomly` to ``false``, but that's almost never a good idea:
+
+* If an earlier move is better than a later move with the same score, the score calculator should add an extra softer <<scoreLevel,score level>> to score the first move as slightly better. Don't rely on move selection order to enforce that.
+* Random tie breaking does not affect <<environmentMode,reproducibility>>.
+
+====
+
+
+[[acceptedCountLimit]]
+==== Accepted count limit
+
+When there are many possible moves, it becomes inefficient to evaluate all of them at every step.
+To evaluate only a random subset of all the moves, use:
+
+* An `acceptedCountLimit` integer, which specifies how many accepted moves should be evaluated during each step. By default, all accepted moves are evaluated at every step.
++
+[source,xml,options="nowrap"]
+----
+  <forager>
+    <acceptedCountLimit>1000</acceptedCountLimit>
+  </forager>
+----
+
+Unlike the n queens problem, real world problems require the use of ``acceptedCountLimit``.
+Start from an `acceptedCountLimit` that takes a step in less than two seconds. <<logging,Turn on INFO logging>> to see the step times.
+Use the <<benchmarker,Benchmarker>> to tweak the value.
+
+[IMPORTANT]
+====
+With a low `acceptedCountLimit` (so a fast stepping algorithm), it is recommended to avoid using `selectionOrder` SHUFFLED because the shuffling generates a random number for every element in the selector, taking up a lot of time, but only a few elements are actually selected.
+====
+
+
+[[localSearchPickEarlyType]]
+==== Pick early type
+
+A forager can pick a move early during a step, ignoring subsequent selected moves.
+There are three pick early types for Local Search:
+
+* ``NEVER``: A move is never picked early: all accepted moves are evaluated that the selection allows. This is the default.
++
+[source,xml,options="nowrap"]
+----
+    <forager>
+      <pickEarlyType>NEVER</pickEarlyType>
+    </forager>
+----
+* ``FIRST_BEST_SCORE_IMPROVING``: Pick the first accepted move that improves the best score. If none improve the best score, it behaves exactly like the pickEarlyType NEVER.
++
+[source,xml,options="nowrap"]
+----
+    <forager>
+      <pickEarlyType>FIRST_BEST_SCORE_IMPROVING</pickEarlyType>
+    </forager>
+----
+* ``FIRST_LAST_STEP_SCORE_IMPROVING``: Pick the first accepted move that improves the last step score. If none improve the last step score, it behaves exactly like the pickEarlyType NEVER.
++
+[source,xml,options="nowrap"]
+----
+    <forager>
+      <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+    </forager>
+----
+
+
+[[hillClimbing]]
+== Hill climbing (simple local search)
+
+
+[[hillClimbingAlgorithm]]
+=== Algorithm description
+
+Hill Climbing tries all selected moves and then takes the best move, which is the move which leads to the solution with the highest score.
+That best move is called the step move.
+From that new solution, it again tries all selected moves and takes the best move and continues like that iteratively.
+If multiple selected moves tie for the best move, one of them is randomly chosen as the best move.
+
+image::local-search/hillClimbingNQueens04.png[align="center"]
+
+Notice that once a queen has moved, it can be moved again later.
+This is a good thing, because in an NP-complete problem it's impossible to predict what will be the optimal final value for a planning variable.
+
+
+[[hillClimbingStuckInLocalOptima]]
+=== Stuck in local optima
+
+Hill climbing always takes improving moves.
+This may seem like a good thing, but it's not: *Hill Climbing can easily get stuck in a local optimum.* This happens when it reaches a solution for which all the moves deteriorate the score.
+Even if it picks one of those moves, the next step might go back to the original solution and which case chasing its own tail:
+
+image::local-search/hillClimbingGetsStuckInLocalOptimaNQueens04.png[align="center"]
+
+Improvements upon Hill Climbing (such as Tabu Search, Simulated Annealing and Late Acceptance) address the problem of being stuck in local optima.
+Therefore, it's recommended to never use Hill Climbing, unless you're absolutely sure there are no local optima in your planning problem.
+
+
+[[hillClimbingConfigure]]
+=== Configuration
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>HILL_CLIMBING</localSearchType>
+  </localSearch>
+----
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <acceptorType>HILL_CLIMBING</acceptorType>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+
+[[tabuSearch]]
+== Tabu search
+
+
+[[tabuSearchAlgorithm]]
+=== Algorithm description
+
+Tabu Search is a Local Search that maintains a tabu list to avoid getting stuck in local optima.
+The tabu list holds recently used objects that are _taboo_ to use for now.
+Moves that involve an object in the tabu list, are not accepted.
+The tabu list objects can be anything related to the move, such as the planning entity, planning value, move, solution, ...
+Here's an example with entity tabu for four queens, so the queens are put in the tabu list:
+
+image::local-search/entityTabuSearch.png[align="center"]
+
+[NOTE]
+====
+It's called Tabu Search, not Taboo Search.
+There is no spelling error.
+====
+
+Scientific paper: _Tabu Search - Part 1 and Part 2_ by Fred Glover (1989 - 1990)
+
+
+[[tabuSearchConfiguration]]
+=== Configuration
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>TABU_SEARCH</localSearchType>
+  </localSearch>
+----
+
+When Tabu Search takes steps it creates one or more tabus.
+For a number of steps, it does not accept a move if that move breaks tabu.
+That number of steps is the tabu size.
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <entityTabuSize>7</entityTabuSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1000</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+[IMPORTANT]
+====
+A Tabu Search acceptor should be combined with a high ``acceptedCountLimit``, such as ``1000``.
+====
+
+OptaPlanner implements several tabu types:
+
+* _Planning entity tabu_ (recommended) makes the planning entities of recent steps tabu. For example, for N queens it makes the recently moved queens tabu. It's recommended to start with this tabu type.
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <entityTabuSize>7</entityTabuSize>
+    </acceptor>
+----
++
+To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of entities, for example 2%:
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <entityTabuRatio>0.02</entityTabuRatio>
+    </acceptor>
+----
+* _Planning value tabu_ makes the planning values of recent steps tabu. For example, for N queens it makes the recently moved to rows tabu.
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <valueTabuSize>7</valueTabuSize>
+    </acceptor>
+----
++
+To avoid hard coding the tabu size, configure a tabu ratio, relative to the number of values, for example 2%:
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <valueTabuRatio>0.02</valueTabuRatio>
+    </acceptor>
+----
+* _Move tabu_ makes recent steps tabu. It does not accept a move equal to one of those steps.
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <moveTabuSize>7</moveTabuSize>
+    </acceptor>
+----
+* __Undo move tabu __makes the undo move of recent steps tabu.
++
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <undoMoveTabuSize>7</undoMoveTabuSize>
+    </acceptor>
+----
+
+[IMPORTANT]
+====
+When using move tabu and undo move tabu with <<customMoves,custom moves>>,
+make sure that the planning entities do not include planning variables in their `hashCode` methods.
+Failure to do so results in runtime exceptions being thrown due to the `hashCode` not being constant,
+as the entities have their values changed by the local search algorithm.
+====
+
+Sometimes it's useful to combine tabu types:
+
+[source,xml,options="nowrap"]
+----
+    <acceptor>
+      <entityTabuSize>7</entityTabuSize>
+      <valueTabuSize>3</valueTabuSize>
+    </acceptor>
+----
+
+If the tabu size is too small, the solver can still get stuck in a local optimum.
+On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing off the walls.
+Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
+
+
+[[simulatedAnnealing]]
+== Simulated annealing
+
+
+[[simulatedAnnealingAlgorithm]]
+=== Algorithm description
+
+Simulated Annealing evaluates only a few moves per step, so it steps quickly.
+In the classic implementation, the first accepted move is the winning step.
+A move is accepted if it doesn't decrease the score or - in case it does decrease the score - it passes a random check.
+The chance that a decreasing move passes the random check decreases relative to the size of the score decrement and the time the phase has been running (which is represented as the temperature).
+
+image::local-search/simulatedAnnealing.png[align="center"]
+
+Simulated Annealing does not always pick the move with the highest score, neither does it evaluate many moves per step.
+At least at first.
+Instead, it gives non improving moves also a chance to be picked, depending on its score and the time gradient of the ``Termination``.
+In the end, it gradually turns into Hill Climbing, only accepting improving moves.
+
+
+[[simulatedAnnealingConfiguration]]
+=== Configuration
+
+Start with a `simulatedAnnealingStartingTemperature` set to the maximum score delta a single move can cause.
+Use the <<benchmarker,Benchmarker>> to tweak the value.
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <simulatedAnnealingStartingTemperature>2hard/100soft</simulatedAnnealingStartingTemperature>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+Simulated Annealing should use a low ``acceptedCountLimit``.
+The classic algorithm uses an `acceptedCountLimit` of ``1``, but often `4` performs better.
+
+Simulated Annealing can be combined with a tabu acceptor at the same time.
+That gives Simulated Annealing salted with a bit of Tabu.
+Use a lower tabu size than in a pure Tabu Search configuration.
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <entityTabuSize>5</entityTabuSize>
+      <simulatedAnnealingStartingTemperature>2hard/100soft</simulatedAnnealingStartingTemperature>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+
+[[lateAcceptance]]
+== Late acceptance
+
+
+[[lateAcceptanceAlgorithm]]
+=== Algorithm description
+
+Late Acceptance (also known as Late Acceptance Hill Climbing) also evaluates only a few moves per step.
+A move is accepted if it does not decrease the score, or if it leads to a score that is at least the late score (which is the winning score of a fixed number of steps ago).
+
+image::local-search/lateAcceptance.png[align="center"]
+
+Scientific paper: http://www.cs.stir.ac.uk/~kjt/techreps/pdf/TR192.pdf[The Late Acceptance Hill-Climbing Heuristic by Edmund K. Burke, Yuri Bykov (2012)]
+
+
+[[lateAcceptanceConfiguration]]
+=== Configuration
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>LATE_ACCEPTANCE</localSearchType>
+  </localSearch>
+----
+
+Late Acceptance accepts any move that has a score which is higher than the best score of a number of steps ago.
+That number of steps is the ``lateAcceptanceSize``.
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+Late Acceptance should use a low ``acceptedCountLimit``.
+
+Late Acceptance can be combined with a tabu acceptor at the same time.
+That gives Late Acceptance salted with a bit of Tabu.
+Use a lower tabu size than in a pure Tabu Search configuration.
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <entityTabuSize>5</entityTabuSize>
+      <lateAcceptanceSize>400</lateAcceptanceSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+
+[[greatDeluge]]
+== Great Deluge
+
+
+[[greatDelugeAlgorithm]]
+=== Algorithm Description
+
+Great Deluge algorithm is similar to the  <<simulatedAnnealing,Simulated Annealing>> algorithm, it evaluates only a few moves per steps,
+so it steps quickly. The first accepted move is the winning step. A move is accepted only if it is not lower than
+the score value (water level) that we are working with. It means Great Deluge is deterministic and opposite
+of Simulated Annealing has no randomization in it. The water level is increased after every step either about the fixed value
+or by percentual value.
+A gradual increase in water level gives Great Deluge more time to escape from local maxima.
+
+
+[[greatDelugeConfiguration]]
+=== Configuration
+
+Simplest configuration:
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>GREAT_DELUGE</localSearchType>
+  </localSearch>
+----
+
+Great Deluge takes as starting water level best score from construction heuristic and uses default rain speed ratio. Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+OptaPlanner implements two water level increment options:
+
+If `greatDelugeWaterLevelIncrementScore` is set, the water level is increased by a constant value.
+
+[source,xml,options="nowrap"]
+----
+<acceptor>
+  <greatDelugeWaterLevelIncrementScore>10</greatDelugeWaterLevelIncrementScore>
+</acceptor>
+----
+To avoid hard coding the water level increment, configure a `greatDelugeWaterLevelIncrementRatio` (recommended) when the water level is increased by percentual value, so there is no need to know the size of the problem or value of a scoring function.
+
+[source,xml,options="nowrap"]
+----
+<acceptor>
+  <greatDelugeWaterLevelIncrementRatio>0.00000005</greatDelugeWaterLevelIncrementRatio>
+</acceptor>
+----
+
+The algorithm takes as starting value the best score from the construction heuristic.
+Use the Benchmarker to fine-tune tweak your configuration.
+
+[[stepCountingHillClimbing]]
+== Step counting hill climbing
+
+
+[[stepCountingHillClimbingAlgorithm]]
+=== Algorithm description
+
+Step Counting Hill Climbing also evaluates only a few moves per step.
+For a number of steps, it keeps the step score as a threshold.
+A move is accepted if it does not decrease the score, or if it leads to a score that is at least the threshold score.
+
+Scientific paper: https://www.researchgate.net/profile/Sanja_Petrovic2/publication/299593956_A_Step_Counting_Hill_Climbing_Algorithm_applied_to_University_Examination_Timetabling/links/5729d02a08aef7c7e2c4103a/A-Step-Counting-Hill-Climbing-Algorithm-applied-to-University-Examination-Timetabling.pdf[An initial study of a novel Step Counting Hill Climbing heuristic applied to timetabling problems by Yuri Bykov, Sanja Petrovic (2013)]
+
+
+[[stepCountingHillClimbingConfiguration]]
+=== Configuration
+
+Step Counting Hill Climbing accepts any move that has a score which is higher than a threshold score.
+Every number of steps (specified by ``stepCountingHillClimbingSize``), the threshold score is set to the step score.
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <stepCountingHillClimbingSize>400</stepCountingHillClimbingSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1</acceptedCountLimit>
+    </forager>
+  </localSearch>
+----
+
+Step Counting Hill Climbing should use a low ``acceptedCountLimit``.
+
+Step Counting Hill Climbing can be combined with a tabu acceptor at the same time, similar as shown in <<lateAcceptance,the Late Acceptance section>>.
+
+
+[[strategicOscillation]]
+== Strategic oscillation
+
+
+[[strategicOscillationAlgorithm]]
+=== Algorithm description
+
+Strategic Oscillation is an add-on, which works especially well with <<tabuSearch,Tabu Search>>.
+Instead of picking the accepted move with the highest score, it employs a different mechanism: If there's an improving move, it picks it.
+If there's no improving move however, it prefers moves which improve a softer score level, over moves which break a harder score level less.
+
+
+[[strategicOscillationConfiguration]]
+=== Configuration
+
+Configure a ``finalistPodiumType``, for example in a Tabu Search configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    ...
+    <acceptor>
+      <entityTabuSize>7</entityTabuSize>
+    </acceptor>
+    <forager>
+      <acceptedCountLimit>1000</acceptedCountLimit>
+      <finalistPodiumType>STRATEGIC_OSCILLATION</finalistPodiumType>
+    </forager>
+  </localSearch>
+----
+
+The following ``finalistPodiumType``s are supported:
+
+* `HIGHEST_SCORE` (default): Pick the accepted move with the highest score.
+* ``STRATEGIC_OSCILLATION``: Alias for the default strategic oscillation variant.
+* ``STRATEGIC_OSCILLATION_BY_LEVEL``: If there is an accepted improving move, pick it. If no such move exists, prefer an accepted move which improves a softer score level over one that doesn't (even if it has a better harder score level). A move is improving if it's better than the last completed step score.
+* ``STRATEGIC_OSCILLATION_BY_LEVEL_ON_BEST_SCORE``: Like ``STRATEGIC_OSCILLATION_BY_LEVEL``, but define improving as better than the best score (instead of the last completed step score).
+
+
+[[variableNeighborhoodDescent]]
+== Variable neighborhood descent
+
+
+[[variableNeighborhoodDescentAlgorithm]]
+=== Algorithm description
+
+Variable Neighborhood Descent iteratively tries multiple move selectors
+in original order (depleting each selector entirely before trying the next one),
+picking the first improving move (which also resets the iterator back to the first move selector).
+
+[NOTE]
+====
+Despite that VND has a name that ends with _descent_ (from the research papers),
+the implementation will ascend to a higher score (which is a better score).
+====
+
+
+[[variableNeighborhoodDescentConfiguration]]
+=== Configuration
+
+Simplest configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <localSearchType>VARIABLE_NEIGHBORHOOD_DESCENT</localSearchType>
+  </localSearch>
+----
+
+Advanced configuration:
+
+[source,xml,options="nowrap"]
+----
+  <localSearch>
+    <unionMoveSelector>
+      <selectionOrder>ORIGINAL</selectionOrder>
+      <changeMoveSelector/>
+      <swapMoveSelector/>
+      ...
+    </unionMoveSelector>
+    <acceptor>
+      <acceptorType>HILL_CLIMBING</acceptorType>
+    </acceptor>
+    <forager>
+      <pickEarlyType>FIRST_LAST_STEP_SCORE_IMPROVING</pickEarlyType>
+    </forager>
+  </localSearch>
+----
+
+Variable Neighborhood Descent doesn't scale well,
+but it is useful in some use cases with a very erratic score landscape.
+
+
+[[customTerminationSelectorOrAcceptor]]
+== Using a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector`, or `Acceptor`
+
+Plug in a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector` or `Acceptor` by extending the abstract class and also the related `\*Config` class.
+
+[IMPORTANT]
+====
+Extending `Config` classes is not covered by the backwards compatibility guarantee.
+Whenever possible, it's better to just use <<customPropertiesConfiguration,custom properties>> instead.
+====
+
+For example, to use a custom ``Termination``, extend the `AbstractTermination` class,
+extend the `TerminationConfig` class and configure it in the solver configuration.
+
+[source,xml,options="nowrap"]
+----
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  <termination class="...MyTerminationConfig">
+    <myProperty>myValue</myProperty>
+  </termination>
+</solver>
+----
+
+[NOTE]
+====
+It's not possible to inject a ``Termination``, ... instance directly (to avoid extending a `Config` class too) because:
+
+* A `SolverFactory` can build multiple `Solver` instances, which each require a distinct ``Termination``, ... instance.
+* A solver configuration needs to be serializable from and to XML.
+This makes benchmarking with `PlannerBenchmark` particularly easy because you can configure different `Solver` variants in XML.
+* A `Config` class is often easier and clearer to configure.
+For example: `TerminationConfig` translates `minutesSpentLimit` and `secondsSpentLimit` into ``timeMillisSpentLimit``.
+====
+
+If you write a custom implementation of any of those classes,
+let us know _why_ on https://groups.google.com/forum/#!forum/optaplanner-dev[our forum].
+If it's not domain specific, you might want to consider contributing it back as a pull request on github:
+we'll optimize it and take it along in future refactorings.

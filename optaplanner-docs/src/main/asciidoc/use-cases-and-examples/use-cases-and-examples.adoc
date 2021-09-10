@@ -1,0 +1,31 @@
+[[useCasesAndExamples]]
+= Use cases and examples
+:doctype: book
+:imagesdir: ..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+include::examples-overview/examples-overview.adoc[leveloffset=+1]
+
+include::nqueens/nqueens.adoc[leveloffset=+1]
+include::cloud-balancing/cloud-balancing.adoc[leveloffset=+1]
+include::travelling-salesman/travelling-salesman.adoc[leveloffset=+1]
+include::tennis-scheduling/tennis-scheduling.adoc[leveloffset=+1]
+include::meeting-scheduling/meeting-scheduling.adoc[leveloffset=+1]
+include::course-timetabling/course-timetabling.adoc[leveloffset=+1]
+include::machine-reassignment/machine-reassignment.adoc[leveloffset=+1]
+include::vehicle-routing/vehicle-routing.adoc[leveloffset=+1]
+include::project-job-scheduling/project-job-scheduling.adoc[leveloffset=+1]
+include::bed-allocation/bed-allocation.adoc[leveloffset=+1]
+include::task-assigning/task-assigning.adoc[leveloffset=+1]
+include::exam-timetabling/exam-timetabling.adoc[leveloffset=+1]
+include::nurse-rostering/nurse-rostering.adoc[leveloffset=+1]
+include::travelling-tournament/travelling-tournament.adoc[leveloffset=+1]
+include::cheap-time/cheap-time.adoc[leveloffset=+1]
+include::investment/investment.adoc[leveloffset=+1]
+include::conference-scheduling/conference-scheduling.adoc[leveloffset=+1]
+include::rock-tour/rock-tour.adoc[leveloffset=+1]
+include::flight-crew-scheduling/flight-crew-scheduling.adoc[leveloffset=+1]
+include::coach-shuttle-gathering/coach-shuttle-gathering.adoc[leveloffset=+1]

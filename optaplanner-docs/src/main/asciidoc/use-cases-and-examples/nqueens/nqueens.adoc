@@ -1,0 +1,170 @@
+[[nQueens]]
+= N queens
+:imagesdir: ../..
+
+
+[[nQueensProblemDescription]]
+== Problem description
+
+Place _n_ queens on a _n_ sized chessboard so that no two queens can attack each other.
+The most common _n_ queens puzzle is the eight queens puzzle, with __n = 8__:
+
+image::use-cases-and-examples/nqueens/nQueensScreenshot.png[align="center"]
+
+Constraints:
+
+* Use a chessboard of _n_ columns and _n_ rows.
+* Place _n_ queens on the chessboard.
+* No two queens can attack each other. A queen can attack any other queen on the same horizontal, vertical or diagonal line.
+
+This documentation heavily uses the four queens puzzle as the primary example.
+
+A proposed solution could be:
+
+.A Wrong Solution for the Four Queens Puzzle
+image::use-cases-and-examples/nqueens/partiallySolvedNQueens04Explained.png[align="center"]
+
+The above solution is wrong because queens `A1` and `B0` can attack each other (so can queens `B0` and ``D0``). Removing queen `B0` would respect the "no two queens can attack each other" constraint, but would break the "place _n_ queens" constraint.
+
+Below is a correct solution:
+
+.A Correct Solution for the Four Queens Puzzle
+image::use-cases-and-examples/nqueens/solvedNQueens04.png[align="center"]
+
+All the constraints have been met, so the solution is correct.
+
+Note that most _n_ queens puzzles have multiple correct solutions.
+We will focus on finding a single correct solution for a given _n_, not on finding the number of possible correct solutions for a given _n_.
+
+
+[[nQueensProblemSize]]
+== Problem size
+
+[source,options="nowrap"]
+----
+4queens   has   4 queens with a search space of    256.
+8queens   has   8 queens with a search space of   10^7.
+16queens  has  16 queens with a search space of  10^19.
+32queens  has  32 queens with a search space of  10^48.
+64queens  has  64 queens with a search space of 10^115.
+256queens has 256 queens with a search space of 10^616.
+----
+
+The implementation of the _n_ queens example has not been optimized because it functions as a beginner example. Nevertheless, it can easily handle 64 queens.
+With a few changes it has been shown to easily handle 5000 queens and more.
+
+
+[[nQueensDomainModel]]
+== Domain model
+
+This example uses the domain model to solve the four queens problem.
+
+. *Creating a Domain Model*
+A good domain model will make it easier to understand and solve your planning problem.
++
+This is the domain model for the _n_ queens example:
++
+[source,java,options="nowrap"]
+----
+public class Column {
+
+    private int index;
+
+    // ... getters and setters
+}
+----
++
+[source,java,options="nowrap"]
+----
+public class Row {
+
+    private int index;
+
+    // ... getters and setters
+}
+----
++
+[source,java,options="nowrap"]
+----
+public class Queen {
+
+    private Column column;
+    private Row row;
+
+    public int getAscendingDiagonalIndex() {...}
+    public int getDescendingDiagonalIndex() {...}
+
+    // ... getters and setters
+}
+----
+
+
+. *Calculating the Search Space.*
++
+A `Queen` instance has a `Column` (for example: 0 is column A, 1 is column B, ...) and a `Row` (its row, for example: 0 is row 0, 1 is row 1, ...).
++
+The ascending diagonal line and the descending diagonal line can be calculated based on the column and the row.
++
+The column and row indexes start from the upper left corner of the chessboard.
++
+[source,java,options="nowrap"]
+----
+public class NQueens {
+
+    private int n;
+    private List<Column> columnList;
+    private List<Row> rowList;
+
+    private List<Queen> queenList;
+
+    private SimpleScore score;
+
+    // ... getters and setters
+}
+----
++
+. *Finding the Solution*
++
+A single `NQueens` instance contains a list of all `Queen` instances.
+It is the solution implementation which is supplied to, solved by, and retrieved from the ``Solver``.
+
+Notice that in the four queens example, NQueens's `getN()` method will always return four.
+
+.A Solution for Four Queens Shown in the Domain Model
+[cols="6a,1,1,1,1,1", options="header"]
+|===
+| A solution
+| Queen
+| columnIndex
+| rowIndex
+| ascendingDiagonalIndex (columnIndex + rowIndex)
+| descendingDiagonalIndex (columnIndex - rowIndex)
+
+.4+| image::use-cases-and-examples/nqueens/partiallySolvedNQueens04Explained.png[align="center"]
+
+|A1
+|0
+|1
+|**1 ($$**$$)**
+|-1
+
+|B0
+|1
+|**0 (*)**
+|**1 ($$**$$)**
+|1
+
+|C2
+|2
+|2
+|4
+|0
+
+|D0
+|3
+|**0 (*)**
+|3
+|3
+|===
+
+When two queens share the same column, row or diagonal line, such as ($$*$$) and ($$**$$), they can attack each other.

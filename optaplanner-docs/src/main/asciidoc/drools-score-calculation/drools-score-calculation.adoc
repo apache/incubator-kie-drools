@@ -1,0 +1,350 @@
+[[droolsScoreCalculation]]
+= Drools score calculation
+:doctype: book
+:imagesdir: ..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+
+[[droolsScoreCalculationOverview]]
+== Overview
+
+Implement your score calculation using the Drools rule engine.
+Every score constraint is written as one or more score rules.
+
+* Advantages:
+** Incremental score calculation for free
+*** Because most DRL syntax uses forward chaining, it does incremental calculation without any extra code
+** Score constraints are isolated as separate rules
+*** Easy to add or edit existing score rules
+** Flexibility to augment your score constraints by
+*** Defining them in decision tables
+**** Excel (XLS) spreadsheet
+** Performance optimizations in future versions for free
+*** In every release, the Drools rule engine tends to become faster
+* Disadvantages:
+** DRL learning curve
+** Usage of DRL
+*** Polyglot fear can prohibit the use of a new language such as DRL in some organizations
+
+
+[[droolsScoreRulesConfiguration]]
+== Drools score rules configuration
+
+There are several ways to define where your score rules live.
+
+
+[[droolsScoreCalculationScoreDrl]]
+=== A `scoreDrl` resource on the classpath
+
+This is the easy way.
+The score rules live in a DRL file which is provided as a classpath resource.
+Just add the score rules DRL file in the solver configuration as a `<scoreDrl>` element:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+  </scoreDirectorFactory>
+----
+
+In a typical project (following the Maven directory structure), that DRL file would be located at `$PROJECT_DIR/src/main/resources/org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl` (even for a war project).
+
+[NOTE]
+====
+The `<scoreDrl>` element expects a classpath resource, as defined by ``ClassLoader.getResource(String)``, it does not accept a ``File``, nor a URL, nor a webapp resource.
+See below to use a `File` instead.
+====
+
+Add multiple `<scoreDrl>` elements if the score rules are split across multiple DRL files.
+
+Optionally, you can also set drools configuration properties:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <scoreDrl>org/optaplanner/examples/nqueens/solver/nQueensConstraints.drl</scoreDrl>
+    <kieBaseConfigurationProperties>
+      <property name="drools.equalityBehavior" value="..." />
+    </kieBaseConfigurationProperties>
+  </scoreDirectorFactory>
+----
+
+To enable property reactive by default, without a `@propertyReactive` on the domain classes,
+add `<drools.propertySpecific>ALWAYS</drools.propertySpecific>` in there.
+Otherwise OptaPlanner automatically changes the Drools default to `ALLOWED` so property reactive is not active by default.
+
+
+[[droolsScoreCalculationScoreDrlFile]]
+=== A `scoreDrlFile` element
+
+To use `File` on the local file system, instead of a classpath resource, add the score rules DRL file in the solver configuration as a `<scoreDrlFile>` element:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <scoreDrlFile>/home/ge0ffrey/tmp/nQueensConstraints.drl</scoreDrlFile>
+  </scoreDirectorFactory>
+----
+
+[WARNING]
+====
+For portability reasons, a classpath resource is recommended over a File.
+An application build on one computer, but used on another computer, might not find the file on the same location.
+Worse, if they use a different Operating System, it is hard to choose a portable file path.
+====
+
+Add multiple `<scoreDrlFile>` elements if the score rules are split across multiple DRL files.
+
+
+[[implementingAScoreRule]]
+== Implementing a score rule
+
+Here is an example of a score constraint implemented as a score rule in a DRL file:
+
+[source,options="nowrap"]
+----
+rule "Horizontal conflict"
+    when
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id > $id, rowIndex == $i)
+    then
+        scoreHolder.addConstraintMatch(kcontext, -1);
+end
+----
+
+This score rule will fire once for every two queens with the same ``rowIndex``.
+The `(id > $id)` condition is needed to assure that for two queens A and B, it can only fire for (A, B) and not for (B, A), (A, A) or (B, B). Let us take a closer look at this score rule on this solution of four queens:
+
+image::drools-score-calculation/unsolvedNQueens04.png[align="center"]
+
+In this solution the `Horizontal conflict` score rule will fire for six queen couples: (A, B), (A, C), (A, D), (B, C), (B, D) and (C, D). Because none of the queens are on the same vertical or diagonal line, this solution will have a score of ``-6``.
+An optimal solution of four queens has a score of ``0``.
+
+[NOTE]
+====
+Notice that every score rule uses at least one planning entity class
+(directly or indirectly through a logically inserted fact).
+
+It is a waste of time to write a score rule that only relates to problem facts,
+as the consequence will never change during planning, no matter what the possible solution.
+====
+
+A `ScoreHolder` instance is asserted into the `KieSession` as a global called ``scoreHolder``.
+The score rules need to (directly or indirectly) update that instance to influence the score of a solution state.
+
+[NOTE]
+====
+The `kcontext` variable is a magic variable in Drools Expert.
+The ``scoreHolder``'s method uses it to do incremental score calculation correctly and to create a `ConstraintMatch` instance.
+====
+
+
+[[weighingScoreRules]]
+== Weighing score rules
+
+If you've configured a <<constraintConfiguration,constraint configuration>>,
+the score level and score weight of each constraint are beautifully decoupled from the constraint implementation,
+so they can be changed by the business users more easily.
+
+In that case, use the `reward()` and `penalize()` methods of the `ScoreHolder`:
+
+[source,options="nowrap"]
+----
+package org.optaplanner.examples.nqueens.solver;
+...
+global SimpleScoreHolder scoreHolder;
+
+rule "Horizontal conflict"
+    when
+        Queen($id : id, row != null, $i : rowIndex)
+        Queen(id > $id, rowIndex == $i)
+    then
+        scoreHolder.penalize(kcontext);
+end
+
+// Vertical conflict is impossible due the model
+
+rule "Ascending diagonal conflict"
+    when
+        Queen($id : id, row != null, $i : ascendingDiagonalIndex)
+        Queen(id > $id, ascendingDiagonalIndex == $i)
+    then
+        scoreHolder.penalize(kcontext);
+end
+
+rule "Descending diagonal conflict"
+    when
+        Queen($id : id, row != null, $i : descendingDiagonalIndex)
+        Queen(id > $id, descendingDiagonalIndex == $i)
+    then
+        scoreHolder.penalize(kcontext);
+end
+----
+
+They automatically impact the score for each constraint match
+by the score weight defined in the <<constraintConfiguration,constraint configuration>>.
+
+The drl file must define a `package` (otherwise Drools defaults to `defaultpkg`)
+and it must match with the <<constraintConfiguration,constraint configuration>>'s `constraintPackage`.
+
+[NOTE]
+====
+To learn more about the Drools rule language (DRL),
+consult https://drools.org/learn/documentation.html[the Drools documentation].
+====
+
+The score weight of some constraints depends on the constraint match.
+In these cases, provide a match weight to the `reward()` or `penalize()` methods.
+The score impact is the constraint weight multiplied with the match weight.
+
+For example in conference scheduling, the impact of a content conflict,
+depends on the number of shared content tags between 2 overlapping talks:
+
+[source,options="nowrap"]
+----
+rule "Content conflict"
+    when
+        $talk1 : Talk(...)
+        $talk2 : Talk(...)
+    then
+        scoreHolder.penalize(kcontext,
+                $talk2.overlappingContentCount($talk1));
+end
+----
+
+Presume its constraint weight is set to `100soft`.
+So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
+But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
+
+If there is no <<constraintConfiguration,constraint configuration>>,
+you'll need to hard-code the weight in the constraint implementations:
+
+[source,options="nowrap"]
+----
+global HardSoftScoreHolder scoreHolder;
+
+// RoomCapacity: For each lecture, the number of students that attend the course must be less or equal
+// than the number of seats of all the rooms that host its lectures.
+rule "roomCapacity"
+    when
+        $room : Room($capacity : capacity)
+        $lecture : Lecture(room == $room, studentSize > $capacity, $studentSize : studentSize)
+    then
+        // Each student above the capacity counts as one point of penalty.
+        scoreHolder.addSoftConstraintMatch(kcontext, ($capacity - $studentSize));
+end
+
+// CurriculumCompactness: Lectures belonging to a curriculum should be adjacent
+// to each other (i.e., in consecutive periods).
+// For a given curriculum we account for a violation every time there is one lecture not adjacent
+// to any other lecture within the same day.
+rule "curriculumCompactness"
+    when
+        ...
+    then
+        // Each isolated lecture in a curriculum counts as two points of penalty.
+        scoreHolder.addSoftConstraintMatch(kcontext, -2);
+end
+----
+
+Notice how `addSoftConstraintMatch()` specifies that it's a soft constraint,
+and needs a negative number to penalize each match. Otherwise it would reward such matches.
+The parameter `($capacity - $studentSize)` always results in a negative number because `studentSize > $capacity`.
+
+
+[[testingDroolsConstraints]]
+== Testing Drools-based constraints
+
+Drools-based constraints come with a unit testing harness.
+To use it, first add a test scoped dependency to the `optaplanner-test` jar to take advantage of the JUnit integration
+and use the `ScoreVerifier` classes to test score rules in DRL (or a constraint match aware incremental score calculator).
+For example, suppose you want to test these score rules:
+
+[source,options="nowrap"]
+----
+global HardSoftScoreHolder scoreHolder;
+
+rule "requiredCpuPowerTotal"
+    when
+        ...
+    then
+        scoreHolder.addHardConstraintMatch(...);
+end
+
+...
+
+rule "computerCost"
+    when
+        ...
+    then
+        scoreHolder.addSoftConstraintMatch(...);
+end
+----
+
+For each score rule, create a separate `@Test` that only tests the effect of that score rule on the score:
+
+[source,java,options="nowrap"]
+----
+public class CloudBalancingScoreConstraintTest {
+
+    private HardSoftScoreVerifier<CloudBalance> scoreVerifier = new HardSoftScoreVerifier<>(
+            SolverFactory.createFromXmlResource(
+                    "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml"));
+
+    @Test
+    public void requiredCpuPowerTotal() {
+        CloudComputer c1 = new CloudComputer(1L, 1000, 1, 1, 1);
+        CloudComputer c2 = new CloudComputer(2L, 200, 1, 1, 1);
+        CloudProcess p1 = new CloudProcess(1L, 700, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 70, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Usage 700 + 70 is within capacity 1000 of c1
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", 0, solution);
+        p1.setComputer(c2);
+        p2.setComputer(c2);
+        // Usage 700 + 70 is above capacity 200 of c2
+        scoreVerifier.assertHardWeight("requiredCpuPowerTotal", -570, solution);
+    }
+
+    ...
+
+    @Test
+    public void computerCost() {
+        CloudComputer c1 = new CloudComputer(1L, 1, 1, 1, 200);
+        CloudComputer c2 = new CloudComputer(2L, 1, 1, 1, 30);
+        CloudProcess p1 = new CloudProcess(1L, 0, 0, 0);
+        CloudProcess p2 = new CloudProcess(2L, 0, 0, 0);
+        CloudBalance solution = new CloudBalance(0L,
+                Arrays.asList(c1, c2),
+                Arrays.asList(p1, p2));
+        // Uninitialized
+        scoreVerifier.assertSoftWeight("computerCost", 0, solution);
+        p1.setComputer(c1);
+        p2.setComputer(c1);
+        // Pay 200 for c1
+        scoreVerifier.assertSoftWeight("computerCost", -200, solution);
+        p2.setComputer(c2);
+        // Pay 200 + 30 for c1 and c2
+        scoreVerifier.assertSoftWeight("computerCost", -230, solution);
+    }
+
+}
+----
+
+There is a `ScoreVerifier` implementation for each `Score` implementation.
+In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the other score rules is ignored (even those of the same score level).
+
+[NOTE]
+====
+A ScoreVerifier does not work well to isolate score corruption,
+use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
+====

@@ -1,0 +1,18 @@
+[[plannerIntroduction]]
+= OptaPlanner Introduction
+:doctype: book
+:imagesdir: ..
+:sectnums:
+:toc: left
+:icons: font
+:experimental:
+
+include::what-is-optaplanner/what-is-optaplanner.adoc[leveloffset=+1]
+
+include::what-is-a-planning-problem/what-is-a-planning-problem.adoc[leveloffset=+1]
+
+include::requirements/requirements.adoc[leveloffset=+1]
+
+include::governance/governance.adoc[leveloffset=+1]
+
+include::download-and-run-the-examples/download-and-run-the-examples.adoc[leveloffset=+1]

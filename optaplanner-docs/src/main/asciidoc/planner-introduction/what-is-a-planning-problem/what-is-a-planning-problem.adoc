@@ -1,0 +1,86 @@
+[[whatIsAPlanningProblem]]
+= What is a planning problem?
+:imagesdir: ../..
+
+image::planner-introduction/what-is-a-planning-problem/whatIsAPlanningProblem.png[align="center"]
+
+A planning problem has an optimal goal, based on limited resources and under specific constraints. Optimal goals can be any number of things, such as:
+
+* Maximized profits - the optimal goal results in the highest possible profit.
+* Minimized ecological footprint - the optimal goal has the least amount of environmental impact.
+* Maximized satisfaction for employees or customers - the optimal goal prioritizes the needs of employees or customers.
+
+The ability to achieve these goals relies on the number of resources available, such as:
+
+* The number of people.
+* Amount of time.
+* Budget.
+* Physical assets, for example, machinery, vehicles, computers, buildings, etc.
+
+Specific constraints related to these resources must also be taken into account, such as the number of hours a person works, their ability to use certain machines, or compatibility between pieces of equipment.
+
+OptaPlanner helps Java^TM^ programmers solve constraint satisfaction problems efficiently. Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.
+
+
+[[aPlanningProblemIsNPCompleteOrNPHard]]
+== A planning problem is NP-complete or NP-hard
+
+All the use cases above are _probably_ https://en.wikipedia.org/wiki/NP-completeness[NP-complete/NP-hard],
+which means in layman's terms:
+
+* It's easy to verify a given solution to a problem in reasonable time.
+* There is no silver bullet to find the optimal solution of a problem in reasonable time (*).
+
+
+[NOTE]
+====
+(*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
+But if they find one for 1 NP-complete problem, it will work for every NP-complete problem.
+
+In fact, there's a $ 1,000,000 reward for anyone that proves if https://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
+====
+
+The implication of this is pretty dire: solving your problem is probably harder than you anticipated, because the two common techniques won't suffice:
+
+* A Brute Force algorithm (even a smarter variant) will take too long.
+* A quick algorithm, for example in bin packing, __putting in the largest items first__, will return a solution that is far from optimal.
+
+By using advanced optimization algorithms, *OptaPlanner does find a near-optimal solution in reasonable time for such planning problems.*
+
+
+[[aPlanningProblemHasConstraints]]
+== A planning problem has (hard and soft) constraints
+
+Usually, a planning problem has at least two levels of constraints:
+
+* A _(negative) hard constraint_ must not be broken. For example: __1 teacher cannot teach 2 different lessons at the same time__.
+* A _(negative) soft constraint_ should not be broken if it can be avoided. For example: __Teacher A does not like to teach on Friday afternoon__.
+
+Some problems have positive constraints too:
+
+* A _positive soft constraint (or reward)_ should be fulfilled if possible. For example: __Teacher B likes to teach on Monday morning__.
+
+Some basic problems (such as <<nQueens,N queens>>) only have hard constraints.
+Some problems have three or more levels of constraints, for example hard, medium and soft constraints.
+
+These constraints define the _score calculation_ (AKA __fitness function__) of a planning problem.
+Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^ code**.
+Such code is easy, flexible and scalable.
+
+
+[[aPlanningProblemHasAHugeSearchSpace]]
+== A planning problem has a huge search space
+
+A planning problem has a number of __solutions__.
+There are several categories of solutions:
+
+* A _possible solution_ is any solution, whether or not it breaks any number of constraints. Planning problems tend to have an incredibly large number of possible solutions. Many of those solutions are worthless.
+* A _feasible solution_ is a solution that does not break any (negative) hard constraints. The number of feasible solutions tends to be relative to the number of possible solutions. Sometimes there are no feasible solutions. Every feasible solution is a possible solution.
+* An _optimal solution_ is a solution with the highest score. Planning problems tend to have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that there are no feasible solutions and the optimal solution isn't feasible.
+* The _best solution found_ is the solution with the highest score found by an implementation in a given amount of time. The best solution found is likely to be feasible and, given enough time, it's an optimal solution.
+
+Counterintuitively, the number of possible solutions is huge (if calculated correctly), even with a small dataset.
+As you can see in the examples, most instances have a lot more possible solutions than the minimal number of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any implementation is forced to evaluate at least a subset of all those possible solutions.
+
+OptaPlanner supports several optimization algorithms to efficiently wade through that incredibly large number of possible solutions.
+Depending on the use case, some optimization algorithms perform better than others, but it's impossible to tell in advance. **With OptaPlanner, it is easy to switch the optimization algorithm**, by changing the solver configuration in a few lines of XML or code.

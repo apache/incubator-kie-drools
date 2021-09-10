@@ -1,0 +1,15 @@
+[[cloudBalancing]]
+= Cloud balancing
+:imagesdir: ../..
+
+include::tutorial/tutorial.adoc[leveloffset=+1]
+
+include::domain-model/domain-model.adoc[leveloffset=+1]
+
+include::main-method/main-method.adoc[leveloffset=+1]
+
+include::solver-configuration/solver-configuration.adoc[leveloffset=+1]
+
+include::score-configuration/score-configuration.adoc[leveloffset=+1]
+
+include::beyond-this-tutorial/beyond-this-tutorial.adoc[leveloffset=+1]
