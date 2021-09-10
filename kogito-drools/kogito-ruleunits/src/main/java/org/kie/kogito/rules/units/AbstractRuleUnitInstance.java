@@ -47,6 +47,11 @@ public class AbstractRuleUnitInstance<T extends RuleUnitData> implements RuleUni
     }
 
     @Override
+    public void dispose() {
+        runtime.dispose();
+    }
+
+    @Override
     public List<Map<String, Object>> executeQuery(String query) {
         fire();
         return runtime.getQueryResults(query).toList();

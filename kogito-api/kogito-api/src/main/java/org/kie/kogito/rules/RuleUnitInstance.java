@@ -31,4 +31,6 @@ public interface RuleUnitInstance<T extends RuleUnitData> {
     <Q> Q executeQuery(Class<? extends RuleUnitQuery<Q>> query);
 
     <T extends SessionClock> T getClock();
+
+    void dispose();
 }
