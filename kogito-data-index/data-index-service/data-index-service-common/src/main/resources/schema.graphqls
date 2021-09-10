@@ -16,6 +16,10 @@ type Mutation {
     ProcessInstanceAbort(id: String): String
     ProcessInstanceRetry(id: String): String
     ProcessInstanceSkip(id: String): String
+    ProcessInstanceUpdateVariables(id: String, variables: String): String
+    NodeInstanceTrigger(id:String, nodeId:String): String
+    NodeInstanceRetrigger(id:String, nodeInstanceId:String): String
+    NodeInstanceCancel(id:String, nodeInstanceId:String): String
 }
 
 type ProcessInstance {

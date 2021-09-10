@@ -30,7 +30,15 @@ public interface KogitoRuntimeClient {
 
     CompletableFuture<String> skipProcessInstance(String serviceURL, ProcessInstance processInstance);
 
+    CompletableFuture<String> updateProcessInstanceVariables(String serviceURL, ProcessInstance processInstance, String variables);
+
     CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance);
 
     CompletableFuture<List<Node>> getProcessInstanceNodeDefinitions(String serviceURL, ProcessInstance processInstance);
+
+    CompletableFuture<String> triggerNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeDefinitionId);
+
+    CompletableFuture<String> retriggerNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeInstanceId);
+
+    CompletableFuture<String> cancelNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeInstanceId);
 }

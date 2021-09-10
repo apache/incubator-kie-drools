@@ -35,6 +35,7 @@ import io.quarkus.security.credential.TokenCredential;
 import io.quarkus.security.identity.SecurityIdentity;
 import io.vertx.core.Vertx;
 import io.vertx.core.buffer.Buffer;
+import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.HttpResponse;
 import io.vertx.ext.web.client.WebClient;
 import io.vertx.ext.web.client.WebClientOptions;
@@ -49,6 +50,10 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public static final String SKIP_PROCESS_INSTANCE_PATH = "/management/processes/%s/instances/%s/skip";
     public static final String GET_PROCESS_INSTANCE_DIAGRAM_PATH = "/svg/processes/%s/instances/%s";
     public static final String GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH = "/management/processes/%s/nodes";
+    public static final String UPDATE_VARIABLES_PROCESS_INSTANCE_PATH = "/%s/%s";
+    public static final String TRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodes/%s"; //node def
+    public static final String RETRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
+    public static final String CANCEL_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
     private Vertx vertx;
@@ -97,6 +102,12 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     }
 
     @Override
+    public CompletableFuture<String> updateProcessInstanceVariables(String serviceURL, ProcessInstance processInstance, String variables) {
+        String requestURI = format(UPDATE_VARIABLES_PROCESS_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId());
+        return sendPutClientRequest(getWebClient(serviceURL), requestURI, "UPDATE VARIABLES of ProcessInstance with id: " + processInstance.getId(), variables);
+    }
+
+    @Override
     public CompletableFuture<String> getProcessInstanceDiagram(String serviceURL, ProcessInstance processInstance) {
         String requestURI = format(GET_PROCESS_INSTANCE_DIAGRAM_PATH, processInstance.getProcessId(), processInstance.getId());
         return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance diagram with id: " + processInstance.getId(), null);
@@ -106,6 +117,30 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public CompletableFuture<List<Node>> getProcessInstanceNodeDefinitions(String serviceURL, ProcessInstance processInstance) {
         String requestURI = format(GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH, processInstance.getProcessId());
         return sendGetClientRequest(getWebClient(serviceURL), requestURI, "Get Process Instance available nodes with id: " + processInstance.getId(), List.class);
+    }
+
+    @Override
+    public CompletableFuture<String> triggerNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeDefinitionId) {
+        String requestURI = format(TRIGGER_NODE_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId(), nodeDefinitionId);
+        return sendPostClientRequest(getWebClient(serviceURL), requestURI,
+                "Trigger Node " + nodeDefinitionId +
+                        "from ProcessInstance with id: " + processInstance.getId());
+    }
+
+    @Override
+    public CompletableFuture<String> retriggerNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeInstanceId) {
+        String requestURI = format(RETRIGGER_NODE_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId(), nodeInstanceId);
+        return sendPostClientRequest(getWebClient(serviceURL), requestURI,
+                "Retrigger NodeInstance " + nodeInstanceId +
+                        "from ProcessInstance with id: " + processInstance.getId());
+    }
+
+    @Override
+    public CompletableFuture<String> cancelNodeInstance(String serviceURL, ProcessInstance processInstance, String nodeInstanceId) {
+        String requestURI = format(CANCEL_NODE_INSTANCE_PATH, processInstance.getProcessId(), processInstance.getId(), nodeInstanceId);
+        return sendDeleteClientRequest(getWebClient(serviceURL), requestURI,
+                "Cancel NodeInstance " + nodeInstanceId +
+                        "from ProcessInstance with id: " + processInstance.getId());
     }
 
     protected CompletableFuture sendDeleteClientRequest(WebClient webClient, String requestURI, String logMessage) {
@@ -127,6 +162,20 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
         webClient.post(requestURI)
                 .putHeader("Authorization", getAuthHeader())
                 .send(res -> {
+                    if (res.succeeded() && (res.result().statusCode() == 200)) {
+                        future.complete(res.result().bodyAsString());
+                    } else {
+                        future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
+                    }
+                });
+        return future;
+    }
+
+    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, String jsonBody) {
+        CompletableFuture future = new CompletableFuture<>();
+        webClient.put(requestURI)
+                .putHeader("Authorization", getAuthHeader())
+                .sendJson(new JsonObject(jsonBody), res -> {
                     if (res.succeeded() && (res.result().statusCode() == 200)) {
                         future.complete(res.result().bodyAsString());
                     } else {

@@ -15,8 +15,8 @@
  */
 package org.kie.kogito.index.resources;
 
-import org.kie.kogito.index.utils.SocketUtils;
 import org.kie.kogito.test.resources.TestResource;
+import org.kie.kogito.test.utils.SocketUtils;
 import org.testcontainers.Testcontainers;
 
 public class KogitoServiceRandomPortTestResource implements TestResource {
