@@ -2,14 +2,807 @@
 = Cloud balancing
 :imagesdir: ../..
 
-include::tutorial/tutorial.adoc[leveloffset=+1]
+[[cloudBalancingTutorial]]
+== Cloud balancing tutorial
 
-include::domain-model/domain-model.adoc[leveloffset=+1]
 
-include::main-method/main-method.adoc[leveloffset=+1]
+[[cloudBalancingProblemDescription]]
+=== Problem description
 
-include::solver-configuration/solver-configuration.adoc[leveloffset=+1]
+Suppose your company owns a number of cloud computers and needs to run a number of processes on those computers.
+Assign each process to a computer.
 
-include::score-configuration/score-configuration.adoc[leveloffset=+1]
+The following hard constraints must be fulfilled:
 
-include::beyond-this-tutorial/beyond-this-tutorial.adoc[leveloffset=+1]
+* Every computer must be able to handle the minimum hardware requirements of the sum of its processes:
+** **CPU capacity**: The CPU power of a computer must be at least the sum of the CPU power required by the processes assigned to that computer.
+** **Memory capacity**: The RAM memory of a computer must be at least the sum of the RAM memory required by the processes assigned to that computer.
+** **Network capacity**: The network bandwidth of a computer must be at least the sum of the network bandwidth required by the processes assigned to that computer.
+
+The following soft constraints should be optimized:
+
+* Each computer that has one or more processes assigned, incurs a maintenance cost (which is fixed per computer).
+** **Cost**: Minimize the total maintenance cost.
+
+This problem is a form of __bin packing__.
+The following is a simplified example, in which we assign four processes to two computers with two constraints (CPU and RAM) with a simple algorithm:
+
+image::use-cases-and-examples/cloud-balancing/cloudBalanceUseCase.png[align="center"]
+
+The simple algorithm used here is the _First Fit Decreasing_ algorithm, which assigns the bigger processes first and assigns the smaller processes to the remaining space.
+As you can see, it is not optimal, as it does not leave enough room to assign the yellow process ``D``.
+
+OptaPlanner does find the more optimal solution by using additional, smarter algorithms.
+It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints).
+So let's see how OptaPlanner can be used in this scenario.
+
+Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
+
+image::use-cases-and-examples/cloud-balancing/cloudOptimizationValueProposition.png[align="center"]
+
+[[cloudBalancingProblemSize]]
+=== Problem size
+
+.Cloud Balancing Problem Size
+[cols="1,1,1,1", options="header"]
+|===
+|Problem Size |Computers |Processes |Search Space
+
+|2computers-6processes |2 |6 |64
+|3computers-9processes |3 |9 |10^4
+|4computers-012processes |4 |12 |10^7
+|100computers-300processes |100 |300 |10^600
+|200computers-600processes |200 |600 |10^1380
+|400computers-1200processes |400 |1200 |10^3122
+|800computers-2400processes |800 |2400 |10^6967
+|===
+
+
+[[cloudBalancingDomainModel]]
+== Using the domain model
+
+
+[[cloudBalancingDomainModelDesign]]
+=== Domain model design
+
+Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify constraints, improve performance, and increase flexibility for future needs.
+
+To create a domain model, define all the objects that represent the input data for the problem. In this simple example, the objects are processes and computers.
+
+A separate object in the domain model must represent a full data set of problem, which contains the input data as well as a solution. In this example, this object holds a list of computers and a list of processes. Each process is assigned to a computer; the distribution of processes between computers is the solution.
+
+. Draw a class diagram of your domain model.
+. Normalize it to remove duplicate data.
+. Write down some sample instances for each class.
+
+* ``Computer``: represents a computer with certain hardware and maintenance costs.
++
+In this example, the sample instances for the `Computer` class are: `cpuPower`, `memory`, `networkBandwidth`, `cost`.
+* ``Process``: represents a process with a demand. Needs to be assigned to a `Computer` by OptaPlanner.
++
+Sample instances for ``Process`` are: `requiredCpuPower`, `requiredMemory`, and `requiredNetworkBandwidth`.
+* ``CloudBalance``: represents a problem. Contains every `Computer` and `Process` for a certain data set.
++
+For an object representing the full data set and solution, a sample instance holding the _score_ must be present. OptaPlanner can calculate and compare the scores for different solutions; the solution with the highest score is the optimal solution. Therefore, the sample instance for `CloudBalance` is `score`.
+
+. Determine which relationships (or fields) change during planning.
+
+* _Planning entity_: The class (or classes) that OptaPlanner can change during solving. In this example, it is the class ``Process``, because OptaPlanner can assign processes to computers.
+* _Problem fact_: A class representing input data that OptaPlanner cannot change.
+* _Planning variable_: The property (or properties) of a planning entity class that changes during solving. In this example, it is the property `computer` on the class ``Process``.
+* _Planning solution_: The class that represents a solution to the problem. This class must represent the full data set and contain all planning entities. In this example that is the class ``CloudBalance``.
+
+In the UML class diagram below, the OptaPlanner concepts are already annotated:
+
+image::use-cases-and-examples/cloud-balancing/cloudBalanceClassDiagram.png[align="center"]
+
+[[cloudBalancingDomainModelImplementation]]
+=== Domain model implementation
+
+
+[[cloudBalancingClassComputer]]
+==== The `Computer` class
+
+The `Computer` class is a POJO (Plain Old Java Object). Usually, you will have more of this kind of classes with input data.
+
+.CloudComputer.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudComputer ... {
+
+    private int cpuPower;
+    private int memory;
+    private int networkBandwidth;
+    private int cost;
+
+    ... // getters
+}
+----
+====
+
+
+[[cloudBalancingClassProcess]]
+==== The `Process` class
+
+The `Process` class is particularly important. It is the class that is modified during solving.
+
+We need to tell OptaPlanner that it can change the property ``computer``. To do this:
+. Annotate the class with `@PlanningEntity`.
+. Annotate the getter `getComputer()` with ``@PlanningVariable``.
+
+Of course, the property `computer` needs a setter too, so OptaPlanner can change it during solving.
+
+.CloudProcess.java
+====
+[source,java,options="nowrap"]
+----
+@PlanningEntity(...)
+public class CloudProcess ... {
+
+    private int requiredCpuPower;
+    private int requiredMemory;
+    private int requiredNetworkBandwidth;
+
+    private CloudComputer computer;
+
+    ... // getters
+
+    @PlanningVariable(valueRangeProviderRefs = {"computerRange"})
+    public CloudComputer getComputer() {
+        return computer;
+    }
+
+    public void setComputer(CloudComputer computer) {
+        computer = computer;
+    }
+
+    // ************************************************************************
+    // Complex methods
+    // ************************************************************************
+
+    ...
+
+}
+----
+====
+
+* OptaPlanner needs to know which values it can choose from to assign to the property ``computer``. Those values are retrieved from the method `CloudBalance.getComputerList()` on the planning solution, which returns a list of all computers in the current data set.
+
+* The ``@PlanningVariable``'s `valueRangeProviderRefs` parameter on `CloudProcess.getComputer()` needs to match with the ``@ValueRangeProvider``'s `id` on `CloudBalance.getComputerList()`.
+
+[NOTE]
+====
+Instead of getter annotations, it is also possible to use <<annotationAlternatives,field annotations>>.
+====
+
+
+[[cloudBalancingClassCloudBalance]]
+==== The `CloudBalance` class
+
+The `CloudBalance` class has a [path]_@PlanningSolution_ annotation.
+
+* It holds a list of all computers and a list of all processes.
+* It represents both the planning problem and (if it is initialized) the planning solution.
+* To save a solution, OptaPlanner initializes a new instance of the class.
+
+. The `processList` property holds a list of processes.
+OptaPlanner can change the processes, allocating them to different computers.
+Therefore, a process is a planning entity and the list of processes is a collection of planning entities.
+We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProperty``.
+
+. The `computerList` property holds a list of computers.
+OptaPlanner cannot change the computers.
+Therefore, a computer is a problem fact.
+Especially for <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the rule engine.
+
+. The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
+OptaPlanner automatically updates it when it calculates a `Score` for a solution instance. Therefore, this property needs a setter.
+
+
+.CloudBalance.java
+====
+[source,java,options="nowrap"]
+----
+@PlanningSolution
+public class CloudBalance ... {
+
+    private List<CloudComputer> computerList;
+
+    private List<CloudProcess> processList;
+
+    private HardSoftScore score;
+
+    @ValueRangeProvider(id = "computerRange")
+    @ProblemFactCollectionProperty
+    public List<CloudComputer> getComputerList() {
+        return computerList;
+    }
+
+    @PlanningEntityCollectionProperty
+    public List<CloudProcess> getProcessList() {
+        return processList;
+    }
+
+    @PlanningScore
+    public HardSoftScore getScore() {
+        return score;
+    }
+
+    public void setScore(HardSoftScore score) {
+        this.score = score;
+    }
+
+    ...
+}
+----
+====
+
+[[cloudBalancingMainMethod]]
+== Run the cloud balancing Hello World
+
+. <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
+. Create a run configuration with the following main class: `org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld`
++
+By default, the Cloud Balancing Hello World is configured to run for 120 seconds.
+
+
+It executes the following code:
+
+.CloudBalancingHelloWorld.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudBalancingHelloWorld {
+
+    public static void main(String[] args) {
+        // Build the Solver
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
+
+        // Load a problem with 400 computers and 1200 processes
+        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
+
+        // Solve the problem
+        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
+
+        // Display the result
+        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
+                + toDisplayString(solvedCloudBalance));
+    }
+
+    ...
+}
+----
+====
+
+The code example does the following:
+
+. Build the `Solver` based on a solver configuration
+which can come from <<solverConfigurationByXML,an XML file>> as classpath resource:
++
+[source,java,options="nowrap"]
+----
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.createFromXmlResource(
+                "org/optaplanner/examples/cloudbalancing/solver/cloudBalancingSolverConfig.xml");
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
+----
++
+Or to avoid XML, build it through <<solverConfigurationByJavaAPI,the programmatic API>> instead:
++
+[source,java,options="nowrap"]
+----
+        SolverFactory<CloudBalance> solverFactory = SolverFactory.create(new SolverConfig()
+                .withSolutionClass(CloudBalance.class)
+                .withEntityClasses(CloudProcess.class)
+                .withEasyScoreCalculatorClass(CloudBalancingEasyScoreCalculator.class)
+                .withTerminationSpentLimit(Duration.ofMinutes(2)));
+        Solver<CloudBalance> solver = solverFactory.buildSolver();
+----
++
+The solver configuration is explained in <<cloudBalancingSolverConfiguration, the next section>>.
+
+. Load the problem.
++
+`CloudBalancingGenerator` generates a random problem: replace this with a class that loads a real problem, for example from a database.
++
+[source,java,options="nowrap"]
+----
+        CloudBalance unsolvedCloudBalance = new CloudBalancingGenerator().createCloudBalance(400, 1200);
+----
+
+. Solve the problem.
++
+[source,java,options="nowrap"]
+----
+        CloudBalance solvedCloudBalance = solver.solve(unsolvedCloudBalance);
+----
+
+. Display the result.
++
+[source,java,options="nowrap"]
+----
+        System.out.println("\nSolved cloudBalance with 400 computers and 1200 processes:\n"
+                + toDisplayString(solvedCloudBalance));
+----
+
+[[cloudBalancingSolverConfiguration]]
+== Solver configuration
+
+The solver configuration file determines how the solving process works; it is considered a part of the code.
+The file is named `cloudBalancingSolverConfig.xml`.
+
+.cloudBalancingSolverConfig.xml
+====
+[source,xml,options="nowrap"]
+----
+<?xml version="1.0" encoding="UTF-8"?>
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  <!-- Domain model configuration -->
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+
+  <!-- Score configuration -->
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>-->
+  </scoreDirectorFactory>
+
+  <!-- Optimization algorithms configuration -->
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+</solver>
+----
+====
+
+This solver configuration consists of three parts:
+
+. *Domain model configuration*: _What can OptaPlanner change?_
++
+We need to make OptaPlanner aware of our domain classes, annotated with `@PlanningEntity` and `@PlanningSolution` annotations:
++
+[source,xml,options="nowrap"]
+----
+  <solutionClass>org.optaplanner.examples.cloudbalancing.domain.CloudBalance</solutionClass>
+  <entityClass>org.optaplanner.examples.cloudbalancing.domain.CloudProcess</entityClass>
+----
+
+. *Score configuration*: _How should OptaPlanner optimize the planning variables?
+What is our goal?_
++
+Since we have hard and soft constraints, we use a ``HardSoftScore``.
+But we need to tell OptaPlanner how to calculate the score, depending on our business requirements.
+Further down, we will look into two alternatives to calculate the score, such as using an easy Java implementation, or Constraint Streams.
++
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+    <!--<constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>-->
+  </scoreDirectorFactory>
+----
+
+. *Optimization algorithms configuration*: _How should OptaPlanner optimize it?_
++
+In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
++
+[source,xml,options="nowrap"]
+----
+  <termination>
+    <secondsSpentLimit>30</secondsSpentLimit>
+  </termination>
+----
++
+OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with
+<<realTimePlanning,real-time planning>>), but the more time it has, the better the results.
+Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
++
+The default algorithms already easily surpass human planners and most in-house implementations.
+Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
+
+[[cloudBalancingScoreConfiguration]]
+== Score configuration
+
+OptaPlanner searches for the solution with the highest ``Score``.
+This example uses a ``HardSoftScore``, which means OptaPlanner looks for the solution with no hard constraints broken (fulfill hardware requirements) and as little as possible soft constraints broken (minimize maintenance cost).
+
+image::use-cases-and-examples/cloud-balancing/scoreComparisonCloudBalancing.png[align="center"]
+
+Of course, OptaPlanner needs to be told about these domain-specific score constraints.
+There are several ways to implement such a score function:
+
+* <<cloudBalancingEasyJavaScoreConfiguration, Easy Java>>
+* <<cloudBalancingConstraintStreamsScoreConfiguration, Constraint Streams>>
+* <<cloudBalancingIncrementalJavaScoreConfiguration, Incremental Java>>
+* <<cloudBalancingDroolsScoreConfiguration, Drools>>
+
+
+[[cloudBalancingEasyJavaScoreConfiguration]]
+=== Easy Java score configuration
+
+One way to define a score function is to implement the interface `EasyScoreCalculator` in plain Java.
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingEasyScoreCalculator</easyScoreCalculatorClass>
+  </scoreDirectorFactory>
+----
+
+Just implement the `calculateScore(Solution)` method to return a `HardSoftScore` instance.
+
+.CloudBalancingEasyScoreCalculator.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudBalancingEasyScoreCalculator
+    implements EasyScoreCalculator<CloudBalance, HardSoftScore> {
+
+    /**
+     * A very simple implementation. The double loop can easily be removed by using Maps as shown in
+     * {@link CloudBalancingMapBasedEasyScoreCalculator#calculateScore(CloudBalance)}.
+     */
+    @Override
+    public HardSoftScore calculateScore(CloudBalance cloudBalance) {
+        int hardScore = 0;
+        int softScore = 0;
+        for (CloudComputer computer : cloudBalance.getComputerList()) {
+            int cpuPowerUsage = 0;
+            int memoryUsage = 0;
+            int networkBandwidthUsage = 0;
+            boolean used = false;
+
+            // Calculate usage
+            for (CloudProcess process : cloudBalance.getProcessList()) {
+                if (computer.equals(process.getComputer())) {
+                    cpuPowerUsage += process.getRequiredCpuPower();
+                    memoryUsage += process.getRequiredMemory();
+                    networkBandwidthUsage += process.getRequiredNetworkBandwidth();
+                    used = true;
+                }
+            }
+
+            // Hard constraints
+            int cpuPowerAvailable = computer.getCpuPower() - cpuPowerUsage;
+            if (cpuPowerAvailable < 0) {
+                hardScore += cpuPowerAvailable;
+            }
+            int memoryAvailable = computer.getMemory() - memoryUsage;
+            if (memoryAvailable < 0) {
+                hardScore += memoryAvailable;
+            }
+            int networkBandwidthAvailable = computer.getNetworkBandwidth() - networkBandwidthUsage;
+            if (networkBandwidthAvailable < 0) {
+                hardScore += networkBandwidthAvailable;
+            }
+
+            // Soft constraints
+            if (used) {
+                softScore -= computer.getCost();
+            }
+        }
+        return HardSoftScore.of(hardScore, softScore);
+    }
+
+}
+----
+====
+
+Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, _it is still slow_ because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
+To fix that, either use constraint streams, incremental Java score calculation or Drools score calculation.
+
+
+[[cloudBalancingConstraintStreamsScoreConfiguration]]
+=== Drools score configuration
+
+Constraint Streams use incremental calculation.
+To use it, implement the interface `ConstraintProvider` in Java.
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <constraintProviderClass>org.optaplanner.examples.cloudbalancing.score.CloudBalancingConstraintProvider</constraintProviderClass>
+  </scoreDirectorFactory>
+----
+
+We want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints.
+If those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint.
+
+.CloudBalancingConstraintProvider.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudBalancingConstraintProvider implements ConstraintProvider {
+
+    @Override
+    public Constraint[] defineConstraints(ConstraintFactory constraintFactory) {
+        return new Constraint[] {
+                requiredCpuPowerTotal(constraintFactory),
+                requiredMemoryTotal(constraintFactory),
+                requiredNetworkBandwidthTotal(constraintFactory),
+                computerCost(constraintFactory)
+        };
+    }
+
+    Constraint requiredCpuPowerTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredCpuPower))
+                .filter((computer, requiredCpuPower) -> requiredCpuPower > computer.getCpuPower())
+                .penalize("requiredCpuPowerTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredCpuPower) -> requiredCpuPower - computer.getCpuPower());
+    }
+
+    Constraint requiredMemoryTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredMemory))
+                .filter((computer, requiredMemory) -> requiredMemory > computer.getMemory())
+                .penalize("requiredMemoryTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredMemory) -> requiredMemory - computer.getMemory());
+    }
+
+    Constraint requiredNetworkBandwidthTotal(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudProcess.class)
+                .groupBy(CloudProcess::getComputer, sum(CloudProcess::getRequiredNetworkBandwidth))
+                .filter((computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth > computer.getNetworkBandwidth())
+                .penalize("requiredNetworkBandwidthTotal",
+                        HardSoftScore.ONE_HARD,
+                        (computer, requiredNetworkBandwidth) -> requiredNetworkBandwidth - computer.getNetworkBandwidth());
+    }
+
+    Constraint computerCost(ConstraintFactory constraintFactory) {
+        return constraintFactory.from(CloudComputer.class)
+                .ifExists(CloudProcess.class, equal(Function.identity(), CloudProcess::getComputer))
+                .penalize("computerCost",
+                        HardSoftScore.ONE_SOFT,
+                        CloudComputer::getCost);
+    }
+
+}
+----
+====
+
+You may have noticed similarities between <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>.
+That is no coincidence, as Constraint Streams are implemented using Drools under the hood.
+
+
+[[cloudBalancingIncrementalJavaScoreConfiguration]]
+=== Easy Java score configuration
+
+Another way to define a score function is to implement the interface `IncrementalScoreCalculator` in plain Java.
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <easyScoreCalculatorClass>org.optaplanner.examples.cloudbalancing.optional.score.CloudBalancingIncrementalScoreCalculator</easyScoreCalculatorClass>
+  </scoreDirectorFactory>
+----
+
+.CloudBalancingIncrementalScoreCalculator.java
+====
+[source,java,options="nowrap"]
+----
+public class CloudBalancingIncrementalScoreCalculator
+        implements IncrementalScoreCalculator<CloudBalance, HardSoftScore> {
+
+    private Map<CloudComputer, Integer> cpuPowerUsageMap;
+    private Map<CloudComputer, Integer> memoryUsageMap;
+    private Map<CloudComputer, Integer> networkBandwidthUsageMap;
+    private Map<CloudComputer, Integer> processCountMap;
+
+    private int hardScore;
+    private int softScore;
+
+    @Override
+    public void resetWorkingSolution(CloudBalance cloudBalance) {
+        int computerListSize = cloudBalance.getComputerList().size();
+        cpuPowerUsageMap = new HashMap<>(computerListSize);
+        memoryUsageMap = new HashMap<>(computerListSize);
+        networkBandwidthUsageMap = new HashMap<>(computerListSize);
+        processCountMap = new HashMap<>(computerListSize);
+        for (CloudComputer computer : cloudBalance.getComputerList()) {
+            cpuPowerUsageMap.put(computer, 0);
+            memoryUsageMap.put(computer, 0);
+            networkBandwidthUsageMap.put(computer, 0);
+            processCountMap.put(computer, 0);
+        }
+        hardScore = 0;
+        softScore = 0;
+        for (CloudProcess process : cloudBalance.getProcessList()) {
+            insert(process);
+        }
+    }
+
+    @Override
+    public void beforeVariableChanged(Object entity, String variableName) {
+        retract((CloudProcess) entity);
+    }
+
+    @Override
+    public void afterVariableChanged(Object entity, String variableName) {
+        insert((CloudProcess) entity);
+    }
+
+    @Override
+    public void beforeEntityRemoved(Object entity) {
+        retract((CloudProcess) entity);
+    }
+
+    ...
+
+    private void insert(CloudProcess process) {
+        CloudComputer computer = process.getComputer();
+        if (computer != null) {
+            int cpuPower = computer.getCpuPower();
+            int oldCpuPowerUsage = cpuPowerUsageMap.get(computer);
+            int oldCpuPowerAvailable = cpuPower - oldCpuPowerUsage;
+            int newCpuPowerUsage = oldCpuPowerUsage + process.getRequiredCpuPower();
+            int newCpuPowerAvailable = cpuPower - newCpuPowerUsage;
+            hardScore += Math.min(newCpuPowerAvailable, 0) - Math.min(oldCpuPowerAvailable, 0);
+            cpuPowerUsageMap.put(computer, newCpuPowerUsage);
+
+            int memory = computer.getMemory();
+            int oldMemoryUsage = memoryUsageMap.get(computer);
+            int oldMemoryAvailable = memory - oldMemoryUsage;
+            int newMemoryUsage = oldMemoryUsage + process.getRequiredMemory();
+            int newMemoryAvailable = memory - newMemoryUsage;
+            hardScore += Math.min(newMemoryAvailable, 0) - Math.min(oldMemoryAvailable, 0);
+            memoryUsageMap.put(computer, newMemoryUsage);
+
+            int networkBandwidth = computer.getNetworkBandwidth();
+            int oldNetworkBandwidthUsage = networkBandwidthUsageMap.get(computer);
+            int oldNetworkBandwidthAvailable = networkBandwidth - oldNetworkBandwidthUsage;
+            int newNetworkBandwidthUsage = oldNetworkBandwidthUsage + process.getRequiredNetworkBandwidth();
+            int newNetworkBandwidthAvailable = networkBandwidth - newNetworkBandwidthUsage;
+            hardScore += Math.min(newNetworkBandwidthAvailable, 0) - Math.min(oldNetworkBandwidthAvailable, 0);
+            networkBandwidthUsageMap.put(computer, newNetworkBandwidthUsage);
+
+            int oldProcessCount = processCountMap.get(computer);
+            if (oldProcessCount == 0) {
+                softScore -= computer.getCost();
+            }
+            int newProcessCount = oldProcessCount + 1;
+            processCountMap.put(computer, newProcessCount);
+        }
+    }
+
+    private void retract(CloudProcess process) {
+        CloudComputer computer = process.getComputer();
+        if (computer != null) {
+            int cpuPower = computer.getCpuPower();
+            int oldCpuPowerUsage = cpuPowerUsageMap.get(computer);
+            int oldCpuPowerAvailable = cpuPower - oldCpuPowerUsage;
+            int newCpuPowerUsage = oldCpuPowerUsage - process.getRequiredCpuPower();
+            int newCpuPowerAvailable = cpuPower - newCpuPowerUsage;
+            hardScore += Math.min(newCpuPowerAvailable, 0) - Math.min(oldCpuPowerAvailable, 0);
+            cpuPowerUsageMap.put(computer, newCpuPowerUsage);
+
+            int memory = computer.getMemory();
+            int oldMemoryUsage = memoryUsageMap.get(computer);
+            int oldMemoryAvailable = memory - oldMemoryUsage;
+            int newMemoryUsage = oldMemoryUsage - process.getRequiredMemory();
+            int newMemoryAvailable = memory - newMemoryUsage;
+            hardScore += Math.min(newMemoryAvailable, 0) - Math.min(oldMemoryAvailable, 0);
+            memoryUsageMap.put(computer, newMemoryUsage);
+
+            int networkBandwidth = computer.getNetworkBandwidth();
+            int oldNetworkBandwidthUsage = networkBandwidthUsageMap.get(computer);
+            int oldNetworkBandwidthAvailable = networkBandwidth - oldNetworkBandwidthUsage;
+            int newNetworkBandwidthUsage = oldNetworkBandwidthUsage - process.getRequiredNetworkBandwidth();
+            int newNetworkBandwidthAvailable = networkBandwidth - newNetworkBandwidthUsage;
+            hardScore += Math.min(newNetworkBandwidthAvailable, 0) - Math.min(oldNetworkBandwidthAvailable, 0);
+            networkBandwidthUsageMap.put(computer, newNetworkBandwidthUsage);
+
+            int oldProcessCount = processCountMap.get(computer);
+            int newProcessCount = oldProcessCount - 1;
+            if (newProcessCount == 0) {
+                softScore += computer.getCost();
+            }
+            processCountMap.put(computer, newProcessCount);
+        }
+    }
+
+    @Override
+    public HardSoftScore calculateScore() {
+        return HardSoftScore.of(hardScore, softScore);
+    }
+}
+----
+====
+
+This score calculation is the fastest we can possibly make it.
+It reacts to every planning variable change, making the smallest possible adjustment to the score.
+
+
+[[cloudBalancingDroolsScoreConfiguration]]
+=== Drools score configuration
+
+Drools score calculation uses incremental calculation.
+Each score constraint is written as one or more score rules.
+
+*Prerequisite*
+To use the Drools rule engine as a score function, simply add a `scoreDrl` resource in the classpath:
+
+[source,xml,options="nowrap"]
+----
+  <scoreDirectorFactory>
+    <scoreDrl>org/optaplanner/examples/cloudbalancing/optional/score/cloudBalancingConstraints.drl</scoreDrl>
+  </scoreDirectorFactory>
+----
+
+. We want to make sure that all computers have enough CPU, RAM and network bandwidth to support all their processes, so we make these hard constraints:
++
+.cloudBalancingConstraints.drl - Hard Constraints
+====
+[source,options="nowrap"]
+----
+...
+
+import org.optaplanner.examples.cloudbalancing.domain.CloudBalance;
+import org.optaplanner.examples.cloudbalancing.domain.CloudComputer;
+import org.optaplanner.examples.cloudbalancing.domain.CloudProcess;
+
+global HardSoftScoreHolder scoreHolder;
+
+// ############################################################################
+// Hard constraints
+// ############################################################################
+
+rule "requiredCpuPowerTotal"
+    when
+        $computer : CloudComputer($cpuPower : cpuPower)
+        accumulate(
+            CloudProcess(
+                computer == $computer,
+                $requiredCpuPower : requiredCpuPower);
+            $requiredCpuPowerTotal : sum($requiredCpuPower);
+            $requiredCpuPowerTotal > $cpuPower
+        )
+    then
+        scoreHolder.addHardConstraintMatch(kcontext, $cpuPower - $requiredCpuPowerTotal);
+end
+
+rule "requiredMemoryTotal"
+    ...
+end
+
+rule "requiredNetworkBandwidthTotal"
+    ...
+end
+----
+====
+
+. If those constraints are met, we want to minimize the maintenance cost, so we add that as a soft constraint:
++
+.cloudBalancingConstraints.drl - Soft Constraints
+====
+[source,options="nowrap"]
+----
+// ############################################################################
+// Soft constraints
+// ############################################################################
+
+rule "computerCost"
+    when
+        $computer : CloudComputer($cost : cost)
+        exists CloudProcess(computer == $computer)
+    then
+        scoreHolder.addSoftConstraintMatch(kcontext, - $cost);
+end
+----
+====
+
+[[cloudBalancingBeyondThisTutorial]]
+== Beyond this tutorial
+
+Now that this simple example works, you can try going further.
+For example, you can enrich the domain model and add extra constraints such as these:
+
+* Each `Process` belongs to a ``Service``. A computer might crash, so processes running the same service must be assigned to different computers.
+* Each `Computer` is located in a ``Building``. A building might burn down, so processes of the same services should (or must) be assigned to computers in different buildings.
+
