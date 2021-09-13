@@ -24,18 +24,15 @@ import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.decisiontables.DecisionTable;
 import org.kie.dmn.feel.runtime.events.InvalidInputEvent;
 
-public interface DMNCompiledAlphaNetwork {
+// TODO DT-ANC review these four names
+public interface DMNAlphaNetworkEvaluator {
 
-    void initRete();
-
-    void setCompiledAlphaNetwork(CompiledNetwork compiledAlphaNetwork);
+    void setCompiledNetwork(CompiledNetwork compiledAlphaNetwork);
 
     ObjectTypeNode getObjectTypeNode();
 
     Optional<InvalidInputEvent> validate(EvaluationContext evaluationContext);
 
     Object evaluate(EvaluationContext evaluationContext, DecisionTable decisionTable);
-
-    ResultCollector getResultCollector();
 
 }

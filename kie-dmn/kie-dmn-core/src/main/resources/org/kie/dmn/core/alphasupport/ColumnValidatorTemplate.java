@@ -20,7 +20,6 @@ import java.util.List;
 
 import org.kie.dmn.api.core.DMNType;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
-import org.kie.dmn.core.alphasupport.UnaryTestR1C1;
 import org.kie.dmn.core.compiler.alphanetbased.evaluator.ColumnValidator;
 import org.kie.dmn.feel.lang.EvaluationContext;
 import org.kie.dmn.feel.runtime.UnaryTest;

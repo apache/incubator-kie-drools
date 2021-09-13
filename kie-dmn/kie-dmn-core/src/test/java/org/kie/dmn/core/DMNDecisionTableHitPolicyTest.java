@@ -49,7 +49,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
+public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsAlphaNetworkTest {
 
     public static final Logger LOG = LoggerFactory.getLogger(DMNDecisionTableHitPolicyTest.class);
 
