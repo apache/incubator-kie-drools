@@ -158,7 +158,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     private void defineClassInClassLoader(MemoryFileSystem trgMfs) {
-        trgMfs.getFilePaths().stream().map(KiePath::toString)
+        trgMfs.getFilePaths().stream().map(KiePath::asString)
                 .forEach(f -> projectClassLoader.defineClass(f.replace('/', '.').substring(0, f.length() - ".class".length()), trgMfs.getBytes(f)));
     }
 

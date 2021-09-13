@@ -37,13 +37,13 @@ public class EnableAuditLogCommand implements ExecutableCommand<Void> {
     @Override
     public Void execute( Context context ) {
         KieSession ksession = ((RegistryContext) context).lookup( KieSession.class );
-        KieServices.Factory.get().getLoggers().newFileLogger( ksession, auditLogFile.toString() );
+        KieServices.Factory.get().getLoggers().newFileLogger( ksession, auditLogFile.asString() );
         return null;
     }
 
     @Override
     public String toString() {
-        return "KieServices.Factory.get().getLoggers().newFileLogger( ksession, " + auditLogFile + " )";
+        return "KieServices.Factory.get().getLoggers().newFileLogger( ksession, " + auditLogFile.asString() + " )";
     }
 
 }

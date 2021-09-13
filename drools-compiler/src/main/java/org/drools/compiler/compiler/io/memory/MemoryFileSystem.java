@@ -137,11 +137,11 @@ public class MemoryFileSystem
             byte[] contents = resourceToBytes( resource );
             byte[] oldContent = resourceToBytes( fileContents.get( filePath ) );
             if (oldContent == null || !Arrays.equals(oldContent, contents)) {
-                modifiedFilesSinceLastMark.add(filePath.toString());
+                modifiedFilesSinceLastMark.add(filePath.asString());
             }
         }
         fileContents.put( filePath, (InternalResource) resource );
-        resource.setSourcePath( file.getPath().toString() );
+        resource.setSourcePath( file.getPath().asString() );
         folders.get( file.getFolder().getPath() ).add( file );
     }
 
@@ -199,7 +199,7 @@ public class MemoryFileSystem
                 KiePath filePath = res.getPath();
                 fileContents.remove( filePath );
                 if (modifiedFilesSinceLastMark != null) {
-                    modifiedFilesSinceLastMark.add( filePath.toString() );
+                    modifiedFilesSinceLastMark.add( filePath.asString() );
                 }
             }
             it.remove();
@@ -211,7 +211,7 @@ public class MemoryFileSystem
             KiePath filePath = file.getPath();
             fileContents.remove( filePath );
             if (modifiedFilesSinceLastMark != null) {
-                modifiedFilesSinceLastMark.add( filePath.toString() );
+                modifiedFilesSinceLastMark.add( filePath.asString() );
             }
             folders.get( ((MemoryFile) file).getFolder().getPath() ).remove( file );
             return true;
@@ -448,7 +448,7 @@ public class MemoryFileSystem
     private void writeJarEntries(Folder f,
                                  ZipOutputStream out) throws IOException {
         for ( FileSystemItem rs : f.getMembers() ) {
-            String rname = rs.getPath().toString();
+            String rname = rs.getPath().asString();
             if ( rs instanceof Folder ) {
                 rname = rname.endsWith("/") ? rname : rname + "/"; // a folder name must end with / according to ZIP spec
                 ZipEntry entry = new ZipEntry( rname );
@@ -557,7 +557,7 @@ public class MemoryFileSystem
                     .forEach(f -> {
                         MemoryFile file = (MemoryFile) memoryFileSystem.getFile(f);
                         byte[] fileContents = memoryFileSystem.getFileContents(file);
-                        String className = f.toString().replace('/', '.').replace(".class", "");
+                        String className = f.asString().replace('/', '.').replace(".class", "");
                         extraClassDefs.put(className, fileContents);
                     });
         }

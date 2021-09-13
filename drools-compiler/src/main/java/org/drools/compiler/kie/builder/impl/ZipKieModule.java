@@ -141,7 +141,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
     }
 
     private Map<String, List<String>> processZipUrl( String urlPath, int urlSeparatorPos ) throws IOException {
-        String folderInUrl = KiePath.normalizePath( urlPath.substring( urlSeparatorPos + 1 ) );
+        String folderInUrl = KiePath.of( urlPath.substring( urlSeparatorPos + 1 ) ).asString();
         // read jar file from uber-jar
         InputStream in = this.getClass().getResourceAsStream(folderInUrl);
         if (in == null) {
@@ -156,7 +156,7 @@ public class ZipKieModule extends AbstractKieModule implements InternalKieModule
 
     private Map<String, List<String>> processFolderInZipFile( String urlPath, int urlSeparatorPos ) throws IOException {
         String jarFile = urlPath.substring( 0, urlSeparatorPos );
-        String folderInUrl = KiePath.normalizePath( urlPath.substring( urlSeparatorPos + 1 ) );
+        String folderInUrl = KiePath.of( urlPath.substring( urlSeparatorPos + 1 ) ).asString();
         String rootFolder = folderInUrl.startsWith( "/" ) ? folderInUrl.substring( 1 ) : folderInUrl;
 
         try (FileInputStream fis = new FileInputStream(jarFile);

@@ -38,7 +38,7 @@ public class ConfFileUtils {
         URL url = null;
         
         // User home 
-        String userHome = KiePath.normalizePath( System.getProperty( "user.home" ) );
+        String userHome = KiePath.of( System.getProperty( "user.home" ) ).asString();
         if ( userHome.endsWith( "/" ) ) {
             url = getURLForFile( userHome + confName );
         } else {

@@ -56,15 +56,11 @@ public class ModelWriter {
         List<String> sourceFiles = new ArrayList<>();
         for (GeneratedFile generatedFile : generatedFiles) {
             KiePath path = basePath.resolve(generatedFile.getKiePath());
-            sourceFiles.add(path.toString());
+            sourceFiles.add(path.asString());
             srcMfs.write(path, generatedFile.getData());
         }
 
         return new Result(sourceFiles, modelFiles);
-    }
-
-    private String pojoName(String folderName, String nameAsString) {
-        return basePath + "/" + folderName + "/" + nameAsString + ".java";
     }
 
     public KiePath getBasePath() {

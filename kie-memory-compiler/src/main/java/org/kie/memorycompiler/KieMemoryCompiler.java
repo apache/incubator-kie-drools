@@ -138,7 +138,7 @@ public class KieMemoryCompiler {
 
         Map<String, byte[]> toReturn = new HashMap<>();
         for (Map.Entry<KiePath, byte[]> entry : store.getResources().entrySet()) {
-            toReturn.put(toClassName( entry.getKey().toString() ), entry.getValue());
+            toReturn.put(toClassName( entry.getKey().asString() ), entry.getValue());
         }
 
         return toReturn;

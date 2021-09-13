@@ -118,8 +118,8 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         private final String content;
 
-        CompilationUnit(KiePath name, String content) {
-            super(URI.create("memo:///" + name), Kind.SOURCE);
+        CompilationUnit(KiePath path, String content) {
+            super(URI.create("memo:///" + path.asString()), Kind.SOURCE);
             this.content = content;
         }
 

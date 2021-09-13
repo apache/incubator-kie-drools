@@ -312,12 +312,12 @@ public class CanonicalKieModule implements InternalKieModule {
                 InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
                 if (includeModule == null) {
                     String text = "Unable to build KieBase, could not find include: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.toString(), text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.asString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 if (!(includeModule instanceof CanonicalKieModule)) {
                     String text = "It is not possible to mix drl based and executable model based projects. Found a drl project: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.toString(), text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.asString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = (KieBaseModelImpl) kieProject.getKieBaseModel(include);

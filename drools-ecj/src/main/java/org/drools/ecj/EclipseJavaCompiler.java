@@ -171,7 +171,7 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
             final KiePath sourceFile = KiePath.of(pSourceFiles[i]);
 
             if (pReader.isAvailable(sourceFile)) {
-                compilationUnits[i] = new CompilationUnit(pReader, sourceFile.toString());
+                compilationUnits[i] = new CompilationUnit(pReader, sourceFile.asString());
             } else {
                 // log.error("source not found " + sourceFile);
 
@@ -186,11 +186,11 @@ public final class EclipseJavaCompiler extends AbstractJavaCompiler {
                     }
 
                     public String getFileName() {
-                        return sourceFile.toString();
+                        return sourceFile.asString();
                     }
 
                     public String getMessage() {
-                        return "Source " + sourceFile + " could not be found";
+                        return "Source " + sourceFile.asString() + " could not be found";
                     }
 
                     public int getStartColumn() {

@@ -32,16 +32,16 @@ public class KiePath implements Serializable {
         this.path = path;
     }
 
-    public static String normalizePath(String s) {
+    public static KiePath of(String s) {
+        String normalized = normalizePath(s);
+        return normalized == null ? ROOT_PATH : new KiePath( normalized );
+    }
+
+    private static String normalizePath(String s) {
         if (s == null || s.isEmpty()) {
             return null;
         }
         return trimLeadingAndTrailing( IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s );
-    }
-
-    public static KiePath of(String s) {
-        String normalized = normalizePath(s);
-        return normalized == null ? ROOT_PATH : new KiePath( normalized );
     }
 
     public KiePath getParent() {
@@ -54,7 +54,7 @@ public class KiePath implements Serializable {
     }
 
     public KiePath resolve(KiePath kiePath) {
-        return isEmpty() ? kiePath : new KiePath(path + "/" + kiePath);
+        return isEmpty() ? kiePath : new KiePath(path + "/" + kiePath.asString());
     }
 
     public KiePath resolve(String name) {
@@ -66,9 +66,15 @@ public class KiePath implements Serializable {
         return lastSlash >= 0 ? path.substring( lastSlash+1 ) : path;
     }
 
+    public String asString() {
+        return path;
+    }
+
     @Override
     public String toString() {
-        return path;
+        return "KiePath{" +
+                "path='" + path + '\'' +
+                '}';
     }
 
     @Override

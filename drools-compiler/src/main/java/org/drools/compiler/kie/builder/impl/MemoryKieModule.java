@@ -108,7 +108,7 @@ public class MemoryKieModule extends AbstractKieModule
 
     @Override
     public Collection<String> getFileNames() {
-        return getFilePaths().stream().map(KiePath::toString).collect(Collectors.toList());
+        return getFilePaths().stream().map(KiePath::asString).collect(Collectors.toList());
     }
 
     public MemoryFileSystem getMemoryFileSystem() {
@@ -337,7 +337,7 @@ public class MemoryKieModule extends AbstractKieModule
             if (members != null) {
                 for (FileSystemItem resource : members) {
                     // take just the name of the member, no the whole path
-                    sb.append(resource.getPath().toString().substring(folder.getPath().toString().length()+1));
+                    sb.append(resource.getPath().asString().substring(folder.getPath().asString().length()+1));
                     // append "\n" to be in sync with the JDK's ClassLoader (returns "\n" even on Windows)
                     sb.append("\n");
                 }

@@ -104,11 +104,11 @@ public abstract class BaseResource
     }
 
     public String getSourcePath() {
-        return sourcePath == null ? null : sourcePath.toString();
+        return sourcePath == null ? null : sourcePath.asString();
     }
 
     public String getTargetPath() {
-        return targetPath == null ? null : targetPath.toString();
+        return targetPath == null ? null : targetPath.asString();
     }
 
     public InternalResource setSourcePath(String path) {

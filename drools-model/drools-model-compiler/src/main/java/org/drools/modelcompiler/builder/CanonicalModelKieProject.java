@@ -97,7 +97,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
 
         InternalKieModule kieModule = getInternalKieModule();
         ModelSourceClass modelSourceClass = new ModelSourceClass( kieModule.getReleaseId(), kieModule.getKieModuleModel().getKieBaseModels(), modelsByKBase, hasDynamicClassLoader() );
-        String projectSourcePath = modelWriter.getBasePath() + "/" + modelSourceClass.getName();
+        String projectSourcePath = modelWriter.getBasePath().asString() + "/" + modelSourceClass.getName();
         srcMfs.write(projectSourcePath, modelSourceClass.generate().getBytes());
         sourceFiles.add( projectSourcePath );
 
@@ -126,7 +126,7 @@ public class CanonicalModelKieProject extends KieModuleKieProject {
             Set<KiePath> generatedClassPaths = new HashSet<>(trgMfs.getFilePaths());
             generatedClassPaths.removeAll(origFileNames);
             Set<String> generatedClassNames = generatedClassPaths.stream()
-                    .map(KiePath::toString)
+                    .map(KiePath::asString)
                     .map(ClassUtils::convertResourceToClassName)
                     .collect(Collectors.toSet());
             modelWriter.writeGeneratedClassNamesFile(generatedClassNames, trgMfs, getInternalKieModule().getReleaseId());

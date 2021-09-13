@@ -65,7 +65,7 @@ public class GeneratedFile {
     }
 
     public String getPath() {
-        return path.toString();
+        return path.asString();
     }
 
     public KiePath getKiePath() {
@@ -79,7 +79,7 @@ public class GeneratedFile {
     @Override
     public String toString() {
         return "GeneratedFile{" +
-                "path='" + path + '\'' +
+                "path='" + path.asString() + '\'' +
                 '}';
     }
 

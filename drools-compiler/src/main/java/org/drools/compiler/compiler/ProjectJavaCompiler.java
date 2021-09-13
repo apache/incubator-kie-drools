@@ -99,17 +99,17 @@ public class ProjectJavaCompiler {
 
         @Override
         public void write(KiePath resourcePath, byte[] pResourceData) {
-            projectClassLoader.defineClass(convertResourceToClassName(resourcePath.toString()), resourcePath.toString(), pResourceData);
+            projectClassLoader.defineClass(convertResourceToClassName(resourcePath.asString()), resourcePath.asString(), pResourceData);
         }
 
         @Override
         public void write(KiePath resourcePath, final byte[] clazzData, boolean createFolder) {
-            write(resourcePath.toString(), clazzData);
+            write(resourcePath.asString(), clazzData);
         }
 
         @Override
         public byte[] read(KiePath resourcePath) {
-            return projectClassLoader.getBytecode(resourcePath.toString());
+            return projectClassLoader.getBytecode(resourcePath.asString());
         }
 
         @Override

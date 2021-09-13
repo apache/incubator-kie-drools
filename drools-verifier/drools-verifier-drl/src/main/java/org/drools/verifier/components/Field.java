@@ -46,7 +46,7 @@ public class Field extends VerifierComponent<BaseDescr>
     
     @Override
     public String getPath() {
-        return KiePath.normalizePath( String.format( "%s/field[@name='%s']", getObjectTypePath(), getName() ) );
+        return KiePath.of( String.format( "%s/field[@name='%s']", getObjectTypePath(), getName() ) ).asString();
     }
 
     public VerifierComponentType getVerifierComponentType() {

@@ -37,7 +37,7 @@ public class MemoryResourceReader implements ResourceReader {
         KiePath normalizedName = KiePath.of(resourceName);
         resources.put(normalizedName, pContent);
         if (modifiedResourcesSinceLastMark != null) {
-            modifiedResourcesSinceLastMark.add(normalizedName.toString());
+            modifiedResourcesSinceLastMark.add(normalizedName.asString());
         }
     }
     

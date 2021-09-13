@@ -42,12 +42,12 @@ public class DiskResourceReader implements ResourceReader {
     }
     
     public boolean isAvailable( KiePath resourcePath ) {
-        return new File(root, resourcePath.toString()).exists();
+        return new File(root, resourcePath.asString()).exists();
     }
 
     public byte[] getBytes( KiePath resourcePath ) {
         try {
-            return readBytesFromInputStream(new FileInputStream(new File(root, resourcePath.toString())));
+            return readBytesFromInputStream(new FileInputStream(new File(root, resourcePath.asString())));
         } catch(Exception e) {
             return null;
         }
@@ -69,12 +69,12 @@ public class DiskResourceReader implements ResourceReader {
         for (Map.Entry<KiePath, Integer> entry : newHashing.entrySet()) {
             Integer oldHashing = filesHashing.get(entry.getKey());
             if (oldHashing == null || !oldHashing.equals(entry.getValue())) {
-                modifiedResources.add(entry.getKey().toString());
+                modifiedResources.add(entry.getKey().asString());
             }
         }
         for (KiePath oldFile : filesHashing.keySet()) {
             if (!newHashing.containsKey(oldFile)) {
-                modifiedResources.add(oldFile.toString());
+                modifiedResources.add(oldFile.asString());
             }
         }
         return modifiedResources;
@@ -98,7 +98,7 @@ public class DiskResourceReader implements ResourceReader {
                 list(directoryFiles[i], pFiles);
             }
         } else {
-            pFiles.add( KiePath.of( pFile.getAbsolutePath().substring(rootPath.toString().length()+1) ) );
+            pFiles.add( KiePath.of( pFile.getAbsolutePath().substring(rootPath.asString().length()+1) ) );
         }
     }   
     

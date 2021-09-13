@@ -44,11 +44,11 @@ public class PackageStore
     public void write(final KiePath resourceName,
                       final byte[] clazzData) {
         try {
-            this.javaDialectRuntimeData.write( resourceName.toString(),
+            this.javaDialectRuntimeData.write( resourceName.asString(),
                                                clazzData );
         } catch ( final Exception e ) {
             e.printStackTrace();
-            this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName + "'" ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to write resourceName='" + resourceName.asString() + "'" ) );
         }
     }
 
@@ -61,18 +61,18 @@ public class PackageStore
     public byte[] read(final KiePath resourceName) {
         byte[] clazz = null;
         try {
-            clazz = this.javaDialectRuntimeData.read( resourceName.toString() );
+            clazz = this.javaDialectRuntimeData.read( resourceName.asString() );
         } catch ( final Exception e ) {
-            this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourceName + "'" ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to read resourceName='" + resourceName.asString() + "'" ) );
         }
         return clazz;
     }
 
     public void remove(final KiePath resourceName) {
         try {
-            this.javaDialectRuntimeData.remove( resourceName.toString() );
+            this.javaDialectRuntimeData.remove( resourceName.asString() );
         } catch ( final Exception e ) {
-            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName + "'"  ) );
+            this.errors.add( new JavaDialectError( "PackageStore was unable to remove resourceName='" + resourceName.asString() + "'"  ) );
         }
     }
 

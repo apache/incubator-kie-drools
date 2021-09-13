@@ -101,7 +101,7 @@ public interface InternalKieModule extends KieModule, Serializable {
     
     byte[] getBytes( final String pResourceName );
     default byte[] getBytes( final KiePath resourcePath ) {
-        return getBytes(resourcePath.toString());
+        return getBytes(resourcePath.asString());
     }
 
     Collection<String> getFileNames();  
@@ -169,7 +169,7 @@ public interface InternalKieModule extends KieModule, Serializable {
             return null;
         }
         try (ZipFile zipFile = new ZipFile(jar)) {
-            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH.toString());
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH.asString());
             if (zipEntry != null) {
                 return internalCreateKieModule( releaseId, jar, zipFile, zipEntry );
             }

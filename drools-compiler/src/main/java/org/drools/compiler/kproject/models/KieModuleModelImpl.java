@@ -32,9 +32,9 @@ public class KieModuleModelImpl implements KieModuleModel {
 
     public static final String KMODULE_FILE_NAME = "kmodule.xml";
     public static final KiePath KMODULE_INFO_JAR_PATH = KiePath.of("META-INF/kmodule.info");
-    public static final KiePath KMODULE_JAR_PATH = KiePath.of("META-INF/" + KMODULE_FILE_NAME);
+    public static final KiePath KMODULE_JAR_PATH = KiePath.of("META-INF").resolve(KMODULE_FILE_NAME);
     public static final KiePath KMODULE_SPRING_JAR_PATH = KiePath.of("META-INF/kmodule-spring.xml");
-    public static final KiePath KMODULE_SRC_PATH = KiePath.of("src/main/resources/" + KMODULE_JAR_PATH);
+    public static final KiePath KMODULE_SRC_PATH = KiePath.of("src/main/resources").resolve(KMODULE_JAR_PATH);
 
     private Map<String, String> confProps = new HashMap<String, String>();
     private Map<String, KieBaseModel> kBases = new HashMap<String, KieBaseModel>();

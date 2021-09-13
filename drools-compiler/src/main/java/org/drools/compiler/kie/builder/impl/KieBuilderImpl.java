@@ -314,7 +314,7 @@ public class KieBuilderImpl
         } else {
             trgMfs.remove( trgFileName );
         }
-        return trgFileName.toString();
+        return trgFileName.asString();
     }
 
     public void setkModule( final MemoryKieModule kModule ) {
@@ -340,7 +340,7 @@ public class KieBuilderImpl
 
     private void addMetaInfBuilder() {
         for ( KiePath filePath : srcMfs.getFilePaths()) {
-            if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.toString() ) ) {
+            if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.asString() ) ) {
                 trgMfs.write( filePath.substring( RESOURCES_ROOT.length() - 1 ),
                               getResource( srcMfs, filePath ),
                               true );
@@ -692,14 +692,14 @@ public class KieBuilderImpl
                 trgMfs.write( filePath,
                               getResource( srcMfs, filePath ),
                               true );
-                classFiles.add( filePath.substring( 0, filePath.toString().length() - ".class".length() ).toString() );
+                classFiles.add( filePath.substring( 0, filePath.asString().length() - ".class".length() ).asString() );
             }
         }
 
         List<String> javaFiles = new ArrayList<>();
         List<String> javaTestFiles = new ArrayList<>();
         for ( KiePath filePath : srcMfs.getFilePaths() ) {
-            String fileName = filePath.toString();
+            String fileName = filePath.asString();
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
                     && notVetoedByFilter( classFilter, fileName ) ) {

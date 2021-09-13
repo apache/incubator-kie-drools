@@ -85,7 +85,7 @@ public class GenerateModel {
                                            "target",
                                            "generated-sources",
                                            "bootstrap",
-                                           f.getPath().toString());
+                                           f.getPath().asString());
 
             try {
                 Files.deleteIfExists(newFile); //NOSONAR javasecurity:S2083 base dir kieDmnValidationBaseDir is provided as configuration by design, static analysis exclusion applies to these 3 lines

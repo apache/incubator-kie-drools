@@ -75,7 +75,7 @@ public class CompilerBytecodeLoader {
             }
             Class<?> loadedClass = null;
             for (Entry<KiePath, byte[]> kv : pStore.getMap().entrySet() ) {
-                String fileName = kv.getKey().toString();
+                String fileName = kv.getKey().asString();
                 final String className = fileName.substring(0, fileName.lastIndexOf(".class")).replaceAll("/", ".");
                 final Class<?> definedClass = defineClass(className, kv.getValue(), 0, kv.getValue().length);
                 if (string.equals(className)) {

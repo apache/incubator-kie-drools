@@ -91,6 +91,6 @@ public class MemoryFileTest {
         
         File f1 = mres.getFile( "MyClass.java" );
         assertEquals( "src/main/java/org/domain/MyClass.java",
-                      f1.getPath().toString() );
+                      f1.getPath().asString() );
     }
 }

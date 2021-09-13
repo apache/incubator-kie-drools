@@ -99,6 +99,6 @@ public class MemoryFolder implements Folder, Serializable {
 
     @Override
     public String toString() {
-        return "MemoryFolder [path=" + path + "]";
+        return "MemoryFolder [path=" + path.asString() + "]";
     }
 }

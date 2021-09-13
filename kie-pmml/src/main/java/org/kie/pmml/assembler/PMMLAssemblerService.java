@@ -233,7 +233,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
                 Map<String, byte[]> classesMap = new HashMap<>();
 
                 for (KiePath name : trgMfs.getFilePaths()) {
-                    classesMap.put(name.toString(), trgMfs.getBytes(name));
+                    classesMap.put(name.asString(), trgMfs.getBytes(name));
                 }
                 if (!classesMap.isEmpty()) {
                     ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
@@ -250,7 +250,7 @@ public class PMMLAssemblerService implements KieAssemblerService {
         List<String> javaFileNames = new ArrayList<>();
         for (KiePath fname : src.getFilePaths()) {
             if (fname.endsWith(".java")) {
-                javaFileNames.add(fname.toString());
+                javaFileNames.add(fname.asString());
             }
         }
         return javaFileNames;
