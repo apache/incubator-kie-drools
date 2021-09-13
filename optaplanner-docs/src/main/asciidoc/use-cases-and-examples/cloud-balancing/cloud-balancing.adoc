@@ -572,7 +572,7 @@ That is no coincidence, as Constraint Streams are implemented using Drools under
 
 
 [[cloudBalancingIncrementalJavaScoreConfiguration]]
-=== Easy Java score configuration
+=== Incremental Java score configuration
 
 Another way to define a score function is to implement the interface `IncrementalScoreCalculator` in plain Java.
 
