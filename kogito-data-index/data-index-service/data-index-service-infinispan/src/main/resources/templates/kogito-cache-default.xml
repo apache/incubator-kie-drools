@@ -17,6 +17,9 @@
           {/for}
         </indexed-entities>
       </indexing>
+      <persistence>
+        <file-store/>
+      </persistence>
     </local-cache>
   </cache-container>
 </infinispan>

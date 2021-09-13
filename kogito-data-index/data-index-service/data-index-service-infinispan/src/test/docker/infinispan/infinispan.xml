@@ -1,0 +1,27 @@
+<infinispan xmlns='urn:infinispan:config:10.0' xsi:schemaLocation='urn:infinispan:config:10.0 http://www.infinispan.org/schemas/infinispan-config-10.0.xsd                             urn:infinispan:server:10.0 http://www.infinispan.org/schemas/infinispan-server-10.0.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+  <cache-container name="default"/>
+  <server xmlns='urn:infinispan:server:10.0'>
+    <interfaces>
+      <interface name='public'>
+        <inet-address value='${infinispan.bind.address:0.0.0.0}'/>
+      </interface>
+    </interfaces>
+    <socket-bindings default-interface='public' port-offset='0'>
+      <socket-binding name='default' port='11222'/>
+    </socket-bindings>
+    <security>
+      <security-realms>
+        <security-realm name='default'>
+          <properties-realm groups-attribute='Roles'>
+            <user-properties path='users.properties' relative-to='infinispan.server.config.path'/>
+            <group-properties path='groups.properties' relative-to='infinispan.server.config.path'/>
+          </properties-realm>
+        </security-realm>
+      </security-realms>
+    </security>
+    <endpoints socket-binding='default' security-realm='default'>
+      <hotrod-connector name="hotrod"/>
+      <rest-connector name="rest"/>
+    </endpoints>
+  </server>
+</infinispan>
