@@ -7,12 +7,359 @@
 :icons: font
 :experimental:
 
-include::what-is-optaplanner/what-is-optaplanner.adoc[leveloffset=+1]
+[[whatIsOptaPlanner]]
+== What is OptaPlanner?
 
-include::what-is-a-planning-problem/what-is-a-planning-problem.adoc[leveloffset=+1]
+Every organization faces planning problems: providing products or services with a limited set of _constrained_ resources (employees, assets, time and money). OptaPlanner optimizes such planning to do more business with less resources.
+This is known as _Constraint Satisfaction Programming_ (which is part of the _Operations Research_ discipline).
 
-include::requirements/requirements.adoc[leveloffset=+1]
+https://www.optaplanner.org[OptaPlanner] is a lightweight, embeddable constraint satisfaction engine which optimizes planning problems. It solves use cases such as:
 
-include::governance/governance.adoc[leveloffset=+1]
+* **Employee shift rostering**: timetabling nurses, repairmen, ...
+* **Agenda scheduling**: scheduling meetings, appointments, maintenance jobs, advertisements, ...
+* **Educational timetabling**: scheduling lessons, courses, exams, conference presentations, ...
+* **Vehicle routing**: planning vehicle routes (trucks, trains, boats, airplanes, ...) for moving freight and/or passengers through multiple destinations using known mapping tools ...
+* **Bin packing**: filling containers, trucks, ships, and storage warehouses with items, but also packing information across computer resources, as in cloud computing ...
+* **Job shop scheduling**: planning car assembly lines, machine queue planning, workforce task planning, ...
+* **Cutting stock**: minimizing waste while cutting paper, steel, carpet, ...
+* **Sport scheduling**: planning games and training schedules for football leagues, baseball leagues, ...
+* **Financial optimization**: investment portfolio optimization, risk spreading, ...
 
-include::download-and-run-the-examples/download-and-run-the-examples.adoc[leveloffset=+1]
+image::planner-introduction/useCaseOverview.png[align="center"]
+
+[[whatIsAPlanningProblem]]
+== What is a planning problem?
+
+image::planner-introduction/whatIsAPlanningProblem.png[align="center"]
+
+A planning problem has an optimal goal, based on limited resources and under specific constraints. Optimal goals can be any number of things, such as:
+
+* Maximized profits - the optimal goal results in the highest possible profit.
+* Minimized ecological footprint - the optimal goal has the least amount of environmental impact.
+* Maximized satisfaction for employees or customers - the optimal goal prioritizes the needs of employees or customers.
+
+The ability to achieve these goals relies on the number of resources available, such as:
+
+* The number of people.
+* Amount of time.
+* Budget.
+* Physical assets, for example, machinery, vehicles, computers, buildings, etc.
+
+Specific constraints related to these resources must also be taken into account, such as the number of hours a person works, their ability to use certain machines, or compatibility between pieces of equipment.
+
+OptaPlanner helps Java^TM^ programmers solve constraint satisfaction problems efficiently. Under the hood, it combines optimization heuristics and metaheuristics with very efficient score calculation.
+
+
+[[aPlanningProblemIsNPCompleteOrNPHard]]
+=== A planning problem is NP-complete or NP-hard
+
+All the use cases above are _probably_ https://en.wikipedia.org/wiki/NP-completeness[NP-complete/NP-hard],
+which means in layman's terms:
+
+* It's easy to verify a given solution to a problem in reasonable time.
+* There is no silver bullet to find the optimal solution of a problem in reasonable time (*).
+
+
+[NOTE]
+====
+(*) At least, none of the smartest computer scientists in the world have found such a silver bullet yet.
+But if they find one for 1 NP-complete problem, it will work for every NP-complete problem.
+
+In fact, there's a $ 1,000,000 reward for anyone that proves if https://en.wikipedia.org/wiki/P_%3D_NP_problem[such a silver bullet actually exists or not].
+====
+
+The implication of this is pretty dire: solving your problem is probably harder than you anticipated, because the two common techniques won't suffice:
+
+* A Brute Force algorithm (even a smarter variant) will take too long.
+* A quick algorithm, for example in bin packing, __putting in the largest items first__, will return a solution that is far from optimal.
+
+By using advanced optimization algorithms, *OptaPlanner does find a near-optimal solution in reasonable time for such planning problems.*
+
+
+[[aPlanningProblemHasConstraints]]
+=== A planning problem has (hard and soft) constraints
+
+Usually, a planning problem has at least two levels of constraints:
+
+* A _(negative) hard constraint_ must not be broken. For example: __1 teacher cannot teach 2 different lessons at the same time__.
+* A _(negative) soft constraint_ should not be broken if it can be avoided. For example: __Teacher A does not like to teach on Friday afternoon__.
+
+Some problems have positive constraints too:
+
+* A _positive soft constraint (or reward)_ should be fulfilled if possible. For example: __Teacher B likes to teach on Monday morning__.
+
+Some basic problems (such as <<nQueens,N queens>>) only have hard constraints.
+Some problems have three or more levels of constraints, for example hard, medium and soft constraints.
+
+These constraints define the _score calculation_ (AKA __fitness function__) of a planning problem.
+Each solution of a planning problem can be graded with a score. **With OptaPlanner, score constraints are written in an Object Oriented language, such as Java^TM^ code**.
+Such code is easy, flexible and scalable.
+
+
+[[aPlanningProblemHasAHugeSearchSpace]]
+=== A planning problem has a huge search space
+
+A planning problem has a number of __solutions__.
+There are several categories of solutions:
+
+* A _possible solution_ is any solution, whether or not it breaks any number of constraints. Planning problems tend to have an incredibly large number of possible solutions. Many of those solutions are worthless.
+* A _feasible solution_ is a solution that does not break any (negative) hard constraints. The number of feasible solutions tends to be relative to the number of possible solutions. Sometimes there are no feasible solutions. Every feasible solution is a possible solution.
+* An _optimal solution_ is a solution with the highest score. Planning problems tend to have 1 or a few optimal solutions. There is always at least 1 optimal solution, even in the case that there are no feasible solutions and the optimal solution isn't feasible.
+* The _best solution found_ is the solution with the highest score found by an implementation in a given amount of time. The best solution found is likely to be feasible and, given enough time, it's an optimal solution.
+
+Counterintuitively, the number of possible solutions is huge (if calculated correctly), even with a small dataset.
+As you can see in the examples, most instances have a lot more possible solutions than the minimal number of atoms in the known universe (10^80). Because there is no silver bullet to find the optimal solution, any implementation is forced to evaluate at least a subset of all those possible solutions.
+
+OptaPlanner supports several optimization algorithms to efficiently wade through that incredibly large number of possible solutions.
+Depending on the use case, some optimization algorithms perform better than others, but it's impossible to tell in advance. **With OptaPlanner, it is easy to switch the optimization algorithm**, by changing the solver configuration in a few lines of XML or code.
+
+[[requirements]]
+== Requirements
+
+OptaPlanner is _open source_ software, released under http://www.apache.org/licenses/LICENSE-2.0.html[the Apache License 2.0].
+This license is very liberal and allows reuse for commercial purposes.
+Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
+
+OptaPlanner is 100% pure Java^TM^ and runs on Java 11 or higher.
+It <<integration,integrates very easily>> with other Java^TM^ technologies.
+OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
+
+OptaPlanner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
+
+image::planner-introduction/compatibility.png[align="center"]
+
+[[governance]]
+== Governance
+
+
+[[statusOfOptaPlanner]]
+=== Status of OptaPlanner
+
+OptaPlanner is stable, reliable and scalable. It has been heavily tested with unit, integration, and stress tests, and is used in production throughout the world. One example handles over 50 000 variables with 5000 variables each, multiple constraint types and billions of possible constraint matches.
+
+
+[[releaseNotes]]
+=== Release notes
+
+We release every month. https://www.optaplanner.org/download/releaseNotes/[Read the release notes of each release on our website.]
+
+
+[[backwardsCompatibility]]
+=== Backwards compatibility
+
+OptaPlanner separates its API and implementation:
+
+* **Public API**: All classes in the package namespace *org.optaplanner.core.api* are 100% *backwards compatible* in future releases (especially minor and hotfix releases). In rare circumstances, if the major version number changes, a few specific classes might have a few backwards incompatible changes, but those will be clearly documented in https://www.optaplanner.org/download/upgradeRecipe/[the upgrade recipe].
+* **XML configuration**: The XML solver configuration is backwards compatible for all elements, except for elements that require the use of non-public API classes. The XML solver configuration is defined by the classes in the package namespace **org.optaplanner.core.config**.
+* **Implementation classes**: All classes in the package namespace *org.optaplanner.core.impl* are _not_ backwards compatible: they will change in future major or minor releases (but probably not in hotfix releases). https://www.optaplanner.org/download/upgradeRecipe/[The upgrade recipe] describes every such relevant change and on how to quickly deal with it when upgrading to a newer version.
+
+
+[NOTE]
+====
+This documentation covers some `impl` classes too.
+Those documented `impl` classes are reliable and safe to use (unless explicitly marked as experimental in this documentation), but we're just not entirely comfortable yet to write their signatures in stone.
+====
+
+
+[[communityAndSupport]]
+=== Community and support
+
+For news and articles, check https://www.optaplanner.org/blog/[our blog],
+https://twitter.com/OptaPlanner[twitter] (including https://twitter.com/GeoffreyDeSmet[Geoffrey's twitter])
+and https://www.facebook.com/OptaPlanner[facebook]. +
+*If you're happy with OptaPlanner, make us happy by posting a tweet or blog article about it.*
+
+Public questions are welcome on https://www.optaplanner.org/community/getHelp.html[here].
+Bugs and feature requests are welcome in https://issues.redhat.com/browse/PLANNER[our issue tracker].
+Pull requests are very welcome on GitHub and get priority treatment! By open sourcing your improvements, you'll benefit from our peer review and from our improvements made on top of your improvements.
+
+Red Hat sponsors OptaPlanner development by employing the core team.
+For enterprise support and consulting, take a look at https://www.optaplanner.org/product/services.html[these services].
+
+
+[[relationshipWithKie]]
+=== Relationship with KIE
+
+OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
+It releases regularly (typically every 3 weeks) together.
+
+See <<architectureOverview,the architecture overview>> to learn more about the optional integration with http://www.drools.org/[Drools].
+
+[[downloadAndRunTheExamples]]
+== Download and run the examples
+
+
+[[getTheReleaseZipAndRunTheExamples]]
+=== Get the release ZIP and run the examples
+
+To try it now:
+
+. Download a release zip of OptaPlanner from https://www.optaplanner.org[the OptaPlanner website] and unzip it.
+. Open the directory [path]_examples_ and run the script.
++
+Linux or Mac:
++
+[source,sh,options="nowrap"]
+----
+$ cd examples
+$ ./runExamples.sh
+----
++
+Windows:
++
+[source,sh,options="nowrap"]
+----
+$ cd examples
+$ runExamples.bat
+----
+
+image::planner-introduction/distributionZip.png[align="center"]
+
+The Examples GUI application will open.
+Pick an example to try it out:
+
+image::planner-introduction/plannerExamplesAppScreenshot.png[align="center"]
+
+[NOTE]
+====
+OptaPlanner itself has no GUI dependencies.
+It runs just as well on a server or a mobile JVM as it does on the desktop.
+====
+
+
+[[runTheExamplesInAnIDE]]
+=== Run the examples in an IDE (IntelliJ, Eclipse, VSCode)
+
+To run the examples in your favorite IDE:
+
+* In IntelliJ IDEA, VSCode or a non-vanilla Eclipse:
++
+. Open the file [path]_examples/sources/pom.xml_ as a new project, the maven integration will take care of the rest.
+. Run the examples from the project.
+
+* In a vanilla Eclipse (which lacks the M2Eclipse plugin):
+. Open a new project for the directory [path]_examples/sources_ .
+. Add all the jars to the classpath from the directory [path]_binaries_ and the directory [path]_examples/binaries_ , except for the file [path]_examples/binaries/optaplanner-examples-*.jar_ .
+. Add the Java source directory [path]_src/main/java_ and the Java resources directory [path]_src/main/resources_ .
+. Create a run configuration:
+** Main class: `org.optaplanner.examples.app.OptaPlannerExamplesApp`
+** VM parameters (optional): `-Xmx512M -server`
+.. To run a specific example directly and skip the example selection window, run its `App` class (for example ``CloudBalancingApp``) instead of ``OptaPlannerExamplesApp``.
+. Run that run configuration.
+
+
+[[useWithMavenGradleEtc]]
+=== Use OptaPlanner with Maven, Gradle, or ANT
+
+The OptaPlanner jars are available in http://search.maven.org/#search|ga|1|org.optaplanner[the central maven repository]
+(and the snapshots in pass:macros[https://repository.jboss.org/nexus/index.html#nexus-search;gav~org.optaplanner~~~~[the JBoss maven repository\]]).
+
+If you use Maven, add a dependency to `optaplanner-core` in your `pom.xml`:
+
+[source,xml,options="nowrap"]
+----
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+      <version>...</version>
+    </dependency>
+----
+
+Or better yet, import the `optaplanner-bom` in `dependencyManagement` to avoid duplicating version numbers
+when adding other optaplanner dependencies later on:
+
+[source,xml,options="nowrap"]
+----
+<project>
+  ...
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.optaplanner</groupId>
+        <artifactId>optaplanner-bom</artifactId>
+        <type>pom</type>
+        <version>...</version>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.optaplanner</groupId>
+      <artifactId>optaplanner-persistence-jpa</artifactId>
+    </dependency>
+    ...
+  </dependencies>
+</project>
+----
+
+If you use Gradle, add a dependency to `optaplanner-core` in your `build.gradle`:
+
+[source,groovy,options="nowrap"]
+----
+dependencies {
+  implementation 'org.optaplanner:optaplanner-core:...'
+}
+----
+
+If you're still using ANT, copy all the jars from the download zip's `binaries` directory in your classpath.
+
+[NOTE]
+====
+The download zip's `binaries` directory contains far more jars then `optaplanner-core` actually uses.
+It also contains the jars used by other modules, such as ``optaplanner-benchmark``.
+
+Check the maven repository `pom.xml` files to determine the minimal dependency set of `optaplanner-core` etc.
+====
+
+
+[[buildFromSource]]
+=== Build OptaPlanner from source
+
+
+*Prerequisites*
+
+* Set up https://git-scm.com/[Git].
+* Authenticate on GitHub using either HTTPS or SSH.
+** See https://help.github.com/articles/set-up-git/[GitHub] for more information about setting up and authenticating Git.
+* Set up http://maven.apache.org/[Maven].
+
+Build and run the examples from source.
+
+. Clone `optaplanner` from GitHub (or alternatively, download https://github.com/kiegroup/optaplanner/zipball/main[the zipball]):
++
+[source,sh,options="nowrap"]
+----
+$ git clone https://github.com/kiegroup/optaplanner.git
+...
+----
+
+. Build it with Maven:
++
+[source,sh,options="nowrap"]
+----
+$ cd optaplanner
+$ mvn clean install -DskipTests
+...
+----
++
+[NOTE]
+====
+The first time, Maven might take a long time, because it needs to download jars.
+====
+
+. Run the examples:
++
+[source,sh,options="nowrap"]
+----
+$ cd optaplanner-examples
+$ mvn exec:java
+...
+----
+
+. Edit the sources in your favorite IDE.
+
