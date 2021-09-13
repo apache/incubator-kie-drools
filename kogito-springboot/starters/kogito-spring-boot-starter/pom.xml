@@ -30,10 +30,6 @@
       <groupId>org.kie.kogito</groupId>
       <artifactId>kogito-predictions-spring-boot-starter</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-serverless-workflow-runtime</artifactId>
-    </dependency>
   </dependencies>
 
 </project>
