@@ -20,6 +20,8 @@ type Mutation {
     NodeInstanceTrigger(id:String, nodeId:String): String
     NodeInstanceRetrigger(id:String, nodeInstanceId:String): String
     NodeInstanceCancel(id:String, nodeInstanceId:String): String
+    JobCancel(id: String): String
+    JobReschedule(id: String, data: String): String
 }
 
 type ProcessInstance {

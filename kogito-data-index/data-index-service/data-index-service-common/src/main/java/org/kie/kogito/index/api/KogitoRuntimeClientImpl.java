@@ -25,6 +25,7 @@ import java.util.concurrent.CompletableFuture;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
@@ -54,6 +55,9 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
     public static final String TRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodes/%s"; //node def
     public static final String RETRIGGER_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
     public static final String CANCEL_NODE_INSTANCE_PATH = "/management/processes/%s/instances/%s/nodeInstances/%s"; // nodeInstance Id
+
+    public static final String CANCEL_JOB_PATH = "/%s";
+    public static final String RESCHEDULE_JOB_PATH = "/%s";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
     private Vertx vertx;
@@ -141,6 +145,20 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
         return sendDeleteClientRequest(getWebClient(serviceURL), requestURI,
                 "Cancel NodeInstance " + nodeInstanceId +
                         "from ProcessInstance with id: " + processInstance.getId());
+    }
+
+    @Override
+    public CompletableFuture<String> cancelJob(String serviceURL, Job job) {
+        String requestURI = format(CANCEL_JOB_PATH, job.getId());
+        return sendDeleteClientRequest(getWebClient(serviceURL), requestURI, "CANCEL Job with id: " + job.getId());
+    }
+
+    @Override
+    public CompletableFuture<String> rescheduleJob(String serviceURL, Job job, String newJobData) {
+        String requestURI = format(RESCHEDULE_JOB_PATH, job.getId());
+        return sendPutClientRequest(getWebClient(serviceURL), requestURI,
+                "RESCHEDULED JOB with id: " + job.getId(), newJobData);
+
     }
 
     protected CompletableFuture sendDeleteClientRequest(WebClient webClient, String requestURI, String logMessage) {

@@ -203,7 +203,7 @@ public final class TestUtils {
                 .build();
     }
 
-    private static Job getJob(String jobId, String processId, String processInstanceId, String rootProcessId, String rootProcessInstanceId, String status) {
+    public static Job getJob(String jobId, String processId, String processInstanceId, String rootProcessId, String rootProcessInstanceId, String status) {
         Job job = new Job();
         job.setId(jobId);
         job.setProcessId(processId);

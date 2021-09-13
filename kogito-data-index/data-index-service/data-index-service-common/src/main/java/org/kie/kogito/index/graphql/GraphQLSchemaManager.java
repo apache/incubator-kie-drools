@@ -118,6 +118,8 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher("NodeInstanceTrigger", this::triggerNodeInstance);
                     builder.dataFetcher("NodeInstanceRetrigger", this::retriggerNodeInstance);
                     builder.dataFetcher("NodeInstanceCancel", this::cancelNodeInstance);
+                    builder.dataFetcher("JobCancel", this::cancelJob);
+                    builder.dataFetcher("JobReschedule", this::rescheduleJob);
                     return builder;
                 })
                 .type("ProcessInstance", builder -> {
@@ -191,6 +193,16 @@ public class GraphQLSchemaManager {
         return dataIndexApiExecutor.cancelNodeInstance(getServiceUrl(processInstance.getEndpoint(), processInstance.getProcessId()),
                 processInstance,
                 env.getArgument("nodeInstanceId"));
+    }
+
+    public CompletableFuture<String> cancelJob(DataFetchingEnvironment env) {
+        Job job = cacheService.getJobsCache().get(env.getArgument("id"));
+        return dataIndexApiExecutor.cancelJob(job.getEndpoint(), job);
+    }
+
+    public CompletableFuture<String> rescheduleJob(DataFetchingEnvironment env) {
+        Job job = cacheService.getJobsCache().get(env.getArgument("id"));
+        return dataIndexApiExecutor.rescheduleJob(job.getEndpoint(), job, env.getArgument("data"));
     }
 
     public CompletableFuture getProcessInstanceDiagram(DataFetchingEnvironment env) {

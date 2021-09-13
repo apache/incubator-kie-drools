@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
+import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
 import org.kie.kogito.index.service.AbstractIndexingIT;
@@ -32,6 +33,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.kie.kogito.index.TestUtils.getJob;
+import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessInstance;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
@@ -176,6 +179,38 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
 
         verify(dataIndexApiClient).cancelNodeInstance(eq("http://localhost:8080"),
                 eq(getProcessInstance(processId, processInstanceId, 1, null, null)), eq(nodeInstanceId));
+    }
+
+    @Test
+    void testJobCancel() {
+        String jobId = UUID.randomUUID().toString();
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+
+        KogitoJobCloudEvent event = getJobCloudEvent(jobId, processId, processInstanceId, null, null, "EXECUTED");
+
+        indexJobCloudEvent(event);
+        checkOkResponse("{ \"query\" : \"mutation{ JobCancel ( id: \\\"" + jobId + "\\\")}\"}");
+
+        verify(dataIndexApiClient).cancelJob(eq("http://localhost:8080/jobs"),
+                eq(getJob(jobId, processId, processInstanceId, null, null, "SCHEDULED")));
+    }
+
+    @Test
+    void testJobReschedule() {
+        String jobId = UUID.randomUUID().toString();
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+        String data = "jobNewData";
+
+        KogitoJobCloudEvent event = getJobCloudEvent(jobId, processId, processInstanceId, null, null, "EXECUTED");
+
+        indexJobCloudEvent(event);
+        checkOkResponse("{ \"query\" : \"mutation{ JobReschedule ( id: \\\"" + jobId + "\\\", data: \\\"" + data + "\\\")}\"}");
+
+        verify(dataIndexApiClient).rescheduleJob(eq("http://localhost:8080/jobs"),
+                eq(getJob(jobId, processId, processInstanceId, null, null, "SCHEDULED")),
+                eq(data));
     }
 
     private void checkOkResponse(String body) {

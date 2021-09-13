@@ -21,6 +21,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.TestUtils;
+import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.ProcessInstance;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
@@ -42,9 +43,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.ABORT_PROCESS_INSTANCE_PATH;
+import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_JOB_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.CANCEL_NODE_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTANCE_DIAGRAM_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.GET_PROCESS_INSTANCE_NODE_DEFINITIONS_PATH;
+import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RESCHEDULE_JOB_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RETRIGGER_NODE_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.RETRY_PROCESS_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.SKIP_PROCESS_INSTANCE_PATH;
@@ -67,6 +70,7 @@ public class KogitoRuntimeClientTest {
     private static int ERROR = 5;
     private static String SERVICE_URL = "http://runtimeURL.com";
     private static String PROCESS_INSTANCE_ID = "pId";
+    private static String JOB_ID = "jobId";
 
     private static String AUTHORIZED_TOKEN = "authToken";
 
@@ -255,6 +259,52 @@ public class KogitoRuntimeClientTest {
     }
 
     @Test
+    public void testCancelJob() {
+        when(webClientMock.delete(any())).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
+
+        Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
+        client.cancelJob(SERVICE_URL, job);
+
+        verify(client).sendDeleteClientRequest(webClientMock,
+                format(CANCEL_JOB_PATH, job.getId()),
+                "CANCEL Job with id: " + JOB_ID);
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        verify(httpRequestMock).send(handlerCaptor.capture());
+        HttpResponse response = mock(HttpResponse.class);
+
+        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
+        verify(response, never()).bodyAsString();
+
+        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
+        verify(response).bodyAsString();
+    }
+
+    @Test
+    public void testRescheduleJob() throws Exception {
+        String newJobData = "{ }";
+        when(webClientMock.put(any())).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(anyString(), anyString())).thenReturn(httpRequestMock);
+
+        Job job = createJob(JOB_ID, PROCESS_INSTANCE_ID, "SCHEDULED");
+
+        client.rescheduleJob(SERVICE_URL, job, newJobData);
+        verify(client).sendPutClientRequest(webClientMock,
+                format(RESCHEDULE_JOB_PATH, JOB_ID),
+                "RESCHEDULED JOB with id: " + job.getId(), newJobData);
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        JsonObject jsonOject = new JsonObject(newJobData);
+        verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
+        HttpResponse response = mock(HttpResponse.class);
+
+        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
+        verify(response, never()).bodyAsString();
+
+        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
+        verify(response).bodyAsString();
+    }
+
+    @Test
     public void testGetProcessInstanceDiagram() {
         setupIdentityMock();
         when(webClientMock.get(any())).thenReturn(httpRequestMock);
@@ -359,6 +409,10 @@ public class KogitoRuntimeClientTest {
 
     private ProcessInstance createProcessInstance(String processInstanceId, int status) {
         return TestUtils.getProcessInstance("travels", processInstanceId, status, null, null);
+    }
+
+    private Job createJob(String jobId, String processInstanceId, String status) {
+        return TestUtils.getJob(jobId, "travels", processInstanceId, null, null, status);
     }
 
     protected void setupIdentityMock() {
