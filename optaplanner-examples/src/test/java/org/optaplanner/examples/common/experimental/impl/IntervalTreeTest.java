@@ -153,6 +153,31 @@ public class IntervalTreeTest {
     }
 
     @Test
+    public void testIntervalAddUpdatingOldBreak() {
+        IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
+        Interval beforeAll = new Interval(1, 2);
+        Interval newStart = new Interval(3, 8);
+        Interval oldStart = new Interval(4, 5);
+        Interval betweenOldAndNewStart = new Interval(6, 7);
+        Interval afterAll = new Interval(9, 10);
+
+        tree.add(beforeAll);
+        verifyBreaks(tree);
+
+        tree.add(afterAll);
+        verifyBreaks(tree);
+
+        tree.add(oldStart);
+        verifyBreaks(tree);
+
+        tree.add(betweenOldAndNewStart);
+        verifyBreaks(tree);
+
+        tree.add(newStart);
+        verifyBreaks(tree);
+    }
+
+    @Test
     public void testOverlappingInterval() {
         IntervalTree<Interval, Integer, Integer> tree = getIntegerIntervalTree();
         Interval a = new Interval(0, 2);
@@ -232,6 +257,9 @@ public class IntervalTreeTest {
         IterableList<IntervalBreak<Interval, Integer, Integer>> breakList =
                 new IterableList<>(tree.getConsecutiveIntervalData().getBreaks());
 
+        if (clusterList.size() == 0) {
+            return;
+        }
         assertThat(breakList).hasSize(clusterList.size() - 1);
         for (int i = 0; i < clusterList.size() - 1; i++) {
             assertThat(breakList.get(i).getPreviousIntervalCluster()).isSameAs(clusterList.get(i));
@@ -315,6 +343,7 @@ public class IntervalTreeTest {
                 }
 
                 // Verify the mutable version matches the recompute version
+                verifyBreaks(tree);
                 assertThat(tree.getConsecutiveIntervalData().getIntervalClusters())
                         .as(op + " interval " + interval + " to " + old).containsExactlyElementsOf(intervalClusterList);
                 assertThat(tree.getConsecutiveIntervalData().getBreaks()).as(op + " interval " + interval + " to " + old)

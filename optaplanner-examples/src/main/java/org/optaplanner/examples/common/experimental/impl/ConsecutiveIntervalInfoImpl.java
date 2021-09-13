@@ -98,6 +98,12 @@ public final class ConsecutiveIntervalInfoImpl<Interval_, Point_ extends Compara
             clusterStartSplitPointToCluster.remove(oldStartSplitPoint);
             clusterStartSplitPointToCluster.put(firstIntersectedIntervalCluster.getStartSplitPoint(),
                     firstIntersectedIntervalCluster);
+            var nextBreak = clusterStartSplitPointToNextBreak.get(firstIntersectedIntervalCluster.getStartSplitPoint());
+            if (nextBreak != null) {
+                nextBreak.setPreviousCluster(firstIntersectedIntervalCluster);
+                nextBreak.setLength(differenceFunction.apply(nextBreak.getPreviousIntervalClusterEnd(),
+                        nextBreak.getNextIntervalClusterStart()));
+            }
         }
     }
 

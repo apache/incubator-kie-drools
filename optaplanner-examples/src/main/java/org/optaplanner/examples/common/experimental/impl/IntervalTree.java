@@ -86,9 +86,9 @@ public final class IntervalTree<Interval_, Point_ extends Comparable<Point_>, Di
         if (ceilingEndSplitPoint == null || !ceilingEndSplitPoint.equals(endSplitPoint)) {
             splitPointSet.add(endSplitPoint);
             endSplitPoint.createCollections();
-            endSplitPoint.addIntervalEndingAtSplitPoint(interval);
+            isChanged |= endSplitPoint.addIntervalEndingAtSplitPoint(interval);
         } else {
-            ceilingEndSplitPoint.addIntervalEndingAtSplitPoint(interval);
+            isChanged |= ceilingEndSplitPoint.addIntervalEndingAtSplitPoint(interval);
         }
 
         if (isChanged) {
