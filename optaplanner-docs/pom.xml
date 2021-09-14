@@ -34,8 +34,13 @@
         <groupId>org.asciidoctor</groupId>
         <artifactId>asciidoctor-maven-plugin</artifactId>
         <configuration>
+          <sourceDirectory>${basedir}/src/modules/ROOT/pages</sourceDirectory>
+          <resources>
+            <resource>
+              <directory>${basedir}/src/modules/ROOT/images</directory>
+            </resource>
+          </resources>
           <attributes>
-            <imagesdir>.</imagesdir>
             <project-version>${project.version}</project-version>
             <java-version>11</java-version>
             <maven-version>${maven.min.version}</maven-version>
@@ -57,6 +62,7 @@
               <backend>html5</backend>
               <outputDirectory>${project.build.directory}/generated-docs/html_single</outputDirectory>
               <attributes>
+                <imagesdir>.</imagesdir>
                 <source-highlighter>highlightjs</source-highlighter>
               </attributes>
             </configuration>
@@ -73,6 +79,7 @@
               <backend>pdf</backend>
               <outputDirectory>${project.build.directory}/generated-docs/pdf</outputDirectory>
               <attributes>
+                <imagesdir>${basedir}/src/modules/ROOT/images</imagesdir>
                 <source-highlighter>coderay</source-highlighter><!-- highlightjs does not work in PDF -->
               </attributes>
             </configuration>
