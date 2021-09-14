@@ -77,7 +77,7 @@ public abstract class KiePMMLClusteringModel extends KiePMMLModel {
         setEntityId(selectedEntityId);
         setAffinity(aggregates[selectedIndex]);
 
-        return clusters.get(selectedIndex).getId().orElseGet(() -> Integer.toString(selectedEntityId));
+        return selectedCluster.getId().orElseGet(() -> Integer.toString(selectedEntityId));
     }
 
     @Override
