@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 import javax.annotation.PostConstruct;
@@ -33,11 +35,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.ApplicationListener;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.event.ConsumerStartedEvent;
 import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.listener.KafkaMessageListenerContainer;
 import org.springframework.kafka.listener.MessageListener;
@@ -50,7 +54,7 @@ import org.springframework.util.concurrent.ListenableFutureCallback;
  */
 @Component
 @ConditionalOnProperty(name = "spring.kafka.bootstrap-servers")
-public class KafkaTestClient {
+public class KafkaTestClient implements ApplicationListener<ConsumerStartedEvent> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KafkaTestClient.class);
 
@@ -60,6 +64,8 @@ public class KafkaTestClient {
     private KafkaTemplate<String, String> producer;
 
     private KafkaMessageListenerContainer<String, String> container;
+
+    private CountDownLatch latch = new CountDownLatch(1);
 
     @PostConstruct
     public void setup() {
@@ -109,14 +115,13 @@ public class KafkaTestClient {
             container.setBeanName("kafka-test-client");
             container.start();
             try {
-                // Needs to wait for Consumer to get started. The only way to get a callback is using an SB application
-                // event, which we're avoiding to register the container as a bean to not interfere with the SB application
-                // context from the app under test.
+                latch.await(10, TimeUnit.SECONDS);
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         } else {
+            latch = new CountDownLatch(1);
             container.stop();
             container = null;
             consume(topics, callback);
@@ -146,6 +151,11 @@ public class KafkaTestClient {
                 LOGGER.info("Event published {}", result.getRecordMetadata());
             }
         };
+    }
+
+    @Override
+    public void onApplicationEvent(ConsumerStartedEvent event) {
+        latch.countDown();
     }
 
     @PreDestroy
