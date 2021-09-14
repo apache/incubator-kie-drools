@@ -77,7 +77,7 @@ This is called overconstrained planning.
 By default, OptaPlanner assigns all planning entities, overloads the planning values, and therefore breaks hard constraints.
 There are two ways to avoid this:
 
-* Use <<nullablePlanningVariable,nullable>> planning variables, so that some entities are unassigned.
+* Use xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable] planning variables, so that some entities are unassigned.
 * Add virtual values to catch the unassigned entities.
 
 
@@ -90,8 +90,8 @@ image::repeated-planning/overconstrainedPlanning.png[align="center"]
 
 To implement this:
 
-. Add a score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
-. Make the planning variable <<nullablePlanningVariable,nullable>>.
+. Add a score level (usually a medium level between the hard and soft level) by switching xref:score-calculation/score-calculation.adoc#scoreType[`Score` type].
+. Make the planning variable xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable].
 . Add a score constraint on the new level (usually a medium constraint) to penalize the number of unassigned entities (or a weighted sum of them).
 
 
@@ -103,7 +103,7 @@ In overconstrained planning with virtual values, the solution indicates which re
 
 To implement this:
 
-. Add an additional score level (usually a medium level between the hard and soft level) by switching <<scoreType,`Score` type>>.
+. Add an additional score level (usually a medium level between the hard and soft level) by switching xref:score-calculation/score-calculation.adoc#scoreType[`Score` type].
 . Add a number of virtual values. It can be difficult to determine a good formula to calculate that number:
 ** Do not add too many, as that will decrease solver efficiency.
 ** Importantly, do not add too few as that will lead to an infeasible solution.
@@ -173,7 +173,7 @@ However, it is stored in the database and used as a starting point for the next 
 Planning entities that are not in the current planning window.
 +
 ** If the planning window is too small to plan all entities, you're dealing with <<overconstrainedPlanning,overconstrained planning>>.
-** If <<assigningTimeToPlanningEntities,time is a planning variable>>, the size of the planning window is determined dynamically,
+** If xref:design-patterns/design-patterns.adoc#assigningTimeToPlanningEntities[time is a planning variable], the size of the planning window is determined dynamically,
 in which case the _unplanned_ stage is not applicable.
 
 image::repeated-planning/continuousPublishingWithRotation.png[align="center"]
@@ -357,7 +357,7 @@ public interface ProblemFactChange<Solution_> {
 The `ScoreDirector` must be updated with any change on the problem facts of planning entities in a `ProblemFactChange`.
 ====
 
-To write a `ProblemFactChange` correctly, it is important to understand the behavior of <<cloningASolution,a planning clone>>.
+To write a `ProblemFactChange` correctly, it is important to understand the behavior of xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone].
 
 A planning clone of a solution must fulfill these requirements:
 
@@ -401,14 +401,14 @@ Consider the following example of a `ProblemFactChange` implementation in the cl
 
 . Any change in a `ProblemFactChange` must be done on the `@PlanningSolution` instance of ``scoreDirector.getWorkingSolution()``.
 
-. The `workingSolution` is <<cloningASolution,a planning clone>> of the ``BestSolutionChangedEvent``'s ``bestSolution``.
+. The `workingSolution` is xref:planner-configuration/planner-configuration.adoc#cloningASolution[a planning clone] of the ``BestSolutionChangedEvent``'s ``bestSolution``.
 * The `workingSolution` in the `Solver` is never the same solution instance as in the rest of your application: it is a planning clone.
 * A planning clone also clones the planning entities and planning entity collections.
 +
 So any change on the planning entities must happen on the instances held by ``scoreDirector.getWorkingSolution()``.
 
 . Use the method `ScoreDirector.lookUpWorkingObject()` to translate and retrieve the working solution's instance of an object.
-This requires <<planningId, annotating a property of that class as the @PlanningId>>.
+This requires xref:optimization-algorithms/optimization-algorithms.adoc#planningId[annotating a property of that class as the @PlanningId].
 
 . A planning clone does not clone the problem facts, nor the problem fact collections.
 _Therefore the ``__workingSolution__`` and the ``__bestSolution__`` share the same problem fact instances and the same problem fact list instances._
@@ -435,11 +435,11 @@ This is a _warm start_ because its initial solution is the adjusted best solutio
 
 . Each solver phase runs again.
 +
-This implies the construction heuristic runs again, but because little or no planning variables are uninitialized (unless you have a <<nullablePlanningVariable,nullable planning variable>>), it finishes much quicker than in a cold start.
+This implies the construction heuristic runs again, but because little or no planning variables are uninitialized (unless you have a xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable planning variable]), it finishes much quicker than in a cold start.
 
 . Each configured `Termination` resets (both in solver and phase configuration), but a previous call to `terminateEarly()` is not undone.
 +
-`Termination` is not usually configured (except in daemon mode); instead, `Solver.terminateEarly()` is called when the results are needed. Alternatively, configure a `Termination` and use the daemon mode in combination with `<<SolverEventListener,BestSolutionChangedEvent>>` as described in the following section.
+`Termination` is not usually configured (except in daemon mode); instead, `Solver.terminateEarly()` is called when the results are needed. Alternatively, configure a `Termination` and use the daemon mode in combination with `xref:optimization-algorithms/optimization-algorithms.adoc#SolverEventListener[BestSolutionChangedEvent]` as described in the following section.
 
 
 [[daemon]]
@@ -471,7 +471,7 @@ To use the `Solver` in daemon mode:
 Do not forget to call `Solver.terminateEarly()` when your application needs to shutdown to avoid killing the solver thread unnaturally.
 ====
 
-. Subscribe to the `<<SolverEventListener,BestSolutionChangedEvent>>` to process new best solutions found by the solver thread.
+. Subscribe to the `xref:optimization-algorithms/optimization-algorithms.adoc#SolverEventListener[BestSolutionChangedEvent]` to process new best solutions found by the solver thread.
 +
 A `BestSolutionChangedEvent` does not guarantee that every `ProblemFactChange` has been processed already, nor that the solution is initialized and feasible.
 
@@ -506,7 +506,7 @@ But problems with the same publication deadline, solved by different organizatio
 are also initially better off with multi-stage planning, because of Conway's law
 and the high risk associated with unifying such groups.
 
-Similarly to <<partitionedSearch,Partitioned Search>>, multi-stage planning leads to suboptimal results.
+Similarly to xref:partitioned-search/partitioned-search.adoc#partitionedSearch[Partitioned Search], multi-stage planning leads to suboptimal results.
 Nevertheless, it might be beneficial in order to simplify the maintenance, ownership, and help to start a project.
 
-Do not confuse multi-stage planning with <<solverPhase,multi-phase solving>>.
+Do not confuse multi-stage planning with xref:optimization-algorithms/optimization-algorithms.adoc#solverPhase[multi-phase solving].

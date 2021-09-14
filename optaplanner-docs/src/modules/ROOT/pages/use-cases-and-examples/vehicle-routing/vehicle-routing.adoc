@@ -160,7 +160,7 @@ Homberger_1000_RC210_1 has 1 depots, 250 vehicles and 1000 customers with a sear
 
 image::use-cases-and-examples/vehicle-routing/vehicleRoutingClassDiagram.png[align="center"]
 
-The vehicle routing with timewindows domain model makes heavily use of <<shadowVariable,shadow variables>>.
+The vehicle routing with timewindows domain model makes heavily use of xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variables].
 This allows it to express its constraints more naturally, because properties such as `arrivalTime` and ``departureTime``, are directly available on the domain model.
 
 

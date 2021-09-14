@@ -73,7 +73,7 @@ Notice that a log message includes the `toString()` method of the `Move` impleme
 
 A naive Local Search configuration solves the four queens problem in three steps, by evaluating only 37 possible solutions (three steps with 12 moves each + one starting solution), which is only a fraction of all 256 possible solutions.
 It solves 16 queens in 31 steps, by evaluating only 7441 out of 18446744073709551616 possible solutions.
-By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's even a lot more efficient.
+By using a xref:construction-heuristics/construction-heuristics.adoc#constructionHeuristics[Construction Heuristics] phase first, it's even a lot more efficient.
 
 
 [[localSearchConceptsDecideTheNextStep]]
@@ -81,7 +81,7 @@ By using a <<constructionHeuristics,Construction Heuristics>> phase first, it's 
 
 Local Search decides the next step with the aid of three configurable components:
 
-* A `MoveSelector` which selects the possible moves of the current solution. See the chapter <<moveAndNeighborhoodSelection,move and neighborhood selection>>.
+* A `MoveSelector` which selects the possible moves of the current solution. See the chapter xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#moveAndNeighborhoodSelection[move and neighborhood selection].
 * An `Acceptor` which filters out unacceptable moves.
 * A `Forager` which gathers accepted moves and picks the next step from them.
 
@@ -106,7 +106,7 @@ In the example below, the `MoveSelector` generated the moves shown with the blue
 
 image::local-search/decideNextStepNQueens04.png[align="center"]
 
-<<logging,Turn on `trace` logging>> to show the decision making in the log:
+xref:planner-configuration/planner-configuration.adoc#logging[Turn on `trace` logging] to show the decision making in the log:
 
 [source,options="nowrap"]
 ----
@@ -126,7 +126,7 @@ DEBUG     LS step (0), time spent (6), score (-3), new best score (-3), accepted
 ----
 
 Because the last solution can degrade (for example in Tabu Search), the `Solver` remembers the best solution it has encountered through the entire search path.
-Each time the current solution is better than the last best solution, the current solution is <<cloningASolution,cloned>> and referenced as the new best solution.
+Each time the current solution is better than the last best solution, the current solution is xref:planner-configuration/planner-configuration.adoc#cloningASolution[cloned] and referenced as the new best solution.
 
 image::local-search/localSearchScoreOverTime.png[align="center"]
 
@@ -154,8 +154,8 @@ Breaking ties randomly leads to better results.
 ====
 It is possible to disable breaking ties randomly by explicitly setting `breakTieRandomly` to ``false``, but that's almost never a good idea:
 
-* If an earlier move is better than a later move with the same score, the score calculator should add an extra softer <<scoreLevel,score level>> to score the first move as slightly better. Don't rely on move selection order to enforce that.
-* Random tie breaking does not affect <<environmentMode,reproducibility>>.
+* If an earlier move is better than a later move with the same score, the score calculator should add an extra softer xref:score-calculation/score-calculation.adoc#scoreLevel[score level] to score the first move as slightly better. Don't rely on move selection order to enforce that.
+* Random tie breaking does not affect xref:planner-configuration/planner-configuration.adoc#environmentMode[reproducibility].
 
 ====
 
@@ -176,8 +176,8 @@ To evaluate only a random subset of all the moves, use:
 ----
 
 Unlike the n queens problem, real world problems require the use of ``acceptedCountLimit``.
-Start from an `acceptedCountLimit` that takes a step in less than two seconds. <<logging,Turn on INFO logging>> to see the step times.
-Use the <<benchmarker,Benchmarker>> to tweak the value.
+Start from an `acceptedCountLimit` that takes a step in less than two seconds. xref:planner-configuration/planner-configuration.adoc#logging[Turn on INFO logging] to see the step times.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to tweak the value.
 
 [IMPORTANT]
 ====
@@ -390,7 +390,7 @@ To avoid hard coding the tabu size, configure a tabu ratio, relative to the numb
 
 [IMPORTANT]
 ====
-When using move tabu and undo move tabu with <<customMoves,custom moves>>,
+When using move tabu and undo move tabu with xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#customMoves[custom moves],
 make sure that the planning entities do not include planning variables in their `hashCode` methods.
 Failure to do so results in runtime exceptions being thrown due to the `hashCode` not being constant,
 as the entities have their values changed by the local search algorithm.
@@ -408,7 +408,7 @@ Sometimes it's useful to combine tabu types:
 
 If the tabu size is too small, the solver can still get stuck in a local optimum.
 On the other hand, if the tabu size is too large, the solver can be inefficient by bouncing off the walls.
-Use the <<benchmarker,Benchmarker>> to fine tweak your configuration.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to fine tweak your configuration.
 
 
 [[simulatedAnnealing]]
@@ -435,7 +435,7 @@ In the end, it gradually turns into Hill Climbing, only accepting improving move
 === Configuration
 
 Start with a `simulatedAnnealingStartingTemperature` set to the maximum score delta a single move can cause.
-Use the <<benchmarker,Benchmarker>> to tweak the value.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to tweak the value.
 Advanced configuration:
 
 [source,xml,options="nowrap"]
@@ -739,7 +739,7 @@ Plug in a custom `Termination`, `MoveSelector`, `EntitySelector`, `ValueSelector
 [IMPORTANT]
 ====
 Extending `Config` classes is not covered by the backwards compatibility guarantee.
-Whenever possible, it's better to just use <<customPropertiesConfiguration,custom properties>> instead.
+Whenever possible, it's better to just use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties] instead.
 ====
 
 For example, to use a custom ``Termination``, extend the `AbstractTermination` class,

@@ -430,7 +430,7 @@ To write those solutions in the ``benchmarkDirectory``, enable ``writeOutputSolu
 [[benchmarkLogging]]
 === Benchmark logging
 
-Benchmark logging is configured like <<logging,solver logging>>.
+Benchmark logging is configured like xref:planner-configuration/planner-configuration.adoc#logging[solver logging].
 
 To separate the log messages of each single benchmark run into a separate file, use the http://logback.qos.ch/manual/mdc.html[MDC] with key `singleBenchmark.name` in a sifting appender.
 For example with Logback in ``logback.xml``:
@@ -707,7 +707,7 @@ On the other hand, for the Tabu Search and Late Acceptance, what you see is what
 ====
 
 *The best score over time statistic is very useful to detect abnormalities, such as a
-potential <<scoreTrap,score trap>> which gets the solver temporarily stuck in a local optima.*
+potential xref:score-calculation/score-calculation.adoc#scoreTrap[score trap] which gets the solver temporarily stuck in a local optima.*
 
 image::benchmarking-and-tweaking/letTheBestScoreStatisticGuideYou.png[align="center"]
 
@@ -735,7 +735,7 @@ But it shouldn't deteriorate too much either.
 ====
 The step score statistic has been seen to slow down the solver noticeably due to GC stress,
 especially for fast stepping algorithms
-(such as <<simulatedAnnealing,Simulated Annealing>> and <<lateAcceptance,Late Acceptance>>).
+(such as xref:local-search/local-search.adoc#simulatedAnnealing[Simulated Annealing] and xref:local-search/local-search.adoc#lateAcceptance[Late Acceptance]).
 ====
 
 
@@ -886,9 +886,9 @@ To see which constraints are matched in the best score (and how much) over time,
 .Constraint Match Total Best Score Diff Over Time Statistic
 image::benchmarking-and-tweaking/constraintMatchTotalBestScoreStatistic.png[align="center"]
 
-Requires the score calculation to support <<explainingTheScore,constraint matches>>.
-<<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>> support constraint matches automatically,
-but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires more work.
+Requires the score calculation to support xref:score-calculation/score-calculation.adoc#explainingTheScore[constraint matches].
+xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and <<droolsScoreCalculation,Drools score calculation>> support constraint matches automatically,
+but xref:score-calculation/score-calculation.adoc#incrementalJavaScoreCalculation[incremental Java score calculation] requires more work.
 
 [WARNING]
 ====
@@ -912,7 +912,7 @@ To see which constraints are matched in the step score (and how much) over time,
 .Constraint Match Total Step Score Diff Over Time Statistic
 image::benchmarking-and-tweaking/constraintMatchTotalStepScoreStatistic.png[align="center"]
 
-Also requires the score calculation to support <<explainingTheScore,constraint matches>>.
+Also requires the score calculation to support xref:score-calculation/score-calculation.adoc#explainingTheScore[constraint matches].
 
 [WARNING]
 ====
@@ -1025,7 +1025,7 @@ for example when running benchmarks on an application server or a cloud platform
 [NOTE]
 ====
 In the future, we will also support multi-JVM benchmarking.
-This feature is independent of <<multithreadedSolving,multithreaded solving>> or multi-JVM solving.
+This feature is independent of xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[multithreaded solving] or multi-JVM solving.
 ====
 
 
@@ -1059,7 +1059,7 @@ The `subSingleCount` defaults to `1` (so no statistical benchmarking).
 
 [NOTE]
 ====
-If `subSingleCount` is higher than ``1``, the benchmarker will automatically use a _different_<<randomNumberGenerator,`Random` seed>> for every sub single run, without losing reproducibility (for each sub single index) in <<environmentMode,EnvironmentMode>>``REPRODUCIBLE`` and lower.
+If `subSingleCount` is higher than ``1``, the benchmarker will automatically use a _different_ xref:planner-configuration/planner-configuration.adoc#randomNumberGenerator[`Random` seed] for every sub single run, without losing reproducibility (for each sub single index) in xref:planner-configuration/planner-configuration.adoc#environmentMode[EnvironmentMode] ``REPRODUCIBLE`` and lower.
 ====
 
 

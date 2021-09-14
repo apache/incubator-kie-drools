@@ -13,7 +13,7 @@
 
 It is often more efficient to partition large data sets (usually above 5000 planning entities)
 into smaller pieces and solve them separately.
-Partition Search is <<multithreadedSolving,multithreaded>>, so it provides a performance boost on multi-core machines
+Partition Search is xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[multithreaded], so it provides a performance boost on multi-core machines
 due to higher CPU utilization.
 Additionally, even when only using one CPU, it finds an initial solution faster,
 because the search space sum of a partitioned Construction Heuristic is far less than its non-partitioned variant.
@@ -46,7 +46,7 @@ Simplest configuration:
   </partitionedSearch>
 ----
 
-Also <<planningId,add a @PlanningId annotations>> on every planning entity class and planning value class.
+Also xref:optimization-algorithms/optimization-algorithms.adoc#planningId[add a @PlanningId annotations] on every planning entity class and planning value class.
 There are several ways to <<partitioningASolution,partition a solution>>.
 
 Advanced configuration:
@@ -66,15 +66,15 @@ Advanced configuration:
 The `runnablePartThreadLimit` allows limiting CPU usage to avoid hanging your machine, see below.
 
 To run in an environment that doesn't like arbitrary thread creation,
-plug in a <<customThreadFactory,custom thread factory>>.
+plug in a xref:optimization-algorithms/optimization-algorithms.adoc#customThreadFactory[custom thread factory].
 
 [IMPORTANT]
 ====
-A <<logging,logging level>> of `debug` or `trace` causes congestion in multithreaded Partitioned Search
-and slows down the <<scoreCalculationSpeed,score calculation speed>>.
+A xref:planner-configuration/planner-configuration.adoc#logging[logging level] of `debug` or `trace` causes congestion in multithreaded Partitioned Search
+and slows down the xref:score-calculation/score-calculation.adoc#scoreCalculationSpeed[score calculation speed].
 ====
 
-Just like a `<solver>` element, the `<partitionedSearch>` element can contain one or more <<solverPhase,phases>>.
+Just like a `<solver>` element, the `<partitionedSearch>` element can contain one or more xref:optimization-algorithms/optimization-algorithms.adoc#solverPhase[phases].
 Each of those phases will be run on each partition.
 
 A common configuration is to first run a Partitioned Search phase
@@ -200,8 +200,8 @@ public class CloudBalancePartitioner implements SolutionPartitioner<CloudBalance
 ----
 
 To configure values of a `SolutionPartitioner` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `solutionPartitionerCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `solutionPartitionerCustomProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties]:
 
 [source,xml,options="nowrap"]
 ----
@@ -224,11 +224,11 @@ However, OptaPlanner has a system to prevent CPU starving of
 other processes (such as an SSH connection in production or your IDE in development)
 or other threads (such as the servlet threads that handle REST requests).
 
-As explained in <<sizingHardwareAndSoftware, sizing hardware and software>>,
+As explained in xref:integration/integration.adoc#sizingHardwareAndSoftware[sizing hardware and software],
 each solver (including each child solver) does no IO during `solve()` and therefore saturates one CPU core completely.
 In Partitioned Search, every partition always has its own thread, called a part thread.
 It is impossible for two partitions to share a thread,
-because of <<asynchronousTermination,asynchronous termination>>: the second thread would never run.
+because of xref:optimization-algorithms/optimization-algorithms.adoc#asynchronousTermination[asynchronous termination]: the second thread would never run.
 Every part thread will try to consume one CPU core entirely, so if there are more partitions than CPU cores,
 this will probably hang the system.
 `Thread.setPriority()` is often too weak to solve this hogging problem, so another approach is used.

@@ -14,7 +14,7 @@ For simplicity's sake, all time slots have the same duration
 and there are no time slots during lunch or other breaks.
 
 A time slot has no date, because a high school schedule just repeats every week.
-So there is no need for https://docs.optaplanner.org/latestFinal/optaplanner-docs/html_single/index.html#continuousPlanning[continuous planning].
+So there is no need for xref:repeated-planning/repeated-planning.adoc#continuousPlanning[continuous planning].
 
 Create the `src/main/java/org/acme/schooltimetabling/domain/Timeslot.java` class:
 
@@ -219,5 +219,5 @@ The `room` field also has an `@PlanningVariable` annotation, for the same reason
 ====
 Determining the `@PlanningVariable` fields for an arbitrary constraint solving use case
 is often challenging the first time.
-Read <<domainModelingGuide,the domain modeling guidelines>> to avoid common pitfalls.
+Read xref:design-patterns/design-patterns.adoc#domainModelingGuide[the domain modeling guidelines] to avoid common pitfalls.
 ====

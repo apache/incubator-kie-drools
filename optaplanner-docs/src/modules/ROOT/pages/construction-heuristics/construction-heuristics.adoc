@@ -75,7 +75,7 @@ So it sorts the planning entities on decreasing difficulty.
 
 image::construction-heuristics/firstFitDecreasingNQueens04.png[align="center"]
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison].
 
 [NOTE]
 ====
@@ -122,7 +122,7 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 Like First Fit, but uses the weaker planning values first, because the strong planning values are more likely to be able to accommodate later planning entities.
 So it sorts the planning values on increasing strength.
 
-Requires the model to support <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
 
 [NOTE]
 ====
@@ -169,8 +169,8 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 Combines First Fit Decreasing and Weakest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on increasing strength.
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>
-and <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison]
+and xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
 
 [NOTE]
 ====
@@ -218,7 +218,7 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 Like First Fit, but uses the strong planning values first, because the strong planning values are more likely to have a lower soft cost to use.
 So it sorts the planning values on decreasing strength.
 
-Requires the model to support <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
 
 [NOTE]
 ====
@@ -265,8 +265,8 @@ For a very advanced configuration, see <<allocateEntityFromQueue,Allocate Entity
 Combines First Fit Decreasing and Strongest Fit.
 So it sorts the planning entities on decreasing difficulty and the planning values on decreasing strength.
 
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>
-and <<planningValueStrength,planning value strength comparison>>.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison]
+and xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
 
 [NOTE]
 ====
@@ -348,18 +348,18 @@ The `entitySorterManner` options are:
 
 * ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first.
 This usually increases pruning (and therefore improves scalability).
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
-* `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports <<planningEntityDifficulty,planning entity difficulty comparison>>, behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison].
+* `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison], behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
 * ``NONE``: Initialize the planning entities in original order.
 
 The `valueSorterManner` options are:
 
 * ``INCREASING_STRENGTH``: Evaluate the planning values in increasing strength.
-Requires the model to support <<planningValueStrength,planning value strength comparison>>.
-* `INCREASING_STRENGTH_IF_AVAILABLE` (default): If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``INCREASING_STRENGTH``, else like ``NONE``.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
+* `INCREASING_STRENGTH_IF_AVAILABLE` (default): If the model supports xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison], behave like ``INCREASING_STRENGTH``, else like ``NONE``.
 * ``DECREASING_STRENGTH``: Evaluate the planning values in decreasing strength.
-Requires the model to support <<planningValueStrength,planning value strength comparison>>.
-* ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``DECREASING_STRENGTH``, else like ``NONE``.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
+* ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison], behave like ``DECREASING_STRENGTH``, else like ``NONE``.
 * ``NONE``: Try the planning values in original order.
 
 Advanced configuration with <<weakestFitDecreasing,Weakest Fit Decreasing>> for a single entity class with one variable:
@@ -387,9 +387,9 @@ Advanced configuration with <<weakestFitDecreasing,Weakest Fit Decreasing>> for 
 
 Per step, the `QueuedEntityPlacer` selects one uninitialized entity from the `EntitySelector`
 and applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``).
-The <<mimicSelection,mimic selection>> ensures that the winning `Move` changes only the selected entity.
+The xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#mimicSelection[mimic selection] ensures that the winning `Move` changes only the selected entity.
 
-To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
+To customize the entity or value sorting, see xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#sortedSelection[sorted selection].
 For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
 
 If there are multiple planning variables, there's one `ChangeMoveSelector` per planning variable,
@@ -437,7 +437,7 @@ The easiest way to deal with multiple entity classes is to run a separate Constr
 There are several pick early types for Construction Heuristics:
 
 * ``NEVER``: Evaluate all the selected moves to initialize the variable(s).
-This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is not ``ONLY_DOWN``.
+This is the default if the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] is not ``ONLY_DOWN``.
 +
 [source,xml,options="nowrap"]
 ----
@@ -449,7 +449,7 @@ This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is 
   </constructionHeuristic>
 ----
 * ``FIRST_NON_DETERIORATING_SCORE``: Initialize the variable(s) with the first move that doesn't deteriorate the score, ignore the remaining selected moves.
-This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``.
+This is the default if the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] is ``ONLY_DOWN``.
 +
 [source,xml,options="nowrap"]
 ----
@@ -463,9 +463,9 @@ This is the default if the <<initializingScoreTrend,InitializingScoreTrend>> is 
 +
 [NOTE]
 ====
-If there are only negative constraints, but the <<initializingScoreTrend,InitializingScoreTrend>> is strictly not ``ONLY_DOWN``,
+If there are only negative constraints, but the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] is strictly not ``ONLY_DOWN``,
 it can sometimes make sense to apply FIRST_NON_DETERIORATING_SCORE.
-Use the <<benchmarker,Benchmarker>> to decide if the score quality loss is worth the time gain.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to decide if the score quality loss is worth the time gain.
 ====
 * ``FIRST_FEASIBLE_SCORE``: Initialize the variable(s) with the first move that has a feasible score.
 +
@@ -479,7 +479,7 @@ Use the <<benchmarker,Benchmarker>> to decide if the score quality loss is worth
   </constructionHeuristic>
 ----
 +
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, use `FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD` instead, because that's faster without any disadvantages.
+If the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] is ``ONLY_DOWN``, use `FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD` instead, because that's faster without any disadvantages.
 * ``FIRST_FEASIBLE_SCORE_OR_NON_DETERIORATING_HARD``: Initialize the variable(s) with the first move that doesn't deteriorate the feasibility of the score any further.
 +
 [source,xml,options="nowrap"]
@@ -688,8 +688,8 @@ Advanced configuration with <<cheapestInsertion,Cheapest Insertion>> for a singl
 
 Per step, the `PooledEntityPlacer` applies the winning `Move` (out of all the moves for that entity generated by the ``MoveSelector``).
 
-To customize the entity or value sorting, see <<sortedSelection,sorted selection>>.
-Other `Selector` customization (such as <<filteredSelection,filtering>> and <<limitedSelection,limiting>>) is supported too.
+To customize the entity or value sorting, see xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#sortedSelection[sorted selection].
+Other `Selector` customization (such as xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#filteredSelection[filtering] and xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#limitedSelection[limiting]) is supported too.
 
 For scaling out, see <<scalingConstructionHeuristics,scaling construction heuristics>>.
 
@@ -698,18 +698,18 @@ For scaling out, see <<scalingConstructionHeuristics,scaling construction heuris
 == Scaling construction heuristics
 
 If the Construction Heuristic takes a long time to solve and create an initial solution,
-there is too little time left for <<localSearch,Local Search>> to reach a near optimal solution.
+there is too little time left for xref:local-search/local-search.adoc#localSearch[Local Search] to reach a near optimal solution.
 
 Ideally, a Construction Heuristic should take less than 20 seconds from scratch
-and less than 50 milliseconds in <<realTimePlanning, real-time planning>>,
-so there is plenty of time left for <<localSearch,Local Search>>.
-If the <<benchmarker,Benchmarker>> proves that this is not the case, there's a number of improvements that can be done:
+and less than 50 milliseconds in xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning],
+so there is plenty of time left for xref:local-search/local-search.adoc#localSearch[Local Search].
+If the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] proves that this is not the case, there's a number of improvements that can be done:
 
 
 [[initializingScoreTrendShortcuts]]
 === InitializingScoreTrend shortcuts
 
-If the <<initializingScoreTrend,InitializingScoreTrend>> is ``ONLY_DOWN``, a Construction Heuristic algorithm (such as First Fit) is faster:
+If the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] is ``ONLY_DOWN``, a Construction Heuristic algorithm (such as First Fit) is faster:
 for an entity, it picks the first move for which the score does not deteriorate the last step score, ignoring all subsequent moves in that step.
 
 It can take that shortcut without reducing solution quality,
@@ -775,7 +775,7 @@ The order of the variables is important, especially in the sequential technique.
 In the sequential example above, it's better to select the `period` first and the `room` second (instead of the other way around),
 because there are more hard constraints that do not involve the room, such as _no teacher should teach two lectures at the same time_.
 
-Let the <<benchmarker,Benchmarker>> guide you.
+Let the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] guide you.
 ====
 
 With three or more variables, it's possible to combine the cartesian product and sequential techniques:
@@ -802,11 +802,11 @@ With three or more variables, it's possible to combine the cartesian product and
 [[otherScalingTechniquesInConstructionHeuristics]]
 === Other scaling techniques in construction heuristics
 
-<<partitionedSearch,Partitioned Search>> reduces the number of moves per step.
+xref:partitioned-search/partitioned-search.adoc#partitionedSearch[Partitioned Search] reduces the number of moves per step.
 On top of that, it runs the Construction Heuristic on the partitions in parallel.
 It is supported to only partition the Construction Heuristic phase.
 
 Other `Selector` customizations can also reduce the number of moves generated by step:
 
-* <<filteredSelection,Filtered selection>>
-* <<limitedSelection,Limited selection>>
+* xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#filteredSelection[Filtered selection]
+* xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#limitedSelection[Limited selection]

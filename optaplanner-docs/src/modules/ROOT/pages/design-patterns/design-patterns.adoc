@@ -27,17 +27,17 @@ Follow the guidelines listed in this section to create a well thought-out model 
 . *Determine which relationships (or fields) change during planning and color them orange.* One side of these relationships will become a planning variable later on. For example, in employee rostering, the `Shift` to `Employee` relationship changes during planning, so it is orange. However, other relationships, such as from `Employee` to `Skill`, are immutable during planning
 because Optaplanner cannot assign an extra skill to an employee.
 
-. *If there are multiple relationships (or fields), check for <<shadowVariable,shadow variables>>*.
+. *If there are multiple relationships (or fields), check for xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variables]*.
 A shadow variable changes during planning, but its value can be calculated based on one or more genuine planning variables, without dispute. Color shadow relationships (or fields) purple.
 +
 [NOTE]
 ====
-Only one side of a bi-directional relationship can be a genuine planning variable. The other side will become an <<bidirectionalVariable,inverse relation shadow variable>> later on. Keep bi-directional relationships orange.
+Only one side of a bi-directional relationship can be a genuine planning variable. The other side will become an xref:shadow-variable/shadow-variable.adoc#bidirectionalVariable[inverse relation shadow variable] later on. Keep bi-directional relationships orange.
 ====
 
-. *Check for <<chainedPlanningVariable,chained planning variables>>*.
+. *Check for xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variables]*.
 In a chained variable design, the focus is on deciding the order of a set of planning entity instances instead of assigning them to a date and time. However,  a shadow variable can assign the date and time.
-A typical use case is <<vehicleRouting,vehicle routing>>.
+A typical use case is xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[vehicle routing].
 
 . *If there is an orange many-to-many relationship, replace it
 with a one-to-many and a many-to-one relationship to a new intermediate class.*
@@ -56,7 +56,7 @@ image::design-patterns/employeeShiftRosteringModelingGuideA.png[align="center"]
 . *Annotate a many-to-one relationship with a `@PlanningEntity` annotation.* Usually the _many_ side of the relationship is the planning entity class that contains the planning variable. If the relationship is bi-directional, both sides are a planning entity class but usually the _many_ side has the planning variable and the _one_ side has the shadow variable. For example, in employee rostering, the `ShiftAssignment` class has an `@PlanningEntity` annotation.
 
 . *Make sure that the planning entity class has at least one problem property*. A planning entity class cannot consist of only planning variables or an ID and only planning variables.
-.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases <<searchSpaceSize,the search space size>> and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
+.. Remove any surplus `@PlanningVariable` annotations so that they become  problem properties. Doing this significantly decreases xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space size] and significantly increases solving efficiency. For example, in employee rostering, the `ShiftAssignment` class should not annotate both the `Shift` and `Employee` relationship with `@PlanningVariable`.
 .. Make sure that when all planning variables have a value of `null`, the planning entity instance is describable to the business people. Planning variables have a value of `null` when the planning solution is uninitialized.
 ** A surrogate ID does not suffice as the required minimum of one problem property.
 ** There is no need to add a hard constraint to assure that two planning entities are different. They are already different due to their problem properties.
@@ -75,7 +75,7 @@ image::design-patterns/entityVariableAndValueExamples.png[align="center"]
 
 [NOTE]
 ====
-Vehicle routing is different because it uses a <<chainedPlanningVariable,chained planning variable>>.
+Vehicle routing is different because it uses a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained planning variable].
 ====
 
 [[assigningTimeToPlanningEntities]]
@@ -99,9 +99,9 @@ Choose the right representation type for your use case:
 There are also several designs for assigning a planning entity to a starting time (or date):
 
 * If the starting time is fixed beforehand, it is not a planning variable (in that solver).
-** For example, in the <<bedAllocation,hospital bed planning>> example,
+** For example, in the xref:use-cases-and-examples/bed-allocation/bed-allocation.adoc#bedAllocation[hospital bed planning] example,
 the arrival day of each patient is fixed beforehand.
-** This is common in <<multiStagePlanning,multi stage planning>>,
+** This is common in xref:repeated-planning/repeated-planning.adoc#multiStagePlanning[multi stage planning],
 when the starting time has been decided already in an earlier planning stage.
 
 * If the starting time is not fixed, it is a planning variable (genuine or shadow).
@@ -141,13 +141,13 @@ image::design-patterns/assigningTimeToPlanningEntities2.png[align="center"]
 
 If all planning entities have *the same duration* (or can be inflated to the same duration), the Timeslot pattern is useful.
 The planning entities are assigned to a timeslot rather than time.
-For example in <<curriculumCourse,course timetabling>>, all lectures take one hour.
+For example in xref:use-cases-and-examples/course-timetabling/course-timetabling.adoc#curriculumCourse[course timetabling], all lectures take one hour.
 
 The timeslots can start at any time.
 For example, the timeslots start at 8:00, 9:00, 10:15 (after a 15-minute break), 11:15, ... They can even overlap, but that is unusual.
 
 It is also usable if all planning entities can be inflated to the same duration.
-For example in <<examination,exam timetabling>>, some exams take 90 minutes and others 120 minutes, but all timeslots are 120 minutes.
+For example in xref:use-cases-and-examples/exam-timetabling/exam-timetabling.adoc#examination[exam timetabling], some exams take 90 minutes and others 120 minutes, but all timeslots are 120 minutes.
 When an exam of 90 minutes is assigned to a timeslot, for the remaining 30 minutes, its seats are occupied too and cannot be used by another exam.
 
 Usually there is a second planning variable, for example the room.
@@ -162,15 +162,15 @@ Assigning humans to start a meeting at four seconds after 9 o'clock is pointless
 Therefore it is not necessary to allow a planning entity to be assigned subsecond, second or even one minute accuracy.
 The five minute or 15 minutes accuracy suffices.
 The TimeGrain pattern models such *time accuracy* by partitioning time as time grains.
-For example in <<meetingScheduling,meeting scheduling>>, all meetings start/end in hour, half hour, or 15-minute intervals before or after each hour, therefore the optimal settings for time grains is 15 minutes.
+For example in xref:use-cases-and-examples/meeting-scheduling/meeting-scheduling.adoc#meetingScheduling[meeting scheduling], all meetings start/end in hour, half hour, or 15-minute intervals before or after each hour, therefore the optimal settings for time grains is 15 minutes.
 
 Each planning entity is assigned to a start time grain.
 The end time grain is calculated by adding the duration in grains to the starting time grain.
 Overlap of two entities is determined by comparing their start and end time grains.
 
 This pattern also works well with a coarser time granularity (such as days, half days, hours, ...).
-With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore <<searchSpaceSize,the search space>>) can become too high, which reduces efficiency and scalability.
-However, such a solution is not impossible, as shown in <<cheapTimeScheduling,cheap time scheduling>>.
+With a finer time granularity (such as seconds, milliseconds, ...) and a long time window, the value range (and therefore xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space]) can become too high, which reduces efficiency and scalability.
+However, such a solution is not impossible, as shown in xref:use-cases-and-examples/cheap-time/cheap-time.adoc#cheapTimeScheduling[cheap time scheduling].
 
 
 [[chainedThroughTimePattern]]
@@ -180,12 +180,12 @@ If a person or a machine continuously works on **one task at a time in sequence*
 which means starting a task when the previous is finished (or with a deterministic delay), the Chained Through Time pattern is useful.
 For example, in the vehicle routing with time windows example, a vehicle drives from customer to customer (thus it handles one customer at a time).
 
-In this pattern, the planning entities are <<chainedPlanningVariable,chained>>.
+In this pattern, the planning entities are xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained].
 The anchor determines the starting time of its first planning entity.
 The second entity's starting time is calculated based on the starting time and duration of the first entity.
 For example, in task assignment, Beth (the anchor) starts working at 8:00, thus her first task starts at 8:00.
 It lasts 52 minutes, therefore her second task starts at 8:52.
-The starting time of an entity is usually <<shadowVariable,a shadow variable>>.
+The starting time of an entity is usually xref:shadow-variable/shadow-variable.adoc#shadowVariable[a shadow variable].
 
 An anchor has only one chain.
 Although it is possible to split up the anchor into two separate anchors, for example split up Beth into Beth's left hand and Beth's right hand (because she can do two tasks at the same time), this model makes pooling resources difficult.
@@ -197,7 +197,7 @@ Between planning entities, there are three ways to create gaps:
 * Only deterministic gaps: This is common for humans. For example, any task that crosses the 10:00 barrier gets an extra 15 minutes duration so the human can take a break.
 ** A deterministic gap can be subjected to complex business logic. For example in vehicle routing, a cross-continent truck driver needs to rest 15 minutes after two hours of driving (which may also occur during loading or unloading time at a customer location) and also needs to rest 10 hours after 14 hours of work.
 * Planning variable gaps: This is uncommon, because that extra planning variable reduces efficiency and scalability,
-(besides impacting the <<searchSpaceSize,search space>> too).
+(besides impacting the xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[search space] too).
 
 
 [[chainedThroughTimeAutomaticCollapse]]
@@ -213,7 +213,7 @@ if those two customers ordered from the same restaurant around the same time and
 
 image::design-patterns/chainedThroughTimeAutomaticCollapse.png[align="center"]
 
-Implement the automatic collapse in the <<customVariableListener,custom variable listener>>
+Implement the automatic collapse in the xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom variable listener]
 that calculates the start and end times of each task.
 
 
@@ -229,7 +229,7 @@ For example when assembling furniture, assembling a bed is a two-person job.
 
 image::design-patterns/chainedThroughTimeAutomaticDelayUntilLast.png[align="center"]
 
-Implement the automatic delay in the <<customVariableListener,custom variable listener>>
+Implement the automatic delay in the xref:shadow-variable/shadow-variable.adoc#customVariableListener[custom variable listener]
 that calculates the arrival, start and end times of each task.
 *Separate the arrival time from the start time.*
 Additionally, add loop detection to avoid an infinite loop:

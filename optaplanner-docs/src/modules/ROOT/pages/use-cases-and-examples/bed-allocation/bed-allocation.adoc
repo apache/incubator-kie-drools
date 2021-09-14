@@ -10,7 +10,7 @@ Assign each patient (that will come to the hospital) into a bed for each night t
 Each bed belongs to a room and each room belongs to a department.
 The arrival and departure dates of the patients is fixed: only a bed needs to be assigned for each night.
 
-This problem features <<overconstrainedPlanning,overconstrained>> datasets.
+This problem features xref:repeated-planning/repeated-planning.adoc#overconstrainedPlanning[overconstrained] datasets.
 
 image::use-cases-and-examples/bed-allocation/patientAdmissionScheduleUseCase.png[align="center"]
 

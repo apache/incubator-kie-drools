@@ -217,7 +217,7 @@ quarkus.optaplanner.solver.termination.spent-limit=5s
 ----
 
 OptaPlanner returns _the best solution_ found in the available termination time.
-Due to <<doesPlannerFindTheOptimalSolution,the nature of NP-hard problems>>,
+Due to xref:optimization-algorithms/optimization-algorithms.adoc#doesPlannerFindTheOptimalSolution[the nature of NP-hard problems],
 the best solution might not be optimal, especially for larger datasets.
 Increase the termination time to potentially find a better solution.
 

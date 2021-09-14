@@ -130,7 +130,7 @@ then a score is _feasible_ if no hard constraints are broken.
 ====
 By default, OptaPlanner will always assign all planning variables a planning value.
 If there is no feasible solution, this means the best solution will be infeasible.
-To instead leave some of the planning entities unassigned, apply <<overconstrainedPlanning,overconstrained planning>>.
+To instead leave some of the planning entities unassigned, apply xref:repeated-planning/repeated-planning.adoc#overconstrainedPlanning[overconstrained planning].
 ====
 
 For each constraint, you need to pick a score level, a score weight and a score signum.
@@ -284,7 +284,7 @@ Most use cases use a ``HardSoftScore``.
 [NOTE]
 ====
 To properly write a `Score` to a database (with JPA/Hibernate) or to XML/JSON (with XStream/JAXB/Jackson),
-see <<integration,the integration chapter>>.
+see xref:integration/integration.adoc#integration[the integration chapter].
 ====
 
 
@@ -399,8 +399,8 @@ Then hook your custom `ScoreDefinition` in the domain:
     private MyCustomScore score;
 ----
 
-To have it integrate seamlessly with <<jpaAndHibernatePersistingAScore,JPA/Hibernate>>,
-<<integrationWithXStream,XStream>>, <<integrationWithJackson,Jackson>>, ...,
+To have it integrate seamlessly with xref:integration/integration.adoc#jpaAndHibernatePersistingAScore[JPA/Hibernate],
+xref:integration/integration.adoc#integrationWithXStream[XStream], xref:integration/integration.adoc#integrationWithJackson[Jackson], ...,
 you'll need to write custom glue code too.
 
 
@@ -414,9 +414,9 @@ you'll need to write custom glue code too.
 There are several ways to calculate the `Score` of a solution:
 
 * **<<easyJavaScoreCalculation,Easy Java score calculation>>**: Implement all constraints together in a single method in Java (or another JVM language). Does not scale.
-* **<<constraintStreams,Constraint streams score calculation>>**: Implement each constraint as a separate Constraint Stream in Java (or another JVM language). Fast and scalable.
+* **xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams score calculation]**: Implement each constraint as a separate Constraint Stream in Java (or another JVM language). Fast and scalable.
 * **<<incrementalJavaScoreCalculation,Incremental Java score calculation>>** (not recommended): Implement multiple low-level methods in Java (or another JVM language). Fast and scalable. Very difficult to implement and maintain.
-* **<<droolsScoreCalculation,Drools score calculation>>**: Implement each constraint as a separate score rule in DRL. Scalable.
+* **xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation]**: Implement each constraint as a separate score rule in DRL. Scalable.
 
 Every score calculation type can work with any Score definition (such as ``HardSoftScore`` or ``HardMediumSoftScore``).
 All score calculation types are Object Oriented and can reuse existing Java code.
@@ -427,11 +427,11 @@ The score calculation must be read-only.
 It must not change the planning entities or the problem facts in any way.
 For example, it must not call a setter method on a planning entity in the score calculation.
 
-OptaPlanner does not recalculate the score of a solution if it can predict it (unless an <<environmentMode,environmentMode assertion>> is enabled).
+OptaPlanner does not recalculate the score of a solution if it can predict it (unless an xref:planner-configuration/planner-configuration.adoc#environmentMode[environmentMode assertion] is enabled).
 For example, after a winning step is done, there is no need to calculate the score because that move was done and undone earlier.
 As a result, there is no guarantee that changes applied during score calculation actually happen.
 
-To update planning entities when the planning variable change, use <<shadowVariable,shadow variables>> instead.
+To update planning entities when the planning variable change, use xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variables] instead.
 ====
 
 
@@ -504,8 +504,8 @@ Configure it in the solver configuration:
 ----
 
 To configure values of an `EasyScoreCalculator` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `easyScoreCalculatorCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `easyScoreCalculatorCustomProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties]:
 
 [source,xml,options="nowrap"]
 ----
@@ -672,8 +672,8 @@ the assertions triggered by the ``environmentMode``.
 ====
 
 To configure values of an `IncrementalScoreCalculator` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `incrementalScoreCalculatorCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>:
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `incrementalScoreCalculatorCustomProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties]:
 
 [source,xml,options="nowrap"]
 ----
@@ -794,7 +794,7 @@ Alternatively, you can also specify the trend for each score level separately:
 [[invalidScoreDetection]]
 === Invalid score detection
 
-When you put the <<environmentMode,`environmentMode`>> in `FULL_ASSERT` (or ``FAST_ASSERT``),
+When you put the xref:planner-configuration/planner-configuration.adoc#environmentMode[`environmentMode`] in `FULL_ASSERT` (or ``FAST_ASSERT``),
 it will detect score corruption in the <<incrementalScoreCalculation,incremental score calculation>>.
 However, that will not verify that your score calculator actually implements your score constraints as your business desires.
 For example, one constraint might consistently match the wrong pattern.
@@ -818,7 +818,7 @@ This way, the `NQueensConstraintProvider` implementation is validated by the ``E
 ====
 This works well to isolate score corruption,
 but to verify that the constraint implement the real business needs,
-<<constraintStreamsTesting, a unit test with a ConstraintVerifier>> is usually better.
+xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[a unit test with a ConstraintVerifier] is usually better.
 ====
 
 
@@ -873,7 +873,7 @@ Similarly in employee rostering:
 image::score-calculation/incrementalScoreCalculationEmployeeRostering.png[align="center"]
 
 This is a huge performance and scalability gain.
-*<<constraintStreams,Constraint Streams>> or <<droolsScoreCalculation,Drools score calculation>> give you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
+*xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] or xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] give you this huge scalability gain without forcing you to write a complicated incremental score calculation algorithm.*
 Just let the rule engine do the hard work.
 
 Notice that the speedup is relative to the size of your planning problem (your __n__), making incremental score calculation far more scalable.
@@ -886,7 +886,7 @@ Do not call remote services in your score calculation (except if you are bridgin
 Cache the results of those remote services if possible.
 
 If some parts of a constraint can be calculated once, when the `Solver` starts, and never change during solving,
-then turn them into <<cachedProblemFact,cached problem facts>>.
+then turn them into xref:planner-configuration/planner-configuration.adoc#cachedProblemFact[cached problem facts].
 
 
 [[pointlessConstraints]]
@@ -910,7 +910,7 @@ There is no need to dynamically change your score calculation based on the datas
 Instead of implementing a hard constraint, it can sometimes be built in.
 For example, if `Lecture` A should never be assigned to `Room` X, but it uses `ValueRangeProvider` on Solution,
 so the `Solver` will often try to assign it to `Room` X too (only to find out that it breaks a hard constraint).
-Use <<valueRangeProviderOnPlanningEntity,a ValueRangeProvider on the planning entity>> or <<filteredSelection,filtered selection>> to define that Course A should only be assigned a `Room` different than X.
+Use xref:planner-configuration/planner-configuration.adoc#valueRangeProviderOnPlanningEntity[a ValueRangeProvider on the planning entity] or xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#filteredSelection[filtered selection] to define that Course A should only be assigned a `Room` different than X.
 
 This can give a good performance gain in some use cases, not just because the score calculation is faster,
 but mainly because most optimization algorithms will spend less time evaluating infeasible solutions.
@@ -982,7 +982,7 @@ There are several ways to deal with a score trap:
 
 Not all score constraints have the same performance cost.
 Sometimes one score constraint can kill the score calculation performance outright.
-Use the <<benchmarker,Benchmarker>> to do a one minute run and check what happens to the score calculation speed if you comment out all but one of the score constraints.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to do a one minute run and check what happens to the score calculation speed if you comment out all but one of the score constraints.
 
 
 [[fairnessScoreConstraints]]
@@ -1064,7 +1064,7 @@ public class ConferenceSolution {
 ----
 
 The `@ConstraintConfigurationProvider` annotation automatically exposes the constraint configuration
-as a <<problemFacts,problem fact>>, there is no need to add a `@ProblemFactProperty` annotation.
+as a xref:planner-configuration/planner-configuration.adoc#problemFacts[problem fact], there is no need to add a `@ProblemFactProperty` annotation.
 
 The constraint configuration class holds the <<constraintWeight, constraint weights>>,
 but it can also hold constraint parameters.
@@ -1097,7 +1097,7 @@ public class ConferenceConstraintConfiguration {
 }
 ----
 
-The type of the constraint weights must be the same score class as <<scoreOfASolution,the planning solution's score member>>.
+The type of the constraint weights must be the same score class as xref:planner-configuration/planner-configuration.adoc#scoreOfASolution[the planning solution's score member].
 For example in conference scheduling, `ConferenceSolution.getScore()` and `ConferenceConstraintConfiguration.getSpeakerConflict()`
 both return a `HardMediumSoftScore`.
 
@@ -1113,10 +1113,10 @@ These connect the constraint weight with the constraint implementation.
 *For each constraint weight, there must be a constraint implementation with the same package and the same name.*
 
 * The `@ConstraintConfiguration` annotation has a `constraintPackage` property that defaults to the package of the constraint configuration class.
-Most cases with <<droolsScoreCalculation,Drools score calculation>>, need to override that because the DRLs use another package.
+Most cases with xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation], need to override that because the DRLs use another package.
 For example, the DRL below uses the package `...conferencescheduling.score`,
 so the constraint configuration above specifies a `constraintPackage`.
-Cases with <<constraintStreams,Constraint streams>>, normally don't need to specify it.
+Cases with xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams], normally don't need to specify it.
 
 * The `@ConstraintWeight` annotation has a `value` which is the constraint name (for example "Speaker conflict").
 It inherits the constraint package from the `@ConstraintConfiguration`,
@@ -1125,7 +1125,7 @@ to use a different constraint package than some of the other weights.
 
 So every constraint weight ends up with a constraint package and a constraint name.
 Each constraint weight links with a constraint implementation,
-for example in <<droolsScoreCalculation,Drools score calculation>>:
+for example in xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation]:
 
 [source,options="nowrap"]
 ----
@@ -1265,7 +1265,7 @@ The sum of all the `ConstraintMatchTotal.getScore()` equals the overall score.
 
 [NOTE]
 ====
-<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 
@@ -1298,7 +1298,7 @@ The sum of all the `Indictment.getScoreTotal()` differs from the overall score, 
 
 [NOTE]
 ====
-<<constraintStreams,Constraint streams>> and <<droolsScoreCalculation,Drools score calculation>> supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
+xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation] supports constraint matches automatically, but <<incrementalJavaScoreCalculation,incremental Java score calculation>> requires
 <<constraintMatchAwareIncrementalScoreCalculator,implementing an extra interface>>.
 ====
 
@@ -1308,5 +1308,5 @@ The sum of all the `Indictment.getScoreTotal()` differs from the overall score, 
 
 It's recommended to write a unit test for each score constraint individually to check that it behaves correctly.
 Different score calculation types come with different tools for testing.
-For more, see <<constraintStreamsTesting,testing Constraint Streams>> or
-<<testingDroolsConstraints,testing Drools constraints>>.
+For more, see xref:constraint-streams/constraint-streams.adoc#constraintStreamsTesting[testing Constraint Streams] or
+xref:drools-score-calculation/drools-score-calculation.adoc#testingDroolsConstraints[testing Drools constraints].

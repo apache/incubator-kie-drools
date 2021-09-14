@@ -40,10 +40,10 @@ This search space size calculation includes infeasible solutions (if they can be
 Even in cases where adding some of the hard constraints in the formula is practical (for example, Course Scheduling), the resulting search space is still huge.
 ====
 
-An algorithm that checks every possible solution (even with pruning, such as in <<branchAndBound,Branch And Bound>>) can easily run for billions of years on a single real-life planning problem.
+An algorithm that checks every possible solution (even with pruning, such as in xref:exhaustive-search/exhaustive-search.adoc#branchAndBound[Branch And Bound]) can easily run for billions of years on a single real-life planning problem.
 The aim is to find the best solution in the available timeframe.
 Planning competitions (such as the International Timetabling Competition) show that Local Search variations
-(<<tabuSearch,Tabu Search>>, <<simulatedAnnealing,Simulated Annealing>>, <<lateAcceptance,Late Acceptance>>, ...)
+(xref:local-search/local-search.adoc#tabuSearch[Tabu Search], xref:local-search/local-search.adoc#simulatedAnnealing[Simulated Annealing], xref:local-search/local-search.adoc#lateAcceptance[Late Acceptance], ...)
 usually perform best for real-world problems given real-world time limitations.
 
 
@@ -59,7 +59,7 @@ The business wants the optimal solution, but they also have other requirements:
 
 Given these requirements, and despite the promises of some salesmen, it is usually impossible for anyone or anything to find the optimal solution.
 Therefore, OptaPlanner focuses on finding the best solution in available time.
-In <<examplesOverview,"realistic, independent competitions">>, it often comes out as the best _reusable_ software.
+In xref:use-cases-and-examples/examples-overview/examples-overview.adoc#examplesOverview["realistic, independent competitions"], it often comes out as the best _reusable_ software.
 
 The nature of NP-complete problems make scaling a prime concern.
 
@@ -82,7 +82,7 @@ This combination is very efficient, because:
 
 * A rule engine, such as Drools, is *great for calculating the score* of a solution of a planning problem.
 It makes it easy and scalable to add additional soft or hard constraints.
-It does <<incrementalScoreCalculation,incremental score calculation (deltas)>> without any extra code.
+It does xref:score-calculation/score-calculation.adoc#incrementalScoreCalculation[incremental score calculation (deltas)] without any extra code.
 However it tends to be not suitable to actually find new solutions.
 * An optimization algorithm is *great at finding new improving solutions* for a planning problem,
 without necessarily brute-forcing every possibility.
@@ -107,29 +107,29 @@ Each of these algorithm families have multiple optimization algorithms:
 |Algorithm |Scalable? |Optimal? |Easy to use? |Tweakable? |Requires CH?
 
 6+|**Exhaustive Search (ES)**
-|  <<bruteForce,Brute Force>> |0/5 |5/5 |5/5 |0/5 |No
-|  <<branchAndBound,Branch And Bound>> |0/5 |5/5 |4/5 |2/5 |No
+|  xref:exhaustive-search/exhaustive-search.adoc#bruteForce[Brute Force] |0/5 |5/5 |5/5 |0/5 |No
+|  xref:exhaustive-search/exhaustive-search.adoc#branchAndBound[Branch And Bound] |0/5 |5/5 |4/5 |2/5 |No
 6+|**Construction heuristics (CH)**
-|  <<firstFit,First Fit>> |5/5 |1/5 |5/5 |1/5 |No
-|  <<firstFitDecreasing,First Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
-|  <<weakestFit,Weakest Fit>> |5/5 |2/5 |4/5 |2/5 |No
-|  <<weakestFitDecreasing,Weakest Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
-|  <<strongestFit,Strongest Fit>> |5/5 |2/5 |4/5 |2/5 |No
-|  <<strongestFitDecreasing,Strongest Fit Decreasing>> |5/5 |2/5 |4/5 |2/5 |No
-|  <<cheapestInsertion,Cheapest Insertion>> |3/5 |2/5 |5/5 |2/5 |No
-|  <<regretInsertion,Regret Insertion>> |3/5 |2/5 |5/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#firstFit[First Fit] |5/5 |1/5 |5/5 |1/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#firstFitDecreasing[First Fit Decreasing] |5/5 |2/5 |4/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#weakestFit[Weakest Fit] |5/5 |2/5 |4/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#weakestFitDecreasing[Weakest Fit Decreasing] |5/5 |2/5 |4/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#strongestFit[Strongest Fit] |5/5 |2/5 |4/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#strongestFitDecreasing[Strongest Fit Decreasing] |5/5 |2/5 |4/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#cheapestInsertion[Cheapest Insertion] |3/5 |2/5 |5/5 |2/5 |No
+|  xref:construction-heuristics/construction-heuristics.adoc#regretInsertion[Regret Insertion] |3/5 |2/5 |5/5 |2/5 |No
 6+|**Metaheuristics (MH)**
 6+|  Local Search (LS)
-|    <<hillClimbing,Hill Climbing>> |5/5 |2/5 |4/5 |3/5 |Yes
-|    <<tabuSearch,Tabu Search>> |5/5 |4/5 |3/5 |5/5 |Yes
-|    <<simulatedAnnealing,Simulated Annealing>> |5/5 |4/5 |2/5 |5/5 |Yes
-|    <<lateAcceptance,Late Acceptance>> |5/5 |4/5 |3/5 |5/5 |Yes
-|    <<greatDeluge,Great Deluge>> |5/5 |4/5 |3/5 |5/5 |Yes
-|    <<stepCountingHillClimbing,Step Counting Hill Climbing>> |5/5 |4/5 |3/5 |5/5 |Yes
-|    <<variableNeighborhoodDescent,Variable Neighborhood Descent>> |3/5 |3/5 |2/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#hillClimbing[Hill Climbing] |5/5 |2/5 |4/5 |3/5 |Yes
+|    xref:local-search/local-search.adoc#tabuSearch[Tabu Search] |5/5 |4/5 |3/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#simulatedAnnealing[Simulated Annealing] |5/5 |4/5 |2/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#lateAcceptance[Late Acceptance] |5/5 |4/5 |3/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#greatDeluge[Great Deluge] |5/5 |4/5 |3/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#stepCountingHillClimbing[Step Counting Hill Climbing] |5/5 |4/5 |3/5 |5/5 |Yes
+|    xref:local-search/local-search.adoc#variableNeighborhoodDescent[Variable Neighborhood Descent] |3/5 |3/5 |2/5 |5/5 |Yes
 6+|  Evolutionary Algorithms (EA)
-|    <<evolutionaryStrategies,Evolutionary Strategies>> |3/5 |3/5 |2/5 |5/5 |Yes
-|    <<geneticAlgorithms,Genetic Algorithms>> |3/5 |3/5 |2/5 |5/5|Yes
+|    xref:evolutionary-algorithms/evolutionary-algorithms.adoc#evolutionaryStrategies[Evolutionary Strategies] |3/5 |3/5 |2/5 |5/5 |Yes
+|    xref:evolutionary-algorithms/evolutionary-algorithms.adoc#geneticAlgorithms[Genetic Algorithms] |3/5 |3/5 |2/5 |5/5|Yes
 |===
 
 To learn more about metaheuristics, see  http://www.cs.gmu.edu/~sean/book/metaheuristics/[Essentials of Metaheuristics] or http://www.cleveralgorithms.com/[Clever Algorithms].
@@ -142,22 +142,22 @@ The best optimization algorithms configuration to use depends heavily on your us
 However, this basic procedure provides a good starting configuration that will produce better than average results.
 
 . Start with a quick configuration that involves little or no configuration and optimization code:
- See <<firstFit,First Fit>>.
+ See xref:construction-heuristics/construction-heuristics.adoc#firstFit[First Fit].
 
-. Next, implement <<planningEntityDifficulty,planning entity difficulty>> comparison and turn it into <<firstFitDecreasing,First Fit Decreasing>>.
+. Next, implement xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty] comparison and turn it into xref:construction-heuristics/construction-heuristics.adoc#firstFitDecreasing[First Fit Decreasing].
 
 . Next, add Late Acceptance behind it:
 .. First Fit Decreasing.
-.. <<lateAcceptance,Late Acceptance>>.
+.. xref:local-search/local-search.adoc#lateAcceptance[Late Acceptance].
 
 At this point, the return on invested time lowers and the result is likely to be sufficient.
 
 However, this can be improved at a lower return on invested time.
-Use the <<benchmarker,Benchmarker>> and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] and try a couple of different Tabu Search, Simulated Annealing and Late Acceptance configurations, for example:
 
-. First Fit Decreasing: <<tabuSearch,Tabu Search>>.
+. First Fit Decreasing: xref:local-search/local-search.adoc#tabuSearch[Tabu Search].
 
-Use the <<benchmarker,Benchmarker>> to improve the values for the size parameters.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to improve the values for the size parameters.
 
 Other experiments can also be run. For example, the following multiple algorithms can be combined together:
 
@@ -173,7 +173,7 @@ Many optimization algorithms have parameters that affect results and scalability
 OptaPlanner applies __configuration by exception__, so all optimization algorithms have default parameter values.
 This is very similar to the Garbage Collection parameters in a JVM: most users have no need to tweak them, but power users often do.
 
-The default parameter values are sufficient for many cases (and especially for prototypes), but if development time allows, it may be beneficial to power tweak them with the <<benchmarker,benchmarker>> for better results and scalability on a specific use case.
+The default parameter values are sufficient for many cases (and especially for prototypes), but if development time allows, it may be beneficial to power tweak them with the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[benchmarker] for better results and scalability on a specific use case.
 The documentation for each optimization algorithm also declares the advanced configuration for power tweaking.
 
 [WARNING]
@@ -265,7 +265,7 @@ These form four nested scopes:
 
 image::optimization-algorithms/scopeOverview.png[align="center"]
 
-Configure <<logging,logging>> to display the log messages of each scope.
+Configure xref:planner-configuration/planner-configuration.adoc#logging[logging] to display the log messages of each scope.
 
 
 [[termination]]
@@ -284,12 +284,12 @@ Finding the best solution in the available time is the most important outcome.
 [IMPORTANT]
 ====
 If no termination is configured (and a metaheuristic algorithm is used), the `Solver` will run forever, until <<asynchronousTermination,terminateEarly()>> is called from another thread.
-This is especially common during <<realTimePlanning,real-time planning>>.
+This is especially common during xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning].
 ====
 
 For synchronous termination, configure a `Termination` on a `Solver` or a `Phase` when it needs to stop.
 The built-in implementations of these should be sufficient,
-but <<customTerminationSelectorOrAcceptor,custom terminations>> are supported too.
+but xref:local-search/local-search.adoc#customTerminationSelectorOrAcceptor[custom terminations] are supported too.
 Every `Termination` can calculate a _time gradient_ (needed for some optimization algorithms),
 which is a ratio between the time already spent solving and the estimated entire solving time of the `Solver` or `Phase`.
 
@@ -512,7 +512,7 @@ This effectively implies a threshold of `1hard/-2147483648soft`, because it reli
 === `BestScoreTermination`
 
 `BestScoreTermination` terminates when a certain score has been reached.
-Use this `Termination` where the perfect score is known, for example for four queens (which uses a <<simpleScore,SimpleScore>>):
+Use this `Termination` where the perfect score is known, for example for four queens (which uses a xref:score-calculation/score-calculation.adoc#simpleScore[SimpleScore]):
 
 [source,xml,options="nowrap"]
 ----
@@ -521,7 +521,7 @@ Use this `Termination` where the perfect score is known, for example for four qu
   </termination>
 ----
 
-A planning problem with a <<hardSoftScore,HardSoftScore>> may look like this:
+A planning problem with a xref:score-calculation/score-calculation.adoc#hardSoftScore[HardSoftScore] may look like this:
 
 [source,xml,options="nowrap"]
 ----
@@ -530,7 +530,7 @@ A planning problem with a <<hardSoftScore,HardSoftScore>> may look like this:
   </termination>
 ----
 
-A planning problem with a <<bendableScore,BendableScore>> with three hard levels and one soft level may look like this:
+A planning problem with a xref:score-calculation/score-calculation.adoc#bendableScore[BendableScore] with three hard levels and one soft level may look like this:
 
 [source,xml,options="nowrap"]
 ----
@@ -610,7 +610,7 @@ This is useful for benchmarking.
   </termination>
 ----
 
-Switching <<environmentMode,EnvironmentMode>> can heavily impact when this termination ends.
+Switching xref:planner-configuration/planner-configuration.adoc#environmentMode[EnvironmentMode] can heavily impact when this termination ends.
 
 
 [[combiningMultipleTerminations]]
@@ -720,7 +720,7 @@ For example, to implement a custom Construction Heuristic without implementing a
 [NOTE]
 ====
 Most of the time, a custom solver phase is not worth the development time investment.
-The supported <<constructionHeuristics,Constructions Heuristics>> are configurable (use the <<benchmarker,Benchmarker>> to tweak them),
+The supported xref:construction-heuristics/construction-heuristics.adoc#constructionHeuristics[Constructions Heuristics] are configurable (use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to tweak them),
 `Termination` aware and support partially initialized solutions too.
 ====
 
@@ -764,7 +764,7 @@ Any change on the planning entities in a `CustomPhaseCommand` must be notified t
 ====
 Do not change any of the problem facts in a `CustomPhaseCommand`.
 That will corrupt the `Solver` because any previous score or solution was for a different problem.
-To do that, read about <<repeatedPlanning,repeated planning>> and do it with a <<problemFactChange,ProblemFactChange>> instead.
+To do that, read about xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning] and do it with a xref:repeated-planning/repeated-planning.adoc#problemFactChange[ProblemFactChange] instead.
 ====
 
 Configure the `CustomPhaseCommand` in the solver configuration:
@@ -798,8 +798,8 @@ The built-in solver phases do not have this issue.
 ====
 
 To configure values of a `CustomPhaseCommand` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `customProperties` element and use <<customPropertiesConfiguration,custom properties>>:
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `customProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties]:
 
 [source,xml,options="nowrap"]
 ----
@@ -838,11 +838,11 @@ There are several ways of doing multithreaded solving:
 ** The `SolverManager` will make it even easier to set this up, in a future version.
 * *Multi bet solving*: solve 1 dataset with multiple, isolated solvers and take the best result.
 ** Not recommended: This is a marginal gain for a high cost of hardware resources.
-** Use the <<benchmarker,Benchmarker>> during development to determine the most appropriate algorithm, although that's only on average.
+** Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] during development to determine the most appropriate algorithm, although that's only on average.
 ** Use multithreaded incremental solving instead.
 * *Partitioned Search*: Split 1 dataset in multiple parts and solve them independently.
-** Configure a <<partitionedSearch,Partitioned Search>>.
-* *Multithreaded incremental solving*: solve 1 dataset with multiple threads without sacrificing <<incrementalScoreCalculation, incremental score calculation>>.
+** Configure a xref:partitioned-search/partitioned-search.adoc#partitionedSearch[Partitioned Search].
+* *Multithreaded incremental solving*: solve 1 dataset with multiple threads without sacrificing xref:score-calculation/score-calculation.adoc#incrementalScoreCalculation[incremental score calculation].
 ** Donate a portion of your CPU cores to OptaPlanner to scale up the score calculation speed and get the same results in fraction of the time.
 ** Configure <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
 
@@ -850,8 +850,8 @@ image::optimization-algorithms/multiThreadingStrategies.png[align="center"]
 
 [NOTE]
 ====
-A <<logging,logging level>> of `debug` or `trace` might cause congestion multithreaded solving
-and slow down the <<scoreCalculationSpeed,score calculation speed>>.
+A xref:planner-configuration/planner-configuration.adoc#logging[logging level] of `debug` or `trace` might cause congestion multithreaded solving
+and slow down the xref:score-calculation/score-calculation.adoc#scoreCalculationSpeed[score calculation speed].
 ====
 
 [[planningId]]
@@ -906,7 +906,7 @@ where arbitrary thread creation should be avoided,
 such as most application servers (including WildFly), Android, or Google App Engine.
 
 Configure the `ThreadFactory` on the solver to create the <<multithreadedIncrementalSolving,move threads>>
-and the <<partitionedSearch,Partition Search threads>> with it:
+and the xref:partitioned-search/partitioned-search.adoc#partitionedSearch[Partition Search threads] with it:
 
 [source,xml,options="nowrap"]
 ----
@@ -949,7 +949,7 @@ Advanced configuration:
 </solver>
 ----
 
-A `moveThreadCount` of `4` <<sizingHardwareAndSoftware,saturates almost 5 CPU cores>>:
+A `moveThreadCount` of `4` xref:integration/integration.adoc#sizingHardwareAndSoftware[saturates almost 5 CPU cores]:
 the 4 move threads fill up 4 CPU cores completely
 and the solver thread uses most of another CPU core.
 

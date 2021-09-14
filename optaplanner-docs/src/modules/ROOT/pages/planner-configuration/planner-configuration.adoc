@@ -45,7 +45,7 @@ However, for portability reasons, a classpath resource is recommended.
 
 [NOTE]
 ====
-On some environments (<<integrationWithOSGi,OSGi>>, <<integrationWithJBossModules,JBoss modules>>, ...), classpath resources (the solver config, domain classes, etc.) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
+On some environments (xref:integration/integration.adoc#integrationWithOSGi[OSGi], xref:integration/integration.adoc#integrationWithJBossModules[JBoss modules], ...), classpath resources (the solver config, domain classes, etc.) in your jars might not be available to the default `ClassLoader` of the `optaplanner-core` jar.
 In those cases, provide the `ClassLoader` of your classes as a parameter:
 
 [source,java,options="nowrap"]
@@ -94,7 +94,7 @@ Notice the three parts in it:
 
 These various parts of a configuration are explained further in this manual.
 
-*OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by changing the configuration.* There is even a <<benchmarker,Benchmarker>> which allows you to play out different configurations against each other and report the most appropriate configuration for your use case.
+*OptaPlanner makes it relatively easy to switch optimization algorithm(s) just by changing the configuration.* There is even a xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] which allows you to play out different configurations against each other and report the most appropriate configuration for your use case.
 
 
 [[solverConfigurationByJavaAPI]]
@@ -193,7 +193,7 @@ Solver Configuration:
 === Custom properties configuration
 
 Solver configuration elements, that instantiate classes and explicitly mention it, support custom properties.
-Custom properties are useful to tweak dynamic values through the <<benchmarker,Benchmarker>>.
+Custom properties are useful to tweak dynamic values through the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker].
 For example, presume your `EasyScoreCalculator` has heavy calculations (which are cached)
 and you want to increase the cache size in one benchmark:
 
@@ -251,12 +251,12 @@ Most use cases also have only one planning variable per planning entity class.
 
 [NOTE]
 ====
-In <<realTimePlanning,real-time planning>>, even though the problem itself changes, problem facts do not really change during planning, instead they change between planning (because the Solver temporarily stops to apply the problem fact changes).
+In xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning], even though the problem itself changes, problem facts do not really change during planning, instead they change between planning (because the Solver temporarily stops to apply the problem fact changes).
 ====
 
-To create a good domain model, read the <<domainModelingGuide,domain modeling guide>>.
+To create a good domain model, read the xref:design-patterns/design-patterns.adoc#domainModelingGuide[domain modeling guide].
 
-*In OptaPlanner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see <<integration,integration>>): it doesn't matter.
+*In OptaPlanner, all problem facts and planning entities are plain old JavaBeans (POJOs).* Load them from a database, an XML file, a data repository, a REST service, a noSQL cloud, ... (see xref:integration/integration.adoc#integration[integration]): it doesn't matter.
 
 [[problemFact]]
 === Problem fact
@@ -329,7 +329,7 @@ But there is usually only one planning entity class, for example the `Queen` cla
 
 A planning entity class needs to be annotated with the `@PlanningEntity` annotation.
 
-Each planning entity class has one or more _planning variables_ (which can be <<planningVariable,genuine>> or <<shadowVariable,shadows>>).
+Each planning entity class has one or more _planning variables_ (which can be <<planningVariable,genuine>> or xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadows]).
 It should also have one or more _defining_ properties.
 For example in n queens, a `Queen` is defined by its `Column` and has a planning variable ``Row``.
 This means that a Queen's column never changes during solving, while its row does change.
@@ -390,7 +390,7 @@ Having multiple planning entity classes directly raises the implementation compl
 _Do not create unnecessary planning entity classes._ This leads to difficult `Move` implementations and slower score calculation.
 
 For example, do not create a planning entity class to hold the total free time of a teacher, which needs to be kept up to date as the `Lecture` planning entities change.
-Instead, calculate the free time in the score constraints (or as a <<shadowVariable,shadow variable>>) and put the result per teacher into a logically inserted score object.
+Instead, calculate the free time in the score constraints (or as a xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadow variable]) and put the result per teacher into a logically inserted score object.
 
 If historic data needs to be considered too, then create problem fact to hold the total of the historic assignments up to, but __not including__, the planning window (so that it does not change when a planning entity changes) and let the score constraints take it into account.
 ====
@@ -411,7 +411,7 @@ For example: in bin packing bigger items are harder to fit, in course scheduling
 *Do not try to use planning entity difficulty to implement a business
           constraint.* It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
 
-To attain a schedule in which certain entities are scheduled earlier in the schedule, <<formalizeTheBusinessConstraints,add a score constraint>> to change the score function so it prefers such solutions.
+To attain a schedule in which certain entities are scheduled earlier in the schedule, xref:score-calculation/score-calculation.adoc#formalizeTheBusinessConstraints[add a score constraint] to change the score function so it prefers such solutions.
 Only consider adding planning entity difficulty too if it can make the solver more efficient.
 ====
 
@@ -450,7 +450,7 @@ public class Queen {
 }
 ----
 
-See <<sortedSelection,sorted selection>> for more information.
+See xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#sortedSelection[sorted selection] for more information.
 
 [IMPORTANT]
 ====
@@ -475,7 +475,7 @@ A planning variable is a JavaBean property (so a getter and setter) on a plannin
 It points to a planning value, which changes during planning.
 For example, a ``Queen``'s `row` property is a genuine planning variable.
 Note that even though a ``Queen``'s `row` property changes to another `Row` during planning, no `Row` instance itself is changed.
-Normally planning variables are genuine, but advanced cases can also have <<shadowVariable,shadows>>.
+Normally planning variables are genuine, but advanced cases can also have xref:shadow-variable/shadow-variable.adoc#shadowVariable[shadows].
 
 A genuine planning variable getter needs to be annotated with the `@PlanningVariable` annotation, which needs a non-empty `valueRangeProviderRefs` property.
 
@@ -543,7 +543,7 @@ To allow an initialized planning variable to be ``null``, set `nullable` to ``tr
 [NOTE]
 ====
 Constraint Streams filter out planning entities with a `null` planning variable by default.
-Use <<constraintStreamsFrom,fromUnfiltered()>> to avoid such unwanted behaviour.
+Use xref:constraint-streams/constraint-streams.adoc#constraintStreamsFrom[fromUnfiltered()] to avoid such unwanted behaviour.
 ====
 
 OptaPlanner will automatically add the value `null` to the value range.
@@ -559,8 +559,8 @@ Using a nullable planning variable implies that your score calculation is respon
 Currently <<chainedPlanningVariable, chained>> planning variables are not compatible with `nullable`.
 ====
 
-<<repeatedPlanning,Repeated planning>> (especially <<realTimePlanning,real-time planning>>) does not mix well with a nullable planning variable.
-Every time the Solver starts or a problem fact change is made, the <<constructionHeuristics,Construction Heuristics>>
+xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[Repeated planning] (especially xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]) does not mix well with a nullable planning variable.
+Every time the Solver starts or a problem fact change is made, the xref:construction-heuristics/construction-heuristics.adoc#constructionHeuristics[Construction Heuristics]
 will try to initialize all the `null` variables again, which can be a huge waste of time.
 One way to deal with this is to filter the entity selector of the placer in the construction heuristic.
 
@@ -820,7 +820,7 @@ Usually, the efficiency gain of planning value strength is far less than that of
 *Do not try to use planning value strength to implement a business
           constraint.* It will not affect the score function: if we have infinite solving time, the returned solution will be the same.
 
-To affect the score function, <<formalizeTheBusinessConstraints,add a score constraint>>.
+To affect the score function, xref:score-calculation/score-calculation.adoc#formalizeTheBusinessConstraints[add a score constraint].
 Only consider adding planning value strength too if it can make the solver more efficient.
 ====
 
@@ -864,7 +864,7 @@ Alternatively, you can also set a `strengthWeightFactoryClass` to the `@Planning
     }
 ----
 
-See <<sortedSelection,sorted selection>> for more information.
+See xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#sortedSelection[sorted selection] for more information.
 
 [IMPORTANT]
 ====
@@ -1074,7 +1074,7 @@ Both annotations can also be <<autoDiscoverSolutionProperties, auto discovered>>
 A `@PlanningSolution` class requires a score property (or field), which is annotated with a `@PlanningScore` annotation.
 The score property is `null` if the score hasn't been calculated yet.
 The `score` property is typed to the specific `Score` implementation of your use case.
-For example, `NQueens` uses a <<simpleScore,SimpleScore>>:
+For example, `NQueens` uses a xref:score-calculation/score-calculation.adoc#simpleScore[SimpleScore]:
 
 [source,java,options="nowrap"]
 ----
@@ -1095,7 +1095,7 @@ public class NQueens {
 }
 ----
 
-Most use cases use a <<hardSoftScore,HardSoftScore>> instead:
+Most use cases use a xref:score-calculation/score-calculation.adoc#hardSoftScore[HardSoftScore] instead:
 
 [source,java,options="nowrap"]
 ----
@@ -1117,7 +1117,7 @@ public class CloudBalance {
 }
 ----
 
-Some use cases use <<scoreType,other score types>>.
+Some use cases use xref:score-calculation/score-calculation.adoc#scoreType[other score types].
 
 This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> if enabled.
 
@@ -1125,7 +1125,7 @@ This annotation can also be <<autoDiscoverSolutionProperties, auto discovered>> 
 [[problemFacts]]
 ==== Problem facts of a solution (`@ProblemFactCollectionProperty`)
 
-For <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+For xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation],
 OptaPlanner needs to extract the problem fact instances from the solution instance.
 It gets those collection(s) by calling every method (or field) that is annotated with ``@ProblemFactCollectionProperty``.
 All objects returned by those methods are available to use by Constraint Streams or Drools rules.
@@ -1252,7 +1252,7 @@ The automatic annotation is based on the field type (or getter return type):
 * `@PlanningScore`: when it is a `Score` or subclass
 
 These automatic annotations can still be overwritten per field (or getter).
-Specifically, a <<bendableScore, BendableScore>> always needs to override
+Specifically, a xref:score-calculation/score-calculation.adoc#bendableScore[BendableScore] always needs to override
 with an explicit `@PlanningScore` annotation to define the number of hard and soft levels.
 
 
@@ -1483,8 +1483,8 @@ For example in n queens, the `solve()` method will return an `NQueens` instance 
 .Best Solution for the Four Queens Puzzle in 8ms (Also an Optimal Solution)
 image::planner-configuration/solvedNQueens04.png[align="left"]
 
-The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through <<searchSpaceSize,the search space>> of possible solutions and remembers the best solution it encounters during solving.
-Depending on a number of factors (including problem size, how much time the `Solver` has, the solver configuration, ...), <<doesPlannerFindTheOptimalSolution,that best solution might or might not be an optimal solution>>.
+The `solve(Solution)` method can take a long time (depending on the problem size and the solver configuration). The `Solver` intelligently wades through xref:optimization-algorithms/optimization-algorithms.adoc#searchSpaceSize[the search space] of possible solutions and remembers the best solution it encounters during solving.
+Depending on a number of factors (including problem size, how much time the `Solver` has, the solver configuration, ...), xref:optimization-algorithms/optimization-algorithms.adoc#doesPlannerFindTheOptimalSolution[that best solution might or might not be an optimal solution].
 
 [NOTE]
 ====
@@ -1497,7 +1497,7 @@ The solution instance returned by the methods `solve(solution)` or `getBestSolut
 [NOTE]
 ====
 The solution instance given to the `solve(Solution)` method does not need to be uninitialized.
-It can be partially or fully initialized, which is often the case in <<repeatedPlanning,repeated planning>>.
+It can be partially or fully initialized, which is often the case in xref:repeated-planning/repeated-planning.adoc#repeatedPlanning[repeated planning].
 ====
 
 
@@ -1607,9 +1607,9 @@ Except if the calling code explicitly catches and eats that ``RuntimeException``
 Meanwhile, the code is disrupted from doing further harm or obfuscating the error.
 ====
 * **warn**: Log suspicious circumstances.
-* **info**: Log every phase and the solver itself. See <<scopeOverview,scope overview>>.
-* **debug**: Log every step of every phase. See <<scopeOverview,scope overview>>.
-* **trace**: Log every move of every step of every phase. See <<scopeOverview,scope overview>>.
+* **info**: Log every phase and the solver itself. See xref:optimization-algorithms/optimization-algorithms.adoc#scopeOverview[scope overview].
+* **debug**: Log every step of every phase. See xref:optimization-algorithms/optimization-algorithms.adoc#scopeOverview[scope overview].
+* **trace**: Log every move of every step of every phase. See xref:optimization-algorithms/optimization-algorithms.adoc#scopeOverview[scope overview].
 
 [NOTE]
 ====
@@ -1619,7 +1619,7 @@ However, it is invaluable during development to discover a bottleneck.
 Even `debug` logging can slow down performance considerably for fast stepping algorithms (such as Late Acceptance and Simulated Annealing),
 but not for slow stepping algorithms (such as Tabu Search).
 
-Both cause congestion in <<multithreadedSolving, multithreaded solving>> with most appenders, see below.
+Both cause congestion in xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[multithreaded solving] with most appenders, see below.
 
 In Eclipse, `debug` logging to the console tends to cause congestion with a score calculation speeds above 10 000 per second.
 Nor IntelliJ, nor the Maven command line suffer from this problem.
@@ -1675,7 +1675,7 @@ If it isn't picked up, temporarily add the system property `-Dlogback.debug=true
 
 [NOTE]
 ====
-When running multiple solvers or one <<multithreadedSolving, multithreaded solver>>,
+When running multiple solvers or one xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[multithreaded solver],
 most appenders (including the console) cause congestion with `debug` and `trace` logging.
 Switch to an async appender to avoid this problem or turn off `debug` logging.
 ====
@@ -1827,7 +1827,7 @@ The following types are supported:
 * ``WELL512A``, ``WELL1024A``, ``WELL19937A``, ``WELL19937C``, `WELL44497A` and ``WELL44497B``: Implementation by http://commons.apache.org/proper/commons-math/userguide/random.html[Commons Math].
 
 For most use cases, the randomType has no significant impact on the average quality of the best solution on multiple datasets.
-If you want to confirm this on your use case, use the <<benchmarker,benchmarker>>.
+If you want to confirm this on your use case, use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[benchmarker].
 
 
 [[solverManager]]
@@ -1844,7 +1844,7 @@ This avoids timeout issues of HTTP and other technologies.
 Internally a `SolverManager` manages a thread pool of solver threads, which call `Solver.solve(...)`,
 and a thread pool of consumer threads, which handle best solution changed events.
 
-In <<integrationWithQuarkus,Quarkus>> and <<integrationWithSpringBoot,Spring Boot>>,
+In xref:integration/integration.adoc#integrationWithQuarkus[Quarkus] and xref:integration/integration.adoc#integrationWithSpringBoot[Spring Boot],
 the `SolverManager` instance is automatically injected in your code.
 Otherwise, build a `SolverManager` instance with the `create(...)` method:
 
@@ -1865,7 +1865,7 @@ For example, if set to `4`, submitting five problems
 has four problems solving immediately, and the fifth one starts when another one ends.
 If those problems solve for 5 minutes each, the fifth problem takes 10 minutes to finish.
 By default, `parallelSolverCount` is set to `AUTO`, which resolves to half the CPU cores,
-regardless of the <<multithreadedSolving,`moveThreadCount`>> of the solvers.
+regardless of the xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedSolving[`moveThreadCount`] of the solvers.
 
 To retrieve the best solution, after solving terminates normally, use `SolverJob.getFinalBestSolution()`:
 

@@ -104,8 +104,8 @@ Simplest configuration of Branch And Bound:
 
 [IMPORTANT]
 ====
-For the pruning to work with the default ``ScoreBounder``, the <<initializingScoreTrend,InitializingScoreTrend>> should be set.
-Especially an <<initializingScoreTrend,InitializingScoreTrend>> of `ONLY_DOWN` (or at least has `ONLY_DOWN` in the leading score levels) prunes a lot.
+For the pruning to work with the default ``ScoreBounder``, the xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] should be set.
+Especially an xref:score-calculation/score-calculation.adoc#initializingScoreTrend[InitializingScoreTrend] of `ONLY_DOWN` (or at least has `ONLY_DOWN` in the leading score levels) prunes a lot.
 ====
 
 Advanced configuration:
@@ -162,16 +162,16 @@ The `nodeExplorationType` options are:
 The `entitySorterManner` options are:
 
 * ``DECREASING_DIFFICULTY``: Initialize the more difficult planning entities first. This usually increases pruning (and therefore improves scalability).
-Requires the model to support <<planningEntityDifficulty,planning entity difficulty comparison>>.
-* `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports <<planningEntityDifficulty,planning entity difficulty comparison>>, behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
+Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison].
+* `DECREASING_DIFFICULTY_IF_AVAILABLE` (default): If the model supports xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty comparison], behave like ``DECREASING_DIFFICULTY``, else like ``NONE``.
 * ``NONE``: Initialize the planning entities in original order.
 
 The `valueSorterManner` options are:
 
-* ``INCREASING_STRENGTH``: Evaluate the planning values in increasing strength. Requires the model to support <<planningValueStrength,planning value strength comparison>>.
-* `INCREASING_STRENGTH_IF_AVAILABLE` (default): If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``INCREASING_STRENGTH``, else like ``NONE``.
-* ``DECREASING_STRENGTH``: Evaluate the planning values in decreasing strength. Requires the model to support <<planningValueStrength,planning value strength comparison>>.
-* ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports <<planningValueStrength,planning value strength comparison>>, behave like ``DECREASING_STRENGTH``, else like ``NONE``.
+* ``INCREASING_STRENGTH``: Evaluate the planning values in increasing strength. Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
+* `INCREASING_STRENGTH_IF_AVAILABLE` (default): If the model supports xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison], behave like ``INCREASING_STRENGTH``, else like ``NONE``.
+* ``DECREASING_STRENGTH``: Evaluate the planning values in decreasing strength. Requires the model to support xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison].
+* ``DECREASING_STRENGTH_IF_AVAILABLE``: If the model supports xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength comparison], behave like ``DECREASING_STRENGTH``, else like ``NONE``.
 * ``NONE``: Try the planning values in original order.
 
 
@@ -183,7 +183,7 @@ Exhaustive Search variants suffer from two big scalability issues:
 * They scale terribly memory wise.
 * They scale horribly performance wise.
 
-As shown in these time spent graphs from the <<benchmarker,Benchmarker>>, Brute Force and Branch And Bound both hit a performance scalability wall.
+As shown in these time spent graphs from the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker], Brute Force and Branch And Bound both hit a performance scalability wall.
 For example, on N queens it hits wall at a few dozen queens:
 
 image::exhaustive-search/exhaustiveSearchScalabilityNQueens.png[align="center"]

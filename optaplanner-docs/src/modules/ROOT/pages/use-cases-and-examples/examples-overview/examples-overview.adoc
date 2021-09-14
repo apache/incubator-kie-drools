@@ -26,7 +26,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |===
 |Example |Domain |Size |Contest |Special features used
 
-|<<nQueens,N queens>>
+|xref:use-cases-and-examples/nqueens/nqueens.adoc#nQueens[N queens]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `256`
@@ -35,7 +35,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* Pointless (https://en.wikipedia.org/wiki/Eight_queens_puzzle#Explicit_solutions[cheatable])
 |None
 
-|<<cloudBalancing,Cloud balancing>>
+|xref:use-cases-and-examples/cloud-balancing/cloud-balancing.adoc#cloudBalancing[Cloud balancing]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `2400`
@@ -43,9 +43,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^6967`
 |* No
 * Defined by us
-|* <<realTimePlanning,Real-time planning>>
+|* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 
-|<<tsp,Traveling salesman>>
+|xref:use-cases-and-examples/travelling-salesman/travelling-salesman.adoc#tsp[Traveling salesman]
 |* 1 entity class
 ** 1 chained variable
 |* Entity <= `980`
@@ -53,9 +53,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^2504`
 |* Unrealistic
 * http://www.math.uwaterloo.ca/tsp/[TSP web]
-|* <<realTimePlanning,Real-time planning>>
+|* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 
-|<<tennis,Tennis club scheduling>>
+|xref:use-cases-and-examples/tennis-scheduling/tennis-scheduling.adoc#tennis[Tennis club scheduling]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `72`
@@ -63,10 +63,10 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^60`
 |* No
 * Defined by us
-|* <<fairnessScoreConstraints,Fairness score constraints>>
-* <<pinnedPlanningEntities,Pinned entities>>
+|* xref:score-calculation/score-calculation.adoc#fairnessScoreConstraints[Fairness score constraints]
+* xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[Pinned entities]
 
-|<<meetingScheduling,Meeting scheduling>>
+|xref:use-cases-and-examples/meeting-scheduling/meeting-scheduling.adoc#meetingScheduling[Meeting scheduling]
 |* 1 entity class
 ** 2 variables
 |* Entity <= `10`
@@ -74,9 +74,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^320`
 |* No
 * Defined by us
-|* <<timeGrainPattern,TimeGrain pattern>>
+|* xref:design-patterns/design-patterns.adoc#timeGrainPattern[TimeGrain pattern]
 
-|<<curriculumCourse,Course timetabling>>
+|xref:use-cases-and-examples/course-timetabling/course-timetabling.adoc#curriculumCourse[Course timetabling]
 |* 1 entity class
 ** 2 variables
 |* Entity <= `434`
@@ -84,9 +84,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^1171`
 |* Realistic
 * http://www.cs.qub.ac.uk/itc2007/curriculmcourse/course_curriculm_index.htm[ITC 2007 track 3]
-|* <<pinnedPlanningEntities,Pinned entities>>
+|* xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[Pinned entities]
 
-|<<machineReassignment,Machine reassignment>>
+|xref:use-cases-and-examples/machine-reassignment/machine-reassignment.adoc#machineReassignment[Machine reassignment]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `50000`
@@ -94,9 +94,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^184948`
 |* Nearly realistic
 * http://challenge.roadef.org/2012/en/[ROADEF 2012]
-|* <<realTimePlanning,Real-time planning>>
+|* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 
-|<<vehicleRouting,Vehicle routing>>
+|xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[Vehicle routing]
 |* 1 entity class
 ** 1 chained variable
 * 1 shadow entity class
@@ -106,12 +106,12 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^8380`
 |* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
-|* <<shadowVariable,Shadow variable>>
-* <<realTimePlanning,Real-time planning>>
-* <<nearbySelection,Nearby selection>>
+|* xref:shadow-variable/shadow-variable.adoc#shadowVariable[Shadow variable]
+* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
+* xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#nearbySelection[Nearby selection]
 * Real road distances
 
-|<<vehicleRouting,Vehicle routing>> with time windows
+|xref:use-cases-and-examples/vehicle-routing/vehicle-routing.adoc#vehicleRouting[Vehicle routing] with time windows
 |* All of Vehicle routing
 * 1 shadow variable
 |* Entity <= `2740`
@@ -120,9 +120,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 |* Unrealistic
 * http://neo.lcc.uma.es/vrp/[VRP web]
 |* All of Vehicle routing
-* Custom <<customVariableListener,VariableListener>>
+* Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
 
-|<<projectJobScheduling,Project job scheduling>>
+|xref:use-cases-and-examples/project-job-scheduling/project-job-scheduling.adoc#projectJobScheduling[Project job scheduling]
 |* 1 entity class
 ** 2 variables
 ** 1 shadow variable
@@ -131,11 +131,11 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `?`
 |* Nearly realistic
 * http://gent.cs.kuleuven.be/mista2013challenge/[MISTA 2013]
-|* <<bendableScore,Bendable score>>
-* Custom <<customVariableListener,VariableListener>>
-* <<valueRangeFactory,ValueRangeFactory>>
+|* xref:score-calculation/score-calculation.adoc#bendableScore[Bendable score]
+* Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
+* xref:planner-configuration/planner-configuration.adoc#valueRangeFactory[ValueRangeFactory]
 
-|<<bedAllocation,Hospital bed planning>>
+|xref:use-cases-and-examples/bed-allocation/bed-allocation.adoc#bedAllocation[Hospital bed planning]
 |* 1 entity class
 ** 1 nullable variable
 |* Entity <= `2750`
@@ -143,9 +143,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^6851`
 |* Unrealistic
 * https://people.cs.kuleuven.be/~wim.vancroonenburg/pas/[Kaho PAS]
-|* <<overconstrainedPlanning,Overconstrained planning>>
+|* xref:repeated-planning/repeated-planning.adoc#overconstrainedPlanning[Overconstrained planning]
 
-|<<taskAssigning,Task assigning>>
+|xref:use-cases-and-examples/task-assigning/task-assigning.adoc#taskAssigning[Task assigning]
 |* 1 entity class
 ** 1 chained variable
 ** 1 shadow variable
@@ -156,13 +156,13 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^1168`
 |* No
 * Defined by us
-|* <<bendableScore,Bendable score>>
-* <<chainedThroughTimePattern,Chained through time pattern>>
-* Custom <<customVariableListener,VariableListener>>
-* <<continuousPlanning,Continuous planning>>
-* <<realTimePlanning,Real-time planning>>
+|* xref:score-calculation/score-calculation.adoc#bendableScore[Bendable score]
+* xref:design-patterns/design-patterns.adoc#chainedThroughTimePattern[Chained through time pattern]
+* Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
+* xref:repeated-planning/repeated-planning.adoc#continuousPlanning[Continuous planning]
+* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 
-|<<examination,Exam timetabling>>
+|xref:use-cases-and-examples/exam-timetabling/exam-timetabling.adoc#examination[Exam timetabling]
 |* 2 entity classes (same hierarchy)
 ** 2 variables
 |* Entity <= `1096`
@@ -170,9 +170,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^3374`
 |* Realistic
 * http://www.cs.qub.ac.uk/itc2007/examtrack/exam_track_index.htm[ITC 2007 track 1]
-|* Custom <<customVariableListener,VariableListener>>
+|* Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
 
-|<<nurseRostering,Nurse rostering>>
+|xref:use-cases-and-examples/nurse-rostering/nurse-rostering.adoc#nurseRostering[Nurse rostering]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `752`
@@ -180,10 +180,10 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^1277`
 |* Realistic
 * https://www.kuleuven-kulak.be/~u0041139/nrpcompetition/nrpcompetition_description.pdf[INRC 2010]
-|* <<continuousPlanning,Continuous planning>>
-* <<realTimePlanning,Real-time planning>>
+|* xref:repeated-planning/repeated-planning.adoc#continuousPlanning[Continuous planning]
+* xref:repeated-planning/repeated-planning.adoc#realTimePlanning[Real-time planning]
 
-|<<travelingTournament,Traveling tournament>>
+|xref:use-cases-and-examples/travelling-tournament/travelling-tournament.adoc#travelingTournament[Traveling tournament]
 |* 1 entity class
 ** 1 variable
 |* Entity <= `1560`
@@ -191,9 +191,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^2301`
 |* Unrealistic
 * http://mat.tepper.cmu.edu/TOURN/[TTP]
-|* Custom <<moveListFactory,MoveListFactory>>
+|* Custom xref:move-and-neighborhood-selection/move-and-neighborhood-selection.adoc#moveListFactory[MoveListFactory]
 
-|<<cheapTimeScheduling,Cheap time scheduling>>
+|xref:use-cases-and-examples/cheap-time/cheap-time.adoc#cheapTimeScheduling[Cheap time scheduling]
 |* 1 entity class
 ** 2 variables
 |* Entity <= `500`
@@ -201,10 +201,10 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^20078`
 |* Nearly realistic
 * ICON challenge 2014
-|* <<annotationAlternatives,Field annotations>>
-* <<valueRangeFactory,ValueRangeFactory>>
+|* xref:planner-configuration/planner-configuration.adoc#annotationAlternatives[Field annotations]
+* xref:planner-configuration/planner-configuration.adoc#valueRangeFactory[ValueRangeFactory]
 
-|<<investment,Investment>>
+|xref:use-cases-and-examples/investment/investment.adoc#investment[Investment]
 |* 1 entity class
 * 1 variable
 |* Entity <= `11`
@@ -212,9 +212,9 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Search space <= `10^4`
 |* No
 * Defined by us
-|* <<valueRangeFactory,ValueRangeFactory>>
+|* xref:planner-configuration/planner-configuration.adoc#valueRangeFactory[ValueRangeFactory]
 
-|<<conferenceScheduling,Conference scheduling>>
+|xref:use-cases-and-examples/conference-scheduling/conference-scheduling.adoc#conferenceScheduling[Conference scheduling]
 |* 1 entity class
 ** 2 variables
 |* Entity <= `216`
@@ -224,7 +224,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Defined by us
 |
 
-|<<rockTour,Rock tour>>
+|xref:use-cases-and-examples/rock-tour/rock-tour.adoc#rockTour[Rock tour]
 |* 1 entity class
 ** 1 chained variable
 ** 4 shadow variables
@@ -237,7 +237,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Defined by us
 |
 
-|<<flightCrewScheduling,Flight crew scheduling>>
+|xref:use-cases-and-examples/flight-crew-scheduling/flight-crew-scheduling.adoc#flightCrewScheduling[Flight crew scheduling]
 |* 1 entity class
 ** 1 variable
 * 1 shadow entity class
@@ -249,7 +249,7 @@ and also in git under [path]_optaplanner/optaplanner-examples_.
 * Defined by us
 |
 
-|<<coachShuttleGathering,Coach shuttle gathering>>
+|xref:use-cases-and-examples/coach-shuttle-gathering/coach-shuttle-gathering.adoc#coachShuttleGathering[Coach shuttle gathering]
 |* 2 entity class (BusStop, Shuttle)
 ** 1 variable each (previousBusOrStop for BusStop, destination for Shuttle)
 * 1 shadow entity class (Coach)
@@ -261,8 +261,8 @@ passenger quantity total) (also on Shuttle)
 * Search space <= `10^23`
 |* No
 * Defined by us
-|* Custom <<customVariableListener,VariableListener>>
-* <<shadowVariable,Shadow variable>>
+|* Custom xref:shadow-variable/shadow-variable.adoc#customVariableListener[VariableListener]
+* xref:shadow-variable/shadow-variable.adoc#shadowVariable[Shadow variable]
 |
 
 |===

@@ -15,14 +15,14 @@ The API should feel familiar if you're familiar with Java Streams or SQL.
 // TODO Remove when PLANNER-1709 is fixed. https://issues.redhat.com/browse/PLANNER-1709
 [WARNING]
 ====
-For the ConstraintStreams API, <<explainingTheScore,Constraint justifications>> may not function properly yet.
+For the ConstraintStreams API, xref:score-calculation/score-calculation.adoc#explainingTheScore[Constraint justifications] may not function properly yet.
 ====
 
 
 [[constraintStreamsIntroduction]]
 == Introduction
 
-Using Java's Streams API, we could implement an <<easyJavaScoreCalculation,easy score calculator>>
+Using Java's Streams API, we could implement an xref:score-calculation/score-calculation.adoc#easyJavaScoreCalculation[easy score calculator]
 that uses a functional approach:
 
 [source,java,options="nowrap"]
@@ -38,7 +38,7 @@ that uses a functional approach:
     }
 ----
 
-However, that scales poorly because it doesn't do an <<incrementalScoreCalculation,incremental calculation>>:
+However, that scales poorly because it doesn't do an xref:score-calculation/score-calculation.adoc#incrementalScoreCalculation[incremental calculation]:
 When the planning variable of a single `Shift` changes, to recalculate the score,
 the normal Streams API has to execute the entire stream from scratch.
 The ConstraintStreams API enables you to write similar code in pure Java, while reaping the performance benefits of
@@ -56,17 +56,17 @@ This is an example of the same code, using the Constraint Streams API:
     }
 ----
 
-This constraint stream iterates over all instances of class `Shift` in the <<problemFacts,problem facts>> and
-<<planningEntity,planning entities>> in the <<planningProblemAndPlanningSolution,planning problem>>.
+This constraint stream iterates over all instances of class `Shift` in the xref:planner-configuration/planner-configuration.adoc#problemFacts[problem facts] and
+xref:planner-configuration/planner-configuration.adoc#planningEntity[planning entities] in the <<planningProblemAndPlanningSolution,planning problem>>.
 It finds every `Shift` which is assigned to employee `Ann` and for every such instance (also called a match), it adds a
-soft penalty of `1` to the overall <<calculateTheScore,score>>.
+soft penalty of `1` to the overall xref:score-calculation/score-calculation.adoc#calculateTheScore[score].
 The following figure illustrates this process on a problem with 4 different shifts:
 
 image::constraint-streams/constraintStreamIntroduction.png[align="center"]
 
 If any of the instances change during solving, the constraint stream automatically detects the change
 and only recalculates the minimum necessary portion of the problem that is affected by the change.
-The following figure illustrates this <<incrementalScoreCalculation,incremental score calculation>>:
+The following figure illustrates this xref:score-calculation/score-calculation.adoc#incrementalScoreCalculation[incremental score calculation]:
 
 image::constraint-streams/constraintStreamIncrementalCalculation.png[align="center"]
 
@@ -219,12 +219,12 @@ This constraint stream penalizes each known and initialized instance of `Shift`.
 === From
 
 The `.from(T)` building block selects every `T` instance that
-is in a <<problemFacts, problem fact collection>>
-or a <<planningEntitiesOfASolution, planning entity collection>>
+is in a xref:planner-configuration/planner-configuration.adoc#problemFacts[problem fact collection]
+or a xref:planner-configuration/planner-configuration.adoc#planningEntitiesOfASolution[planning entity collection]
 and has no `null` planning variables.
 
 To include instances with a `null` planning variable,
-especially if you use <<nullablePlanningVariable, nullable>> variables,
+especially if you use xref:planner-configuration/planner-configuration.adoc#nullablePlanningVariable[nullable] variables,
 replace the `from()` building block by `fromUnfiltered()`:
 
 [source,java,options="nowrap"]
@@ -239,7 +239,7 @@ replace the `from()` building block by `fromUnfiltered()`:
 [[constraintStreamsPenaltiesRewards]]
 === Penalties and rewards
 
-The purpose of constraint streams is to build up a <<whatIsAScore,score>> for a <<planningProblemAndPlanningSolution,solution>>.
+The purpose of constraint streams is to build up a xref:score-calculation/score-calculation.adoc#whatIsAScore[score] for a <<planningProblemAndPlanningSolution,solution>>.
 To do this, every constraint stream must be terminated by a call to either a `penalize()` or a `reward()`
 building block.
 The `penalize()` building block makes the score worse and the `reward()` building block improves the score.
@@ -247,7 +247,7 @@ Penalties and rewards have several components:
 
 - Constraint package is the Java package that contains the constraint.
 The default value is the package that contains the `ConstraintProvider` implementation or the value from
-<<constraintConfiguration,constraint configuration>>, if implemented.
+xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration], if implemented.
 - Constraint name is the human readable descriptive name for the constraint, which
 (together with the constraint package) must be unique within the entire `ConstraintProvider` implementation.
 - Constraint weight is a constant score value indicating how much every breach of the constraint affects the score.
@@ -268,9 +268,9 @@ The score type must be the same type as used on the `@PlanningScore` annotated m
 of hours in every matching `Shift` in the constraint stream.
 This is an example of using a constraint match weigher.
 - Configurable penalty (`penalizeConfigurable("Constraint name")`) makes the score worse using constraint weights
-defined in <<constraintConfiguration,constraint configuration>>.
+defined in xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration].
 - Configurable dynamic penalty(`penalizeConfigurable("Constraint name", Shift::getHours)`) makes the score worse using
-constraint weights defined in <<constraintConfiguration,constraint configuration>>, multiplied by the number of hours in
+constraint weights defined in xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration], multiplied by the number of hours in
 every matching `Shift` in the constraint stream.
 
 By replacing the keyword `penalize` by `reward` in the name of these building blocks, you get operations that
@@ -990,7 +990,7 @@ Constraint streams come in two flavors:
 * *CS Drools* (default): a fast, feature-complete implementation that uses Drools underneath.
 
 * *Bavet*: a fast, experimental implementation.
-It lacks features and therefore many of the <<examplesOverview,examples>> are not supported.
+It lacks features and therefore many of the xref:use-cases-and-examples/examples-overview/examples-overview.adoc#examplesOverview[examples] are not supported.
 To try it out set the `constraintStreamImplType` to `BAVET` in your solver config:
 +
 [source,xml,options="nowrap"]

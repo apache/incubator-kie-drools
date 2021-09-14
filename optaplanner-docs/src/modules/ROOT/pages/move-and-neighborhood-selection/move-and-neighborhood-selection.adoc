@@ -186,7 +186,7 @@ This guarantees that every possible solution can be reached in theory through ap
 Of course, normally it is unioned with other, more coarse grained move selectors.
 ====
 
-This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on a <<chainedPlanningVariable,chained>> variable.
+This move selector only supports <<cacheType,phase or solver caching>> if it doesn't apply on a xref:planner-configuration/planner-configuration.adoc#chainedPlanningVariable[chained] variable.
 
 
 [[swapMoveSelector]]
@@ -903,7 +903,7 @@ There can be certain moves that you don't want to select, because:
 
 * The move is pointless and would only waste CPU time.
 For example, swapping two lectures of the same course will result in the same score and the same schedule because all lectures of one course are interchangeable (same teacher, same students, same topic).
-* Doing the move would break <<buildInHardConstraint,a built-in hard constraint>>,
+* Doing the move would break xref:score-calculation/score-calculation.adoc#buildInHardConstraint[a built-in hard constraint],
 so the solution would be infeasible but the score function doesn't check built-in hard constraints for performance reasons.
 For example, don't change a gym lecture to a room which is not a gym room.
 It's usually better to not use move filtering for such cases,
@@ -999,7 +999,7 @@ Configure the `filterClass` on every targeted `entitySelector` (potentially both
     </changeMoveSelector>
 ----
 
-If that filter should apply on all entities, configure it as a <<pinnedPlanningEntities,global pinningFilter>> instead.
+If that filter should apply on all entities, configure it as a xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[global pinningFilter] instead.
 
 [[filteredValueSelection]]
 ==== Filtered value selection
@@ -1051,7 +1051,7 @@ If you do explicitly configure the ``Selector``, it overwrites the default setti
 Some `Selector` types implement a `SorterManner` out of the box:
 
 * `EntitySelector` supports:
-** ``DECREASING_DIFFICULTY``: Sorts the planning entities according to decreasing <<planningEntityDifficulty,planning entity difficulty>>. Requires that planning entity difficulty is annotated on the domain model.
+** ``DECREASING_DIFFICULTY``: Sorts the planning entities according to decreasing xref:planner-configuration/planner-configuration.adoc#planningEntityDifficulty[planning entity difficulty]. Requires that planning entity difficulty is annotated on the domain model.
 +
 [source,xml,options="nowrap"]
 ----
@@ -1062,7 +1062,7 @@ Some `Selector` types implement a `SorterManner` out of the box:
     </entitySelector>
 ----
 * `ValueSelector` supports:
-** ``INCREASING_STRENGTH``: Sorts the planning values according to increasing <<planningValueStrength,planning value strength>>. Requires that planning value strength is annotated on the domain model.
+** ``INCREASING_STRENGTH``: Sorts the planning values according to increasing xref:planner-configuration/planner-configuration.adoc#planningValueStrength[planning value strength]. Requires that planning value strength is annotated on the domain model.
 +
 [source,xml,options="nowrap"]
 ----
@@ -1226,7 +1226,7 @@ For example, if there are three entities: process A (probabilityWeight 2.0), pro
 [[limitedSelection]]
 === Limited selection
 
-Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics (which don't support <<acceptedCountLimit,acceptedCountLimit>>).
+Selecting all possible moves sometimes does not scale well enough, especially for construction heuristics (which don't support xref:local-search/local-search.adoc#acceptedCountLimit[acceptedCountLimit]).
 
 To limit the number of selected selection per step, apply a `selectedCountLimit` on the selector:
 
@@ -1239,7 +1239,7 @@ To limit the number of selected selection per step, apply a `selectedCountLimit`
 
 [NOTE]
 ====
-To scale Local Search, setting <<acceptedCountLimit,acceptedCountLimit>> is usually better than using ``selectedCountLimit``.
+To scale Local Search, setting xref:local-search/local-search.adoc#acceptedCountLimit[acceptedCountLimit] is usually better than using ``selectedCountLimit``.
 ====
 
 
@@ -1392,7 +1392,7 @@ The following ``NearbySelectionDistributionType``s are supported:
   </nearbySelection>
 ----
 
-As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
+As always, use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to tweak values if desired.
 
 
 [[customMoves]]
@@ -1403,8 +1403,8 @@ As always, use the <<benchmarker,Benchmarker>> to tweak values if desired.
 === Which move types might be missing in my implementation?
 
 To determine which move types might be missing in your implementation,
-run a <<benchmarker,Benchmarker>> __for a short amount of time__
-and <<writeTheOutputSolutionOfBenchmarkRuns,configure it to write the best solutions to disk>>.
+run a xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] __for a short amount of time__
+and xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#writeTheOutputSolutionOfBenchmarkRuns[configure it to write the best solutions to disk].
 Take a look at such a best solution: it will likely be a local optima.
 Try to figure out if there's a move that could get out of that local optima faster.
 
@@ -1484,7 +1484,7 @@ For example, a swap move is really just two change moves, but it keeps those two
 ====
 A `Move` can only change/add/remove planning entities,
 it must not change any of the problem facts as that will cause score corruption.
-Use <<realTimePlanning,real-time planning>> to change problem facts while solving.
+Use xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning] to change problem facts while solving.
 ====
 
 OptaPlanner automatically filters out _non doable moves_ by calling the `isMoveDoable(ScoreDirector)` method on each selected move.
@@ -1542,7 +1542,7 @@ Keep it non-verbose and make it consistent with <<genericMoveSelectorsOverview,t
 ----
 
 Optionally, implement the `getSimpleMoveTypeDescription()` method to support
-<<benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic, picked move statistics>>:
+xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarkReportPickedMoveTypeBestScoreDiffOverTimeStatistic[picked move statistics]:
 
 [source,java,options="nowrap"]
 ----
@@ -1555,7 +1555,7 @@ Optionally, implement the `getSimpleMoveTypeDescription()` method to support
 
 ==== Custom move: `rebase()`
 
-For <<multithreadedIncrementalSolving,multithreaded incremental solving>>,
+For xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedIncrementalSolving[multithreaded incremental solving],
 the custom move must implement the `rebase()` method:
 
 [source,java,options="nowrap"]
@@ -1574,7 +1574,7 @@ This allows multithreaded solving to migrate moves from one thread to another.
 
 The `lookUpWorkingObject()` method translates a planning entity instance or problem fact instance
 from one working solution to that of the destination's working solution.
-Internally it often uses a mapping technique based on the <<planningId,planning ID>>.
+Internally it often uses a mapping technique based on the xref:optimization-algorithms/optimization-algorithms.adoc#planningId[planning ID].
 
 To rebase lists or arrays in bulk, use `rebaseList()` and `rebaseArray()` on `AbstractMove`.
 
@@ -1583,7 +1583,7 @@ To rebase lists or arrays in bulk, use `rebaseList()` and `rebaseArray()` on `Ab
 ==== Custom move: `getPlanningEntities()` and `getPlanningValues()`
 
 A custom move should also implement the `getPlanningEntities()` and `getPlanningValues()` methods.
-Those are used by <<tabuSearch,entity tabu and value tabu>> respectively.
+Those are used by xref:local-search/local-search.adoc#tabuSearch[entity tabu and value tabu] respectively.
 They are called after the `Move` has already been done.
 
 [source,java,options="nowrap"]
@@ -1620,7 +1620,7 @@ and return all their values (to which they are changing) in ``getPlanningValues(
 [[customMoveEqualsAndHashCode]]
 ==== Custom move: `equals()` and `hashCode()`
 
-A `Move` must implement the `equals()` and `hashCode()` methods for <<tabuSearch,move tabu>>.
+A `Move` must implement the `equals()` and `hashCode()` methods for xref:local-search/local-search.adoc#tabuSearch[move tabu].
 Two moves which make the same change on a solution, should be equal ideally.
 
 [source,java,options="nowrap"]
@@ -1721,12 +1721,12 @@ it does not support `cacheType` ``JUST_IN_TIME``.
 Therefore, `moveListFactory` uses `cacheType` ``STEP`` by default and it scales badly.
 
 To configure values of a `MoveListFactory` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `moveListFactoryCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>.
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `moveListFactoryCustomProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties].
 
 [WARNING]
 ====
-A custom `MoveListFactory` implementation must ensure that it does not move <<pinnedPlanningEntities, pinned entities>>.
+A custom `MoveListFactory` implementation must ensure that it does not move xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[pinned entities].
 ====
 
 
@@ -1784,10 +1784,10 @@ Advanced configuration:
 ----
 
 To configure values of a `MoveIteratorFactory` dynamically in the solver configuration
-(so the <<benchmarker,Benchmarker>> can tweak those parameters),
-add the `moveIteratorFactoryCustomProperties` element and use <<customPropertiesConfiguration,custom properties>>.
+(so the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] can tweak those parameters),
+add the `moveIteratorFactoryCustomProperties` element and use xref:planner-configuration/planner-configuration.adoc#customPropertiesConfiguration[custom properties].
 
 [WARNING]
 ====
-A custom `MoveIteratorFactory` implementation must ensure that it does not move <<pinnedPlanningEntities, pinned entities>>.
+A custom `MoveIteratorFactory` implementation must ensure that it does not move xref:repeated-planning/repeated-planning.adoc#pinnedPlanningEntities[pinned entities].
 ====

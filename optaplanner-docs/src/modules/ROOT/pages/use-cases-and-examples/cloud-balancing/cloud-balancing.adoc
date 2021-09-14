@@ -36,7 +36,7 @@ OptaPlanner does find the more optimal solution by using additional, smarter alg
 It also scales: both in data (more processes, more computers) and constraints (more hardware requirements, other constraints).
 So let's see how OptaPlanner can be used in this scenario.
 
-Here's an executive summary of this example and <<machineReassignment,an advanced implementation with more constraints>>:
+Here's an executive summary of this example and xref:use-cases-and-examples/machine-reassignment/machine-reassignment.adoc#machineReassignment[an advanced implementation with more constraints]:
 
 image::use-cases-and-examples/cloud-balancing/cloudOptimizationValueProposition.png[align="center"]
 
@@ -65,7 +65,7 @@ image::use-cases-and-examples/cloud-balancing/cloudOptimizationValueProposition.
 [[cloudBalancingDomainModelDesign]]
 === Domain model design
 
-Using a <<domainModelingGuide,domain model>> helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify constraints, improve performance, and increase flexibility for future needs.
+Using a xref:design-patterns/design-patterns.adoc#domainModelingGuide[domain model] helps determine which classes are planning entities and which of their properties are planning variables. It also helps to simplify constraints, improve performance, and increase flexibility for future needs.
 
 To create a domain model, define all the objects that represent the input data for the problem. In this simple example, the objects are processes and computers.
 
@@ -173,7 +173,7 @@ public class CloudProcess ... {
 
 [NOTE]
 ====
-Instead of getter annotations, it is also possible to use <<annotationAlternatives,field annotations>>.
+Instead of getter annotations, it is also possible to use xref:planner-configuration/planner-configuration.adoc#annotationAlternatives[field annotations].
 ====
 
 
@@ -194,7 +194,7 @@ We annotate the getter `getProcessList()` with ``@PlanningEntityCollectionProper
 . The `computerList` property holds a list of computers.
 OptaPlanner cannot change the computers.
 Therefore, a computer is a problem fact.
-Especially for <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>,
+Especially for xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation],
 the property `computerList` needs to be annotated with a `@ProblemFactCollectionProperty` so that OptaPlanner can retrieve the list of computers (problem facts) and make it available to the rule engine.
 
 . The `CloudBalance` class also has a `@PlanningScore` annotated property ``score``, which is the `Score` of that solution in its current state.
@@ -242,7 +242,7 @@ public class CloudBalance ... {
 [[cloudBalancingMainMethod]]
 == Run the cloud balancing Hello World
 
-. <<runTheExamplesInAnIDE,Download and configure the examples in your preferred IDE.>>
+. xref:planner-introduction/planner-introduction.adoc#runTheExamplesInAnIDE[Download and configure the examples in your preferred IDE.]
 . Create a run configuration with the following main class: `org.optaplanner.examples.cloudbalancing.app.CloudBalancingHelloWorld`
 +
 By default, the Cloud Balancing Hello World is configured to run for 120 seconds.
@@ -281,7 +281,7 @@ public class CloudBalancingHelloWorld {
 The code example does the following:
 
 . Build the `Solver` based on a solver configuration
-which can come from <<solverConfigurationByXML,an XML file>> as classpath resource:
+which can come from xref:planner-configuration/planner-configuration.adoc#solverConfigurationByXML[an XML file] as classpath resource:
 +
 [source,java,options="nowrap"]
 ----
@@ -290,7 +290,7 @@ which can come from <<solverConfigurationByXML,an XML file>> as classpath resour
         Solver<CloudBalance> solver = solverFactory.buildSolver();
 ----
 +
-Or to avoid XML, build it through <<solverConfigurationByJavaAPI,the programmatic API>> instead:
+Or to avoid XML, build it through xref:planner-configuration/planner-configuration.adoc#solverConfigurationByJavaAPI[the programmatic API] instead:
 +
 [source,java,options="nowrap"]
 ----
@@ -388,7 +388,7 @@ Further down, we will look into two alternatives to calculate the score, such as
 
 . *Optimization algorithms configuration*: _How should OptaPlanner optimize it?_
 +
-In this case, we use the default <<optimizationAlgorithms,optimization algorithms>> (because no explicit optimization algorithms are configured) for 30 seconds:
+In this case, we use the default xref:optimization-algorithms/optimization-algorithms.adoc#optimizationAlgorithms[optimization algorithms] (because no explicit optimization algorithms are configured) for 30 seconds:
 +
 [source,xml,options="nowrap"]
 ----
@@ -398,11 +398,11 @@ In this case, we use the default <<optimizationAlgorithms,optimization algorithm
 ----
 +
 OptaPlanner should get a good result in seconds (and even in less than 15 milliseconds with
-<<realTimePlanning,real-time planning>>), but the more time it has, the better the results.
-Advanced use cases might use different <<termination,termination criteria>> than a hard time limit.
+xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning]), but the more time it has, the better the results.
+Advanced use cases might use different xref:optimization-algorithms/optimization-algorithms.adoc#termination[termination criteria] than a hard time limit.
 +
 The default algorithms already easily surpass human planners and most in-house implementations.
-Use the <<benchmarker,Benchmarker>> to <<powerTweaking,power tweak>> to get even better results.
+Use the xref:benchmarking-and-tweaking/benchmarking-and-tweaking.adoc#benchmarker[Benchmarker] to xref:optimization-algorithms/optimization-algorithms.adoc#powerTweaking[power tweak] to get even better results.
 
 [[cloudBalancingScoreConfiguration]]
 == Score configuration
@@ -492,7 +492,7 @@ public class CloudBalancingEasyScoreCalculator
 ----
 ====
 
-Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, _it is still slow_ because it does not do <<incrementalScoreCalculation,incremental score calculation>>.
+Even if we optimize the code above to use ``Map``s to iterate through the `processList` only once, _it is still slow_ because it does not do xref:score-calculation/score-calculation.adoc#incrementalScoreCalculation[incremental score calculation].
 To fix that, either use constraint streams, incremental Java score calculation or Drools score calculation.
 
 
@@ -567,7 +567,7 @@ public class CloudBalancingConstraintProvider implements ConstraintProvider {
 ----
 ====
 
-You may have noticed similarities between <<constraintStreams,Constraint Streams>> and <<droolsScoreCalculation,Drools score calculation>>.
+You may have noticed similarities between xref:constraint-streams/constraint-streams.adoc#constraintStreams[Constraint Streams] and xref:drools-score-calculation/drools-score-calculation.adoc#droolsScoreCalculation[Drools score calculation].
 That is no coincidence, as Constraint Streams are implemented using Drools under the hood.
 
 

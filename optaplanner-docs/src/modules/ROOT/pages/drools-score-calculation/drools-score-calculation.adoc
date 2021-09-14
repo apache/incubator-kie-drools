@@ -145,7 +145,7 @@ The ``scoreHolder``'s method uses it to do incremental score calculation correct
 [[weighingScoreRules]]
 == Weighing score rules
 
-If you've configured a <<constraintConfiguration,constraint configuration>>,
+If you've configured a xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration],
 the score level and score weight of each constraint are beautifully decoupled from the constraint implementation,
 so they can be changed by the business users more easily.
 
@@ -185,10 +185,10 @@ end
 ----
 
 They automatically impact the score for each constraint match
-by the score weight defined in the <<constraintConfiguration,constraint configuration>>.
+by the score weight defined in the xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration].
 
 The drl file must define a `package` (otherwise Drools defaults to `defaultpkg`)
-and it must match with the <<constraintConfiguration,constraint configuration>>'s `constraintPackage`.
+and it must match with the xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration]'s `constraintPackage`.
 
 [NOTE]
 ====
@@ -219,7 +219,7 @@ Presume its constraint weight is set to `100soft`.
 So when 2 overlapping talks share only 1 content tag, the score is impacted by `-100soft`.
 But when 2 overlapping talks share 3 content tags, the match weight is `3`, so the score is impacted by `-300soft`.
 
-If there is no <<constraintConfiguration,constraint configuration>>,
+If there is no xref:score-calculation/score-calculation.adoc#constraintConfiguration[constraint configuration],
 you'll need to hard-code the weight in the constraint implementations:
 
 [source,options="nowrap"]
@@ -346,5 +346,5 @@ In the `assertHardWeight()` and `assertSoftWeight()` methods, the weight of the 
 [NOTE]
 ====
 A ScoreVerifier does not work well to isolate score corruption,
-use <<invalidScoreDetection, an `assertionScoreDirectorFactory`>> instead.
+use xref:score-calculation/score-calculation.adoc#invalidScoreDetection[an `assertionScoreDirectorFactory`] instead.
 ====

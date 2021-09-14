@@ -36,7 +36,7 @@ There are several levels of fail fast, from better to worse:
 . **Fail Fast at compile time**. For example: Don't accept an `Object` as a parameter if it needs to be a `String` or an ``Integer``.
 . **Fail Fast at startup time**. For example: if the configuration parameter needs to be a positive `int` and it's negative, fail fast
 . **Fail Fast at runtime**. For example: if the request needs to contain a double between `0.0` and `1.0` and it's bigger than ``1.0``, fail fast.
-. *Fail Fast at runtime in assertion mode* if the detection performance cost is high. For example: If, after every low level iteration, the variable A needs to be equal to the square root of B, check it if and only if an assert flag is set to true (usually controlled by the <<environmentMode,EnvironmentMode>>).
+. *Fail Fast at runtime in assertion mode* if the detection performance cost is high. For example: If, after every low level iteration, the variable A needs to be equal to the square root of B, check it if and only if an assert flag is set to true (usually controlled by the xref:planner-configuration/planner-configuration.adoc#environmentMode[EnvironmentMode]).
 
 === Exception messages
 

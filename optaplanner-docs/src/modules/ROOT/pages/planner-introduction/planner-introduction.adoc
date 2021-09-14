@@ -121,7 +121,7 @@ This license is very liberal and allows reuse for commercial purposes.
 Read http://www.apache.org/foundation/licence-FAQ.html#WhatDoesItMEAN[the layman's explanation].
 
 OptaPlanner is 100% pure Java^TM^ and runs on Java 11 or higher.
-It <<integration,integrates very easily>> with other Java^TM^ technologies.
+It xref:integration/integration.adoc#integration[integrates very easily] with other Java^TM^ technologies.
 OptaPlanner is available in <<useWithMavenGradleEtc,the Maven Central Repository>>.
 
 OptaPlanner works on any Java Virtual Machine and is compatible with Standard Java, Enterprise Java, and all JVM languages.
@@ -183,7 +183,7 @@ For enterprise support and consulting, take a look at https://www.optaplanner.or
 OptaPlanner is part of the http://www.kiegroup.org[KIE group of projects].
 It releases regularly (typically every 3 weeks) together.
 
-See <<architectureOverview,the architecture overview>> to learn more about the optional integration with http://www.drools.org/[Drools].
+See xref:optimization-algorithms/optimization-algorithms.adoc#architectureOverview[the architecture overview] to learn more about the optional integration with http://www.drools.org/[Drools].
 
 [[downloadAndRunTheExamples]]
 == Download and run the examples

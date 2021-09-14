@@ -23,19 +23,19 @@ Do not define this property when a `ConstraintProvider`, `EasyScoreCalculator` o
 Enable runtime assertions to detect common bugs in your implementation during development.
 
 {property_prefix}optaplanner.solver.daemon::
-Enable <<daemon,daemon mode>>.
+Enable xref:repeated-planning/repeated-planning.adoc#daemon[daemon mode].
 In daemon mode, non-early termination pauses the solver instead of stopping it, until the next problem fact change arrives.
-This is often useful for <<realTimePlanning,real-time planning>>.
+This is often useful for xref:repeated-planning/repeated-planning.adoc#realTimePlanning[real-time planning].
 Defaults to `false`.
 
 {property_prefix}optaplanner.solver.move-thread-count::
 Enable multithreaded solving for a single problem, which increases CPU consumption.
 Defaults to `NONE`.
-See <<multithreadedIncrementalSolving,multithreaded incremental solving>>.
+See xref:optimization-algorithms/optimization-algorithms.adoc#multithreadedIncrementalSolving[multithreaded incremental solving].
 
 {property_prefix}optaplanner.solver.domain-access-type::
 How OptaPlanner should access the domain model.
-See <<domainAccess,the domain access section>> for more details.
+See xref:planner-configuration/planner-configuration.adoc#domainAccess[the domain access section] for more details.
 ifeval::["{property_prefix}" == "quarkus."]
 Defaults to `GIZMO`.
 The other possible value is `REFLECTION`.
