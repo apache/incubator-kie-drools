@@ -6,6 +6,6 @@ metadata:
   - "drools"
   - "predictions"
   - "PMML"
-  guide: "https://quarkus.io/guides/kogito"
+  guide: "https://quarkus.io/guides/kogito-pmml"
   categories:
   - "business-automation"

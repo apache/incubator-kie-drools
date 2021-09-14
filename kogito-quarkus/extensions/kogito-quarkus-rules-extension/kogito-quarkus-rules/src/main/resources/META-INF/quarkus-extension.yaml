@@ -6,6 +6,6 @@ metadata:
   - "drools"
   - "rules"
   - "DRL"
-  guide: "https://quarkus.io/guides/kogito"
+  guide: "https://quarkus.io/guides/kogito-drl"
   categories:
   - "business-automation"
