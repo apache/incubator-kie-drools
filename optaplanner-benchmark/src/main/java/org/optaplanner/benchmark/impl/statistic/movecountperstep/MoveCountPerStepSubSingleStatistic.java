@@ -21,21 +21,18 @@ import java.util.List;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.AbstractSolver;
+
+import io.micrometer.core.instrument.Tags;
 
 public class MoveCountPerStepSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, MoveCountPerStepStatisticPoint> {
 
-    private MoveCountPerStepSubSingleStatisticListener listener;
-
     public MoveCountPerStepSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, ProblemStatisticType.MOVE_COUNT_PER_STEP);
-        listener = new MoveCountPerStepSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -43,30 +40,12 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
-    }
-
-    @Override
-    public void close(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
-    }
-
-    private class MoveCountPerStepSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
-
-        @Override
-        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            if (stepScope instanceof LocalSearchStepScope) {
-                localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
-            }
-        }
-
-        private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-            pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
-                    new MoveCountPerStepMeasurement(stepScope.getAcceptedMoveCount(), stepScope.getSelectedMoveCount())));
-        }
-
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.MOVE_COUNT_PER_STEP,
+                timeMillisSpent -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted", runTag,
+                        accepted -> registry.getGaugeValue(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected", runTag,
+                                selected -> pointList.add(new MoveCountPerStepStatisticPoint(timeMillisSpent,
+                                        new MoveCountPerStepMeasurement(accepted.longValue(), selected.longValue()))))));
     }
 
     // ************************************************************************
@@ -79,7 +58,7 @@ public class MoveCountPerStepSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected MoveCountPerStepStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new MoveCountPerStepStatisticPoint(Long.parseLong(csvLine.get(0)),
                 new MoveCountPerStepMeasurement(Long.parseLong(csvLine.get(1)), Long.parseLong(csvLine.get(2))));

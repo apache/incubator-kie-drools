@@ -16,13 +16,16 @@
 
 package org.optaplanner.core.impl.solver.scope;
 
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Semaphore;
 
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
@@ -30,11 +33,14 @@ import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.termination.Termination;
 import org.optaplanner.core.impl.solver.thread.ChildThreadType;
 
+import io.micrometer.core.instrument.Tags;
+
 /**
  * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
  */
 public class SolverScope<Solution_> {
-
+    protected Set<SolverMetric> solverMetricSet;
+    protected Tags monitoringTags;
     protected int startingSolverCount;
     protected Random workingRandom;
     protected InnerScoreDirector<Solution_, ?> scoreDirector;
@@ -56,6 +62,22 @@ public class SolverScope<Solution_> {
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
+
+    public Tags getMonitoringTags() {
+        return monitoringTags;
+    }
+
+    public void setMonitoringTags(Tags monitoringTags) {
+        this.monitoringTags = monitoringTags;
+    }
+
+    public Set<SolverMetric> getSolverMetricSet() {
+        return solverMetricSet;
+    }
+
+    public void setSolverMetricSet(EnumSet<SolverMetric> solverMetricSet) {
+        this.solverMetricSet = solverMetricSet;
+    }
 
     public int getStartingSolverCount() {
         return startingSolverCount;
@@ -175,6 +197,10 @@ public class SolverScope<Solution_> {
     // Calculated methods
     // ************************************************************************
 
+    public boolean isMetricEnabled(SolverMetric solverMetric) {
+        return solverMetricSet.contains(solverMetric);
+    }
+
     public void startingNow() {
         startingSystemTimeMillis = System.currentTimeMillis();
         endingSystemTimeMillis = null;
@@ -217,6 +243,8 @@ public class SolverScope<Solution_> {
 
     public SolverScope<Solution_> createChildThreadSolverScope(ChildThreadType childThreadType) {
         SolverScope<Solution_> childThreadSolverScope = new SolverScope<>();
+        childThreadSolverScope.monitoringTags = monitoringTags;
+        childThreadSolverScope.solverMetricSet = solverMetricSet;
         childThreadSolverScope.startingSolverCount = startingSolverCount;
         // TODO FIXME use RandomFactory
         // Experiments show that this trick to attain reproducibility doesn't break uniform distribution

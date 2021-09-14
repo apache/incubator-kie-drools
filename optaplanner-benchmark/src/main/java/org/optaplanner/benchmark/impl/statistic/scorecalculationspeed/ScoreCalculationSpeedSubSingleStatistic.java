@@ -17,23 +17,23 @@
 package org.optaplanner.benchmark.impl.statistic.scorecalculationspeed;
 
 import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.Consumer;
 
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.AbstractSolver;
-import org.optaplanner.core.impl.solver.scope.SolverScope;
+
+import io.micrometer.core.instrument.Tags;
 
 public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, ScoreCalculationSpeedStatisticPoint> {
 
     private final long timeMillisThresholdInterval;
-
-    private final ScoreCalculationSpeedSubSingleStatisticListener listener;
 
     public ScoreCalculationSpeedSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         this(subSingleBenchmarkResult, 1000L);
@@ -46,7 +46,6 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
                     + ") must be bigger than 0.");
         }
         this.timeMillisThresholdInterval = timeMillisThresholdInterval;
-        listener = new ScoreCalculationSpeedSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -54,45 +53,35 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
-    }
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.SCORE_CALCULATION_COUNT, new Consumer<Long>() {
+            long nextTimeMillisThreshold = timeMillisThresholdInterval;
+            long lastTimeMillisSpent = 0;
+            final AtomicLong lastScoreCalculationCount = new AtomicLong(0);
 
-    @Override
-    public void close(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
-    }
-
-    private class ScoreCalculationSpeedSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
-
-        private long nextTimeMillisThreshold = timeMillisThresholdInterval;
-        private long lastTimeMillisSpent = 0L;
-        private long lastCalculationCount = 0L;
-
-        @Override
-        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-            if (timeMillisSpent >= nextTimeMillisThreshold) {
-                SolverScope<Solution_> solverScope = stepScope.getPhaseScope().getSolverScope();
-                long calculationCount = solverScope.getScoreCalculationCount();
-                long calculationCountInterval = calculationCount - lastCalculationCount;
-                long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;
-                if (timeMillisSpentInterval == 0L) {
-                    // Avoid divide by zero exception on a fast CPU
-                    timeMillisSpentInterval = 1L;
-                }
-                long scoreCalculationSpeed = calculationCountInterval * 1000L / timeMillisSpentInterval;
-                pointList.add(new ScoreCalculationSpeedStatisticPoint(timeMillisSpent, scoreCalculationSpeed));
-                lastCalculationCount = calculationCount;
-
-                lastTimeMillisSpent = timeMillisSpent;
-                nextTimeMillisThreshold += timeMillisThresholdInterval;
-                if (nextTimeMillisThreshold < timeMillisSpent) {
-                    nextTimeMillisThreshold = timeMillisSpent;
+            @Override
+            public void accept(Long timeMillisSpent) {
+                if (timeMillisSpent >= nextTimeMillisThreshold) {
+                    registry.getGaugeValue(SolverMetric.SCORE_CALCULATION_COUNT, runTag, scoreCalculationCountNumber -> {
+                        long scoreCalculationCount = scoreCalculationCountNumber.longValue();
+                        long calculationCountInterval = scoreCalculationCount - lastScoreCalculationCount.get();
+                        long timeMillisSpentInterval = timeMillisSpent - lastTimeMillisSpent;
+                        if (timeMillisSpentInterval == 0L) {
+                            // Avoid divide by zero exception on a fast CPU
+                            timeMillisSpentInterval = 1L;
+                        }
+                        long scoreCalculationSpeed = calculationCountInterval * 1000L / timeMillisSpentInterval;
+                        pointList.add(new ScoreCalculationSpeedStatisticPoint(timeMillisSpent, scoreCalculationSpeed));
+                        lastScoreCalculationCount.set(scoreCalculationCount);
+                    });
+                    lastTimeMillisSpent = timeMillisSpent;
+                    nextTimeMillisThreshold += timeMillisThresholdInterval;
+                    if (nextTimeMillisThreshold < timeMillisSpent) {
+                        nextTimeMillisThreshold = timeMillisSpent;
+                    }
                 }
             }
-        }
-
+        });
     }
 
     // ************************************************************************
@@ -105,7 +94,7 @@ public class ScoreCalculationSpeedSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected ScoreCalculationSpeedStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected ScoreCalculationSpeedStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new ScoreCalculationSpeedStatisticPoint(Long.parseLong(csvLine.get(0)),
                 Long.parseLong(csvLine.get(1)));

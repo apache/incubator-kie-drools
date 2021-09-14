@@ -38,30 +38,25 @@ import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.report.BenchmarkReport;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.PureSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.benchmark.impl.statistic.common.MillisecondsSpentNumberFormat;
-import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
-import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.ScoreUtils;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.AbstractSolver;
+
+import io.micrometer.core.instrument.Tag;
+import io.micrometer.core.instrument.Tags;
 
 public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
         extends PureSubSingleStatistic<Solution_, PickedMoveTypeStepScoreDiffStatisticPoint> {
-
-    @XmlTransient
-    private PickedMoveTypeStepScoreDiffSubSingleStatisticListener listener;
 
     @XmlTransient
     protected List<File> graphFileList = null;
 
     public PickedMoveTypeStepScoreDiffSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, SingleStatisticType.PICKED_MOVE_TYPE_STEP_SCORE_DIFF);
-        listener = new PickedMoveTypeStepScoreDiffSubSingleStatisticListener();
     }
 
     /**
@@ -77,50 +72,16 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
-    }
-
-    @Override
-    public void close(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
-    }
-
-    private class PickedMoveTypeStepScoreDiffSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
-
-        private Score oldStepScore = null;
-
-        @Override
-        public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
-            if (phaseScope instanceof LocalSearchPhaseScope) {
-                oldStepScore = phaseScope.getStartingScore();
-            }
-        }
-
-        @Override
-        public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
-            if (phaseScope instanceof LocalSearchPhaseScope) {
-                oldStepScore = null;
-            }
-        }
-
-        @Override
-        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.PICKED_MOVE_TYPE_STEP_SCORE_DIFF, (timeMillisSpent, stepScope) -> {
             if (stepScope instanceof LocalSearchStepScope) {
-                localSearchStepEnded((LocalSearchStepScope<Solution_>) stepScope);
+                String moveType = ((LocalSearchStepScope<Solution_>) stepScope).getStep().getSimpleMoveTypeDescription();
+                registry.extractScoreFromMeters(SolverMetric.PICKED_MOVE_TYPE_STEP_SCORE_DIFF,
+                        runTag.and(Tag.of("move.type", moveType)),
+                        score -> pointList.add(new PickedMoveTypeStepScoreDiffStatisticPoint(
+                                timeMillisSpent, moveType, score)));
             }
-        }
-
-        private void localSearchStepEnded(LocalSearchStepScope<Solution_> stepScope) {
-            long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-            String moveType = stepScope.getStep().getSimpleMoveTypeDescription();
-            Score newStepScore = stepScope.getScore();
-            Score stepScoreDiff = newStepScore.subtract(oldStepScore);
-            oldStepScore = newStepScore;
-            pointList.add(new PickedMoveTypeStepScoreDiffStatisticPoint(
-                    timeMillisSpent, moveType, stepScoreDiff));
-        }
-
+        });
     }
 
     // ************************************************************************
@@ -133,7 +94,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected PickedMoveTypeStepScoreDiffStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new PickedMoveTypeStepScoreDiffStatisticPoint(Long.parseLong(csvLine.get(0)),
                 csvLine.get(1), scoreDefinition.parseScore(csvLine.get(2)));
@@ -161,7 +122,7 @@ public class PickedMoveTypeStepScoreDiffSubSingleStatistic<Solution_>
                 double yValue = levelValues[i];
                 // In an XYInterval the yLow must be lower than yHigh
                 series.add(timeMillisSpent, timeMillisSpent, timeMillisSpent,
-                        yValue, (yValue > 0.0) ? 0.0 : yValue, (yValue > 0.0) ? yValue : 0.0);
+                        yValue, Math.min(yValue, 0.0), Math.max(yValue, 0.0));
             }
         }
         graphFileList = new ArrayList<>(moveTypeToSeriesMapList.size());

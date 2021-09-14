@@ -16,6 +16,7 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -103,6 +104,7 @@ public final class DefaultSolverManager<Solution_, ProblemId_> implements Solver
             Consumer<? super Solution_> finalBestSolutionConsumer,
             BiConsumer<? super ProblemId_, ? super Throwable> exceptionHandler) {
         Solver<Solution_> solver = solverFactory.buildSolver();
+        ((DefaultSolver<Solution_>) solver).setMonitorTagMap(Map.of("problem.id", problemId.toString()));
         // TODO consumption should happen on different thread than solver thread, doing skipAhead and throttling
         if (bestSolutionConsumer != null) {
             solver.addEventListener(event -> bestSolutionConsumer.accept(event.getNewBestSolution()));

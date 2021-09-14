@@ -21,20 +21,18 @@ import java.util.List;
 import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
 import org.optaplanner.benchmark.impl.result.SubSingleBenchmarkResult;
 import org.optaplanner.benchmark.impl.statistic.ProblemBasedSubSingleStatistic;
+import org.optaplanner.benchmark.impl.statistic.StatisticRegistry;
 import org.optaplanner.core.api.solver.Solver;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleListenerAdapter;
-import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
-import org.optaplanner.core.impl.solver.AbstractSolver;
+
+import io.micrometer.core.instrument.Tags;
 
 public class StepScoreSubSingleStatistic<Solution_>
         extends ProblemBasedSubSingleStatistic<Solution_, StepScoreStatisticPoint> {
 
-    private final StepScoreSubSingleStatisticListener listener;
-
     public StepScoreSubSingleStatistic(SubSingleBenchmarkResult subSingleBenchmarkResult) {
         super(subSingleBenchmarkResult, ProblemStatisticType.STEP_SCORE);
-        listener = new StepScoreSubSingleStatisticListener();
     }
 
     // ************************************************************************
@@ -42,25 +40,10 @@ public class StepScoreSubSingleStatistic<Solution_>
     // ************************************************************************
 
     @Override
-    public void open(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).addPhaseLifecycleListener(listener);
-    }
-
-    @Override
-    public void close(Solver<Solution_> solver) {
-        ((AbstractSolver<Solution_>) solver).removePhaseLifecycleListener(listener);
-    }
-
-    private class StepScoreSubSingleStatisticListener extends PhaseLifecycleListenerAdapter<Solution_> {
-
-        @Override
-        public void stepEnded(AbstractStepScope<Solution_> stepScope) {
-            if (stepScope.getScore().isSolutionInitialized()) {
-                long timeMillisSpent = stepScope.getPhaseScope().calculateSolverTimeMillisSpentUpToNow();
-                pointList.add(new StepScoreStatisticPoint(timeMillisSpent, stepScope.getScore()));
-            }
-        }
-
+    public void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        registry.addListener(SolverMetric.STEP_SCORE,
+                timeMillisSpent -> registry.extractScoreFromMeters(SolverMetric.STEP_SCORE, runTag,
+                        score -> pointList.add(new StepScoreStatisticPoint(timeMillisSpent, score))));
     }
 
     // ************************************************************************
@@ -73,7 +56,7 @@ public class StepScoreSubSingleStatistic<Solution_>
     }
 
     @Override
-    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition scoreDefinition,
+    protected StepScoreStatisticPoint createPointFromCsvLine(ScoreDefinition<?> scoreDefinition,
             List<String> csvLine) {
         return new StepScoreStatisticPoint(Long.parseLong(csvLine.get(0)),
                 scoreDefinition.parseScore(csvLine.get(1)));

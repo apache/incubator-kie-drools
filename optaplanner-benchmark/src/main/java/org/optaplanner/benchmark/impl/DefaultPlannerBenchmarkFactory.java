@@ -77,7 +77,6 @@ public class DefaultPlannerBenchmarkFactory extends PlannerBenchmarkFactory {
         validate();
         generateSolverBenchmarkConfigNames();
         List<SolverBenchmarkConfig> effectiveSolverBenchmarkConfigList = buildEffectiveSolverBenchmarkConfigList();
-
         PlannerBenchmarkResult plannerBenchmarkResult = new PlannerBenchmarkResult();
         plannerBenchmarkResult.setName(plannerBenchmarkConfig.getName());
         plannerBenchmarkResult.setAggregation(false);

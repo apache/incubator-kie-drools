@@ -16,15 +16,19 @@
 
 package org.optaplanner.core.impl.solver;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.Score;
 import org.optaplanner.core.api.solver.ProblemFactChange;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
@@ -37,6 +41,7 @@ import org.optaplanner.core.impl.solver.termination.Termination;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 /**
  * Default implementation for {@link Solver}.
@@ -59,6 +64,7 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     private final String moveThreadCountDescription;
 
     // Metrics
+    private Tags monitoringTags;
     private LongTaskTimer solveLengthTimer;
     private Counter errorCounter;
 
@@ -76,8 +82,8 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         this.basicPlumbingTermination = basicPlumbingTermination;
         this.solverScope = solverScope;
         this.moveThreadCountDescription = moveThreadCountDescription;
-        this.solveLengthTimer = Metrics.more().longTaskTimer("optaplanner.solver.solve.duration");
-        this.errorCounter = Metrics.counter("optaplanner.solver.errors");
+        monitoringTags = Tags.empty();
+        registerMetrics();
     }
 
     public EnvironmentMode getEnvironmentMode() {
@@ -154,6 +160,30 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
     @Override
     public boolean isEveryProblemFactChangeProcessed() {
         return basicPlumbingTermination.isEveryProblemFactChangeProcessed();
+    }
+
+    public void setMonitorTagMap(Map<String, String> monitorTagMap) {
+        monitoringTags = ObjectUtils.defaultIfNull(monitorTagMap, Collections.<String, String> emptyMap())
+                .entrySet().stream().map(entry -> Tags.of(entry.getKey(), entry.getValue()))
+                .reduce(Tags.empty(), Tags::and);
+        solverScope.setMonitoringTags(monitoringTags);
+        unregisterMetrics();
+        registerMetrics();
+    }
+
+    private void unregisterMetrics() {
+        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.unregister(this));
+    }
+
+    private void registerMetrics() {
+        this.solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId(),
+                solverScope.getMonitoringTags());
+        this.errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId(), solverScope.getMonitoringTags());
+
+        // NOTE: Speed can be derived by count if sampling rate is known
+        Metrics.gauge(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(), solverScope.getMonitoringTags(),
+                solverScope, SolverScope::getScoreCalculationCount);
+        solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.register(this));
     }
 
     // ************************************************************************

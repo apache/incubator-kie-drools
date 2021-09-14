@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -43,6 +44,8 @@ import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import io.micrometer.core.instrument.Tags;
 
 /**
  * 1 statistic of {@link SubSingleBenchmarkResult}.
@@ -103,9 +106,11 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
     // Lifecycle methods
     // ************************************************************************
 
-    public abstract void open(Solver<Solution_> solver);
+    public abstract void open(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver);
 
-    public abstract void close(Solver<Solution_> solver);
+    public void close(StatisticRegistry<Solution_> registry, Tags runTag, Solver<Solution_> solver) {
+        // Empty by default; SubSingleBenchmarkRunner unregisters the Registry (and thus the listeners)
+    }
 
     // ************************************************************************
     // Write methods
@@ -119,7 +124,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     private void writeCsvStatisticFile() {
         File csvFile = getCsvFile();
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), "UTF-8")) {
+        try (Writer writer = new OutputStreamWriter(new FileOutputStream(csvFile), StandardCharsets.UTF_8)) {
             writer.append(getCsvHeader()).append("\n");
             for (StatisticPoint point : getPointList()) {
                 writer.append(point.toCsvLine()).append("\n");
@@ -134,7 +139,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
 
     private void readCsvStatisticFile() {
         File csvFile = getCsvFile();
-        ScoreDefinition scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
+        ScoreDefinition<?> scoreDefinition = subSingleBenchmarkResult.getSingleBenchmarkResult().getSolverBenchmarkResult()
                 .getScoreDefinition();
         if (!pointList.isEmpty()) {
             throw new IllegalStateException("The pointList with size (" + pointList.size() + ") should be empty.");
@@ -147,7 +152,8 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
                 throw new IllegalStateException("The csvFile (" + csvFile + ") does not exist.");
             }
         }
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), "UTF-8"))) {
+        try (BufferedReader reader =
+                new BufferedReader(new InputStreamReader(new FileInputStream(csvFile), StandardCharsets.UTF_8))) {
             String line = reader.readLine();
             if (!getCsvHeader().equals(line)) {
                 throw new IllegalStateException("The read line (" + line
@@ -204,7 +210,7 @@ public abstract class SubSingleStatistic<Solution_, StatisticPoint_ extends Stat
         pointList = null;
     }
 
-    protected abstract StatisticPoint_ createPointFromCsvLine(ScoreDefinition scoreDefinition, List<String> csvLine);
+    protected abstract StatisticPoint_ createPointFromCsvLine(ScoreDefinition<?> scoreDefinition, List<String> csvLine);
 
     // ************************************************************************
     // Report accumulates

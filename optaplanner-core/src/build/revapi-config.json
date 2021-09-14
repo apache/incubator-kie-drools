@@ -72,7 +72,49 @@
            "methodName": "flattenLast",
            "elementKind": "method",
            "justification": "Constraint Streams API receives flattening support."
-         }
+         },
+         {
+           "code": "java.annotation.attributeValueChanged",
+           "old": "class org.optaplanner.core.config.solver.SolverConfig",
+           "new": "class org.optaplanner.core.config.solver.SolverConfig",
+           "annotationType": "javax.xml.bind.annotation.XmlType",
+           "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"})",
+           "attribute": "propOrder",
+           "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+           "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"solverMetricList\"}",
+           "package": "org.optaplanner.core.config.solver",
+           "classSimpleName": "SolverConfig",
+           "elementKind": "class",
+           "justification": "Allow enabling metrics via SolverConfig"
+         },
+         {
+            "code": "java.annotation.attributeValueChanged",
+            "old": "class org.optaplanner.core.config.solver.SolverConfig",
+            "new": "class org.optaplanner.core.config.solver.SolverConfig",
+            "annotationType": "javax.xml.bind.annotation.XmlType",
+            "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"})",
+            "attribute": "propOrder",
+            "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+            "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\", \"metricConfig\"}",
+            "package": "org.optaplanner.core.config.solver",
+            "classSimpleName": "SolverConfig",
+            "elementKind": "class",
+            "justification": "Allow adding custom tags to metrics via SolverConfig"
+        },
+        {
+            "code": "java.annotation.attributeValueChanged",
+            "old": "class org.optaplanner.core.config.solver.SolverConfig",
+            "new": "class org.optaplanner.core.config.solver.SolverConfig",
+            "annotationType": "javax.xml.bind.annotation.XmlType",
+            "annotation": "@javax.xml.bind.annotation.XmlType(name = \"solverConfig\", propOrder = {\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"})",
+            "attribute": "propOrder",
+            "oldValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+            "newValue": "{\"environmentMode\", \"daemon\", \"randomType\", \"randomSeed\", \"randomFactoryClass\", \"moveThreadCount\", \"moveThreadBufferSize\", \"threadFactoryClass\", \"monitoringConfig\", \"solutionClass\", \"entityClassList\", \"domainAccessType\", \"scoreDirectorFactoryConfig\", \"terminationConfig\", \"phaseConfigList\"}",
+            "package": "org.optaplanner.core.config.solver",
+            "classSimpleName": "SolverConfig",
+            "elementKind": "class",
+            "justification": "Add MonitoringConfig to XML"
+        }
       ]
     }
   }

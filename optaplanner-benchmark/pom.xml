@@ -90,6 +90,10 @@
     </dependency>
     <!-- Benchmarker statistics -->
     <dependency>
+      <groupId>io.micrometer</groupId>
+      <artifactId>micrometer-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.jfree</groupId>
       <artifactId>jfreechart</artifactId>
     </dependency>

@@ -16,16 +16,29 @@
 
 package org.optaplanner.core.impl.localsearch;
 
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
+import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.localsearch.decider.LocalSearchDecider;
 import org.optaplanner.core.impl.localsearch.event.LocalSearchPhaseLifecycleListener;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
+import org.optaplanner.core.impl.score.definition.ScoreDefinition;
+import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
+
+import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 /**
  * Default implementation of {@link LocalSearchPhase}.
@@ -36,6 +49,12 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         LocalSearchPhaseLifecycleListener<Solution_> {
 
     protected LocalSearchDecider<Solution_> decider;
+    protected final AtomicLong acceptedMoveCountPerStep = new AtomicLong(0);
+    protected final AtomicLong selectedMoveCountPerStep = new AtomicLong(0);
+    protected final Map<Tags, AtomicLong> constraintMatchTotalTagsToStepCount = new ConcurrentHashMap<>();
+    protected final Map<Tags, AtomicLong> constraintMatchTotalTagsToBestCount = new ConcurrentHashMap<>();
+    protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalStepScoreMap = new ConcurrentHashMap<>();
+    protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalBestScoreMap = new ConcurrentHashMap<>();
 
     public DefaultLocalSearchPhase(int phaseIndex, String logIndentation,
             BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
@@ -63,6 +82,13 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     public void solve(SolverScope<Solution_> solverScope) {
         LocalSearchPhaseScope<Solution_> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         phaseStarted(phaseScope);
+
+        if (solverScope.isMetricEnabled(SolverMetric.MOVE_COUNT_PER_STEP)) {
+            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".accepted",
+                    solverScope.getMonitoringTags(), acceptedMoveCountPerStep);
+            Metrics.gauge(SolverMetric.MOVE_COUNT_PER_STEP.getMeterId() + ".selected",
+                    solverScope.getMonitoringTags(), selectedMoveCountPerStep);
+        }
 
         while (!termination.isPhaseTerminated(phaseScope)) {
             LocalSearchStepScope<Solution_> stepScope = new LocalSearchStepScope<>(phaseScope);
@@ -129,6 +155,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     public void stepEnded(LocalSearchStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         decider.stepEnded(stepScope);
+        collectMetrics(stepScope);
         LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {
             logger.debug("{}    LS step ({}), time spent ({}), score ({}), {} best score ({})," +
@@ -141,6 +168,51 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
                     stepScope.getAcceptedMoveCount(),
                     stepScope.getSelectedMoveCount(),
                     stepScope.getStepString());
+        }
+    }
+
+    private void collectMetrics(LocalSearchStepScope<Solution_> stepScope) {
+        LocalSearchPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
+        SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
+        if (solverScope.isMetricEnabled(SolverMetric.MOVE_COUNT_PER_STEP)) {
+            acceptedMoveCountPerStep.set(stepScope.getAcceptedMoveCount());
+            selectedMoveCountPerStep.set(stepScope.getSelectedMoveCount());
+        }
+        if (solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE)
+                || solverScope.isMetricEnabled(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE)) {
+            InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
+            ScoreDefinition<?> scoreDefinition = solverScope.getScoreDefinition();
+            if (scoreDirector.isConstraintMatchEnabled()) {
+                for (ConstraintMatchTotal<?> constraintMatchTotal : scoreDirector.getConstraintMatchTotalMap()
+                        .values()) {
+                    Tags tags = solverScope.getMonitoringTags().and(
+                            "constraint.package", constraintMatchTotal.getConstraintPackage(),
+                            "constraint.name", constraintMatchTotal.getConstraintName());
+                    collectConstraintMatchTotalMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_BEST_SCORE, tags,
+                            constraintMatchTotalTagsToBestCount,
+                            constraintMatchTotalBestScoreMap, constraintMatchTotal, scoreDefinition, solverScope);
+                    collectConstraintMatchTotalMetrics(SolverMetric.CONSTRAINT_MATCH_TOTAL_STEP_SCORE, tags,
+                            constraintMatchTotalTagsToStepCount,
+                            constraintMatchTotalStepScoreMap, constraintMatchTotal, scoreDefinition, solverScope);
+                }
+            }
+        }
+    }
+
+    private void collectConstraintMatchTotalMetrics(SolverMetric metric, Tags tags, Map<Tags, AtomicLong> countMap,
+            Map<Tags, List<AtomicReference<Number>>> scoreMap, ConstraintMatchTotal<?> constraintMatchTotal,
+            ScoreDefinition<?> scoreDefinition, SolverScope<Solution_> solverScope) {
+        if (solverScope.isMetricEnabled(metric)) {
+            if (countMap.containsKey(tags)) {
+                countMap.get(tags).set(constraintMatchTotal.getConstraintMatchCount());
+            } else {
+                AtomicLong count = new AtomicLong(constraintMatchTotal.getConstraintMatchCount());
+                countMap.put(tags, count);
+                Metrics.gauge(metric.getMeterId() + ".count",
+                        tags, count);
+            }
+            SolverMetric.registerScoreMetrics(metric,
+                    tags, scoreDefinition, scoreMap, constraintMatchTotal.getScore());
         }
     }
 

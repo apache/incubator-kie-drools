@@ -17,12 +17,20 @@
 package org.optaplanner.benchmark.impl;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils;
 import org.optaplanner.benchmark.config.ProblemBenchmarksConfig;
 import org.optaplanner.benchmark.config.SolverBenchmarkConfig;
+import org.optaplanner.benchmark.config.statistic.ProblemStatisticType;
+import org.optaplanner.benchmark.config.statistic.SingleStatisticType;
 import org.optaplanner.benchmark.impl.result.PlannerBenchmarkResult;
 import org.optaplanner.benchmark.impl.result.SolverBenchmarkResult;
 import org.optaplanner.core.config.solver.EnvironmentMode;
+import org.optaplanner.core.config.solver.SolverConfig;
+import org.optaplanner.core.config.solver.monitoring.MonitoringConfig;
+import org.optaplanner.core.config.solver.monitoring.SolverMetric;
 import org.optaplanner.core.config.util.ConfigUtils;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
@@ -43,7 +51,19 @@ public class SolverBenchmarkFactory {
         if (config.getSolverConfig().getClassLoader() == null) {
             config.getSolverConfig().setClassLoader(classLoader);
         }
-        solverBenchmarkResult.setSolverConfig(config.getSolverConfig());
+        if (config.getSolverConfig().getMonitoringConfig() != null &&
+                config.getSolverConfig().getMonitoringConfig().getSolverMetricList() != null &&
+                !config.getSolverConfig().getMonitoringConfig().getSolverMetricList().isEmpty()) {
+            throw new IllegalArgumentException(
+                    "The solverBenchmarkConfig (" + config + ") has a " + SolverConfig.class.getSimpleName() +
+                            " (" + config.getSolverConfig() + " ) with a non-empty " + MonitoringConfig.class.getSimpleName() +
+                            " (" + config.getSolverConfig().getMonitoringConfig() + ").");
+        }
+        List<SolverMetric> solverMetricList = getSolverMetrics(config.getProblemBenchmarksConfig());
+        solverBenchmarkResult.setSolverConfig(config.getSolverConfig()
+                .copyConfig().withMonitoringConfig(
+                        new MonitoringConfig()
+                                .withSolverMetricList(solverMetricList)));
         DefaultSolverFactory<Solution_> defaultSolverFactory = new DefaultSolverFactory<>(config.getSolverConfig());
         SolutionDescriptor<Solution_> solutionDescriptor =
                 defaultSolverFactory.buildSolutionDescriptor(EnvironmentMode.REPRODUCIBLE);
@@ -80,5 +100,25 @@ public class SolverBenchmarkFactory {
             throw new IllegalStateException("The solverBenchmark name (" + config.getName()
                     + ") is invalid because the subSingleCount (" + config.getSubSingleCount() + ") must be greater than 1.");
         }
+    }
+
+    protected List<SolverMetric> getSolverMetrics(ProblemBenchmarksConfig config) {
+        List<SolverMetric> out = new ArrayList<>();
+        if (config == null) {
+            return out;
+        }
+        for (ProblemStatisticType problemStatisticType : ObjectUtils.defaultIfNull(config.getProblemStatisticTypeList(),
+                Collections.<ProblemStatisticType> emptyList())) {
+            if (problemStatisticType == ProblemStatisticType.SCORE_CALCULATION_SPEED) {
+                out.add(SolverMetric.SCORE_CALCULATION_COUNT);
+            } else {
+                out.add(SolverMetric.valueOf(problemStatisticType.name()));
+            }
+        }
+        for (SingleStatisticType singleStatisticType : ObjectUtils.defaultIfNull(config.getSingleStatisticTypeList(),
+                Collections.<SingleStatisticType> emptyList())) {
+            out.add(SolverMetric.valueOf(singleStatisticType.name()));
+        }
+        return out;
     }
 }
