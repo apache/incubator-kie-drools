@@ -84,7 +84,7 @@ public class OOPathExprGenerator {
 
             final String fieldName = chunk.getField().toString();
 
-            final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass, null);
+            final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, previousClass, null, context);
             if (callExpr == null) {
                 context.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + fieldName + " on " + previousClass ) );
                 break;
