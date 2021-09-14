@@ -1,0 +1,161 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="score" optype="continuous" dataType="double"/>
+    <DataField name="text_input" optype="categorical" dataType="string"/>
+  </DataDictionary>
+  <TransformationDictionary>
+    <DefineFunction name="discretize_function" optype="categorical" dataType="string">
+      <ParameterField name="eval_input1"/>
+      <Discretize field="eval_input1" dataType="string" mapMissingTo="mapMissing" defaultValue="defaultValue">
+        <DiscretizeBin binValue="abc">
+          <Interval closure="openOpen" leftMargin="4.2" rightMargin="9.8"/>
+        </DiscretizeBin>
+        <DiscretizeBin binValue="def">
+          <Interval closure="closedOpen" leftMargin="15.4" rightMargin="22.1"/>
+        </DiscretizeBin>
+      </Discretize>
+    </DefineFunction>
+    <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
+      <ParameterField name="eval_reason"/>
+      <NormDiscrete field="eval_reason" value="Input1ReasonCode" />
+    </DefineFunction>
+    <DefineFunction name="fun_input1_fieldref" optype="continuous" dataType="double">
+      <ParameterField name="input1_fake"/>
+      <FieldRef field="input1_fake"/>
+    </DefineFunction>
+    <DefineFunction name="TEXT_INDEX_NORMALIZATION_FUNCTION" optype="continuous">
+      <ParameterField name="reviewText"/>
+      <ParameterField name="term"/>
+      <TextIndex textField="reviewText" localTermWeights="binary" isCaseSensitive="false">
+        <TextIndexNormalization inField="string" outField="stem" regexField="regex">
+          <InlineTable>
+            <row>
+              <string>interfaces?</string>
+              <stem>interface</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>is|are|seem(ed|s?)|were</string>
+              <stem>be</stem>
+              <regex>true</regex>
+            </row>
+            <row>
+              <string>user friendl(y|iness)</string>
+              <stem>user_friendly</stem>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <TextIndexNormalization inField="re" outField="feature" regexField="regex">
+          <InlineTable>
+            <row>
+              <re>interface be (user_friendly|well designed|excellent)</re>
+              <feature>ui_good</feature>
+              <regex>true</regex>
+            </row>
+          </InlineTable>
+        </TextIndexNormalization>
+        <FieldRef field="term"/>
+      </TextIndex>
+    </DefineFunction>
+    <DerivedField name="der_fun_input1_fieldref" optype="continuous" dataType="double">
+      <Apply function="fun_input1_fieldref">
+        <FieldRef field="input1"/>
+      </Apply>
+    </DerivedField>
+    <DerivedField name="der_input1" optype="continuous" dataType="double">
+      <FieldRef field="input1"/>
+    </DerivedField>
+    <DerivedField name="der_input2" optype="continuous" dataType="double">
+      <FieldRef field="input2"/>
+    </DerivedField>
+    <DerivedField name="der_constant" optype="categorical" dataType="string">
+      <Constant>constant</Constant>
+    </DerivedField>
+    <DerivedField name="normcontinuous_field" optype="continuous" dataType="double">
+      <NormContinuous field="input1">
+        <LinearNorm orig="4.7" norm="5.2"/>
+        <LinearNorm orig="5.6" norm="5.9"/>
+        <LinearNorm orig="6.4" norm="6.2"/>
+        <LinearNorm orig="6.8" norm="6.7"/>
+      </NormContinuous>
+    </DerivedField>
+  </TransformationDictionary>
+  <Scorecard modelName="SimpleScorecardWithTransformations" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
+    <MiningSchema>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="text_input" invalidValueTreatment="asIs"/>
+      <MiningField name="score" usageType="target"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Score" feature="predictedValue" dataType="double" optype="continuous"/>
+      <OutputField name="Reason Code 1" rank="1" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="Reason Code 2" rank="2" feature="reasonCode" dataType="string" optype="categorical"/>
+      <OutputField name="out_der_input1" dataType="double" feature="transformedValue">
+        <FieldRef field="der_input1"/>
+      </OutputField>
+      <OutputField name="out_der_input2" dataType="double" feature="transformedValue">
+        <FieldRef field="der_input2"/>
+      </OutputField>
+      <OutputField name="out_der_constant" dataType="string" feature="transformedValue">
+        <FieldRef field="der_constant"/>
+      </OutputField>
+      <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">
+        <FieldRef field="normcontinuous_field"/>
+      </OutputField>
+      <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string" optype="categorical">
+        <Apply function="norm_discrete_function" >
+          <FieldRef field="Reason Code 1"/>
+        </Apply>
+      </OutputField>
+      <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
+        <Apply function="discretize_function" >
+          <FieldRef field="input1"/>
+        </Apply>
+      </OutputField>
+      <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
+        <MapValues outputColumn="out" dataType="string">
+          <FieldColumnPair field="Reason Code 1" column="reasoncode"/>
+          <InlineTable>
+            <row>
+              <reasoncode>Input1ReasonCode</reasoncode>
+              <out>RES-1</out>
+            </row>
+            <row>
+              <reasoncode>Input2ReasonCode</reasoncode>
+              <out>RES-2</out>
+            </row>
+          </InlineTable>
+        </MapValues>
+      </OutputField>
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+          <FieldRef field="text_input"/>
+          <Constant>ui_good</Constant>
+        </Apply>
+      </OutputField>
+    </Output>
+    <Characteristics>
+      <Characteristic name="input1Score" baselineScore="4" reasonCode="Input1ReasonCode">
+        <Attribute partialScore="-12">
+          <SimplePredicate field="der_fun_input1_fieldref" operator="lessOrEqual" value="10"/>
+        </Attribute>
+        <Attribute partialScore="50">
+          <SimplePredicate field="der_fun_input1_fieldref" operator="greaterThan" value="10"/>
+        </Attribute>
+      </Characteristic>
+      <Characteristic name="input2Score" baselineScore="8" reasonCode="Input2ReasonCode">
+        <Attribute partialScore="-8">
+          <SimplePredicate field="der_input2" operator="lessOrEqual" value="-5"/>
+        </Attribute>
+        <Attribute partialScore="32">
+          <SimplePredicate field="der_input2" operator="greaterThan" value="-5"/>
+        </Attribute>
+      </Characteristic>
+    </Characteristics>
+  </Scorecard>
+</PMML>

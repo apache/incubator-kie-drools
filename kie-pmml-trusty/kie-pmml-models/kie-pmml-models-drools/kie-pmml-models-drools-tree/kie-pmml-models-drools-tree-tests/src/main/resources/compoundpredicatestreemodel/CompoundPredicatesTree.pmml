@@ -1,0 +1,59 @@
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns="http://www.dmg.org/PMML-4_2">
+  <Header/>
+  <DataDictionary numberOfFields="4">
+    <DataField name="result" optype="categorical" dataType="string">
+      <Value value="classRootNode"/>
+      <Value value="classOrAndNestedNode"/>
+      <Value value="classOrNode"/>
+      <Value value="classAndNode"/>
+      <Value value="classXorNode"/>
+    </DataField>
+    <DataField name="input1" optype="continuous" dataType="double"/>
+    <DataField name="input2" optype="continuous" dataType="double"/>
+    <DataField name="input3" optype="continuous" dataType="double"/>
+  </DataDictionary>
+  <TreeModel modelName="CompoundPredicatesTreeModel" functionName="classification" noTrueChildStrategy="returnLastPrediction">
+    <MiningSchema>
+      <MiningField name="result" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input1" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input2" usageType="active" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input3" usageType="active" invalidValueTreatment="returnInvalid"/>
+    </MiningSchema>
+    <Output>
+      <OutputField name="Predicted_result" optype="categorical" dataType="string" feature="predictedValue"/>
+    </Output>
+    <Node id="1" score="classRootNode">
+      <True/>
+      <Node id="2" score="classOrAndNestedNode">
+        <CompoundPredicate booleanOperator="or">
+          <SimplePredicate field="input1" operator="lessThan" value="-5"/>
+          <CompoundPredicate booleanOperator="and">
+            <SimplePredicate field="input2" operator="lessThan" value="-5"/>
+            <SimplePredicate field="input2" operator="greaterThan" value="-10"/>
+          </CompoundPredicate>
+        </CompoundPredicate>
+      </Node>
+      <Node id="3" score="classOrNode">
+        <CompoundPredicate booleanOperator="or">
+          <SimplePredicate field="input1" operator="equal" value="2"/>
+          <SimplePredicate field="input2" operator="equal" value="3.5"/>
+        </CompoundPredicate>
+      </Node>
+      <Node id="4" score="classAndNode">
+        <CompoundPredicate booleanOperator="and">
+          <SimplePredicate field="input2" operator="greaterOrEqual" value="8"/>
+          <SimplePredicate field="input3" operator="greaterThan" value="8.5"/>
+        </CompoundPredicate>
+      </Node>
+      <Node id="5" score="classXorNode">
+        <CompoundPredicate booleanOperator="xor">
+          <SimplePredicate field="input1" operator="equal" value="6"/>
+<!--          <SimplePredicate field="input1" operator="equal" value="7"/>-->
+          <SimplePredicate field="input2" operator="equal" value="6.5"/>
+<!--          <SimplePredicate field="input2" operator="equal" value="7.5"/>-->
+<!--          <SimplePredicate field="input3" operator="equal" value="7.7"/>-->
+        </CompoundPredicate>
+      </Node>
+    </Node>
+  </TreeModel>
+</PMML>
