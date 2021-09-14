@@ -15,8 +15,6 @@
 
   <modules>
     <module>kie-pmml-models-drools-common</module>
-    <module>kie-pmml-models-drools-tree</module>
-    <module>kie-pmml-models-drools-scorecard</module>
   </modules>
 
 
