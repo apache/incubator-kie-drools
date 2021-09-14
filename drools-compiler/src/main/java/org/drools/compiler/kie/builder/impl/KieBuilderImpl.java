@@ -341,7 +341,7 @@ public class KieBuilderImpl
     private void addMetaInfBuilder() {
         for ( KiePath filePath : srcMfs.getFilePaths()) {
             if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.asString() ) ) {
-                trgMfs.write( filePath.substring( RESOURCES_ROOT.length() - 1 ),
+                trgMfs.write( filePath.substring( RESOURCES_ROOT.length() ),
                               getResource( srcMfs, filePath ),
                               true );
             }

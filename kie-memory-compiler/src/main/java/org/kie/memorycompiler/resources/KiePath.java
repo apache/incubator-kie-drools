@@ -41,7 +41,7 @@ public class KiePath implements Serializable {
         if (s == null || s.isEmpty()) {
             return null;
         }
-        return trimLeadingAndTrailing( IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s );
+        return trimTrailingSeparator( IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s );
     }
 
     public KiePath getParent() {
@@ -106,13 +106,7 @@ public class KiePath implements Serializable {
         return of(path.substring(beginIndex, endIndex));
     }
 
-    public static String trimLeadingAndTrailing(String p) {
-        if ( p.charAt( 0 ) == '/') {
-            p = p.substring( 1 );
-        }
-        if ( p.charAt( p.length() -1 ) == '/') {
-            p = p.substring( 0, p.length() -1 );
-        }
-        return p;
+    public static String trimTrailingSeparator(String p) {
+        return p.charAt( p.length() -1 ) == '/' ? p.substring( 0, p.length() -1 ) : p;
     }
 }

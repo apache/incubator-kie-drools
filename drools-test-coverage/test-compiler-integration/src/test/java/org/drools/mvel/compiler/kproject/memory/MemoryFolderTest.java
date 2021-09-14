@@ -40,17 +40,17 @@ public class MemoryFolderTest {
 
         assertEquals( "", new MemoryFolder( mfs, "/src/" ).getParent().getPath().asString() );
 
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().asString() );
+        assertEquals( "/src", new MemoryFolder( mfs, "/src/main" ).getParent().getPath().asString() );
 
         assertEquals( "src", new MemoryFolder( mfs, "src/main/" ).getParent().getPath().asString() );
 
-        assertEquals( "src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().asString() );
+        assertEquals( "/src", new MemoryFolder( mfs, "/src/main/" ).getParent().getPath().asString() );
 
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().asString() );
+        assertEquals( "/src/main", new MemoryFolder( mfs, "/src/main/java" ).getParent().getPath().asString() );
 
         assertEquals( "src/main", new MemoryFolder( mfs, "src/main/java/" ).getParent().getPath().asString() );
 
-        assertEquals( "src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().asString() );
+        assertEquals( "/src/main", new MemoryFolder( mfs, "/src/main/java/" ).getParent().getPath().asString() );
     }
     
     
