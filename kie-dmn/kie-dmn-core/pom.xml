@@ -156,13 +156,13 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-model</artifactId>
+      <artifactId>kie-pmml-models-tree-model</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-compiler</artifactId>
+      <artifactId>kie-pmml-models-tree-compiler</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
       <exclusions>
@@ -174,7 +174,7 @@
     </dependency>
     <dependency>
       <groupId>org.kie</groupId>
-      <artifactId>kie-pmml-models-drools-tree-evaluator</artifactId>
+      <artifactId>kie-pmml-models-tree-evaluator</artifactId>
       <scope>provided</scope>
       <optional>true</optional>
       <exclusions>
