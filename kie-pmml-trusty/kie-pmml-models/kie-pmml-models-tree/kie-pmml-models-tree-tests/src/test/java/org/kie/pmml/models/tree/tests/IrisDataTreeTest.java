@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +18,13 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class IrisDataTreeTest extends AbstractPMMLTest {
 
+    private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.000001);
     private static final String FILE_NAME = "irisTree.pmml";
     private static final String MODEL_NAME = "IrisTreeModel";
     private static final String TARGET_FIELD = "Species";
+    private static final String PROBABILITY_SETOSA = "Probability_setosa";
+    private static final String PROBABILITY_VERSICOLOR = "Probability_versicolor";
+    private static final String PROBABILITY_VIRGINICA = "Probability_virginica";
     private static PMMLRuntime pmmlRuntime;
 
     private double sepalLength;
@@ -27,17 +32,27 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
     private double petalLength;
     private double petalWidth;
     private String expectedResult;
+    private double probabilitySetosa;
+    private double probabilityVersicolor;
+    private double probabilityVirginica;
 
     public IrisDataTreeTest(double sepalLength, double sepalWidth, double petalLength,
-                            double petalWidth, String expectedResult) {
+                            double petalWidth,
+                            String expectedResult,
+                            double probabilitySetosa,
+                            double probabilityVersicolor,
+                            double probabilityVirginica) {
         this.sepalLength = sepalLength;
         this.sepalWidth = sepalWidth;
         this.petalLength = petalLength;
         this.petalWidth = petalWidth;
         this.expectedResult = expectedResult;
+        this.probabilitySetosa = probabilitySetosa;
+        this.probabilityVersicolor = probabilityVersicolor;
+        this.probabilityVirginica = probabilityVirginica;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -45,11 +60,11 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {6.9, 3.1, 5.1, 2.3, "virginica"},
-                {5.8, 2.6, 4.0, 1.2, "versicolor"},
-                {5.7, 3.0, 4.2, 1.2, "versicolor"},
-                {5.0, 3.3, 1.4, 0.2, "setosa"},
-                {5.4, 3.9, 1.3, 0.4, "setosa"}
+                {6.9, 3.1, 5.1, 2.3, "virginica", 0.0, 0.021739130434782608, 0.9782608695652174},
+                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.0, 0.9074074074074074, 0.09259259259259259},
+                {5.7, 3.0, 4.2, 1.2, "versicolor", 0.0, 0.9074074074074074, 0.09259259259259259},
+                {5.0, 3.3, 1.4, 0.2, "setosa", 1.0, 0.0, 0.0},
+                {5.4, 3.9, 1.3, 0.4, "setosa", 1.0, 0.0, 0.0},
         });
     }
 
@@ -64,5 +79,12 @@ public class IrisDataTreeTest extends AbstractPMMLTest {
 
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isNotNull();
+
+        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_SETOSA)).isEqualTo(probabilitySetosa);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isNotNull();
+        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VERSICOLOR)).isCloseTo(probabilityVersicolor, TOLERANCE_PERCENTAGE);
+        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isNotNull();
+        Assertions.assertThat((double) pmml4Result.getResultVariables().get(PROBABILITY_VIRGINICA)).isCloseTo(probabilityVirginica, TOLERANCE_PERCENTAGE);
     }
 }

@@ -16,6 +16,8 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.commons.model.predicates.KiePMMLTruePredicate;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
+import org.kie.pmml.models.tree.model.KiePMMLNodeResult;
+import org.kie.pmml.models.tree.model.KiePMMLScoreDistribution;
 
 
 
@@ -25,17 +27,20 @@ public class KiePMMLNodeTemplate extends KiePMMLNode {
         super(name, Collections.emptyList());
     }
 
-    public static Object evaluateNode(final Map<String, Object> requestData) {
+    public static KiePMMLNodeResult evaluateNode(final Map<String, Object> requestData) {
             if (!predicate.evaluate(requestData)) {
                 return null;
             }
-            final List<Function<Map<String, Object>, Object>> nodeFunctions = null;
+            final List<Function<Map<String, Object>, KiePMMLNodeResult>> nodeFunctions = null;
             final Object score = null;
+            final List<KiePMMLScoreDistribution> scoreDistributions = null;
+            final double missingValuePenalty = 1.0;
+            KiePMMLNodeResult kiePMMLNodeResult = new KiePMMLNodeResult(score, KiePMMLNode.getProbabilityConfidenceMap(scoreDistributions, missingValuePenalty));
             if (nodeFunctions.isEmpty()) {
-                return score;
+                return kiePMMLNodeResult;
             }
-            Optional<Object> nestedScore = KiePMMLNode.getNestedScore(nodeFunctions, requestData);
-            return nestedScore.orElse(score);
+            Optional<KiePMMLNodeResult> nestedKiePMMLNodeResult = KiePMMLNode.getNestedKiePMMLNodeResult(nodeFunctions, requestData);
+            return nestedKiePMMLNodeResult.orElse(kiePMMLNodeResult);
     }
 
 }

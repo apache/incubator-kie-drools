@@ -38,12 +38,15 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
+import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Predicate;
+import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.tree.Node;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -52,6 +55,7 @@ import org.kie.pmml.compiler.commons.utils.CommonCodegenUtils;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils;
 import org.kie.pmml.models.tree.model.KiePMMLNode;
+import org.kie.pmml.models.tree.model.KiePMMLScoreDistribution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,6 +69,7 @@ import static org.kie.pmml.commons.Constants.MISSING_VARIABLE_IN_BODY;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLModelFactoryUtils.setConstructorSuperNameInvocation;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLPredicateFactory.getKiePMMLPredicate;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getExpressionForObject;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
 
@@ -75,6 +80,8 @@ public class KiePMMLNodeFactory {
     static final String EVALUATE_NODE = "evaluateNode";
     static final String PREDICATE = "predicate";
     static final String SCORE = "score";
+    static final String SCORE_DISTRIBUTIONS = "scoreDistributions";
+    static final String MISSING_VALUE_PENALTY = "missingValuePenalty";
     static final String NODE_FUNCTIONS = "nodeFunctions";
     static final String EMPTY_LIST = "emptyList";
     static final String AS_LIST = "asList";
@@ -88,9 +95,10 @@ public class KiePMMLNodeFactory {
                                              final DataDictionary dataDictionary,
                                              final List<DerivedField> derivedFields,
                                              final String packageName,
+                                             final Double missingValuePenalty,
                                              final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLTreeNode {} {}", packageName, node);
-        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null);
+        final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(node, createNodeClassName(), null, missingValuePenalty);
         final Map<String, String> sourcesMap = getKiePMMLNodeSourcesMap(nodeNamesDTO, dataDictionary, derivedFields, packageName);
         String fullClassName = packageName + "." + nodeNamesDTO.nodeClassName;
         try {
@@ -148,7 +156,7 @@ public class KiePMMLNodeFactory {
         final Node node = nodeNamesDTO.node;
         if (node.hasNodes()) {
             for (Node nestedNode : node.getNodes()) {
-                final NodeNamesDTO nestedNodeNamesDTO = new NodeNamesDTO(nestedNode, nodeNamesDTO.getNestedNodeClassName(nestedNode), nodeNamesDTO.nodeClassName);
+                final NodeNamesDTO nestedNodeNamesDTO = new NodeNamesDTO(nestedNode, nodeNamesDTO.getNestedNodeClassName(nestedNode), nodeNamesDTO.nodeClassName, nodeNamesDTO.missingValuePenalty);
                 if (toPopulate.limitReach()) {
                     // start creating new node
                     // 1) dump generated class source
@@ -267,6 +275,15 @@ public class KiePMMLNodeFactory {
         // set 'score'
         populateEvaluateNodeWithScore(evaluateNodeBody, nodeNamesDTO.node.getScore());
 
+        // set 'scoreDistributions'
+        if (nodeNamesDTO.node.hasScoreDistributions()) {
+            populateEvaluateNodeWithScoreDistributions(evaluateNodeBody, nodeNamesDTO.node.getScoreDistributions());
+        }
+
+        // set 'missingValuePenalty'
+        if (nodeNamesDTO.missingValuePenalty != null) {
+            populateEvaluateNodeWithMissingValuePenalty(evaluateNodeBody, nodeNamesDTO.missingValuePenalty);
+        }
     }
 
     /**
@@ -278,7 +295,7 @@ public class KiePMMLNodeFactory {
      *     <code>Object nodeFunctions = java.util.Collections.emptyList();</code>
      * </p>
      *
-     *  otherwise an <code>ArrayList</code> of related references
+     *  otherwise, an <code>ArrayList</code> of related references
      * <p>
      *     <code>Object nodeFunctions = java.util.Arrays.asList(full.node.NodeClassName0::evaluateNode, full.node.NodeClassName1::evaluateNode);</code>
      * </p>
@@ -347,6 +364,73 @@ public class KiePMMLNodeFactory {
             scoreExpression = new NameExpr(scoreParamExpr);
         }
         CommonCodegenUtils.setVariableDeclaratorValue(toPopulate, SCORE, scoreExpression);
+    }
+
+    /**
+     * Set the <b>scoreDistribution</b> <code>VariableDeclarator</code> initializer of the given <code>BlockStmt</code>.
+     * If <b>scoreDistributionsParam</b> is <code>null</code>, a <code>NullLiteralExpr</code> is set.
+     * <p>
+     *     <code>List<KiePMMLScoreDistribution> scoreDistributions = null;</code>
+     * </p>
+     * Otherwise
+     * <p>
+     *     <code>List<KiePMMLScoreDistribution> scoreDistributions = arrays.asList(new KiePMMLScoreDistribution(....));</code>
+     * </p>
+     *
+     *
+     * @param toPopulate
+     * @param scoreDistributionsParam
+     */
+    static void populateEvaluateNodeWithScoreDistributions(final BlockStmt toPopulate,
+                                                           final List<ScoreDistribution> scoreDistributionsParam) {
+        final Expression scoreDistributionsExpression;
+        if (scoreDistributionsParam == null) {
+            scoreDistributionsExpression = new NullLiteralExpr();
+        } else {
+            int counter = 0;
+            final NodeList<Expression> scoreDistributionsArguments = new NodeList<>();
+            for (ScoreDistribution scoreDistribution : scoreDistributionsParam) {
+                String nestedVariableName = String.format("scoreDistribution_%s", counter);
+                scoreDistributionsArguments.add(getKiePMMLScoreDistribution(nestedVariableName, scoreDistribution));
+                counter ++;
+            }
+            scoreDistributionsExpression = new MethodCallExpr();
+            ((MethodCallExpr)scoreDistributionsExpression).setScope(new NameExpr(Arrays.class.getSimpleName()));
+            ((MethodCallExpr)scoreDistributionsExpression).setName("asList");
+            ((MethodCallExpr)scoreDistributionsExpression).setArguments(scoreDistributionsArguments);
+        }
+        CommonCodegenUtils.setVariableDeclaratorValue(toPopulate, SCORE_DISTRIBUTIONS, scoreDistributionsExpression);
+    }
+
+    /**
+     * Set the <b>missingValuePenalty</b> <code>VariableDeclarator</code> initializer of the given <code>BlockStmt</code>.
+     * <p>
+     *     <code>final double missingValuePenalty = ...;</code>
+     * </p>
+     *
+     *
+     * @param toPopulate
+     * @param missingValuePenalty
+     */
+    static void populateEvaluateNodeWithMissingValuePenalty(final BlockStmt toPopulate, final Double missingValuePenalty) {
+        CommonCodegenUtils.setVariableDeclaratorValue(toPopulate, MISSING_VALUE_PENALTY, getExpressionForObject(missingValuePenalty));
+    }
+
+    static ObjectCreationExpr getKiePMMLScoreDistribution(final String variableName,
+                                         final ScoreDistribution scoreDistribution) {
+        final NodeList<Expression> scoreDistributionsArguments = new NodeList<>();
+        scoreDistributionsArguments.add(getExpressionForObject(variableName));
+        scoreDistributionsArguments.add(new NullLiteralExpr());
+        scoreDistributionsArguments.add(getExpressionForObject(scoreDistribution.getValue().toString()));
+        scoreDistributionsArguments.add(getExpressionForObject(scoreDistribution.getRecordCount().intValue()));
+        Expression confidenceExpression = scoreDistribution.getConfidence() != null ? getExpressionForObject(scoreDistribution.getConfidence().doubleValue()) : new NullLiteralExpr();
+        scoreDistributionsArguments.add(confidenceExpression);
+        Expression probabilityExpression = scoreDistribution.getProbability() != null ? getExpressionForObject(scoreDistribution.getProbability().doubleValue()) : new NullLiteralExpr();
+        scoreDistributionsArguments.add(probabilityExpression);
+
+        return new ObjectCreationExpr(null, new ClassOrInterfaceType(null, KiePMMLScoreDistribution.class.getCanonicalName()),
+                                                                       scoreDistributionsArguments);
+
     }
 
     /**
@@ -448,8 +532,9 @@ public class KiePMMLNodeFactory {
         final String nodeName;
         final Map<Node, String> childrenNodes;
         final String parentNodeClassName;
+        final Double missingValuePenalty;
 
-        public NodeNamesDTO(final Node node, final String nodeClassName, final String parentNodeClassName) {
+        public NodeNamesDTO(final Node node, final String nodeClassName, final String parentNodeClassName, final Double missingValuePenalty) {
             this.node = node;
             this.parentNodeClassName = parentNodeClassName;
             this.nodeClassName = nodeClassName;
@@ -462,6 +547,7 @@ public class KiePMMLNodeFactory {
             } else {
                 childrenNodes = Collections.emptyMap();
             }
+            this.missingValuePenalty = missingValuePenalty;
         }
 
         String getNestedNodeClassName(final Node nestedNode) {
