@@ -56,7 +56,7 @@ public class DefaultPartitionedSearchPhaseFactory<Solution_>
         Termination<Solution_> phaseTermination = buildPhaseTermination(phaseConfigPolicy, solverTermination);
         Integer resolvedActiveThreadCount = resolveActiveThreadCount(phaseConfig.getRunnablePartThreadLimit());
         DefaultPartitionedSearchPhase<Solution_> phase =
-                new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(), bestSolutionRecaller,
+                new DefaultPartitionedSearchPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
                         phaseTermination, buildSolutionPartitioner(), threadFactory, resolvedActiveThreadCount);
         List<PhaseConfig> phaseConfigList_ = phaseConfig.getPhaseConfigList();
         if (ConfigUtils.isEmptyCollection(phaseConfigList_)) {

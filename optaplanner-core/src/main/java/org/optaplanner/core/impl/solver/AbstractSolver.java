@@ -23,6 +23,7 @@ import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.api.solver.event.SolverEventListener;
 import org.optaplanner.core.impl.partitionedsearch.PartitionSolver;
+import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.Phase;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
@@ -49,27 +50,26 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
 
     protected final transient Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
-    protected final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
+    private final SolverEventSupport<Solution_> solverEventSupport = new SolverEventSupport<>(this);
+    private final PhaseLifecycleSupport<Solution_> phaseLifecycleSupport = new PhaseLifecycleSupport<>();
 
     protected final BestSolutionRecaller<Solution_> bestSolutionRecaller;
-    // Note that the DefaultSolver.basicPlumbingTermination is a component of this termination
-    protected final Termination<Solution_> termination;
+    // Note that the DefaultSolver.basicPlumbingTermination is a component of this termination.
+    // Called "solverTermination" to clearly distinguish from "phaseTermination" inside AbstractPhase.
+    protected final Termination<Solution_> solverTermination;
     protected final List<Phase<Solution_>> phaseList;
 
     // ************************************************************************
     // Constructors and simple getters/setters
     // ************************************************************************
 
-    public AbstractSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
+    public AbstractSolver(BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> solverTermination,
             List<Phase<Solution_>> phaseList) {
         this.bestSolutionRecaller = bestSolutionRecaller;
-        this.termination = termination;
+        this.solverTermination = solverTermination;
         bestSolutionRecaller.setSolverEventSupport(solverEventSupport);
         this.phaseList = phaseList;
-        for (Phase<Solution_> phase : phaseList) {
-            phase.setSolverPhaseLifecycleSupport(phaseLifecycleSupport);
-        }
+        phaseList.forEach(phase -> ((AbstractPhase<Solution_>) phase).setSolver(this));
     }
 
     // ************************************************************************
@@ -79,7 +79,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
     public void solvingStarted(SolverScope<Solution_> solverScope) {
         solverScope.setWorkingSolutionFromBestSolution();
         bestSolutionRecaller.solvingStarted(solverScope);
-        termination.solvingStarted(solverScope);
+        solverTermination.solvingStarted(solverScope);
         phaseLifecycleSupport.fireSolvingStarted(solverScope);
         for (Phase<Solution_> phase : phaseList) {
             phase.solvingStarted(solverScope);
@@ -94,7 +94,7 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
             return;
         }
         Iterator<Phase<Solution_>> it = phaseList.iterator();
-        while (!termination.isSolverTerminated(solverScope) && it.hasNext()) {
+        while (!solverTermination.isSolverTerminated(solverScope) && it.hasNext()) {
             Phase<Solution_> phase = it.next();
             phase.solve(solverScope);
             // If there is a next phase, it starts from the best solution, which might differ from the working solution.
@@ -110,8 +110,36 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
             phase.solvingEnded(solverScope);
         }
         bestSolutionRecaller.solvingEnded(solverScope);
-        termination.solvingEnded(solverScope);
+        solverTermination.solvingEnded(solverScope);
         phaseLifecycleSupport.fireSolvingEnded(solverScope);
+    }
+
+    public void phaseStarted(AbstractPhaseScope<Solution_> phaseScope) {
+        bestSolutionRecaller.phaseStarted(phaseScope);
+        phaseLifecycleSupport.firePhaseStarted(phaseScope);
+        solverTermination.phaseStarted(phaseScope);
+        // Do not propagate to phases; the active phase does that for itself and they should not propagate further.
+    }
+
+    public void phaseEnded(AbstractPhaseScope<Solution_> phaseScope) {
+        bestSolutionRecaller.phaseEnded(phaseScope);
+        phaseLifecycleSupport.firePhaseEnded(phaseScope);
+        solverTermination.phaseEnded(phaseScope);
+        // Do not propagate to phases; the active phase does that for itself and they should not propagate further.
+    }
+
+    public void stepStarted(AbstractStepScope<Solution_> stepScope) {
+        bestSolutionRecaller.stepStarted(stepScope);
+        phaseLifecycleSupport.fireStepStarted(stepScope);
+        solverTermination.stepStarted(stepScope);
+        // Do not propagate to phases; the active phase does that for itself and they should not propagate further.
+    }
+
+    public void stepEnded(AbstractStepScope<Solution_> stepScope) {
+        bestSolutionRecaller.stepEnded(stepScope);
+        phaseLifecycleSupport.fireStepEnded(stepScope);
+        solverTermination.stepEnded(stepScope);
+        // Do not propagate to phases; the active phase does that for itself and they should not propagate further.
     }
 
     // ************************************************************************
@@ -148,6 +176,18 @@ public abstract class AbstractSolver<Solution_> implements Solver<Solution_> {
      */
     public void removePhaseLifecycleListener(PhaseLifecycleListener<Solution_> phaseLifecycleListener) {
         phaseLifecycleSupport.removeEventListener(phaseLifecycleListener);
+    }
+
+    // ************************************************************************
+    // Simple getters and setters
+    // ************************************************************************
+
+    public BestSolutionRecaller<Solution_> getBestSolutionRecaller() {
+        return bestSolutionRecaller;
+    }
+
+    public List<Phase<Solution_>> getPhaseList() {
+        return phaseList;
     }
 
 }

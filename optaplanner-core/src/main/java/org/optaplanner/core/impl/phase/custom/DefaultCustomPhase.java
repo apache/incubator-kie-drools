@@ -23,7 +23,6 @@ import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.phase.custom.scope.CustomPhaseScope;
 import org.optaplanner.core.impl.phase.custom.scope.CustomStepScope;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -36,9 +35,8 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
 
     protected List<CustomPhaseCommand<Solution_>> customPhaseCommandList;
 
-    public DefaultCustomPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    public DefaultCustomPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
+        super(phaseIndex, logIndentation, termination);
     }
 
     public void setCustomPhaseCommandList(List<CustomPhaseCommand<Solution_>> customPhaseCommandList) {
@@ -62,7 +60,7 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         CustomStepScope<Solution_> stepScope = new CustomStepScope<>(phaseScope);
         for (CustomPhaseCommand<Solution_> customPhaseCommand : customPhaseCommandList) {
             solverScope.checkYielding();
-            if (termination.isPhaseTerminated(phaseScope)) {
+            if (phaseTermination.isPhaseTerminated(phaseScope)) {
                 break;
             }
             stepStarted(stepScope);
@@ -86,14 +84,14 @@ public class DefaultCustomPhase<Solution_> extends AbstractPhase<Solution_> impl
         InnerScoreDirector<Solution_, ?> scoreDirector = stepScope.getScoreDirector();
         customPhaseCommand.changeWorkingSolution(scoreDirector);
         calculateWorkingStepScore(stepScope, customPhaseCommand);
-        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
     }
 
     public void stepEnded(CustomStepScope<Solution_> stepScope) {
         super.stepEnded(stepScope);
         boolean bestScoreImproved = stepScope.getBestScoreImproved();
         if (!bestScoreImproved) {
-            bestSolutionRecaller.updateBestSolution(stepScope.getPhaseScope().getSolverScope());
+            solver.getBestSolutionRecaller().updateBestSolution(stepScope.getPhaseScope().getSolverScope());
         }
         CustomPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         if (logger.isDebugEnabled()) {

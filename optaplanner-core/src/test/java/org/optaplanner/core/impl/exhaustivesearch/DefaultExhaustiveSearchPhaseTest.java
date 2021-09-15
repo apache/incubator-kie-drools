@@ -95,7 +95,7 @@ public class DefaultExhaustiveSearchPhaseTest {
         when(lastCompletedStepScope.getExpandingNode()).thenReturn(node3A);
         when(stepScope.getExpandingNode()).thenReturn(node4B);
 
-        DefaultExhaustiveSearchPhase<TestdataSolution> phase = new DefaultExhaustiveSearchPhase<>(0, "", null, null);
+        DefaultExhaustiveSearchPhase<TestdataSolution> phase = new DefaultExhaustiveSearchPhase<>(0, "", null);
         phase.setEntitySelector(mock(EntitySelector.class));
         phase.setDecider(mock(ExhaustiveSearchDecider.class));
         phase.restoreWorkingSolution(stepScope);

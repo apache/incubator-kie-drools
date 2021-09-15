@@ -48,11 +48,11 @@ public abstract class AbstractMoveScope<Solution_> {
         return move;
     }
 
-    public <Score_ extends Score<Score_>> Score_ getScore() {
-        return (Score_) score;
+    public Score getScore() {
+        return score;
     }
 
-    public <Score_ extends Score<Score_>> void setScore(Score_ score) {
+    public void setScore(Score score) {
         this.score = score;
     }
 

@@ -19,7 +19,6 @@ package org.optaplanner.core.impl.phase;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.solver.Solver;
 import org.optaplanner.core.impl.phase.event.PhaseLifecycleListener;
-import org.optaplanner.core.impl.phase.event.PhaseLifecycleSupport;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.DefaultSolver;
@@ -32,13 +31,6 @@ import org.optaplanner.core.impl.solver.scope.SolverScope;
  * @see AbstractPhase
  */
 public interface Phase<Solution_> extends PhaseLifecycleListener<Solution_> {
-
-    /**
-     * Used to make {@link DefaultSolver#addPhaseLifecycleListener(PhaseLifecycleListener)} work.
-     *
-     * @param solverPhaseLifecycleSupport never null
-     */
-    void setSolverPhaseLifecycleSupport(PhaseLifecycleSupport<Solution_> solverPhaseLifecycleSupport);
 
     /**
      * Add a {@link PhaseLifecycleListener} that is only notified

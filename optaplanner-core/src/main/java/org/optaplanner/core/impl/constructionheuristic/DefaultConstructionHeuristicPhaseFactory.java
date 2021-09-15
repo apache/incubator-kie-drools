@@ -58,12 +58,11 @@ public class DefaultConstructionHeuristicPhaseFactory<Solution_>
     public ConstructionHeuristicPhase<Solution_> buildPhase(int phaseIndex,
             HeuristicConfigPolicy<Solution_> solverConfigPolicy, BestSolutionRecaller<Solution_> bestSolutionRecaller,
             Termination<Solution_> solverTermination) {
-
         HeuristicConfigPolicy<Solution_> phaseConfigPolicy = solverConfigPolicy.createFilteredPhaseConfigPolicy();
         DefaultConstructionHeuristicPhase<Solution_> phase =
                 new DefaultConstructionHeuristicPhase<>(phaseIndex, solverConfigPolicy.getLogIndentation(),
-                        bestSolutionRecaller, buildPhaseTermination(phaseConfigPolicy, solverTermination));
-        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getTermination()));
+                        buildPhaseTermination(phaseConfigPolicy, solverTermination));
+        phase.setDecider(buildDecider(phaseConfigPolicy, phase.getPhaseTermination()));
         ConstructionHeuristicType constructionHeuristicType_ = defaultIfNull(
                 phaseConfig.getConstructionHeuristicType(), ConstructionHeuristicType.ALLOCATE_ENTITY_FROM_QUEUE);
         phaseConfigPolicy

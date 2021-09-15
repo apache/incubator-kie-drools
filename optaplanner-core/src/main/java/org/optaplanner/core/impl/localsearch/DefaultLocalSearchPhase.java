@@ -33,7 +33,6 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.definition.ScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -56,9 +55,8 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
     protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalStepScoreMap = new ConcurrentHashMap<>();
     protected final Map<Tags, List<AtomicReference<Number>>> constraintMatchTotalBestScoreMap = new ConcurrentHashMap<>();
 
-    public DefaultLocalSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    public DefaultLocalSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
+        super(phaseIndex, logIndentation, termination);
     }
 
     public LocalSearchDecider<Solution_> getDecider() {
@@ -90,13 +88,13 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
                     solverScope.getMonitoringTags(), selectedMoveCountPerStep);
         }
 
-        while (!termination.isPhaseTerminated(phaseScope)) {
+        while (!phaseTermination.isPhaseTerminated(phaseScope)) {
             LocalSearchStepScope<Solution_> stepScope = new LocalSearchStepScope<>(phaseScope);
-            stepScope.setTimeGradient(termination.calculatePhaseTimeGradient(phaseScope));
+            stepScope.setTimeGradient(phaseTermination.calculatePhaseTimeGradient(phaseScope));
             stepStarted(stepScope);
             decider.decideNextStep(stepScope);
             if (stepScope.getStep() == null) {
-                if (termination.isPhaseTerminated(phaseScope)) {
+                if (phaseTermination.isPhaseTerminated(phaseScope)) {
                     logger.trace("{}    Step index ({}), time spent ({}) terminated without picking a nextStep.",
                             logIndentation,
                             stepScope.getStepIndex(),
@@ -128,7 +126,7 @@ public class DefaultLocalSearchPhase<Solution_> extends AbstractPhase<Solution_>
         Move<Solution_> undoStep = step.doMove(stepScope.getScoreDirector());
         stepScope.setUndoStep(undoStep);
         predictWorkingStepScore(stepScope, step);
-        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
     }
 
     @Override

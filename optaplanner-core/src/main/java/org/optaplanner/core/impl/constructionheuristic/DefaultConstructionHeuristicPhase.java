@@ -24,7 +24,6 @@ import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeurist
 import org.optaplanner.core.impl.constructionheuristic.scope.ConstructionHeuristicStepScope;
 import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.phase.AbstractPhase;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -42,9 +41,8 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     // TODO make this configurable or make it constant
     protected final boolean skipBestSolutionCloningInSteps = true;
 
-    public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
+        super(phaseIndex, logIndentation, termination);
     }
 
     public void setEntityPlacer(EntityPlacer<Solution_> entityPlacer) {
@@ -74,7 +72,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
             stepStarted(stepScope);
             decider.decideNextStep(stepScope, placement);
             if (stepScope.getStep() == null) {
-                if (termination.isPhaseTerminated(phaseScope)) {
+                if (phaseTermination.isPhaseTerminated(phaseScope)) {
                     logger.trace("{}    Step index ({}), time spent ({}) terminated without picking a nextStep.",
                             logIndentation,
                             stepScope.getStepIndex(),
@@ -96,7 +94,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
             doStep(stepScope);
             stepEnded(stepScope);
             phaseScope.setLastCompletedStepScope(stepScope);
-            if (termination.isPhaseTerminated(phaseScope)) {
+            if (phaseTermination.isPhaseTerminated(phaseScope)) {
                 break;
             }
         }
@@ -111,7 +109,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         if (!skipBestSolutionCloningInSteps) {
             // Causes a planning clone, which is expensive
             // For example, on cloud balancing 1200c-4800p this reduces performance by 18%
-            bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+            solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
         } else {
             stepScope.setBestScoreImproved(true);
         }
@@ -155,7 +153,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
         if (skipBestSolutionCloningInSteps) {
-            bestSolutionRecaller.updateBestSolution(phaseScope.getSolverScope());
+            solver.getBestSolutionRecaller().updateBestSolution(phaseScope.getSolverScope());
         }
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);

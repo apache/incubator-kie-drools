@@ -63,11 +63,10 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
     protected List<PhaseConfig> phaseConfigList;
     protected HeuristicConfigPolicy<Solution_> configPolicy;
 
-    public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination,
+    public DefaultPartitionedSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination,
             SolutionPartitioner<Solution_> solutionPartitioner, ThreadFactory threadFactory,
             Integer runnablePartThreadLimit) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+        super(phaseIndex, logIndentation, termination);
         this.solutionPartitioner = solutionPartitioner;
         this.threadFactory = threadFactory;
         this.runnablePartThreadLimit = runnablePartThreadLimit;
@@ -169,12 +168,11 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
 
     public PartitionSolver<Solution_> buildPartitionSolver(
             ChildThreadPlumbingTermination<Solution_> childThreadPlumbingTermination,
-            Semaphore runnablePartThreadSemaphore,
-            SolverScope<Solution_> solverScope) {
+            Semaphore runnablePartThreadSemaphore, SolverScope<Solution_> solverScope) {
         BestSolutionRecaller<Solution_> bestSolutionRecaller =
                 BestSolutionRecallerFactory.create().buildBestSolutionRecaller(configPolicy.getEnvironmentMode());
         Termination<Solution_> partTermination = new OrCompositeTermination<>(childThreadPlumbingTermination,
-                termination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
+                phaseTermination.createChildThreadTermination(solverScope, ChildThreadType.PART_THREAD));
         List<Phase<Solution_>> phaseList = new ArrayList<>(phaseConfigList.size());
         int partPhaseIndex = 0;
         for (PhaseConfig phaseConfig : phaseConfigList) {
@@ -194,7 +192,7 @@ public class DefaultPartitionedSearchPhase<Solution_> extends AbstractPhase<Solu
         Move<Solution_> nextStep = stepScope.getStep();
         nextStep.doMove(stepScope.getScoreDirector());
         calculateWorkingStepScore(stepScope, nextStep);
-        bestSolutionRecaller.processWorkingSolutionDuringStep(stepScope);
+        solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
     }
 
     @Override

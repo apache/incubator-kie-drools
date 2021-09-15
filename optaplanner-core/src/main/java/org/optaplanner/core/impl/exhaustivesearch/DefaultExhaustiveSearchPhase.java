@@ -35,7 +35,6 @@ import org.optaplanner.core.impl.heuristic.move.Move;
 import org.optaplanner.core.impl.heuristic.selector.entity.EntitySelector;
 import org.optaplanner.core.impl.phase.AbstractPhase;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
-import org.optaplanner.core.impl.solver.recaller.BestSolutionRecaller;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.solver.termination.Termination;
 
@@ -54,9 +53,8 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
     protected boolean assertWorkingSolutionScoreFromScratch = false;
     protected boolean assertExpectedWorkingSolutionScore = false;
 
-    public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation,
-            BestSolutionRecaller<Solution_> bestSolutionRecaller, Termination<Solution_> termination) {
-        super(phaseIndex, logIndentation, bestSolutionRecaller, termination);
+    public DefaultExhaustiveSearchPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
+        super(phaseIndex, logIndentation, termination);
     }
 
     public Comparator<ExhaustiveSearchNode> getNodeComparator() {
@@ -107,7 +105,7 @@ public class DefaultExhaustiveSearchPhase<Solution_> extends AbstractPhase<Solut
         phaseScope.setExpandableNodeQueue(expandableNodeQueue);
         phaseStarted(phaseScope);
 
-        while (!expandableNodeQueue.isEmpty() && !termination.isPhaseTerminated(phaseScope)) {
+        while (!expandableNodeQueue.isEmpty() && !phaseTermination.isPhaseTerminated(phaseScope)) {
             ExhaustiveSearchStepScope<Solution_> stepScope = new ExhaustiveSearchStepScope<>(phaseScope);
             ExhaustiveSearchNode node = expandableNodeQueue.last();
             expandableNodeQueue.remove(node);
