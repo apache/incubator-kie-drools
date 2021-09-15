@@ -211,6 +211,11 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-transaction-spi-jakarta</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-legacy-test-util</artifactId>
       <type>test-jar</type>
