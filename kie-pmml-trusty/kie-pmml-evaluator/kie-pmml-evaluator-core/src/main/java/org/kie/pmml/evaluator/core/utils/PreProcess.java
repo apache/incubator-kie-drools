@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.evaluator.core.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -42,6 +41,12 @@ public class PreProcess {
         // Avoid instantiation
     }
 
+    /**
+     * Method to create a <code>ProcessingDTO</code> with <b>fix</b> values from the given <code>KiePMMLModel</code>
+     * @param model
+     * @param context
+     * @return
+     */
     public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
         addMissingValuesReplacements(model, context);
         final PMMLRequestData requestData = context.getRequestData();
@@ -53,9 +58,7 @@ public class PreProcess {
     static ProcessingDTO createProcessingDTO(final KiePMMLModel model, final Map<String, ParameterInfo> mappedRequestParams) {
         final List<KiePMMLNameValue> kiePMMLNameValues =
                 getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        return new ProcessingDTO(model,
-                                 kiePMMLNameValues,
-                                 new ArrayList<>());
+        return new ProcessingDTO(model, kiePMMLNameValues);
     }
 
     /**

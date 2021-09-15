@@ -28,10 +28,8 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 
 public class CommonTestingUtility {
 
-    public static ProcessingDTO getProcessingDTO(final KiePMMLModel model,
-                                           final List<KiePMMLNameValue> kiePMMLNameValues,
-                                           final List<String> orderedReasonCodes) {
-        return new ProcessingDTO(model, kiePMMLNameValues, orderedReasonCodes);
+    public static ProcessingDTO getProcessingDTO(KiePMMLModel model, List<KiePMMLNameValue> kiePMMLNameValues) {
+        return new ProcessingDTO(model, kiePMMLNameValues);
     }
 
     public static ProcessingDTO getProcessingDTO(List<KiePMMLNameValue> kiePMMLNameValues) {

@@ -20,7 +20,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
@@ -189,32 +188,29 @@ public class PMMLRuntimeFactoryInternalTest {
         return new KiePMMLModelWithNested(modelName, kiePmmlModels);
     }
 
-    private class KiePMMLModelA extends KiePMMLModel {
+    private class KiePMMLModelA extends KiePMMLTestingModel {
+
+        private static final long serialVersionUID = -8174670245229417048L;
 
         public KiePMMLModelA(String name) {
             super(name, Collections.emptyList());
         }
 
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
-        }
     }
 
-    private class KiePMMLModelB extends KiePMMLModel {
+    private class KiePMMLModelB extends KiePMMLTestingModel {
+
+        private static final long serialVersionUID = 8521110750870376450L;
 
         public KiePMMLModelB(String name) {
             super(name, Collections.emptyList());
         }
 
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
-        }
     }
 
-    private class KiePMMLModelWithNested extends KiePMMLModel implements HasNestedModels {
+    private class KiePMMLModelWithNested extends KiePMMLTestingModel implements HasNestedModels {
 
+        private static final long serialVersionUID = -3005462259673834598L;
         private final List<KiePMMLModel> nestedModels;
 
         public KiePMMLModelWithNested(String modelName, List<KiePMMLModel> nestedModels) {
@@ -227,9 +223,5 @@ public class PMMLRuntimeFactoryInternalTest {
             return nestedModels;
         }
 
-        @Override
-        public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
-            return null;
-        }
     }
 }

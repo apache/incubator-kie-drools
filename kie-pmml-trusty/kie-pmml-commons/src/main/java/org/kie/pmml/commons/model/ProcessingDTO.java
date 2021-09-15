@@ -17,7 +17,9 @@ package org.kie.pmml.commons.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.tuples.KiePMMLNameValue;
@@ -37,34 +39,39 @@ public class ProcessingDTO {
     private final List<KiePMMLNameValue> kiePMMLNameValues;
     private final List<String> orderedReasonCodes;
     private final List<MiningField> miningFields;
+    private Object predictedDisplayValue;
+    private Object entityId;
+    private Object affinity;
+    private Map<String, Double> probabilityMap;
 
     /**
      *
      * @param model
      * @param kiePMMLNameValues a <b>mutable</b> list of <code>KiePMMLNameValue</code>
-     * @param orderedReasonCodes a <b>mutable</b> list
      */
-    public ProcessingDTO(final KiePMMLModel model,
-                         final List<KiePMMLNameValue> kiePMMLNameValues,
-                         final List<String> orderedReasonCodes) {
-        derivedFields = new ArrayList<>();
-        defineFunctions = new ArrayList<>();
+    public ProcessingDTO(final KiePMMLModel model, final List<KiePMMLNameValue> kiePMMLNameValues) {
+        this.derivedFields = new ArrayList<>();
+        this.defineFunctions = new ArrayList<>();
         if (model.getTransformationDictionary() != null) {
             if (model.getTransformationDictionary().getDerivedFields() != null) {
-                derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
+                this.derivedFields.addAll(model.getTransformationDictionary().getDerivedFields());
             }
             if (model.getTransformationDictionary().getDefineFunctions() != null) {
-                defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
+                this.defineFunctions.addAll(model.getTransformationDictionary().getDefineFunctions());
             }
         }
         if (model.getLocalTransformations() != null && model.getLocalTransformations().getDerivedFields() != null) {
-            derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
+            this.derivedFields.addAll(model.getLocalTransformations().getDerivedFields());
         }
-        outputFields =  model.getKiePMMLOutputFields();
-        kiePMMLTargets = model.getKiePMMLTargets();
+        this.outputFields = model.getKiePMMLOutputFields();
+        this.kiePMMLTargets = model.getKiePMMLTargets();
         this.kiePMMLNameValues = kiePMMLNameValues;
-        this.orderedReasonCodes = orderedReasonCodes;
-        miningFields = model.getMiningFields();
+        this.orderedReasonCodes = new ArrayList<>();
+        this.miningFields = model.getMiningFields();
+        this.predictedDisplayValue = model.getPredictedDisplayValue();
+        this.entityId = model.getEntityId();
+        this.affinity = model.getAffinity();
+        this.probabilityMap = model.getProbabilityMap();
     }
 
     /**
@@ -91,6 +98,10 @@ public class ProcessingDTO {
         this.miningFields =  miningFields;
         this.kiePMMLNameValues = kiePMMLNameValues;
         this.orderedReasonCodes = orderedReasonCodes;
+        this.predictedDisplayValue = null;
+        this.entityId = null;
+        this.affinity = null;
+        this.probabilityMap = new LinkedHashMap<>();
     }
 
     public List<KiePMMLDefineFunction> getDefineFunctions() {
@@ -134,5 +145,37 @@ public class ProcessingDTO {
 
     public List<MiningField> getMiningFields() {
         return Collections.unmodifiableList(miningFields);
+    }
+
+    public Object getPredictedDisplayValue() {
+        return predictedDisplayValue;
+    }
+
+    public void setPredictedDisplayValue(Object predictedDisplayValue) {
+        this.predictedDisplayValue = predictedDisplayValue;
+    }
+
+    public Object getEntityId() {
+        return entityId;
+    }
+
+    public void setEntityId(Object entityId) {
+        this.entityId = entityId;
+    }
+
+    public Object getAffinity() {
+        return affinity;
+    }
+
+    public void setAffinity(Object affinity) {
+        this.affinity = affinity;
+    }
+
+    public Map<String, Double> getProbabilityMap() {
+        return probabilityMap;
+    }
+
+    public void setProbabilityMap(Map<String, Double> probabilityMap) {
+        this.probabilityMap = probabilityMap;
     }
 }

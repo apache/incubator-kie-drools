@@ -17,6 +17,7 @@ package org.kie.pmml.models.regression.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
@@ -80,6 +81,10 @@ public abstract class KiePMMLRegressionTable implements Serializable {
 
     public double getIntercept() {
         return intercept;
+    }
+
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return new LinkedHashMap<>();
     }
 
     protected abstract void updateResult(final AtomicReference<Double> toUpdate);
