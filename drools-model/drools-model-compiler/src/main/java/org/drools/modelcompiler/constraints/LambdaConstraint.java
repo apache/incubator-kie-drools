@@ -82,13 +82,13 @@ public class LambdaConstraint extends AbstractConstraint {
     private void initIndexes() {
         Index index = evaluator.getIndex();
         if (index != null) {
-            this.readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
+            readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
             switch (index.getIndexType()) {
                 case ALPHA:
-                    this.field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
+                    field = new ObjectFieldImpl( ( ( AlphaIndex ) index).getRightValue() );
                     break;
                 case BETA:
-                    this.indexExtractor = initBetaIndex( ( BetaIndexN ) index );
+                    indexExtractor = initBetaIndex( ( BetaIndexN ) index );
                     break;
             }
         }
@@ -154,9 +154,9 @@ public class LambdaConstraint extends AbstractConstraint {
     @Override
     public LambdaConstraint clone() {
         LambdaConstraint clone = new LambdaConstraint( evaluator.clone(),
-                                                       this.predicateInformation );
-        clone.field = this.field;
-        clone.readAccessor = this.readAccessor;
+                                                       predicateInformation );
+        clone.field = field;
+        clone.readAccessor = readAccessor;
         return clone;
     }
 
@@ -279,30 +279,36 @@ public class LambdaConstraint extends AbstractConstraint {
 
         private transient InternalWorkingMemory workingMemory;
 
+        @Override
         public void updateFromTuple(InternalWorkingMemory workingMemory, Tuple tuple) {
             this.tuple = tuple;
             this.workingMemory = workingMemory;
         }
 
+        @Override
         public void updateFromFactHandle(InternalWorkingMemory workingMemory, InternalFactHandle handle) {
             this.workingMemory = workingMemory;
             this.handle = handle;
         }
 
+        @Override
         public void resetTuple() {
             tuple = null;
         }
 
+        @Override
         public void resetFactHandle() {
             workingMemory = null;
             handle = null;
         }
 
+        @Override
         public void writeExternal(ObjectOutput out ) throws IOException {
             out.writeObject(tuple);
             out.writeObject( handle );
         }
 
+        @Override
         public void readExternal(ObjectInput in ) throws IOException, ClassNotFoundException {
             tuple = (Tuple)in.readObject();
             handle = (InternalFactHandle) in.readObject();
@@ -320,10 +326,12 @@ public class LambdaConstraint extends AbstractConstraint {
             return workingMemory;
         }
 
+        @Override
         public ContextEntry getNext() {
             throw new UnsupportedOperationException();
         }
 
+        @Override
         public void setNext(final ContextEntry entry) {
             throw new UnsupportedOperationException();
         }
@@ -347,6 +355,7 @@ public class LambdaConstraint extends AbstractConstraint {
             return valueType;
         }
 
+        @Override
         public abstract TupleValueExtractor clone();
 
         public abstract void replaceDeclaration(Declaration oldDecl, Declaration newDecl);

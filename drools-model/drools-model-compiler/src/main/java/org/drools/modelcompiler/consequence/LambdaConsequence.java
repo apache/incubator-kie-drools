@@ -60,10 +60,10 @@ public class LambdaConsequence implements Consequence {
 
     @Override
     public void evaluate( KnowledgeHelper knowledgeHelper, WorkingMemory workingMemory ) throws Exception {
-        if ( this.requiredDeclarations == null ) {
+        if ( requiredDeclarations == null ) {
             Declaration[] declarations = (( RuleTerminalNode ) knowledgeHelper.getMatch().getTuple().getTupleSink()).getRequiredDeclarations();
             if (enabledTupleOptimization) {
-                this.requiredDeclarations = declarations;
+                requiredDeclarations = declarations;
             } else {
                 Object[] facts = declarationsToFacts( knowledgeHelper, ( InternalWorkingMemory ) workingMemory, knowledgeHelper.getTuple(), declarations, consequence.getVariables(), consequence.isUsingDrools() );
                 consequence.getBlock().execute( facts );
@@ -234,6 +234,7 @@ public class LambdaConsequence implements Consequence {
             facts[supplierIndex] = workingMemory.getGlobal( globalName );
         }
 
+        @Override
         public int compareTo( GlobalSupplier o ) {
             return globalName.compareTo( o.globalName );
         }
@@ -250,7 +251,7 @@ public class LambdaConsequence implements Consequence {
         private TupleFactSupplier( int supplierIndex, Declaration declaration, boolean useDrools ) {
             this.supplierIndex = supplierIndex;
             this.declaration = declaration;
-            this.declarationTupleIndex = declaration.getTupleIndex();
+            declarationTupleIndex = declaration.getTupleIndex();
             this.useDrools = useDrools;
         }
 

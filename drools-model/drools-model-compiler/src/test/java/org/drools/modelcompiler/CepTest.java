@@ -376,7 +376,7 @@ public class CepTest extends BaseModelTest {
         KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        List<StockTick> resultsAfter = new ArrayList<StockTick>();
+        List<StockTick> resultsAfter = new ArrayList<>();
         ksession.setGlobal("resultsAfter", resultsAfter);
 
         // inserting new StockTick with duration 30 at time 0 => rule
@@ -415,7 +415,7 @@ public class CepTest extends BaseModelTest {
         KieSession ksession = getKieSession(getCepKieModuleModel(), str);
         SessionPseudoClock clock = ksession.getSessionClock();
 
-        List<StockTick> resultsAfter = new ArrayList<StockTick>();
+        List<StockTick> resultsAfter = new ArrayList<>();
         ksession.setGlobal("resultsAfter", resultsAfter);
 
         // inserting new StockTick with duration 30 at time 0 => rule
@@ -461,7 +461,7 @@ public class CepTest extends BaseModelTest {
         ksession.fireAllRules();
         assertEquals(0, ksession.getObjects().size());
     }
-    
+
     @Test
     public void testDeclareAndExpires() throws Exception {
         String str =
@@ -814,6 +814,7 @@ public class CepTest extends BaseModelTest {
         public MyEvent(final long timestamp ) { this.timestamp = timestamp; }
         public long getTimestamp() { return timestamp; }
         public void setTimestamp(final long timestamp ) { this.timestamp = timestamp; }
+        @Override
         public String toString() { return "MyEvent{" + "timestamp=" + timestamp + '}';  }
     }
 
@@ -882,7 +883,7 @@ public class CepTest extends BaseModelTest {
         }
 
         public void setOrderType( OrderType ordertype ) {
-            this.orderType = ordertype;
+            orderType = ordertype;
         }
 
         public Long getTimestamp() {

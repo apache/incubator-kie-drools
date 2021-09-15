@@ -29,7 +29,6 @@ import org.junit.Test;
 import org.kie.api.runtime.KieContainer;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.util.ClassUtils.getCanonicalSimpleName;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -41,7 +40,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
     }
 
     public static class AdultUnit implements RuleUnit {
-        private List<String> results = new ArrayList<String>();
+        private List<String> results = new ArrayList<>();
         private int adultAge = 18;
         private DataSource<Person> persons;
 
@@ -151,7 +150,7 @@ public class RuleUnitCompilerTest extends BaseModelTest {
         private String positive_or_negative;
 
         public PositiveNegativeDTUnit(long val) {
-            this.a_number = new BigDecimal(val);
+            a_number = new BigDecimal(val);
         }
 
         public DataSource<BigDecimal> getInput1() {

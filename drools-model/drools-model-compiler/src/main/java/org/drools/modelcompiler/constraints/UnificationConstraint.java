@@ -49,9 +49,9 @@ public class UnificationConstraint extends MutableTypeConstraint implements Inde
         this.evaluator = evaluator;
         if (evaluator != null) {
             Index index = evaluator.getIndex();
-            this.readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
+            readAccessor = new LambdaReadAccessor( index.getIndexId(), index.getIndexedClass(), index.getLeftOperandExtractor() );
         } else {
-            this.readAccessor = new LambdaReadAccessor( indexingDeclaration.getDeclarationClass(), x -> x );
+            readAccessor = new LambdaReadAccessor( indexingDeclaration.getDeclarationClass(), x -> x );
         }
     }
 

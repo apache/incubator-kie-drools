@@ -30,8 +30,8 @@ public class ChildFactWithFirings1 {
     public ChildFactWithFirings1(final int id, final int parentId) {
         this.id = id;
         this.parentId = parentId;
-        this.firings = new ArrayList<>();
-        this.evaluationName = "";
+        firings = new ArrayList<>();
+        evaluationName = "";
     }
 
     public int getId() {

@@ -41,7 +41,7 @@ public class Cheese
     public Cheese(final String type) {
         super();
         this.type = type;
-        this.price = 0;
+        price = 0;
     }
 
     public Cheese(final String type,
@@ -61,11 +61,11 @@ public class Cheese
     }
 
     public int getPrice() {
-        return this.price;
+        return price;
     }
 
     public String getType() {
-        return this.type;
+        return type;
     }
 
     public void setType(final String type) {
@@ -76,10 +76,12 @@ public class Cheese
         this.price = price;
     }
 
+    @Override
     public String toString() {
-        return "Cheese( type='" + this.type + "', price=" + this.price + " )";
+        return "Cheese( type='" + type + "', price=" + price + " )";
     }
 
+    @Override
     public int hashCode() {
         final int PRIME = 31;
         int result = 1;
@@ -88,15 +90,28 @@ public class Cheese
         return result;
     }
 
+    @Override
     public boolean equals(Object obj) {
-        if ( this == obj ) return true;
-        if ( obj == null ) return false;
-        if ( getClass() != obj.getClass() ) return false;
+        if ( this == obj ) {
+            return true;
+        }
+        if ( obj == null ) {
+            return false;
+        }
+        if ( getClass() != obj.getClass() ) {
+            return false;
+        }
         final Cheese other = (Cheese) obj;
-        if ( price != other.price ) return false;
+        if ( price != other.price ) {
+            return false;
+        }
         if ( type == null ) {
-            if ( other.type != null ) return false;
-        } else if ( !type.equals( other.type ) ) return false;
+            if ( other.type != null ) {
+                return false;
+            }
+        } else if ( !type.equals( other.type ) ) {
+            return false;
+        }
         return true;
     }
 

@@ -591,7 +591,7 @@ public class ConstraintParser {
         if (equalityExpr) {
             combo = getEqualityExpression( left, right, operator ).expression;
         } else if (arithmeticExpr && (left.isBigDecimal())) {
-            ConstraintCompiler constraintCompiler = createConstraintCompiler(this.context, of(patternType));
+            ConstraintCompiler constraintCompiler = createConstraintCompiler(context, of(patternType));
             CompiledExpressionResult compiledExpressionResult = constraintCompiler.compileExpression(binaryExpr);
 
             combo = compiledExpressionResult.getExpression();

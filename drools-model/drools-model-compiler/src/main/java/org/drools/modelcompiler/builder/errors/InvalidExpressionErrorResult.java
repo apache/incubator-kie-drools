@@ -31,12 +31,12 @@ public class InvalidExpressionErrorResult extends DroolsError {
     public InvalidExpressionErrorResult(String message) {
         super();
         this.message = message;
-        this.errorLines[0] = -1;
+        errorLines[0] = -1;
     }
 
     public InvalidExpressionErrorResult(String message, Optional<BaseDescr> descrOpt) {
         this(message);
-        descrOpt.ifPresent(descr -> this.errorLines[0] = descr.getLine());
+        descrOpt.ifPresent(descr -> errorLines[0] = descr.getLine());
     }
 
     @Override

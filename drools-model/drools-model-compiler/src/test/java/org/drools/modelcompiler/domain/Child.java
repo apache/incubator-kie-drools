@@ -24,7 +24,7 @@ public class Child extends Person {
 
     private final String parent;
 
-    private final List<Toy> toys = new ReactiveList<Toy>();
+    private final List<Toy> toys = new ReactiveList<>();
 
     public Child(String name, int age) {
         this(name, age, null);

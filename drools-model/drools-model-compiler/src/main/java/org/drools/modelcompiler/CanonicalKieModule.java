@@ -224,7 +224,7 @@ public class CanonicalKieModule implements InternalKieModule {
 
     @Override
     public InternalKnowledgeBase createKieBase(KieBaseModelImpl kBaseModel, KieProject kieProject, BuildContext buildContext, KieBaseConfiguration conf) {
-        this.moduleClassLoader = ((ProjectClassLoader) kieProject.getClassLoader());
+        moduleClassLoader = ((ProjectClassLoader) kieProject.getClassLoader());
         if (generatedClassNames == null) {
             generatedClassNames = findGeneratedClassNamesWithDependencies();
         }
@@ -331,7 +331,7 @@ public class CanonicalKieModule implements InternalKieModule {
         CanonicalKiePackages canonicalKiePackages = mergeProcesses(processes, canonicalKiePkgs);
 
         modelsForKBase.clear();
-        this.models.clear();
+        models.clear();
 
         return canonicalKiePackages;
     }
@@ -389,6 +389,7 @@ public class CanonicalKieModule implements InternalKieModule {
         return pkgsInKbase.computeIfAbsent(kBaseModel.getName(), k -> createKiePackages(null, kBaseModel, null, getKnowledgeBaseConfiguration(kBaseModel, getModuleClassLoader())));
     }
 
+    @Override
     public ProjectClassLoader getModuleClassLoader() {
         if (moduleClassLoader == null) {
             moduleClassLoader = createModuleClassLoader(null);
@@ -729,7 +730,7 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public void updateKieModule(InternalKieModule newKM) {
         CanonicalKieModule newCanonicalKieModule = (CanonicalKieModule) newKM;
-        newCanonicalKieModule.setModuleClassLoader(this.getModuleClassLoader());
+        newCanonicalKieModule.setModuleClassLoader(getModuleClassLoader());
     }
 
     public InternalKieModule getInternalKieModule() {

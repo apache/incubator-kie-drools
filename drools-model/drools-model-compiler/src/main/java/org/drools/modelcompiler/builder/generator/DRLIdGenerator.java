@@ -104,23 +104,30 @@ public class DRLIdGenerator {
         }
         @Override
         public boolean equals(Object obj) {
-            if (this == obj)
+            if (this == obj) {
                 return true;
-            if (obj == null)
+            }
+            if (obj == null) {
                 return false;
-            if (getClass() != obj.getClass())
+            }
+            if (getClass() != obj.getClass()) {
                 return false;
+            }
             PatternTypeDRLConstraint other = (PatternTypeDRLConstraint) obj;
             if (drlConstraint == null) {
-                if (other.drlConstraint != null)
+                if (other.drlConstraint != null) {
                     return false;
-            } else if (!drlConstraint.equals(other.drlConstraint))
+                }
+            } else if (!drlConstraint.equals(other.drlConstraint)) {
                 return false;
+            }
             if (patternType == null) {
-                if (other.patternType != null)
+                if (other.patternType != null) {
                     return false;
-            } else if (!patternType.equals(other.patternType))
+                }
+            } else if (!patternType.equals(other.patternType)) {
                 return false;
+            }
             return true;
         }
         @Override

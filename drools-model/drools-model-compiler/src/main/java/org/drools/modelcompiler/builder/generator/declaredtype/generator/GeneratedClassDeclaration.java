@@ -44,11 +44,10 @@ import org.drools.modelcompiler.builder.generator.declaredtype.api.TypeDefinitio
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static java.text.MessageFormat.format;
-
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.text.MessageFormat.format;
 import static org.drools.core.util.ClassUtils.getGetterMethod;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;

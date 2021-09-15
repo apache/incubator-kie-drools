@@ -18,9 +18,8 @@ import org.drools.core.addon.TypeResolver;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.junit.Test;
 
-import static java.util.Arrays.asList;
-
 import static com.github.javaparser.ast.NodeList.nodeList;
+import static java.util.Arrays.asList;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
 import static org.junit.Assert.assertArrayEquals;
 

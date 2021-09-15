@@ -32,7 +32,7 @@ import org.kie.api.event.rule.DefaultAgendaEventListener;
  */
 public class TrackingAgendaEventListener extends DefaultAgendaEventListener {
 
-    private Map<String, Integer> rulesFired = new HashMap<String, Integer>();
+    private Map<String, Integer> rulesFired = new HashMap<>();
     private List<String> rulesFiredOrder = new ArrayList<>();
 
     @Override

@@ -10,7 +10,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.PATTERN_CALL;
 
 public class PatternToReplace {
@@ -20,7 +19,7 @@ public class PatternToReplace {
 
     public PatternToReplace(RuleContext context, Collection<String> patternBindings) {
         this.context = context;
-        this.bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
+        bindingExprsVars = patternBindings.stream().map(context::getVarExpr).collect(toList());
     }
 
     public Optional<MethodCallExpr> findFromPattern() {

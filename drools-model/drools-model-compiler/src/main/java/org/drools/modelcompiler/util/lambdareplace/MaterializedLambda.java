@@ -78,7 +78,7 @@ abstract class MaterializedLambda {
 
     public CreatedClass create(LambdaExpr lambdaExpr, Collection<String> imports, Collection<String> staticImports) {
         this.lambdaExpr = lambdaExpr;
-        this.temporaryClassHash = classHash(lambdaExpr.toString());
+        temporaryClassHash = classHash(lambdaExpr.toString());
 
         parseParameters();
 

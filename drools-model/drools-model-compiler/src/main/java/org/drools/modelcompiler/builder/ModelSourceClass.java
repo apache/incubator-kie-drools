@@ -52,8 +52,8 @@ public class ModelSourceClass {
     public ModelSourceClass(ReleaseId releaseId, Map<String, KieBaseModel> kBaseModels, Map<String, List<String>> modelsByKBase, boolean useUniqueName) {
         this.releaseId = releaseId;
         this.modelsByKBase = modelsByKBase;
-        this.modelMethod = new KieModuleModelMethod( kBaseModels );
-        this.className = useUniqueName ? getProjectModelClassNameNameWithReleaseId(releaseId) : CanonicalKieModule.PROJECT_MODEL_CLASS;
+        modelMethod = new KieModuleModelMethod( kBaseModels );
+        className = useUniqueName ? getProjectModelClassNameNameWithReleaseId(releaseId) : CanonicalKieModule.PROJECT_MODEL_CLASS;
     }
 
     public KieModuleModelMethod getModelMethod() {
@@ -224,9 +224,9 @@ public class ModelSourceClass {
 
             private BaseModelGenerator(KieBaseModel kieBaseModel) {
                 this.kieBaseModel = kieBaseModel;
-                this.kieBaseModelName = "kieBaseModel_" + toId(kieBaseModel.getName());
-                this.kieBaseModelNameExpr = new NameExpr(kieBaseModelName);
-                this.confExpr = new NameExpr("conf");
+                kieBaseModelName = "kieBaseModel_" + toId(kieBaseModel.getName());
+                kieBaseModelNameExpr = new NameExpr(kieBaseModelName);
+                confExpr = new NameExpr("conf");
             }
 
             void toSourceCode() {
@@ -294,10 +294,10 @@ public class ModelSourceClass {
             private SessionModelGenerator(KieSessionModel kieSessionModel, NameExpr kieBaseModelNameExpr) {
                 this.kieSessionModel = kieSessionModel;
                 this.kieBaseModelNameExpr = kieBaseModelNameExpr;
-                this.name = "kieSessionModel_" + toId(kieSessionModel.getName());
-                this.nameExpr = new NameExpr(name);
-                this.confExpr = new NameExpr("conf");
-                kSessionConfs.put( kieSessionModel.getName(), this.confBlock );
+                name = "kieSessionModel_" + toId(kieSessionModel.getName());
+                nameExpr = new NameExpr(name);
+                confExpr = new NameExpr("conf");
+                kSessionConfs.put( kieSessionModel.getName(), confBlock );
             }
 
             void toSourceCode() {

@@ -69,7 +69,7 @@ public class ChannelTest extends BaseModelTest {
 
     public static class TestChannel implements Channel {
 
-        private final List<Object> channelMessages = new ArrayList<Object>();
+        private final List<Object> channelMessages = new ArrayList<>();
 
         @Override
         public void send(Object object) {

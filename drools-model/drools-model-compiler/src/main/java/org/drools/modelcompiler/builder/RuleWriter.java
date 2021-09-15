@@ -50,7 +50,7 @@ public class RuleWriter {
     public RuleWriter(String rulesFileName, PackageModel.RuleSourceResult rulesSource, PackageModel pkgModel) {
         this.rulesFileName = rulesFileName;
         this.rulesSource = rulesSource;
-        this.generatedPojo = rulesSource.getMainRuleClass();
+        generatedPojo = rulesSource.getMainRuleClass();
         this.pkgModel = pkgModel;
     }
 

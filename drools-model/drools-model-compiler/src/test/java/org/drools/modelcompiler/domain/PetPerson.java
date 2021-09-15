@@ -25,12 +25,12 @@ public class PetPerson extends Person {
 
     public PetPerson() {
         super();
-        pets = new HashMap<String, Pet>();
+        pets = new HashMap<>();
     }
 
     public PetPerson(String name) {
         super(name);
-        pets = new HashMap<String, Pet>();
+        pets = new HashMap<>();
     }
 
     public Map<String, Pet> getPets() {

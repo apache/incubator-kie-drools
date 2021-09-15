@@ -34,7 +34,6 @@ import org.drools.model.Constraint;
 import org.drools.modelcompiler.constraints.LambdaConstraint.LambdaContextEntry;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.model.Constraint.Type.OR;
 
 public class CombinedConstraint extends AbstractConstraint {

@@ -32,15 +32,14 @@ import org.drools.core.factmodel.AccessibleFact;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodDefinition;
 import org.drools.modelcompiler.builder.generator.declaredtype.api.MethodWithStringBody;
 
+import static com.github.javaparser.StaticJavaParser.parseStatement;
+import static com.github.javaparser.ast.NodeList.nodeList;
 import static java.lang.String.format;
 import static java.util.Arrays.stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Stream.concat;
 import static java.util.stream.Stream.empty;
 import static java.util.stream.Stream.of;
-
-import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static com.github.javaparser.ast.NodeList.nodeList;
 import static org.drools.core.util.ClassUtils.getter2property;
 import static org.drools.core.util.ClassUtils.setter2property;
 

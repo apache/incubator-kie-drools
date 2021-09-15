@@ -27,7 +27,6 @@ import org.drools.modelcompiler.domain.InternationalAddress;
 import org.drools.modelcompiler.domain.Man;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 

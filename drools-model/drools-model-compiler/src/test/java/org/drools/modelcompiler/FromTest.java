@@ -440,7 +440,7 @@ public class FromTest extends BaseModelTest {
                      "then\n" +
                      "    list.add($p.getName());\n" +
                      "end \n";
-        
+
         KieSession ksession = getKieSession(str);
         List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
@@ -835,7 +835,7 @@ public class FromTest extends BaseModelTest {
         }
 
         public static <K, V> Map.Entry<K, V> mapEntry(K key, V value) {
-            return new AbstractMap.SimpleEntry<K, V>(key, value);
+            return new AbstractMap.SimpleEntry<>(key, value);
         }
     }
 

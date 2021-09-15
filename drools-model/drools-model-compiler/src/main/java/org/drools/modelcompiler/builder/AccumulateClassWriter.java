@@ -28,10 +28,10 @@ public class AccumulateClassWriter {
 
     public AccumulateClassWriter(GeneratedClassWithPackage pojo, PackageModel packageModel) {
         TypeDeclaration genClass = pojo.getGeneratedClass();
-        this.generatedPojo = genClass;
-        this.name = genClass.getNameAsString();
-        this.pkgModel = packageModel;
-        this.generatedClassWithPackage = pojo;
+        generatedPojo = genClass;
+        name = genClass.getNameAsString();
+        pkgModel = packageModel;
+        generatedClassWithPackage = pojo;
     }
 
     public String getSource() {

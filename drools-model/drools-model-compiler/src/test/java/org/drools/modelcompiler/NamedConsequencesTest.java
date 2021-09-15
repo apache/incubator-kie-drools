@@ -219,7 +219,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         KieSession ksession = getKieSession(str);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         Cheese stilton = new Cheese("stilton", 5);
@@ -314,7 +314,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         KieSession ksession = getKieSession(str);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         Cheese stilton = new Cheese("stilton", 5);
@@ -347,7 +347,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         KieSession ksession = getKieSession(str);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         Cheese stilton = new Cheese("stilton", 5);
@@ -505,7 +505,7 @@ public class NamedConsequencesTest extends BaseModelTest {
                      "end\n";
 
         KieSession ksession = getKieSession(str);
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal("results", results);
 
         Cheese stilton = new Cheese("stilton", 5);

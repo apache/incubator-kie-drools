@@ -28,8 +28,6 @@ import org.drools.core.time.impl.CronExpression;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.DateUtils;
 
-import static org.drools.core.util.ClassUtils.getGetterMethod;
-
 public class TimerUtil {
 
     public static boolean validateTimer(String timerString) {

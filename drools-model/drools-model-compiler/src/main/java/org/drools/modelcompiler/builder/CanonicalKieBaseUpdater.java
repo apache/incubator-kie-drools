@@ -27,12 +27,12 @@ import org.drools.compiler.builder.InternalKnowledgeBuilder;
 import org.drools.compiler.builder.impl.CompositeKnowledgeBuilderImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImpl;
 import org.drools.compiler.kie.builder.impl.KieBaseUpdaterImplContext;
-import org.drools.core.impl.KieBaseUpdate;
 import org.drools.compiler.kproject.models.KieBaseModelImpl;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.drools.core.definitions.rule.impl.RuleImpl;
+import org.drools.core.impl.KieBaseUpdate;
 import org.drools.core.rule.Function;
 import org.drools.core.rule.TypeDeclaration;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -117,7 +117,7 @@ public class CanonicalKieBaseUpdater extends KieBaseUpdaterImpl {
                     }
                 }
 
-                this.updateResource(pkgbuilder, ckbuilder, changeSet);
+                updateResource(pkgbuilder, ckbuilder, changeSet);
 
                 for (ResourceChange change : changeSet.getChanges()) {
                     String changedItemName = change.getName();

@@ -57,15 +57,33 @@ public class ClassUtil {
     }
 
     public static Class<?> toNonPrimitiveType(Class<?> c) {
-        if (!c.isPrimitive()) return c;
-        if (c == int.class) return Integer.class;
-        if (c == long.class) return Long.class;
-        if (c == double.class) return Double.class;
-        if (c == float.class) return Float.class;
-        if (c == short.class) return Short.class;
-        if (c == byte.class) return Byte.class;
-        if (c == char.class) return Character.class;
-        if (c == boolean.class) return Boolean.class;
+        if (!c.isPrimitive()) {
+            return c;
+        }
+        if (c == int.class) {
+            return Integer.class;
+        }
+        if (c == long.class) {
+            return Long.class;
+        }
+        if (c == double.class) {
+            return Double.class;
+        }
+        if (c == float.class) {
+            return Float.class;
+        }
+        if (c == short.class) {
+            return Short.class;
+        }
+        if (c == byte.class) {
+            return Byte.class;
+        }
+        if (c == char.class) {
+            return Character.class;
+        }
+        if (c == boolean.class) {
+            return Boolean.class;
+        }
         return c;
     }
 

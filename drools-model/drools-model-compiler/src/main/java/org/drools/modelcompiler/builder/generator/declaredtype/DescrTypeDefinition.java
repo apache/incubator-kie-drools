@@ -44,7 +44,6 @@ import static java.util.Optional.empty;
 import static java.util.Optional.of;
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.declaredtype.POJOGenerator.quote;
 import static org.drools.modelcompiler.util.StreamUtils.optionalToStream;
 
@@ -71,7 +70,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         this.packageDescr = packageDescr;
         this.typeDeclarationDescr = typeDeclarationDescr;
         this.typeResolver = typeResolver;
-        this.fieldDefinition = processFields();
+        fieldDefinition = processFields();
 
         processSuperTypes();
 
@@ -192,7 +191,9 @@ public class DescrTypeDefinition implements TypeDefinition {
 
         int counter = 0;
         for (TypeFieldDescr descr : nonPositionalFields) {
-            for (; sortedTypes[counter] != null; counter++);
+            for (; sortedTypes[counter] != null; counter++) {
+                ;
+            }
             sortedTypes[counter++] = descr;
         }
 
@@ -209,7 +210,7 @@ public class DescrTypeDefinition implements TypeDefinition {
         Stream<DescrFieldDefinition> keyFields = fieldDefinition.stream().filter(FieldDefinition::isKeyField);
 
         Stream<FieldDefinition> superTypeKieFields =
-                optionalToStream(getSuperType(this.typeDeclarationDescr, packageDescr)
+                optionalToStream(getSuperType(typeDeclarationDescr, packageDescr)
                                          .map(superType -> new DescrTypeDefinition(packageDescr, superType, typeResolver)))
                         .flatMap(t -> t.getKeyFields().stream());
 

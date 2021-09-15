@@ -53,7 +53,6 @@ import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
 import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ENTRY_POINT_CALL;

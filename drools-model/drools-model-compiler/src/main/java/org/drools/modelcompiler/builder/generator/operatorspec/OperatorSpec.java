@@ -17,11 +17,11 @@
 
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 import com.github.javaparser.ast.expr.Expression;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
 
 public interface OperatorSpec {
     Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper);

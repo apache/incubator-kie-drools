@@ -30,7 +30,7 @@ public class VariableUsedInBindingError extends DroolsError {
         super();
         this.usedDeclaration = usedDeclaration;
         this.constraintExpressionString = constraintExpressionString;
-        this.errorLines[0] = -1;
+        errorLines[0] = -1;
     }
 
     @Override

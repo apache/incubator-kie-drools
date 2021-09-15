@@ -147,7 +147,7 @@ class ComparisonWithCast extends SpecialComparisonCase {
         if(leftTypeCast.isPresent()) {
             CastExpr castExpr = new CastExpr(toJavaParserType(leftTypeCast.get()), left.getExpression());
             compareMethod.addArgument(castExpr);
-            this.left = left.cloneWithNewExpression(castExpr);
+            left = left.cloneWithNewExpression(castExpr);
         } else {
             compareMethod.addArgument(left.getExpression());
         }
@@ -155,13 +155,13 @@ class ComparisonWithCast extends SpecialComparisonCase {
 
         if(rightTypeCast.isPresent()) {
             CastExpr castExpr = new CastExpr(toJavaParserType(rightTypeCast.get()), right.getExpression());
-            this.right = right.cloneWithNewExpression(castExpr);
+            right = right.cloneWithNewExpression(castExpr);
             compareMethod.addArgument(castExpr);
         } else {
             compareMethod.addArgument(right.getExpression());
         }
 
-        return new ConstraintParser.SpecialComparisonResult(compareMethod, this.left, this.right);
+        return new ConstraintParser.SpecialComparisonResult(compareMethod, left, right);
     }
 }
 

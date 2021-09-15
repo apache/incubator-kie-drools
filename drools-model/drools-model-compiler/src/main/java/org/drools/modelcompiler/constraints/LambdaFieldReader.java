@@ -29,7 +29,7 @@ public class LambdaFieldReader implements Function1 {
     private final String field;
 
     public LambdaFieldReader( Class<?> clazz, String field ) {
-        this.accessor = ClassUtils.getAccessor( clazz, field );
+        accessor = ClassUtils.getAccessor( clazz, field );
         this.field = field;
     }
 

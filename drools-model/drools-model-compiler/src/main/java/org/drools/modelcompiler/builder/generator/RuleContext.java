@@ -136,8 +136,8 @@ public class RuleContext {
     public RuleContext(KnowledgeBuilderImpl kbuilder, PackageModel packageModel, TypeResolver typeResolver, RuleDescr ruleDescr, int ruleIndex) {
         this.kbuilder = kbuilder;
         this.packageModel = packageModel;
-        this.idGenerator = packageModel.getExprIdGenerator();
-        exprPointer.push( this.expressions::add );
+        idGenerator = packageModel.getExprIdGenerator();
+        exprPointer.push( expressions::add );
         this.typeResolver = typeResolver;
         this.ruleDescr = ruleDescr;
         processUnitData();
@@ -264,7 +264,7 @@ public class RuleContext {
     public void removeDeclarationById(String id) {
         String declId = getDeclarationKey( id );
         scopedDeclarations.remove( declId );
-        this.allDeclarations.remove( declId );
+        allDeclarations.remove( declId );
         definedVars.remove(id);
     }
 
@@ -344,8 +344,8 @@ public class RuleContext {
     }
 
     public DeclarationSpec addDeclaration(DeclarationSpec d) {
-        this.scopedDeclarations.putIfAbsent( d.getBindingId(), d );
-        this.allDeclarations.putIfAbsent( d.getBindingId(), d );
+        scopedDeclarations.putIfAbsent( d.getBindingId(), d );
+        allDeclarations.putIfAbsent( d.getBindingId(), d );
         return d;
     }
 
@@ -355,14 +355,14 @@ public class RuleContext {
         if (declarationById.isPresent()) {
             removeDeclarationById(bindingId);
         }
-        this.scopedDeclarations.put(d.getBindingId(), d);
-        this.allDeclarations.put(d.getBindingId(), d);
+        scopedDeclarations.put(d.getBindingId(), d);
+        allDeclarations.put(d.getBindingId(), d);
         definedVars.put(bindingId, bindingId);
     }
 
     public void addOOPathDeclaration(DeclarationSpec d) {
         if(!getOOPathDeclarationById(d.getBindingId()).isPresent()) {
-            this.ooPathDeclarations.add(d);
+            ooPathDeclarations.add(d);
         }
     }
 
@@ -640,7 +640,7 @@ public class RuleContext {
 
         private Scope( String id, ConditionalElementDescr scopeElement ) {
             this.id = id;
-            this.forallFirstIdentifier =
+            forallFirstIdentifier =
                 (scopeElement instanceof ForallDescr && scopeElement.getDescrs().size() == 2 && scopeElement.getDescrs().get( 0 ) instanceof PatternDescr) ?
                 (( PatternDescr ) scopeElement.getDescrs().get( 0 )).getIdentifier() : null;
         }
@@ -703,7 +703,7 @@ public class RuleContext {
     }
 
     public void resetCurrentConstraintDescr() {
-        this.currentConstraintDescr = empty();
+        currentConstraintDescr = empty();
     }
 
     public void setParentDescr( AndDescr parentDescr ) {

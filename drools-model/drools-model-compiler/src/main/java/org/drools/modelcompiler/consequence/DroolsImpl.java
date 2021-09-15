@@ -33,7 +33,6 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.Match;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.core.reteoo.PropertySpecificUtil.calculatePositiveMask;
 import static org.drools.modelcompiler.util.EvaluationUtil.adaptBitMask;
 
@@ -142,7 +141,7 @@ public class DroolsImpl implements Drools, org.kie.api.runtime.rule.RuleContext 
 
     @Override
     public <T> T getContext(Class<T> contextClass) {
-        return (T)knowledgeHelper.getContext(contextClass);
+        return knowledgeHelper.getContext(contextClass);
     }
 
     @Override

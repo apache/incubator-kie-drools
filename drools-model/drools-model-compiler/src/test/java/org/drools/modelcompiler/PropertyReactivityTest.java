@@ -1260,7 +1260,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         }
 
         public String getName() {
-            return this.name;
+            return name;
         }
 
         public void setName(String name) {
@@ -1338,7 +1338,7 @@ public class PropertyReactivityTest extends BaseModelTest {
         private Deque<StackFrame> stackFrames;
 
         public AssessmentContext() {
-            stackFrames = new ArrayDeque<StackFrame>(8);
+            stackFrames = new ArrayDeque<>(8);
             stackFrames.push(new StackFrame());
         }
 
@@ -1493,12 +1493,12 @@ public class PropertyReactivityTest extends BaseModelTest {
 
         public void setDoubleValue(double doubleValue) {
 
-            this.doubleValues.clear();
-            this.doubleValues.add(doubleValue);
+            doubleValues.clear();
+            doubleValues.add(doubleValue);
         }
 
         public void addDoubleValue(double doubleValue) {
-            this.doubleValues.add(doubleValue);
+            doubleValues.add(doubleValue);
         }
     }
 

@@ -27,7 +27,6 @@ import org.kie.api.definition.type.Position;
 
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
-
 import static org.drools.core.util.StringUtils.isIdentifier;
 
 public class ConstraintExpression {

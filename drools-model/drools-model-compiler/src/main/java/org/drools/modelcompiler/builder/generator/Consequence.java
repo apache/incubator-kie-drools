@@ -120,7 +120,7 @@ public class Consequence {
 
     public Consequence(RuleContext context) {
         this.context = context;
-        this.packageModel = context.getPackageModel();
+        packageModel = context.getPackageModel();
     }
 
     public MethodCallExpr createCall(RuleDescr ruleDescr, String consequenceString, BlockStmt ruleVariablesBlock, boolean isBreaking) {

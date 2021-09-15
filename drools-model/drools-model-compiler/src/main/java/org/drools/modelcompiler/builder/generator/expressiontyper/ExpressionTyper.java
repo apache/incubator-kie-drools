@@ -897,7 +897,7 @@ public class ExpressionTyper {
         int genericPos = 0;
         for (TypeVariable typeVar : rawClassCursor.getTypeParameters()) {
             if (typeVar.equals( genericReturnType )) {
-                return (( ParameterizedType ) originalTypeCursor).getActualTypeArguments()[genericPos];
+                return originalTypeCursor.getActualTypeArguments()[genericPos];
             }
             genericPos++;
         }

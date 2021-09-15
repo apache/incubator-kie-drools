@@ -85,7 +85,7 @@ public class QueryGenerator {
         public QueryDefWithType(ClassOrInterfaceType queryType, MethodCallExpr methodCallExpr, RuleContext contex) {
             this.queryType = queryType;
             this.methodCallExpr = methodCallExpr;
-            this.context = contex;
+            context = contex;
         }
 
         public ClassOrInterfaceType getQueryType() {

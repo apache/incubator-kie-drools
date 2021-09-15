@@ -49,7 +49,7 @@ public class ReteDumper {
     }
 
     public static Set<BaseNode> visitRete( Rete rete, BiConsumer<String, BaseNode> consumer ) {
-        HashSet<BaseNode> visitedNodes = new HashSet<BaseNode>();
+        HashSet<BaseNode> visitedNodes = new HashSet<>();
         for (EntryPointNode entryPointNode : rete.getEntryPointNodes().values()) {
             visitNode( entryPointNode, "", visitedNodes, consumer );
         }

@@ -28,13 +28,13 @@ public class RuleDescrImpl {
         this.descr = descr;
         this.impl = impl;
     }
-    
+
     public RuleDescr getDescr() {
         return descr;
     }
-    
+
     public RuleImpl getImpl() {
         return impl;
     }
-    
+
 }

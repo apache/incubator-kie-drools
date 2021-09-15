@@ -112,7 +112,7 @@ public class PackageModel {
     private final DialectCompiletimeRegistry dialectCompiletimeRegistry;
 
     private final String rulesFileName;
-    
+
     private final Set<String> imports = new HashSet<>();
     private final Set<String> staticImports = new HashSet<>();
     private final Set<String> entryPoints = new HashSet<>();
@@ -170,7 +170,7 @@ public class PackageModel {
     public PackageModel(String name, KnowledgeBuilderConfigurationImpl configuration, DialectCompiletimeRegistry dialectCompiletimeRegistry, DRLIdGenerator exprIdGenerator, String pkgUUID) {
         this.name = name;
         this.pkgUUID = pkgUUID;
-        this.rulesFileName = RULES_FILE_NAME + pkgUUID;
+        rulesFileName = RULES_FILE_NAME + pkgUUID;
         this.configuration = configuration;
         this.exprIdGenerator = exprIdGenerator;
         this.dialectCompiletimeRegistry = dialectCompiletimeRegistry;
@@ -215,7 +215,7 @@ public class PackageModel {
     public String getRulesFileNameWithPackage() {
         return name + "." + rulesFileName;
     }
-    
+
     public DRLIdGenerator getExprIdGenerator() {
         return exprIdGenerator;
     }
@@ -225,11 +225,11 @@ public class PackageModel {
     }
 
     public Collection<String> getImports() {
-        return this.imports;
+        return imports;
     }
 
     public void addStaticImports(Collection<String> imports) {
-        this.staticImports.addAll(imports);
+        staticImports.addAll(imports);
     }
 
     public void addEntryPoints(Collection<EntryPointDeclarationDescr> entryPoints) {
@@ -245,7 +245,7 @@ public class PackageModel {
     }
 
     public Collection<String> getStaticImports() {
-        return this.staticImports;
+        return staticImports;
     }
 
     public Method getStaticMethod(String methodName) {
@@ -319,7 +319,7 @@ public class PackageModel {
     }
 
     public void putQueryMethod(MethodDeclaration queryMethod) {
-        this.queryMethods.put(queryMethod.getNameAsString(), queryMethod);
+        queryMethods.put(queryMethod.getNameAsString(), queryMethod);
     }
 
     public void registerQueryName(String queryName) {
@@ -331,12 +331,12 @@ public class PackageModel {
     }
 
     public void putQueryVariable(String queryName, QueryParameter qp) {
-        this.queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
-        this.queryVariables.get(queryName).add(qp);
+        queryVariables.computeIfAbsent(queryName, k -> new ArrayList<>());
+        queryVariables.get(queryName).add(qp);
     }
 
     public List<QueryParameter> queryVariables(String queryName) {
-        return this.queryVariables.get(queryName);
+        return queryVariables.get(queryName);
     }
 
     public Map<String, QueryGenerator.QueryDefWithType> getQueryDefWithType() {
@@ -348,7 +348,7 @@ public class PackageModel {
     }
 
     public void addGeneratedPOJO(TypeDeclaration pojo) {
-        this.generatedPOJOs.add(pojo);
+        generatedPOJOs.add(pojo);
     }
 
     public List<TypeDeclaration> getGeneratedPOJOsSource() {
@@ -356,7 +356,7 @@ public class PackageModel {
     }
 
     public void addGeneratedAccumulateClasses(GeneratedClassWithPackage clazz) {
-        this.generatedAccumulateClasses.add(clazz);
+        generatedAccumulateClasses.add(clazz);
     }
 
     public List<GeneratedClassWithPackage> getGeneratedAccumulateClasses() {
@@ -364,7 +364,7 @@ public class PackageModel {
     }
 
     public void addAllWindowReferences(String methodName, MethodCallExpr windowMethod) {
-        this.windowReferences.put(methodName, windowMethod);
+        windowReferences.put(methodName, windowMethod);
     }
 
     public Map<String, MethodCallExpr> getWindowReferences() {
@@ -395,7 +395,7 @@ public class PackageModel {
     }
 
     public void addRuleUnit(RuleUnitDescription ruleUnitDescription) {
-        this.ruleUnits.add(ruleUnitDescription);
+        ruleUnits.add(ruleUnitDescription);
     }
 
     public Collection<RuleUnitDescription> getRuleUnits() {
@@ -437,7 +437,7 @@ public class PackageModel {
 
         /**
          * Append additional class to source results.
-         * @param additionalCU 
+         * @param additionalCU
          */
         public RuleSourceResult withClass( CompilationUnit additionalCU ) {
             modelClasses.add(additionalCU);

@@ -224,7 +224,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertEquals( testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
 
         ksession.insert( 5 );
         ksession.insert( "test" );
@@ -329,7 +329,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertEquals( testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
 
         ksession.insert( 2L );
         ksession.insert( 3 );
@@ -358,7 +358,7 @@ public class IndexTest extends BaseModelTest {
         ObjectTypeNode otn = getObjectTypeNodeForClass( ksession, Person.class );
         BetaNode beta = (BetaNode) otn.getObjectSinkPropagator().getSinks()[0];
         // this beta index is only supported by executable model
-        assertEquals( this.testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
+        assertEquals( testRunType.isExecutableModel(), beta.getRawConstraints().isIndexed() );
 
         ksession.insert( (short)1 );
         ksession.insert( 1L );

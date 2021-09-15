@@ -547,7 +547,7 @@ public class QueryTest extends BaseModelTest {
         locationType.set(key, "location", "envelope");
 
         // create working memory objects
-        final List<Command<?>> commands = new ArrayList<Command<?>>();
+        final List<Command<?>> commands = new ArrayList<>();
 
         // Location instances
         commands.add(kieServices.getCommands().newInsert(pear));
@@ -563,7 +563,7 @@ public class QueryTest extends BaseModelTest {
         final ExecutionResults results = ksession.execute(kieServices.getCommands().newBatchExecution(commands, null));
         final QueryResults qResults = (QueryResults) results.getValue(queryAlias);
 
-        final List<String> l = new ArrayList<String>();
+        final List<String> l = new ArrayList<>();
         for (QueryResultsRow r : qResults) {
             l.add((String) r.get("x"));
         }

@@ -73,7 +73,7 @@ public class ActivationGroupTest extends OnlyPatternTest {
                      "    list.add(\"Rule without activation group executed\");\n" +
                      "end";
 
-        List<Command<?>> commands = new ArrayList<Command<?>>();
+        List<Command<?>> commands = new ArrayList<>();
 
         KieSession ksession = getKieSession(str);
 

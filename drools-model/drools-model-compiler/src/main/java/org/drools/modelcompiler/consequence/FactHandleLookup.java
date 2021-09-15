@@ -70,8 +70,8 @@ public interface FactHandleLookup {
 
         @Override
         public void clear() {
-            this.obj = null;
-            this.fh = null;
+            obj = null;
+            fh = null;
         }
     }
 
@@ -84,26 +84,26 @@ public interface FactHandleLookup {
 
         @Override
         public void put( Object obj, InternalFactHandle fh ) {
-            if ( this.obj1 == null) {
-                this.obj1 = obj;
-                this.fh1 = fh;
+            if ( obj1 == null) {
+                obj1 = obj;
+                fh1 = fh;
             } else {
-                this.obj2 = obj;
-                this.fh2 = fh;
+                obj2 = obj;
+                fh2 = fh;
             }
         }
 
         @Override
         public InternalFactHandle get( Object obj ) {
-            return this.obj1 == obj ? fh1 : ( this.obj2 == obj ? fh2 : null );
+            return obj1 == obj ? fh1 : ( obj2 == obj ? fh2 : null );
         }
 
         @Override
         public void clear() {
-            this.obj1 = null;
-            this.obj2 = null;
-            this.fh1 = null;
-            this.fh2 = null;
+            obj1 = null;
+            obj2 = null;
+            fh1 = null;
+            fh2 = null;
         }
     }
 

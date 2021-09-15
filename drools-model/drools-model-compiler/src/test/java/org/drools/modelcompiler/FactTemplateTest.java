@@ -38,21 +38,21 @@ import org.kie.api.KieBase;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
+import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.field;
+import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.prototype;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
 import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.declarationOf;
-import static org.drools.model.PatternDSL.on;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.reactOn;
 import static org.drools.model.PatternDSL.rule;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.drools.modelcompiler.facttemplate.FactFactory.createMapBasedFact;
 import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class FactTemplateTest {
@@ -186,7 +186,7 @@ public class FactTemplateTest {
         KieSession ksession = kieBase.newKieSession();
 
         assertTrue( hasFactTemplateObjectType( ksession, "FactPerson" ) );
-        
+
         Fact mark = createMapBasedFact( personFact );
         mark.setFieldValue( "name", "Mark" );
         mark.setFieldValue( "age", 37 );

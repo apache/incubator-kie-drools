@@ -339,7 +339,7 @@ public class TypeObjectCoercionTest extends BaseModelTest {
         ksession.insert(new IntegerHolder(Integer.valueOf(10)));
         try {
             // in case of standard-drl, MathProcessor.doOperationNonNumeric() throws ClassCastException when the right operand is not comparable to the left operand
-            // Caused by ClassCastException: class java.lang.Object cannot be cast to class java.lang.Integer 
+            // Caused by ClassCastException: class java.lang.Object cannot be cast to class java.lang.Integer
             ksession.fireAllRules();
             fail("Should fail with RuntimeException");
         } catch (RuntimeException e) {

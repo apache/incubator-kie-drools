@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.MethodReferenceExpr;
@@ -72,7 +71,7 @@ public class LegacyAccumulate {
         this.descr = descr;
         this.basePattern = basePattern;
         this.context = context;
-        this.packageModel = context.getPackageModel();
+        packageModel = context.getPackageModel();
 
         final DialectCompiletimeRegistry dialectCompiletimeRegistry = packageModel.getDialectCompiletimeRegistry();
         final Dialect defaultDialect = dialectCompiletimeRegistry.getDialect("java");
@@ -153,7 +152,7 @@ public class LegacyAccumulate {
                                   .collect(Collectors.toList()));
 
         return new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) parsedInvokedClass.getType(0), packageName, allImports, Collections.emptyList()
+                parsedInvokedClass.getType(0), packageName, allImports, Collections.emptyList()
         );
     }
 
@@ -161,7 +160,7 @@ public class LegacyAccumulate {
         final String allAccumulatesClass = new JavaRuleClassBuilder().buildRule(ruleBuildContext);
         final CompilationUnit parsedAccumulateClass = parse(allAccumulatesClass);
         return new GeneratedClassWithPackage(
-                (ClassOrInterfaceDeclaration) parsedAccumulateClass.getType(0), packageName, imports, Collections.emptyList()
+                parsedAccumulateClass.getType(0), packageName, imports, Collections.emptyList()
         );
     }
 

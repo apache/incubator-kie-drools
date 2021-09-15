@@ -16,7 +16,7 @@ import org.kie.api.runtime.KieSession;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.*;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.junit.Assert.assertEquals;
 

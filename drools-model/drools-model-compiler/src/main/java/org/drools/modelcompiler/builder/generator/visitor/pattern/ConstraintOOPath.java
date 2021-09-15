@@ -42,7 +42,7 @@ class ConstraintOOPath implements DSLNode {
         this.pattern = pattern;
         this.patternType = patternType;
         this.patternConstraintParseResult = patternConstraintParseResult;
-        this.expression = patternConstraintParseResult.getExpression();
+        expression = patternConstraintParseResult.getExpression();
         this.drlxParseResult = drlxParseResult;
     }
 

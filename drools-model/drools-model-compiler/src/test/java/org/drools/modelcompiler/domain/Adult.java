@@ -16,13 +16,13 @@
 
 package org.drools.modelcompiler.domain;
 
-import org.drools.core.phreak.ReactiveList;
-
 import java.util.List;
+
+import org.drools.core.phreak.ReactiveList;
 
 public class Adult extends Person {
 
-    private final List<Child> children = new ReactiveList<Child>();
+    private final List<Child> children = new ReactiveList<>();
     private Person[] childrenA = new Person[0];
 
     public Adult(String name, int age) {
@@ -43,7 +43,7 @@ public class Adult extends Person {
     }
 
     public void setChildrenA(Person[] children) {
-        this.childrenA = children;
+        childrenA = children;
     }
 }
 

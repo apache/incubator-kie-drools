@@ -1040,7 +1040,7 @@ public class CompilerTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        List<String> list = new ArrayList<String>();
+        List<String> list = new ArrayList<>();
         ksession.setGlobal("list", list);
 
         ksession.insert("y");
@@ -1549,7 +1549,7 @@ public class CompilerTest extends BaseModelTest {
         KieSession ksession = getKieSession( drl1 );
 
         final Person john = new Person("John");
-        HashMap<Integer, Integer> items = new HashMap<Integer, Integer>();
+        HashMap<Integer, Integer> items = new HashMap<>();
         items.put(1, 20);
         john.setItems(items);
 
@@ -1690,7 +1690,7 @@ public class CompilerTest extends BaseModelTest {
         private int status;
 
         public String getMessage() {
-            return this.message;
+            return message;
         }
 
         public void setMessage( String message ) {
@@ -1698,7 +1698,7 @@ public class CompilerTest extends BaseModelTest {
         }
 
         public int getStatus() {
-            return this.status;
+            return status;
         }
 
         public void setStatus( int status ) {
@@ -2135,7 +2135,7 @@ public class CompilerTest extends BaseModelTest {
         Person first = new Person("First", 40);
         first.setEmployed(true);
         ksession.insert(first);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -2171,7 +2171,7 @@ public class CompilerTest extends BaseModelTest {
         Person first = new Person("John", 40);
         first.setEmployed(true);
         ksession.insert(first);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test
@@ -2191,7 +2191,7 @@ public class CompilerTest extends BaseModelTest {
         StockTick st = new StockTick("RHT");
         st.setTimeField(new Date().getTime());
         ksession.insert(st);
-        assertThat(ksession.fireAllRules()).isEqualTo(1);;
+        assertThat(ksession.fireAllRules()).isEqualTo(1);
     }
 
     @Test()
@@ -2270,7 +2270,7 @@ public class CompilerTest extends BaseModelTest {
             this.testBoolean = testBoolean;
             this.testInt = testInt;
             this.testShort = testShort;
-            this.testDouble = 0d;
+            testDouble = 0d;
         }
 
         public void setTestBoolean(Boolean testBoolean) {
@@ -2302,7 +2302,7 @@ public class CompilerTest extends BaseModelTest {
         }
 
         public void setTestDouble(Double testShort) {
-            this.testDouble = testDouble;
+            testDouble = testDouble;
         }
 
         @Override

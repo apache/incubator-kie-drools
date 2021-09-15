@@ -46,25 +46,25 @@ public class ConstraintEvaluator {
 
     public ConstraintEvaluator(Declaration[] declarations, SingleConstraint constraint) {
         this.constraint = constraint;
-        this.pattern = null;
+        pattern = null;
         this.declarations = declarations;
-        this.requiredDeclarations = declarations;
-        this.innerEvaluator = initInnerEvaluator(null);
+        requiredDeclarations = declarations;
+        innerEvaluator = initInnerEvaluator(null);
     }
 
     public ConstraintEvaluator(Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
         this.pattern = pattern;
-        this.declarations = new Declaration[] { pattern.getDeclaration() };
-        this.requiredDeclarations = new Declaration[0];
-        this.innerEvaluator = initInnerEvaluator(findPatternDeclaration());
+        declarations = new Declaration[] { pattern.getDeclaration() };
+        requiredDeclarations = new Declaration[0];
+        innerEvaluator = initInnerEvaluator(findPatternDeclaration());
     }
 
     public ConstraintEvaluator(Declaration[] declarations, Pattern pattern, SingleConstraint constraint) {
         this.constraint = constraint;
         this.declarations = declarations;
         this.pattern = pattern;
-        this.innerEvaluator = initInnerEvaluator(findPatternAndRequiredDeclaration());
+        innerEvaluator = initInnerEvaluator(findPatternAndRequiredDeclaration());
     }
 
     public SingleConstraint getConstraint() {
@@ -106,7 +106,7 @@ public class ConstraintEvaluator {
                 requiredDeclarationsList.add(declarations[i]);
             }
         }
-        this.requiredDeclarations = requiredDeclarationsList.toArray( new Declaration[requiredDeclarationsList.size()] );
+        requiredDeclarations = requiredDeclarationsList.toArray( new Declaration[requiredDeclarationsList.size()] );
         return patternDeclaration;
     }
 
@@ -145,11 +145,19 @@ public class ConstraintEvaluator {
 
     @Override
     public boolean equals(Object other) {
-        if (this == other) return true;
-        if (other == null || getClass() != other.getClass()) return false;
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
         ConstraintEvaluator otherEval = (ConstraintEvaluator) other;
-        if (!getId().equals(otherEval.getId())) return false;
-        if (declarations.length != otherEval.declarations.length) return false;
+        if (!getId().equals(otherEval.getId())) {
+            return false;
+        }
+        if (declarations.length != otherEval.declarations.length) {
+            return false;
+        }
         for (int i = 0; i < declarations.length; i++) {
             if (!declarations[i].getExtractor().equals( otherEval.declarations[i].getExtractor() )) {
                 return false;
@@ -192,6 +200,7 @@ public class ConstraintEvaluator {
         }
     }
 
+    @Override
     public ConstraintEvaluator clone() {
         return pattern == null ?
                 new ConstraintEvaluator( getClonedDeclarations(), constraint ) :

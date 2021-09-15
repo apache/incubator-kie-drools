@@ -48,7 +48,7 @@ public class LambdaGroupByAccumulate extends Accumulate {
         this.innerAccumulate = innerAccumulate;
         this.groupingDeclarations = groupingDeclarations;
         this.groupingFunction = groupingFunction;
-        this.groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
+        groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
     }
 
     private Object getKey( Tuple tuple, InternalFactHandle handle, WorkingMemory workingMemory ) {
@@ -73,10 +73,10 @@ public class LambdaGroupByAccumulate extends Accumulate {
     public void readExternal( ObjectInput in) throws IOException,
             ClassNotFoundException {
         super.readExternal(in);
-        this.innerAccumulate = (Accumulate) in.readObject();
-        this.groupingDeclarations = (Declaration[]) in.readObject();
-        this.groupingFunction = (FunctionN) in.readObject();
-        this.groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
+        innerAccumulate = (Accumulate) in.readObject();
+        groupingDeclarations = (Declaration[]) in.readObject();
+        groupingFunction = (FunctionN) in.readObject();
+        groupingFunction1 = groupingDeclarations.length == 1 ? groupingFunction.asFunction1() : null;
     }
 
     @Override

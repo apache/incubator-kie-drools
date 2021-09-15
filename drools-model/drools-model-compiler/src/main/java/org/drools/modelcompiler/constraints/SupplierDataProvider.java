@@ -34,8 +34,8 @@ public class SupplierDataProvider implements DataProvider {
 
 
     public SupplierDataProvider(Function0 providerFunction) {
-        this.supplierFunction = providerFunction;
-        this.reactive = false;
+        supplierFunction = providerFunction;
+        reactive = false;
     }
 
     @Override

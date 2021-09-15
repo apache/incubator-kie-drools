@@ -28,8 +28,8 @@ import org.drools.core.util.Drools;
 import org.kie.api.builder.ReleaseId;
 
 import static org.drools.modelcompiler.CanonicalKieModule.MODEL_VERSION;
-import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 import static org.drools.modelcompiler.CanonicalKieModule.getGeneratedClassNamesFile;
+import static org.drools.modelcompiler.CanonicalKieModule.getModelFileWithGAV;
 
 public class ModelWriter {
 

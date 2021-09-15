@@ -251,8 +251,9 @@ public class GeneratedClassNamesTest extends BaseModelTest {
                 if (generatedClassName.contains(nameFragment)) {
                     if (generatedClassName.startsWith("org.example.dep")) {
                         containsDep = true;
-                    } else if (generatedClassName.startsWith("org.example.main"))
+                    } else if (generatedClassName.startsWith("org.example.main")) {
                         containsMain = true;
+                    }
                 }
             }
             if (!containsDep) {

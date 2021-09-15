@@ -1,12 +1,12 @@
 package org.drools.modelcompiler.variables;
 
-import static org.junit.Assert.assertEquals;
-
 import java.util.Collection;
 
 import org.drools.modelcompiler.BaseModelTest;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
+
+import static org.junit.Assert.assertEquals;
 
 public class VariablesTest extends BaseModelTest {
 

@@ -28,11 +28,10 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
-import org.drools.compiler.kie.builder.impl.BuildContext;
-import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.memory.MemoryFile;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
+import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.CompilationProblemAdapter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;

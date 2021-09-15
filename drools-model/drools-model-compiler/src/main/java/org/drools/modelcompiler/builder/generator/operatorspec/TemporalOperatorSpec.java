@@ -17,16 +17,16 @@
 
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
-import org.drools.mvel.parser.ast.expr.PointFreeExpr;
-import org.drools.mvel.parser.ast.expr.TemporalChunkExpr;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
-import org.drools.mvel.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.TypedExpression;
 import org.drools.modelcompiler.builder.generator.expressiontyper.ExpressionTyper;
+import org.drools.mvel.parser.ast.expr.PointFreeExpr;
+import org.drools.mvel.parser.ast.expr.TemporalChunkExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralChunkExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralExpr;
+import org.drools.mvel.parser.ast.expr.TemporalLiteralInfiniteChunkExpr;
 
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
@@ -34,6 +34,7 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDs
 public class TemporalOperatorSpec implements OperatorSpec {
     public static final TemporalOperatorSpec INSTANCE = new TemporalOperatorSpec();
 
+    @Override
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
         MethodCallExpr methodCallExpr = new MethodCallExpr( null, "D." + pointFreeExpr.getOperator().asString() );
         if (pointFreeExpr.getArg1() != null) {

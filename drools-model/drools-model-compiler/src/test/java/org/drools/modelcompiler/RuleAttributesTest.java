@@ -206,7 +206,7 @@ public class RuleAttributesTest extends BaseModelTest {
 
         KieSession ksession = getKieSession(str);
 
-        ArrayList<String> list = new ArrayList<String>();
+        ArrayList<String> list = new ArrayList<>();
 
         ksession.getCalendars().set("weekend", WEEKEND);
         ksession.getCalendars().set("weekday", WEEKDAY);
@@ -362,7 +362,7 @@ public class RuleAttributesTest extends BaseModelTest {
 
     public static class OrderListener extends DefaultAgendaEventListener {
 
-        private List<String> rulesFired = new ArrayList<String>();
+        private List<String> rulesFired = new ArrayList<>();
 
         @Override
         public void afterMatchFired(final AfterMatchFiredEvent event) {
@@ -384,7 +384,7 @@ public class RuleAttributesTest extends BaseModelTest {
         final String RULE_NAME = "hello world";
         final String RULE_KEY = "output";
         final String RULE_VALUE = "Hello world!";
-        final String rule = " package " + PACKAGE_NAME + ";\n" + 
+        final String rule = " package " + PACKAGE_NAME + ";\n" +
                             " rule \"" + RULE_NAME + "\"\n" +
                             " @" + RULE_KEY + "(\"\\\"" + RULE_VALUE + "\\\"\")\n" +
                             " when\n" +

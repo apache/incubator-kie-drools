@@ -39,7 +39,7 @@ public class TemporalConstraintEvaluator extends ConstraintEvaluator {
     public TemporalConstraintEvaluator( Declaration[] declarations, Pattern pattern, SingleConstraint constraint ) {
         super( declarations, pattern, constraint );
         TemporalPredicate temporalPredicate = ((TemporalConstraint) constraint).getTemporalPredicate();
-        this.interval = new Interval( temporalPredicate.getInterval().getLowerBound(), temporalPredicate.getInterval().getUpperBound() );
+        interval = new Interval( temporalPredicate.getInterval().getLowerBound(), temporalPredicate.getInterval().getUpperBound() );
     }
 
     @Override

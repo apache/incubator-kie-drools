@@ -42,6 +42,7 @@ public interface DrlxParseSuccess extends DrlxParseResult {
 
     List<Expression> getNullSafeExpressions();
 
+    @Override
     default boolean isOOPath() {
         return getExpr() instanceof OOPathExpr;
     }

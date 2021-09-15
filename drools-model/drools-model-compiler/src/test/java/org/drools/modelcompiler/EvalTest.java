@@ -23,7 +23,6 @@ import org.drools.modelcompiler.domain.CalcFact;
 import org.drools.modelcompiler.domain.Overloaded;
 import org.drools.modelcompiler.domain.Person;
 import org.drools.modelcompiler.domain.Result;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.runtime.KieSession;
 

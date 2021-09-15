@@ -295,7 +295,7 @@ public class CoercedExpression {
         }
 
         CoercedExpressionResult(TypedExpression left, TypedExpression coercedRight, boolean rightAsStaticField) {
-            this.coercedLeft = left;
+            coercedLeft = left;
             this.coercedRight = coercedRight;
             this.rightAsStaticField = rightAsStaticField;
         }

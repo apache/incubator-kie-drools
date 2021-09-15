@@ -25,14 +25,13 @@ import org.drools.model.Variable;
 import org.drools.model.impl.ModelImpl;
 import org.drools.modelcompiler.builder.KieBaseBuilder;
 import org.drools.modelcompiler.domain.Person;
-import org.junit.Test;
-import org.kie.api.KieBase;
 import org.drools.ruleunit.DataSource;
 import org.drools.ruleunit.RuleUnit;
 import org.drools.ruleunit.RuleUnitExecutor;
+import org.junit.Test;
+import org.kie.api.KieBase;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.DSL.declarationOf;
 import static org.drools.model.DSL.on;
 import static org.drools.model.DSL.unitData;
@@ -43,7 +42,7 @@ import static org.junit.Assert.assertTrue;
 public class RuleUnitTest {
 
     public static class AdultUnit implements RuleUnit {
-        private List<String> results = new ArrayList<String>();
+        private List<String> results = new ArrayList<>();
         private int adultAge = 18;
         private DataSource<Person> persons;
 

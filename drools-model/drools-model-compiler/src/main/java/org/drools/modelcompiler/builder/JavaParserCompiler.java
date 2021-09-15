@@ -155,6 +155,7 @@ public class JavaParserCompiler {
             this.mfs = mfs;
         }
 
+        @Override
         public Class<?> loadClass(String className) throws ClassNotFoundException {
             try {
                 return super.loadClass( className );

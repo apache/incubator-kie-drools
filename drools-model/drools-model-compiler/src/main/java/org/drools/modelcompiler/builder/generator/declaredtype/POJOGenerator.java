@@ -118,7 +118,7 @@ public class POJOGenerator {
         @Override
         public Optional<Class<?>> resolveType(String className) {
             try {
-                return Optional.ofNullable(this.typeResolver.resolveType(className));
+                return Optional.ofNullable(typeResolver.resolveType(className));
             } catch(ClassNotFoundException e) {
                 return Optional.empty();
             }

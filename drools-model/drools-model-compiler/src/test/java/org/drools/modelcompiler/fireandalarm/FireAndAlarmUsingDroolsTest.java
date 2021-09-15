@@ -15,7 +15,6 @@ import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.model.DSL.any;
 import static org.drools.model.DSL.execute;
 import static org.drools.model.DSL.exists;

@@ -17,9 +17,9 @@
 
 package org.drools.modelcompiler.builder.generator.operatorspec;
 
+import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.core.base.ValueType;
 import org.drools.core.base.evaluators.EvaluatorDefinition;
-import com.github.javaparser.ast.expr.MethodCallExpr;
 import org.drools.model.functions.Operator;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 

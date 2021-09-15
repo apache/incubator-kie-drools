@@ -127,6 +127,7 @@ public class DescrFieldDefinition implements FieldDefinition {
         return this;
     }
 
+    @Override
     public boolean isOverride() {
         return isOverride;
     }

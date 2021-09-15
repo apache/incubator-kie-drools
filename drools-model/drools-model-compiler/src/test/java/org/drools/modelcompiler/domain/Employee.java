@@ -37,7 +37,7 @@ public class Employee extends Person implements Serializable {
     }
 
      public String getPosition() {
-        return this.position;
+        return position;
     }
 
     public void setPosition(final String position) {
@@ -51,9 +51,15 @@ public class Employee extends Person implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         Employee employee = (Employee) o;
 

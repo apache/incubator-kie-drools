@@ -41,7 +41,6 @@ import org.drools.modelcompiler.builder.generator.visitor.pattern.PatternVisitor
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXISTS_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.FORALL_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NOT_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.OR_CALL;
 
 public class ModelGeneratorVisitor implements DescrVisitor {
 

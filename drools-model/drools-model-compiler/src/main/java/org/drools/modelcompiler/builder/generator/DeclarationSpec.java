@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.type.Type;
 import org.drools.compiler.lang.descr.BehaviorDescr;
@@ -29,7 +30,6 @@ import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.base.ClassObjectType;
 import org.drools.core.rule.Declaration;
 import org.drools.core.spi.PatternExtractor;
-import com.github.javaparser.ast.expr.Expression;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 
@@ -64,7 +64,7 @@ public class DeclarationSpec {
     DeclarationSpec(String bindingId, Class<?> declarationClass, Optional<PatternDescr> pattern, Optional<Expression> declarationSource, Optional<String> variableName, Boolean isGlobal) {
         this.bindingId = bindingId;
         this.declarationClass = declarationClass;
-        this.optPattern = pattern;
+        optPattern = pattern;
         this.declarationSource = declarationSource;
         this.variableName = variableName;
         this.isGlobal = isGlobal;

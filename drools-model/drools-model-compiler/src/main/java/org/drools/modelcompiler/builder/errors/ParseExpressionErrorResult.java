@@ -33,12 +33,12 @@ public class ParseExpressionErrorResult extends DroolsError {
     public ParseExpressionErrorResult(Expression expr) {
         super();
         this.expr = expr;
-        this.errorLines[0] = -1;
+        errorLines[0] = -1;
     }
 
     public ParseExpressionErrorResult(Expression expr, Optional<BaseDescr> descrOpt) {
         this(expr);
-        descrOpt.ifPresent(descr -> this.errorLines[0] = descr.getLine());
+        descrOpt.ifPresent(descr -> errorLines[0] = descr.getLine());
     }
 
     @Override

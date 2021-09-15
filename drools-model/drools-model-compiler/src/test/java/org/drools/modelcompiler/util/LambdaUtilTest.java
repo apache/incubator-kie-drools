@@ -5,7 +5,7 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import org.junit.Test;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class LambdaUtilTest {
 

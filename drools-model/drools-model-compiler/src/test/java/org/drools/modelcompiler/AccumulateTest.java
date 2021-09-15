@@ -2556,7 +2556,7 @@ public class AccumulateTest extends BaseModelTest {
 
         public void setStartDateTime(OffsetDateTime startDateTime) {
             this.startDateTime = startDateTime;
-            this.lengthInMinutes.set(-1);
+            lengthInMinutes.set(-1);
         }
 
         public String getEmployee() {
@@ -2879,6 +2879,7 @@ public class AccumulateTest extends BaseModelTest {
             this.discontinued = discontinued;
         }
 
+        @Override
         public String toString() {
             return (name + " " + variant).trim();
         }
@@ -3890,7 +3891,7 @@ public class AccumulateTest extends BaseModelTest {
         assertEquals( 1, results.size() );
         assertEquals( 90, results.get(0) );
     }
-  
+
     @Test
     public void testPositionalAccumulate() {
         // DROOLS-6128

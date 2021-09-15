@@ -150,7 +150,6 @@ import org.kie.internal.builder.conf.PropertySpecificOption;
 import org.kie.internal.ruleunit.RuleUnitUtil;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.compiler.rule.builder.RuleBuilder.buildTimer;
 import static org.drools.core.rule.GroupElement.AND;
 import static org.drools.core.rule.GroupElement.OR;
@@ -184,7 +183,7 @@ public class KiePackagesBuilder {
     }
 
     public KiePackagesBuilder( KieBaseConfiguration conf, KnowledgeBuilderConfiguration builderConf, Collection<Model> models) {
-        this.configuration = ((RuleBaseConfiguration) conf);
+        configuration = ((RuleBaseConfiguration) conf);
         this.builderConf = builderConf;
         this.models = models;
     }

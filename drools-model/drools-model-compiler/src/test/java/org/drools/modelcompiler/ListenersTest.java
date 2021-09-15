@@ -47,15 +47,18 @@ public class ListenersTest extends BaseModelTest {
         List<String> results = new ArrayList<>();
 
         final RuleRuntimeEventListener workingMemoryListener = new RuleRuntimeEventListener() {
+            @Override
             public void objectInserted( ObjectInsertedEvent event) {
                 if (event.getObject() instanceof String) {
                     results.add( event.getRule().getName() );
                 }
             }
 
+            @Override
             public void objectUpdated( ObjectUpdatedEvent event) {
             }
 
+            @Override
             public void objectDeleted( ObjectDeletedEvent event) {
             }
 

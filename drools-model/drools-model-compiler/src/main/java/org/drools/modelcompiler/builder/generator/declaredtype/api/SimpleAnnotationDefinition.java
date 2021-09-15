@@ -39,6 +39,7 @@ public class SimpleAnnotationDefinition implements AnnotationDefinition {
     }
 
 
+    @Override
     public AnnotationDefinition addValue(String key, String value) {
         values.put(key, value);
         return this;

@@ -93,15 +93,15 @@ public class ExecModelLambdaPostProcessor {
 
     public ExecModelLambdaPostProcessor(PackageModel pkgModel,
                                         CompilationUnit cu) {
-        this.lambdaClasses = pkgModel.getLambdaClasses();
-        this.packageName = pkgModel.getName();
-        this.ruleClassName = pkgModel.getRulesFileNameWithPackage();
-        this.imports = pkgModel.getImports();
-        this.staticImports = pkgModel.getStaticImports();
-        this.lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
-        this.debugPredicateInformation = pkgModel.getAllConstraintsMap();
+        lambdaClasses = pkgModel.getLambdaClasses();
+        packageName = pkgModel.getName();
+        ruleClassName = pkgModel.getRulesFileNameWithPackage();
+        imports = pkgModel.getImports();
+        staticImports = pkgModel.getStaticImports();
+        lambdaReturnTypes = pkgModel.getLambdaReturnTypes();
+        debugPredicateInformation = pkgModel.getAllConstraintsMap();
         this.cu = cu;
-        this.isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
+        isParallel = pkgModel.getConfiguration().isParallelLambdaExternalization();
     }
 
     public ExecModelLambdaPostProcessor(String packageName,
@@ -112,7 +112,7 @@ public class ExecModelLambdaPostProcessor {
                                         Map<String, PredicateInformation> debugPredicateInformation,
                                         CompilationUnit cu,
                                         boolean isParallel) {
-        this.lambdaClasses = new ConcurrentHashMap<>();
+        lambdaClasses = new ConcurrentHashMap<>();
         this.packageName = packageName;
         this.ruleClassName = ruleClassName;
         this.imports = imports;
@@ -160,7 +160,7 @@ public class ExecModelLambdaPostProcessor {
         createStream(exprMethods)
                 .forEach(methodCallExpr1 -> {
                     if (containsTemporalPredicate(methodCallExpr1)) {
-                        this.convertTemporalExpr(methodCallExpr1);
+                        convertTemporalExpr(methodCallExpr1);
                     } else {
                         extractLambdaFromMethodCall(methodCallExpr1,
                                 (exprId) -> new MaterializedLambdaPredicate(packageName, ruleClassName, getPredicateInformation(exprId)));

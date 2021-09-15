@@ -58,8 +58,8 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.util.StringUtil;
-import org.drools.mvelcompiler.MvelCompiler;
 import org.drools.mvelcompiler.CompiledBlockResult;
+import org.drools.mvelcompiler.MvelCompiler;
 
 import static com.github.javaparser.StaticJavaParser.parseStatement;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.addCurlyBracesToBlock;
@@ -102,9 +102,9 @@ public class AccumulateInline {
                      PatternDescr basePattern) {
         this.context = context;
         this.packageModel = packageModel;
-        this.accumulateDescr = descr;
+        accumulateDescr = descr;
         this.basePattern = basePattern;
-        this.mvelCompiler = createMvelCompiler(context);
+        mvelCompiler = createMvelCompiler(context);
         singleAccumulateType = null;
     }
 
@@ -155,9 +155,9 @@ public class AccumulateInline {
         parsedClass.findAll(ClassOrInterfaceType.class, c -> "CONTEXT_DATA_GENERIC".equals(c.asString()))
                 .forEach(c -> c.setName(accumulateInlineClassName + ".ContextData"));
 
-        this.accumulateInlineClass = parsedClass;
+        accumulateInlineClass = parsedClass;
 
-        contextData = this.accumulateInlineClass.findFirst(ClassOrInterfaceDeclaration.class
+        contextData = accumulateInlineClass.findFirst(ClassOrInterfaceDeclaration.class
                 , c -> "ContextData".equals(c.getNameAsString()))
                 .orElseThrow(InvalidInlineTemplateException::new);
     }
@@ -317,13 +317,13 @@ public class AccumulateInline {
     }
 
     private void addAccumulateClassInitializationToMethod(MethodCallExpr accumulateDSL, String identifier) {
-        this.packageModel.addGeneratedPOJO(accumulateInlineClass);
+        packageModel.addGeneratedPOJO(accumulateInlineClass);
 
         final MethodCallExpr functionDSL = createDslTopLevelMethod(ACC_FUNCTION_CALL);
         functionDSL.addArgument(new MethodReferenceExpr(new NameExpr(accumulateInlineClassName), new NodeList<>(), "new"));
         functionDSL.addArgument(context.getVarExpr(identifier));
 
-        final String bindingId = this.basePattern.getIdentifier();
+        final String bindingId = basePattern.getIdentifier();
         final MethodCallExpr asDSL = new MethodCallExpr(functionDSL, BIND_AS_CALL);
         asDSL.addArgument(context.getVarExpr(bindingId));
         accumulateDSL.addArgument(asDSL);

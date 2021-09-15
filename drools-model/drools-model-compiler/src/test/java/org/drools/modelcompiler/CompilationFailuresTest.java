@@ -76,7 +76,7 @@ public class CompilationFailuresTest extends BaseModelTest {
         private Number value;
 
         public void setValue(Number number) {
-            this.value = number;
+            value = number;
         }
 
         public boolean isInt() {

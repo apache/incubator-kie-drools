@@ -87,30 +87,30 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     public SingleDrlxParseSuccess(SingleDrlxParseSuccess drlx) {
         // Shallow copy constructor
         this(drlx.getPatternType(), drlx.getPatternBinding(), drlx.getExpr(), drlx.getExprType());
-        this.originalDrlConstraint = drlx.getOriginalDrlConstraint();
-        this.accumulateBinding = drlx.getAccumulateBinding();
-        this.isPatternBindingUnification = drlx.isPatternBindingUnification();
-        this.exprBinding = drlx.getExprBinding();
-        this.decodeConstraintType = drlx.getDecodeConstraintType();
-        this.usedDeclarations = drlx.getUsedDeclarations();
-        this.usedDeclarationsOnLeft = drlx.getUsedDeclarationsOnLeft();
-        this.reactOnProperties = drlx.getReactOnProperties();
-        this.left = drlx.getLeft();
-        this.right = drlx.getRight();
-        this.boundExpr = drlx.getBoundExpr();
-        this.rightLiteral = drlx.getRightLiteral();
-        this.isStatic = drlx.isStatic();
-        this.isPredicate = drlx.isPredicate();
-        this.skipThisAsParam = drlx.isSkipThisAsParam();
-        this.betaConstraint = drlx.isBetaConstraint();
-        this.requiresSplit = drlx.isRequiresSplit();
-        this.unification = drlx.isUnification();
-        this.temporal = drlx.isTemporal();
-        this.combined = drlx.isCombined();
-        this.implicitCastExpression = drlx.getImplicitCastExpression();
-        this.nullSafeExpressions = drlx.getNullSafeExpressions();
+        originalDrlConstraint = drlx.getOriginalDrlConstraint();
+        accumulateBinding = drlx.getAccumulateBinding();
+        isPatternBindingUnification = drlx.isPatternBindingUnification();
+        exprBinding = drlx.getExprBinding();
+        decodeConstraintType = drlx.getDecodeConstraintType();
+        usedDeclarations = drlx.getUsedDeclarations();
+        usedDeclarationsOnLeft = drlx.getUsedDeclarationsOnLeft();
+        reactOnProperties = drlx.getReactOnProperties();
+        left = drlx.getLeft();
+        right = drlx.getRight();
+        boundExpr = drlx.getBoundExpr();
+        rightLiteral = drlx.getRightLiteral();
+        isStatic = drlx.isStatic();
+        isPredicate = drlx.isPredicate();
+        skipThisAsParam = drlx.isSkipThisAsParam();
+        betaConstraint = drlx.isBetaConstraint();
+        requiresSplit = drlx.isRequiresSplit();
+        unification = drlx.isUnification();
+        temporal = drlx.isTemporal();
+        combined = drlx.isCombined();
+        implicitCastExpression = drlx.getImplicitCastExpression();
+        nullSafeExpressions = drlx.getNullSafeExpressions();
 
-        this.watchedProperties = drlx.getWatchedProperties();
+        watchedProperties = drlx.getWatchedProperties();
     }
 
     public SingleDrlxParseSuccess setDecodeConstraintType( Index.ConstraintType decodeConstraintType ) {
@@ -142,7 +142,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     }
 
     public void setPatternBindingUnification(Boolean unification) {
-        this.isPatternBindingUnification = unification;
+        isPatternBindingUnification = unification;
     }
 
     public SingleDrlxParseSuccess addReactOnProperty(String reactOnProperty) {
@@ -150,7 +150,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
             if ( reactOnProperties.isEmpty() ) {
                 reactOnProperties = new HashSet<>();
             }
-            this.reactOnProperties.add( reactOnProperty );
+            reactOnProperties.add( reactOnProperty );
         }
         return this;
     }
@@ -195,6 +195,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
+    @Override
     public String getExprId(DRLIdGenerator exprIdGenerator) {
         String constraint;
         if(asUnificationTypedExpression(left).isPresent() || asUnificationTypedExpression(right).isPresent()) {
@@ -261,10 +262,12 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .orElseThrow(() -> new IllegalStateException("Left or Right unification not present!"));
     }
 
+    @Override
     public Expression getExpr() {
         return expr;
     }
 
+    @Override
     public String getExprBinding() {
         return exprBinding;
     }
@@ -325,6 +328,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return isStatic;
     }
 
+    @Override
     public boolean isTemporal() {
         return temporal;
     }
@@ -338,11 +342,11 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     // false: .bind
     @Override
     public boolean isPredicate() {
-        return this.isPredicate;
+        return isPredicate;
     }
 
     public SingleDrlxParseSuccess setIsPredicate(boolean predicate) {
-        this.isPredicate = predicate;
+        isPredicate = predicate;
         return this;
     }
 
@@ -364,6 +368,7 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         return this;
     }
 
+    @Override
     public boolean isRequiresSplit() {
         return requiresSplit;
     }
@@ -386,31 +391,31 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
         SingleDrlxParseSuccess otherDrlx = ( SingleDrlxParseSuccess ) other;
 
         Collection<String> newUsedDeclarations = new LinkedHashSet<>();
-        newUsedDeclarations.addAll( this.usedDeclarations );
+        newUsedDeclarations.addAll( usedDeclarations );
         newUsedDeclarations.addAll( otherDrlx.usedDeclarations );
 
         Collection<String> newUsedDeclarationsOnLeft = null;
-        if (this.usedDeclarationsOnLeft != null && otherDrlx.usedDeclarationsOnLeft != null) {
+        if (usedDeclarationsOnLeft != null && otherDrlx.usedDeclarationsOnLeft != null) {
             newUsedDeclarationsOnLeft = new LinkedHashSet<>();
-            newUsedDeclarationsOnLeft.addAll( this.usedDeclarationsOnLeft );
+            newUsedDeclarationsOnLeft.addAll( usedDeclarationsOnLeft );
             newUsedDeclarationsOnLeft.addAll( otherDrlx.usedDeclarationsOnLeft );
         }
 
         Set<String> newReactOnProperties = new HashSet<>();
-        newReactOnProperties.addAll( this.reactOnProperties );
+        newReactOnProperties.addAll( reactOnProperties );
         newReactOnProperties.addAll( otherDrlx.reactOnProperties );
 
         List<Expression> newNullSafeExpressions = new ArrayList<>();
         if (operator == BinaryExpr.Operator.OR) {
             // NullSafeExpressions are combined here because the order is complex
-            this.expr = combinePredicatesWithAnd(this.expr, this.nullSafeExpressions);
+            expr = combinePredicatesWithAnd(expr, nullSafeExpressions);
             otherDrlx.expr = combinePredicatesWithAnd(otherDrlx.expr, otherDrlx.nullSafeExpressions);
             // Also combine implicitCast earlier than null-check
-            this.expr = combinePredicatesWithAnd(this.expr, StreamUtils.optionalToList(this.implicitCastExpression));
+            expr = combinePredicatesWithAnd(expr, StreamUtils.optionalToList(implicitCastExpression));
             otherDrlx.expr = combinePredicatesWithAnd(otherDrlx.expr, StreamUtils.optionalToList(otherDrlx.implicitCastExpression));
         } else {
             // NullSafeExpressions will be added by PatternDSL.addNullSafeExpr
-            newNullSafeExpressions.addAll(this.nullSafeExpressions);
+            newNullSafeExpressions.addAll(nullSafeExpressions);
             newNullSafeExpressions.addAll(otherDrlx.nullSafeExpressions);
         }
 
@@ -418,15 +423,15 @@ public class SingleDrlxParseSuccess extends AbstractDrlxParseSuccess {
                 .setDecodeConstraintType(Index.ConstraintType.UNKNOWN)
                 .setUsedDeclarations(newUsedDeclarations)
                 .setUsedDeclarationsOnLeft(newUsedDeclarationsOnLeft)
-                .setUnification(this.isUnification() || otherDrlx.isUnification())
+                .setUnification(isUnification() || otherDrlx.isUnification())
                 .setCombined( true )
                 .setReactOnProperties(newReactOnProperties).setBetaConstraint( betaConstraint )
-                .setLeft(new TypedExpression(this.expr, left != null ? left.getType() : boolean.class))
+                .setLeft(new TypedExpression(expr, left != null ? left.getType() : boolean.class))
                 .setRight(new TypedExpression(otherDrlx.expr, right != null ? right.getType() : boolean.class))
                 .setBoundExpr(left)
-                .setIsPredicate(this.isPredicate && otherDrlx.isPredicate)
+                .setIsPredicate(isPredicate && otherDrlx.isPredicate)
                 .setNullSafeExpressions(newNullSafeExpressions)
-                .setExprBinding(this.exprBinding); // only left exprBinding
+                .setExprBinding(exprBinding); // only left exprBinding
     }
 
     private Expression combinePredicatesWithAnd(Expression mainPredicate, List<Expression> prefixPredicates) {

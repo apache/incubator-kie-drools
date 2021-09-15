@@ -117,8 +117,8 @@ public class LambdaDataProvider implements DataProvider {
     @Override
     public void replaceDeclaration( Declaration declaration, Declaration resolved ) {
         for (int i = 0; i < declarations.length; i++) {
-            if ( this.declarations[i].getIdentifier().equals( declaration.getIdentifier() ) ) {
-                this.declarations[i] = resolved;
+            if ( declarations[i].getIdentifier().equals( declaration.getIdentifier() ) ) {
+                declarations[i] = resolved;
             }
         }
     }
@@ -130,8 +130,12 @@ public class LambdaDataProvider implements DataProvider {
 
     @Override
     public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
         LambdaDataProvider that = ( LambdaDataProvider ) o;
         return reactive == that.reactive &&
                 Objects.equals( providerFunction, that.providerFunction ) &&

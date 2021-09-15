@@ -37,9 +37,9 @@ public class ConstraintUtil {
 
     /**
      * Swap left and right operands in a constraint when a fact property is located on the right side.
-     * 
+     *
      * e.g. Person(20 < age) should be normalized to Person(age > 20)
-     * 
+     *
      * @param drlxParseResult
      * @return Normalized <code>DrlxParseResult</code>
      */

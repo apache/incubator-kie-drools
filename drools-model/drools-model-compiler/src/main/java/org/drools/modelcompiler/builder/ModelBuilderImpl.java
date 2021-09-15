@@ -118,6 +118,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         DrlxParseUtil.clearAccessorCache();
     }
 
+    @Override
     protected void processOtherDeclarations(PackageRegistry pkgRegistry, PackageDescr packageDescr) {
         processAccumulateFunctions(pkgRegistry, packageDescr);
         if (hasMvel()) {
@@ -195,6 +196,7 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         }
     }
 
+    @Override
     protected void buildRules(Collection<CompositePackageDescr> packages) {
         if (hasErrors()) { // if Error while generating pojo do not try compile rule as they very likely depends hence fail too.
             return;
@@ -274,8 +276,8 @@ public class ModelBuilderImpl<T extends PackageSources> extends KnowledgeBuilder
         return packageModels.computeIfAbsent(pkgName, s -> {
             final DialectCompiletimeRegistry dialectCompiletimeRegistry = pkgRegistry.getDialectCompiletimeRegistry();
             return packageDescr.getPreferredPkgUUID()
-                    .map(pkgUUI -> new PackageModel(pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
-                    .orElse(new PackageModel(releaseId, pkgName, this.getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator));
+                    .map(pkgUUI -> new PackageModel(pkgName, getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator, pkgUUI))
+                    .orElse(new PackageModel(releaseId, pkgName, getBuilderConfiguration(), dialectCompiletimeRegistry, exprIdGenerator));
         });
     }
 

@@ -56,7 +56,6 @@ import org.drools.modelcompiler.domain.Result;
 import org.drools.modelcompiler.domain.StockTick;
 import org.drools.modelcompiler.domain.Toy;
 import org.drools.modelcompiler.domain.Woman;
-import org.drools.modelcompiler.dsl.pattern.D;
 import org.junit.Test;
 import org.kie.api.KieBase;
 import org.kie.api.KieServices;
@@ -69,25 +68,25 @@ import org.kie.api.runtime.rule.FactHandle;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.time.SessionPseudoClock;
 
+import static org.drools.model.DSL.accFunction;
+import static org.drools.model.DSL.accumulate;
+import static org.drools.model.DSL.after;
+import static org.drools.model.DSL.and;
+import static org.drools.model.DSL.declarationOf;
+import static org.drools.model.DSL.execute;
+import static org.drools.model.DSL.globalOf;
+import static org.drools.model.DSL.not;
+import static org.drools.model.DSL.on;
+import static org.drools.model.DSL.or;
+import static org.drools.model.DSL.reactiveFrom;
 import static org.drools.model.DSL.supply;
-import static org.drools.model.PatternDSL.accFunction;
-import static org.drools.model.PatternDSL.accumulate;
-import static org.drools.model.PatternDSL.after;
+import static org.drools.model.DSL.valueOf;
 import static org.drools.model.PatternDSL.alphaIndexedBy;
-import static org.drools.model.PatternDSL.and;
 import static org.drools.model.PatternDSL.betaIndexedBy;
-import static org.drools.model.PatternDSL.declarationOf;
-import static org.drools.model.PatternDSL.execute;
-import static org.drools.model.PatternDSL.globalOf;
-import static org.drools.model.PatternDSL.not;
-import static org.drools.model.PatternDSL.on;
-import static org.drools.model.PatternDSL.or;
 import static org.drools.model.PatternDSL.pattern;
 import static org.drools.model.PatternDSL.query;
 import static org.drools.model.PatternDSL.reactOn;
-import static org.drools.model.PatternDSL.reactiveFrom;
 import static org.drools.model.PatternDSL.rule;
-import static org.drools.model.PatternDSL.valueOf;
 import static org.drools.model.PatternDSL.when;
 import static org.drools.modelcompiler.BaseModelTest.getObjectsIntoList;
 import static org.hamcrest.CoreMatchers.hasItem;
@@ -297,10 +296,10 @@ public class PatternDSLTest {
         Variable<Integer> resultSum = declarationOf(Integer.class);
         Variable<Integer> constant = declarationOf(Integer.class);
 
-        Rule rule = D.rule("X").build(D.accumulate(D.pattern(person).expr((_this) -> _this.getName().startsWith("M")),
-                                                   D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
+        Rule rule = PatternDSL.rule("X").build(DSL.accumulate(PatternDSL.pattern(person).expr((_this) -> _this.getName().startsWith("M")),
+                                                   DSL.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction.class,
                                                                  valueOf(2)).as(resultSum)),
-                                      D.on(resultSum).execute((drools, $sum) -> result.setValue("total = " + $sum)));
+                                      DSL.on(resultSum).execute((drools, $sum) -> result.setValue("total = " + $sum)));
 
         Model model = new ModelImpl().addRule(rule);
         KieBase kieBase = KieBaseBuilder.createKieBaseFromModel(model);
@@ -688,30 +687,30 @@ public class PatternDSLTest {
                 int.class,
                 "$age");
 
-        org.drools.model.Query peeps_build = queryDef_peeps.build(D.pattern(queryDef_peeps.getArg1(), D.from(queryDef_peeps.getArg2(), queryDef_peeps.getArg3(), ($name, $age) -> new Person($name, $age))));
+        org.drools.model.Query peeps_build = queryDef_peeps.build(PatternDSL.pattern(queryDef_peeps.getArg1(), DSL.from(queryDef_peeps.getArg2(), queryDef_peeps.getArg3(), ($name, $age) -> new Person($name, $age))));
 
-        final org.drools.model.Variable<java.lang.String> var_$n1 = D.declarationOf(java.lang.String.class,
+        final org.drools.model.Variable<java.lang.String> var_$n1 = DSL.declarationOf(java.lang.String.class,
                 "$n1");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$pattern_Person$2$ = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$pattern_Person$2$ = DSL.declarationOf(org.drools.modelcompiler.domain.Person.class,
                 "$pattern_Person$2$");
-        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = D.declarationOf(org.drools.modelcompiler.domain.Person.class,
+        final org.drools.model.Variable<org.drools.modelcompiler.domain.Person> var_$p = DSL.declarationOf(org.drools.modelcompiler.domain.Person.class,
                 "$p");
-        org.drools.model.Rule rule = D.rule("org.drools.compiler.test",
-                "x1").build(D.pattern(var_$n1),
-                D.not(D.pattern(var_$pattern_Person$2$).expr("$expr$2$",
+        org.drools.model.Rule rule = PatternDSL.rule("org.drools.compiler.test",
+                "x1").build(PatternDSL.pattern(var_$n1),
+                DSL.not(PatternDSL.pattern(var_$pattern_Person$2$).expr("$expr$2$",
                         (_this) -> org.drools.modelcompiler.util.EvaluationUtil.areNullSafeEquals(_this.getName(),
                                 "darth"),
-                        D.alphaIndexedBy(java.lang.String.class,
+                        PatternDSL.alphaIndexedBy(java.lang.String.class,
                                 org.drools.model.Index.ConstraintType.EQUAL,
                                 0,
                                 _this -> _this.getName(),
                                 "darth"),
-                        D.reactOn("name"))),
+                        PatternDSL.reactOn("name"))),
                 queryDef_peeps.call(true,
                         var_$p,
                         var_$n1,
-                        D.valueOf(100)),
-                D.on(var_list,
+                        DSL.valueOf(100)),
+                DSL.on(var_list,
                         var_$p).execute((list, $p) -> {
                     list.add($p);
                 }));
@@ -734,16 +733,16 @@ public class PatternDSLTest {
 
     @Test
     public void testDynamicSalienceOnGlobal() {
-        Global<AtomicInteger> var_salience1 = D.globalOf(AtomicInteger.class, "defaultpkg", "salience1");
-        Global<AtomicInteger> var_salience2 = D.globalOf(AtomicInteger.class, "defaultpkg", "salience2");
-        Global<List> var_list = D.globalOf(List.class, "defaultpkg", "list");
+        Global<AtomicInteger> var_salience1 = DSL.globalOf(AtomicInteger.class, "defaultpkg", "salience1");
+        Global<AtomicInteger> var_salience2 = DSL.globalOf(AtomicInteger.class, "defaultpkg", "salience2");
+        Global<List> var_list = DSL.globalOf(List.class, "defaultpkg", "list");
 
-        Variable<Integer> var_$i = D.declarationOf(Integer.class, "$i");
+        Variable<Integer> var_$i = DSL.declarationOf(Integer.class, "$i");
 
-        Rule rule1 = D.rule("R1")
+        Rule rule1 = PatternDSL.rule("R1")
                 .attribute(Rule.Attribute.SALIENCE, supply( var_salience1, salience1 -> salience1.get() ))
-                .build(D.pattern(var_$i),
-                        D.on(var_$i,
+                .build(PatternDSL.pattern(var_$i),
+                        DSL.on(var_$i,
                                 var_salience1,
                                 var_list).execute((drools, $i, salience1, list) -> {
                             drools.delete($i);
@@ -751,10 +750,10 @@ public class PatternDSLTest {
                             list.add(1);
                         }));
 
-        Rule rule2 = D.rule("R2")
+        Rule rule2 = PatternDSL.rule("R2")
                 .attribute(Rule.Attribute.SALIENCE, supply( var_salience2, salience2 -> salience2.get() ))
-                .build(D.pattern(var_$i),
-                        D.on(var_$i,
+                .build(PatternDSL.pattern(var_$i),
+                        DSL.on(var_$i,
                                 var_list,
                                 var_salience2).execute((drools, $i, list, salience2) -> {
                             drools.delete($i);
@@ -784,23 +783,23 @@ public class PatternDSLTest {
 
     @Test
     public void testDynamicSalienceOnDeclarations() {
-        Global<List> var_list = D.globalOf( List.class, "defaultpkg", "list" );
+        Global<List> var_list = DSL.globalOf( List.class, "defaultpkg", "list" );
 
-        Variable<Integer> var_$i = D.declarationOf(Integer.class, "$i" );
-        Variable<String> var_$s = D.declarationOf(String.class, "$s");
+        Variable<Integer> var_$i = DSL.declarationOf(Integer.class, "$i" );
+        Variable<String> var_$s = DSL.declarationOf(String.class, "$s");
 
-        Rule rule1 = D.rule("R1")
+        Rule rule1 = PatternDSL.rule("R1")
                 .attribute(Rule.Attribute.SALIENCE, supply(var_$s, s -> s.length()))
-                .build(D.pattern(var_$s),
-                        D.on(var_list,
+                .build(PatternDSL.pattern(var_$s),
+                        DSL.on(var_list,
                                 var_$s).execute((list, $s) -> {
                             list.add($s);
                         }));
 
-        Rule rule2 = D.rule("R2")
+        Rule rule2 = PatternDSL.rule("R2")
                 .attribute(Rule.Attribute.SALIENCE, supply(var_$i, i -> i))
-                .build(D.pattern(var_$i),
-                        D.on(var_$i,
+                .build(PatternDSL.pattern(var_$i),
+                        DSL.on(var_$i,
                                 var_list).execute(($i, list) -> {
                             list.add($i);
                         }));
@@ -921,24 +920,24 @@ public class PatternDSLTest {
 
     @Test
     public void testTwoAccumulatesWithVarBindingModel() {
-        Variable<Person> a = PatternDSL.declarationOf(Person.class);
-        Variable<Pair> accSource = PatternDSL.declarationOf(Pair.class);
-        Variable<Collection> accResult = PatternDSL.declarationOf(Collection.class);
-        Variable<Collection> accResult2 = PatternDSL.declarationOf(Collection.class);
-        Variable<Pair> wrapped = PatternDSL.declarationOf(Pair.class, PatternDSL.from(accResult));
-        Variable<Object> unwrapped1 = PatternDSL.declarationOf(Object.class);
+        Variable<Person> a = DSL.declarationOf(Person.class);
+        Variable<Pair> accSource = DSL.declarationOf(Pair.class);
+        Variable<Collection> accResult = DSL.declarationOf(Collection.class);
+        Variable<Collection> accResult2 = DSL.declarationOf(Collection.class);
+        Variable<Pair> wrapped = DSL.declarationOf(Pair.class, DSL.from(accResult));
+        Variable<Object> unwrapped1 = DSL.declarationOf(Object.class);
 
         PatternDSL.PatternDef aPattern = PatternDSL.pattern(a)
                 .bind(accSource, v -> Pair.create(v.getName(), v.getAge()));
-        ViewItem accumulate = PatternDSL.accumulate(aPattern, DSL.accFunction( CollectSetAccumulateFunction::new, accSource).as(accResult));
+        ViewItem accumulate = DSL.accumulate(aPattern, DSL.accFunction( CollectSetAccumulateFunction::new, accSource).as(accResult));
 
         PatternDSL.PatternDef secondPattern = PatternDSL.pattern(accResult);
         PatternDSL.PatternDef thirdPattern =
               PatternDSL.pattern(wrapped).bind(unwrapped1, Pair::getKey); // If binding removed, test will pass.
-        ViewItem accumulate2 = PatternDSL.accumulate(PatternDSL.and(secondPattern, thirdPattern),
+        ViewItem accumulate2 = DSL.accumulate(DSL.and(secondPattern, thirdPattern),
                 DSL.accFunction(CollectSetAccumulateFunction::new, wrapped).as(accResult2));
         Rule rule = PatternDSL.rule("R")
-                .build(accumulate, accumulate2, PatternDSL.on(accResult2).execute(obj -> {
+                .build(accumulate, accumulate2, DSL.on(accResult2).execute(obj -> {
                     boolean works = obj.contains(Pair.create("Lukas", 35));
                     if (!works) {
                         throw new IllegalStateException("Why is " + obj + " not Set<" + Pair.class + ">?");
@@ -955,23 +954,23 @@ public class PatternDSLTest {
 
     @Test
     public void testBetaIndexOn2ValuesOnLeftTuple() {
-        final Variable<Integer> var_$integer = D.declarationOf(Integer.class);
-        final Variable<Integer> var_$i = D.declarationOf(Integer.class);
-        final Variable<String> var_$string = D.declarationOf(String.class);
-        final Variable<Integer> var_$l = D.declarationOf(Integer.class);
-        final Variable<Person> var_$p = D.declarationOf(Person.class);
+        final Variable<Integer> var_$integer = DSL.declarationOf(Integer.class);
+        final Variable<Integer> var_$i = DSL.declarationOf(Integer.class);
+        final Variable<String> var_$string = DSL.declarationOf(String.class);
+        final Variable<Integer> var_$l = DSL.declarationOf(Integer.class);
+        final Variable<Person> var_$p = DSL.declarationOf(Person.class);
 
-        Rule rule = D.rule("R1").build(D.pattern(var_$integer).bind(var_$i,
+        Rule rule = PatternDSL.rule("R1").build(PatternDSL.pattern(var_$integer).bind(var_$i,
                 (Integer _this) -> _this),
-                D.pattern(var_$string).bind(var_$l,
+                PatternDSL.pattern(var_$string).bind(var_$l,
                         (String _this) -> _this.length()),
-                D.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
+                PatternDSL.pattern(var_$p).expr("8EF302358D7EE770A4D874DF4B3327D2",
                         var_$l,
                         var_$i,
                         (_this, $l, $i) -> org.drools.modelcompiler.util.EvaluationUtil.areNumbersNullSafeEquals(_this.getAge(), $l + $i),
-                        D.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
-                        D.reactOn("age")),
-                D.execute(() -> { })
+                        PatternDSL.betaIndexedBy(int.class, Index.ConstraintType.EQUAL, 3, Person::getAge, ($l, $i) -> $l + $i, int.class),
+                        PatternDSL.reactOn("age")),
+                DSL.execute(() -> { })
         );
 
         Model model = new ModelImpl().addRule(rule);
@@ -987,28 +986,28 @@ public class PatternDSLTest {
 
     @Test
     public void testPatternsAfterAccMovedToEvalsOnResultPattern() throws Exception {
-        final Global<List> var_results = D.globalOf(List.class, "defaultpkg", "results");
+        final Global<List> var_results = DSL.globalOf(List.class, "defaultpkg", "results");
 
-        final Variable<String> var_$key = D.declarationOf(String.class);
-        final Variable<Person> var_$p   = D.declarationOf(Person.class);
-        Variable<Integer> var_$age = D.declarationOf(Integer.class);
-        Variable<Integer> var_$sumOfAges = D.declarationOf(Integer.class);
-        Variable<Long> var_$countOfPersons = D.declarationOf(Long.class);
+        final Variable<String> var_$key = DSL.declarationOf(String.class);
+        final Variable<Person> var_$p   = DSL.declarationOf(Person.class);
+        Variable<Integer> var_$age = DSL.declarationOf(Integer.class);
+        Variable<Integer> var_$sumOfAges = DSL.declarationOf(Integer.class);
+        Variable<Long> var_$countOfPersons = DSL.declarationOf(Long.class);
 
         Predicate1<Integer> p1 =  a -> a > 0;
         Predicate1<Long> p2 =  c -> c > 0;
 
-        Rule rule1 = D.rule("R1").build(
-                D.accumulate(
+        Rule rule1 = PatternDSL.rule("R1").build(
+                DSL.accumulate(
                         // Patterns
-                        D.pattern(var_$p).bind(var_$age, person -> person.getAge(), D.reactOn("age")),
-                        D.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
-                        D.accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(var_$countOfPersons)),
+                        PatternDSL.pattern(var_$p).bind(var_$age, person -> person.getAge(), PatternDSL.reactOn("age")),
+                        DSL.accFunction(org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age).as(var_$sumOfAges),
+                        DSL.accFunction(org.drools.core.base.accumulators.CountAccumulateFunction::new).as(var_$countOfPersons)),
                 // Filter
-                D.pattern(var_$sumOfAges).expr(p1),
-                D.pattern(var_$countOfPersons).expr(p2),
+                PatternDSL.pattern(var_$sumOfAges).expr(p1),
+                PatternDSL.pattern(var_$countOfPersons).expr(p2),
                 // Consequence
-                D.on(var_$sumOfAges, var_$countOfPersons, var_results)
+                DSL.on(var_$sumOfAges, var_$countOfPersons, var_results)
                         .execute(($ages, $counts, results) -> results.add($ages + ":" + $counts)));
 
         Model      model    = new ModelImpl().addRule(rule1).addGlobal(var_results);
@@ -1029,7 +1028,7 @@ public class PatternDSLTest {
 
         KieSession ksession = kbase.newKieSession();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal( "results", results );
 
         ksession.insert( new Person( "Mark", 42 ) );
@@ -1041,28 +1040,28 @@ public class PatternDSLTest {
 
     @Test
     public void test2AccRewriteToNested() throws Exception {
-        final Global<List> var_results = D.globalOf( List.class, "defaultpkg", "results" );
+        final Global<List> var_results = DSL.globalOf( List.class, "defaultpkg", "results" );
 
-        final Variable<Person> var_$p = D.declarationOf( Person.class );
-        Variable<Integer> var_$age = D.declarationOf( Integer.class );
-        Variable<Integer> var_$sumOfAges = D.declarationOf( Integer.class );
-        Variable<Long> var_$countOfPersons = D.declarationOf( Long.class );
+        final Variable<Person> var_$p = DSL.declarationOf( Person.class );
+        Variable<Integer> var_$age = DSL.declarationOf( Integer.class );
+        Variable<Integer> var_$sumOfAges = DSL.declarationOf( Integer.class );
+        Variable<Long> var_$countOfPersons = DSL.declarationOf( Long.class );
 
         Predicate1<Long> cp = c -> c > 0;
 
-        Rule rule1 = D.rule( "R1" ).build(
-                D.accumulate(
-                        D.pattern( var_$p ).bind( var_$age, person -> person.getAge(), D.reactOn( "age" ) ),
-                        D.accFunction( org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age ).as( var_$sumOfAges ) ),
-                D.accumulate(
-                        D.pattern( var_$sumOfAges ),
-                        D.accFunction( org.drools.core.base.accumulators.CountAccumulateFunction::new ).as( var_$countOfPersons ) ),
+        Rule rule1 = PatternDSL.rule( "R1" ).build(
+                DSL.accumulate(
+                        PatternDSL.pattern( var_$p ).bind( var_$age, person -> person.getAge(), PatternDSL.reactOn( "age" ) ),
+                        DSL.accFunction( org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age ).as( var_$sumOfAges ) ),
+                DSL.accumulate(
+                        PatternDSL.pattern( var_$sumOfAges ),
+                        DSL.accFunction( org.drools.core.base.accumulators.CountAccumulateFunction::new ).as( var_$countOfPersons ) ),
                 // Filter
-                D.pattern( var_$countOfPersons ).expr(cp),
+                PatternDSL.pattern( var_$countOfPersons ).expr(cp),
                 // Consequence
-                D.on( var_$countOfPersons, var_results )
+                DSL.on( var_$countOfPersons, var_results )
                         .execute( (drools, i, results) -> {
-                            Activation activation = (Activation) ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
                             results.add(i + ":" + activation.getObjectsDeep());
 
                         } ) );
@@ -1087,7 +1086,7 @@ public class PatternDSLTest {
 
         KieSession ksession = kbase.newKieSession();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal( "results", results );
 
         ksession.insert( new Person( "Mark", 42 ) );
@@ -1100,33 +1099,33 @@ public class PatternDSLTest {
     @Test
     public void test2AccsWithGetObjectsDeep() throws Exception {
         // DROOLS-6236
-        final Global<List> var_results = D.globalOf( List.class, "defaultpkg", "results" );
+        final Global<List> var_results = DSL.globalOf( List.class, "defaultpkg", "results" );
 
-        final Variable<Person> var_$p = D.declarationOf( Person.class );
-        Variable<Integer> var_$age = D.declarationOf( Integer.class );
-        Variable<Integer> var_$sumOfAges = D.declarationOf( Integer.class );
-        Variable<Long> var_$countOfPersons = D.declarationOf( Long.class, D.from(var_$p) );
+        final Variable<Person> var_$p = DSL.declarationOf( Person.class );
+        Variable<Integer> var_$age = DSL.declarationOf( Integer.class );
+        Variable<Integer> var_$sumOfAges = DSL.declarationOf( Integer.class );
+        Variable<Long> var_$countOfPersons = DSL.declarationOf( Long.class, DSL.from(var_$p) );
 
-        Rule rule1 = D.rule( "R1" ).build(
-                D.accumulate(
-                        D.pattern( var_$p ).bind( var_$age, person -> person.getAge(), D.reactOn( "age" ) ),
-                        D.accFunction( org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age ).as( var_$sumOfAges ) ),
-                D.accumulate(
-                        D.pattern( var_$sumOfAges ),
-                        D.accFunction( org.drools.core.base.accumulators.CountAccumulateFunction::new ).as( var_$countOfPersons ) ),
-                D.pattern( var_$countOfPersons ),
+        Rule rule1 = PatternDSL.rule( "R1" ).build(
+                DSL.accumulate(
+                        PatternDSL.pattern( var_$p ).bind( var_$age, person -> person.getAge(), PatternDSL.reactOn( "age" ) ),
+                        DSL.accFunction( org.drools.core.base.accumulators.IntegerSumAccumulateFunction::new, var_$age ).as( var_$sumOfAges ) ),
+                DSL.accumulate(
+                        PatternDSL.pattern( var_$sumOfAges ),
+                        DSL.accFunction( org.drools.core.base.accumulators.CountAccumulateFunction::new ).as( var_$countOfPersons ) ),
+                PatternDSL.pattern( var_$countOfPersons ),
                 // Consequence
-                D.on( var_$countOfPersons )
+                DSL.on( var_$countOfPersons )
                         .execute( (drools, i) -> {
                             System.out.println(i);
-                            Activation activation = (Activation) ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
+                            Activation activation = ((org.drools.modelcompiler.consequence.DroolsImpl) drools).asKnowledgeHelper().getMatch();
                             System.out.println(activation.getObjectsDeep());
                         } ) );
 
         Model model = new ModelImpl().addRule( rule1 ).addGlobal( var_results );
         KieSession ksession = KieBaseBuilder.createKieBaseFromModel( model ).newKieSession();
 
-        List<String> results = new ArrayList<String>();
+        List<String> results = new ArrayList<>();
         ksession.setGlobal( "results", results );
 
         ksession.insert( new Person( "Mark", 42 ) );

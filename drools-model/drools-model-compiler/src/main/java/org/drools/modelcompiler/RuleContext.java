@@ -159,7 +159,7 @@ public class RuleContext {
     }
 
     public void setNeedStreamMode() {
-        this.needStreamMode = true;
+        needStreamMode = true;
     }
 
     public Map<String, Declaration> getDeclarations() {

@@ -66,8 +66,12 @@ public class GeneratedClassWithPackage {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         GeneratedClassWithPackage that = (GeneratedClassWithPackage) o;
         return getPackageName().equals(that.getPackageName()) && getClassName().equals(that.getClassName());
     }

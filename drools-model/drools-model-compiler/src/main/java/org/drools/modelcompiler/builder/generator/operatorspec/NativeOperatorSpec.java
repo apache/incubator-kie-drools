@@ -38,6 +38,7 @@ import static org.drools.modelcompiler.builder.generator.drlxparse.ConstraintPar
 public class NativeOperatorSpec implements OperatorSpec {
     public static final NativeOperatorSpec INSTANCE = new NativeOperatorSpec();
 
+    @Override
     public Expression getExpression(RuleContext context, PointFreeExpr pointFreeExpr, TypedExpression left, ExpressionTyper expressionTyper) {
         MethodCallExpr methodCallExpr = createDslTopLevelMethod( EVAL_CALL );
 

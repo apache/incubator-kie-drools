@@ -30,7 +30,7 @@ public class UnificationTypedExpression extends TypedExpression {
     public UnificationTypedExpression(String unificationVariable, Type type, String name) {
         super(null, type);
         this.unificationVariable = Optional.of(unificationVariable);
-        this.unificationName = Optional.of(name);
+        unificationName = Optional.of(name);
     }
 
     public Optional<String> getUnificationVariable() {

@@ -45,7 +45,7 @@ public class InputDataTypes {
     private int no22Count;
     private int no23Count;
     private int no24Count;
-    private List<String> firings = new ArrayList<String>();
+    private List<String> firings = new ArrayList<>();
 
     public InputDataTypes() {
         no1Count = 1;

@@ -27,7 +27,7 @@ public class DeclaredTypeWriter {
 
     public DeclaredTypeWriter(TypeDeclaration generatedPojo, PackageModel pkgModel) {
         this.generatedPojo = generatedPojo;
-        this.name = generatedPojo.getNameAsString();
+        name = generatedPojo.getNameAsString();
         this.pkgModel = pkgModel;
     }
 

@@ -24,7 +24,9 @@ public class Room {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Room)) return false;
+        if (!(obj instanceof Room)) {
+            return false;
+        }
         return name.equals(((Room)obj).getName());
     }
 

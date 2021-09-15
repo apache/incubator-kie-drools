@@ -22,7 +22,6 @@ import org.drools.core.base.ValueType;
 import org.drools.core.base.extractors.BaseObjectClassFieldReader;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.spi.InternalReadAccessor;
-import org.drools.core.util.Drools;
 import org.drools.model.functions.Function1;
 
 public class LambdaReadAccessor extends BaseObjectClassFieldReader implements InternalReadAccessor {
@@ -45,9 +44,15 @@ public class LambdaReadAccessor extends BaseObjectClassFieldReader implements In
 
     @Override
     public boolean equals( Object o ) {
-        if ( this == o ) return true;
-        if ( o == null || getClass() != o.getClass() ) return false;
-        if ( !super.equals( o ) ) return false;
+        if ( this == o ) {
+            return true;
+        }
+        if ( o == null || getClass() != o.getClass() ) {
+            return false;
+        }
+        if ( !super.equals( o ) ) {
+            return false;
+        }
         LambdaReadAccessor that = ( LambdaReadAccessor ) o;
         return Objects.equals( lambda, that.lambda );
     }

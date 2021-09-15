@@ -70,16 +70,15 @@ import org.kie.api.runtime.rule.AccumulateFunction;
 
 import static java.util.Optional.ofNullable;
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLiteralExpressionType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.validateDuplicateBindings;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACCUMULATE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ACC_FUNCTION_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.AND_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_AS_CALL;
-import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
+import static org.drools.modelcompiler.builder.generator.DslMethodNames.VALUE_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
 import static org.drools.modelcompiler.util.lambdareplace.ReplaceTypeInLambda.replaceTypeInExprLambda;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -96,7 +95,7 @@ public class AccumulateVisitor {
         this.context = context;
         this.modelGeneratorVisitor = modelGeneratorVisitor;
         this.packageModel = packageModel;
-        this.expressionBuilder = new PatternExpressionBuilder(context);
+        expressionBuilder = new PatternExpressionBuilder(context);
     }
 
     public void visit(AccumulateDescr descr, PatternDescr basePattern) {
@@ -105,7 +104,7 @@ public class AccumulateVisitor {
         final MethodCallExpr accumulateExprs = createDslTopLevelMethod(AND_CALL);
         accumulateDSL.addArgument(accumulateExprs);
 
-        this.context.pushScope(descr);
+        context.pushScope(descr);
         pushAccumulateContext( accumulateExprs );
 
         try {
@@ -131,7 +130,7 @@ public class AccumulateVisitor {
             }
         } finally {
             context.popExprPointer();
-            this.context.popScope();
+            context.popScope();
         }
     }
 

@@ -34,7 +34,7 @@ public class DrlxCompiler {
             drlxCompiler.visit(result.getResult().get(), null);
             PackageDescr pkg = drlxCompiler.getPackageDescr();
             if (pkg == null) {
-                this.results.add(new ParserError(resource, "Parser returned a null Package", 0, 0));
+                results.add(new ParserError(resource, "Parser returned a null Package", 0, 0));
                 return null;
             } else {
                 pkg.setResource(resource);
@@ -45,7 +45,7 @@ public class DrlxCompiler {
                 TokenRange tokenRange = problem.getLocation().get();
                 Range range = tokenRange.getBegin().getRange().get();
                 int lineCount = range.getLineCount();
-                this.results.add(new ParserError(problem.getMessage(), lineCount, -1));
+                results.add(new ParserError(problem.getMessage(), lineCount, -1));
             }
             return null;
         }

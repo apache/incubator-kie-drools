@@ -34,7 +34,7 @@ public class InternationalAddress extends Address implements Serializable {
     }
 
     public String getState() {
-        return this.state;
+        return state;
     }
 
     public void setState(final String state) {
@@ -43,9 +43,15 @@ public class InternationalAddress extends Address implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
 
         InternationalAddress that = (InternationalAddress) o;
 

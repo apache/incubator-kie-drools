@@ -60,7 +60,7 @@ public class OOPathExprGenerator {
     public OOPathExprGenerator(RuleContext context, PackageModel packageModel) {
         this.context = context;
         this.packageModel = packageModel;
-        this.expressionBuilder = AbstractExpressionBuilder.getExpressionBuilder(context);
+        expressionBuilder = AbstractExpressionBuilder.getExpressionBuilder(context);
     }
 
     public void visit(Class<?> originalClass, String originalBind, DrlxParseSuccess patternParseResult) {

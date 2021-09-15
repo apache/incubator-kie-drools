@@ -32,10 +32,10 @@ public class PackageModelWriter {
 
     public PackageModelWriter(PackageModel packageModel) {
         this.packageModel = packageModel;
-        this.declaredTypes = toDeclaredTypeWriters(packageModel);
-        this.accumulateClasses = toAccumulateClassWriters(packageModel);
-        this.ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(), packageModel);
-        this.domainClassesMetadata = new DomainClassesMetadata(packageModel);
+        declaredTypes = toDeclaredTypeWriters(packageModel);
+        accumulateClasses = toAccumulateClassWriters(packageModel);
+        ruleWriter = new RuleWriter(packageModel.getRulesFileName(), packageModel.getRulesSource(), packageModel);
+        domainClassesMetadata = new DomainClassesMetadata(packageModel);
     }
 
     public List<DeclaredTypeWriter> getDeclaredTypes() {
