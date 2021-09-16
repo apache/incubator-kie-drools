@@ -1793,6 +1793,49 @@ of the measuring.
 longest-running currently active solver.
 * `optaplanner.solver.solve.duration.seconds-duration-sum`: the sum of each active solver's solve duration. For example, if there are two active solvers, one running for three minutes and the other for one minute, the total solve time is four minutes.
 
+==== Additional Metrics
+
+For more detailed monitoring, OptaPlanner can be configured to monitor additional metrics at a performance cost.
+
+[source,xml,options="nowrap"]
+----
+<solver xmlns="https://www.optaplanner.org/xsd/solver" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://www.optaplanner.org/xsd/solver https://www.optaplanner.org/xsd/solver/solver.xsd">
+  <monitoring>
+    <metric>BEST_SCORE</metric>
+    <metric>SCORE_CALCULATION_COUNT</metric>
+    ...
+  </monitoring>
+  ...
+</solver>
+----
+
+The following metrics are available:
+
+- `SOLVE_DURATION` (default, Micrometer meter id: "optaplanner.solver.solve.duration"): Measure the duration of solving for the longest active solver, the number of active solvers and the cumulative duration of all active solvers.
+
+- `ERROR_COUNT` (default, Micrometer meter id: "optaplanner.solver.errors"): Measures the number of errors that occur while solving.
+
+- `SCORE_CALCULATION_COUNT` (default, Micrometer meter id: "optaplanner.solver.score.calculation.count"): Measures the number of score calculations OptaPlanner performed.
+
+- `BEST_SCORE` (Micrometer meter id: "optaplanner.solver.best.score.*"): Measures the score of the best solution OptaPlanner found so far. There are separate meters for each level of the score. For instance, for a `HardSoftScore`, there are `optaplanner.solver.best.score.hard.score` and `optaplanner.solver.best.score.soft.score` meters.
+
+- `STEP_SCORE` (Micrometer meter id: "optaplanner.solver.step.score.*"): Measures the score of each step OptaPlanner takes. There are separate meters for each level of the score. For instance, for a `HardSoftScore`, there are `optaplanner.solver.step.score.hard.score` and `optaplanner.solver.step.score.soft.score` meters.
+
+- `BEST_SOLUTION_MUTATION` (Micrometer meter id: "optaplanner.solver.best.solution.mutation"): Measures the number of changed planning variables between consecutive best solutions.
+
+- `MOVE_COUNT_PER_STEP` (Micrometer meter id: "optaplanner.solver.step.move.count"): Measures the number of moves evaluated in a step.
+
+- `MEMORY_USE` (Micrometer meter id: "jvm.memory.used"): Measures the amount of memory used across the JVM. This does not measure the amount of memory used by a solver; two solvers on the same JVM will report the same value for this metric.
+
+- `CONSTRAINT_MATCH_TOTAL_BEST_SCORE` (Micrometer meter id: "optaplanner.solver.constraint.match.best.score.*"): Measures the score impact of each constraint on the best solution OptaPlanner found so far. There are separate meters for each level of the score, with tags for each constraint. For instance, for a `HardSoftScore` for a constraint "Minimize Cost" in package "com.example", there are `optaplanner.solver.constraint.match.best.score.hard.score` and `optaplanner.solver.constraint.match.best.score.soft.score` meters with tags "constraint.package=com.example" and "constraint.name=Minimize Cost".
+
+- `CONSTRAINT_MATCH_TOTAL_STEP_SCORE` (Micrometer meter id: "optaplanner.solver.constraint.match.step.score.*"): Measures the score impact of each constraint on the current step. There are separate meters for each level of the score, with tags for each constraint. For instance, for a `HardSoftScore` for a constraint "Minimize Cost" in package "com.example", there are `optaplanner.solver.constraint.match.step.score.hard.score` and `optaplanner.solver.constraint.match.step.score.soft.score` meters with tags "constraint.package=com.example" and "constraint.name=Minimize Cost".
+
+- `PICKED_MOVE_TYPE_BEST_SCORE_DIFF` (Micrometer meter id: "optaplanner.solver.move.type.best.score.diff.*"): Measures how much a particular move type improves the best solution. There are separate meters for each level of the score, with a tag for the move type. For instance, for a `HardSoftScore` and a `ChangeMove` for the computer of a process, there are `optaplanner.solver.move.type.best.score.diff.hard.score` and `optaplanner.solver.move.type.best.score.diff.soft.score` meters with the tag `move.type=ChangeMove(Process.computer)`.
+
+- `PICKED_MOVE_TYPE_STEP_SCORE_DIFF` (Micrometer meter id: "optaplanner.solver.move.type.step.score.diff.*"): Measures how much a particular move type improves the best solution. There are separate meters for each level of the score, with a tag for the move type. For instance, for a `HardSoftScore` and a `ChangeMove` for the computer of a process, there are `optaplanner.solver.move.type.step.score.diff.hard.score` and `optaplanner.solver.move.type.step.score.diff.soft.score` meters with the tag `move.type=ChangeMove(Process.computer)`.
+
 [[randomNumberGenerator]]
 === Random number generator
 
