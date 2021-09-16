@@ -35,7 +35,7 @@
       <DerivedField name="double(s_wid)" optype="continuous" dataType="double">
         <FieldRef field="s_wid"/>
       </DerivedField>
-      <DerivedField name="double(p_len))" optype="continuous" dataType="double">
+      <DerivedField name="double(p_len)" optype="continuous" dataType="double">
         <FieldRef field="p_len"/>
       </DerivedField>
       <DerivedField name="double(s_len)" optype="continuous" dataType="double">
@@ -45,11 +45,11 @@
     <Segmentation multipleModelMethod="selectFirst">
       <Segment id="1">
         <True/>
-        <RegressionModel functionName="classification" targetFieldName="Species">
+        <RegressionModel functionName="classification" >
           <MiningSchema>
             <MiningField name="double(p_wid)"/>
             <MiningField name="double(s_wid)"/>
-            <MiningField name="double(p_len))"/>
+            <MiningField name="double(p_len)"/>
             <MiningField name="double(s_len)"/>
           </MiningSchema>
           <Output>
