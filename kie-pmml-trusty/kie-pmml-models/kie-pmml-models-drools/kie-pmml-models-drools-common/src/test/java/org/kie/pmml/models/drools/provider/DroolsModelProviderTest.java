@@ -375,7 +375,7 @@ public class DroolsModelProviderTest {
 
         @Override
         protected LinkedHashMap<String, Double> getProbabilityResultMap() {
-            return null;
+            return new LinkedHashMap<>();
         }
     }
 

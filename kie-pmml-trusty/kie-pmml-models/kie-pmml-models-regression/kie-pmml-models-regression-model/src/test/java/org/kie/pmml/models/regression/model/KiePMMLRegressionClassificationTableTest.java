@@ -124,13 +124,6 @@ public class KiePMMLRegressionClassificationTableTest {
                 return null;
             }
 
-//            @Override
-//            protected void populateOutputFieldsMapWithProbability(Map.Entry<String, Double> predictedEntry,
-//                                                                  LinkedHashMap<String, Double> probabilityMap) {
-//                outputFieldsMap.put(PROBABILITY_FALSE, probabilityMap.get(CASE_A));
-//                outputFieldsMap.put(PROBABILITY_TRUE, probabilityMap.get(CASE_B));
-//            }
-
         };
         toReturn.categoryTableMap.put(CASE_A, getKiePMMLRegressionTable(firstTableResult));
         toReturn.categoryTableMap.put(CASE_B, getKiePMMLRegressionTable(secondTableResult));

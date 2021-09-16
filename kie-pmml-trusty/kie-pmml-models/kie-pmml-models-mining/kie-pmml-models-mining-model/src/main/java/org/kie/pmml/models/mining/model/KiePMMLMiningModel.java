@@ -58,7 +58,6 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     @Override
     public LinkedHashMap<String, Double> getProbabilityResultMap() {
         return new LinkedHashMap<>();
-//        throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual usage");
     }
 
     @Override

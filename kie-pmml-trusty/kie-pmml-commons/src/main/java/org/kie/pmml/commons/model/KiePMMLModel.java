@@ -131,7 +131,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Double> getProbabilityMap() {
         final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
-        return probabilityResultMap != null  ? Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
+        return probabilityResultMap != null ? Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
     }
 
     public Object getPredictedDisplayValue() {
@@ -173,7 +173,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
      */
     protected abstract LinkedHashMap<String, Double> getProbabilityResultMap();
 
-    private LinkedHashMap<String, Double> getFixedProbabilityMap(final LinkedHashMap<String, Double> probabilityResultMap) {
+    private static LinkedHashMap<String, Double> getFixedProbabilityMap(final LinkedHashMap<String, Double> probabilityResultMap) {
         LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
         String[] resultMapKeys = probabilityResultMap.keySet().toArray(new String[0]);
         AtomicReference<Double> sumCounter = new AtomicReference<>(0.0);
