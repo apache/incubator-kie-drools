@@ -31,6 +31,15 @@ Currently known limitations:
 Transformations
 ===============
 
+rel 7.60.0
+----------
+Implemented overall functionality
+
+Currently known limitations:
+
+1. Only _Aggregation_ and _Lag_ not implemented
+
+
 rel 7.41.0
 ----------
 Implemented basic functionality
@@ -55,6 +64,12 @@ Currently known limitations:
 
 Tree model implementation status
 ================================
+
+rel 7.60.0
+----------
+Currently known limitation:
+
+1. _ScoreDistribution_ and probability evaluation available only in codegen (not-drools) implementation
 
 rel 7.36.0
 ----------
