@@ -24,6 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         java-version: [11]
+        maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     name: Maven Build
@@ -37,18 +38,19 @@ jobs:
           sudo rm -rf /opt/ghc
           docker rmi $(docker image ls -aq)
           df -h    
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-${{ matrix.java-version }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-m2
-      - name: Build Chain ${{ matrix.java-version }}
+          key: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2
+      - name: Build Chain ${{ matrix.java-version }}. Maven ${{ matrix.maven-version }}
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.5
         with:

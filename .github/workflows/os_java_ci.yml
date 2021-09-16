@@ -36,6 +36,7 @@ jobs:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
         java-version: [ 11 ]
+        maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
@@ -63,24 +64,25 @@ jobs:
         run: |
           echo "Available storage:"
           df -h
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-${{ matrix.java-version }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2
       - name: Set FLOW_TYPE to pull-request
         if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
       - name: Set FLOW_TYPE to branch
         if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
-      - name: Build Chain ${{ matrix.java-version }}
+      - name: Build Chain ${{ matrix.java-version }}. Maven ${{ matrix.maven-version }}
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.4
         with:
@@ -120,24 +122,25 @@ jobs:
         run: |
           echo "Available storage:"
           df -h
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: 16
+          maven-version: '3.8.1'
       # See https://docs.github.com/en/actions/guides/building-and-testing-java-with-maven#caching-dependencies
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-16-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-m2
+          key: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2
       - name: Set FLOW_TYPE to pull-request
         if: github.event_name == 'pull_request'
         run: echo "FLOW_TYPE=pull-request" >> $GITHUB_ENV
       - name: Set FLOW_TYPE to branch
         if: github.event_name == 'push'
         run: echo "FLOW_TYPE=branch" >> $GITHUB_ENV
-      - name: Build Chain 16
+      - name: Build Chain 16. Maven 3.8.1
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.4
         with:
