@@ -84,14 +84,9 @@ public class EventDrivenDecisionController {
                 CloudEvent.class));
     }
 
-    void handleEvent(String event) {
-        CloudEventUtils.decode(event)
-                .filter(e -> REQUEST_EVENT_TYPE.equals(e.getType()))
-                .ifPresent(this::handleRequest);
-    }
-
     private CompletionStage<Void> handleRequest(CloudEvent event) {
-        buildEvaluationContext(event)
+        validateRequest(event)
+                .flatMap(this::buildEvaluationContext)
                 .map(this::processRequest)
                 .flatMap(this::buildResponseCloudEvent)
                 .flatMap(CloudEventUtils::toDataEvent)
@@ -99,12 +94,11 @@ public class EventDrivenDecisionController {
         return CompletableFuture.completedFuture(null);
     }
 
-    private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {
-        if (event == null) {
-            LOG.error("Received null CloudEvent");
-            return Optional.empty();
-        }
+    private Optional<CloudEvent> validateRequest(CloudEvent event) {
+        return Optional.ofNullable(event).filter(e -> REQUEST_EVENT_TYPE.equals(e.getType()));
+    }
 
+    private Optional<EvaluationContext> buildEvaluationContext(CloudEvent event) {
         KogitoExtension kogitoExtension = ExtensionProvider.getInstance().parseExtension(KogitoExtension.class, event);
         Map<String, Object> data = CloudEventUtils.decodeMapData(event, String.class, Object.class).orElse(null);
 
