@@ -17,21 +17,23 @@ jobs:
     strategy:
       matrix:
         java-version: [11]
+        maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ubuntu-latest
     name: Maven Build
     steps:
-      - name: Set up JDK
-        uses: actions/setup-java@v1
+      - name: Setup Maven And Java Version
+        uses: s4u/setup-maven-action@v1.2.1
         with:
           java-version: ${{ matrix.java-version }}
+          maven-version: ${{ matrix.maven-version }}
       - name: Cache Maven packages
         uses: actions/cache@v2
         with:
           path: ~/.m2
-          key: ${{ runner.os }}-${{ matrix.java-version }}-m2-${{ hashFiles('**/pom.xml') }}
-          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-m2
-      - name: Build Chain ${{ matrix.java-version }}
+          key: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-${{ matrix.java-version }}-maven${{ matrix.maven-version }}-m2
+      - name: Build Chain ${{ matrix.java-version }}. Maven ${{ matrix.maven-version }}
         id: build-chain
         uses: kiegroup/github-action-build-chain@v2.6.8
         with:
