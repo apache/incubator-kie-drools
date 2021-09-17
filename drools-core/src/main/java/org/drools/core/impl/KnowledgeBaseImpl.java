@@ -22,6 +22,7 @@ import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -135,6 +136,12 @@ public class KnowledgeBaseImpl
     private RuleBaseConfiguration config;
 
     protected Map<String, InternalKnowledgePackage> pkgs;
+
+    /**
+     * Allows external stakeholders to track if the pkgs collection has been modified
+     * since the last access.
+     */
+    private Instant pkgsLastUpdatedAt;
 
     private Map<String, Process> processes;
 
@@ -868,6 +875,7 @@ public class KnowledgeBaseImpl
             pkg.getDialectRuntimeRegistry().merge( newPkg.getDialectRuntimeRegistry(),
                                                    this.rootClassLoader,
                                                    true );
+            pkgsLastUpdatedAt = Instant.now();                                                   
 
         }
 
@@ -1794,5 +1802,9 @@ public class KnowledgeBaseImpl
             receiveNodes = new ArrayList<>();
         }
         receiveNodes.add(node);
+    }
+
+    public Instant getPkgsLastUpdatedAt() {
+        return pkgsLastUpdatedAt;
     }
 }

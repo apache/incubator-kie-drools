@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core.impl;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import org.drools.core.definitions.ResourceTypePackageRegistry;
 import org.drools.core.impl.InternalKnowledgeBase;
 import org.drools.core.impl.KnowledgeBaseImpl;
 import org.kie.api.KieBase;
+import org.kie.api.definition.KiePackage;
 import org.kie.api.io.ResourceType;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieRuntimeFactory;
@@ -53,6 +55,8 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
     private static final Logger logger = LoggerFactory.getLogger( DMNRuntimeKBWrappingIKB.class );
 
     private final InternalKnowledgeBase        knowledgeBase;
+    private List<DMNProfile> dmnProfileList;
+    private Instant pkgsLastUpdatedAt;
 
     public DMNRuntimeKBWrappingIKB(InternalKnowledgeBase knowledgeBase) {
         this.knowledgeBase = knowledgeBase;
@@ -151,19 +155,29 @@ public class DMNRuntimeKBWrappingIKB implements DMNRuntimeKB {
 
     @Override
     public List<DMNProfile> getProfiles() {
-        // need list to preserve ordering
-        List<DMNProfile> profiles = new ArrayList<>();
-        knowledgeBase.getKiePackages().forEach(kpkg -> {
-            DMNPackageImpl dmnPkg = (DMNPackageImpl) ((InternalKnowledgePackage) kpkg).getResourceTypePackages().get(ResourceType.DMN);
-            if (dmnPkg != null) {
-                for (DMNProfile p : dmnPkg.getProfiles()) {
-                    if (!profiles.contains(p)) {
-                        profiles.add(p);
+        if(isProfileCacheInvalid()) {
+            // need list to preserve ordering
+            List<DMNProfile> profiles = new ArrayList<>();
+            knowledgeBase.getKiePackages().forEach(kpkg -> {
+                DMNPackageImpl dmnPkg = (DMNPackageImpl) ((InternalKnowledgePackage) kpkg)
+                    .getResourceTypePackages().get(ResourceType.DMN);
+                if (dmnPkg != null) {
+                    for (DMNProfile p : dmnPkg.getProfiles()) {
+                        if (!profiles.contains(p)) {
+                            profiles.add(p);
+                        }
                     }
                 }
-            }
-        });
-        return profiles;
+            });
+            pkgsLastUpdatedAt = knowledgeBase.getPkgsLastUpdatedAt();
+            dmnProfileList = profiles;
+        }
+        return dmnProfileList;
+    }
+
+    private boolean isProfileCacheInvalid() {
+        return dmnProfileList == null || dmnProfileList.isEmpty() || pkgsLastUpdatedAt == null
+            || !pkgsLastUpdatedAt.equals(knowledgeBase.getPkgsLastUpdatedAt());
     }
 
     @Override
