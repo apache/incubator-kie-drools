@@ -130,6 +130,14 @@ public class RhsParser {
                 .map( varDecl -> ( ObjectCreationExpr ) varDecl.getInitializer().get() )
                 .map( objCreat -> objCreat.getType().getNameAsString() )
                 .findFirst()
+                .orElseGet( () -> getClassNameFromDeclaration(consequenceExpr, actionArg) );
+    }
+
+    private String getClassNameFromDeclaration(MethodCallExpr consequenceExpr, Expression actionArg) {
+        return consequenceExpr.findAll( VariableDeclarator.class ).stream()
+                .filter( varDecl -> varDecl.getName().toString().equals( actionArg.toString() ))
+                .map( varDecl -> varDecl.getTypeAsString() )
+                .findFirst()
                 .orElseThrow( () -> new RuntimeException("Unknown variable: " + actionArg) );
     }
 
