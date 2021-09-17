@@ -31,6 +31,7 @@ import org.drools.testcoverage.common.util.KieBaseUtil;
 import org.drools.testcoverage.common.util.KieSessionTestConfiguration;
 import org.drools.testcoverage.common.util.TestParametersUtil;
 import org.junit.After;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -187,6 +188,7 @@ public class TimerAndCalendarWithRealTimeTest {
         assertEquals(2, list.size());
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testTimerWithNot() throws Exception {
 
@@ -206,6 +208,7 @@ public class TimerAndCalendarWithRealTimeTest {
         assertEquals(2, ksession.getFactCount());
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testTimerRemoval() throws InterruptedException {
         final String drl = "package org.drools.compiler.test\n" +
@@ -243,6 +246,7 @@ public class TimerAndCalendarWithRealTimeTest {
         assertEquals(0, list.size());
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test
     public void testCronFire() {
         // BZ-1059372
@@ -268,6 +272,7 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.fireAllRules();
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test
     public void testIntervalRuleInsertion() throws Exception {
         // DROOLS-620
@@ -303,6 +308,7 @@ public class TimerAndCalendarWithRealTimeTest {
         assertEquals(1, list.size());
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testHaltWithTimer() throws Exception {
         final String drl = "// fire once, for a String, create an Integer, halt!\n" +
@@ -328,6 +334,7 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.delete(handle);
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testHaltAfterSomeTimeThenRestart() throws Exception {
         final String drl = "package org.kie.test;" +
@@ -387,6 +394,7 @@ public class TimerAndCalendarWithRealTimeTest {
         assertEquals(asList(0, 0, 0, 5, 0, -5, 0, 0), list);
     }
 
+    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
         final String drl = "package org.kie.test;" +
