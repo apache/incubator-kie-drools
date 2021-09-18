@@ -27,6 +27,8 @@
     <module>kogito-api-incubation-predictions-services</module>
     <module>kogito-api-incubation-decisions</module>
     <module>kogito-api-incubation-decisions-services</module>
+    <module>kogito-api-incubation-rules</module>
+    <module>kogito-api-incubation-rules-services</module>
     <module>kogito-services</module>
     <module>kogito-timer</module>
     <module>kogito-legacy-api</module>
