@@ -36,7 +36,7 @@ public class KiePath implements Serializable {
         return of(s, IS_WINDOWS_SEPARATOR);
     }
 
-    public static KiePath of(String s, boolean isWindowsSeparator) {
+    static KiePath of(String s, boolean isWindowsSeparator) {
         String normalized = normalizePath(s, isWindowsSeparator);
         return normalized.isEmpty() ? ROOT_PATH : new KiePath( normalized );
     }
