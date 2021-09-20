@@ -28,7 +28,6 @@ import org.drools.modelcompiler.builder.PackageModel;
 import org.drools.modelcompiler.builder.PackageModelWriter;
 import org.drools.modelcompiler.builder.PackageSources;
 import org.drools.modelcompiler.builder.QueryModel;
-import org.drools.modelcompiler.builder.RuleWriter;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,18 +54,20 @@ public class KogitoPackageSources extends PackageSources {
             REFLECTION_PERMISSIONS +
             "    }\n" +
             "]";
+
     private GeneratedFile reflectConfigSource;
-    private Map<String, String> modelsByUnit = new HashMap<>();
     private Collection<RuleUnitDescription> ruleUnits;
     private String rulesFileName;
     private Map<String, Collection<QueryModel>> queries;
+
+    private String pkgName;
 
     public static KogitoPackageSources dumpSources(PackageModel pkgModel) {
         KogitoPackageSources sources = dumpPojos(pkgModel);
 
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
 
-        RuleWriter rules = PackageSources.writeRules(pkgModel, sources, packageModelWriter);
+        PackageSources.writeRules(pkgModel, sources, packageModelWriter);
         sources.rulesFileName = pkgModel.getRulesFileName();
 
         sources.ruleUnits = pkgModel.getRuleUnits();
@@ -78,12 +79,12 @@ public class KogitoPackageSources extends PackageSources {
             }
         }
 
-        sources.modelsByUnit.putAll(rules.getModelsByUnit());
         return sources;
     }
 
-    public static KogitoPackageSources dumpPojos(PackageModel pkgModel) {
+    private static KogitoPackageSources dumpPojos(PackageModel pkgModel) {
         KogitoPackageSources sources = new KogitoPackageSources();
+        sources.pkgName = pkgModel.getName();
 
         List<String> pojoClasses = new ArrayList<>();
         PackageModelWriter packageModelWriter = new PackageModelWriter(pkgModel);
@@ -109,8 +110,8 @@ public class KogitoPackageSources extends PackageSources {
         return pojoClasses.stream().collect(Collectors.joining(JSON_DELIMITER, JSON_PREFIX, JSON_SUFFIX));
     }
 
-    public Map<String, String> getModelsByUnit() {
-        return modelsByUnit;
+    public String getPackageName() {
+        return pkgName;
     }
 
     public Collection<RuleUnitDescription> getRuleUnits() {

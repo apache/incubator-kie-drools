@@ -29,6 +29,7 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.BreakStmt;
 import com.github.javaparser.ast.stmt.IfStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.stmt.SwitchEntry;
@@ -147,6 +148,7 @@ public class ProjectRuntimeGenerator {
         for (Map.Entry<String, BlockStmt> entry : modelMethod.getkSessionConfs().entrySet()) {
             StringLiteralExpr sessionName = new StringLiteralExpr(entry.getKey());
             SwitchEntry switchEntry = new SwitchEntry(new NodeList<>(sessionName), SwitchEntry.Type.STATEMENT_GROUP, new NodeList<>(entry.getValue()));
+            switchEntry.addStatement(new BreakStmt().setValue(null));
             switchStmt.getEntries().add(switchEntry);
         }
     }

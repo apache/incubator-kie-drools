@@ -20,17 +20,51 @@ import org.drools.core.common.InternalFactHandle;
 import org.drools.core.common.InternalWorkingMemory;
 import org.drools.core.reteoo.ObjectTypeConf;
 import org.drools.core.reteoo.ReteooFactHandleFactory;
+import org.drools.core.rule.TypeDeclaration;
 import org.drools.core.spi.FactHandleFactory;
 
 public class KogitoFactHandleFactory extends ReteooFactHandleFactory {
 
+    public KogitoFactHandleFactory() {
+        super();
+    }
+
+    public KogitoFactHandleFactory(long id, long counter) {
+        super(id, counter);
+    }
+
     @Override
-    public InternalFactHandle newFactHandle(long id, Object object, long recency, ObjectTypeConf conf, InternalWorkingMemory workingMemory, WorkingMemoryEntryPoint wmEntryPoint) {
-        return new KogitoDefaultFactHandle(id, object, recency, wmEntryPoint != null ? wmEntryPoint : workingMemory);
+    public InternalFactHandle newFactHandle(long id, Object object, long recency, ObjectTypeConf conf,
+            InternalWorkingMemory workingMemory, WorkingMemoryEntryPoint wmEntryPoint) {
+        if (conf != null && conf.isEvent()) {
+            TypeDeclaration type = conf.getTypeDeclaration();
+            long timestamp;
+            if (type != null && type.getTimestampExtractor() != null) {
+                timestamp = type.getTimestampExtractor().getLongValue(workingMemory,
+                        object);
+            } else {
+                timestamp = workingMemory.getTimerService().getCurrentTime();
+            }
+            long duration = 0;
+            if (type != null && type.getDurationExtractor() != null) {
+                duration = type.getDurationExtractor().getLongValue(workingMemory,
+                        object);
+            }
+            return new KogitoEventFactHandle(id, object, recency, timestamp, duration,
+                    wmEntryPoint != null ? wmEntryPoint : workingMemory);
+        }
+
+        return new KogitoDefaultFactHandle(id, object, recency,
+                wmEntryPoint != null ? wmEntryPoint : workingMemory);
     }
 
     @Override
     public FactHandleFactory newInstance() {
         return new KogitoFactHandleFactory();
+    }
+
+    @Override
+    public FactHandleFactory newInstance(long id, long counter) {
+        return new KogitoFactHandleFactory(id, counter);
     }
 }
