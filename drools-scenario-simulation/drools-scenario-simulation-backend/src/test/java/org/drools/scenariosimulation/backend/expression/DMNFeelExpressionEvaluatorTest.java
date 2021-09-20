@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -288,5 +289,11 @@ public class DMNFeelExpressionEvaluatorTest {
         assertFalse(expressionEvaluator.isStructuredInput(Set.class.getCanonicalName()));
         assertFalse(expressionEvaluator.isStructuredInput(Integer.class.getCanonicalName()));
         assertFalse(expressionEvaluator.isStructuredInput(String.class.getCanonicalName()));
+    }
+    
+    @Test
+    public void drools6589() {
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("now() > ?", LocalDateTime.of(2020, 9,6,11,34), LocalDateTime.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("today() > ?", LocalDate.of(2020, 9, 6), LocalDateTime.class).isSuccessful());
     }
 }
