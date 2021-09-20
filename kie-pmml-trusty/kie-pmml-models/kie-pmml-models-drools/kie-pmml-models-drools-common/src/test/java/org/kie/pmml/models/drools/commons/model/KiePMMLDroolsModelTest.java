@@ -18,6 +18,7 @@ package org.kie.pmml.models.drools.commons.model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -67,6 +68,11 @@ public class KiePMMLDroolsModelTest {
         @Override
         public Object evaluate(Object knowledgeBase, Map<String, Object> requestData) {
             return super.evaluate(knowledgeBase, requestData);
+        }
+
+        @Override
+        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
+            return new LinkedHashMap<>();
         }
 
         @Override

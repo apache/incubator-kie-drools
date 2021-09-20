@@ -18,7 +18,7 @@ package org.kie.pmml.commons.model.tuples;
 import java.util.Objects;
 
 /**
- * Class to represent a <b>Object/Weight (double)</b> tupla
+ * Class to represent a <b>Object/Weight (double)</b> tuple
  */
 public class KiePMMLValueWeight {
 

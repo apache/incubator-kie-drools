@@ -15,17 +15,18 @@
  */
 package org.kie.pmml.models.mining.model;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import org.kie.pmml.api.enums.MINING_FUNCTION;
+import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.model.HasNestedModels;
 import org.kie.pmml.commons.model.KiePMMLExtension;
 import org.kie.pmml.commons.model.KiePMMLModel;
-import org.kie.pmml.api.enums.MINING_FUNCTION;
-import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegment;
 import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 
@@ -35,6 +36,7 @@ import org.kie.pmml.models.mining.model.segmentation.KiePMMLSegmentation;
 public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.MINING_MODEL;
+    private static final long serialVersionUID = 1074200573309922605L;
 
     protected String algorithmName;
     protected boolean scorable = true;
@@ -51,6 +53,11 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
         throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return new LinkedHashMap<>();
     }
 
     @Override

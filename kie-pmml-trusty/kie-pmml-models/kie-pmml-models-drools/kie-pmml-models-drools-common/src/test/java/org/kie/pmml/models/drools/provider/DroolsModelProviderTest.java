@@ -19,6 +19,7 @@ package org.kie.pmml.models.drools.provider;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -370,6 +371,11 @@ public class DroolsModelProviderTest {
             this.transformationDictionary = transformationDictionary;
             this.model = model;
             this.fieldTypeMap = fieldTypeMap;
+        }
+
+        @Override
+        protected LinkedHashMap<String, Double> getProbabilityResultMap() {
+            return new LinkedHashMap<>();
         }
     }
 

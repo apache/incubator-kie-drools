@@ -38,8 +38,6 @@ public class KiePMMLRegressionClassificationTableTest {
     private static final DoubleUnaryOperator SECOND_ITEM_OPERATOR = aDouble -> 1 - aDouble;
     private static final String CASE_A = "caseA";
     private static final String CASE_B = "caseB";
-    private static final String PROBABILITY_FALSE = String.format("probability(%s)", CASE_A);
-    private static final String PROBABILITY_TRUE = String.format("probability(%s)", CASE_B);
     private final KiePMMLRegressionClassificationTable classificationTable;
     private final double firstTableResult;
     private final double secondTableResult;
@@ -69,11 +67,11 @@ public class KiePMMLRegressionClassificationTableTest {
         input.put("b", 32);
         Object retrieved = classificationTable.evaluateRegression(input);
         assertEquals(expectedResult, retrieved);
-        final Map<String, Object> outputFieldsMap = classificationTable.getOutputFieldsMap();
+        final Map<String, Double> probabilityResultMap = classificationTable.getProbabilityResultMap();
         double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
-        assertEquals(expectedDouble, outputFieldsMap.get(PROBABILITY_FALSE));
+        assertEquals(expectedDouble, probabilityResultMap.get(CASE_A), 0);
         expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
-        assertEquals(expectedDouble, outputFieldsMap.get(PROBABILITY_TRUE));
+        assertEquals(expectedDouble, probabilityResultMap.get(CASE_B), 0);
     }
 
     @Test
@@ -109,6 +107,8 @@ public class KiePMMLRegressionClassificationTableTest {
     private KiePMMLRegressionClassificationTable getKiePMMLRegressionClassificationTable() {
         KiePMMLRegressionClassificationTable toReturn = new KiePMMLRegressionClassificationTable() {
 
+            private static final long serialVersionUID = 8046624834036965711L;
+
             @Override
             public boolean isBinary() {
                 return true;
@@ -122,13 +122,6 @@ public class KiePMMLRegressionClassificationTableTest {
             @Override
             public Object getTargetCategory() {
                 return null;
-            }
-
-            @Override
-            protected void populateOutputFieldsMapWithProbability(Map.Entry<String, Double> predictedEntry,
-                                                                  LinkedHashMap<String, Double> probabilityMap) {
-                outputFieldsMap.put(PROBABILITY_FALSE, probabilityMap.get(CASE_A));
-                outputFieldsMap.put(PROBABILITY_TRUE, probabilityMap.get(CASE_B));
             }
 
         };

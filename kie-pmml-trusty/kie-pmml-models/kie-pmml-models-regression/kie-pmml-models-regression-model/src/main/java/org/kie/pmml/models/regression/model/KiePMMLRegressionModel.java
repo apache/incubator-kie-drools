@@ -16,6 +16,7 @@
 package org.kie.pmml.models.regression.model;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -25,6 +26,7 @@ import org.kie.pmml.commons.model.KiePMMLModel;
  */
 public abstract class KiePMMLRegressionModel extends KiePMMLModel {
 
+    private static final long serialVersionUID = -6870859552385880008L;
     protected KiePMMLRegressionTable regressionTable;
 
     public KiePMMLRegressionModel(String modelName) {
@@ -39,6 +41,11 @@ public abstract class KiePMMLRegressionModel extends KiePMMLModel {
     @Override
     public Map<String, Object> getOutputFieldsMap() {
         return regressionTable.getOutputFieldsMap();
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return regressionTable.getProbabilityResultMap();
     }
 
     public KiePMMLRegressionTable getRegressionTable() {

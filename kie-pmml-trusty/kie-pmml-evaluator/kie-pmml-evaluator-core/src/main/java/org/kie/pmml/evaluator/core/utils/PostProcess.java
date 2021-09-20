@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.DATA_TYPE;
-import org.kie.pmml.api.enums.RESULT_FEATURE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -52,9 +51,16 @@ public class PostProcess {
         executeTargets(toReturn, processingDTO);
         updateTargetValueType(model, toReturn);
         populateProcessingDTO(toReturn, model,  processingDTO);
-        populateOutputFields(toReturn, processingDTO,  model);
+        populateOutputFields(toReturn, processingDTO);
     }
 
+    /**
+     * Method used to populate a <code>ProcessingDTO</code> with values accumulated inside the given <code>KiePMMLModel</code>
+     * during evaluation
+     * @param pmml4Result
+     * @param model
+     * @param toPopulate
+     */
     static void populateProcessingDTO(final PMML4Result pmml4Result, final KiePMMLModel model, final ProcessingDTO toPopulate) {
         pmml4Result.getResultVariables().forEach((key, value) -> toPopulate.addKiePMMLNameValue(new KiePMMLNameValue(key, value)));
         final Map<String, Double> sortedByValue
@@ -67,6 +73,10 @@ public class PostProcess {
                                           LinkedHashMap::new));
         final List<String> orderedReasonCodes = new ArrayList<>(sortedByValue.keySet());
         toPopulate.addOrderedReasonCodes(orderedReasonCodes);
+        toPopulate.setAffinity(model.getAffinity());
+        toPopulate.setEntityId(model.getEntityId());
+        toPopulate.setPredictedDisplayValue(model.getPredictedDisplayValue());
+        toPopulate.setProbabilityMap(model.getProbabilityMap());
     }
 
     /**
@@ -119,11 +129,10 @@ public class PostProcess {
      * @param processingDTO
      */
     static void populateOutputFields(final PMML4Result toUpdate,
-                                     final ProcessingDTO processingDTO,
-                                     final KiePMMLModel model) {
+                                     final ProcessingDTO processingDTO) {
         logger.debug("populateOutputFields {} {}", toUpdate, processingDTO);
         for (KiePMMLOutputField outputField : processingDTO.getOutputFields()) {
-            Object variableValue = outputFieldToValue(outputField, processingDTO, model);
+            Object variableValue = outputField.evaluate(processingDTO);
             if (variableValue != null) {
                 String variableName = outputField.getName();
                 toUpdate.addResultVariable(variableName, variableValue);
@@ -132,44 +141,4 @@ public class PostProcess {
         }
     }
 
-    /**
-     * This method extract the value of the specified output field either from
-     * the processing DTO or the model, depending from the field type.
-     *
-     * @param outputField
-     * @param processingDTO
-     * @param model
-     *
-     * @return the correct value as Object if the field is implemented or null if
-     * the field is not implemented. It is up to the caller to handle the null case.
-     */
-    private static Object outputFieldToValue(KiePMMLOutputField outputField, ProcessingDTO processingDTO, KiePMMLModel model) {
-        RESULT_FEATURE resultFeature = RESULT_FEATURE.getOrDefault(outputField.getResultFeature());
-        switch (resultFeature) {
-            case PREDICTED_VALUE:
-                return outputField.evaluatePredictedValue(processingDTO);
-
-            case TRANSFORMED_VALUE:
-                return outputField.evaluateTransformedValue(processingDTO);
-
-            case REASON_CODE:
-                return outputField.evaluateReasonCodeValue(processingDTO);
-
-            case PREDICTED_DISPLAY_VALUE:
-                return model.getPredictedDisplayValue();
-
-            case ENTITY_ID:
-            case CLUSTER_ID:
-                return model.getEntityId();
-
-            case AFFINITY:
-            case ENTITY_AFFINITY:
-            case CLUSTER_AFFINITY:
-                return model.getAffinity();
-
-            default:
-                logger.warn("OutputField with feature \"{}\" is currently not implemented and will be ignored.", resultFeature.getName());
-                return null;
-        }
-    }
 }

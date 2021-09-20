@@ -39,6 +39,7 @@ import org.dmg.pmml.OutputField;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.ParameterField;
 import org.dmg.pmml.ResultFeature;
+import org.dmg.pmml.ScoreDistribution;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.Target;
@@ -77,8 +78,7 @@ public class PMMLModelTestUtils {
     }
 
     public static TransformationDictionary getTransformationDictionary() {
-        TransformationDictionary toReturn = new TransformationDictionary();
-        return toReturn;
+        return new TransformationDictionary();
     }
 
     public static MiningSchema getMiningSchema(List<MiningField> miningFields) {
@@ -391,6 +391,23 @@ public class PMMLModelTestUtils {
         final SimpleSetPredicate.BooleanOperator[] values = SimpleSetPredicate.BooleanOperator.values();
         int rndIndex = new Random().nextInt(values.length);
         return values[rndIndex];
+    }
+
+    public static List<ScoreDistribution> getRandomPMMLScoreDistributions(boolean withProbability) {
+        List<Double> probabilities = withProbability ? Arrays.asList(0.1, 0.3, 0.6) : Arrays.asList(null, null, null);
+        return IntStream.range(0, 3)
+                .mapToObj(i -> getRandomPMMLScoreDistribution(probabilities.get(i)))
+                .collect(Collectors.toList());
+    }
+
+    public static ScoreDistribution getRandomPMMLScoreDistribution(Double probability) {
+        Random random = new Random();
+        ScoreDistribution toReturn = new ScoreDistribution();
+        toReturn.setValue(RandomStringUtils.random(6, true, false));
+        toReturn.setRecordCount(random.nextInt(100));
+        toReturn.setConfidence((double) random.nextInt(1) / 100);
+        toReturn.setProbability(probability);
+        return toReturn;
     }
 
     public static List<String> getStringObjects(Array.Type arrayType, int size) {

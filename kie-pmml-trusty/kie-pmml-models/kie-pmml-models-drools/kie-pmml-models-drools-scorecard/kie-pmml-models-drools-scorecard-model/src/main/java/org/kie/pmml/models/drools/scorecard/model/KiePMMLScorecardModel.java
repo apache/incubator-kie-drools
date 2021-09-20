@@ -15,10 +15,9 @@
  */
 package org.kie.pmml.models.drools.scorecard.model;
 
+import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.commons.model.KiePMMLExtension;
@@ -27,6 +26,7 @@ import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
 
     public static final PMML_MODEL PMML_MODEL_TYPE = PMML_MODEL.SCORECARD_MODEL;
+    private static final long serialVersionUID = 3726828657243287195L;
 
     protected KiePMMLScorecardModel(String modelName, List<KiePMMLExtension> extensions) {
         super(modelName, extensions);
@@ -41,9 +41,8 @@ public class KiePMMLScorecardModel extends KiePMMLDroolsModel {
     }
 
     @Override
-    public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        final PMML4Result toReturn = (PMML4Result) super.evaluate(knowledgeBase, requestData);
-        return toReturn;
+    protected LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return new LinkedHashMap<>();
     }
 
     public static class Builder extends KiePMMLDroolsModel.Builder<KiePMMLScorecardModel> {

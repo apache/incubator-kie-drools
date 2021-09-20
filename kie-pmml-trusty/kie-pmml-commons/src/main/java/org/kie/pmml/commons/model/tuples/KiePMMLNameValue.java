@@ -18,7 +18,7 @@ package org.kie.pmml.commons.model.tuples;
 import java.util.Objects;
 
 /**
- * Class to represent a <b>name/value (object)</b> tupla
+ * Class to represent a <b>name/value (object)</b> tuple
  */
 public class KiePMMLNameValue {
 

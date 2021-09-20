@@ -5,7 +5,7 @@ import java.util.Objects;
 import org.kie.pmml.api.enums.OP_TYPE;
 
 /**
- * Class to represent a <b>name/operation type</b> tupla
+ * Class to represent a <b>name/operation type</b> tuple
  */
 public class KiePMMLNameOpType {
 

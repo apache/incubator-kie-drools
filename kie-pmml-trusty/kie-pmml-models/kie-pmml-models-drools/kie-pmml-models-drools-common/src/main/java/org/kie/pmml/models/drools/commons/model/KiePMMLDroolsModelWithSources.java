@@ -16,6 +16,7 @@
 package org.kie.pmml.models.drools.commons.model;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -26,6 +27,7 @@ import org.kie.pmml.commons.HasRule;
  */
 public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements HasRule {
 
+    private static final long serialVersionUID = -168095076511604775L;
     protected Map<String, String> sourcesMap;
     protected Map<String, String> rulesSourceMap;
     private final String kmodulePackageName;
@@ -45,12 +47,17 @@ public class KiePMMLDroolsModelWithSources extends KiePMMLDroolsModel implements
 
     @Override
     public Object evaluate(final Object knowledgeBase, Map<String, Object> requestData) {
-        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual evaluation");
+        throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual evaluation");
     }
 
     @Override
     public Map<String, Object> getOutputFieldsMap() {
-        throw new KiePMMLException("KiePMMLRegressionModelWithSources. is not meant to be used for actual usage");
+        throw new KiePMMLException("KiePMMLDroolsModelWithSources. is not meant to be used for actual usage");
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        throw new KiePMMLException("KiePMMLDroolsModelWithSources is not meant to be used for actual usage");
     }
 
     @Override

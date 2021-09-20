@@ -84,8 +84,9 @@ public class KiePMMLTreeModelFactory {
                                                                                  KIE_PMML_TREE_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
+        final Double missingValuePenalty =  model.getMissingValuePenalty() != null ? model.getMissingValuePenalty().doubleValue() : null;
         final KiePMMLNodeFactory.NodeNamesDTO nodeNamesDTO = new KiePMMLNodeFactory.NodeNamesDTO(model.getNode(),
-                                                                                                 createNodeClassName(), null);
+                                                                                                 createNodeClassName(), null, missingValuePenalty);
         String fullNodeClassName = packageName + "." + nodeNamesDTO.nodeClassName;
         final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary,
                                                                   model.getLocalTransformations());

@@ -16,6 +16,7 @@
 package  org.kie.pmml.models.tree.model;
 
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
 
@@ -25,7 +26,8 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     private static final long serialVersionUID = -5158590062736070465L;
 
-    protected Function<Map<String, Object>, Object> nodeFunction;
+    protected Function<Map<String, Object>, KiePMMLNodeResult> nodeFunction;
+    private LinkedHashMap<String, Double> probabilityResultMap;
 
     public KiePMMLTreeModel(String modelName) {
         super(modelName, Collections.emptyList());
@@ -33,7 +35,14 @@ public class KiePMMLTreeModel extends KiePMMLModel {
 
     @Override
     public Object evaluate(final Object knowledgeBase, final Map<String, Object> requestData) {
-        return nodeFunction.apply(requestData);
+        KiePMMLNodeResult kiePMMLNodeResult = nodeFunction.apply(requestData);
+        probabilityResultMap = kiePMMLNodeResult.getProbabilityMap();
+        return kiePMMLNodeResult.getScore();
+    }
+
+    @Override
+    public LinkedHashMap<String, Double> getProbabilityResultMap() {
+        return probabilityResultMap;
     }
 
 }

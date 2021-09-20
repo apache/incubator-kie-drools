@@ -38,7 +38,6 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
-import org.dmg.pmml.ResultFeature;
 import org.dmg.pmml.regression.RegressionModel;
 import org.dmg.pmml.regression.RegressionTable;
 import org.kie.pmml.api.enums.OP_TYPE;
@@ -51,7 +50,6 @@ import org.kie.pmml.models.regression.model.tuples.KiePMMLTableSourceCategory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.kie.pmml.commons.Constants.MISSING_BODY_TEMPLATE;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMethod;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
@@ -112,7 +110,6 @@ public class KiePMMLRegressionTableClassificationFactory {
                 REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
         final OP_TYPE opTypePmml = opType != null ? OP_TYPE.byName(opType.value()) : null;
         populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
-        populateOutputFieldsMapWithProbability(tableTemplate, outputFields);
         populateIsBinaryMethod(opType, regressionTablesMap.size(), tableTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, tableTemplate.getName())));
@@ -158,48 +155,6 @@ public class KiePMMLRegressionTableClassificationFactory {
                     NodeList.nodeList(new StringLiteralExpr(tableSourceCategory.getCategory()), objectCreationExpr);
             body.addStatement(new MethodCallExpr(new NameExpr("categoryTableMap"), "put", expressions));
         });
-    }
-
-    /**
-     * Add entries <b>output field/output value</b> inside <b>populateOutputFieldsMap</b> method
-     * @param tableTemplate
-     * @param outputFields
-     */
-    static void populateOutputFieldsMapWithProbability(final ClassOrInterfaceDeclaration tableTemplate,
-                                                final List<OutputField> outputFields) {
-        MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("populateOutputFieldsMapWithProbability").get(0);
-        BlockStmt body =
-                methodDeclaration.getBody().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_BODY_TEMPLATE, "populateOutputFieldsMapWithProbability")));
-        populateOutputFieldsMapWithProbability(body, outputFields);
-    }
-
-
-    /**
-     * Add entries <b>output field/output value</b> inside <b>populateOutputFieldsMapWithProbability</b> method
-     * @param body
-     * @param outputFields
-     */
-    static void populateOutputFieldsMapWithProbability(final BlockStmt body,
-                                                               final List<OutputField> outputFields) {
-        outputFields.stream()
-                .filter(outputField -> ResultFeature.PROBABILITY.equals(outputField.getResultFeature()))
-                .forEach(outputField -> {
-                    StringLiteralExpr key = new StringLiteralExpr(outputField.getName().getValue());
-                    Expression value = null;
-                    if (outputField.getValue() != null) {
-                        NodeList<Expression> expressions =
-                                NodeList.nodeList(new StringLiteralExpr(outputField.getValue().toString()));
-                        value = new MethodCallExpr(new NameExpr("probabilityMap"), "get", expressions);
-                    } else if (outputField.getTargetField() != null) {
-                        NodeList<Expression> expressions =
-                                NodeList.nodeList(new StringLiteralExpr(outputField.getTargetField().getValue()));
-                        value = new MethodCallExpr(new NameExpr("probabilityMap"), "get", expressions);
-                    }
-                    if (value != null) {
-                        NodeList<Expression> expressions = NodeList.nodeList(key, value);
-                        body.addStatement(new MethodCallExpr(new NameExpr("outputFieldsMap"), "put", expressions));
-                    }
-                });
     }
 
     /**

@@ -20,10 +20,10 @@ import java.util.Map;
 import org.drools.core.util.StringUtils;
 import org.kie.api.KieBase;
 import org.kie.api.pmml.PMML4Result;
-import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.enums.PMML_MODEL;
-import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
+import org.kie.pmml.api.exceptions.KiePMMLInternalException;
 import org.kie.pmml.api.runtime.PMMLContext;
+import org.kie.pmml.evaluator.api.exceptions.KiePMMLModelException;
 import org.kie.pmml.evaluator.core.executor.PMMLModelEvaluator;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionClassificationTable;
 import org.kie.pmml.models.regression.model.KiePMMLRegressionModel;
@@ -60,7 +60,6 @@ public class PMMLRegressionModelEvaluator implements PMMLModelEvaluator<KiePMMLR
         toReturn.addResultVariable(targetField, result);
         toReturn.setResultObjectName(targetField);
         toReturn.setResultCode(OK.getName());
-        model.getOutputFieldsMap().forEach(toReturn::addResultVariable);
         return toReturn;
     }
 
