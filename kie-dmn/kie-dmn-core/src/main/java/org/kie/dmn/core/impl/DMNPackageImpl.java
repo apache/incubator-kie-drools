@@ -42,7 +42,9 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
     private Map<String, DMNModel> models = new HashMap<>(  );
     private List<DMNProfile> profiles = new ArrayList<>();
 
-    // adding something here? don't forget to update merge of DMNWeaverService
+    // adding something here? don't forget to update:
+    // 1. merge of DMNWeaverService
+    // 2. for Business Central and Workbench WBCommonServicesBackend scope, the #readExternal below (in-memory identity cloning for BC/WB purposes, RHDM-969)
 
     public DMNPackageImpl() {
         this("");
@@ -126,6 +128,7 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
         if (in instanceof DroolsObjectInputStream && (( DroolsObjectInputStream ) in).isCloning()) {
             DMNPackageImpl clone = (( DroolsObjectInputStream ) in).getCloneByKey( this.namespace );
             this.models = clone.models;
+            this.profiles = clone.profiles;
         } else {
             this.models = ( Map<String, DMNModel> ) in.readObject();
         }
@@ -139,5 +142,7 @@ public class DMNPackageImpl implements DMNPackage, Externalizable {
         return profiles;
     }
 
-    // adding something here? don't forget to update merge of DMNWeaverService
+    // adding something here? don't forget to update:
+    // 1. merge of DMNWeaverService
+    // 2. for Business Central and Workbench WBCommonServicesBackend scope, the #readExternal in this class (in-memory identity cloning for BC/WB purposes, RHDM-969)
 }
