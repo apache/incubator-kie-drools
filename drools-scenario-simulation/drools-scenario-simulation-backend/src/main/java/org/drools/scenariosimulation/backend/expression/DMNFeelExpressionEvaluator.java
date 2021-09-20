@@ -78,7 +78,7 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
 
     @Override
     protected Object internalLiteralEvaluation(String raw, String className) {
-        return executeAndVerifyErrors(feel -> feel.evaluate(raw));
+        return executeAndVerifyErrors(FEEL::evaluate);
     }
 
     @Override
