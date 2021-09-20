@@ -92,6 +92,10 @@ public class DMNFeelExpressionEvaluator extends AbstractExpressionEvaluator {
                 new IllegalArgumentException("Error during evaluation: " + l.stream().map(FEELEvent::getMessage).collect(Collectors.joining(", "))));
     }
     
+    /**
+     * Perform compilation and evaluation of FEEL Unary Tests,
+     * implementing the command pattern of {@link DMNFeelExpressionEvaluator#executeAndVerifyErrors(Function)}
+     */
     private static class EvaluateUTCommand implements Function<FEEL, Either<List<FEELEvent>, Boolean>> {
         
         private final String rawExpression;
