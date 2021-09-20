@@ -32,7 +32,9 @@ How to retest this PR or trigger a specific build:
 
 * for a <b>pull request build</b> please add comment: <b>Jenkins retest this</b>
 * for a <b>specific pull request build</b> please add comment: <b>Jenkins (re)run [optaplanner|kogito-apps|kogito-examples|optaplanner-quickstarts|optaweb-employee-rostering|optaweb-vehicle-routing] tests</b>
-* for a <b>full downstream build</b> please add comment: <b>Jenkins run fdb</b>
+* for a <b>full downstream build</b> 
+  * for <b>jenkins</b> job: please add comment: <b>Jenkins run fdb</b>
+  * for <b>github actions</b> job: add the label `run_fdb`
 * for a <b>compile downstream build</b> please add comment: <b>Jenkins run cdb</b>
 * for a <b>full production downstream build</b> please add comment: <b>Jenkins execute product fdb</b>
 * for an <b>upstream build</b> please add comment: <b>Jenkins run upstream</b>

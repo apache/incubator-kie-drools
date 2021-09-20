@@ -3,7 +3,7 @@ name: Build Chain
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [labeled]
     branches:
       - main
       - 8.*
@@ -17,8 +17,9 @@ on:
 
 jobs:
   build-chain:
+    if: contains(github.event.pull_request.labels.*.name, 'run_fdb')
     concurrency:
-      group: pull_request-${{ github.head_ref }}
+      group: fdb-${{ github.head_ref }}
       cancel-in-progress: true
     strategy:
       matrix:
@@ -27,7 +28,7 @@ jobs:
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}
-    name: Maven Build
+    name: Full downstream build
     steps:
       - name: Free disk space
         if: ${{ matrix.os == 'ubuntu-latest' }}
