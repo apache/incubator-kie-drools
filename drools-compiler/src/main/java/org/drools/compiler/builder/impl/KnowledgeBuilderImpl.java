@@ -1258,10 +1258,36 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 }
 
                 if (!rulesToBeRemoved.isEmpty()) {
+                    rulesToBeRemoved.addAll(findChildrenRulesToBeRemoved(packageDescr, rulesToBeRemoved));
                     kBase.removeRules(rulesToBeRemoved);
                 }
             });
         }
+    }
+
+    private Collection<RuleImpl> findChildrenRulesToBeRemoved(PackageDescr packageDescr, Collection<RuleImpl> rulesToBeRemoved) {
+        Collection<String> childrenRuleNamesToBeRemoved = new HashSet<>();
+        Collection<RuleImpl> childrenRulesToBeRemoved = new HashSet<>();
+        for (RuleImpl rule : rulesToBeRemoved) {
+            if (rule.hasChildren()) {
+                for (RuleImpl child : rule.getChildren()) {
+                    if (!rulesToBeRemoved.contains(child)) {
+                        // if a rule has a child rule not marked to be removed ...
+                        childrenRulesToBeRemoved.add(child);
+                        childrenRuleNamesToBeRemoved.add(child.getName());
+                        // ... remove the child rule but also add it back to the PackageDescr in order to readd it when also the parent rule will be readded ...
+                        RuleDescr toBeReadded = new RuleDescr(child.getName());
+                        toBeReadded.setNamespace(packageDescr.getNamespace());
+                        packageDescr.addRule(toBeReadded);
+                    }
+                }
+            }
+        }
+        // ... add a filter to the PackageDescr to also consider the readded children rules as updated together with the parent one
+        if (!childrenRuleNamesToBeRemoved.isEmpty()) {
+            ((CompositePackageDescr) packageDescr).addFilter((type, pkgName, assetName) -> childrenRuleNamesToBeRemoved.contains(assetName) ? AssetFilter.Action.UPDATE : AssetFilter.Action.DO_NOTHING);
+        }
+        return childrenRulesToBeRemoved;
     }
 
     private Map<String, RuleBuildContext> buildRuleBuilderContexts(List<RuleDescr> rules, PackageRegistry pkgRegistry) {
