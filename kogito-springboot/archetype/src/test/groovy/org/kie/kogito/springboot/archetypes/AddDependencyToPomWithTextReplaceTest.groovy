@@ -28,7 +28,7 @@ class AddDependencyToPomWithTextReplaceTest extends Specification {
 
     def "Add a list of new dependencies to original pom.xml"() {
         given:
-        String[] artifacts = "cloudevents,persistence,monitoring".split(",")
+        String[] artifacts = "messaging,persistence,monitoring".split(",")
         def dependencies = new StringBuilder()
         artifacts.each {
             dependencies <<

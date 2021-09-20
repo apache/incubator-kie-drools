@@ -16,8 +16,12 @@ In this module you will find all the add-ons supported by the community for Quar
 | Mail                 | kogito-addons-quarkus-mail | 1.6.0 |
 | Monitoring Elastic   | kogito-addons-quarkus-monitoring-elastic | 1.2.0 |
 | Monitoring Prometheus | kogito-addons-quarkus-monitoring-prometheus | 0.1.0 |
-| Persistence ISPN Health | kogito-addons-quarkus-persistence-infinispan-health | 0.8.0 |
+| Persistence FileSystem | kogito-addons-quarkus-persistence-filesystem | 1.12.0 |
+| Persistence Infinispan | kogito-addons-quarkus-persistence-infinispan | 1.12.0  |
+| Persistence JDBC       | kogito-addons-quarkus-persistence-jdbc       | 1.12.0  |
 | Persistence Kafka       | kogito-addons-quarkus-persistence-kafka | 1.4.0 |
+| Persistence MongoDB    | kogito-addons-quarkus-persistence-mongodb    | 1.12.0 |
+| Persistence Postgresql | kogito-addons-quarkus-persistence-postgresql | 1.12.0  |
 | Process Management      | kogito-addons-quarkus-process-management | 0.3.0 |
 | Process SVG             | kogito-addons-quarkus-process-svg | 1.0.0 |
 | Task Management         | kogito-addons-quarkus-task-management | 1.4.0 |

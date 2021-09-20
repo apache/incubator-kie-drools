@@ -1,0 +1,12 @@
+name: Kogito Add-On Jobs Service
+description: Kogito Add-On to interact with Kogito Jobs Service
+metadata:
+  keywords:
+    - kogito
+    - process
+    - bpmn
+    - jobs
+  # TODO: add processes guide
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

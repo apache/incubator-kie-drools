@@ -1,0 +1,12 @@
+name: Kogito Add-On Events MongoDB
+description: Kogito Add-On for storing Kogito events log on MongoDB for later pushing via Debezium, allowing Outbox pattern implementation.
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - mongodb
+    - events
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

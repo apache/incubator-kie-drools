@@ -1,0 +1,10 @@
+name: Kogito Add-On Monitoring Prometheus
+description: Kogito Add-On for Prometheus Monitoring
+metadata:
+  keywords:
+    - kogito
+    - prometheus
+    - monitoring
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

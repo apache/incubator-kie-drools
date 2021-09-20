@@ -1,0 +1,12 @@
+name: Kogito Add-On Events Process
+description: Kogito Add-On for Processes Events
+metadata:
+  keywords:
+    - kogito
+    - bpmn
+    - process
+    - events
+  # TODO: add process guide
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

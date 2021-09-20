@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence Kafka
+description: Kogito Add-On support for persistence on Kafka
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - kafka
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

@@ -11,8 +11,8 @@
 
   <artifactId>kogito-addons-quarkus-knative-parent</artifactId>
   <packaging>pom</packaging>
-  <name>Kogito :: Add-Ons :: Quarkus :: Knative</name>
-  <description>Parent module for Kogito Quarkus Knative Addon</description>
+  <name>Kogito Add-On Knative - Parent</name>
+  <description>Parent module for Kogito Quarkus Knative Add-Ons</description>
   <modules>
     <module>eventing</module>
   </modules>

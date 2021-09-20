@@ -9,11 +9,6 @@ The following table lists all the add-ons, independent of runtime implementation
 
 | Add-On Description     | Artifact ID                          | Since               |
 |------------------------|--------------------------------------|---------------------|
-| Persistence FileSystem | kogito-addons-persistence-filesystem | 0.10.0              |
-| Persistence Infinispan | kogito-addons-persistence-infinispan | 0.3.0               |
-| Persistence JDBC       | kogito-addons-persistence-jdbc       | 1.8.0               |
-| Persistence MongoDB    | kogito-addons-persistence-mongodb    | 0.15.0              |
-| Persistence Postgresql | kogito-addons-persistence-postgresql | 1.6.0               |
 | Human Task Predictions | kogito-addons-human-task-prediction-api | 0.7.0            |
 
 ### Quarkus Implementation

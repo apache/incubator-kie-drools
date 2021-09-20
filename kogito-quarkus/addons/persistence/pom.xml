@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <parent>
     <artifactId>kogito-addons-quarkus-parent</artifactId>
@@ -10,13 +10,17 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>kogito-addons-quarkus-persistence-parent</artifactId>
-  <name>Kogito :: Add-Ons :: Quarkus :: Persistence</name>
+  <name>Kogito Add-On Quarkus Persistence</name>
   <description>Kogito Persistence Addons for Quarkus Runtime</description>
   <packaging>pom</packaging>
 
   <modules>
-    <module>infinispan-health</module>
+    <module>infinispan</module>
     <module>kafka</module>
+    <module>filesystem</module>
+    <module>jdbc</module>
+    <module>mongodb</module>
+    <module>postgresql</module>
   </modules>
 
 </project>

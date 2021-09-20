@@ -12,9 +12,9 @@
   <artifactId>kogito-addons-deprecated-parent</artifactId>
   <packaging>pom</packaging>
   <name>Kogito :: Add-Ons :: Deprecated</name>
-  
+
   <description>Home for deprecated addons that will be discontinued in future releases. Do not use these dependencies.</description>
-  
+
   <modules>
     <module>kogito-event-driven-decisions-common</module>
     <module>kogito-event-driven-decisions-quarkus-addon</module>
@@ -49,5 +49,5 @@
       </modules>
     </profile>
   </profiles>
-  
+
 </project>

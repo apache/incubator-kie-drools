@@ -1,0 +1,18 @@
+name: Kogito Add-On Knative Eventing
+description: Adds support for CloudEvents on top of HTTP and Knative env vars configuration.
+metadata:
+  keywords:
+    - kogito
+    - processes
+    - decisions
+    - rules
+    - bpmn
+    - drl
+    - dmn
+    - knative
+    - eventing
+    - cloudevents
+  # TODO: add processes guide
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

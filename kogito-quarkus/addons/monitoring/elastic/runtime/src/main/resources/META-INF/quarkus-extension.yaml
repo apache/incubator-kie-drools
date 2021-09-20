@@ -1,0 +1,10 @@
+name: Kogito Add-On Monitoring Elasticsearch
+description: Kogito Add-On for Elasticsearch Monitoring
+metadata:
+  keywords:
+    - kogito
+    - elasticsearch
+    - monitoring
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

@@ -1,0 +1,10 @@
+name: Kogito Add-On Process Management
+description: Kogito Process Management REST API
+metadata:
+  keywords:
+    - kogito
+    - process
+    - management
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

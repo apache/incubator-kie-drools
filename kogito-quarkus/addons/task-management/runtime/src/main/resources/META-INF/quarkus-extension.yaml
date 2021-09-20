@@ -1,0 +1,10 @@
+name: Kogito Add-On Task Management
+description: Kogito Add-On Task Management REST API
+metadata:
+  keywords:
+    - kogito
+    - process
+    - task
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence Infinispan
+description: Kogito Add-On support for persistence on Infinispan
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - infinispan
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

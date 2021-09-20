@@ -29,6 +29,11 @@
       <artifactId>kogito-quarkus-processes-deployment</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.kie.kogito</groupId>
+      <artifactId>kogito-addons-quarkus-messaging-deployment</artifactId>
+      <version>${project.version}</version>
+    </dependency>
     <!-- Quarkus Deployment Extensions Dependencies -->
     <dependency>
       <groupId>io.quarkus</groupId>

@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence PostgreSQL
+description: Kogito Add-On support for persistence on PostgreSQL
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - postgresql
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

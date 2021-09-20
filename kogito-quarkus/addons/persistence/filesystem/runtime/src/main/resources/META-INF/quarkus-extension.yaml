@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence FileSystem
+description: Kogito Add-On support for persistence on FileSystem
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - filesystem
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

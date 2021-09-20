@@ -1,0 +1,14 @@
+name: Kogito Add-On User Tasks e-mail
+description: Kogito Add-On for e-mail support on Human Tasks.
+metadata:
+  keywords:
+    - kogito
+    - processes
+    - mail
+    - e-mail
+    - tasks
+    - notification
+  # TODO: add processes guide
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

@@ -1,0 +1,11 @@
+name: Kogito Add-On Persistence MongoDB
+description: Kogito Add-On support for persistence on MongoDB
+metadata:
+  keywords:
+    - kogito
+    - persistence
+    - mongodb
+    - process
+  guide: https://quarkus.io/guides/kogito
+  categories:
+    - "business-automation"

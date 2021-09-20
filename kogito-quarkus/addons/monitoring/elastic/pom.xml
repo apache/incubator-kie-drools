@@ -1,30 +1,19 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xmlns="http://maven.apache.org/POM/4.0.0"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
   <parent>
-    <artifactId>kogito-addons-quarkus-monitoring-parent</artifactId>
     <groupId>org.kie.kogito</groupId>
+    <artifactId>kogito-addons-quarkus-monitoring-parent</artifactId>
     <version>2.0.0-SNAPSHOT</version>
   </parent>
-  <modelVersion>4.0.0</modelVersion>
+  <artifactId>kogito-addons-quarkus-monitoring-elastic-parent</artifactId>
+  <packaging>pom</packaging>
+  <name>Kogito Add-On Monitoring Elastic - Parent</name>
+  <description>Kogito Quarkus Monitoring Elastic Parent</description>
 
-  <artifactId>kogito-addons-quarkus-monitoring-elastic</artifactId>
-  <name>Kogito :: Add-Ons :: Monitoring Elastic Quarkus</name>
-  <description>Monitoring Elastic Quarkus</description>
-
-  <dependencies>
-    <dependency>
-      <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-monitoring-elastic</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.kogito</groupId>
-      <artifactId>kogito-addons-quarkus-monitoring-core</artifactId>
-    </dependency>
-  </dependencies>
+  <modules>
+    <module>runtime</module>
+    <module>deployment</module>
+  </modules>
 </project>

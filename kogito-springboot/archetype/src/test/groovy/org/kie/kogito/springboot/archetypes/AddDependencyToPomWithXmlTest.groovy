@@ -40,7 +40,7 @@ class AddDependencyToPomWithXmlTest extends Specification {
 
         when:
         Node newDep = new Node(null, "dependency",
-                [groupId: "org.kie.kogito", artifactId: "kogito-addons-springboot-cloudevents", version: "2.0.0-SNAPSHOT"])
+                [groupId: "org.kie.kogito", artifactId: "kogito-addons-springboot-messaging", version: "2.0.0-SNAPSHOT"])
         pomXml.dependencies[0].children().add(0, newDep)
 
         then:
@@ -49,7 +49,7 @@ class AddDependencyToPomWithXmlTest extends Specification {
 
     def "Add a list of new dependencies to original pom.xml"() {
         given:
-        String[] artifacts = "cloudevents,persistence,monitoring".split(",")
+        String[] artifacts = "messaging,persistence,monitoring".split(",")
         Node pomXml = new XmlParser().parse(this.getClass().getResourceAsStream(pomFile))
 
         when:
