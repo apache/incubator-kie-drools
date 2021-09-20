@@ -33,15 +33,19 @@ public class KiePath implements Serializable {
     }
 
     public static KiePath of(String s) {
-        String normalized = normalizePath(s);
+        return of(s, IS_WINDOWS_SEPARATOR);
+    }
+
+    public static KiePath of(String s, boolean isWindowsSeparator) {
+        String normalized = normalizePath(s, isWindowsSeparator);
         return normalized.isEmpty() ? ROOT_PATH : new KiePath( normalized );
     }
 
-    private static String normalizePath(String s) {
+    private static String normalizePath(String s, boolean isWindowsSeparator) {
         if (s == null) {
             throw new NullPointerException("A path cannot be null");
         }
-        return trimTrailingSeparator( IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s );
+        return trimTrailingSeparator( isWindowsSeparator ? s.replace('\\', '/') : s );
     }
 
     public KiePath getParent() {

@@ -14,37 +14,51 @@
 
 package org.kie.memorycompiler.resources;
 
-import java.io.File;
-
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(Parameterized.class)
 public class KiePathTest {
+
+    protected final boolean isWindowsSeparator;
+    protected final String fileSeparator;
+
+    public KiePathTest( boolean isWindowsSeparator ) {
+        this.isWindowsSeparator = isWindowsSeparator;
+        this.fileSeparator = isWindowsSeparator ? "\\" : "/";
+    }
+
+    @Parameterized.Parameters(name = "{0}")
+    public static Object[] params() {
+        return new Object[] { true, false };
+    }
 
     @Test
     public void testAsString() throws Exception {
-        assertEquals("src", KiePath.of("src").asString());
-        assertEquals("src/test", KiePath.of("src" + File.separator + "test").asString());
-        assertEquals("src/test", KiePath.of("src" + File.separator + "test").asString());
-        assertEquals("src/test/folder", KiePath.of("src" + File.separator + "test" + File.separator + "folder").asString());
+        assertEquals("src", KiePath.of("src", isWindowsSeparator).asString());
+        assertEquals("src/test", KiePath.of("src" + fileSeparator + "test", isWindowsSeparator).asString());
+        assertEquals("src/test", KiePath.of("src" + fileSeparator + "test", isWindowsSeparator).asString());
+        assertEquals("src/test/folder", KiePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).asString());
     }
 
     @Test
     public void testParent() throws Exception {
-        assertEquals("src/test", KiePath.of("src" + File.separator + "test" + File.separator + "folder").getParent().asString());
-        assertEquals("src", KiePath.of("src" + File.separator + "test" + File.separator + "folder").getParent().getParent().asString());
-        assertEquals("", KiePath.of("src" + File.separator + "test" + File.separator + "folder").getParent().getParent().getParent().asString());
+        assertEquals("src/test", KiePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().asString());
+        assertEquals("src", KiePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().getParent().asString());
+        assertEquals("", KiePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getParent().getParent().getParent().asString());
     }
 
     @Test
     public void testResolve() throws Exception {
-        assertEquals("src/test/folder", KiePath.of("src" + File.separator + "test").resolve("folder").asString());
-        assertEquals("src/test/folder/subfolder", KiePath.of("src" + File.separator + "test").resolve("folder" + File.separator + "subfolder").asString());
+        assertEquals("src/test/folder", KiePath.of("src" + fileSeparator + "test", isWindowsSeparator).resolve("folder").asString());
+        assertEquals("src/test/folder/subfolder", KiePath.of("src" + fileSeparator + "test", isWindowsSeparator).resolve(KiePath.of("folder" + fileSeparator + "subfolder", isWindowsSeparator)).asString());
     }
 
     @Test
     public void testFileName() throws Exception {
-        assertEquals("folder", KiePath.of("src" + File.separator + "test" + File.separator + "folder").getFileName());
+        assertEquals("folder", KiePath.of("src" + fileSeparator + "test" + fileSeparator + "folder", isWindowsSeparator).getFileName());
     }
 }
