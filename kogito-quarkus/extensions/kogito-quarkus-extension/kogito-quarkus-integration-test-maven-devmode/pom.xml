@@ -13,6 +13,11 @@
   <artifactId>kogito-quarkus-integration-test-maven-devmode</artifactId>
   <name>Kogito :: Quarkus Extension :: Integration Tests (Maven devmode)</name>
 
+  <properties>
+    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5656 -->
+    <quarkus.test.list.include>false</quarkus.test.list.include>
+  </properties>
+
   <dependencies>
 
     <!-- this is used implicitly by hot reload tests so let's make Maven aware of it -->

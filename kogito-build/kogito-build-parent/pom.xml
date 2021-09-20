@@ -104,7 +104,7 @@
     <version.org.xolstice.maven.protobuf>0.6.1</version.org.xolstice.maven.protobuf>
     <version.plugin.plugin>3.6.0</version.plugin.plugin>
     <version.project.sources.plugin>0.3</version.project.sources.plugin>
-    <version.rpkgtests.maven.plugin>0.10.0</version.rpkgtests.maven.plugin>
+    <version.rpkgtests.maven.plugin>0.11.0</version.rpkgtests.maven.plugin>
     <version.resources.plugin>3.1.0</version.resources.plugin>
     <version.site.plugin>3.7.1</version.site.plugin>
     <version.shade.plugin>3.0.0</version.shade.plugin>

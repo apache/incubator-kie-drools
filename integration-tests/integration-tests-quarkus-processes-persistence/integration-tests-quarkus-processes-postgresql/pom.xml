@@ -12,6 +12,11 @@
   <artifactId>integration-tests-quarkus-processes-postgresql</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Persistence :: PostgreSQL</name>
 
+  <properties>
+    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5655 -->
+    <quarkus.test.list.include>false</quarkus.test.list.include>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

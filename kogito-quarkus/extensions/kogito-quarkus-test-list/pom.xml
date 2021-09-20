@@ -45,39 +45,7 @@
             <phase>generate-resources</phase>
             <configuration>
               <testJarsPath>${test.list.file.location}</testJarsPath>
-              <fileSets>
-                <fileSet>
-                  <directory>${project.root.dir}/integration-tests/</directory>
-                  <includes>
-                    <include>*quarkus*/pom.xml</include>
-                    <include>integration-tests-quarkus-processes-persistence/*/pom.xml</include>
-                  </includes>
-                  <excludes>
-                    <!-- Explicitly mentioning failing tests. -->
-                    <exclude>integration-tests-kogito-plugin/pom.xml</exclude>
-                    <exclude>integration-tests-quarkus-norest/pom.xml</exclude>
-                    <exclude>integration-tests-quarkus-processes/pom.xml</exclude>
-                    <exclude>integration-tests-quarkus-processes-persistence/pom.xml</exclude>
-                  </excludes>
-                </fileSet>
-                <fileSet>
-                  <directory>${project.root.dir}/quarkus/extensions/</directory>
-                  <includes>
-                    <include>kogito-quarkus-decisions-extension/*-integration-test*/pom.xml</include>
-                    <include>kogito-quarkus-extension/*-integration-test*/pom.xml</include>
-                    <include>kogito-quarkus-predictions-extension/*-integration-test*/pom.xml</include>
-                    <include>kogito-quarkus-rules-extension/*-integration-test*/pom.xml</include>
-                    <include>kogito-quarkus-serverless-workflow-extension/*-integration-test*/pom.xml</include>
-                  </includes>
-                  <excludes>
-                    <!-- Explicitly mentioning failing tests. -->
-                    <exclude>**/kogito-quarkus-decisions-integration-test-hot-reload/pom.xml</exclude>
-                    <exclude>**/kogito-quarkus-integration-test-hot-reload/pom.xml</exclude>
-                    <exclude>**/kogito-quarkus-rules-integration-test-hot-reload/pom.xml</exclude>
-                    <exclude>**/kogito-quarkus-rules-integration-test-legacy/pom.xml</exclude>
-                  </excludes>
-                </fileSet>
-              </fileSets>
+              <activatingPropertyName>quarkus.test.list.include</activatingPropertyName>
             </configuration>
           </execution>
         </executions>

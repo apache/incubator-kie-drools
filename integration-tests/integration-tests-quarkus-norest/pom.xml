@@ -10,6 +10,11 @@
   <artifactId>integration-tests-quarkus-norest</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Without REST</name>
 
+  <properties>
+    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5338 -->
+    <quarkus.test.list.include>false</quarkus.test.list.include>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

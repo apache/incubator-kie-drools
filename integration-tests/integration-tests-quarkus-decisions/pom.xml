@@ -10,6 +10,10 @@
   <artifactId>integration-tests-quarkus-decisions</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Decisions</name>
 
+  <properties>
+    <quarkus.test.list.include>true</quarkus.test.list.include>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -34,7 +34,6 @@
     <module>kogito-quarkus-decisions-extension</module>
     <module>kogito-quarkus-predictions-extension</module>
     <module>kogito-quarkus-processes-extension</module>
-    <module>kogito-quarkus-test-list</module>
   </modules>
 
   <profiles>
@@ -47,6 +46,17 @@
       </activation>
       <modules>
         <module>kogito-quarkus-serverless-workflow-extension</module>
+      </modules>
+    </profile>
+    <profile>
+      <id>integration-test-modules</id>
+      <activation>
+        <property>
+          <name>!excludeITModules</name>
+        </property>
+      </activation>
+      <modules>
+        <module>kogito-quarkus-test-list</module>
       </modules>
     </profile>
   </profiles>

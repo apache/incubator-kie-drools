@@ -11,6 +11,11 @@
   <artifactId>integration-tests-quarkus-processes</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Processes</name>
 
+  <properties>
+    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5340 -->
+    <quarkus.test.list.include>false</quarkus.test.list.include>
+  </properties>
+
   <dependencyManagement>
     <dependencies>
       <dependency>

@@ -12,6 +12,10 @@
     <artifactId>kogito-quarkus-rules-integration-test</artifactId>
     <name>Kogito :: Quarkus Rules Extension :: Integration Tests</name>
 
+    <properties>
+        <quarkus.test.list.include>true</quarkus.test.list.include>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>

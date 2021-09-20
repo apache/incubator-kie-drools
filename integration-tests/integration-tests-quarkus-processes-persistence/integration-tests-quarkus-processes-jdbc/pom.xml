@@ -12,6 +12,11 @@
   <artifactId>integration-tests-quarkus-processes-jdbc</artifactId>
   <name>Kogito :: Integration Tests :: Quarkus :: Processes :: Persistence :: JDBC</name>
 
+  <properties>
+    <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5651 -->
+    <quarkus.test.list.include>false</quarkus.test.list.include>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>io.quarkus</groupId>

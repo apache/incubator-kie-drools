@@ -11,6 +11,11 @@
     <artifactId>kogito-codegen-integration-tests</artifactId>
     <name>Kogito :: Codegen Integration Tests</name>
 
+    <properties>
+        <!-- excluded because of https://issues.redhat.com/browse/KOGITO-5808 -->
+        <quarkus.test.list.include>false</quarkus.test.list.include>
+    </properties>
+
     <dependencies>
 
         <!-- test -->

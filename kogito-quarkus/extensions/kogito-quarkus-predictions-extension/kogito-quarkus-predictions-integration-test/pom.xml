@@ -12,6 +12,10 @@
     <artifactId>kogito-quarkus-predictions-integration-test</artifactId>
     <name>Kogito :: Quarkus Predictions Extension :: Integration Tests</name>
 
+    <properties>
+        <quarkus.test.list.include>true</quarkus.test.list.include>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.kie.kogito</groupId>
