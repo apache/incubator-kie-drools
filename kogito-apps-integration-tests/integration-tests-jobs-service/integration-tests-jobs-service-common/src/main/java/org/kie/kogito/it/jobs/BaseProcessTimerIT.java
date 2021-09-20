@@ -31,6 +31,8 @@ public abstract class BaseProcessTimerIT {
     public static final String TIMERS = "timers";
     public static final String TIMERS_CYCLE = "timerscycle";
     public static final String TIMERS_ON_TASK = "timersOnTask";
+    public static final int TIMEOUT = 10;
+    public static final int POLL_INTERVAL = 1;
 
     //Timers Tests
     @Test
@@ -38,8 +40,8 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("PT02S"), TIMERS);
         Object id2 = getTimerById(id, TIMERS);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(2, SECONDS)
-                .atMost(3, SECONDS)
+        with().pollDelay(POLL_INTERVAL, SECONDS)
+                .atMost(TIMEOUT, SECONDS)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
@@ -57,8 +59,8 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("R2/PT1S"), TIMERS_CYCLE);
         String id2 = getTimerById(id, TIMERS_CYCLE);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(2, SECONDS)
-                .atMost(3, SECONDS)
+        with().pollDelay(POLL_INTERVAL, SECONDS)
+                .atMost(TIMEOUT, SECONDS)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS));
     }
 
@@ -76,8 +78,8 @@ public abstract class BaseProcessTimerIT {
         String id = createTimer(new RequestPayload("PT02S"), TIMERS_ON_TASK);
         String id2 = getTimerById(id, TIMERS_ON_TASK);
         assertThat(id).isEqualTo(id2);
-        with().pollDelay(2, SECONDS)
-                .atMost(3, SECONDS)
+        with().pollDelay(POLL_INTERVAL, SECONDS)
+                .atMost(TIMEOUT, SECONDS)
                 .untilAsserted(() -> getTimerWithStatusCode(id, 404, TIMERS_ON_TASK));
     }
 
