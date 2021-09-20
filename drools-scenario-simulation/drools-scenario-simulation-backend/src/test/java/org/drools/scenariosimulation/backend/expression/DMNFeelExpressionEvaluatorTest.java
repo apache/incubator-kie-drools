@@ -292,7 +292,7 @@ public class DMNFeelExpressionEvaluatorTest {
     }
     
     @Test
-    public void drools6589() {
+    public void drools6337() {
         assertTrue(expressionEvaluator.evaluateUnaryExpression("now() > ?", LocalDateTime.of(2020, 9,6,11,34), LocalDateTime.class).isSuccessful());
         assertTrue(expressionEvaluator.evaluateUnaryExpression("today() > ?", LocalDate.of(2020, 9, 6), LocalDateTime.class).isSuccessful());
     }
