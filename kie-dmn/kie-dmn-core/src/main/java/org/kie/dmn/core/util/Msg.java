@@ -131,6 +131,7 @@ public final class Msg {
     public static final Message1 FUNC_DEF_PMML_MISSING_MODEL_NAME                    = new Message1( DMNMessageType.INVALID_SYNTAX, "The PMML function definition did not provide 'model' attribute, while the PMML resource defines the following model names: %s" );
     public static final Message1 FUNC_DEF_PMML_ERR_LOCATIONURI                       = new Message1( DMNMessageType.IMPORT_NOT_FOUND, "Unable to locate pmml model from locationURI '%s'");
     public static final Message2 ERROR_CHECKING_ALLOWED_VALUES                       = new Message2( DMNMessageType.FEEL_EVALUATION_ERROR, "Error checking allowed values for node '%s': %s" );
+    public static final Message1 DTMULTIPLEOUTPUTCOLLECTOPERATOR                     = new Message1( DMNMessageType.INVALID_SYNTAX, "Decision Table '%s' is using Collect with Operator for compound outputs; this is partially supported beyond the specification requirements.");
     public static final Message1 DTANALYSISRESULT                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS, "Decision Table Analysis results: %s");
     public static final Message1 DTANALYSIS_EMPTY                                    = new Message1( DMNMessageType.DECISION_TABLE_ANALYSIS_EMPTY, "Decision Table Analysis of table '%s' finished with no messages to be reported.");
     public static final Message2 DTANALYSIS_ERROR_ANALYSIS_SKIPPED                   = new Message2( DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR, "Skipped Decision Table Analysis of table '%s' because: %s");

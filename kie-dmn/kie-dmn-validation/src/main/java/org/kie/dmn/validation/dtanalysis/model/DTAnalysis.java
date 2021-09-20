@@ -34,11 +34,10 @@ import org.kie.dmn.core.util.MsgUtil;
 import org.kie.dmn.feel.lang.ast.DashNode;
 import org.kie.dmn.feel.runtime.Range.RangeBoundary;
 import org.kie.dmn.model.api.DecisionTable;
-import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.kie.dmn.model.api.LiteralExpression;
-import org.kie.dmn.model.api.NamedElement;
+import org.kie.dmn.validation.ValidatorUtil;
 import org.kie.dmn.validation.dtanalysis.DMNDTAnalysisMessage;
 import org.kie.dmn.validation.dtanalysis.mcdc.MCDCAnalyser.PosNegBlock;
 import org.slf4j.Logger;
@@ -768,15 +767,7 @@ public class DTAnalysis {
     }
 
     public String nameOrIDOfTable() {
-        if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
-            return sourceDT.getOutputLabel();
-        } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
-            return ((NamedElement) sourceDT.getParent()).getName();
-        } else if (sourceDT.getParent() instanceof FunctionDefinition && sourceDT.getParent().getParent() instanceof NamedElement) { // DT is decision logic of BKM.
-            return ((NamedElement) sourceDT.getParent().getParent()).getName();
-        } else {
-            return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
-        }
+        return ValidatorUtil.nameOrIDOfTable(sourceDT);
     }
 
     public void computeOutputInLOV() {

@@ -16,6 +16,7 @@
 
 package org.kie.dmn.core;
 
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -27,10 +28,13 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Test;
 import org.kie.api.KieServices;
+import org.kie.api.builder.KieBuilder;
+import org.kie.api.builder.KieFileSystem;
+import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNDecisionResult;
 import org.kie.dmn.api.core.DMNMessage;
@@ -42,18 +46,26 @@ import org.kie.dmn.api.core.DMNRuntime;
 import org.kie.dmn.api.core.event.AfterEvaluateDecisionTableEvent;
 import org.kie.dmn.api.core.event.DMNRuntimeEventListener;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
+import org.kie.dmn.api.marshalling.DMNMarshaller;
+import org.kie.dmn.backend.marshalling.v1x.DMNMarshallerFactory;
 import org.kie.dmn.core.api.DMNFactory;
 import org.kie.dmn.core.impl.DMNResultImpl;
 import org.kie.dmn.core.impl.DMNResultImplFactory;
 import org.kie.dmn.core.impl.DMNRuntimeImpl;
 import org.kie.dmn.core.util.DMNRuntimeUtil;
 import org.kie.dmn.core.util.KieHelper;
+import org.kie.dmn.model.api.BuiltinAggregator;
 import org.kie.dmn.model.api.DMNModelInstrumentedBase;
+import org.kie.dmn.model.api.DRGElement;
+import org.kie.dmn.model.api.Decision;
+import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.Definitions;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -63,6 +75,7 @@ import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.internal.verification.VerificationModeFactory.times;
 
@@ -599,7 +612,7 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         LOG.debug("{}", dmnResult.getMessages());
         assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(true));
         DMNMessage msg0 = dmnResult.getMessages().get(0);
-        Assertions.assertThat(msg0.getText()).containsIgnoringCase("Invalid result value on rule #1, output #1."); // there is only 1 row, 1 output column
+        assertThat(msg0.getText()).containsIgnoringCase("Invalid result value on rule #1, output #1."); // there is only 1 row, 1 output column
     }
 
     @Test
@@ -650,5 +663,49 @@ public class DMNDecisionTableRuntimeTest extends BaseInterpretedVsCompiledTest {
         assertThat("while it's okay to have error-ed on evaluation of FEEL, there should not be any sort of NPEs when reporting the human friendly message",
                    feelNPEs.isEmpty(),
                    is(true));
+    }
+
+    @Test
+    public void testDTCollectOperatorsMultipleOutputs() {
+        checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.SUM, 100, 111, 18);
+        checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.COUNT, 10, 2, 2);
+        checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.MIN, 100, 1, 3);
+        checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator.MAX, 100, 100, 9);
+    }
+    
+    private void checkDTCollectOperatorsMultipleOutputs(BuiltinAggregator aggregator, int level, int a, int b) {
+        // DROOLS-6590 DMN composite output on DT Collect with operators - this is beyond the spec.
+        final KieServices ks = KieServices.Factory.get();
+        DMNMarshaller marshaller = DMNMarshallerFactory.newDefaultMarshaller();
+        final Definitions definitions = marshaller
+                .unmarshal(new InputStreamReader(this.getClass().getResourceAsStream("multipleOutputsCollectDT.dmn")));
+        
+        DRGElement drgElement1 = definitions.getDrgElement().get(1);
+        assertThat(drgElement1).describedAs("xml of the test changed, unable to locate Decision Node").isInstanceOf(Decision.class);
+        ((DecisionTable)((Decision)drgElement1).getExpression()).setAggregation(aggregator);
+        
+        final String dmnXml = marshaller.marshal(definitions);
+        
+        final ReleaseId kjarReleaseId = ks.newReleaseId("org.kie.dmn.core", "DMNDecisionTableRuntimeTest", UUID.randomUUID().toString());
+        final KieFileSystem kfs = ks.newKieFileSystem();
+        kfs.write("src/main/resources/multipleOutputsCollectDT.dmn", dmnXml);
+        kfs.generateAndWritePomXML(kjarReleaseId);
+        final KieBuilder kieBuilder = ks.newKieBuilder(kfs).buildAll();
+        assertTrue(kieBuilder.getResults().getMessages().toString(), kieBuilder.getResults().getMessages().isEmpty());
+
+        final KieContainer container = ks.newKieContainer(kjarReleaseId);
+        final DMNRuntime runtime = KieRuntimeFactory.of(container.getKieBase()).get(DMNRuntime.class);
+        final DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_943A3581-5FD1-4BCF-9A52-AC7242CC451C", "multipleOutputsCollectDT");
+        assertThat(dmnModel, notNullValue());
+        assertThat(DMNRuntimeUtil.formatMessages(dmnModel.getMessages()), dmnModel.hasErrors(), is(false));
+
+        final DMNContext context = DMNFactory.newContext();
+        context.set("level", level);
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+        Object decision1 = dmnResult.getDecisionResultByName("Decision-1").getResult();
+        assertThat(decision1).hasFieldOrPropertyWithValue("a", new BigDecimal(a));
+        assertThat(decision1).hasFieldOrPropertyWithValue("b", new BigDecimal(b));
     }
 }
