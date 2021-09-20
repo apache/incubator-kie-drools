@@ -34,12 +34,12 @@ public class KiePath implements Serializable {
 
     public static KiePath of(String s) {
         String normalized = normalizePath(s);
-        return normalized == null ? ROOT_PATH : new KiePath( normalized );
+        return normalized.isEmpty() ? ROOT_PATH : new KiePath( normalized );
     }
 
     private static String normalizePath(String s) {
-        if (s == null || s.isEmpty()) {
-            return null;
+        if (s == null) {
+            throw new NullPointerException("A path cannot be null");
         }
         return trimTrailingSeparator( IS_WINDOWS_SEPARATOR ? s.replace('\\', '/') : s );
     }
@@ -68,6 +68,10 @@ public class KiePath implements Serializable {
 
     public String asString() {
         return path;
+    }
+
+    public String asClassName() {
+        return path.substring(0, path.length() - ".class".length()).replace('/', '.');
     }
 
     @Override
@@ -107,6 +111,6 @@ public class KiePath implements Serializable {
     }
 
     public static String trimTrailingSeparator(String p) {
-        return p.charAt( p.length() -1 ) == '/' ? p.substring( 0, p.length() -1 ) : p;
+        return !p.isEmpty() && p.charAt( p.length() -1 ) == '/' ? p.substring( 0, p.length() -1 ) : p;
     }
 }

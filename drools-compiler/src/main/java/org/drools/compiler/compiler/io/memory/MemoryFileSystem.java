@@ -557,8 +557,7 @@ public class MemoryFileSystem
                     .forEach(f -> {
                         MemoryFile file = (MemoryFile) memoryFileSystem.getFile(f);
                         byte[] fileContents = memoryFileSystem.getFileContents(file);
-                        String className = f.asString().replace('/', '.').replace(".class", "");
-                        extraClassDefs.put(className, fileContents);
+                        extraClassDefs.put(f.asClassName(), fileContents);
                     });
         }
 

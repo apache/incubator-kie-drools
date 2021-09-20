@@ -110,8 +110,7 @@ public class JavaParserCompiler {
     private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
         List<String> classNames = new ArrayList<>();
         for (Map.Entry<KiePath, byte[]> entry : trgMfs.getMap().entrySet()) {
-            String fileName = entry.getKey().asString();
-            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
+            String className = entry.getKey().asClassName();
             classNames.add(className);
             if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {
                 ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());
