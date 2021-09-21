@@ -54,7 +54,7 @@ public class KiePMMLRegressionClassificationTableTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {24.5, 13.2, CASE_B},
+                {24.5, 13.2, CASE_A},
                 {10.4, 16.8, CASE_B},
                 {0.7, 0.22, CASE_A},
         });
@@ -68,10 +68,8 @@ public class KiePMMLRegressionClassificationTableTest {
         Object retrieved = classificationTable.evaluateRegression(input);
         assertEquals(expectedResult, retrieved);
         final Map<String, Double> probabilityResultMap = classificationTable.getProbabilityResultMap();
-        double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_A), 0);
-        expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
-        assertEquals(expectedDouble, probabilityResultMap.get(CASE_B), 0);
+        assertEquals(firstTableResult, probabilityResultMap.get(CASE_A), 0);
+        assertEquals(secondTableResult, probabilityResultMap.get(CASE_B), 0);
     }
 
     @Test
@@ -116,7 +114,7 @@ public class KiePMMLRegressionClassificationTableTest {
 
             @Override
             protected LinkedHashMap<String, Double> getProbabilityMap(LinkedHashMap<String, Double> resultMap) {
-                return getProbabilityMap(resultMap, FIRST_ITEM_OPERATOR, SECOND_ITEM_OPERATOR);
+                return resultMap;
             }
 
             @Override
@@ -147,7 +145,6 @@ public class KiePMMLRegressionClassificationTableTest {
             protected void updateResult(AtomicReference<Double> toUpdate) {
 
             }
-
         };
     }
 }

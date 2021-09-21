@@ -25,7 +25,6 @@ import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
@@ -46,7 +45,6 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFullClassName;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMap;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentationFactory.getSegmentationSourcesMapCompiled;
 
@@ -112,8 +110,6 @@ public class KiePMMLMiningModelFactory {
                                                                               final HasClassLoader hasClassloader,
                                                                               final List<KiePMMLModel> nestedModels) {
         logger.trace("getKiePMMLMiningModelSourcesMapCompiled {} {} {}", fields, model, parentPackageName);
-        final List<DerivedField> derivedFields = getDerivedFields(transformationDictionary,
-                                                                  model.getLocalTransformations());
         final Map<String, String> toReturn = getSegmentationSourcesMapCompiled(parentPackageName,
                                                                                fields,
                                                                                transformationDictionary,

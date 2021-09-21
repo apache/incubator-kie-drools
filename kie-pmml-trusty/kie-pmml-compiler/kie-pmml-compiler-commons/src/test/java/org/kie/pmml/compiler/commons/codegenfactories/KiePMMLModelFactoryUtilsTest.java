@@ -412,6 +412,38 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          ".enums.OP_TYPE.CONTINUOUS, " +
                                                                          "transformationDictionaryDerivedField_6_0)" +
                                                                          ".withDisplayName(null).build();\n" +
+                                                                         "    KiePMMLFieldColumnPair " +
+                                                                         "transformationDictionaryDerivedField_7_0_0 " +
+                                                                         "= new KiePMMLFieldColumnPair" +
+                                                                         "(\"FLAG_OWN_CAR\", Collections.emptyList()," +
+                                                                         " \"data:input\");\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_7_0_InlineTable_0_columnValues = Stream.of(new Object[][] { { \"data:output\", \"0.0\" }, { \"data:input\", \"0\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_7_0_InlineTable_0 = new KiePMMLRow(transformationDictionaryDerivedField_7_0_InlineTable_0_columnValues);\n" +
+                                                                         "    Map<String, Object> " +
+                                                                         "transformationDictionaryDerivedField_7_0_InlineTable_1_columnValues = Stream.of(new Object[][] { { \"data:output\", \"1.0\" }, { \"data:input\", \"1\" } }).collect(Collectors.toMap(data -> (String) data[0], data -> data[1]));\n" +
+                                                                         "    KiePMMLRow " +
+                                                                         "transformationDictionaryDerivedField_7_0_InlineTable_1 = new KiePMMLRow(transformationDictionaryDerivedField_7_0_InlineTable_1_columnValues);\n" +
+                                                                         "    KiePMMLInlineTable " +
+                                                                         "transformationDictionaryDerivedField_7_0_InlineTable = new KiePMMLInlineTable(\"transformationDictionaryDerivedField_7_0_InlineTable\", Collections.emptyList(), Arrays.asList(transformationDictionaryDerivedField_7_0_InlineTable_0, transformationDictionaryDerivedField_7_0_InlineTable_1));\n" +
+                                                                         "    KiePMMLMapValues " +
+                                                                         "transformationDictionaryDerivedField_7_0 = " +
+                                                                         "KiePMMLMapValues.builder" +
+                                                                         "(\"transformationDictionaryDerivedField_7_0" +
+                                                                         "\", Collections.emptyList(), " +
+                                                                         "\"data:output\").withDefaultValue(null)" +
+                                                                         ".withMapMissingTo(null).withDataType(null)" +
+                                                                         ".withKiePMMLInlineTable" +
+                                                                         "(transformationDictionaryDerivedField_7_0_InlineTable).withKiePMMLFieldColumnPairs(Arrays.asList(transformationDictionaryDerivedField_7_0_0)).build();\n" +
+                                                                         "    KiePMMLDerivedField " +
+                                                                         "transformationDictionaryDerivedField_7 = " +
+                                                                         "KiePMMLDerivedField.builder" +
+                                                                         "(\"dataencoded\", Collections.emptyList(), " +
+                                                                         "org.kie.pmml.api.enums.DATA_TYPE.DOUBLE, " +
+                                                                         "org.kie.pmml.api.enums.OP_TYPE.CATEGORICAL," +
+                                                                         " transformationDictionaryDerivedField_7_0)" +
+                                                                         ".withDisplayName(null).build();\n" +
                                                                          "    KiePMMLTransformationDictionary " +
                                                                          "transformationDictionary = " +
                                                                          "KiePMMLTransformationDictionary.builder" +
@@ -427,7 +459,8 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          "transformationDictionaryDerivedField_3, " +
                                                                          "transformationDictionaryDerivedField_4, " +
                                                                          "transformationDictionaryDerivedField_5, " +
-                                                                         "transformationDictionaryDerivedField_6))" +
+                                                                         "transformationDictionaryDerivedField_6, " +
+                                                                         "transformationDictionaryDerivedField_7))" +
                                                                          ".build();\n" +
                                                                          "    return transformationDictionary;\n" +
                                                                          "}");

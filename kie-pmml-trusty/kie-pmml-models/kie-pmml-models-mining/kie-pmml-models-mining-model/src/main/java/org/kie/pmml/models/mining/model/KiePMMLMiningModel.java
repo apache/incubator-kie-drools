@@ -41,6 +41,7 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     protected String algorithmName;
     protected boolean scorable = true;
     protected KiePMMLSegmentation segmentation;
+    private LinkedHashMap<String, Double> probabilityResultMap;
 
     protected KiePMMLMiningModel(String name, List<KiePMMLExtension> extensions) {
         super(name, extensions);
@@ -55,9 +56,13 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
         throw new KiePMMLException("KiePMMLMiningModel is not meant to be used for actual evaluation");
     }
 
+    public void setProbabilityResultMap(LinkedHashMap<String, Double> probabilityResultMap) {
+        this.probabilityResultMap = probabilityResultMap;
+    }
+
     @Override
     public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
+        return probabilityResultMap;
     }
 
     @Override

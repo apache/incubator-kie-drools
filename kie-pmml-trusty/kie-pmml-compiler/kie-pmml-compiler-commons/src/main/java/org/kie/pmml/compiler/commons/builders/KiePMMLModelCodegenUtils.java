@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.compiler.commons.builders;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +24,12 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
-import com.github.javaparser.ast.expr.MethodReferenceExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.utils.Pair;
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
@@ -112,7 +109,9 @@ public class KiePMMLModelCodegenUtils {
 
     static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(final List<Field<?>> fields, Model pmmlModel) {
         Map<String, DATA_TYPE> dataTypeMap = fields.stream()
-                .collect(Collectors.toMap(i -> i.getName().getValue(), i -> DATA_TYPE.byName(i.getDataType().value())));
+                .collect(Collectors.toMap(i -> i.getName().getValue(),
+                                          i -> DATA_TYPE.byName(i.getDataType().value()),
+                                          (prevDataType, newDataType) -> newDataType));
         return pmmlModel.getMiningSchema() == null
                 ? Collections.emptyMap()
                 : pmmlModel.getMiningSchema().getMiningFields().stream()
@@ -122,5 +121,4 @@ public class KiePMMLModelCodegenUtils {
                                 mf -> new Pair<>(dataTypeMap.get(mf.getName().getValue()), (String) mf.getMissingValueReplacement())
                         ));
     }
-
 }

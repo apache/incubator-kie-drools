@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.mining.compiler.factories;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,13 +31,12 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.Model;
+import org.dmg.pmml.Output;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.TransformationDictionary;
-import org.dmg.pmml.mining.MiningModel;
 import org.dmg.pmml.mining.Segment;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -161,7 +161,9 @@ public class KiePMMLSegmentFactory {
                                                "does not implement HasSources");
         }
         nestedModels.add(nestedModel);
-        return getSegmentSourcesMap(packageName, fields, segment);
+        final Map<String, String> toReturn = getSegmentSourcesMap(packageName, fields, segment);
+        fields.addAll(getFieldsFromModel(segment.getModel()));
+        return toReturn;
     }
 
     static Map<String, String> getSegmentSourcesMap(final String packageName,
@@ -216,5 +218,20 @@ public class KiePMMLSegmentFactory {
         toSet.addStatement(new ReturnStmt(PREDICATE));
         MethodDeclaration methodDeclaration = segmentTemplate.getMethodsByName(GET_PREDICATE).get(0);
         methodDeclaration.setBody(toSet);
+    }
+
+    static List<Field<?>> getFieldsFromModel(final Model model) {
+        final List<Field<?>> toReturn = new ArrayList<>();
+        LocalTransformations localTransformations = model.getLocalTransformations();
+        if (localTransformations != null && localTransformations.hasDerivedFields()) {
+            localTransformations.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        Output output =  model.getOutput();
+        if (output != null && output.hasOutputFields()) {
+            output.getOutputFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        return toReturn;
     }
 }
