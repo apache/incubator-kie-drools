@@ -66,11 +66,6 @@ public class KiePMMLMiningModel extends KiePMMLModel implements HasNestedModels 
     }
 
     @Override
-    public LinkedHashMap<String, Double> getProbabilityResultMap() {
-        return new LinkedHashMap<>();
-    }
-
-    @Override
     public List<KiePMMLModel> getNestedModels() {
         return getSegmentation().getSegments().stream().map(KiePMMLSegment::getModel).collect(Collectors.toList());
     }
