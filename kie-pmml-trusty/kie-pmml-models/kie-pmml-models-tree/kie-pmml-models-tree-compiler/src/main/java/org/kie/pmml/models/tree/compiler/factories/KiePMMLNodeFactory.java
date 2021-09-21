@@ -43,6 +43,7 @@ import com.github.javaparser.ast.expr.TypeExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.Statement;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.ScoreDistribution;

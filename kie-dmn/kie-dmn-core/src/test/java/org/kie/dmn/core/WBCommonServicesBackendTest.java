@@ -17,6 +17,7 @@
 package org.kie.dmn.core;
 
 import java.math.BigDecimal;
+import java.util.UUID;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
@@ -28,6 +29,7 @@ import org.kie.api.KieServices;
 import org.kie.api.builder.KieModule;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
+import org.kie.api.runtime.KieRuntimeFactory;
 import org.kie.api.runtime.KieSession;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNModel;
@@ -39,8 +41,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasSize;
 import static org.kie.dmn.core.util.DynamicTypeUtils.entry;
 import static org.kie.dmn.core.util.DynamicTypeUtils.mapOf;
 
@@ -93,5 +95,43 @@ public class WBCommonServicesBackendTest extends BaseInterpretedVsCompiledTest {
 
         final DMNContext result = dmnResult.getContext();
         assertThat(result.get("the shortest distance"), is(new BigDecimal("5")));
+    }
+    
+    @Test
+    public void testProfileWithKieWbCommonServicesBackendBuilder() throws Exception {
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId v100 = ks.newReleaseId("org.kie", "dmn-test-"+UUID.randomUUID(), "1.0.0");
+        final KieModule kieModule = KieHelper.createAndDeployJar(ks,
+                v100,
+                ks.getResources().newClassPathResource("nowGT1970.dmn", this.getClass()));
+
+        final KieContainer kieContainer = ks.newKieContainer(v100);
+        final DMNRuntime runtime = KieRuntimeFactory.of(kieContainer.getKieBase()).get(DMNRuntime.class);
+        Assert.assertNotNull(runtime);
+        assertThat(runtime.getModels(), hasSize(1));
+
+        check_nowGT1970(runtime);
+
+        // the below is performed by the WB at: https://github.com/kiegroup/kie-wb-common/blob/9e6b6da145e61ac8f5a9f7c0259d44aa9d090a2b/kie-wb-common-services/kie-wb-common-services-backend/src/main/java/org/kie/workbench/common/services/backend/builder/core/Builder.java#L592-L620
+        final KieProject kieProject = new KieModuleKieProject((InternalKieModule) kieModule, null);
+        final KieContainer kieContainer2 = new KieContainerImpl(kieProject, ks.getRepository(), v100);
+        final DMNRuntime runtime2 = KieRuntimeFactory.of(kieContainer2.getKieBase()).get(DMNRuntime.class);
+        Assert.assertNotNull(runtime2);
+        assertThat(runtime2.getModels(), hasSize(1));
+
+        check_nowGT1970(runtime2);
+    }
+
+    private void check_nowGT1970(DMNRuntime runtime) {
+        DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_B359CA2D-0702-43E2-BDC5-E1AE54FD97E5", "new-file");
+        DMNContext context = runtime.newContext();
+
+        final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
+        LOG.debug("{}", dmnResult);
+        assertThat(DMNRuntimeUtil.formatMessages(dmnResult.getMessages()), dmnResult.hasErrors(), is(false));
+
+        final DMNContext result = dmnResult.getContext();
+        assertThat(result.get("Decision-1"), is(true));
     }
 }

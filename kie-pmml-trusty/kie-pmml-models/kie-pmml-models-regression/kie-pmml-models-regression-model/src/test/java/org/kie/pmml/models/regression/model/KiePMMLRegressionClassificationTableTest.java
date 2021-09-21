@@ -68,8 +68,10 @@ public class KiePMMLRegressionClassificationTableTest {
         Object retrieved = classificationTable.evaluateRegression(input);
         assertEquals(expectedResult, retrieved);
         final Map<String, Double> probabilityResultMap = classificationTable.getProbabilityResultMap();
-        assertEquals(firstTableResult, probabilityResultMap.get(CASE_A), 0);
-        assertEquals(secondTableResult, probabilityResultMap.get(CASE_B), 0);
+        double expectedDouble = FIRST_ITEM_OPERATOR.applyAsDouble(firstTableResult);
+        assertEquals(expectedDouble, probabilityResultMap.get(CASE_A), 0);
+        expectedDouble = SECOND_ITEM_OPERATOR.applyAsDouble(expectedDouble);
+        assertEquals(expectedDouble, probabilityResultMap.get(CASE_B), 0);
     }
 
     @Test

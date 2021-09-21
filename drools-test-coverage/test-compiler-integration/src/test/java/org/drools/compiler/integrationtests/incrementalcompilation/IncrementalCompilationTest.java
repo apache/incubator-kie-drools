@@ -2334,7 +2334,7 @@ public class IncrementalCompilationTest {
     }
 
     @Test
-    public void testIncrementalCompilationChangeingParentRule() {
+    public void testIncrementalCompilationChangeParentRule() {
         // DROOLS-1031
         final String drl1_1 =
                 "rule R1 when\n" +
@@ -2368,6 +2368,46 @@ public class IncrementalCompilationTest {
 
         final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-extends", "1.1.2");
         KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1_2 + drl2);
+
+        kc.updateToVersion(releaseId2);
+        assertEquals(2, ksession.fireAllRules());
+    }
+
+    @Test
+    public void testIncrementalCompilationChangeParentRuleInDifferentFile() {
+        // DROOLS-6497
+        final String drl1_1 =
+                "rule R1 when\n" +
+                        "   $s : String( this == \"s1\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        final String drl1_2 =
+                "rule R1 when\n" +
+                        "   $s : String( this == \"s2\" )\n" +
+                        "then\n" +
+                        "end\n";
+
+        final String drl2 =
+                "rule R2 extends R1 when\n" +
+                        "   $i : Integer()\n" +
+                        "then\n" +
+                        "end\n";
+
+        final KieServices ks = KieServices.Factory.get();
+
+        final ReleaseId releaseId1 = ks.newReleaseId("org.kie", "test-extends", "1.1.1");
+        KieUtil.getKieModuleFromDrls(releaseId1, kieBaseTestConfiguration, drl1_1, drl2);
+
+        final KieContainer kc = ks.newKieContainer(releaseId1);
+        final KieSession ksession = kc.newKieSession();
+
+        ksession.insert(1);
+        ksession.insert("s2");
+        assertEquals(0, ksession.fireAllRules());
+
+        final ReleaseId releaseId2 = ks.newReleaseId("org.kie", "test-extends", "1.1.2");
+        KieUtil.getKieModuleFromDrls(releaseId2, kieBaseTestConfiguration, drl1_2, drl2);
 
         kc.updateToVersion(releaseId2);
         assertEquals(2, ksession.fireAllRules());
