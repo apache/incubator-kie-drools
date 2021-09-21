@@ -133,3 +133,5 @@ ifdef::DROOLS,JBPM,OP[]
 xref:pmml-con_pmml-models[]
 endif::[]
 |===
+
+When you define business decisions, you can also consider using {KOGITO} for your cloud-native decision services. For more information about getting started with {KOGITO} microservices, see {URL_GETTING_STARTED_KOGITO_MICROSERVICES}[_{GETTING_STARTED_KOGITO_MICROSERVICES}_].
