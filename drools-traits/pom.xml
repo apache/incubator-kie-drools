@@ -116,6 +116,11 @@
       <artifactId>narayana-jta</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-transaction-spi-jakarta</artifactId>
+      <scope>test</scope>
+    </dependency>
 
     <!-- Hibernate -->
     <dependency>
