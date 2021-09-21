@@ -55,6 +55,7 @@ import org.drools.modelcompiler.builder.generator.drlxparse.ParseResultVoidVisit
 import org.drools.modelcompiler.builder.generator.drlxparse.SingleDrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
 import org.drools.modelcompiler.builder.generator.visitor.FromVisitor;
+import org.kie.api.definition.rule.Watch;
 
 import static org.drools.model.impl.NamesGenerator.generateName;
 import static org.drools.model.impl.VariableImpl.GENERATED_VARIABLE_PREFIX;
@@ -320,19 +321,30 @@ public abstract class PatternDSL implements DSLNode {
         Set<String> settableWatchedProps = new HashSet<>();
         Collection<String> settableProps = ClassUtils.getAccessibleProperties(patternType);
 
-        Collection<String> lookAheadProps = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
-        lookAheadProps.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, false)); // okay to have non-settable prop in lookAhead
-
         List<String> propertiesInWatch = getPatternListenedProperties(pattern);
         propertiesInWatch.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, true));
+
+        if (context.isPropertyReactive(patternType)) {
+            Collection<String> lookAheadProps = context.getRuleDescr().lookAheadFieldsOfIdentifier(pattern);
+            lookAheadProps.stream().forEach(prop -> populateSettableWatchedProps(prop, settableProps, settableWatchedProps, false)); // okay to have non-settable prop in lookAhead
+        }
+        
         return settableWatchedProps;
     }
 
-    private void populateSettableWatchedProps(String prop, Collection<String> settableProps, Set<String> settableWatchedProps, boolean raiseErrorForNonSettableProp) {
-        String actualProp = prop.startsWith("!") ? prop.substring(1) : prop;
+    private void populateSettableWatchedProps(String prop, Collection<String> settableProps, Set<String> settableWatchedProps, boolean raiseErrorForNonSettableOrDuplicatedProp) {
+        String actualProp = prop;
+        if (prop.startsWith("!")) {
+            actualProp = prop.substring(1).trim();
+            prop = "!" + actualProp;
+        }
         if (actualProp.equals("*") || settableProps.contains(actualProp)) {
+            if (raiseErrorForNonSettableOrDuplicatedProp && (settableWatchedProps.contains(actualProp) || settableWatchedProps.contains("!" + actualProp))) {
+                context.addCompilationError(new InvalidExpressionErrorResult("Duplicate property " + actualProp + " in @" + Watch.class.getSimpleName() + " annotation"));
+                return;
+            }
             settableWatchedProps.add(prop);
-        } else if (raiseErrorForNonSettableProp) {
+        } else if (raiseErrorForNonSettableOrDuplicatedProp) {
             context.addCompilationError(new InvalidExpressionErrorResult("Unknown property " + actualProp + " in @watch annotation"));
         }
     }
