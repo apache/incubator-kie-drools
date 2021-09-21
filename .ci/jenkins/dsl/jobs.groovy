@@ -1,5 +1,5 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.KogitoConstants
+import org.kie.jenkins.jobdsl.FolderUtils
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.VersionUtils
 import org.kie.jenkins.jobdsl.KogitoJobType
@@ -58,13 +58,9 @@ def getJobParams(String jobName, String jobFolder, String jenkinsfileName, Strin
     return jobParams
 }
 
-def bddRuntimesPrFolder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${KogitoConstants.KOGITO_DSL_RUNTIMES_BDD_FOLDER}"
-def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BRANCH_FOLDER}"
-def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
-
 if (Utils.isMainBranch(this)) {
     // For BDD runtimes PR job
-    setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
+    setupDeployJob(FolderUtils.getPullRequestRuntimesBDDFolder(this), KogitoJobType.PR)
 }
 
 // Optaplanner PR checks
@@ -73,23 +69,22 @@ setupMultijobPrNativeChecks()
 setupMultijobPrLTSChecks()
 
 // Nightly jobs
-setupNativeJob(nightlyBranchFolder)
-setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
-setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
+setupNativeJob()
+setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 
 // No release directly on main branch
 if (!Utils.isMainBranch(this)) {
-    setupDeployJob(releaseBranchFolder, KogitoJobType.RELEASE)
-    setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
+    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
+    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
 }
 
-def otherFolder = KogitoConstants.KOGITO_DSL_OTHER_FOLDER
 if (Utils.isMainBranch(this)) {
-    setupOptaPlannerTurtleTestsJob(otherFolder)
+    setupOptaPlannerTurtleTestsJob()
 }
 
 if (Utils.isLTSBranch(this)) {
-    setupNativeLTSJob(nightlyBranchFolder)
+    setupNativeLTSJob()
 }
 
 /////////////////////////////////////////////////////////////////
@@ -108,8 +103,8 @@ void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
-void setupNativeJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-native', jobFolder, "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native Testing')
+void setupNativeJob() {
+    def jobParams = getJobParams('optaplanner-native', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -123,8 +118,8 @@ void setupNativeJob(String jobFolder) {
     }
 }
 
-void setupNativeLTSJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-native-lts', jobFolder, "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native LTS Testing')
+void setupNativeLTSJob() {
+    def jobParams = getJobParams('optaplanner-native-lts', FolderUtils.getNightlyFolder(this), "${JENKINS_PATH}/Jenkinsfile.native", 'Optaplanner Native LTS Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -246,8 +241,8 @@ void setupPromoteJob(String jobFolder, KogitoJobType jobType) {
     }
 }
 
-void setupOptaPlannerTurtleTestsJob(String jobFolder) {
-    def jobParams = getJobParams('optaplanner-turtle-tests', jobFolder, "${JENKINS_PATH}/Jenkinsfile.turtle",
+void setupOptaPlannerTurtleTestsJob() {
+    def jobParams = getJobParams('optaplanner-turtle-tests', FolderUtils.getOtherFolder(this), "${JENKINS_PATH}/Jenkinsfile.turtle",
             'Run OptaPlanner turtle tests on a weekly basis.')
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         properties {
