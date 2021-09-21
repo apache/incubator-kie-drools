@@ -54,7 +54,7 @@ public class KiePMMLRegressionClassificationTableTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                {24.5, 13.2, CASE_A},
+                {24.5, 13.2, CASE_B},
                 {10.4, 16.8, CASE_B},
                 {0.7, 0.22, CASE_A},
         });
@@ -116,7 +116,7 @@ public class KiePMMLRegressionClassificationTableTest {
 
             @Override
             protected LinkedHashMap<String, Double> getProbabilityMap(LinkedHashMap<String, Double> resultMap) {
-                return resultMap;
+                return getProbabilityMap(resultMap, FIRST_ITEM_OPERATOR, SECOND_ITEM_OPERATOR);
             }
 
             @Override
@@ -147,6 +147,7 @@ public class KiePMMLRegressionClassificationTableTest {
             protected void updateResult(AtomicReference<Double> toUpdate) {
 
             }
+
         };
     }
 }
