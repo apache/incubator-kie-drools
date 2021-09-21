@@ -18,6 +18,7 @@ package org.kie.dmn.validation.dtanalysis.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class DDTARule {
@@ -39,7 +40,7 @@ public class DDTARule {
         builder.append("DDTARule inputEntries > ");
         builder.append(inputEntry.stream().map(DDTAInputEntry::toString).collect(Collectors.joining(" | ")));
         builder.append(" outputEntries > ");
-        builder.append(outputEntry.stream().map(Object::toString).collect(Collectors.joining(" | ")));
+        builder.append(outputEntry.stream().map(Objects::toString).collect(Collectors.joining(" | ")));
         return builder.toString();
     }
 
