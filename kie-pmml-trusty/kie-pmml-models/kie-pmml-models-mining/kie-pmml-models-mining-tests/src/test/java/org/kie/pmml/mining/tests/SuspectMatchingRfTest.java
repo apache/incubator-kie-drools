@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.core.data.Percentage;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,7 @@ import org.kie.pmml.models.tests.AbstractPMMLTest;
 @RunWith(Parameterized.class)
 public class SuspectMatchingRfTest extends AbstractPMMLTest {
 
+    private static final Percentage TOLERANCE_PERCENTAGE = Percentage.withPercentage(0.000001);
     private static final String FILE_NAME = "SuspectMatchingRf.pmml";
     private static final String MODEL_NAME = "SuspectMatchingRf";
     private static final String TARGET_FIELD = "FlagMatchDecision";
@@ -125,15 +127,14 @@ public class SuspectMatchingRfTest extends AbstractPMMLTest {
                 {6.9f, 3.1f, 5.1f, 2.3f, 34.6f, 12.4f, 3.4f, 23.7f, 4.5f, 55.1f, 4.99f, 3.5f, 95.1f, 33.1f,
                         1,
                         0.0, 0.7, 0.3},
-//                {5.8, 2.6, 4.0, 1.2, "versicolor", 0.0, 0.9966666666666667, 0.0033333333333333335},
-//                {5.7, 3.0, 4.2, 1.2, "versicolor", 0.0, 1.0, 0.0},
-//                {5.0, 3.3, 1.4, 0.2, "setosa", 1.0, 0.0, 0.0},
-//                {5.4, 3.9, 1.3, 0.4, "setosa", 1.0, 0.0, 0.0}
+                {5.8f, 2.6f, 4.0f, 1.2f, 34f, 3.11f, 341.23f, 5.444f, 34.88f, 123.4f, 7.9f, 10.44f, 32.4f, 1.9f,
+                        1,
+                        0.0, 0.7, 0.3}
         });
     }
 
     @Test
-    public void testMiningWithNestedRefers() throws Exception {
+    public void testSuspectMatchingRf() throws Exception {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put(LEGAL_GIVEN_NAME_ONE, legalGivenNameOne);
         inputData.put(LEGAL_LAST_NAME, legalLastName);
@@ -155,10 +156,10 @@ public class SuspectMatchingRfTest extends AbstractPMMLTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(TARGET_FIELD)).isEqualTo(expectedResult);
         Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_0)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_0)).isEqualTo(p0);
+        Assertions.assertThat((double)pmml4Result.getResultVariables().get(PROBABILITY_0)).isCloseTo(p0, TOLERANCE_PERCENTAGE);
         Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_1)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_1)).isEqualTo(p1);
+        Assertions.assertThat((double)pmml4Result.getResultVariables().get(PROBABILITY_1)).isCloseTo(p1, TOLERANCE_PERCENTAGE);
         Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_2)).isNotNull();
-        Assertions.assertThat(pmml4Result.getResultVariables().get(PROBABILITY_2)).isEqualTo(p2);
+        Assertions.assertThat((double)pmml4Result.getResultVariables().get(PROBABILITY_2)).isCloseTo(p2, TOLERANCE_PERCENTAGE);
     }
 }
