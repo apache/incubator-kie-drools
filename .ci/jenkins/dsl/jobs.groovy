@@ -1,5 +1,5 @@
 import org.kie.jenkins.jobdsl.templates.KogitoJobTemplate
-import org.kie.jenkins.jobdsl.KogitoConstants
+import org.kie.jenkins.jobdsl.FolderUtils
 import org.kie.jenkins.jobdsl.Utils
 import org.kie.jenkins.jobdsl.KogitoJobType
 
@@ -49,16 +49,12 @@ Map getMultijobPRConfig() {
     ]
 }
 
-def bddRuntimesPrFolder = "${KogitoConstants.KOGITO_DSL_PULLREQUEST_FOLDER}/${KogitoConstants.KOGITO_DSL_RUNTIMES_BDD_FOLDER}"
-def nightlyBranchFolder = "${KogitoConstants.KOGITO_DSL_NIGHTLY_FOLDER}/${JOB_BRANCH_FOLDER}"
-def releaseBranchFolder = "${KogitoConstants.KOGITO_DSL_RELEASE_FOLDER}/${JOB_BRANCH_FOLDER}"
-
 if (Utils.isMainBranch(this)) {
-    setupDeployJob(bddRuntimesPrFolder, KogitoJobType.PR)
+    setupDeployJob(FolderUtils.getPullRequestRuntimesBDDFolder(this), KogitoJobType.PR)
 
     // Sonarcloud analysis only on main branch
     // As we have only Community edition
-    setupSonarCloudJob(nightlyBranchFolder)
+    setupSonarCloudJob()
 }
 
 // PR checks
@@ -68,23 +64,23 @@ setupMultijobPrLTSChecks()
 
 // Nightly jobs
 if (Utils.isMainBranch(this)) {
-    setupDroolsJob(nightlyBranchFolder)
+    setupDroolsJob()
 
-    setupQuarkusJob(nightlyBranchFolder, 'main')
+    setupQuarkusJob('main')
 }
-setupNativeJob(nightlyBranchFolder)
-setupDeployJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
-setupPromoteJob(nightlyBranchFolder, KogitoJobType.NIGHTLY)
+setupNativeJob()
+setupDeployJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
+setupPromoteJob(FolderUtils.getNightlyFolder(this), KogitoJobType.NIGHTLY)
 
 // No release directly on main branch
 if (!Utils.isMainBranch(this)) {
-    setupDeployJob(releaseBranchFolder, KogitoJobType.RELEASE)
-    setupPromoteJob(releaseBranchFolder, KogitoJobType.RELEASE)
+    setupDeployJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
+    setupPromoteJob(FolderUtils.getReleaseFolder(this), KogitoJobType.RELEASE)
 }
 
 if (Utils.isLTSBranch(this)) {
-    setupQuarkusJob(nightlyBranchFolder, Utils.getQuarkusLTSVersion(this))
-    setupNativeLTSJob(nightlyBranchFolder)
+    setupQuarkusJob(Utils.getQuarkusLTSVersion(this))
+    setupNativeLTSJob()
 }
 /////////////////////////////////////////////////////////////////
 // Methods
@@ -102,8 +98,8 @@ void setupMultijobPrLTSChecks() {
     KogitoJobTemplate.createMultijobLTSPRJobs(this, getMultijobPRConfig()) { return getDefaultJobParams() }
 }
 
-void setupDroolsJob(String jobFolder) {
-    def jobParams = getJobParams('kogito-drools-snapshot', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.drools", 'Kogito Runtimes Drools Snapshot')
+void setupDroolsJob() {
+    def jobParams = getJobParams('kogito-drools-snapshot', FolderUtils.getNightlyFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.drools", 'Kogito Runtimes Drools Snapshot')
     jobParams.triggers = [ cron : 'H 2 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -119,8 +115,8 @@ void setupDroolsJob(String jobFolder) {
     }
 }
 
-void setupQuarkusJob(String jobFolder, String quarkusBranch) {
-    def jobParams = getJobParams("kogito-quarkus-${quarkusBranch}", jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.quarkus", 'Kogito Runtimes Quarkus Snapshot')
+void setupQuarkusJob(String quarkusBranch) {
+    def jobParams = getJobParams("kogito-quarkus-${quarkusBranch}", FolderUtils.getNightlyFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.quarkus", 'Kogito Runtimes Quarkus Snapshot')
     jobParams.triggers = [ cron : 'H 4 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -134,8 +130,8 @@ void setupQuarkusJob(String jobFolder, String quarkusBranch) {
     }
 }
 
-void setupSonarCloudJob(String jobFolder) {
-    def jobParams = getJobParams('kogito-runtimes-sonarcloud', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.sonarcloud", 'Kogito Runtimes Daily Sonar')
+void setupSonarCloudJob() {
+    def jobParams = getJobParams('kogito-runtimes-sonarcloud', FolderUtils.getNightlyFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.sonarcloud", 'Kogito Runtimes Daily Sonar')
     jobParams.triggers = [ cron : 'H 20 * * 1-5' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -148,8 +144,8 @@ void setupSonarCloudJob(String jobFolder) {
     }
 }
 
-void setupNativeJob(String jobFolder) {
-    def jobParams = getJobParams('kogito-runtimes-native', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.native", 'Kogito Runtimes Native Testing')
+void setupNativeJob() {
+    def jobParams = getJobParams('kogito-runtimes-native', FolderUtils.getNightlyFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.native", 'Kogito Runtimes Native Testing')
     jobParams.triggers = [ cron : 'H 6 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
@@ -163,8 +159,8 @@ void setupNativeJob(String jobFolder) {
     }
 }
 
-void setupNativeLTSJob(String jobFolder) {
-    def jobParams = getJobParams('kogito-runtimes-native-lts', jobFolder, "${JENKINSFILE_PATH}/Jenkinsfile.native", 'Kogito Runtimes Native LTS Testing')
+void setupNativeLTSJob() {
+    def jobParams = getJobParams('kogito-runtimes-native-lts', FolderUtils.getNightlyFolder(this), "${JENKINSFILE_PATH}/Jenkinsfile.native", 'Kogito Runtimes Native LTS Testing')
     jobParams.triggers = [ cron : 'H 8 * * *' ]
     KogitoJobTemplate.createPipelineJob(this, jobParams).with {
         parameters {
