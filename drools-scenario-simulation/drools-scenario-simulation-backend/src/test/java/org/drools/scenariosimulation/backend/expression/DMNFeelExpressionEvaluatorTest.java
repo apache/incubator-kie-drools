@@ -18,6 +18,7 @@ package org.drools.scenariosimulation.backend.expression;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,6 +43,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.entry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -288,5 +290,16 @@ public class DMNFeelExpressionEvaluatorTest {
         assertFalse(expressionEvaluator.isStructuredInput(Set.class.getCanonicalName()));
         assertFalse(expressionEvaluator.isStructuredInput(Integer.class.getCanonicalName()));
         assertFalse(expressionEvaluator.isStructuredInput(String.class.getCanonicalName()));
+    }
+    
+    @Test
+    public void testUnaryTestUsingKieExtendedProfile() {
+    // DROOLS-6337 today() and now() functions not evaluated correctly in Test Scenarios
+        ZonedDateTime now = (ZonedDateTime) expressionEvaluator.evaluateLiteralExpression("now()", ZonedDateTime.class.getCanonicalName(), Collections.emptyList()); 
+        LocalDate today = (LocalDate) expressionEvaluator.evaluateLiteralExpression("today()", LocalDate.class.getCanonicalName(), Collections.emptyList());
+        assertNotNull(now);
+        assertNotNull(today);
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("now() > ?", now.minusDays(1), ZonedDateTime.class).isSuccessful());
+        assertTrue(expressionEvaluator.evaluateUnaryExpression("today() > ?", today.minusDays(1), LocalDate.class).isSuccessful());
     }
 }
