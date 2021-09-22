@@ -64,6 +64,8 @@ import static org.mockito.Mockito.when;
 
 class ExplanationServiceImplTest {
 
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
+
     @SuppressWarnings("rawtype")
     Instance instance;
     ExplanationServiceImpl explanationService;
@@ -83,8 +85,11 @@ class ExplanationServiceImplTest {
         cfExplainerMock = mock(CounterfactualExplainer.class);
         PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
         explainerServiceHandlerRegistryMock = new LocalExplainerServiceHandlerRegistry(instance);
-        limeExplainerServiceHandlerMock = spy(new LimeExplainerServiceHandler(limeExplainerMock, predictionProviderFactory));
-        cfExplainerServiceHandlerMock = spy(new CounterfactualExplainerServiceHandler(cfExplainerMock, predictionProviderFactory));
+        limeExplainerServiceHandlerMock = spy(new LimeExplainerServiceHandler(limeExplainerMock,
+                predictionProviderFactory));
+        cfExplainerServiceHandlerMock = spy(new CounterfactualExplainerServiceHandler(cfExplainerMock,
+                predictionProviderFactory,
+                MAX_RUNNING_TIME_SECONDS));
 
         predictionProviderMock = mock(PredictionProvider.class);
         callbackMock = mock(Consumer.class);

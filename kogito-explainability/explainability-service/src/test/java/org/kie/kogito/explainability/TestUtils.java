@@ -49,6 +49,8 @@ import static java.util.Collections.singletonMap;
 
 public class TestUtils {
 
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
+
     private TestUtils() {
         // prevent initialization
     }
@@ -90,15 +92,19 @@ public class TestUtils {
                     MODEL_IDENTIFIER,
                     INPUTS,
                     OUTPUTS,
-                    SEARCH_DOMAINS);
+                    SEARCH_DOMAINS,
+                    MAX_RUNNING_TIME_SECONDS);
     public static final LIMEExplainabilityRequestDto LIME_REQUEST_DTO = new LIMEExplainabilityRequestDto(EXECUTION_ID,
             SERVICE_URL,
             MODEL_IDENTIFIER,
             INPUTS,
             OUTPUTS);
 
-    public static final LIMEExplainabilityRequest LIME_REQUEST = new LimeExplainerServiceHandler(null, null).explainabilityRequestFrom(LIME_REQUEST_DTO);
-    public static final CounterfactualExplainabilityRequest COUNTERFACTUAL_REQUEST = new CounterfactualExplainerServiceHandler(null, null).explainabilityRequestFrom(COUNTERFACTUAL_REQUEST_DTO);
+    public static final LIMEExplainabilityRequest LIME_REQUEST = new LimeExplainerServiceHandler(null,
+            null).explainabilityRequestFrom(LIME_REQUEST_DTO);
+    public static final CounterfactualExplainabilityRequest COUNTERFACTUAL_REQUEST = new CounterfactualExplainerServiceHandler(null,
+            null,
+            MAX_RUNNING_TIME_SECONDS).explainabilityRequestFrom(COUNTERFACTUAL_REQUEST_DTO);
 
     public static final CounterfactualResult COUNTERFACTUAL_RESULT = new CounterfactualResult(Collections.emptyList(),
             List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 2.0)))),

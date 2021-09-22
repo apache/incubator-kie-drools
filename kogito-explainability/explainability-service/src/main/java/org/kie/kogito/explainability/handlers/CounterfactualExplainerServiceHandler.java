@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
+import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.kie.kogito.explainability.ConversionUtils;
 import org.kie.kogito.explainability.PredictionProviderFactory;
 import org.kie.kogito.explainability.api.BaseExplainabilityRequestDto;
@@ -53,6 +54,8 @@ import org.kie.kogito.explainability.models.ModelIdentifier;
 import org.kie.kogito.tracing.typedvalue.CollectionValue;
 import org.kie.kogito.tracing.typedvalue.StructureValue;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.kie.kogito.explainability.ConversionUtils.toFeatureConstraintList;
 import static org.kie.kogito.explainability.ConversionUtils.toFeatureDomainList;
@@ -63,14 +66,20 @@ import static org.kie.kogito.explainability.ConversionUtils.toOutputList;
 public class CounterfactualExplainerServiceHandler
         implements LocalExplainerServiceHandler<CounterfactualResult, CounterfactualExplainabilityRequest, CounterfactualExplainabilityRequestDto> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CounterfactualExplainerServiceHandler.class);
+
+    private final Long kafkaMaxRecordAgeSeconds;
+
     private final CounterfactualExplainer explainer;
     private final PredictionProviderFactory predictionProviderFactory;
 
     @Inject
     public CounterfactualExplainerServiceHandler(CounterfactualExplainer explainer,
-            PredictionProviderFactory predictionProviderFactory) {
+            PredictionProviderFactory predictionProviderFactory,
+            @ConfigProperty(name = "mp.messaging.incoming.trusty-explainability-request.throttled.unprocessed-record-max-age.ms", defaultValue = "60000") Long kafkaMaxRecordAgeMilliSeconds) {
         this.explainer = explainer;
         this.predictionProviderFactory = predictionProviderFactory;
+        this.kafkaMaxRecordAgeSeconds = Math.floorDiv(kafkaMaxRecordAgeMilliSeconds, 1000);
     }
 
     @Override
@@ -85,6 +94,14 @@ public class CounterfactualExplainerServiceHandler
 
     @Override
     public CounterfactualExplainabilityRequest explainabilityRequestFrom(CounterfactualExplainabilityRequestDto dto) {
+        Long maxRunningTimeSeconds = dto.getMaxRunningTimeSeconds();
+        if (Objects.nonNull(maxRunningTimeSeconds)) {
+            if (maxRunningTimeSeconds > kafkaMaxRecordAgeSeconds) {
+                LOGGER.info(String.format("Maximum Running Timeout set to '%d's since the provided value '%d's exceeded the Messaging sub-system configuration '%d's.", kafkaMaxRecordAgeSeconds,
+                        maxRunningTimeSeconds, kafkaMaxRecordAgeSeconds));
+                maxRunningTimeSeconds = kafkaMaxRecordAgeSeconds;
+            }
+        }
         return new CounterfactualExplainabilityRequest(
                 dto.getExecutionId(),
                 dto.getCounterfactualId(),
@@ -92,7 +109,8 @@ public class CounterfactualExplainerServiceHandler
                 ModelIdentifier.from(dto.getModelIdentifier()),
                 dto.getOriginalInputs(),
                 dto.getGoals(),
-                dto.getSearchDomains());
+                dto.getSearchDomains(),
+                maxRunningTimeSeconds);
     }
 
     @Override
@@ -107,6 +125,7 @@ public class CounterfactualExplainerServiceHandler
         Map<String, TypedValue> originalInputs = request.getOriginalInputs();
         Map<String, TypedValue> goals = request.getGoals();
         Map<String, CounterfactualSearchDomainDto> searchDomains = request.getSearchDomains();
+        Long maxRunningTimeSeconds = request.getMaxRunningTimeSeconds();
 
         // If the incoming is not flat we cannot perform CF on it so fail fast
         // See https://issues.redhat.com/browse/FAI-473 and https://issues.redhat.com/browse/FAI-474
@@ -124,7 +143,8 @@ public class CounterfactualExplainerServiceHandler
                 featureDomain,
                 featureConstraints,
                 null,
-                UUID.fromString(request.getExecutionId()));
+                UUID.fromString(request.getExecutionId()),
+                maxRunningTimeSeconds);
     }
 
     private boolean isUnsupportedModel(Map<String, TypedValue> originalInputs,

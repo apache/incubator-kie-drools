@@ -59,6 +59,7 @@ import com.fasterxml.jackson.databind.node.IntNode;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,6 +81,10 @@ public class CounterfactualExplainerServiceHandlerTest {
 
     private static final ModelIdentifierDto MODEL_IDENTIFIER_DTO = new ModelIdentifierDto("resourceType", "resourceId");
 
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
+
+    private static final Long MAX_RUNNING_TIME_MILLISECONDS = MAX_RUNNING_TIME_SECONDS * 1000;
+
     private CounterfactualExplainer explainer;
 
     private CounterfactualExplainerServiceHandler handler;
@@ -89,7 +94,9 @@ public class CounterfactualExplainerServiceHandlerTest {
         PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
 
         this.explainer = mock(CounterfactualExplainer.class);
-        this.handler = new CounterfactualExplainerServiceHandler(explainer, predictionProviderFactory);
+        this.handler = new CounterfactualExplainerServiceHandler(explainer,
+                predictionProviderFactory,
+                MAX_RUNNING_TIME_MILLISECONDS);
     }
 
     @Test
@@ -112,10 +119,50 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER_DTO,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualExplainabilityRequest request = handler.explainabilityRequestFrom(requestDto);
 
+        assertExplainabilityRequestFrom(requestDto, request);
+        assertEquals(requestDto.getMaxRunningTimeSeconds(), request.getMaxRunningTimeSeconds());
+    }
+
+    @Test
+    public void testExplainabilityRequestFromWithTimeoutLargerThanKafka() {
+        CounterfactualExplainabilityRequestDto requestDto = new CounterfactualExplainabilityRequestDto(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                SERVICE_URL,
+                MODEL_IDENTIFIER_DTO,
+                Collections.emptyMap(),
+                Collections.emptyMap(),
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_MILLISECONDS * 2);
+
+        CounterfactualExplainabilityRequest request = handler.explainabilityRequestFrom(requestDto);
+
+        assertExplainabilityRequestFrom(requestDto, request);
+        assertEquals(MAX_RUNNING_TIME_SECONDS, request.getMaxRunningTimeSeconds());
+    }
+
+    @Test
+    public void testExplainabilityRequestFromWithNullTimeout() {
+        CounterfactualExplainabilityRequestDto requestDto = new CounterfactualExplainabilityRequestDto(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                SERVICE_URL,
+                MODEL_IDENTIFIER_DTO,
+                Collections.emptyMap(),
+                Collections.emptyMap(),
+                Collections.emptyMap(),
+                null);
+
+        CounterfactualExplainabilityRequest request = handler.explainabilityRequestFrom(requestDto);
+
+        assertExplainabilityRequestFrom(requestDto, request);
+        assertNull(request.getMaxRunningTimeSeconds());
+    }
+
+    private void assertExplainabilityRequestFrom(CounterfactualExplainabilityRequestDto requestDto, CounterfactualExplainabilityRequest request) {
         assertEquals(requestDto.getExecutionId(), request.getExecutionId());
         assertEquals(requestDto.getCounterfactualId(), request.getCounterfactualId());
         assertEquals(requestDto.getServiceUrl(), request.getServiceUrl());
@@ -134,7 +181,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         Prediction prediction = handler.getPrediction(request);
         assertTrue(prediction instanceof CounterfactualPrediction);
@@ -143,6 +191,8 @@ public class CounterfactualExplainerServiceHandlerTest {
         assertTrue(counterfactualPrediction.getInput().getFeatures().isEmpty());
         assertTrue(counterfactualPrediction.getOutput().getOutputs().isEmpty());
         assertTrue(counterfactualPrediction.getDomain().getFeatureDomains().isEmpty());
+
+        assertEquals(counterfactualPrediction.getMaxRunningTimeSeconds(), request.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -154,7 +204,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Map.of("input1",
                         new UnitValue("number", new IntNode(20))),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         Prediction prediction = handler.getPrediction(request);
         assertTrue(prediction instanceof CounterfactualPrediction);
@@ -169,6 +220,8 @@ public class CounterfactualExplainerServiceHandlerTest {
 
         assertTrue(counterfactualPrediction.getOutput().getOutputs().isEmpty());
         assertTrue(counterfactualPrediction.getDomain().getFeatureDomains().isEmpty());
+
+        assertEquals(counterfactualPrediction.getMaxRunningTimeSeconds(), request.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -180,7 +233,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Map.of("input1",
                         new StructureValue("number", Map.of("input2b", new UnitValue("number", new IntNode(55))))),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -194,7 +248,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Map.of("input1",
                         new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100))))),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -208,7 +263,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Collections.emptyMap(),
                 Map.of("output1",
                         new UnitValue("number", new IntNode(20))),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         Prediction prediction = handler.getPrediction(request);
         assertTrue(prediction instanceof CounterfactualPrediction);
@@ -224,6 +280,8 @@ public class CounterfactualExplainerServiceHandlerTest {
         assertTrue(counterfactualPrediction.getInput().getFeatures().isEmpty());
         assertTrue(counterfactualPrediction.getDomain().getFeatureDomains().isEmpty());
         assertTrue(counterfactualPrediction.getConstraints().isEmpty());
+
+        assertEquals(counterfactualPrediction.getMaxRunningTimeSeconds(), request.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -235,7 +293,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Collections.emptyMap(),
                 Map.of("input1",
                         new StructureValue("number", Map.of("input2b", new UnitValue("number", new IntNode(55))))),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -249,7 +308,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Collections.emptyMap(),
                 Map.of("input1",
                         new CollectionValue("number", List.of(new UnitValue("number", new IntNode(100))))),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -265,7 +325,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 Map.of("output1",
                         new CounterfactualSearchDomainUnitDto("number",
                                 true,
-                                new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))));
+                                new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))),
+                MAX_RUNNING_TIME_SECONDS);
 
         Prediction prediction = handler.getPrediction(request);
         assertTrue(prediction instanceof CounterfactualPrediction);
@@ -280,6 +341,8 @@ public class CounterfactualExplainerServiceHandlerTest {
         assertTrue(counterfactualPrediction.getOutput().getOutputs().isEmpty());
         assertEquals(1, counterfactualPrediction.getConstraints().size());
         assertTrue(counterfactualPrediction.getConstraints().get(0));
+
+        assertEquals(counterfactualPrediction.getMaxRunningTimeSeconds(), request.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -295,7 +358,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                                 Map.of("input2b",
                                         new CounterfactualSearchDomainUnitDto("number",
                                                 true,
-                                                new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))))));
+                                                new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))))),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -312,7 +376,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                         new CounterfactualSearchDomainCollectionDto("number",
                                 List.of(new CounterfactualSearchDomainUnitDto("number",
                                         true,
-                                        new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))))));
+                                        new CounterfactualDomainRangeDto(new IntNode(10), new IntNode(20)))))),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertThrows(IllegalArgumentException.class, () -> handler.getPrediction(request));
     }
@@ -325,7 +390,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualResult counterfactuals = new CounterfactualResult(List.of(DoubleEntity.from(new Feature("input1", Type.NUMBER, new Value(123.0d)), 0, 1000)),
                 List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 1.0)))),
@@ -365,7 +431,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualResult counterfactuals = new CounterfactualResult(Collections.emptyList(),
                 null,
@@ -385,7 +452,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualResult counterfactuals = new CounterfactualResult(Collections.emptyList(),
                 Collections.emptyList(),
@@ -405,7 +473,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualResult counterfactuals = new CounterfactualResult(Collections.emptyList(),
                 List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 1.0))),
@@ -426,7 +495,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         CounterfactualResult counterfactuals = new CounterfactualResult(List.of(DoubleEntity.from(new Feature("input1", Type.NUMBER, new Value(123.0d)), 0, 1000)),
                 List.of(new PredictionOutput(List.of(new Output("output1", Type.NUMBER, new Value(555.0d), 1.0)))),
@@ -466,7 +536,8 @@ public class CounterfactualExplainerServiceHandlerTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         BaseExplainabilityResultDto base = handler.createFailedResultDto(request, new NullPointerException("Something went wrong"));
         assertTrue(base instanceof CounterfactualExplainabilityResultDto);

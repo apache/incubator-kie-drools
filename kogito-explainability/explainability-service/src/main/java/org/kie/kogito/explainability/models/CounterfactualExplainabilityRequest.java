@@ -26,6 +26,7 @@ public class CounterfactualExplainabilityRequest extends BaseExplainabilityReque
     private final Map<String, TypedValue> originalInputs;
     private final Map<String, TypedValue> goals;
     private final Map<String, CounterfactualSearchDomainDto> searchDomains;
+    private final Long maxRunningTimeSeconds;
 
     public CounterfactualExplainabilityRequest(String executionId,
             String counterfactualId,
@@ -33,12 +34,14 @@ public class CounterfactualExplainabilityRequest extends BaseExplainabilityReque
             ModelIdentifier modelIdentifier,
             Map<String, TypedValue> originalInputs,
             Map<String, TypedValue> goals,
-            Map<String, CounterfactualSearchDomainDto> searchDomains) {
+            Map<String, CounterfactualSearchDomainDto> searchDomains,
+            Long maxRunningTimeSeconds) {
         super(executionId, serviceUrl, modelIdentifier);
         this.counterfactualId = counterfactualId;
         this.originalInputs = originalInputs;
         this.goals = goals;
         this.searchDomains = searchDomains;
+        this.maxRunningTimeSeconds = maxRunningTimeSeconds;
     }
 
     public String getCounterfactualId() {
@@ -55,5 +58,9 @@ public class CounterfactualExplainabilityRequest extends BaseExplainabilityReque
 
     public Map<String, CounterfactualSearchDomainDto> getSearchDomains() {
         return searchDomains;
+    }
+
+    public Long getMaxRunningTimeSeconds() {
+        return maxRunningTimeSeconds;
     }
 }

@@ -26,11 +26,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.kie.kogito.explainability.Config;
@@ -70,6 +73,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
@@ -79,11 +83,23 @@ import static org.mockito.Mockito.when;
 
 class CounterfactualExplainerTest {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(CounterfactualExplainerTest.class);
-    final long predictionTimeOut = 10L;
-    final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
-    final Long steps = 30_000L;
+    private static final Logger logger = LoggerFactory.getLogger(CounterfactualExplainerTest.class);
+
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
+
+    private final long predictionTimeOut = 10L;
+    private final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
+    private final Long steps = 30_000L;
+
+    private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory;
+    private SolverManager<CounterfactualSolution, UUID> solverManager;
+
+    @BeforeEach
+    @SuppressWarnings({ "unused", "unchecked" })
+    private void setup() {
+        this.solverManagerFactory = mock(Function.class);
+        this.solverManager = mock(SolverManager.class);
+    }
 
     private CounterfactualResult runCounterfactualSearch(Long randomSeed, List<Output> goal,
             List<Boolean> constraints,
@@ -102,7 +118,13 @@ class CounterfactualExplainerTest {
         PredictionOutput output = new PredictionOutput(goal);
         PredictionFeatureDomain domain = new PredictionFeatureDomain(dataDomain.getFeatureDomains());
         Prediction prediction =
-                new CounterfactualPrediction(input, output, domain, constraints, null, UUID.randomUUID());
+                new CounterfactualPrediction(input,
+                        output,
+                        domain,
+                        constraints,
+                        null,
+                        UUID.randomUUID(),
+                        null);
         return explainer.explainAsync(prediction, model)
                 .get(predictionTimeOut, predictionTimeUnit);
     }
@@ -137,8 +159,13 @@ class CounterfactualExplainerTest {
         PredictionInput input = new PredictionInput(features);
         PredictionOutput output = new PredictionOutput(goal);
         Prediction prediction =
-                new CounterfactualPrediction(input, output, new PredictionFeatureDomain(featureBoundaries), constraints, null,
-                        UUID.randomUUID());
+                new CounterfactualPrediction(input,
+                        output,
+                        new PredictionFeatureDomain(featureBoundaries),
+                        constraints,
+                        null,
+                        UUID.randomUUID(),
+                        null);
 
         final CounterfactualResult counterfactualResult = counterfactualExplainer.explainAsync(prediction, model)
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -630,7 +657,8 @@ class CounterfactualExplainerTest {
                 new PredictionFeatureDomain(featureBoundaries),
                 constraints,
                 null,
-                UUID.randomUUID());
+                UUID.randomUUID(),
+                null);
         final CounterfactualResult counterfactualResult =
                 counterfactualExplainer.explainAsync(prediction, model, assertIntermediateCounterfactualNotNull)
                         .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -652,38 +680,8 @@ class CounterfactualExplainerTest {
             sequenceIds.add(counterfactual.getSequenceId());
         };
 
-        ArgumentCaptor<Consumer<CounterfactualSolution>> intermediateSolutionConsumerCaptor =
-                ArgumentCaptor.forClass(Consumer.class);
-
-        //Mock SolverManager and SolverJob to guarantee deterministic test behaviour
-        SolverManager<CounterfactualSolution, UUID> solverManager = mock(SolverManager.class);
-        SolverJob<CounterfactualSolution, UUID> solverJob = mock(SolverJob.class);
-        CounterfactualSolution solution = mock(CounterfactualSolution.class);
-        BendableBigDecimalScore score = BendableBigDecimalScore.zero(0, 0);
-        when(solverManager.solveAndListen(any(), any(), any(), any())).thenReturn(solverJob);
-        when(solverJob.getFinalBestSolution()).thenReturn(solution);
-        when(solution.getScore()).thenReturn(score);
-
-        //Setup Explainer
-        final CounterfactualConfig counterfactualConfig =
-                new CounterfactualConfig().withSolverManagerFactory(solverConfig -> solverManager);
-        final CounterfactualExplainer counterfactualExplainer =
-                new CounterfactualExplainer(counterfactualConfig);
-
-        //Setup mock model, what it does is not important
-        Prediction prediction = new CounterfactualPrediction(new PredictionInput(Collections.emptyList()),
-                new PredictionOutput(Collections.emptyList()),
-                new PredictionFeatureDomain(Collections.emptyList()),
-                Collections.emptyList(),
-                null,
-                UUID.randomUUID());
-
-        CounterfactualResult result = counterfactualExplainer.explainAsync(prediction,
-                (List<PredictionInput> inputs) -> CompletableFuture.completedFuture(Collections.emptyList()),
-                captureSequenceIds)
-                .get(Config.INSTANCE.getAsyncTimeout(),
-                        Config.INSTANCE.getAsyncTimeUnit());
-
+        ArgumentCaptor<Consumer<CounterfactualSolution>> intermediateSolutionConsumerCaptor = ArgumentCaptor.forClass(Consumer.class);
+        CounterfactualResult result = mockExplainerInvocation(captureSequenceIds, null);
         verify(solverManager).solveAndListen(any(), any(), intermediateSolutionConsumerCaptor.capture(), any());
         Consumer<CounterfactualSolution> intermediateSolutionConsumer = intermediateSolutionConsumerCaptor.getValue();
 
@@ -756,8 +754,13 @@ class CounterfactualExplainerTest {
         PredictionInput input = new PredictionInput(features);
         PredictionOutput output = new PredictionOutput(goal);
         final UUID executionId = UUID.randomUUID();
-        Prediction prediction = new CounterfactualPrediction(input, output, new PredictionFeatureDomain(featureBoundaries),
-                constraints, null, executionId);
+        Prediction prediction = new CounterfactualPrediction(input,
+                output,
+                new PredictionFeatureDomain(featureBoundaries),
+                constraints,
+                null,
+                executionId,
+                null);
         final CounterfactualResult counterfactualResult =
                 counterfactualExplainer.explainAsync(prediction, model, captureIntermediateIds.andThen(captureExecutionIds))
                         .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -827,8 +830,13 @@ class CounterfactualExplainerTest {
         PredictionInput input = new PredictionInput(features);
         PredictionOutput output = new PredictionOutput(goal);
         final UUID executionId = UUID.randomUUID();
-        Prediction prediction = new CounterfactualPrediction(input, output, new PredictionFeatureDomain(featureBoundaries),
-                constraints, null, executionId);
+        Prediction prediction = new CounterfactualPrediction(input,
+                output,
+                new PredictionFeatureDomain(featureBoundaries),
+                constraints,
+                null,
+                executionId,
+                null);
         final CounterfactualResult counterfactualResult =
                 counterfactualExplainer.explainAsync(prediction, model, captureIntermediateIds.andThen(captureExecutionIds))
                         .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
@@ -895,4 +903,66 @@ class CounterfactualExplainerTest {
         assertTrue(!result.getEntities().get(0).isChanged() || !result.getEntities().get(1).isChanged());
         assertTrue(result.isValid());
     }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testTerminationSpentLimitWhenDefined() throws ExecutionException, InterruptedException, TimeoutException {
+        ArgumentCaptor<SolverConfig> solverConfigArgumentCaptor = ArgumentCaptor.forClass(SolverConfig.class);
+
+        mockExplainerInvocation(mock(Consumer.class), MAX_RUNNING_TIME_SECONDS);
+
+        verify(solverManagerFactory).apply(solverConfigArgumentCaptor.capture());
+        SolverConfig solverConfig = solverConfigArgumentCaptor.getValue();
+
+        assertEquals(MAX_RUNNING_TIME_SECONDS, solverConfig.getTerminationConfig().getSpentLimit().getSeconds());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testTerminationSpentLimitWhenUndefined() throws ExecutionException, InterruptedException, TimeoutException {
+        ArgumentCaptor<SolverConfig> solverConfigArgumentCaptor = ArgumentCaptor.forClass(SolverConfig.class);
+
+        mockExplainerInvocation(mock(Consumer.class), null);
+
+        verify(solverManagerFactory).apply(solverConfigArgumentCaptor.capture());
+        SolverConfig solverConfig = solverConfigArgumentCaptor.getValue();
+
+        assertNull(solverConfig.getTerminationConfig().getSecondsSpentLimit());
+    }
+
+    @SuppressWarnings("unchecked")
+    CounterfactualResult mockExplainerInvocation(Consumer<CounterfactualResult> intermediateResultsConsumer,
+            Long maxRunningTimeSeconds) throws ExecutionException, InterruptedException, TimeoutException {
+        //Mock SolverManager and SolverJob to guarantee deterministic test behaviour
+        SolverJob<CounterfactualSolution, UUID> solverJob = mock(SolverJob.class);
+        CounterfactualSolution solution = mock(CounterfactualSolution.class);
+        BendableBigDecimalScore score = BendableBigDecimalScore.zero(0, 0);
+        when(solverManager.solveAndListen(any(), any(), any(), any())).thenReturn(solverJob);
+        when(solverJob.getFinalBestSolution()).thenReturn(solution);
+        when(solution.getScore()).thenReturn(score);
+
+        when(solverManagerFactory.apply(any())).thenReturn(solverManager);
+
+        //Setup Explainer
+        final CounterfactualConfig counterfactualConfig =
+                new CounterfactualConfig().withSolverManagerFactory(solverManagerFactory);
+        final CounterfactualExplainer counterfactualExplainer =
+                new CounterfactualExplainer(counterfactualConfig);
+
+        //Setup mock model, what it does is not important
+        Prediction prediction = new CounterfactualPrediction(new PredictionInput(Collections.emptyList()),
+                new PredictionOutput(Collections.emptyList()),
+                new PredictionFeatureDomain(Collections.emptyList()),
+                Collections.emptyList(),
+                null,
+                UUID.randomUUID(),
+                maxRunningTimeSeconds);
+
+        return counterfactualExplainer.explainAsync(prediction,
+                (List<PredictionInput> inputs) -> CompletableFuture.completedFuture(Collections.emptyList()),
+                intermediateResultsConsumer)
+                .get(Config.INSTANCE.getAsyncTimeout(),
+                        Config.INSTANCE.getAsyncTimeUnit());
+    }
+
 }

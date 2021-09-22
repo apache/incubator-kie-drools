@@ -15,7 +15,9 @@
  */
 package org.kie.kogito.explainability.local.counterfactual;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -107,10 +109,11 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
             PredictionProvider model,
             Consumer<CounterfactualResult> intermediateResultsConsumer) {
         final AtomicLong sequenceId = new AtomicLong(0);
-        CounterfactualPrediction cfPrediction = (CounterfactualPrediction) prediction;
+        final CounterfactualPrediction cfPrediction = (CounterfactualPrediction) prediction;
         final PredictionFeatureDomain featureDomain = cfPrediction.getDomain();
         final List<Boolean> constraints = cfPrediction.getConstraints();
         final UUID executionId = cfPrediction.getExecutionId();
+        final Long maxRunningTimeSeconds = cfPrediction.getMaxRunningTimeSeconds();
         final List<CounterfactualEntity> entities =
                 CounterfactualEntityFactory.createEntities(prediction.getInput(), featureDomain, constraints,
                         cfPrediction.getDataDistribution());
@@ -121,8 +124,13 @@ public class CounterfactualExplainer implements LocalExplainer<CounterfactualRes
                 uuid -> new CounterfactualSolution(entities, model, goal, UUID.randomUUID(), executionId);
 
         final CompletableFuture<CounterfactualSolution> cfSolution = CompletableFuture.supplyAsync(() -> {
-            try (SolverManager<CounterfactualSolution, UUID> solverManager =
-                    this.counterfactualConfig.getSolverManagerFactory().apply(this.counterfactualConfig.getSolverConfig())) {
+            SolverConfig solverConfig = this.counterfactualConfig.getSolverConfig();
+            if (Objects.nonNull(maxRunningTimeSeconds)) {
+                solverConfig.withTerminationSpentLimit(Duration.ofSeconds(maxRunningTimeSeconds));
+            }
+            try (SolverManager<CounterfactualSolution, UUID> solverManager = this.counterfactualConfig
+                    .getSolverManagerFactory()
+                    .apply(solverConfig)) {
 
                 SolverJob<CounterfactualSolution, UUID> solverJob =
                         solverManager.solveAndListen(executionId, initial,

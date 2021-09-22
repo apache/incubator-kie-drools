@@ -86,6 +86,7 @@ public class TrustyServiceTest {
     private static final String TEST_MODEL = "definition";
     private static final String TEST_SOURCE_URL = "http://localhost:8080/model/service";
     private static final String TEST_SERVICE_URL = "http://localhost:8080/model";
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -115,7 +116,8 @@ public class TrustyServiceTest {
         trustyService = new TrustyServiceImpl(false,
                 explainabilityRequestProducerMock,
                 trustyStorageServiceMock,
-                new ExplainerServiceHandlerRegistry(explanationHandlers));
+                new ExplainerServiceHandlerRegistry(explanationHandlers),
+                MAX_RUNNING_TIME_SECONDS);
     }
 
     @Test
@@ -529,6 +531,9 @@ public class TrustyServiceTest {
         CounterfactualDomainRangeDto range = (CounterfactualDomainRangeDto) unit.getDomain();
         assertEquals(10, range.getLowerBound().asInt());
         assertEquals(30, range.getUpperBound().asInt());
+
+        //Check Max Running Time Seconds
+        assertEquals(MAX_RUNNING_TIME_SECONDS, request.getMaxRunningTimeSeconds());
     }
 
     @Test

@@ -36,6 +36,7 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
 
     protected static final String COUNTERFACTUAL_ID = UUID.randomUUID().toString();
     protected static final String SOLUTION_ID = UUID.randomUUID().toString();
+    protected static final Long MAX_RUNNING_TIME_SECONDS = 60L;
 
     @Override
     protected BaseExplainabilityRequestDto buildRequest() {
@@ -45,7 +46,8 @@ class ExplainabilityMessagingHandlerCounterfactualsIT extends BaseExplainability
                 MODEL_IDENTIFIER_DTO,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
     }
 
     @Override

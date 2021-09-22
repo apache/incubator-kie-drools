@@ -33,23 +33,33 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
 
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
 
+    public static final String ORIGINAL_INPUTS_FIELD = "originalInputs";
+
+    public static final String GOALS_FIELD = "goals";
+
     public static final String SEARCH_DOMAINS_FIELD = "searchDomains";
+
+    public static final String MAX_RUNNING_TIME_SECONDS_FIELD = "maxRunningTimeSeconds";
 
     @JsonProperty(COUNTERFACTUAL_ID_FIELD)
     @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
-    @JsonProperty("originalInputs")
+    @JsonProperty(ORIGINAL_INPUTS_FIELD)
     @NotNull(message = "originalInputs object must be provided.")
     private Map<String, TypedValue> originalInputs;
 
-    @JsonProperty("goals")
+    @JsonProperty(GOALS_FIELD)
     @NotNull(message = "goals object must be provided.")
     private Map<String, TypedValue> goals;
 
     @JsonProperty(SEARCH_DOMAINS_FIELD)
     @NotNull(message = "searchDomains object must be provided.")
     private Map<String, CounterfactualSearchDomainDto> searchDomains;
+
+    @JsonProperty(MAX_RUNNING_TIME_SECONDS_FIELD)
+    @NotNull(message = "maxRunningTimeSeconds must be provided.")
+    private Long maxRunningTimeSeconds;
 
     private CounterfactualExplainabilityRequestDto() {
         super();
@@ -61,12 +71,14 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
             @NotNull ModelIdentifierDto modelIdentifier,
             @NotNull Map<String, TypedValue> originalInputs,
             @NotNull Map<String, TypedValue> goals,
-            @NotNull Map<String, CounterfactualSearchDomainDto> searchDomains) {
+            @NotNull Map<String, CounterfactualSearchDomainDto> searchDomains,
+            Long maxRunningTimeSeconds) {
         super(executionId, serviceUrl, modelIdentifier);
         this.counterfactualId = Objects.requireNonNull(counterfactualId);
         this.originalInputs = Objects.requireNonNull(originalInputs);
         this.goals = Objects.requireNonNull(goals);
         this.searchDomains = Objects.requireNonNull(searchDomains);
+        this.maxRunningTimeSeconds = maxRunningTimeSeconds;
     }
 
     public String getCounterfactualId() {
@@ -83,5 +95,9 @@ public class CounterfactualExplainabilityRequestDto extends BaseExplainabilityRe
 
     public Map<String, CounterfactualSearchDomainDto> getSearchDomains() {
         return searchDomains;
+    }
+
+    public Long getMaxRunningTimeSeconds() {
+        return maxRunningTimeSeconds;
     }
 }

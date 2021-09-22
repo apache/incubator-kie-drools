@@ -45,8 +45,9 @@ public class CounterfactualResultsResponse extends CounterfactualExplainabilityR
             @NotNull String counterfactualId,
             @NotNull Collection<TypedVariableWithValue> goals,
             @NotNull Collection<CounterfactualSearchDomain> searchDomains,
+            Long maxRunningTimeSeconds,
             @NotNull List<CounterfactualExplainabilityResult> solutions) {
-        super(executionId, counterfactualId, goals, searchDomains);
+        super(executionId, counterfactualId, goals, searchDomains, maxRunningTimeSeconds);
         this.solutions = Objects.requireNonNull(solutions);
     }
 

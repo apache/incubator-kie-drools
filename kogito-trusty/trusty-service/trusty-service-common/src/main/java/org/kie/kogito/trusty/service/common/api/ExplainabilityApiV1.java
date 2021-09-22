@@ -112,7 +112,9 @@ public class ExplainabilityApiV1 {
         List<TypedVariableWithValue> goals = request.getGoals();
         List<CounterfactualSearchDomain> searchDomains = request.getSearchDomains();
         return requestCounterfactualsForExecution(executionId, goals, searchDomains)
-                .map(obj -> new CounterfactualRequestResponse(obj.getExecutionId(), obj.getCounterfactualId()))
+                .map(obj -> new CounterfactualRequestResponse(obj.getExecutionId(),
+                        obj.getCounterfactualId(),
+                        obj.getMaxRunningTimeSeconds()))
                 .map(Response::ok)
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
                 .build();
@@ -146,7 +148,9 @@ public class ExplainabilityApiV1 {
                     required = true,
                     schema = @Schema(implementation = String.class)) @PathParam("executionId") String executionId) {
         return getCounterfactualRequestsForExecution(executionId)
-                .map(obj -> obj.stream().map(cf -> new CounterfactualRequestResponse(cf.getExecutionId(), cf.getCounterfactualId())).collect(Collectors.toList()))
+                .map(obj -> obj.stream().map(cf -> new CounterfactualRequestResponse(cf.getExecutionId(),
+                        cf.getCounterfactualId(),
+                        cf.getMaxRunningTimeSeconds())).collect(Collectors.toList()))
                 .map(Response::ok)
                 .orElseGet(() -> Response.status(Response.Status.BAD_REQUEST.getStatusCode()))
                 .build();
@@ -189,6 +193,7 @@ public class ExplainabilityApiV1 {
                             counterfactualId,
                             request.getGoals(),
                             request.getSearchDomains(),
+                            request.getMaxRunningTimeSeconds(),
                             results);
                 })
                 .map(Response::ok)

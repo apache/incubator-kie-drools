@@ -75,6 +75,7 @@ public class TrustyServiceImpl implements TrustyService {
     private static final Logger LOG = LoggerFactory.getLogger(TrustyServiceImpl.class);
 
     private boolean isExplainabilityEnabled;
+    private Long maxRunningTimeSeconds;
 
     private ExplainabilityRequestProducer explainabilityRequestProducer;
     private TrustyStorageService storageService;
@@ -89,11 +90,14 @@ public class TrustyServiceImpl implements TrustyService {
             @ConfigProperty(name = "trusty.explainability.enabled") Boolean isExplainabilityEnabled,
             ExplainabilityRequestProducer explainabilityRequestProducer,
             TrustyStorageService storageService,
-            ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry) {
+            ExplainerServiceHandlerRegistry explainerServiceHandlerRegistry,
+            @ConfigProperty(name = "trusty.explainability.counterfactuals.maxRunningTimeSeconds",
+                    defaultValue = "60") Long maxRunningTimeSeconds) {
         this.isExplainabilityEnabled = Boolean.TRUE.equals(isExplainabilityEnabled);
         this.explainabilityRequestProducer = explainabilityRequestProducer;
         this.storageService = storageService;
         this.explainerServiceHandlerRegistry = explainerServiceHandlerRegistry;
+        this.maxRunningTimeSeconds = maxRunningTimeSeconds;
     }
 
     // used only in tests
@@ -202,17 +206,18 @@ public class TrustyServiceImpl implements TrustyService {
         if (!storage.containsKey(executionId)) {
             throw new IllegalArgumentException(String.format("A decision with ID %s is not present in the storage. Counterfactuals cannot be requested.", executionId));
         }
-        CounterfactualExplainabilityRequest counterfactualRequest = storeCounterfactualRequest(executionId, goals, searchDomains);
-        sendCounterfactualRequestEvent(executionId, counterfactualRequest.getCounterfactualId(), goals, searchDomains);
+        CounterfactualExplainabilityRequest counterfactualRequest = storeCounterfactualRequest(executionId, goals, searchDomains, maxRunningTimeSeconds);
+        sendCounterfactualRequestEvent(executionId, counterfactualRequest.getCounterfactualId(), goals, searchDomains, maxRunningTimeSeconds);
 
         return counterfactualRequest;
     }
 
     protected CounterfactualExplainabilityRequest storeCounterfactualRequest(String executionId,
             List<TypedVariableWithValue> goals,
-            List<CounterfactualSearchDomain> searchDomains) {
+            List<CounterfactualSearchDomain> searchDomains,
+            Long maxRunningTimeSeconds) {
         String counterfactualId = UUID.randomUUID().toString();
-        CounterfactualExplainabilityRequest counterfactualRequest = new CounterfactualExplainabilityRequest(executionId, counterfactualId, goals, searchDomains);
+        CounterfactualExplainabilityRequest counterfactualRequest = new CounterfactualExplainabilityRequest(executionId, counterfactualId, goals, searchDomains, maxRunningTimeSeconds);
         Storage<String, CounterfactualExplainabilityRequest> storage = storageService.getCounterfactualRequestStorage();
         storage.put(counterfactualId, counterfactualRequest);
 
@@ -222,7 +227,8 @@ public class TrustyServiceImpl implements TrustyService {
     protected void sendCounterfactualRequestEvent(String executionId,
             String counterfactualId,
             List<TypedVariableWithValue> goals,
-            List<CounterfactualSearchDomain> searchDomains) {
+            List<CounterfactualSearchDomain> searchDomains,
+            Long maxRunningTimeSeconds) {
         Decision decision = getDecisionById(executionId);
 
         //This is returned as null under Redis, so play safe
@@ -268,7 +274,8 @@ public class TrustyServiceImpl implements TrustyService {
                 createDecisionModelIdentifierDto(decision),
                 originalInputs,
                 requiredOutputs,
-                searchDomainDtos));
+                searchDomainDtos,
+                maxRunningTimeSeconds));
     }
 
     private <T extends TypedVariable<T>> String buildCounterfactualErrorMessage(String title,

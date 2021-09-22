@@ -42,7 +42,7 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
                         null,
                         false,
                         new CounterfactualDomainRange(JsonNodeFactory.instance.numberNode(0), JsonNodeFactory.instance.numberNode(10))));
-        CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId", "counterfactualId", goals, searchDomains);
+        CounterfactualExplainabilityRequest request = new CounterfactualExplainabilityRequest("executionId", "counterfactualId", goals, searchDomains, 60L);
         CounterfactualExplainabilityRequestMarshaller marshaller = new CounterfactualExplainabilityRequestMarshaller(new ObjectMapper());
 
         marshaller.writeTo(writer, request);
@@ -53,5 +53,6 @@ public class CounterfactualExplainabilityRequestMarshallerTest extends Marshalle
         Assertions.assertEquals(goals.get(0).getName(), retrieved.getGoals().stream().findFirst().get().getName());
         Assertions.assertEquals(searchDomains.get(0).getName(), retrieved.getSearchDomains().stream().findFirst().get().getName());
         Assertions.assertEquals(0, ((CounterfactualDomainRange) retrieved.getSearchDomains().stream().findFirst().get().getDomain()).getLowerBound().asInt());
+        Assertions.assertEquals(60L, request.getMaxRunningTimeSeconds());
     }
 }

@@ -48,11 +48,14 @@ import static org.mockito.Mockito.when;
 public class ExplainabilityApiV1Test {
 
     private static final String EXECUTION_ID = "executionId";
+
     private static final String COUNTERFACTUAL_ID = "counterfactualId";
 
     private static final TrustyService trustyService = mock(TrustyService.class);
 
     private static final ExplainabilityApiV1 explainabilityEndpoint = new ExplainabilityApiV1();
+
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
 
     @BeforeAll
     public static void initialise() {
@@ -78,7 +81,11 @@ public class ExplainabilityApiV1Test {
 
     @Test
     public void testRequestCounterfactualsWhenExecutionDoesExist() {
-        when(trustyService.requestCounterfactuals(anyString(), any(), any())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID));
+        when(trustyService.requestCounterfactuals(anyString(), any(), any())).thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                MAX_RUNNING_TIME_SECONDS));
 
         org.kie.kogito.trusty.service.common.requests.CounterfactualRequest request =
                 new org.kie.kogito.trusty.service.common.requests.CounterfactualRequest(Collections.emptyList(), Collections.emptyList());
@@ -92,6 +99,7 @@ public class ExplainabilityApiV1Test {
         CounterfactualRequestResponse counterfactualRequestResponse = (CounterfactualRequestResponse) entity;
         assertEquals(EXECUTION_ID, counterfactualRequestResponse.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, counterfactualRequestResponse.getCounterfactualId());
+        assertEquals(MAX_RUNNING_TIME_SECONDS, counterfactualRequestResponse.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -106,7 +114,11 @@ public class ExplainabilityApiV1Test {
     @Test
     @SuppressWarnings({ "rawtypes", "unchecked" })
     public void testGetAllCounterfactualsWhenExecutionDoesExist() {
-        when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualExplainabilityRequest(EXECUTION_ID, COUNTERFACTUAL_ID)));
+        when(trustyService.getCounterfactualRequests(anyString())).thenReturn(List.of(new CounterfactualExplainabilityRequest(EXECUTION_ID,
+                COUNTERFACTUAL_ID,
+                Collections.emptyList(),
+                Collections.emptyList(),
+                MAX_RUNNING_TIME_SECONDS)));
 
         Response response = explainabilityEndpoint.getAllCounterfactualsSummary(EXECUTION_ID);
         assertNotNull(response);
@@ -120,6 +132,7 @@ public class ExplainabilityApiV1Test {
         CounterfactualRequestResponse counterfactual = counterfactualRequestResponse.get(0);
         assertEquals(EXECUTION_ID, counterfactual.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, counterfactual.getCounterfactualId());
+        assertEquals(MAX_RUNNING_TIME_SECONDS, counterfactual.getMaxRunningTimeSeconds());
     }
 
     @Test
@@ -144,7 +157,8 @@ public class ExplainabilityApiV1Test {
                 .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
                         COUNTERFACTUAL_ID,
                         List.of(goal),
-                        List.of(searchDomain)));
+                        List.of(searchDomain),
+                        MAX_RUNNING_TIME_SECONDS));
 
         Response response = explainabilityEndpoint.getCounterfactualDetails(EXECUTION_ID, COUNTERFACTUAL_ID);
         assertNotNull(response);
@@ -155,6 +169,7 @@ public class ExplainabilityApiV1Test {
         CounterfactualResultsResponse resultsResponse = (CounterfactualResultsResponse) entity;
         assertEquals(EXECUTION_ID, resultsResponse.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, resultsResponse.getCounterfactualId());
+        assertEquals(MAX_RUNNING_TIME_SECONDS, resultsResponse.getMaxRunningTimeSeconds());
         assertEquals(1, resultsResponse.getGoals().size());
         assertEquals(goal, resultsResponse.getGoals().iterator().next());
         assertEquals(1, resultsResponse.getSearchDomains().size());
@@ -197,7 +212,8 @@ public class ExplainabilityApiV1Test {
                 .thenReturn(new CounterfactualExplainabilityRequest(EXECUTION_ID,
                         COUNTERFACTUAL_ID,
                         List.of(goal),
-                        List.of(searchDomain)));
+                        List.of(searchDomain),
+                        MAX_RUNNING_TIME_SECONDS));
         when(trustyService.getCounterfactualResults(anyString(), anyString())).thenReturn(List.of(solution1, solution2));
 
         Response response = explainabilityEndpoint.getCounterfactualDetails(EXECUTION_ID, COUNTERFACTUAL_ID);
@@ -209,6 +225,7 @@ public class ExplainabilityApiV1Test {
         CounterfactualResultsResponse resultsResponse = (CounterfactualResultsResponse) entity;
         assertEquals(EXECUTION_ID, resultsResponse.getExecutionId());
         assertEquals(COUNTERFACTUAL_ID, resultsResponse.getCounterfactualId());
+        assertEquals(MAX_RUNNING_TIME_SECONDS, resultsResponse.getMaxRunningTimeSeconds());
         assertEquals(1, resultsResponse.getGoals().size());
         assertEquals(goal, resultsResponse.getGoals().iterator().next());
         assertEquals(1, resultsResponse.getSearchDomains().size());

@@ -30,8 +30,9 @@ public class CounterfactualExplainabilityRequest {
 
     public static final String EXECUTION_ID_FIELD = "executionId";
     public static final String COUNTERFACTUAL_ID_FIELD = "counterfactualId";
-    public static final String COUNTERFACTUAL_GOALS = "goals";
-    public static final String COUNTERFACTUAL_SEARCH_DOMAINS = "searchDomains";
+    public static final String COUNTERFACTUAL_GOALS_FIELD = "goals";
+    public static final String COUNTERFACTUAL_SEARCH_DOMAINS_FIELD = "searchDomains";
+    public static final String MAX_RUNNING_TIME_SECONDS_FIELD = "maxRunningTimeSeconds";
 
     @JsonProperty(EXECUTION_ID_FIELD)
     @NotNull(message = "executionId must be provided.")
@@ -41,30 +42,36 @@ public class CounterfactualExplainabilityRequest {
     @NotNull(message = "counterfactualId must be provided.")
     private String counterfactualId;
 
-    @JsonProperty(COUNTERFACTUAL_GOALS)
+    @JsonProperty(COUNTERFACTUAL_GOALS_FIELD)
     @NotNull(message = "goals object must be provided.")
     private Collection<TypedVariableWithValue> goals;
 
-    @JsonProperty(COUNTERFACTUAL_SEARCH_DOMAINS)
+    @JsonProperty(COUNTERFACTUAL_SEARCH_DOMAINS_FIELD)
     @NotNull(message = "searchDomains object must be provided.")
     private Collection<CounterfactualSearchDomain> searchDomains;
+
+    @JsonProperty(MAX_RUNNING_TIME_SECONDS_FIELD)
+    @NotNull(message = "maxRunningTimeSeconds must be provided.")
+    private Long maxRunningTimeSeconds;
 
     public CounterfactualExplainabilityRequest() {
     }
 
     public CounterfactualExplainabilityRequest(@NotNull String executionId,
             @NotNull String counterfactualId) {
-        this(executionId, counterfactualId, new ArrayList<>(), new ArrayList<>());
+        this(executionId, counterfactualId, new ArrayList<>(), new ArrayList<>(), null);
     }
 
     public CounterfactualExplainabilityRequest(@NotNull String executionId,
             @NotNull String counterfactualId,
             @NotNull Collection<TypedVariableWithValue> goals,
-            @NotNull Collection<CounterfactualSearchDomain> searchDomains) {
+            @NotNull Collection<CounterfactualSearchDomain> searchDomains,
+            Long maxRunningTimeSeconds) {
         this.executionId = Objects.requireNonNull(executionId);
         this.counterfactualId = Objects.requireNonNull(counterfactualId);
         this.goals = Objects.requireNonNull(goals);
         this.searchDomains = Objects.requireNonNull(searchDomains);
+        this.maxRunningTimeSeconds = maxRunningTimeSeconds;
     }
 
     public String getExecutionId() {
@@ -81,6 +88,10 @@ public class CounterfactualExplainabilityRequest {
 
     public Collection<CounterfactualSearchDomain> getSearchDomains() {
         return searchDomains;
+    }
+
+    public Long getMaxRunningTimeSeconds() {
+        return maxRunningTimeSeconds;
     }
 
     //-------------
@@ -100,6 +111,10 @@ public class CounterfactualExplainabilityRequest {
 
     public void setSearchDomains(Collection<CounterfactualSearchDomain> searchDomains) {
         this.searchDomains = searchDomains;
+    }
+
+    public void setMaxRunningTimeSeconds(Long maxRunningTimeSeconds) {
+        this.maxRunningTimeSeconds = maxRunningTimeSeconds;
     }
 
 }

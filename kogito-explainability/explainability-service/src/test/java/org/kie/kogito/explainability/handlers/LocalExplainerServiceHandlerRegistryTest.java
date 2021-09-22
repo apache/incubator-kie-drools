@@ -55,6 +55,8 @@ public class LocalExplainerServiceHandlerRegistryTest {
 
     private static final String COUNTERFACTUAL_ID = "counterfactualId";
 
+    private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
+
     private LimeExplainerServiceHandler limeExplainerServiceHandler;
     private CounterfactualExplainerServiceHandler counterfactualExplainerServiceHandler;
     private PredictionProvider predictionProvider;
@@ -68,8 +70,11 @@ public class LocalExplainerServiceHandlerRegistryTest {
         LimeExplainer limeExplainer = mock(LimeExplainer.class);
         CounterfactualExplainer counterfactualExplainer = mock(CounterfactualExplainer.class);
         PredictionProviderFactory predictionProviderFactory = mock(PredictionProviderFactory.class);
-        limeExplainerServiceHandler = spy(new LimeExplainerServiceHandler(limeExplainer, predictionProviderFactory));
-        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(counterfactualExplainer, predictionProviderFactory));
+        limeExplainerServiceHandler = spy(new LimeExplainerServiceHandler(limeExplainer,
+                predictionProviderFactory));
+        counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(counterfactualExplainer,
+                predictionProviderFactory,
+                MAX_RUNNING_TIME_SECONDS));
         predictionProvider = mock(PredictionProvider.class);
         callback = mock(Consumer.class);
 
@@ -113,7 +118,8 @@ public class LocalExplainerServiceHandlerRegistryTest {
                 MODEL_IDENTIFIER_DTO,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         assertTrue(registry.explainabilityRequestFrom(request) instanceof CounterfactualExplainabilityRequest);
 
@@ -128,7 +134,8 @@ public class LocalExplainerServiceHandlerRegistryTest {
                 MODEL_IDENTIFIER,
                 Collections.emptyMap(),
                 Collections.emptyMap(),
-                Collections.emptyMap());
+                Collections.emptyMap(),
+                MAX_RUNNING_TIME_SECONDS);
 
         registry.explainAsyncWithResults(request, callback);
 
