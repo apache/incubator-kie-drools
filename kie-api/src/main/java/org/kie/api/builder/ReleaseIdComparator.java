@@ -15,20 +15,20 @@
  */
 package org.kie.api.builder;
 
-import java.math.BigInteger;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
-import java.util.Stack;
 
 public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
-    public static enum SortDirection {
+    public enum SortDirection {
         ASCENDING,
         DESCENDING
     }
@@ -74,7 +74,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
     }
 
     private static ReleaseId getFirstSorted(List<ReleaseId> releaseIds, SortDirection sortDirection) {
-        if (releaseIds != null && releaseIds.size() > 0) {
+        if (releaseIds != null && !releaseIds.isEmpty()) {
             releaseIds.sort(new ReleaseIdComparator(sortDirection));
             return releaseIds.get(0);
         }
@@ -91,51 +91,46 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
         private interface Item {
 
-            int INTEGER_ITEM = 0;
-            int STRING_ITEM = 1;
-            int LIST_ITEM = 2;
+            enum ItemType {INTEGER_ITEM, STRING_ITEM, LIST_ITEM}
 
             int compareTo(Item item);
 
-            int getType();
+            ItemType getType();
 
             boolean isNull();
         }
 
         private static class IntegerItem implements Item {
-
-            private static final BigInteger BigInteger_ZERO = new BigInteger("0");
-
-            private final BigInteger value;
-
-            public static final IntegerItem ZERO = new IntegerItem();
-
-            private IntegerItem() {
-                this.value = BigInteger_ZERO;
+            private final int value;
+            
+            private static final IntegerItem NULL_INTEGER = new IntegerItem();
+            
+            private IntegerItem () {
+                this.value = 0;
             }
-
+            
             public IntegerItem(String str) {
-                this.value = new BigInteger(str);
+                this.value = Integer.parseInt(str);
             }
 
-            public int getType() {
-                return INTEGER_ITEM;
+            public ItemType getType() {
+                return ItemType.INTEGER_ITEM;
             }
 
             public boolean isNull() {
-                return BigInteger_ZERO.equals(value);
+                return this.value == 0;
             }
 
             public int compareTo(Item item) {
                 if (item == null)
                 {
-                    return BigInteger_ZERO.equals(value) ? 0 : 1; // 1.0 == 1, 1.1 > 1
+                    return value == 0 ? 0 : 1; // 1.0 == 1, 1.1 > 1
                 }
 
                 switch (item.getType())
                 {
                     case INTEGER_ITEM:
-                        return value.compareTo(((IntegerItem) item).value);
+                        return value - ((IntegerItem) item).value;
 
                     case STRING_ITEM:
                         return 1; // 1.1 > 1-sp
@@ -144,12 +139,12 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                         return 1; // 1.1 > 1-1
 
                     default:
-                        throw new RuntimeException("invalid item: " + item.getClass());
+                        throw new IllegalArgumentException("invalid type: " + item.getType());
                 }
             }
 
             public String toString() {
-                return value.toString();
+                return Integer.toString(value);
             }
         }
 
@@ -196,8 +191,8 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                 this.value = ALIASES.containsKey(value) ? ALIASES.get(value) : value;
             }
 
-            public int getType() {
-                return STRING_ITEM;
+            public ItemType getType() {
+                return ItemType.STRING_ITEM;
             }
 
             public boolean isNull() {
@@ -238,7 +233,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                         return -1; // 1.any < 1-1
 
                     default:
-                        throw new RuntimeException("invalid item: " + item.getClass());
+                        throw new IllegalArgumentException("invalid type: " + item.getType());
                 }
             }
 
@@ -253,8 +248,8 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
          */
         private static class ListItem extends ArrayList<Item> implements Item {
 
-            public int getType() {
-                return LIST_ITEM;
+            public ItemType getType() {
+                return ItemType.LIST_ITEM;
             }
 
             public boolean isNull() {
@@ -296,7 +291,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                             Item r = right.hasNext() ? right.next() : null;
 
                             // if this is shorter, then invert the compare and mul with -1
-                            int result = l == null ? -1 * r.compareTo(l) : l.compareTo(r);
+                            int result = l == null ? -r.compareTo(l) : l.compareTo(r);
 
                             if (result != 0) {
                                 return result;
@@ -306,7 +301,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
                         return 0;
 
                     default:
-                        throw new RuntimeException("invalid item: " + item.getClass());
+                        throw new IllegalArgumentException("invalid item: " + item.getType());
                 }
             }
 
@@ -338,7 +333,7 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
             ListItem list = items;
 
-            Stack<Item> stack = new Stack<Item>();
+            Deque<Item> stack = new ArrayDeque<>();
             stack.push(list);
 
             boolean isDigit = false;
@@ -350,14 +345,14 @@ public class ReleaseIdComparator implements Comparator<ReleaseId> {
 
                 if (c == '.') {
                     if (i == startIndex) {
-                        list.add(IntegerItem.ZERO);
+                        list.add(IntegerItem.NULL_INTEGER);
                     } else {
                         list.add(parseItem(isDigit, version.substring(startIndex, i)));
                     }
                     startIndex = i + 1;
                 } else if (c == '-') {
                     if (i == startIndex) {
-                        list.add(IntegerItem.ZERO);
+                        list.add(IntegerItem.NULL_INTEGER);
                     } else {
                         list.add(parseItem(isDigit, version.substring(startIndex, i)));
                     }
