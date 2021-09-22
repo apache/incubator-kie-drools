@@ -32,7 +32,7 @@ import static org.kie.dmn.validation.DMNValidator.Validation.ANALYZE_DECISION_TA
 public class FailingOutputConstraintsTest extends AbstractDTAnalysisTest {
 
     @Test
-    public void test() {
+    public void testFailingOutputConstraints() {
         List<DMNMessage> validate = validator.validate(getReader("FailingOutputConstraints.dmn"), ANALYZE_DECISION_TABLE);
         assertTrue("It should contain DMNMessage for output outside of LoV",
                    validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.DECISION_TABLE_ANALYSIS_ERROR)));
@@ -45,7 +45,7 @@ public class FailingOutputConstraintsTest extends AbstractDTAnalysisTest {
     }
     
     @Test
-    public void test2() {
+    public void testFailingOutputConstraintsWhenOutputIsSymbol() {
         List<DMNMessage> validate = validator.validate(getReader("FailingOutputConstraints2.dmn"), ANALYZE_DECISION_TABLE);
         debugValidatorMsg(validate);
         assertTrue("It should NOT contain DMNMessage for output outside of LoV (using a symbol in output)",
