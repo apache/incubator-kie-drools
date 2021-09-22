@@ -332,20 +332,21 @@ public abstract class PatternDSL implements DSLNode {
         return settableWatchedProps;
     }
 
-    private void populateSettableWatchedProps(String prop, Collection<String> settableProps, Set<String> settableWatchedProps, boolean raiseErrorForNonSettableOrDuplicatedProp) {
-        String actualProp = prop;
-        if (prop.startsWith("!")) {
-            actualProp = prop.substring(1).trim();
-            prop = "!" + actualProp;
+    private void populateSettableWatchedProps(String property, Collection<String> settableProps, Set<String> settableWatchedProps, boolean raiseErrorForNonSettableOrDuplicatedProp) {
+        String trimmedProperty = property.trim();
+        String actualProperty = trimmedProperty;
+        if (trimmedProperty.startsWith("!")) {
+            actualProperty = property.substring(1).trim();
+            trimmedProperty = "!" + actualProperty;
         }
-        if (actualProp.equals("*") || settableProps.contains(actualProp)) {
-            if (raiseErrorForNonSettableOrDuplicatedProp && (settableWatchedProps.contains(actualProp) || settableWatchedProps.contains("!" + actualProp))) {
-                context.addCompilationError(new InvalidExpressionErrorResult("Duplicate property " + actualProp + " in @" + Watch.class.getSimpleName() + " annotation"));
+        if (actualProperty.equals("*") || settableProps.contains(actualProperty)) {
+            if (raiseErrorForNonSettableOrDuplicatedProp && (settableWatchedProps.contains(actualProperty) || settableWatchedProps.contains("!" + actualProperty))) {
+                context.addCompilationError(new InvalidExpressionErrorResult("Duplicate property " + actualProperty + " in @" + Watch.class.getSimpleName() + " annotation"));
                 return;
             }
-            settableWatchedProps.add(prop);
+            settableWatchedProps.add(trimmedProperty);
         } else if (raiseErrorForNonSettableOrDuplicatedProp) {
-            context.addCompilationError(new InvalidExpressionErrorResult("Unknown property " + actualProp + " in @watch annotation"));
+            context.addCompilationError(new InvalidExpressionErrorResult("Unknown property " + actualProperty + " in @watch annotation"));
         }
     }
 
