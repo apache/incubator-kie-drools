@@ -21,10 +21,17 @@ import java.io.Reader;
 import java.util.List;
 
 import org.junit.Test;
+import org.kie.api.builder.Message.Level;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNMessageType;
+import org.kie.dmn.api.core.DMNModel;
+import org.kie.dmn.api.core.DMNRuntime;
+import org.kie.dmn.core.DMNRuntimeTest;
+import org.kie.dmn.core.util.DMNRuntimeUtil;
+import org.kie.dmn.model.api.Definitions;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.kie.dmn.validation.DMNValidator.Validation.VALIDATE_COMPILATION;
@@ -389,5 +396,22 @@ public class ValidatorDecisionTest extends AbstractValidatorTest {
                 VALIDATE_MODEL );
         assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
         assertTrue(validate.stream().anyMatch(p -> p.getMessageType().equals(DMNMessageType.REQ_NOT_FOUND)));
+    }
+    
+    @Test
+    public void testDTCollectOperatorsMultipleOutputs() {
+        // DROOLS-6590 DMN composite output on DT Collect with operators - this is beyond the spec.
+        DMNRuntime runtime = DMNRuntimeUtil.createRuntime("multipleOutputsCollectDT.dmn", DMNRuntimeTest.class);
+        DMNModel dmnModel = runtime.getModel("https://kiegroup.org/dmn/_943A3581-5FD1-4BCF-9A52-AC7242CC451C", "multipleOutputsCollectDT");
+        assertThat(dmnModel, notNullValue());
+
+        Definitions definitions = dmnModel.getDefinitions();
+        assertThat(definitions, notNullValue());
+
+        List<DMNMessage> validate = DMNValidatorFactory.newValidator().validate(definitions, VALIDATE_MODEL, VALIDATE_COMPILATION);
+        assertThat(ValidatorUtil.formatMessages(validate), validate.size(), is(1));
+        assertTrue(ValidatorUtil.formatMessages(validate), validate.stream()
+                   .allMatch(p -> p.getLevel() == Level.WARNING && 
+                       p.getText().contains("Collect with Operator for compound outputs")));
     }
 }

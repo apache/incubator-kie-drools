@@ -23,10 +23,13 @@ import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.model.api.Association;
 import org.kie.dmn.model.api.AuthorityRequirement;
 import org.kie.dmn.model.api.DMNElement;
+import org.kie.dmn.model.api.DecisionTable;
 import org.kie.dmn.model.api.Definitions;
+import org.kie.dmn.model.api.FunctionDefinition;
 import org.kie.dmn.model.api.InformationRequirement;
 import org.kie.dmn.model.api.ItemDefinition;
 import org.kie.dmn.model.api.KnowledgeRequirement;
+import org.kie.dmn.model.api.NamedElement;
 
 public final class ValidatorUtil {
 
@@ -61,6 +64,18 @@ public final class ValidatorUtil {
                           .filter(e -> (e instanceof InformationRequirement || e instanceof KnowledgeRequirement || e instanceof AuthorityRequirement))
                           .map(DMNElement.class::cast)
                           .anyMatch(e -> (e.getId().equals(id)));
+    }
+    
+    public static String nameOrIDOfTable(DecisionTable sourceDT) {
+        if (sourceDT.getOutputLabel() != null && !sourceDT.getOutputLabel().isEmpty()) {
+            return sourceDT.getOutputLabel();
+        } else if (sourceDT.getParent() instanceof NamedElement) { // DT is decision logic of Decision, and similar cases.
+            return ((NamedElement) sourceDT.getParent()).getName();
+        } else if (sourceDT.getParent() instanceof FunctionDefinition && sourceDT.getParent().getParent() instanceof NamedElement) { // DT is decision logic of BKM.
+            return ((NamedElement) sourceDT.getParent().getParent()).getName();
+        } else {
+            return new StringBuilder("[ID: ").append(sourceDT.getId()).append("]").toString();
+        }
     }
 
     private ValidatorUtil() {

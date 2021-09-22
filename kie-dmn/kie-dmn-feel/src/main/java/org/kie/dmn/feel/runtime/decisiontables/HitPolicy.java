@@ -406,8 +406,9 @@ public enum HitPolicy {
                 dt,
                 results,
                 x -> x.map( y -> (Comparable) y ).collect( minBy( Comparator.naturalOrder() ) ).orElse( null ) );
-        ctx.notifyEvt( () -> {
-                                   List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
+        ctx.notifyEvt( () -> { 
+                                int resultIdx = results.indexOf( result );
+                                List<Integer> indexes = resultIdx >= 0 ? Collections.singletonList( matches.get( resultIdx ).getIndex() + 1 ) : Collections.emptyList();
                                    return new DecisionTableRulesSelectedEvent(
                                            FEELEvent.Severity.INFO,
                                            "Rules fired for decision table '" + dt.getName() + "': " + indexes,
@@ -433,7 +434,8 @@ public enum HitPolicy {
                 results,
                 x -> x.map( y -> (Comparable) y ).collect( maxBy( Comparator.naturalOrder() ) ).orElse( null ) );
         ctx.notifyEvt( () -> {
-                                   List<Integer> indexes = Collections.singletonList( matches.get( results.indexOf( result ) ).getIndex() + 1 );
+                                int resultIdx = results.indexOf( result );
+                                List<Integer> indexes = resultIdx >= 0 ? Collections.singletonList( matches.get( resultIdx ).getIndex() + 1 ) : Collections.emptyList();
                                    return new DecisionTableRulesSelectedEvent(
                                            FEELEvent.Severity.INFO,
                                            "Rules fired for decision table '" + dt.getName() + "': " + indexes,
