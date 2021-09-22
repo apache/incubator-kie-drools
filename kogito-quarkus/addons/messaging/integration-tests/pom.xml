@@ -11,6 +11,10 @@
   <name>Kogito Add-On Messaging - Integration Tests</name>
   <description>Integration tests for for Messaging Add-On (Quarkus)</description>
 
+  <properties>
+    <quarkus.test.list.include>true</quarkus.test.list.include>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.kie.kogito</groupId>
