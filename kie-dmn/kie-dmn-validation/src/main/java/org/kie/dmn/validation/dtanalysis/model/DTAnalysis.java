@@ -775,6 +775,9 @@ public class DTAnalysis {
             DDTARule rule = ddtaTable.getRule().get(ruleIdx);
             for (int outputIdx = 0; outputIdx < ddtaTable.getOutputs().size(); outputIdx++) {
                 Comparable<?> value = rule.getOutputEntry().get(outputIdx);
+                if (value instanceof DDTAOutputEntryExpression) {
+                    continue; // we can't say _statically_ if the output expression is in the output LoV; skipping
+                }
                 DDTAOutputClause outputClause = ddtaTable.getOutputs().get(outputIdx);
                 if (outputClause.isDiscreteDomain() && !outputClause.getDiscreteValues().contains(value)) {
                     passThruMessages.add(new DMNDTAnalysisMessage(this,
