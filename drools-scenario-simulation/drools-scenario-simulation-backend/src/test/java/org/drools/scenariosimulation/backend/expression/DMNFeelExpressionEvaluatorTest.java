@@ -293,7 +293,8 @@ public class DMNFeelExpressionEvaluatorTest {
     }
     
     @Test
-    public void drools6337() {
+    public void testUnaryTestUsingKieExtendedProfile() {
+    // DROOLS-6337 today() and now() functions not evaluated correctly in Test Scenarios
         ZonedDateTime now = (ZonedDateTime) expressionEvaluator.evaluateLiteralExpression("now()", ZonedDateTime.class.getCanonicalName(), Collections.emptyList()); 
         LocalDate today = (LocalDate) expressionEvaluator.evaluateLiteralExpression("today()", LocalDate.class.getCanonicalName(), Collections.emptyList());
         assertNotNull(now);
