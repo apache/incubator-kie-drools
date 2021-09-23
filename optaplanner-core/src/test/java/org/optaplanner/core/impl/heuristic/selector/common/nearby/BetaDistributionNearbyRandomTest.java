@@ -18,12 +18,9 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class BetaDistributionNearbyRandomTest {
 
@@ -39,17 +36,12 @@ public class BetaDistributionNearbyRandomTest {
 
     @Test
     public void nextIntUniform() {
-        Random random = mock(Random.class);
         NearbyRandom nearbyRandom = new BetaDistributionNearbyRandom(1.0, 1.0);
 
-        when(random.nextDouble()).thenReturn(0.0);
-        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
-        when(random.nextDouble()).thenReturn(1.0 / 500.0);
-        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(1);
-        when(random.nextDouble()).thenReturn(2.0 / 500.0);
-        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(2);
-        when(random.nextDouble()).thenReturn(3.0 / 500.0);
-        assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(3);
+        assertThat(nearbyRandom.nextInt(new TestRandom(0), 500)).isEqualTo(0);
+        assertThat(nearbyRandom.nextInt(new TestRandom(1.0 / 500.0), 500)).isEqualTo(1);
+        assertThat(nearbyRandom.nextInt(new TestRandom(2.0 / 500.0), 500)).isEqualTo(2);
+        assertThat(nearbyRandom.nextInt(new TestRandom(3.0 / 500.0), 500)).isEqualTo(3);
     }
 
 }

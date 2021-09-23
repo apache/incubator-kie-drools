@@ -17,15 +17,11 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.primint;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class IntValueRangeTest {
 
@@ -87,22 +83,14 @@ public class IntValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(0, 7).createRandomIterator(workingRandom), 3, 0);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(100, 104).createRandomIterator(workingRandom), 103, 100);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(-4, 3).createRandomIterator(workingRandom), -1, -4);
-        assertAllElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(workingRandom));
+        assertElementsOfIterator(new IntValueRange(0, 7).createRandomIterator(new TestRandom(3, 0)), 3, 0);
+        assertElementsOfIterator(new IntValueRange(100, 104).createRandomIterator(new TestRandom(3, 0)), 103, 100);
+        assertElementsOfIterator(new IntValueRange(-4, 3).createRandomIterator(new TestRandom(3, 0)), -1, -4);
+        assertAllElementsOfIterator(new IntValueRange(7, 7).createRandomIterator(new TestRandom(0)));
         // IncrementUnit
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(0, 10, 2).createRandomIterator(workingRandom), 6, 0);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(-1, 9, 2).createRandomIterator(workingRandom), 5, -1);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new IntValueRange(100, 120, 5).createRandomIterator(workingRandom), 115, 100);
+        assertElementsOfIterator(new IntValueRange(0, 10, 2).createRandomIterator(new TestRandom(3, 0)), 6, 0);
+        assertElementsOfIterator(new IntValueRange(-1, 9, 2).createRandomIterator(new TestRandom(3, 0)), 5, -1);
+        assertElementsOfIterator(new IntValueRange(100, 120, 5).createRandomIterator(new TestRandom(3, 0)), 115, 100);
     }
 
 }

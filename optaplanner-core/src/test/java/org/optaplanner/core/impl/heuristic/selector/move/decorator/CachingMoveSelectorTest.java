@@ -24,8 +24,6 @@ import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllCod
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertCodesOfNeverEndingMoveSelector;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.verifyPhaseLifecycle;
 
-import java.util.Random;
-
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.config.heuristic.selector.common.SelectionCacheType;
 import org.optaplanner.core.impl.heuristic.move.DummyMove;
@@ -34,6 +32,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class CachingMoveSelectorTest {
 
@@ -133,45 +133,34 @@ public class CachingMoveSelectorTest {
         CachingMoveSelector moveSelector = new CachingMoveSelector(childMoveSelector, cacheType, true);
         verify(childMoveSelector, times(1)).isNeverEnding();
 
-        Random workingRandom = mock(Random.class);
+        TestRandom workingRandom = new TestRandom(1, 0, 2);
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
 
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
 
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
-        when(workingRandom.nextInt(3)).thenReturn(1, 0, 2);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a1", "a3");
         moveSelector.stepEnded(stepScopeA1);
 
-        AbstractStepScope stepScopeA2 = mock(AbstractStepScope.class);
-        when(stepScopeA2.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA2.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeA2 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA2);
-        when(workingRandom.nextInt(3)).thenReturn(2, 0, 1);
+        workingRandom.reset(2, 0, 1);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a3", "a1", "a2");
         moveSelector.stepEnded(stepScopeA2);
 
         moveSelector.phaseEnded(phaseScopeA);
 
-        AbstractPhaseScope phaseScopeB = mock(AbstractPhaseScope.class);
-        when(phaseScopeB.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeB.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeB = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeB);
 
-        AbstractStepScope stepScopeB1 = mock(AbstractStepScope.class);
-        when(stepScopeB1.getPhaseScope()).thenReturn(phaseScopeB);
-        when(stepScopeB1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeB1 = PlannerTestUtils.delegatingStepScope(phaseScopeB);
         moveSelector.stepStarted(stepScopeB1);
-        when(workingRandom.nextInt(3)).thenReturn(1, 2, 0);
+        workingRandom.reset(1, 2, 0);
         assertCodesOfNeverEndingMoveSelector(moveSelector, 3L, "a2", "a3", "a1");
         moveSelector.stepEnded(stepScopeB1);
 

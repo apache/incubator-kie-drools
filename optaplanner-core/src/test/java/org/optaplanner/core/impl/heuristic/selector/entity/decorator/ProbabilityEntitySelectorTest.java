@@ -39,6 +39,8 @@ import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class ProbabilityEntitySelectorTest {
 
@@ -65,19 +67,19 @@ public class ProbabilityEntitySelectorTest {
         EntitySelector entitySelector = new ProbabilityEntitySelector(childEntitySelector, SelectionCacheType.STEP,
                 probabilityWeightFactory);
 
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextDouble()).thenReturn(1222.0 / 1234.0, 111.0 / 1234.0, 0.0, 1230.0 / 1234.0, 1199.0 / 1234.0);
+        Random workingRandom = new TestRandom(
+                1222.0 / 1234.0,
+                111.0 / 1234.0,
+                0.0,
+                1230.0 / 1234.0,
+                1199.0 / 1234.0);
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         entitySelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         entitySelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         entitySelector.stepStarted(stepScopeA1);
 
         assertThat(entitySelector.isCountable()).isTrue();

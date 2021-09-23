@@ -18,10 +18,6 @@ package org.optaplanner.core.impl.localsearch.decider.acceptor.simulatedannealin
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardmediumsoft.HardMediumSoftScore;
@@ -32,6 +28,7 @@ import org.optaplanner.core.impl.localsearch.scope.LocalSearchPhaseScope;
 import org.optaplanner.core.impl.localsearch.scope.LocalSearchStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
@@ -42,8 +39,6 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
 
         SolverScope<TestdataSolution> solverScope = new SolverScope<>();
         solverScope.setBestScore(SimpleScore.of(-1000));
-        Random workingRandom = mock(Random.class);
-        solverScope.setWorkingRandom(workingRandom);
         LocalSearchPhaseScope<TestdataSolution> phaseScope = new LocalSearchPhaseScope<>(solverScope);
         LocalSearchStepScope<TestdataSolution> lastCompletedStepScope = new LocalSearchStepScope<>(phaseScope, -1);
         lastCompletedStepScope.setScore(SimpleScore.of(-1000));
@@ -54,11 +49,11 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         stepScope0.setTimeGradient(0.0);
         acceptor.stepStarted(stepScope0);
         LocalSearchMoveScope<TestdataSolution> moveScope0 = buildMoveScope(stepScope0, -500);
-        when(workingRandom.nextDouble()).thenReturn(0.3);
+        solverScope.setWorkingRandom(new TestRandom(0.3));
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1300))).isFalse();
-        when(workingRandom.nextDouble()).thenReturn(0.3);
+        solverScope.setWorkingRandom(new TestRandom(0.3));
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1200))).isTrue();
-        when(workingRandom.nextDouble()).thenReturn(0.4);
+        solverScope.setWorkingRandom(new TestRandom(0.4));
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope0, -1200))).isFalse();
         assertThat(acceptor.isAccepted(moveScope0)).isTrue();
         stepScope0.setStep(moveScope0.getMove());
@@ -71,11 +66,11 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         stepScope1.setTimeGradient(0.5);
         acceptor.stepStarted(stepScope1);
         LocalSearchMoveScope<TestdataSolution> moveScope1 = buildMoveScope(stepScope1, -800);
-        when(workingRandom.nextDouble()).thenReturn(0.13);
+        solverScope.setWorkingRandom(new TestRandom(0.13));
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -700))).isTrue();
-        when(workingRandom.nextDouble()).thenReturn(0.14);
+        solverScope.setWorkingRandom(new TestRandom(0.14));
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope1, -700))).isFalse();
-        when(workingRandom.nextDouble()).thenReturn(0.04);
+        solverScope.setWorkingRandom(new TestRandom(0.04));
         assertThat(acceptor.isAccepted(moveScope1)).isTrue();
         stepScope1.setStep(moveScope1.getMove());
         stepScope1.setScore(moveScope1.getScore());
@@ -83,15 +78,13 @@ public class SimulatedAnnealingAcceptorTest extends AbstractAcceptorTest {
         acceptor.stepEnded(stepScope1);
         phaseScope.setLastCompletedStepScope(stepScope1);
 
+        solverScope.setWorkingRandom(new TestRandom(0.01, 0.01));
         LocalSearchStepScope<TestdataSolution> stepScope2 = new LocalSearchStepScope<>(phaseScope);
         stepScope2.setTimeGradient(1.0);
         acceptor.stepStarted(stepScope2);
         LocalSearchMoveScope<TestdataSolution> moveScope2 = buildMoveScope(stepScope1, -400);
-        when(workingRandom.nextDouble()).thenReturn(0.01);
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -800))).isTrue();
-        when(workingRandom.nextDouble()).thenReturn(0.01);
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -801))).isFalse();
-        when(workingRandom.nextDouble()).thenReturn(0.01);
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -1200))).isFalse();
         assertThat(acceptor.isAccepted(buildMoveScope(stepScope2, -700))).isTrue();
         assertThat(acceptor.isAccepted(moveScope2)).isTrue();

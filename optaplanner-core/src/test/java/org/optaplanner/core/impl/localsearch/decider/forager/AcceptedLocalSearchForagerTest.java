@@ -34,6 +34,7 @@ import org.optaplanner.core.impl.score.buildin.simple.SimpleScoreDefinition;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class AcceptedLocalSearchForagerTest {
 
@@ -230,8 +231,7 @@ public class AcceptedLocalSearchForagerTest {
         when(scoreDirector.getSolutionDescriptor()).thenReturn(TestdataSolution.buildSolutionDescriptor());
         when(scoreDirector.getScoreDefinition()).thenReturn(new SimpleScoreDefinition());
         solverScope.setScoreDirector(scoreDirector);
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(3)).thenReturn(1);
+        Random workingRandom = new TestRandom(1, 1);
         solverScope.setWorkingRandom(workingRandom);
         solverScope.setBestScore(SimpleScore.of(-10));
         LocalSearchStepScope<TestdataSolution> lastLocalSearchStepScope = new LocalSearchStepScope<>(phaseScope);

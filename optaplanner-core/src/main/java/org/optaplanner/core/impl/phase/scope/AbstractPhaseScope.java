@@ -187,7 +187,7 @@ public abstract class AbstractPhaseScope<Solution_> {
     }
 
     public Random getWorkingRandom() {
-        return solverScope.getWorkingRandom();
+        return getSolverScope().getWorkingRandom();
     }
 
     public boolean isBestSolutionInitialized() {

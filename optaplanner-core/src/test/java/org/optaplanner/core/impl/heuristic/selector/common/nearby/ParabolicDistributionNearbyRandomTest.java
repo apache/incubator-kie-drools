@@ -18,12 +18,11 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class ParabolicDistributionNearbyRandomTest {
 
@@ -34,27 +33,28 @@ public class ParabolicDistributionNearbyRandomTest {
 
     @Test
     public void nextInt() {
-        Random random = mock(Random.class);
+        Random random = new TestRandom(
+                0.0,
+                1.0 - Math.pow(1 - 1.0 / 100.0, 3.0),
+                1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
-        when(random.nextDouble()).thenReturn(0.0);
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
-        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 1.0 / 100.0, 3.0));
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(1);
-        when(random.nextDouble()).thenReturn(1.0 - Math.pow(1 - 2.0 / 100.0, 3.0));
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(2);
     }
 
     @Test
     public void cornerCase() {
-        Random random = mock(Random.class);
+        Random random = new TestRandom(
+                Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
+                Math.nextAfter(1.0, Double.NEGATIVE_INFINITY),
+                0, 0);
         NearbyRandom nearbyRandom = new ParabolicDistributionNearbyRandom(100);
 
-        when(random.nextDouble()).thenReturn(Math.nextAfter(1.0, Double.NEGATIVE_INFINITY));
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(99);
         assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(9);
 
-        when(random.nextDouble()).thenReturn(0.0);
         assertThat(nearbyRandom.nextInt(random, 500)).isEqualTo(0);
         assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(0);
     }

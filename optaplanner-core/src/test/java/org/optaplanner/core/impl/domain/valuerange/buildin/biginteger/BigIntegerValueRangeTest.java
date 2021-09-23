@@ -17,16 +17,13 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.biginteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
 import java.math.BigInteger;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class BigIntegerValueRangeTest {
 
@@ -118,28 +115,21 @@ public class BigIntegerValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("7"))
-                .createRandomIterator(workingRandom), new BigInteger("3"), new BigInteger("0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("3"), new BigInteger("0"));
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("104"))
-                .createRandomIterator(workingRandom), new BigInteger("103"), new BigInteger("100"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("103"), new BigInteger("100"));
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("-4"), new BigInteger("3"))
-                .createRandomIterator(workingRandom), new BigInteger("-1"), new BigInteger("-4"));
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("-1"), new BigInteger("-4"));
         assertAllElementsOfIterator(new BigIntegerValueRange(new BigInteger("7"), new BigInteger("7"))
-                .createRandomIterator(workingRandom));
+                .createRandomIterator(new TestRandom(0)));
         // IncrementUnit
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("0"), new BigInteger("10"), new BigInteger("2"))
-                .createRandomIterator(workingRandom), new BigInteger("6"), new BigInteger("0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("6"), new BigInteger("0"));
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("-1"), new BigInteger("9"), new BigInteger("2"))
-                .createRandomIterator(workingRandom), new BigInteger("5"), new BigInteger("-1"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("5"), new BigInteger("-1"));
         assertElementsOfIterator(new BigIntegerValueRange(new BigInteger("100"), new BigInteger("120"), new BigInteger("5"))
-                .createRandomIterator(workingRandom), new BigInteger("115"), new BigInteger("100"));
+                .createRandomIterator(new TestRandom(3, 0)), new BigInteger("115"), new BigInteger("100"));
     }
 
 }

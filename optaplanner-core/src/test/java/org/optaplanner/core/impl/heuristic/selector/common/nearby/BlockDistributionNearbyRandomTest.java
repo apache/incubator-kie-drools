@@ -18,14 +18,11 @@ package org.optaplanner.core.impl.heuristic.selector.common.nearby;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class BlockDistributionNearbyRandomTest {
 
@@ -61,73 +58,67 @@ public class BlockDistributionNearbyRandomTest {
 
     @Test
     public void nextInt() {
-        Random random = mock(Random.class);
-        when(random.nextInt(anyInt())).thenReturn(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
+        TestRandom random = new TestRandom(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
         NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 300, 0.2, 0.0);
 
         assertThat(nearbyRandom.nextInt(random, 100)).isEqualTo(0);
-        verify(random).nextInt(20);
+        random.assertIntBoundJustRequested(20);
         assertThat(nearbyRandom.nextInt(random, 1000)).isEqualTo(1);
-        verify(random).nextInt(200);
+        random.assertIntBoundJustRequested(200);
         assertThat(nearbyRandom.nextInt(random, 10000)).isEqualTo(2);
-        verify(random).nextInt(300);
+        random.assertIntBoundJustRequested(300);
         assertThat(nearbyRandom.nextInt(random, 20)).isEqualTo(3);
-        verify(random).nextInt(10);
+        random.assertIntBoundJustRequested(10);
         assertThat(nearbyRandom.nextInt(random, 7)).isEqualTo(4);
-        verify(random).nextInt(7);
+        random.assertIntBoundJustRequested(7);
 
         nearbyRandom = new BlockDistributionNearbyRandom(100, 250, 1.0, 0.0);
         assertThat(nearbyRandom.nextInt(random, 700)).isEqualTo(5);
-        verify(random).nextInt(250);
+        random.assertIntBoundJustRequested(250);
         assertThat(nearbyRandom.nextInt(random, 170)).isEqualTo(6);
-        verify(random).nextInt(170);
+        random.assertIntBoundJustRequested(170);
         assertThat(nearbyRandom.nextInt(random, 70)).isEqualTo(7);
-        verify(random).nextInt(70);
+        random.assertIntBoundJustRequested(70);
 
-        when(random.nextDouble()).thenReturn(0.3);
+        random = new TestRandom(0.3, 8, 0.5, 9);
         nearbyRandom = new BlockDistributionNearbyRandom(100, 500, 0.5, 0.4);
         assertThat(nearbyRandom.nextInt(random, 700)).isEqualTo(8);
-        verify(random).nextInt(700);
-        when(random.nextDouble()).thenReturn(0.5);
+        random.assertIntBoundJustRequested(700);
         assertThat(nearbyRandom.nextInt(random, 700)).isEqualTo(9);
-        verify(random).nextInt(350);
+        random.assertIntBoundJustRequested(350);
     }
 
     @Test
     public void cornerCase() {
-        Random random = mock(Random.class);
         double threshold = 0.5;
         NearbyRandom nearbyRandom = new BlockDistributionNearbyRandom(10, 100, 0.5, threshold);
 
-        when(random.nextInt(anyInt())).thenReturn(-2);
-        when(random.nextInt(1)).thenReturn(-1);
-        when(random.nextDouble()).thenReturn(Math.nextAfter(threshold, Double.NEGATIVE_INFINITY));
+        Random random = new TestRandom(Math.nextAfter(threshold, Double.NEGATIVE_INFINITY), -1);
         assertThat(nearbyRandom.nextInt(random, 1)).isEqualTo(-1);
 
-        when(random.nextDouble()).thenReturn(threshold);
-        when(random.nextInt(anyInt())).thenReturn(-2);
-        when(random.nextInt(10)).thenReturn(-1);
+        random = new TestRandom(threshold, -1, threshold, -1, -1, -1, -1, -1);
         assertThat(nearbyRandom.nextInt(random, 10)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 11)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 20)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 19)).isEqualTo(-1);
+
         // Rounding
+        random = new TestRandom(threshold, -1, threshold, -2);
         assertThat(nearbyRandom.nextInt(random, 21)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 22)).isEqualTo(-2);
 
-        when(random.nextInt(anyInt())).thenReturn(-2);
-        when(random.nextInt(100)).thenReturn(-1);
-        when(random.nextInt(99)).thenReturn(-3);
+        random = new TestRandom(threshold, -1, -1, -1, -1, -1);
         assertThat(nearbyRandom.nextInt(random, 200)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 300)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 1000)).isEqualTo(-1);
+
         // Rounding
+        random = new TestRandom(threshold, -3, threshold, -3, -2, -2, -2);
         assertThat(nearbyRandom.nextInt(random, 199)).isEqualTo(-3);
         assertThat(nearbyRandom.nextInt(random, 198)).isEqualTo(-3);
         assertThat(nearbyRandom.nextInt(random, 197)).isEqualTo(-2);
 
-        when(random.nextInt(anyInt())).thenReturn(-2);
-        when(random.nextInt(5)).thenReturn(-1);
+        random = new TestRandom(1, -1, -1, -2, -2, -2);
         assertThat(nearbyRandom.nextInt(random, 5)).isEqualTo(-1);
         assertThat(nearbyRandom.nextInt(random, 6)).isEqualTo(-2);
         assertThat(nearbyRandom.nextInt(random, 4)).isEqualTo(-2);

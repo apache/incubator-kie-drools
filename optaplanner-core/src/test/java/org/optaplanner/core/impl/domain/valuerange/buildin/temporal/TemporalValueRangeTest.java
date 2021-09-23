@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
@@ -36,6 +35,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class TemporalValueRangeTest {
 
@@ -336,30 +336,24 @@ public class TemporalValueRangeTest {
 
     @Test
     public void createRandomIteratorForLocalDate() {
-        Random workingRandom = mock(Random.class);
-
         LocalDate from = LocalDate.of(2016, 7, 1);
         LocalDate to = LocalDate.of(2016, 7, 11);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
-        assertElementsOfIterator(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).createRandomIterator(workingRandom),
+        assertElementsOfIterator(
+                new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).createRandomIterator(new TestRandom(3, 0)),
                 LocalDate.of(2016, 7, 4));
-        when(workingRandom.nextInt(anyInt())).thenReturn(0, 0);
-        assertElementsOfIterator(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).createRandomIterator(workingRandom),
+        assertElementsOfIterator(new TemporalValueRange<>(from, to, 1, ChronoUnit.DAYS).createRandomIterator(new TestRandom(0)),
                 LocalDate.of(2016, 7, 1));
-        when(workingRandom.nextInt(anyInt())).thenReturn(1, 0);
-        assertElementsOfIterator(new TemporalValueRange<>(from, to, 5, ChronoUnit.DAYS).createRandomIterator(workingRandom),
+        assertElementsOfIterator(
+                new TemporalValueRange<>(from, to, 5, ChronoUnit.DAYS).createRandomIterator(new TestRandom(1, 0)),
                 LocalDate.of(2016, 7, 6));
     }
 
     @Test
     public void createRandomIteratorForLocalDateTime() {
-        Random workingRandom = mock(Random.class);
-
         LocalDateTime fromTime = LocalDateTime.of(2016, 7, 1, 4, 5, 12);
         LocalDateTime toTime = LocalDateTime.of(2016, 7, 3, 12, 15, 12);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(
-                new TemporalValueRange<>(fromTime, toTime, 10, ChronoUnit.MINUTES).createRandomIterator(workingRandom),
+                new TemporalValueRange<>(fromTime, toTime, 10, ChronoUnit.MINUTES).createRandomIterator(new TestRandom(3, 0)),
                 LocalDateTime.of(2016, 7, 1, 4, 35, 12));
     }
 

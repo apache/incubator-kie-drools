@@ -17,18 +17,15 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class NullableCountableValueRangeTest {
 
@@ -86,23 +83,16 @@ public class NullableCountableValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(0, 2, 5)))
-                .createRandomIterator(workingRandom), null, 0);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), null, 0);
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(100, 120, 5)))
-                .createRandomIterator(workingRandom), null, 100);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), null, 100);
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList(-15, 25, 0)))
-                .createRandomIterator(workingRandom), null, -15);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), null, -15);
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Arrays.asList("b", "z", "a")))
-                .createRandomIterator(workingRandom), null, "b");
-        when(workingRandom.nextInt(anyInt())).thenReturn(0);
+                .createRandomIterator(new TestRandom(3, 0)), null, "b");
         assertElementsOfIterator(new NullableCountableValueRange<>(new ListValueRange<>(Collections.emptyList()))
-                .createRandomIterator(workingRandom), new String[] { null });
+                .createRandomIterator(new TestRandom(0)), new String[] { null });
     }
 
 }

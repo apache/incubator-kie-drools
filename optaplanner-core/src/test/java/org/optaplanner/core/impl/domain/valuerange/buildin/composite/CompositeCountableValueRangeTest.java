@@ -17,9 +17,6 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.composite;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
@@ -27,10 +24,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.impl.domain.valuerange.buildin.collection.ListValueRange;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class CompositeCountableValueRangeTest {
 
@@ -82,16 +79,12 @@ public class CompositeCountableValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(createValueRange(Arrays.asList(0, 2, 5, 10), Arrays.asList(-15, 25, -1))
-                .createRandomIterator(workingRandom), 10, 0);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), 10, 0);
         assertElementsOfIterator(createValueRange(Arrays.asList("a", "b"), Arrays.asList("c"), Arrays.asList("d"))
-                .createRandomIterator(workingRandom), "d", "a");
+                .createRandomIterator(new TestRandom(3, 0)), "d", "a");
         assertElementsOfIterator(createValueRange(Collections.emptyList())
-                .createRandomIterator(workingRandom));
+                .createRandomIterator(new TestRandom(0)));
     }
 
 }

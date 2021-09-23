@@ -17,16 +17,13 @@
 package org.optaplanner.core.impl.domain.valuerange.buildin.bigdecimal;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.anyInt;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertAllElementsOfIterator;
 import static org.optaplanner.core.impl.testdata.util.PlannerAssert.assertElementsOfIterator;
 
 import java.math.BigDecimal;
-import java.util.Random;
 
 import org.junit.jupiter.api.Test;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class BigDecimalValueRangeTest {
 
@@ -122,29 +119,22 @@ public class BigDecimalValueRangeTest {
 
     @Test
     public void createRandomIterator() {
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0"), new BigDecimal("4"))
-                .createRandomIterator(workingRandom), new BigDecimal("3"), new BigDecimal("0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("3"), new BigDecimal("0"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("104.0"))
-                .createRandomIterator(workingRandom), new BigDecimal("100.3"), new BigDecimal("100.0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("100.3"), new BigDecimal("100.0"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("-4.00"), new BigDecimal("3.00"))
-                .createRandomIterator(workingRandom), new BigDecimal("-3.97"), new BigDecimal("-4.00"));
+                .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("-3.97"), new BigDecimal("-4.00"));
         assertAllElementsOfIterator(new BigDecimalValueRange(new BigDecimal("7"), new BigDecimal("7"))
-                .createRandomIterator(workingRandom));
+                .createRandomIterator(new TestRandom(3, 0)));
         // IncrementUnit
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("0.0"), new BigDecimal("10.0"), new BigDecimal("2.0"))
-                .createRandomIterator(workingRandom), new BigDecimal("6.0"), new BigDecimal("0.0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("6.0"), new BigDecimal("0.0"));
         assertElementsOfIterator(new BigDecimalValueRange(new BigDecimal("-1.0"), new BigDecimal("9.0"), new BigDecimal("2.0"))
-                .createRandomIterator(workingRandom), new BigDecimal("5.0"), new BigDecimal("-1.0"));
-        when(workingRandom.nextInt(anyInt())).thenReturn(3, 0);
+                .createRandomIterator(new TestRandom(3, 0)), new BigDecimal("5.0"), new BigDecimal("-1.0"));
         assertElementsOfIterator(
                 new BigDecimalValueRange(new BigDecimal("100.0"), new BigDecimal("120.4"), new BigDecimal("5.1"))
-                        .createRandomIterator(workingRandom),
+                        .createRandomIterator(new TestRandom(3, 0)),
                 new BigDecimal("115.3"), new BigDecimal("100.0"));
     }
 

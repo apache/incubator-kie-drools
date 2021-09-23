@@ -48,10 +48,13 @@ import org.optaplanner.core.config.score.trend.InitializingScoreTrendLevel;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
 import org.optaplanner.core.impl.domain.solution.descriptor.SolutionDescriptor;
+import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
+import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.score.DummySimpleScoreEasyScoreCalculator;
 import org.optaplanner.core.impl.score.director.InnerScoreDirector;
 import org.optaplanner.core.impl.score.director.easy.EasyScoreDirectorFactory;
 import org.optaplanner.core.impl.score.trend.InitializingScoreTrend;
+import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataEntity;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
 import org.optaplanner.core.impl.testdata.domain.TestdataValue;
@@ -195,6 +198,42 @@ public class PlannerTestUtils {
         SortedMap<X, Y> result = asSortedMap(x1, y1);
         result.put(x2, y2);
         return result;
+    }
+
+    // ************************************************************************
+    // Scope helpers
+    // ************************************************************************
+
+    /**
+     * Returns {@link AbstractPhaseScope} instance that will delegate to {@link SolverScope#getWorkingRandom()}.
+     *
+     * @param solverScope never null
+     * @param <Solution_> generic type of the solution
+     * @return never null
+     */
+    public static <Solution_> AbstractPhaseScope<Solution_> delegatingPhaseScope(SolverScope<Solution_> solverScope) {
+        return new AbstractPhaseScope<>(solverScope) {
+            @Override
+            public AbstractStepScope<Solution_> getLastCompletedStepScope() {
+                return null;
+            }
+        };
+    }
+
+    /**
+     * Returns {@link AbstractPhaseScope} instance that will delegate to {@link AbstractPhaseScope#getWorkingRandom()}.
+     *
+     * @param phaseScope never null
+     * @param <Solution_> generic type of the solution
+     * @return never null
+     */
+    public static <Solution_> AbstractStepScope<Solution_> delegatingStepScope(AbstractPhaseScope<Solution_> phaseScope) {
+        return new AbstractStepScope<>(0) {
+            @Override
+            public AbstractPhaseScope<Solution_> getPhaseScope() {
+                return phaseScope;
+            }
+        };
     }
 
     // ************************************************************************

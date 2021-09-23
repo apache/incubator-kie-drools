@@ -33,12 +33,12 @@ defaults:
 jobs:
   build-chain:
     concurrency:
-      group: pull_request-${{ github.head_ref }}
+      group: pull_request-${{ github.event_name }}-${{ github.head_ref }}-${{ matrix.os }}
       cancel-in-progress: true
     strategy:
       matrix:
         os: [ ubuntu-latest, windows-latest ]
-        java-version: [ 11, 16 ]
+        java-version: [ 11, 17 ]
         maven-version: ['3.8.1']
       fail-fast: false
     runs-on: ${{ matrix.os }}

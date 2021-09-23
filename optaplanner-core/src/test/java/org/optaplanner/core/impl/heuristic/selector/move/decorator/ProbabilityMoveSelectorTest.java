@@ -35,6 +35,8 @@ import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
 import org.optaplanner.core.impl.testdata.domain.TestdataSolution;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class ProbabilityMoveSelectorTest {
 
@@ -61,19 +63,19 @@ public class ProbabilityMoveSelectorTest {
         MoveSelector<TestdataSolution> moveSelector = new ProbabilityMoveSelector<>(childMoveSelector,
                 SelectionCacheType.STEP, probabilityWeightFactory);
 
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextDouble()).thenReturn(1222.0 / 1234.0, 111.0 / 1234.0, 0.0, 1230.0 / 1234.0, 1199.0 / 1234.0);
+        Random workingRandom = new TestRandom(
+                1222.0 / 1234.0,
+                111.0 / 1234.0,
+                0.0,
+                1230.0 / 1234.0,
+                1199.0 / 1234.0);
 
         SolverScope<TestdataSolution> solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope<TestdataSolution> phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope<TestdataSolution> phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope<TestdataSolution> stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope<TestdataSolution> stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         assertCodesOfNeverEndingMoveSelector(moveSelector, 4L, "e3", "e1", "e1", "e4", "e2");

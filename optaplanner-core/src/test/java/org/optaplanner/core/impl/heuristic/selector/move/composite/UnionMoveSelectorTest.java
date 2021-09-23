@@ -34,6 +34,8 @@ import org.optaplanner.core.impl.heuristic.selector.move.MoveSelector;
 import org.optaplanner.core.impl.phase.scope.AbstractPhaseScope;
 import org.optaplanner.core.impl.phase.scope.AbstractStepScope;
 import org.optaplanner.core.impl.solver.scope.SolverScope;
+import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
+import org.optaplanner.core.impl.util.TestRandom;
 
 public class UnionMoveSelectorTest {
 
@@ -104,19 +106,18 @@ public class UnionMoveSelectorTest {
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
                 new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap));
 
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextDouble()).thenReturn(1.0 / 1020.0, 1019.0 / 1020.0, 1000.0 / 1020.0, 0.0, 999.0 / 1020.0);
-
+        Random workingRandom = new TestRandom(
+                1.0 / 1020.0,
+                1019.0 / 1020.0,
+                1000.0 / 1020.0,
+                0.0,
+                999.0 / 1020.0);
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection
@@ -141,19 +142,14 @@ public class UnionMoveSelectorTest {
         UnionMoveSelector moveSelector = new UnionMoveSelector(childMoveSelectorList, true,
                 new FixedSelectorProbabilityWeightFactory<>(fixedProbabilityWeightMap));
 
-        Random workingRandom = mock(Random.class);
-        when(workingRandom.nextDouble()).thenReturn(1.0);
+        Random workingRandom = new TestRandom(1);
 
         SolverScope solverScope = mock(SolverScope.class);
         when(solverScope.getWorkingRandom()).thenReturn(workingRandom);
         moveSelector.solvingStarted(solverScope);
-        AbstractPhaseScope phaseScopeA = mock(AbstractPhaseScope.class);
-        when(phaseScopeA.getSolverScope()).thenReturn(solverScope);
-        when(phaseScopeA.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractPhaseScope phaseScopeA = PlannerTestUtils.delegatingPhaseScope(solverScope);
         moveSelector.phaseStarted(phaseScopeA);
-        AbstractStepScope stepScopeA1 = mock(AbstractStepScope.class);
-        when(stepScopeA1.getPhaseScope()).thenReturn(phaseScopeA);
-        when(stepScopeA1.getWorkingRandom()).thenReturn(workingRandom);
+        AbstractStepScope stepScopeA1 = PlannerTestUtils.delegatingStepScope(phaseScopeA);
         moveSelector.stepStarted(stepScopeA1);
 
         // A union of ending MoveSelectors does end, even with randomSelection
