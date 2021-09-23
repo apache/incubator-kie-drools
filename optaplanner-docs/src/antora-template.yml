@@ -1,0 +1,18 @@
+# This file is a template for antora.yml, which is created during a release by:
+#   1. running maven that substitutes the properties into this file
+#   2. running build/release/update_antora_yml.sh that copies the result of the previous step to src/antora.yml
+#
+# The goal is to have the antora.yml containing correct attributes available in the release branch before
+# the optaplanner-website is refreshed.
+name: optaplanner-docs
+title: OptaPlanner User Guide
+version: latest
+asciidoc:
+  attributes:
+    project-version: ${project.version}
+    java-version: ${maven.compiler.release}
+    maven-version: ${maven.min.version}
+    quarkus-version: ${version.io.quarkus}
+    spring-boot-version: ${version.org.springframework.boot}
+nav:
+  - modules/ROOT/nav.adoc

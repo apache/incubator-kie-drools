@@ -122,6 +122,9 @@ pipeline {
             steps {
                 script {
                     getOptaplannerMavenCommand().skipTests(params.SKIP_TESTS).run('clean install')
+                    if (isRelease()) {
+                        updateAntoraYaml(optaplannerRepository)
+                    }
                 }
             }
             post {
@@ -386,6 +389,7 @@ void commitAndCreatePR(String repo, String buildBranch) {
         githubscm.commitChanges(commitMsg, {
             githubscm.findAndStageNotIgnoredFiles('pom.xml')
             githubscm.findAndStageNotIgnoredFiles('build.gradle')
+            githubscm.findAndStageNotIgnoredFiles('antora.yml')
         })
         githubscm.pushObject('origin', getBotBranch(), getBotAuthorCredsID())
         deployProperties["${repo}.pr.link"] = isRelease() ?
@@ -539,4 +543,15 @@ void setDeployPropertyIfNeeded(String key, def value) {
 
 String getQuickStartsBranch() {
     return params.QUICKSTARTS_BUILD_BRANCH_NAME
+}
+
+void updateAntoraYaml(String directory) {
+    if (isNotTestingBuild()) {
+        echo "updateAntoraYaml for ${directory}"
+        dir(directory) {
+            sh './build/release/update_antora_yml.sh'
+        }
+    } else {
+        echo 'No updateAntoraYaml due to testing build'
+    }
 }

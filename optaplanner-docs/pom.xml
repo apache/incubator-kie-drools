@@ -42,7 +42,7 @@
           </resources>
           <attributes>
             <project-version>${project.version}</project-version>
-            <java-version>11</java-version>
+            <java-version>${maven.compiler.release}</java-version>
             <maven-version>${maven.min.version}</maven-version>
             <quarkus-version>${version.io.quarkus}</quarkus-version>
             <spring-boot-version>${version.org.springframework.boot}</spring-boot-version>
@@ -89,6 +89,32 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <!-- Substitutes properties in antora-template.yml that is copied to src/antora.yml during a release. -->
+          <execution>
+            <id>generate-antora-yml</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+            <phase>process-resources</phase>
+            <configuration>
+              <resources>
+                <resource>
+                  <directory>${project.basedir}/src</directory>
+                  <targetPath>${project.build.directory}</targetPath>
+                  <includes>
+                    <include>antora-template.yml</include>
+                  </includes>
+                  <filtering>true</filtering>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
 
