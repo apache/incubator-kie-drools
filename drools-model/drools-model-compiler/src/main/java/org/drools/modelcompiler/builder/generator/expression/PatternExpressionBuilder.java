@@ -202,7 +202,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
         boolean isBeta = drlxParseResult.isBetaConstraint();
         Expression rightExpression = right.getExpression();
-        if (!isBeta && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression))) {
+        if (!isBeta && !(rightExpression instanceof LiteralExpr || isStringToDateExpression(rightExpression) || isNumberToStringExpression(rightExpression))) {
             return Optional.empty();
         }
 

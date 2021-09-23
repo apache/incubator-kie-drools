@@ -45,7 +45,6 @@ import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.PrimitiveType;
 import org.drools.compiler.lang.descr.RuleDescr;
 import org.drools.model.Index;
-import org.drools.model.functions.PredicateInformation;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.modelcompiler.builder.generator.BoxedParameters;
 import org.drools.modelcompiler.builder.generator.DrlxParseUtil;
@@ -192,7 +191,7 @@ public abstract class AbstractExpressionBuilder {
         TypedExpression right = result.getRight();
 
         if (right != null && right.getExpression() != null && right.getExpression() instanceof NodeWithOptionalScope) {
-            if (isStringToDateExpression(right.getExpression())) {
+            if (isStringToDateExpression(right.getExpression()) || isNumberToStringExpression(right.getExpression())) {
                 return true;
             }
             NodeWithOptionalScope<?> e = (NodeWithOptionalScope<?>) (right.getExpression());
@@ -206,7 +205,14 @@ public abstract class AbstractExpressionBuilder {
     }
 
     protected boolean isStringToDateExpression(Expression expression) {
-        return expression instanceof NameExpr && ((NameExpr) expression).getNameAsString().startsWith( CoercedExpression.STRING_TO_DATE_FIELD_START );
+        return expression instanceof NameExpr &&
+                ((NameExpr) expression).getNameAsString().startsWith( CoercedExpression.STRING_TO_DATE_FIELD_START );
+    }
+
+    protected boolean isNumberToStringExpression(Expression expression) {
+        return expression instanceof MethodCallExpr &&
+                ((MethodCallExpr) expression).getNameAsString().equals("valueOf") &&
+                ((MethodCallExpr) expression).getScope().map(s -> s.toString().equals("String")).orElse(false);
     }
 
     public static AbstractExpressionBuilder getExpressionBuilder(RuleContext context) {
