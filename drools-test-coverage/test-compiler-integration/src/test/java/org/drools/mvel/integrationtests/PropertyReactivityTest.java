@@ -56,8 +56,7 @@ public class PropertyReactivityTest {
 
     @Parameterized.Parameters(name = "KieBase type={0}")
     public static Collection<Object[]> getParameters() {
-     // TODO: EM failed with some tests. File JIRAs
-        return TestParametersUtil.getKieBaseCloudConfigurations(false);
+        return TestParametersUtil.getKieBaseCloudConfigurations(true);
     }
 
     @Test(timeout=10000)
@@ -568,7 +567,7 @@ public class PropertyReactivityTest {
                 "rule Join_1\n" +
                 "when\n" +
                 " Man( $name ; ) \n" +
-                " Animal( $name := owner ) \n" +
+                " Animal( $name == owner ) \n" +
                 "then\n" +
                 " list.add( 1 ); \n" +
                 "end\n" +
@@ -1387,7 +1386,7 @@ public class PropertyReactivityTest {
                 "    when\n" +
                 "       $event: DummyBean ()\n" +
                 "    then\n" +
-                "        retract($event)\n" +
+                "        retract($event);\n" +
                 "        System.out.println(\"RG_TEST_3 fired\");\n" +
                 "end";
 

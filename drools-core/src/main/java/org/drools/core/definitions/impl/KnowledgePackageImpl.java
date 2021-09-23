@@ -371,7 +371,7 @@ public class KnowledgePackageImpl
         if (clazz == null) {
             return null;
         }
-        TypeDeclaration typeDeclaration = getTypeDeclaration(ClassUtils.getSimpleName(clazz));
+        TypeDeclaration typeDeclaration = getExactTypeDeclaration(clazz);
         if (typeDeclaration == null) {
             // check if clazz is resolved by any of the type declarations
             for (TypeDeclaration type : this.typeDeclarations.values()) {
@@ -382,6 +382,10 @@ public class KnowledgePackageImpl
             }
         }
         return typeDeclaration;
+    }
+
+    public TypeDeclaration getExactTypeDeclaration(Class<?> clazz) {
+        return getTypeDeclaration(ClassUtils.getSimpleName(clazz));
     }
 
     public TypeDeclaration getTypeDeclaration(String type) {
