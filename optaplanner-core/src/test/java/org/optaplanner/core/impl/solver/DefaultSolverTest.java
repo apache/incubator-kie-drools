@@ -28,6 +28,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.optaplanner.core.api.score.buildin.hardsoft.HardSoftScore;
@@ -64,9 +65,16 @@ import org.optaplanner.core.impl.testdata.domain.score.TestdataHardSoftScoreSolu
 import org.optaplanner.core.impl.testdata.util.PlannerTestUtils;
 import org.optaplanner.core.impl.util.TestMeterRegistry;
 
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Metrics;
+import io.micrometer.core.instrument.Tags;
 
 public class DefaultSolverTest {
+
+    @BeforeEach
+    public void resetGlobalRegistry() {
+        Metrics.globalRegistry.clear();
+    }
 
     @Test
     public void solve() {
@@ -85,6 +93,129 @@ public class DefaultSolverTest {
     }
 
     @Test
+    public void checkDefaultMeters() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+        meterRegistry.publish(solver);
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId)).isEmpty();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        AtomicBoolean updatedTime = new AtomicBoolean();
+        solver.addEventListener(event -> {
+            if (!updatedTime.get()) {
+                assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                        .containsExactlyInAnyOrder(
+                                new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.LONG_TASK_TIMER),
+                                new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.COUNTER),
+                                new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                        Tags.empty(),
+                                        null,
+                                        null,
+                                        Meter.Type.GAUGE));
+                updatedTime.set(true);
+            }
+        });
+        solver.solve(solution);
+
+        // Score calculation count should be removed
+        // since registering multiple gauges with the same id
+        // make it return the average, and the solver holds
+        // onto the solver scope, meaning it won't automatically
+        // be deregistered.
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.empty(),
+                                null,
+                                null,
+                                Meter.Type.COUNTER));
+    }
+
+    @Test
+    public void checkDefaultMetersTags() {
+        TestMeterRegistry meterRegistry = new TestMeterRegistry();
+        Metrics.addRegistry(meterRegistry);
+
+        SolverConfig solverConfig = PlannerTestUtils.buildSolverConfig(
+                TestdataSolution.class, TestdataEntity.class);
+        SolverFactory<TestdataSolution> solverFactory = SolverFactory.create(solverConfig);
+
+        DefaultSolver<TestdataSolution> solver = (DefaultSolver<TestdataSolution>) solverFactory.buildSolver();
+        solver.setMonitorTagMap(Map.of("tag.key", "tag.value"));
+        meterRegistry.publish(solver);
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId)).isEmpty();
+
+        TestdataSolution solution = new TestdataSolution("s1");
+        solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
+        solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
+
+        AtomicBoolean updatedTime = new AtomicBoolean();
+        solver.addEventListener(event -> {
+            if (!updatedTime.get()) {
+                assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                        .containsExactlyInAnyOrder(
+                                new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                        Tags.of("tag.key", "tag.value"),
+                                        null,
+                                        null,
+                                        Meter.Type.LONG_TASK_TIMER),
+                                new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                        Tags.of("tag.key", "tag.value"),
+                                        null,
+                                        null,
+                                        Meter.Type.COUNTER),
+                                new Meter.Id(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(),
+                                        Tags.of("tag.key", "tag.value"),
+                                        null,
+                                        null,
+                                        Meter.Type.GAUGE));
+                updatedTime.set(true);
+            }
+        });
+        solver.solve(solution);
+
+        // Score calculation count should be removed
+        // since registering multiple gauges with the same id
+        // make it return the average, and the solver holds
+        // onto the solver scope, meaning it won't automatically
+        // be deregistered.
+        assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
+                .containsExactlyInAnyOrder(
+                        new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
+                                Tags.of("tag.key", "tag.value"),
+                                null,
+                                null,
+                                Meter.Type.LONG_TASK_TIMER),
+                        new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
+                                Tags.of("tag.key", "tag.value"),
+                                null,
+                                null,
+                                Meter.Type.COUNTER));
+    }
+
+    @Test
     public void solveMetrics() {
         TestMeterRegistry meterRegistry = new TestMeterRegistry();
         Metrics.addRegistry(meterRegistry);
@@ -96,8 +227,6 @@ public class DefaultSolverTest {
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetrics"));
         meterRegistry.publish(solver);
-        assertThat(meterRegistry.getMeasurement(SolverMetric.ERROR_COUNT.getMeterId(), "COUNT")).isZero();
-        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isZero();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
@@ -177,12 +306,19 @@ public class DefaultSolverTest {
         TestdataHardSoftScoreSolution solution = new TestdataHardSoftScoreSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("none"), new TestdataValue("reward")));
         solution.setEntityList(Arrays.asList(new TestdataEntity("e1"), new TestdataEntity("e2")));
-        AtomicInteger step = new AtomicInteger(0);
+        AtomicInteger step = new AtomicInteger(-1);
 
         solver.addEventListener(event -> {
             meterRegistry.publish(solver);
-            assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
-                    .isEqualTo(0);
+            System.out.println(event.getNewBestScore());
+
+            // This event listener is added before the best score event listener
+            // so it is one step behind
+            if (step.get() != -1) {
+                assertThat(
+                        meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
+                                .isEqualTo(0);
+            }
             if (step.get() == 0) {
                 assertThat(
                         meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".soft.score", "VALUE").intValue())
@@ -200,7 +336,7 @@ public class DefaultSolverTest {
         });
         solution = solver.solve(solution);
 
-        assertThat(step.get()).isEqualTo(3);
+        assertThat(step.get()).isEqualTo(2);
         meterRegistry.publish(solver);
         assertThat(solution).isNotNull();
         assertThat(meterRegistry.getMeasurement(SolverMetric.BEST_SCORE.getMeterId() + ".hard.score", "VALUE").intValue())
@@ -238,8 +374,6 @@ public class DefaultSolverTest {
         Solver<TestdataSolution> solver = solverFactory.buildSolver();
         ((DefaultSolver<TestdataSolution>) solver).setMonitorTagMap(Map.of("solver.id", "solveMetricsError"));
         meterRegistry.publish(solver);
-        assertThat(meterRegistry.getMeasurement(SolverMetric.ERROR_COUNT.getMeterId(), "COUNT")).isZero();
-        assertThat(meterRegistry.getMeasurement(SolverMetric.SOLVE_DURATION.getMeterId(), "ACTIVE_TASKS")).isZero();
 
         TestdataSolution solution = new TestdataSolution("s1");
         solution.setValueList(Arrays.asList(new TestdataValue("v1"), new TestdataValue("v2")));
