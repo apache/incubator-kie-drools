@@ -32,6 +32,7 @@ export interface ExecutionRouteParams {
 
 export interface ItemObject {
   name: string;
+  kind: 'STRUCTURE' | 'UNIT' | 'COLLECTION';
   typeRef: string;
   value: string | number | boolean | Array<string | number | boolean> | null;
   components: (ItemObject | ItemObject[])[] | null;
@@ -87,10 +88,12 @@ export interface Saliency {
   outcomeId: string;
   featureImportance: FeatureScores[];
 }
+
 export enum SaliencyStatus {
   SUCCEEDED = 'SUCCEEDED',
   FAILED = 'FAILED'
 }
+
 export type SaliencyStatusStrings = keyof typeof SaliencyStatus;
 
 export interface Saliencies {
@@ -114,4 +117,75 @@ export interface ModelData {
   dmnVersion: string;
   serviceIdentifier: ServiceIdentifier;
   model: string;
+}
+
+export interface CFNumericalDomain {
+  type: 'RANGE';
+  lowerBound?: number;
+  upperBound?: number;
+}
+
+export interface CFCategoricalDomain {
+  type: 'CATEGORICAL';
+  categories: string[];
+}
+
+export interface CFSearchInput extends ItemObject {
+  fixed?: boolean;
+  domain?: CFNumericalDomain | CFCategoricalDomain;
+}
+
+export enum CFGoalRole {
+  UNSUPPORTED,
+  ORIGINAL,
+  FIXED,
+  FLOATING
+}
+
+export type CFGoal = Pick<ItemObject, 'name' | 'kind' | 'typeRef' | 'value'> & {
+  role: CFGoalRole;
+  originalValue: ItemObject['value'];
+  id: string;
+};
+
+export type CFResult = Array<unknown>;
+
+export interface CFStatus {
+  isDisabled: boolean;
+  executionStatus: CFExecutionStatus;
+  lastExecutionTime: null | string;
+}
+
+export enum CFExecutionStatus {
+  COMPLETED,
+  RUNNING,
+  NOT_STARTED,
+  FAILED,
+  NO_RESULTS
+}
+
+export type CFAnalysisResetType = 'NEW' | 'EDIT';
+
+export interface CFAnalysisExecution {
+  executionId: string;
+  counterfactualId: string;
+}
+
+export interface CFAnalysisResult extends CFAnalysisExecution {
+  type: 'counterfactual';
+  valid: boolean;
+  status: 'SUCCEEDED' | 'FAILED';
+  statusDetails: string;
+  solutionId: string;
+  isValid: boolean;
+  stage: 'INTERMEDIATE' | 'FINAL';
+  inputs: CFSearchInput[];
+  outputs: CFGoal[];
+  sequenceId: number;
+}
+
+export interface CFAnalysisResultsSets extends CFAnalysisExecution {
+  goals: CFGoal[];
+  searchDomains: CFSearchInput[];
+  solutions: CFAnalysisResult[];
 }

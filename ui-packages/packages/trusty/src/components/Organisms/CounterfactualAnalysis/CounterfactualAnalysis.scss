@@ -1,0 +1,8 @@
+.counterfactual {
+  &__section {
+    height: 100%;
+  }
+  &__drawer {
+    --pf-c-drawer__content--BackgroundColor: transparent;
+  }
+}

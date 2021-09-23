@@ -52,6 +52,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
       const rootSection: ItemObject = {
         name: 'Root',
         typeRef: 'root',
+        kind: 'STRUCTURE',
         value: null,
         components: []
       };
@@ -74,7 +75,7 @@ const InputDataBrowser = ({ inputData }: InputDataBrowserProps) => {
       // open the fist section as default
       setViewSection(0);
     }
-  }, [inputData.status]);
+  }, [inputData]);
 
   return (
     <div className="input-browser">

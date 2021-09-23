@@ -44,6 +44,6 @@ describe('FormattedDate', () => {
       .mockImplementation(() => new Date(fixedDate).getTime());
     const wrapper = shallow(<FormattedDate date={fixedDate} />);
 
-    expect(wrapper.find('span').text()).toMatch('0 seconds ago');
+    expect(wrapper.find('span').text()).toMatch('less than a minute ago');
   });
 });

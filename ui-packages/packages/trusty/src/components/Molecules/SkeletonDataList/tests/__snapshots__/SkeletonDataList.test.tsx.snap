@@ -10,14 +10,13 @@ exports[`SkeletonDatalist renders a 2x2 data list 1`] = `
   wrapModifier={null}
 >
   <DataListItem
-    aria-labelledby=""
+    aria-labelledby="Loading row 0"
     className=""
     id=""
     isExpanded={false}
+    key="skeleton-row-0"
   >
-    <DataListItemRow
-      key="skeleton-row-0"
-    >
+    <DataListItemRow>
       <DataListItemCells
         dataListCells={
           Array [
@@ -35,9 +34,15 @@ exports[`SkeletonDatalist renders a 2x2 data list 1`] = `
         }
       />
     </DataListItemRow>
-    <DataListItemRow
-      key="skeleton-row-1"
-    >
+  </DataListItem>
+  <DataListItem
+    aria-labelledby="Loading row 1"
+    className=""
+    id=""
+    isExpanded={false}
+    key="skeleton-row-1"
+  >
+    <DataListItemRow>
       <DataListItemCells
         dataListCells={
           Array [

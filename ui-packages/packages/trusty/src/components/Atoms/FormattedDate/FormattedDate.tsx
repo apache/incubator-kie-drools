@@ -1,5 +1,5 @@
 import React from 'react';
-import { differenceInDays, format, formatDistanceToNowStrict } from 'date-fns';
+import { differenceInDays, format, formatDistanceToNow } from 'date-fns';
 import { Tooltip } from '@patternfly/react-core';
 import { TooltipProps } from '@patternfly/react-core/dist/js/components/Tooltip/Tooltip';
 
@@ -22,7 +22,7 @@ const FormattedDate = (props: FormattedDateProps) => {
   let formattedDate;
 
   if (difference === 0) {
-    formattedDate = `${formatDistanceToNowStrict(new Date(date))} ago`;
+    formattedDate = `${formatDistanceToNow(new Date(date))} ago`;
   } else {
     const prefix = preposition ? 'on ' : '';
     formattedDate = `${prefix}${format(new Date(date), 'PP')}`;

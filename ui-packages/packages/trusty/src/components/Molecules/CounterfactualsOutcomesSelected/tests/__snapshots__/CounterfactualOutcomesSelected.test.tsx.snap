@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CounterfactualOutcomesSelected renders correctly 1`] = `
+<Fragment>
+  <List
+    style={
+      Object {
+        "color": "var(--pf-global--Color--200)",
+      }
+    }
+    variant="inline"
+  >
+    <ListItem
+      key="selected outcomes"
+    >
+      <span>
+        Selected Outcomes:
+      </span>
+       
+      <span
+        key="1001"
+      >
+        <span>
+          Score
+          : 
+          1
+        </span>
+        <span>
+          , 
+        </span>
+      </span>
+      <span
+        key="1002"
+      >
+        <span>
+          Approval
+          : 
+          true
+        </span>
+      </span>
+    </ListItem>
+  </List>
+</Fragment>
+`;

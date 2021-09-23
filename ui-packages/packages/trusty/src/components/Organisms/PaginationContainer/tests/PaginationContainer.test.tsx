@@ -1,6 +1,7 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import PaginationContainer from '../PaginationContainer';
+import { PaginationVariant } from '@patternfly/react-core';
 
 const defaultProps = {
   total: 10,
@@ -8,7 +9,8 @@ const defaultProps = {
   pageSize: 10,
   paginationId: 'pagination-id',
   onSetPage: jest.fn(),
-  onSetPageSize: jest.fn()
+  onSetPageSize: jest.fn(),
+  position: PaginationVariant.top
 };
 
 describe('PaginationContainer', () => {

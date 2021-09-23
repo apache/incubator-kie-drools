@@ -1,0 +1,17 @@
+.counterfactual {
+  &__divider {
+    padding-left: var(--pf-c-page__main-section--xl--PaddingLeft);
+    padding-right: var(--pf-c-page__main-section--xl--PaddingLeft);
+  }
+  &__wrapper {
+    height: 100%;
+    position: relative;
+    &__container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}

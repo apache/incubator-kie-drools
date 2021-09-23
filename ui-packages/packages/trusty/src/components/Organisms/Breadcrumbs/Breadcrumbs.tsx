@@ -58,6 +58,10 @@ const routes = [
     breadcrumb: 'Model Lookup'
   },
   { path: '/audit/:executionType/:id/input-data', breadcrumb: 'Input Data' },
+  {
+    path: '/audit/:executionType/:id/counterfactual-analysis',
+    breadcrumb: 'Counterfactual Analysis'
+  },
   { path: '/audit/:executionType/:id', breadcrumb: AuditDetailBreadcrumb }
 ];
 

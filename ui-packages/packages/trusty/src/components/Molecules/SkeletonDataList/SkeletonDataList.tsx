@@ -38,19 +38,19 @@ const SkeletonDataList = (props: SkeletonDataListProps) => {
 
   return (
     <DataList aria-label="Loading content">
-      <DataListItem aria-labelledby="">
-        {rows.map((item, index) => {
-          let headerClass;
-          if (hasHeader && index === 0) {
-            headerClass = 'skeleton-datalist__header';
-          }
-          return (
-            <DataListItemRow className={headerClass} key={item.key}>
+      {rows.map((item, index) => {
+        let headerClass;
+        if (hasHeader && index === 0) {
+          headerClass = 'skeleton-datalist__header';
+        }
+        return (
+          <DataListItem aria-labelledby={`Loading row ${index}`} key={item.key}>
+            <DataListItemRow className={headerClass}>
               <DataListItemCells dataListCells={item.cells} />
             </DataListItemRow>
-          );
-        })}
-      </DataListItem>
+          </DataListItem>
+        );
+      })}
     </DataList>
   );
 };
