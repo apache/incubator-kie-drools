@@ -87,6 +87,7 @@
       <groupId>com.fasterxml.jackson.datatype</groupId>
       <artifactId>jackson-datatype-jsr310</artifactId>
     </dependency>
+
     <!-- test -->
     <dependency>
       <groupId>org.kie.kogito</groupId>
@@ -121,6 +122,18 @@
       <properties>
         <sonar.exclusions>**/JBPMMessages.java</sonar.exclusions>
       </properties>
+    </profile>
+    <profile>
+      <id>java15-javascript</id>
+      <activation>
+        <jdk>[15,)</jdk>
+      </activation>
+      <dependencies>
+        <dependency>
+          <groupId>org.mozilla</groupId> <!-- JDKs older than 15 carry their own. -->
+          <artifactId>rhino-engine</artifactId>
+        </dependency>
+      </dependencies>
     </profile>
   </profiles>
 </project>

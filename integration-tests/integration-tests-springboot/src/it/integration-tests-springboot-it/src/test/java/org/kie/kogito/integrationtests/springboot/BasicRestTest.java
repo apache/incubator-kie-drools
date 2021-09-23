@@ -260,7 +260,7 @@ class BasicRestTest extends BaseRestTest {
                 .get("/AdHocFragments/{id}/tasks", id)
             .then()
                 .statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
                 .body("[0].name", is("Task"));
 
         assertExpectedUnitOfWorkEvents(1);

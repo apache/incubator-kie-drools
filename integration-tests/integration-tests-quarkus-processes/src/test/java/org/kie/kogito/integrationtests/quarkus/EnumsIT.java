@@ -69,7 +69,7 @@ class EnumsIT {
                 .get("/cinema/{pid}/tasks", pid)
                 .then()
                 .statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
                 .body("[0].name", is("ReviewRatingTask"))
                 .extract()
                 .path("[0].id");

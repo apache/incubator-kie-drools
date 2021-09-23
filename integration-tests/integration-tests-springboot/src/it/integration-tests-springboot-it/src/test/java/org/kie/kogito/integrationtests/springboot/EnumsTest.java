@@ -69,7 +69,7 @@ class EnumsTest extends BaseRestTest {
                 .get("/cinema/{pid}/tasks", pid)
             .then()
                 .statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
             .extract()
                 .as(TestWorkItem[].class)[0];
 

@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.instance.context.variable.VariableScopeInstance;
@@ -53,8 +52,7 @@ public class JavaScriptReturnValueEvaluator implements ReturnValueEvaluator, Ext
     }
 
     public Object evaluate(KogitoProcessContext context) throws Exception {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        ScriptEngine engine = JavaScriptAction.loadJavaScriptEngine();
 
         // insert globals into context
         Globals globals = context.getKieRuntime().getGlobals();

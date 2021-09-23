@@ -33,7 +33,8 @@
     <version.org.openapitools>5.0.1</version.org.openapitools>
     <version.org.openapitools.jackson.databind.nullable>0.2.0</version.org.openapitools.jackson.databind.nullable>
 
-    <version.com.sun.xml.bind>2.3.0</version.com.sun.xml.bind>
+    <version.com.sun.xml.bind.core>2.3.0.1</version.com.sun.xml.bind.core>
+    <version.com.sun.xml.bind.impl>2.3.5</version.com.sun.xml.bind.impl>
     <version.com.sun.activation>1.2.0</version.com.sun.activation>
     <version.com.thoughtworks.xstream>1.4.17</version.com.thoughtworks.xstream>
     <version.javax.annotation>1.3.2</version.javax.annotation>
@@ -68,17 +69,18 @@
     <version.org.mongo>4.3.1</version.org.mongo>
     <version.org.mongo-image>4.2.3</version.org.mongo-image> <!-- Version 4.3.0 is not existing ... -->
     <version.org.mongo.springboot>4.1.0</version.org.mongo.springboot> <!-- https://issues.redhat.com/browse/KOGITO-5031 -->
+    <version.org.mozilla.rhino>1.7.13</version.org.mozilla.rhino>
 
     <version.org.assertj>3.20.2</version.org.assertj>
     <version.org.json-unit-assertj>2.9.0</version.org.json-unit-assertj>
     <version.org.hamcrest>1.3</version.org.hamcrest> <!-- else old version coming from Mockito wins and breaks tests -->
-    <version.org.junit.minor>7.2</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
+    <version.org.junit.minor>8.0</version.org.junit.minor> <!-- so that org.junit.platform and org.junit can share the same minor version -->
     <version.org.junit>5.${version.org.junit.minor}</version.org.junit>
     <version.org.junit.jupiter>${version.org.junit}</version.org.junit.jupiter>
     <version.org.junit.vintage>${version.org.junit}</version.org.junit.vintage>
     <version.org.junit.platform>1.${version.org.junit.minor}</version.org.junit.platform> <!-- otherwise Quarkus brings its own, silently disabling some tests -->
-    <version.org.junit.pioneer>1.0.0</version.org.junit.pioneer>
-    <version.org.mockito>3.11.2</version.org.mockito>
+    <version.org.junit.pioneer>1.4.2</version.org.junit.pioneer>
+    <version.org.mockito>3.12.4</version.org.mockito>
     <version.org.testcontainers>1.15.3</version.org.testcontainers>
 
     <version.org.mvel>2.4.12.Final</version.org.mvel>
@@ -143,6 +145,18 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-core</artifactId>
         <version>${version.ch.qos.logback}</version>
+      </dependency>
+
+      <!-- Java 17 compatibility -->
+      <dependency>
+        <groupId>org.mozilla</groupId>
+        <artifactId>rhino</artifactId>
+        <version>${version.org.mozilla.rhino}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.mozilla</groupId>
+        <artifactId>rhino-engine</artifactId>
+        <version>${version.org.mozilla.rhino}</version>
       </dependency>
 
       <!-- code generation -->
@@ -406,12 +420,12 @@
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-core</artifactId>
-        <version>${version.com.sun.xml.bind}</version>
+        <version>${version.com.sun.xml.bind.core}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.xml.bind</groupId>
         <artifactId>jaxb-impl</artifactId>
-        <version>${version.com.sun.xml.bind}</version>
+        <version>${version.com.sun.xml.bind.impl}</version>
       </dependency>
       <dependency>
         <groupId>com.sun.activation</groupId>

@@ -33,6 +33,16 @@ import org.kie.kogito.internal.process.runtime.KogitoProcessContext;
 
 public class JavaScriptAction implements Action, Externalizable {
 
+    static ScriptEngine loadJavaScriptEngine() {
+        ScriptEngineManager factory = new ScriptEngineManager();
+        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        if (engine != null) {
+            return engine;
+        }
+        throw new IllegalStateException("JavaScript implementation not found on the classpath." +
+                "If you're running JDK 15 or later, please include org.mozilla:rhino-engine in your project.");
+    }
+
     private static final long serialVersionUID = 630l;
 
     private String expr;
@@ -54,8 +64,7 @@ public class JavaScriptAction implements Action, Externalizable {
 
     @Override
     public void execute(KogitoProcessContext context) throws Exception {
-        ScriptEngineManager factory = new ScriptEngineManager();
-        ScriptEngine engine = factory.getEngineByName("JavaScript");
+        ScriptEngine engine = loadJavaScriptEngine();
         engine.put("kcontext", context);
 
         // insert globals into context

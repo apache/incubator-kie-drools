@@ -88,7 +88,7 @@ public class PingPongMessageTest extends BaseRestTest {
                         .get("/pong_message/")
                         .then()
                         .statusCode(200)
-                        .body("$.size", equalTo(1)));
+                        .body("$.size()", equalTo(1)));
 
         String pId = given()
                 .contentType(ContentType.JSON)
@@ -96,7 +96,7 @@ public class PingPongMessageTest extends BaseRestTest {
                 .get("/pong_message/")
                 .then()
                 .statusCode(200)
-                .body("$.size", equalTo(1))
+                .body("$.size()", equalTo(1))
                 .extract().body().path("[0].id");
 
         given()

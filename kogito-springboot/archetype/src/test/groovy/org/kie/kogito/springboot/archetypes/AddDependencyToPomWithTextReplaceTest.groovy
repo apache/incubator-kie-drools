@@ -18,8 +18,7 @@ package org.kie.kogito.springboot.archetypes
 
 import spock.lang.Specification
 
-import java.nio.file.Files
-import java.nio.file.Path
+import java.nio.charset.StandardCharsets
 
 // we can't use XML with the current Archetype plugin see: https://github.com/apache/maven-archetype/pull/58
 
@@ -40,7 +39,7 @@ class AddDependencyToPomWithTextReplaceTest extends Specification {
         }
 
         when:
-        String pomFile = Files.readString(Path.of(this.getClass().getResource(pomFile).toURI()))
+        String pomFile = new String(this.getClass().getResourceAsStream(pomFile).readAllBytes(), StandardCharsets.UTF_8)
                 .replace("    <!-- kogito dependencies -->", dependencies)
 
         then:

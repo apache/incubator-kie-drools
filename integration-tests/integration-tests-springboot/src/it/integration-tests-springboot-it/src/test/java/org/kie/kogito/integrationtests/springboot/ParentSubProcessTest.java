@@ -67,7 +67,7 @@ public class ParentSubProcessTest extends BaseRestTest {
         String taskId = given().accept(ContentType.JSON)
                 .when().get("/subprocess/{uuid}/tasks?user=john", subProcessId)
                 .then().statusCode(200)
-                .body("$.size", is(1))
+                .body("$.size()", is(1))
                 .body("[0].parameters.param_name", is(name))
                 .extract().path("[0].id");
 
