@@ -3215,19 +3215,21 @@ OOPathChunk OOPathChunk():
 
 DrlxExpression DrlxExpression():
 {
-	SimpleName decl = null;
+	DrlxExpression ret = null;
+    SimpleName decl = null;
 	Expression expr;
+	Expression right;
 }
 {
   [ LOOKAHEAD(2) decl = SimpleName() ":" ]
   (
   LOOKAHEAD(OOPathExpr())
-    expr = OOPathExpr()
+    expr = OOPathExpr() { ret = new DrlxExpression(decl, expr); }
   |
-  expr = Expression()
+  expr = Expression() { ret = new DrlxExpression(decl, expr); }
   )
-
-  { return new DrlxExpression(decl, expr); }
+  ( ":" right = Expression() { ret = parseBindingAfterAnd(range(ret, token()), ret, right); } )*
+  { return ret; }
 }
 
 Expression MapCreationLiteralExpression():

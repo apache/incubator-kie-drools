@@ -91,6 +91,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.getLitera
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.isBooleanBoxedUnboxed;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.stripEnclosedExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.drlxparse.MultipleDrlxParseSuccess.createMultipleDrlxParseSuccess;
 import static org.drools.modelcompiler.builder.generator.drlxparse.SpecialComparisonCase.specialComparisonFactory;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.transformFullyQualifiedInlineCastExpr;
 import static org.drools.mvel.parser.printer.PrintUtil.printConstraint;
@@ -524,7 +525,7 @@ public class ConstraintParser {
                     binaryExpr.getRight();
             DrlxParseResult rightResult = compileToJavaRecursive(patternType, bindingId, constraint, rightExpr, hasBind, isPositional );
             return isMultipleResult(leftResult, operator, rightResult) ?
-                    new MultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
+                    createMultipleDrlxParseSuccess( operator, ( DrlxParseSuccess ) leftResult, ( DrlxParseSuccess ) rightResult ) :
                     leftResult.combineWith( rightResult, operator );
         }
 

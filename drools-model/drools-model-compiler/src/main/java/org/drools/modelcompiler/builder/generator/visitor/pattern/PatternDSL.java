@@ -180,7 +180,8 @@ public abstract class PatternDSL implements DSLNode {
                 .anyMatch(r -> r.getDrlxParseResult().acceptWithReturnValue(new ParseResultVisitor<Boolean>() {
                     @Override
                     public Boolean onSuccess(DrlxParseSuccess t) {
-                        return t.getExpr() != null && t.getExpr().isInstanceOfExpr();
+                        Expression expr = t.getExpr();
+                        return expr != null && expr.isInstanceOfExpr();
                     }
 
                     @Override

@@ -16,6 +16,7 @@
 
 package org.drools.modelcompiler.builder.generator.drlxparse;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,9 +33,25 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
     private final BinaryExpr.Operator operator;
     private final DrlxParseSuccess[] results;
 
-    public MultipleDrlxParseSuccess( BinaryExpr.Operator operator, DrlxParseSuccess... results ) {
+    private MultipleDrlxParseSuccess( BinaryExpr.Operator operator, DrlxParseSuccess... results ) {
         this.operator = operator;
         this.results = results;
+    }
+
+    public static MultipleDrlxParseSuccess createMultipleDrlxParseSuccess( BinaryExpr.Operator operator, DrlxParseSuccess... results ) {
+        List<DrlxParseSuccess> flattenedDrlx = new ArrayList<>();
+        for (DrlxParseSuccess result : results) {
+            if (result instanceof SingleDrlxParseSuccess) {
+                flattenedDrlx.add(result);
+            } else if (((MultipleDrlxParseSuccess) result).getOperator() == operator) {
+                for (DrlxParseSuccess innerResult : ((MultipleDrlxParseSuccess) result).getResults()) {
+                    flattenedDrlx.add(innerResult);
+                }
+            } else {
+                return new MultipleDrlxParseSuccess( operator, results );
+            }
+        }
+        return new MultipleDrlxParseSuccess( operator, flattenedDrlx.toArray(new DrlxParseSuccess[flattenedDrlx.size()]) );
     }
 
     public BinaryExpr.Operator getOperator() {
@@ -92,7 +109,11 @@ public class MultipleDrlxParseSuccess extends AbstractDrlxParseSuccess {
 
     @Override
     public Expression getExpr() {
-        return new BinaryExpr( results[0].getExpr(), results[1].getExpr(), operator );
+        Expression expr = new BinaryExpr( results[0].getExpr(), results[1].getExpr(), operator );
+        for (int i = 2; i < results.length; i++) {
+            expr = new BinaryExpr( expr, results[i].getExpr(), operator );
+        }
+        return expr;
     }
 
     @Override
