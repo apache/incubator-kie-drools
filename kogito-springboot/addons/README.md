@@ -6,12 +6,12 @@ In this module you will find all the add-ons supported by the community for Spri
 
 | Add-On Description  | Artifact ID                           | Since             |
 |---------------------|---------------------------------------|-------------------|
-| Cloud Events         | kogito-addons-springboot-cloudevents | 1.0.0 |
 | Events Decisions     | kogito-addons-springboot-events-decisions | 1.2.0 |
 | Events Kafka         | kogito-addons-springboot-events-kafka | 0.3.0 |
 | Explainability       | kogito-addons-springboot-explainability | 0.15.0 |
 | Jobs Management      | kogito-addons-springboot-jobs-management | 0.6.0 |
 | Mail                 | kogito-addons-springboot-mail | 1.6.0 |
+| Messaging            | kogito-addons-springboot-messaging | 1.0.0 |
 | Monitoring Elastic   | kogito-addons-springboot-monitoring-elastic | 1.2.0 |
 | Monitoring Prometheus |kogito-addons-springboot-monitoring-prometheus | 0.1.0  |
 | Persistence FileSystem | kogito-addons-persistence-filesystem | 0.10.0              |

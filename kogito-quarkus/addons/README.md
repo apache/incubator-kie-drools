@@ -6,14 +6,13 @@ In this module you will find all the add-ons supported by the community for Quar
 
 | Add-On Description   | Artifact ID                        | Since                  |
 |----------------------|------------------------------------|------------------|
-| Cloud Events         | kogito-addons-quarkus-cloudevents  | 1.0.0 |
-| Cloud Events Multi   | kogito-addons-quarkus-cloudevents-multi | 1.8.0 |
 | Events Decisions     | kogito-addons-quarkus-events-decisions | 1.2.0 |
 | Events Smallrye      | kogito-addons-quarkus-events-smallrye | 0.3.0 |
 | Explainability       | kogito-addons-quarkus-explainability | 0.15.0 |
 | Jobs Management      | kogito-addons-quarkus-jobs-management | 0.6.0 |
 | Knative Eventing     | kogito-addons-quarkus-knative-eventing | 1.10.0 |
 | Mail                 | kogito-addons-quarkus-mail | 1.6.0 |
+| Messaging            | kogito-addons-quarkus-messaging  | 1.0.0 |
 | Monitoring Elastic   | kogito-addons-quarkus-monitoring-elastic | 1.2.0 |
 | Monitoring Prometheus | kogito-addons-quarkus-monitoring-prometheus | 0.1.0 |
 | Persistence FileSystem | kogito-addons-quarkus-persistence-filesystem | 1.12.0 |

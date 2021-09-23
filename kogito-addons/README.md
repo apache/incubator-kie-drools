@@ -88,7 +88,7 @@ In this case, you will have to create a new capability from the scratch. To do t
 knowledge of the Kogito engine internals. Then follow these steps:
 
 1. Create a new sub-module under `common` with a meaningful name. This module can be a parent module if you foresee a
-   complex scenario for your new add-on. See [`cloudevents`](common/cloudevents) as an example.
+   complex scenario for your new add-on. See [`messaging`](common/messaging) as an example.
 2. Do not use any dependencies from Quarkus or Spring Boot in `common` module. Your add-on must only have code to support
    your capability. New dependencies must be added to the [kogito-build](../kogito-build/kogito-build-parent) BOM.
 3. Create the same capability under the `addons` module in the runtime module you wish to add support (
