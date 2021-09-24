@@ -172,9 +172,12 @@ public class DefaultSolver<Solution_> extends AbstractSolver<Solution_> {
         if (problem == null) {
             throw new IllegalArgumentException("The problem (" + problem + ") must not be null.");
         }
-        LongTaskTimer solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId(),
-                solverScope.getMonitoringTags());
-        Counter errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId(), solverScope.getMonitoringTags());
+
+        // No tags for these metrics; they are global
+        LongTaskTimer solveLengthTimer = Metrics.more().longTaskTimer(SolverMetric.SOLVE_DURATION.getMeterId());
+        Counter errorCounter = Metrics.counter(SolverMetric.ERROR_COUNT.getMeterId());
+
+        // Score Calculation Count is specific per solver
         Metrics.gauge(SolverMetric.SCORE_CALCULATION_COUNT.getMeterId(), solverScope.getMonitoringTags(),
                 solverScope, SolverScope::getScoreCalculationCount);
         solverScope.getSolverMetricSet().forEach(solverMetric -> solverMetric.register(this));

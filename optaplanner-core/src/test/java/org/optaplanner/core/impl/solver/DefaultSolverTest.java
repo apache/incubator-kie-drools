@@ -177,12 +177,12 @@ public class DefaultSolverTest {
                 assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
                         .containsExactlyInAnyOrder(
                                 new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
-                                        Tags.of("tag.key", "tag.value"),
+                                        Tags.empty(),
                                         null,
                                         null,
                                         Meter.Type.LONG_TASK_TIMER),
                                 new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
-                                        Tags.of("tag.key", "tag.value"),
+                                        Tags.empty(),
                                         null,
                                         null,
                                         Meter.Type.COUNTER),
@@ -204,12 +204,12 @@ public class DefaultSolverTest {
         assertThat(meterRegistry.getMeters().stream().map(Meter::getId))
                 .containsExactlyInAnyOrder(
                         new Meter.Id(SolverMetric.SOLVE_DURATION.getMeterId(),
-                                Tags.of("tag.key", "tag.value"),
+                                Tags.empty(),
                                 null,
                                 null,
                                 Meter.Type.LONG_TASK_TIMER),
                         new Meter.Id(SolverMetric.ERROR_COUNT.getMeterId(),
-                                Tags.of("tag.key", "tag.value"),
+                                Tags.empty(),
                                 null,
                                 null,
                                 Meter.Type.COUNTER));
