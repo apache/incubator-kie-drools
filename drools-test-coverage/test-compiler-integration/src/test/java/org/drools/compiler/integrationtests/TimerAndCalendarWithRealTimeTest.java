@@ -20,9 +20,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
+import org.drools.core.common.DefaultAgenda;
 import org.drools.testcoverage.common.model.Alarm;
 import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.Person;
@@ -42,13 +43,18 @@ import org.kie.api.runtime.conf.TimedRuleExecutionOption;
 import org.kie.api.runtime.rule.FactHandle;
 
 import static java.util.Arrays.asList;
+import static org.awaitility.Awaitility.await;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(Parameterized.class)
 public class TimerAndCalendarWithRealTimeTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
     private KieSession ksession;
+    private KieBase kbase;
 
     public TimerAndCalendarWithRealTimeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
@@ -96,15 +102,9 @@ public class TimerAndCalendarWithRealTimeTest {
         // now check for update
         assertEquals(0, list.size());
 
-        waitUntilRuleFires();
+        awaitUntilRulesThatFiredAre(1);
         // now check for update
         assertEquals(1, list.size());
-    }
-
-    private void waitUntilRuleFires() throws InterruptedException {
-        while (ksession.fireAllRules() == 0) {
-            Thread.sleep(10);
-        }
     }
 
     @Test(timeout = 10000)
@@ -139,7 +139,7 @@ public class TimerAndCalendarWithRealTimeTest {
         // now check for update
         assertEquals(0, list.size());
 
-        waitUntilRuleFires();
+        awaitUntilRulesThatFiredAre(1);
 
         // now check for update
         assertEquals(1, list.size());
@@ -182,13 +182,12 @@ public class TimerAndCalendarWithRealTimeTest {
         // now check for update
         assertEquals(0, list.size());
 
-        waitUntilRuleFires();
+        awaitUntilRulesThatFiredAre(1);
 
         // now check for update
         assertEquals(2, list.size());
     }
 
-    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
     public void testTimerWithNot() throws Exception {
 
@@ -199,80 +198,43 @@ public class TimerAndCalendarWithRealTimeTest {
                                                   "org/drools/compiler/integrationtests/test_Timer_With_Not.drl");
         ksession = kbase.newKieSession();
 
-        ksession.fireAllRules();
-        Thread.sleep(200);
-        ksession.fireAllRules();
-        Thread.sleep(200);
-        ksession.fireAllRules();
+        awaitUntilRulesThatFiredAre(2);
         // now check that rule "wrap A" fired once, creating one B
         assertEquals(2, ksession.getFactCount());
     }
 
-    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test(timeout = 10000)
-    public void testTimerRemoval() throws InterruptedException {
+    public void testTimerRemoval() {
         final String drl = "package org.drools.compiler.test\n" +
                            "import " + TimeUnit.class.getName() + "\n" +
                            "global java.util.List list \n" +
-                           "global " + CountDownLatch.class.getName() + " latch\n" +
                            "rule TimerRule \n" +
                            "   timer (int:100 50) \n" +
                            "when \n" +
                            "then \n" +
                            "        //forces it to pause until main thread is ready\n" +
-                           "        latch.await(10, TimeUnit.MINUTES); \n" +
                            "        list.add(list.size()); \n" +
                            " end";
 
-        final KieBase kbase =
-                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         ksession = kbase.newKieSession();
 
-        final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> list = Collections.synchronizedList(new ArrayList<>());
         ksession.setGlobal("list", list);
-        ksession.setGlobal("latch", latch);
 
         ksession.fireAllRules();
-        Thread.sleep(500); // this makes sure it actually enters a rule
+
+        await().until(agendaIsNotEmpty());
+        ksession.fireAllRules();
+
+        await().until(list::size, greaterThanOrEqualTo(1));
+
         kbase.removeRule("org.drools.compiler.test", "TimerRule");
         ksession.fireAllRules();
-        latch.countDown();
-        Thread.sleep(500); // allow the last rule, if we were in the middle of one to actually fire, before clearing
-        ksession.fireAllRules();
-        list.clear();
-        Thread.sleep(500); // now wait to see if any more fire, they shouldn't
-        ksession.fireAllRules();
-        assertEquals(0, list.size());
+
+        await().until(ruleIsRemoved());
     }
 
-    @Ignore("DROOLS-6479 - Fixing timing issues")
-    @Test
-    public void testCronFire() {
-        // BZ-1059372
-        final String drl = "package test.drools\n" +
-                           "rule TestRule " +
-                           "  timer (cron:* * * * * ?) " +
-                           "when\n" +
-                           "    String() " +
-                           "    Integer() " +
-                           "then\n" +
-                           "end\n";
-
-        final KieBase kbase =
-                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        ksession = kbase.newKieSession();
-
-        final int repetitions = 10000;
-        for (int j = 0; j < repetitions; j++) {
-            ksession.insert(j);
-        }
-
-        ksession.insert("go");
-        ksession.fireAllRules();
-    }
-
-    @Ignore("DROOLS-6479 - Fixing timing issues")
     @Test
     public void testIntervalRuleInsertion() throws Exception {
         // DROOLS-620
@@ -301,11 +263,16 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.setGlobal("list", list);
 
         ksession.fireAllRules();
-        assertEquals(0, list.size());
-        Thread.sleep(900);
-        assertEquals(0, list.size());
-        Thread.sleep(500);
-        assertEquals(1, list.size());
+
+        // use a timestamp to check if the interval is large enough
+
+        long start = System.currentTimeMillis();
+
+        await().until(list::size, equalTo(1));
+
+        long end = System.currentTimeMillis();
+
+        assertTrue(end - start >= 1000);
     }
 
     @Ignore("DROOLS-6479 - Fixing timing issues")
@@ -325,13 +292,16 @@ public class TimerAndCalendarWithRealTimeTest {
                 KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         ksession = kbase.newKieSession();
         new Thread(ksession::fireUntilHalt).start();
-        Thread.sleep(1000);
-        final FactHandle handle = ksession.insert("halt");
+        // Thread.sleep(1000);
+
+        ksession.insert("halt");
+
+        // replace with latches
         Thread.sleep(2000);
 
         // now check that rule "halt" fired once, creating one Integer
         assertEquals(2, ksession.getFactCount());
-        ksession.delete(handle);
+        //ksession.delete(handle);
     }
 
     @Ignore("DROOLS-6479 - Fixing timing issues")
@@ -379,6 +349,7 @@ public class TimerAndCalendarWithRealTimeTest {
         ksession.setGlobal("list", list);
 
         new Thread(ksession::fireUntilHalt).start();
+
         Thread.sleep(250);
 
         assertEquals(asList(0, 0, 0), list);
@@ -444,6 +415,22 @@ public class TimerAndCalendarWithRealTimeTest {
 
         assertEquals(2, list.size());
         assertEquals(asList(0, 0), list);
+    }
+
+    private void awaitUntilRulesThatFiredAre(int rulesToFire) throws InterruptedException {
+        int count = 0;
+        while (count < rulesToFire) {
+            count += ksession.fireAllRules();
+            Thread.sleep(10);
+        }
+    }
+
+    private Callable<Boolean> ruleIsRemoved() {
+        return () -> kbase.getRule("org.drools.compiler.test", "TimerRule") == null;
+    }
+
+    private Callable<Boolean> agendaIsNotEmpty() {
+        return () -> !((DefaultAgenda) ksession.getAgenda()).getPropagationList().isEmpty();
     }
 
 }
