@@ -71,6 +71,7 @@ public class AbstractGraphTest {
 
     /**
      * Assert that there are exact links with the types between source node and target node.
+     * If no expectedTypes, it means there is no link
      */
     protected void assertLink(Graph graph, String sourceFqdn, String targetFqdn, ReactivityType... expectedTypes) {
         Node source = graph.getNodeMap().get(sourceFqdn);
