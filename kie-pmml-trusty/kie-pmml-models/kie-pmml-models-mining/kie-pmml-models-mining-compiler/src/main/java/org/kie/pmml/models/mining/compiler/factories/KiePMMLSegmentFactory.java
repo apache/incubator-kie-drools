@@ -125,8 +125,10 @@ public class KiePMMLSegmentFactory {
                 segment.getModel(),
                 hasClassloader)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
-        return getSegmentSourcesMapCommon(parentPackageName, fields, segment, nestedModels,
-                                          nestedModel);
+        final Map<String, String> toReturn = getSegmentSourcesMapCommon(parentPackageName, fields, segment, nestedModels,
+                                   nestedModel);
+        populateFieldsWithModelOnes(fields, segment.getModel());
+        return toReturn;
     }
 
     public static Map<String, String> getSegmentSourcesMapCompiled(final String parentPackageName,
@@ -144,8 +146,10 @@ public class KiePMMLSegmentFactory {
                 segment.getModel(),
                 hasClassloader)
                 .orElseThrow(() -> new KiePMMLException("Failed to get the KiePMMLModel for segment " + segment.getModel().getModelName()));
-        return getSegmentSourcesMapCommon(parentPackageName,fields, segment, nestedModels,
-                                          nestedModel);
+        final Map<String, String> toReturn = getSegmentSourcesMapCommon(parentPackageName,fields, segment, nestedModels,
+                                                                        nestedModel);
+        populateFieldsWithModelOnes(fields, segment.getModel());
+        return toReturn;
     }
 
     static Map<String, String> getSegmentSourcesMapCommon(
@@ -161,9 +165,17 @@ public class KiePMMLSegmentFactory {
                                                "does not implement HasSources");
         }
         nestedModels.add(nestedModel);
-        final Map<String, String> toReturn = getSegmentSourcesMap(packageName, fields, segment);
-        fields.addAll(getFieldsFromModel(segment.getModel()));
-        return toReturn;
+        return getSegmentSourcesMap(packageName, fields, segment);
+    }
+
+    /**
+     * Method to add the <b>model-specific</b> <code>Field</code>s to the global <code>List&lt;Field&lt;?&gt;&gt;</code>.
+     * To be invoked <b>AFTER</b> the creation of the sources-map for the specific <code>Model</code>
+     * @param fields
+     * @param model
+     */
+    static void populateFieldsWithModelOnes(final List<Field<?>> fields, final Model model) {
+        fields.addAll(getFieldsFromModel(model));
     }
 
     static Map<String, String> getSegmentSourcesMap(final String packageName,

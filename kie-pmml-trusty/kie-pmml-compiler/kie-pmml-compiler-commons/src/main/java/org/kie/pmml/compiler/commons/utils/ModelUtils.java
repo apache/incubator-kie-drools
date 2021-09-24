@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.Array;
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -163,25 +162,6 @@ public class ModelUtils {
                                                                                       " %s", targetFieldName)));
     }
 
-//    /**
-//     * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from
-//     <code>DataDictionary</code>
-//     * @param dataDictionary
-//     * @param fieldName
-//     * @return
-//     */
-//    public static Optional<OP_TYPE> getOpTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
-//        if (dataDictionary != null && dataDictionary.getDataFields() != null) {
-//            return dataDictionary.getDataFields().stream()
-//                    .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()) && dataField
-//                    .getOpType() != null)
-//                    .findFirst()
-//                    .map(dataField -> OP_TYPE.byName(dataField.getOpType().value()));
-//        } else {
-//            return Optional.empty();
-//        }
-//    }
-
     /**
      * Return <code>Optional&lt;OP_TYPE&gt;</code> of field with given <b>fieldName</b> from <code>DataDictionary</code>
      * @param fields
@@ -230,27 +210,6 @@ public class ModelUtils {
             return Optional.empty();
         }
     }
-
-//    /**
-//     * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in
-//     * <b>dataDictionary</b>
-//     * @param derivedFields
-//     * @param dataDictionary
-//     * @param fieldName
-//     * @return
-//     */
-//    public static DataType getDataType(final List<DerivedField> derivedFields,
-//                                       final DataDictionary dataDictionary,
-//                                       final String fieldName) {
-//        return Stream.of(getDataTypeFromDerivedFields(derivedFields, fieldName),
-//                         getDataTypeFromDataDictionary(dataDictionary, fieldName))
-//                .filter(Optional::isPresent)
-//                .map(Optional::get)
-//                .findFirst()
-//                .orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
-//                                                                                      "field %s",
-//                                                                              fieldName)));
-//    }
 
     /**
      * <code>DataType</code> of the given <b>field</b>, first looked upon <b>derivedFields</b> and then in
@@ -563,33 +522,6 @@ public class ModelUtils {
         Class<?> c = dataType == null ? Object.class : DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
-
-//    /**
-//     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
-//     * @param dataDictionary
-//     * @param fieldName
-//     * @return
-//     */
-//    static Optional<DataType> getDataTypeFromDataDictionary(DataDictionary dataDictionary, String fieldName) {
-//        return (dataDictionary != null && dataDictionary.getDataFields() != null) ?
-//                dataDictionary.getDataFields().stream()
-//                        .filter(dataField -> Objects.equals(fieldName, dataField.getName().getValue()))
-//                        .findFirst()
-//                        .map(DataField::getDataType) : Optional.empty();
-//    }
-//
-//    /**
-//     * <code>Optional&lt;DataType&gt;</code> of the given <b>field</b>
-//     * @param derivedFields
-//     * @param fieldName
-//     * @return
-//     */
-//    static Optional<DataType> getDataTypeFromDerivedFields(List<DerivedField> derivedFields, String fieldName) {
-//        return derivedFields.stream()
-//                .filter(derivedField -> Objects.equals(fieldName, derivedField.getName().getValue()))
-//                .map(DerivedField::getDataType)
-//                .findFirst();
-//    }
 
     static List<String> convertDataFieldValues(List<Value> toConvert) {
         return toConvert != null ? toConvert.stream()
