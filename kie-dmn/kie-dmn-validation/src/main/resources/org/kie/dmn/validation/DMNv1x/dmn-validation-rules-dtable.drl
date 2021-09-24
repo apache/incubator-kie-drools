@@ -26,6 +26,7 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.core.util.Msg;
 
 import function org.kie.dmn.validation.ValidatorUtil.rightOfHash;
+import function org.kie.dmn.validation.ValidatorUtil.nameOrIDOfTable;
 
 global org.kie.dmn.validation.MessageReporter reporter;
 
@@ -71,4 +72,11 @@ when
   $dt : DecisionTable( ) from $dr.parent
 then
   reporter.report( DMNMessage.Severity.ERROR,  $ie , Msg.DTABLE_EMPTY_ENTRY, $dt.getRule().indexOf( $dr )+1, $dr.getInputEntry().indexOf($ie)+1, $dt.getParentDRDElement().getIdentifierString() );
+end
+
+rule DTABLE_MULTIPLEOUTPUTCOLLECTOPERATOR
+when
+  $dt : DecisionTable( hitPolicy == HitPolicy.COLLECT, aggregation != null, output.size > 1 )
+then
+  reporter.report( DMNMessage.Severity.WARN,  $dt, Msg.DTMULTIPLEOUTPUTCOLLECTOPERATOR, nameOrIDOfTable($dt) );
 end

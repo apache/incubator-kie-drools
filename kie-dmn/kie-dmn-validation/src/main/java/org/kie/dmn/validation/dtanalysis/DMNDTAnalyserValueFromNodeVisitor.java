@@ -33,6 +33,7 @@ import org.kie.dmn.feel.lang.ast.StringNode;
 import org.kie.dmn.feel.lang.ast.visitor.DefaultedVisitor;
 import org.kie.dmn.feel.lang.impl.FEELImpl;
 import org.kie.dmn.feel.util.EvalHelper;
+import org.kie.dmn.validation.dtanalysis.model.DDTAOutputEntryExpression;
 
 import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE;
 import static org.kie.dmn.feel.runtime.functions.FEELConversionFunctionNames.DATE_AND_TIME;
@@ -102,7 +103,7 @@ public class DMNDTAnalyserValueFromNodeVisitor extends DefaultedVisitor<Comparab
 
         @Override
         public Comparable<?> defaultVisit(ASTNode n) {
-            return n.getText();
+            return new DDTAOutputEntryExpression(n);
         }
 
     }

@@ -33,6 +33,7 @@ import org.drools.modelcompiler.builder.generator.DeclarationSpec;
 import org.drools.modelcompiler.builder.generator.RuleContext;
 import org.drools.modelcompiler.builder.generator.drlxparse.DrlxParseSuccess;
 import org.drools.modelcompiler.builder.generator.visitor.DSLNode;
+import org.kie.api.definition.rule.Watch;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findRootNodeViaScope;
@@ -86,11 +87,13 @@ class PatternDSLPattern extends PatternDSL {
     }
 
     private MethodCallExpr addWatchToPattern( MethodCallExpr patternExpression ) {
-        if (context.isPropertyReactive(patternType)) {
-            Set<String> settableWatchedProps = getSettableWatchedProps();
-            if ( !settableWatchedProps.isEmpty() ) {
-                patternExpression = new MethodCallExpr( patternExpression, WATCH_CALL );
-                settableWatchedProps.stream().map( StringLiteralExpr::new ).forEach( patternExpression::addArgument );
+        Set<String> settableWatchedProps = getSettableWatchedProps();
+        if ( !settableWatchedProps.isEmpty() ) {
+            if (context.isPropertyReactive(patternType)) {
+                patternExpression = new MethodCallExpr(patternExpression, WATCH_CALL);
+                settableWatchedProps.stream().map(StringLiteralExpr::new).forEach(patternExpression::addArgument);
+            } else {
+                context.addCompilationError(new InvalidExpressionErrorResult("Wrong usage of @" + Watch.class.getSimpleName() + " annotation on class " + patternType.getName() + " that is not annotated as @PropertyReactive"));
             }
         }
         return patternExpression;

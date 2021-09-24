@@ -26,6 +26,10 @@ import org.kie.dmn.api.feel.runtime.events.FEELEvent;
  * For a unique hit decision table, the same rule will be matched and selected,
  * but for decision tables with different hit policies, the rules actually
  * selected might be a subset of the rules matched.
+ * 
+ * In some Multiple hit policies, the aggregated result may not correspond to 
+ * a unique index; in this case, despite the tables evaluating to an actual result,
+ * the {@link #getFired()} may be unspecified or an empty list.
  */
 public class DecisionTableRulesSelectedEvent
         extends FEELEventBase
