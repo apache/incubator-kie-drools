@@ -293,4 +293,73 @@ public class BindingTest extends BaseModelTest {
         assertThat(result).containsExactlyInAnyOrder(40, "Cheddar");
     }
 
+    @Test
+    public void testBindingOnNonBooleanUnaryLeft() {
+        // DROOLS-6612
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name && age > 20)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Mario");
+    }
+
+    @Test
+    public void testBindingOnNonBooleanUnaryRight() {
+        // DROOLS-6612
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person(name == \"Mario\" && $a : age)\n" +
+                "then\n" +
+                "  result.add($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder(40);
+    }
+
+    @Test
+    public void testBindingOnNonBooleanUnaryBoth() {
+        // DROOLS-6612
+        String str =
+                "import " + Person.class.getCanonicalName() + ";" +
+                "global java.util.List result;\n" +
+                "rule R when\n" +
+                "  $p : Person($n : name && $a : age)\n" +
+                "then\n" +
+                "  result.add($n);\n" +
+                "  result.add($a);\n" +
+                "end";
+
+        KieSession ksession = getKieSession(str);
+        List<Object> result = new ArrayList<>();
+        ksession.setGlobal("result", result);
+
+        Person me = new Person("Mario", 40);
+        ksession.insert(me);
+        ksession.fireAllRules();
+
+        assertThat(result).containsExactlyInAnyOrder("Mario", 40);
+    }
 }
