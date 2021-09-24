@@ -23,31 +23,54 @@ import org.drools.core.event.KogitoProcessEventSupportImpl;
 import org.drools.core.event.ProcessEventSupport;
 import org.jbpm.process.instance.event.KogitoProcessEventListenerAdapter;
 import org.kie.api.event.process.ProcessEventListener;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventListener;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
+import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 
 public abstract class AbstractProcessRuntime implements InternalProcessRuntime {
 
     protected KogitoProcessEventSupport processEventSupport;
+    protected KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl(this);
+    private final Application application;
 
     private final Map<ProcessEventListener, KogitoProcessEventListener> listenersMap = new IdentityHashMap<>();
 
+    protected AbstractProcessRuntime(Application application) {
+        this.application = application;
+    }
+
+    @Override
+    public KogitoProcessRuntime getKogitoProcessRuntime() {
+        return kogitoProcessRuntime;
+    }
+
+    @Override
     public KogitoProcessEventSupport getProcessEventSupport() {
         return processEventSupport;
     }
 
+    @Override
+    public Application getApplication() {
+        return application;
+    }
+
+    @Override
     public void setProcessEventSupport(ProcessEventSupport processEventSupport) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void addEventListener(final ProcessEventListener listener) {
         ((KogitoProcessEventSupportImpl) this.processEventSupport).addEventListener(asKogitoProcessEventListener(listener));
     }
 
+    @Override
     public void removeEventListener(final ProcessEventListener listener) {
         ((KogitoProcessEventSupportImpl) this.processEventSupport).removeEventListener(removeKogitoProcessEventListener(listener));
     }
 
+    @Override
     public List<ProcessEventListener> getProcessEventListeners() {
         return (List<ProcessEventListener>) (Object) ((KogitoProcessEventSupportImpl) this.processEventSupport).getEventListeners();
     }

@@ -162,9 +162,17 @@ public interface ProcessInstance<T> {
      * Returns list of currently active work items.
      *
      * @param policies optional list of policies to be enforced
-     * @return non empty list of identifiers of currently active tasks.
+     * @return list of work items
      */
     List<WorkItem> workItems(Policy<?>... policies);
+
+    /**
+     * Returns list of filtered work items
+     * 
+     * @param p the predicate to be applied to the node holding the work item
+     * @return list of work items
+     */
+    List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy<?>... policies);
 
     /**
      * Returns identifier of this process instance

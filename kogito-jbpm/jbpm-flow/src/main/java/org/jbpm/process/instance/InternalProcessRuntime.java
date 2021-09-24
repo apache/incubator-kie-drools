@@ -16,6 +16,7 @@
 package org.jbpm.process.instance;
 
 import org.drools.core.common.InternalKnowledgeRuntime;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.JobsService;
@@ -35,4 +36,7 @@ public interface InternalProcessRuntime extends org.drools.core.runtime.process.
     InternalKnowledgeRuntime getInternalKieRuntime();
 
     JobsService getJobsService();
+
+    Application getApplication();
+
 }

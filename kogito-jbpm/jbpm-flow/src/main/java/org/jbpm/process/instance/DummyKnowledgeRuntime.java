@@ -48,6 +48,7 @@ import org.kie.api.runtime.rule.LiveQuery;
 import org.kie.api.runtime.rule.QueryResults;
 import org.kie.api.runtime.rule.ViewChangedEventListener;
 import org.kie.api.time.SessionClock;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -247,27 +248,27 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KogitoProcessInstance startProcess(String processId) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.startProcess(processId);
     }
 
     @Override
     public KogitoProcessInstance startProcess(String processId, Map<String, Object> parameters) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.startProcess(processId, parameters);
     }
 
     @Override
     public KogitoProcessInstance startProcess(String processId, AgendaFilter agendaFilter) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.startProcess(processId, agendaFilter);
     }
 
     @Override
     public KogitoProcessInstance startProcess(String processId, Map<String, Object> parameters, AgendaFilter agendaFilter) {
-        return null;
+        return (KogitoProcessInstance) processRuntime.startProcess(processId, parameters, agendaFilter);
     }
 
     @Override
     public ProcessInstance startProcessFromNodeIds(String s, Map<String, Object> map, String... strings) {
-        throw new UnsupportedOperationException("org.jbpm.process.instance.DummyKnowledgeRuntime.startProcessFromNodeIds -> TODO");
+        return processRuntime.startProcessFromNodeIds(s, map, strings);
 
     }
 
@@ -284,17 +285,17 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public KogitoProcessInstance startProcessInstance(String processInstanceId) {
-        return null;
+        return processRuntime.getKogitoProcessRuntime().startProcessInstance(processInstanceId);
     }
 
     @Override
     public KogitoProcessInstance startProcessInstance(String processInstanceId, String trigger) {
-        return null;
+        return processRuntime.getKogitoProcessRuntime().startProcessInstance(processInstanceId, trigger);
     }
 
     @Override
     public void signalEvent(String type, Object event) {
-
+        processRuntime.getKogitoProcessRuntime().signalEvent(type, event);
     }
 
     @Override
@@ -305,7 +306,7 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
 
     @Override
     public void signalEvent(String type, Object event, String processInstanceId) {
-
+        processRuntime.getKogitoProcessRuntime().signalEvent(type, event, processInstanceId);
     }
 
     @Override
@@ -459,5 +460,10 @@ class DummyKnowledgeRuntime implements InternalKnowledgeRuntime, KogitoProcessRu
     @Override
     public TimerService getTimerService() {
         return null;
+    }
+
+    @Override
+    public Application getApplication() {
+        return processRuntime.getApplication();
     }
 }

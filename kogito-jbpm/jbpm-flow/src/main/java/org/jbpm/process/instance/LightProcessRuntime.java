@@ -50,7 +50,6 @@ import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
-import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.internal.process.runtime.KogitoWorkItemManager;
 import org.kie.kogito.jobs.DurationExpirationTime;
 import org.kie.kogito.jobs.ExactExpirationTime;
@@ -72,13 +71,16 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     private final KogitoWorkItemManager workItemManager;
     private UnitOfWorkManager unitOfWorkManager;
 
-    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl(this);
-
     public static LightProcessRuntime of(Application app, Collection<Process> process, ProcessRuntimeServiceProvider services) {
-        return new LightProcessRuntime(new LightProcessRuntimeContext(app, process), services);
+        return new LightProcessRuntime(new LightProcessRuntimeContext(process), services, app);
     }
 
     protected LightProcessRuntime(ProcessRuntimeContext runtimeContext, ProcessRuntimeServiceProvider services) {
+        this(runtimeContext, services, null);
+    }
+
+    protected LightProcessRuntime(ProcessRuntimeContext runtimeContext, ProcessRuntimeServiceProvider services, Application application) {
+        super(application);
         this.unitOfWorkManager = services.getUnitOfWorkManager();
         this.knowledgeRuntime = new DummyKnowledgeRuntime(this);
         this.runtimeContext = runtimeContext;
@@ -112,11 +114,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     }
 
     @Override
-    public KogitoProcessRuntime getKogitoProcessRuntime() {
-        return kogitoProcessRuntime;
-    }
-
-    @Override
     public ProcessInstance startProcess(String processId) {
         return startProcess(processId, null, null, null);
     }
@@ -143,7 +140,6 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     private ProcessInstance startProcess(String processId, Map<String, Object> parameters, String trigger, AgendaFilter agendaFilter) {
         KogitoProcessInstance processInstance = createProcessInstance(processId, parameters);
         if (processInstance != null) {
-            processInstanceManager.addProcessInstance(processInstance);
             return kogitoProcessRuntime.startProcessInstance(processInstance.getStringId(), trigger, agendaFilter);
         }
         return null;
@@ -158,8 +154,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
     public KogitoProcessInstance startProcess(String processId, CorrelationKey correlationKey, Map<String, Object> parameters) {
         KogitoProcessInstance processInstance = createProcessInstance(processId, correlationKey, parameters);
         if (processInstance != null) {
-            processInstanceManager.addProcessInstance(processInstance);
-            return (KogitoProcessInstance) startProcessInstance(processInstance.getId());
+            return kogitoProcessRuntime.startProcessInstance(processInstance.getStringId());
         }
         return null;
     }
@@ -179,6 +174,7 @@ public class LightProcessRuntime extends AbstractProcessRuntime {
             org.jbpm.process.instance.ProcessInstance pi = runtimeContext.createProcessInstance(process, correlationKey);
             pi.setKnowledgeRuntime(knowledgeRuntime);
             runtimeContext.setupParameters(pi, parameters);
+            processInstanceManager.addProcessInstance(pi);
             return pi;
         } finally {
             runtimeContext.endOperation();

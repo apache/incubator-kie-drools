@@ -23,6 +23,7 @@ import org.kie.api.event.process.ProcessEventManager;
 import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
@@ -169,5 +170,10 @@ public class KogitoProcessRuntimeImpl implements KogitoProcessRuntime {
         } finally {
             delegate.getInternalKieRuntime().endOperation();
         }
+    }
+
+    @Override
+    public Application getApplication() {
+        return delegate.getApplication();
     }
 }

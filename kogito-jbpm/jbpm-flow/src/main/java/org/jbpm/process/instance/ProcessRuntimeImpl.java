@@ -60,6 +60,7 @@ import org.kie.internal.command.RegistryContext;
 import org.kie.internal.process.CorrelationKey;
 import org.kie.internal.runtime.StatefulKnowledgeSession;
 import org.kie.internal.utils.CompositeClassLoader;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.runtime.KogitoProcessInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.jobs.DurationExpirationTime;
@@ -81,9 +82,8 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     private JobsService jobService;
     private UnitOfWorkManager unitOfWorkManager;
 
-    private final KogitoProcessRuntimeImpl kogitoProcessRuntime = new KogitoProcessRuntimeImpl(this);
-
-    public ProcessRuntimeImpl(InternalKnowledgeRuntime kruntime) {
+    public ProcessRuntimeImpl(Application application, InternalKnowledgeRuntime kruntime) {
+        super(application);
         this.kruntime = kruntime;
         TimerService timerService = kruntime.getTimerService();
         if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
@@ -103,7 +103,8 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         initProcessActivationListener();
     }
 
-    public ProcessRuntimeImpl(InternalWorkingMemory workingMemory) {
+    public ProcessRuntimeImpl(Application application, InternalWorkingMemory workingMemory) {
+        super(application);
         TimerService timerService = workingMemory.getTimerService();
         if (!(timerService.getTimerJobFactoryManager() instanceof CommandServiceTimerJobFactoryManager)) {
             timerService.setTimerJobFactoryManager(new ThreadSafeTrackableTimeJobFactoryManager());
@@ -201,7 +202,6 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     @Override
     public ProcessInstance startProcessInstance(long l) {
         throw new UnsupportedOperationException();
-
     }
 
     @Override
@@ -251,6 +251,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
                 parameters);
     }
 
+    @Override
     public ProcessInstanceManager getProcessInstanceManager() {
         return processInstanceManager;
     }
@@ -260,10 +261,12 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         return jobService;
     }
 
+    @Override
     public SignalManager getSignalManager() {
         return signalManager;
     }
 
+    @Override
     public Collection<ProcessInstance> getProcessInstances() {
         return (Collection<ProcessInstance>) (Object) processInstanceManager.getProcessInstances();
     }
@@ -288,7 +291,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
     }
 
     public KogitoProcessInstance getProcessInstance(String id, boolean readOnly) {
-        return (KogitoProcessInstance) processInstanceManager.getProcessInstance(id, readOnly);
+        return processInstanceManager.getProcessInstance(id, readOnly);
     }
 
     public void removeProcessInstance(KogitoProcessInstance processInstance) {
@@ -352,6 +355,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
 
     private void initProcessActivationListener() {
         kruntime.addEventListener(new DefaultAgendaEventListener() {
+            @Override
             public void matchCreated(MatchCreatedEvent event) {
                 String ruleFlowGroup = ((RuleImpl) event.getMatch().getRule()).getRuleFlowGroup();
                 if ("DROOLS_SYSTEM".equals(ruleFlowGroup)) {
@@ -386,6 +390,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         });
 
         kruntime.addEventListener(new DefaultAgendaEventListener() {
+            @Override
             public void afterRuleFlowGroupDeactivated(final RuleFlowGroupDeactivatedEvent event) {
                 if (kruntime instanceof StatefulKnowledgeSession) {
                     signalManager.signalEvent("RuleFlowGroup_" + event.getRuleFlowGroup().getName() + "_" + ((StatefulKnowledgeSession) kruntime).getIdentifier(),
@@ -412,6 +417,7 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         return unitOfWorkManager;
     }
 
+    @Override
     public void signalEvent(String type, Object event) {
         signalManager.signalEvent(type, event);
     }
@@ -421,15 +427,18 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void dispose() {
         this.processEventSupport.reset();
         kruntime = null;
     }
 
+    @Override
     public void clearProcessInstances() {
         this.processInstanceManager.clearProcessInstances();
     }
 
+    @Override
     public void clearProcessInstancesState() {
         this.processInstanceManager.clearProcessInstancesState();
     }
@@ -519,10 +528,12 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             this.eventTransformer = eventTransformer;
         }
 
+        @Override
         public String[] getEventTypes() {
             return null;
         }
 
+        @Override
         public void signalEvent(final String type,
                 Object event) {
             for (EventFilter filter : eventFilters) {
@@ -590,11 +601,13 @@ public class ProcessRuntimeImpl extends AbstractProcessRuntime {
             this.event = event;
         }
 
+        @Override
         public void execute(InternalWorkingMemory workingMemory) {
 
             signalEvent(type, event);
         }
 
+        @Override
         public void execute(InternalKnowledgeRuntime kruntime) {
             signalEvent(type, event);
         }

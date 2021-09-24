@@ -48,7 +48,6 @@ import org.jbpm.process.instance.context.variable.VariableScopeInstance;
 import org.jbpm.process.instance.impl.AssignmentAction;
 import org.jbpm.process.instance.impl.ContextInstanceFactory;
 import org.jbpm.process.instance.impl.ContextInstanceFactoryRegistry;
-import org.jbpm.process.instance.impl.ProcessInstanceImpl;
 import org.jbpm.util.PatternConstants;
 import org.jbpm.workflow.core.Node;
 import org.jbpm.workflow.core.node.Assignment;
@@ -65,12 +64,15 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.process.DataTransformer;
 import org.kie.api.runtime.process.EventListener;
 import org.kie.api.runtime.process.ProcessWorkItemHandlerException;
+import org.kie.kogito.Model;
 import org.kie.kogito.internal.process.runtime.KogitoNodeInstance;
 import org.kie.kogito.internal.process.runtime.KogitoProcessRuntime;
 import org.kie.kogito.process.EventDescription;
 import org.kie.kogito.process.GroupedNamedDataType;
 import org.kie.kogito.process.IOEventDescription;
 import org.kie.kogito.process.NamedDataType;
+import org.kie.kogito.process.Processes;
+import org.kie.kogito.process.impl.AbstractProcessInstance;
 import org.kie.kogito.process.workitem.WorkItemExecutionException;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItem;
 import org.kie.kogito.process.workitems.InternalKogitoWorkItemManager;
@@ -446,7 +448,7 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         } else if ("workItemAborted".equals(type)) {
             workItemAborted((InternalKogitoWorkItem) event);
         } else if (("processInstanceCompleted:" + exceptionHandlingProcessInstanceId).equals(type)) {
-            exceptionHandlingCompleted((ProcessInstance) event, null);
+            exceptionHandlingCompleted((WorkflowProcessInstance) event, null);
         } else if (type.equals("RuleFlow-Activate" + getProcessInstance().getProcessId() + "-" + getNode().getMetaData().get("UniqueId"))) {
 
             trigger(null, Node.CONNECTION_DEFAULT_TYPE);
@@ -593,30 +595,38 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
      */
 
     private void handleWorkItemHandlerException(ProcessWorkItemHandlerException handlerException, InternalKogitoWorkItem workItem) {
-        Map<String, Object> parameters = new HashMap<>();
-
-        parameters.put("DeploymentId", workItem.getDeploymentId());
-        parameters.put("ProcessInstanceId", workItem.getProcessInstanceStringId());
-        parameters.put("WorkItemId", workItem.getStringId());
-        parameters.put("NodeInstanceId", this.getStringId());
-        parameters.put("ErrorMessage", handlerException.getMessage());
-        parameters.put("Error", handlerException);
-
-        // add all parameters of the work item to the newly started process instance
-        parameters.putAll(workItem.getParameters());
-
         KogitoProcessRuntime kruntime = getKieRuntimeForSubprocess();
 
-        ProcessInstance processInstance = (ProcessInstance) kruntime.createProcessInstance(handlerException.getProcessId(), parameters);
+        org.kie.kogito.process.Process<? extends Model> process = kruntime.getApplication().get(Processes.class).processById(handlerException.getProcessId());
 
-        this.exceptionHandlingProcessInstanceId = processInstance.getStringId();
-        ((ProcessInstanceImpl) processInstance).setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
-        ((ProcessInstanceImpl) processInstance).setMetaData("ParentNodeInstanceId", getUniqueId());
+        if (process == null) {
+            logger.error("Cannot find process {}. Aborting error handling", handlerException.getProcessId());
+            return;
+        }
 
+        AbstractProcessInstance<?> kogitoProcessInstance = (AbstractProcessInstance<?>) process.createInstance(process.createModel());
+
+        WorkflowProcessInstance processInstance = kogitoProcessInstance.internalGetProcessInstance();
         processInstance.setParentProcessInstanceId(getProcessInstance().getStringId());
         processInstance.setSignalCompletion(true);
+        processInstance.setMetaData("ParentProcessInstanceId", getProcessInstance().getStringId());
+        processInstance.setMetaData("ParentNodeInstanceId", getUniqueId());
 
-        kruntime.startProcessInstance(processInstance.getStringId());
+        // add all parameters of the work item to the newly started process instance
+        VariableScopeInstance variableScopeInstance = (VariableScopeInstance) processInstance.getContextInstance(VariableScope.VARIABLE_SCOPE);
+        variableScopeInstance.setVariable("DeploymentId", workItem.getDeploymentId());
+        variableScopeInstance.setVariable("ProcessInstanceId", workItem.getProcessInstanceStringId());
+        variableScopeInstance.setVariable("WorkItemId", workItem.getStringId());
+        variableScopeInstance.setVariable("NodeInstanceId", this.getStringId());
+        variableScopeInstance.setVariable("ErrorMessage", handlerException.getMessage());
+        variableScopeInstance.setVariable("Error", handlerException);
+        for (Map.Entry<String, Object> entry : workItem.getParameters().entrySet()) {
+            variableScopeInstance.setVariable(entry.getKey(), entry.getValue());
+        }
+        kogitoProcessInstance.start();
+        // start change the id
+        this.exceptionHandlingProcessInstanceId = kogitoProcessInstance.id();
+
         if (processInstance.getState() == STATE_COMPLETED
                 || processInstance.getState() == STATE_ABORTED) {
             exceptionHandlingCompleted(processInstance, handlerException);
@@ -625,10 +635,11 @@ public class WorkItemNodeInstance extends StateBasedNodeInstance implements Even
         }
     }
 
-    private void exceptionHandlingCompleted(ProcessInstance processInstance, ProcessWorkItemHandlerException handlerException) {
-
-        if (handlerException == null) {
-            handlerException = (ProcessWorkItemHandlerException) ((WorkflowProcessInstance) processInstance).getVariable("Error");
+    private void exceptionHandlingCompleted(WorkflowProcessInstance processInstance, ProcessWorkItemHandlerException handlerException) {
+        Object errorVariable = processInstance.getVariable("Error");
+        // allow child override
+        if (errorVariable instanceof ProcessWorkItemHandlerException) {
+            handlerException = (ProcessWorkItemHandlerException) errorVariable;
         }
         InternalKogitoWorkItemManager kogitoWorkItemManager =
                 (InternalKogitoWorkItemManager) KogitoProcessRuntime.asKogitoProcessRuntime(getProcessInstance().getKnowledgeRuntime()).getKogitoWorkItemManager();

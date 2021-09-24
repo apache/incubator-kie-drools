@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import org.jbpm.process.instance.impl.humantask.HumanTaskHelper;
 import org.jbpm.process.instance.impl.humantask.HumanTaskTransition;
 import org.jbpm.util.JsonSchemaUtil;
+import org.jbpm.workflow.instance.node.HumanTaskNodeInstance;
 import org.kie.kogito.Application;
 import org.kie.kogito.MapOutput;
 import org.kie.kogito.MappableToModel;
@@ -132,7 +133,7 @@ public class ProcessServiceImpl implements ProcessService {
     public <T extends Model> Optional<List<WorkItem>> getTasks(Process<T> process, String id, String user, List<String> groups) {
         return process.instances()
                 .findById(id, ProcessInstanceReadMode.READ_ONLY)
-                .map(pi -> pi.workItems(Policies.of(user, groups)));
+                .map(pi -> pi.workItems(HumanTaskNodeInstance.class::isInstance, Policies.of(user, groups)));
     }
 
     @Override

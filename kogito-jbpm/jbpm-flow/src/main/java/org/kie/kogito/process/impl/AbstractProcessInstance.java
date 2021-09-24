@@ -430,9 +430,14 @@ public abstract class AbstractProcessInstance<T extends Model> implements Proces
 
     @Override
     public List<WorkItem> workItems(Policy<?>... policies) {
+        return workItems(WorkItemNodeInstance.class::isInstance, policies);
+    }
+
+    @Override
+    public List<WorkItem> workItems(Predicate<KogitoNodeInstance> p, Policy<?>... policies) {
         return processInstance().getNodeInstances(true)
                 .stream()
-                .filter(ni -> ni instanceof WorkItemNodeInstance && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
+                .filter(ni -> p.test(ni) && ((WorkItemNodeInstance) ni).getWorkItem().enforce(policies))
                 .map(ni -> new BaseWorkItem(ni.getStringId(),
                         ((WorkItemNodeInstance) ni).getWorkItemId(),
                         Long.toString(((WorkItemNodeInstance) ni).getNode().getId()),

@@ -24,6 +24,7 @@ import org.kie.api.runtime.KieRuntime;
 import org.kie.api.runtime.KieSession;
 import org.kie.api.runtime.process.ProcessRuntime;
 import org.kie.api.runtime.rule.AgendaFilter;
+import org.kie.kogito.Application;
 import org.kie.kogito.internal.process.event.KogitoProcessEventSupport;
 import org.kie.kogito.jobs.JobsService;
 
@@ -208,6 +209,8 @@ public interface KogitoProcessRuntime {
     KogitoProcessEventSupport getProcessEventSupport();
 
     ProcessEventManager getProcessEventManager();
+
+    Application getApplication();
 
     @Deprecated
     KieRuntime getKieRuntime();
