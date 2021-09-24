@@ -1201,7 +1201,7 @@ public class KiePackagesBuilder {
             if (patternClass.getPackage() != null && !patternClass.isPrimitive() &&
                 (!name.startsWith( "java.lang" ) || packages.containsKey( patternClass.getPackage().getName() ))) {
                 KnowledgePackageImpl pkg = (KnowledgePackageImpl) packages.computeIfAbsent( patternClass.getPackage().getName(), this::createKiePackage );
-                TypeDeclaration typeDeclaration = pkg.getTypeDeclaration( patternClass );
+                TypeDeclaration typeDeclaration = pkg.getExactTypeDeclaration( patternClass );
                 if ( typeDeclaration == null ) {
                     typeDeclaration = createTypeDeclaration( patternClass, getPropertySpecificOption() );
                     pkg.addTypeDeclaration( typeDeclaration );
