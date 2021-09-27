@@ -222,6 +222,15 @@ public class RuleContext {
         }
     }
 
+    public void addCompilationWarning( KnowledgeBuilderResult warn ) {
+        if ( warn instanceof BaseKnowledgeBuilderResultImpl ) {
+            (( BaseKnowledgeBuilderResultImpl ) warn).setResource( ruleDescr.getResource() );
+        }
+        synchronized (kbuilder) {
+            kbuilder.addBuilderResult(warn);
+        }
+    }
+
     public boolean hasCompilationError() {
         return hasCompilationError;
     }

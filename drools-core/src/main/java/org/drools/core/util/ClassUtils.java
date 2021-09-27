@@ -44,6 +44,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.drools.core.common.DroolsObjectInputStream;
@@ -459,18 +460,60 @@ public final class ClassUtils {
     }
 
     public static Method getAccessor(Class<?> clazz, String field) {
-        return Stream.<Supplier<String>>of(
-                    () -> "get" + ucFirst(field),
-                    () -> field,
-                    () -> "is" + ucFirst(field),
-                    () -> "get" + field,
-                    () -> "is" + field
-        )
-                .map( f -> getMethod(clazz, f.get(), new Class<?>[0] ))
-                .filter( Optional::isPresent )
-                .findFirst()
-                .flatMap( Function.identity() )
-                .orElse( null );
+        return getAccessor(clazz, field, false);
+    }
+
+    public static Method getAccessor(Class<?> clazz, String field, boolean exceptionIfIncompatible) {
+        Map<String, Integer> accessorPriorityMap = accessorPriorityMap(field);
+        List<Method> accessors = accessorPriorityMap.keySet()
+                                                    .stream()
+                                                    .map(methodName -> getMethod(clazz, methodName, new Class<?>[0]))
+                                                    .filter(Optional::isPresent)
+                                                    .map(Optional::get)
+                                                    .filter(method -> !(method.getName().startsWith("is") && !method.getReturnType().equals(boolean.class)))
+                                                    .distinct()
+                                                    .collect(Collectors.toList());
+        return bestCandidateAccessor(clazz, accessors, accessorPriorityMap, exceptionIfIncompatible);
+    }
+
+    public static Map<String, Integer> accessorPriorityMap(String field) {
+        Map<String, Integer> accessorPriorityMap = new HashMap<>();
+        accessorPriorityMap.put("is" + ucFirst(field), 4);
+        accessorPriorityMap.put("is" + field, 3);
+        accessorPriorityMap.put("get" + ucFirst(field), 2);
+        accessorPriorityMap.put("get" + field, 1);
+        accessorPriorityMap.put(field, 0);
+        return accessorPriorityMap;
+    }
+
+    private static Method bestCandidateAccessor(Class<?> clazz, List<Method> accessors, Map<String, Integer> accessorPriorityMap, boolean exceptionIfIncompatible) {
+        Method bestCandidate = null;
+        for (Method method : accessors) {
+            if (bestCandidate != null && !MethodUtils.isOverride(bestCandidate, method)) {
+                if (method.getReturnType() != bestCandidate.getReturnType()) {
+                    if (method.getReturnType().isAssignableFrom(bestCandidate.getReturnType())) {
+                        // a more specialized getter (covariant overload) has been already indexed, so skip this one
+                        continue;
+                    } else if (bestCandidate.getReturnType().isAssignableFrom(method.getReturnType())) {
+                        // this method is a more specialized getter. Overwrite with this one
+                    } else {
+                        // returnType is different so it would likely produce a wrong result
+                        if (exceptionIfIncompatible) {
+                            throw new IncompatibleGetterOverloadException(clazz,
+                                                                          bestCandidate.getName(), bestCandidate.getReturnType(),
+                                                                          method.getName(), method.getReturnType());
+                        }
+                    }
+                } else if (Modifier.isAbstract(method.getModifiers()) && Modifier.isAbstract(bestCandidate.getModifiers())) {
+                    // If both are abstract, no need of Warning
+                } else if (accessorPriorityMap.get(bestCandidate.getName()) > accessorPriorityMap.get(method.getName())) {
+                    // bestCandidate has higher priority
+                    continue;
+                }
+            }
+            bestCandidate = method;
+        }
+        return bestCandidate;
     }
 
     public static Method getSetter(Class<?> clazz, String field, Class<?> parameterType) {

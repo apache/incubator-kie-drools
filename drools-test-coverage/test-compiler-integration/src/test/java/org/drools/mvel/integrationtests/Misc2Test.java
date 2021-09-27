@@ -3377,15 +3377,8 @@ public class Misc2Test {
 
         Results results = kieBuilder.getResults();
         List<org.kie.api.builder.Message> errors = results.getMessages(org.kie.api.builder.Message.Level.ERROR);
-        assertTrue(errors.toString(), errors.isEmpty());
-
-        List<org.kie.api.builder.Message> warnings = results.getMessages(org.kie.api.builder.Message.Level.WARNING);
-        assertEquals( 2, warnings.size() );
-        for (org.kie.api.builder.Message warning : warnings) {
-            System.out.println( warning );
-        }
+        assertEquals( 2, errors.size() );
     }
-
 
     @Test
     public void testCollectAccumulate() {

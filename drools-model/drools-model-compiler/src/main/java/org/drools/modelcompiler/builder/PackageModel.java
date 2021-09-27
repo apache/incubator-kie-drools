@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.ImportDeclaration;
@@ -850,6 +851,7 @@ public class PackageModel {
         for (Class<?> domainClass : domainClasses) {
             String domainClassSourceName = asJavaSourceName( domainClass );
             List<String> accessibleProperties = getAccessibleProperties( domainClass );
+            accessibleProperties = accessibleProperties.stream().distinct().collect(Collectors.toList());
             sb.append( "    public static final " + DomainClassMetadata.class.getCanonicalName() + " " + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE + " = new " + domainClassSourceName+ "_Metadata();\n" );
             sb.append( "    private static class " + domainClassSourceName + "_Metadata implements " + DomainClassMetadata.class.getCanonicalName() + " {\n\n" );
             sb.append(

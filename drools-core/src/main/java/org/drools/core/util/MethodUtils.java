@@ -333,5 +333,11 @@ public class MethodUtils {
         return false;
     }
 
+    public static boolean isOverride(Method oldMethod, Method newMethod) {
+        return oldMethod.getName().equals(newMethod.getName()) &&
+               !oldMethod.getDeclaringClass().equals(newMethod.getDeclaringClass()) &&
+               oldMethod.getDeclaringClass().isAssignableFrom(newMethod.getDeclaringClass());
+    }
+
     public interface NullType { }
 }

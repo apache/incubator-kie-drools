@@ -88,9 +88,12 @@ import org.drools.compiler.lang.descr.AnnotationDescr;
 import org.drools.compiler.lang.descr.PatternDescr;
 import org.drools.core.addon.TypeResolver;
 import org.drools.core.util.ClassUtils;
+import org.drools.core.util.IncompatibleGetterOverloadException;
 import org.drools.core.util.MethodUtils;
 import org.drools.core.util.StringUtils;
 import org.drools.model.Index;
+import org.drools.modelcompiler.builder.errors.GetterOverloadWarning;
+import org.drools.modelcompiler.builder.errors.IncompatibleGetterOverloadError;
 import org.drools.modelcompiler.builder.errors.InvalidExpressionErrorResult;
 import org.drools.mvel.parser.DrlxParser;
 import org.drools.mvel.parser.ast.expr.BigDecimalLiteralExpr;
@@ -148,12 +151,12 @@ public class DrlxParseUtil {
         return Operator.valueOf(operator.name());
     }
 
-    public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope) {
+    public static TypedExpression nameExprToMethodCallExpr(String name, java.lang.reflect.Type type, Expression scope, RuleContext context) {
         if (type == null) {
             return null;
         }
         Class<?> clazz = toRawClass( type );
-        Method accessor = getAccessor( clazz, name );
+        Method accessor = getAccessor(clazz, name, context);
         if (accessor != null) {
             MethodCallExpr body = new MethodCallExpr( scope, accessor.getName() );
             return new TypedExpression( body, accessor.getGenericReturnType() );
@@ -818,8 +821,17 @@ public class DrlxParseUtil {
         return empty();
     }
 
-    public static Method getAccessor( Class<?> clazz, String name ) {
-        return ACCESSOR_CACHE.computeIfAbsent( clazz.getCanonicalName() + "." + name, k -> ClassUtils.getAccessor(clazz, name) );
+    public static Method getAccessor(Class<?> clazz, String name, RuleContext context) {
+        String key = clazz.getCanonicalName() + "." + name;
+        return ACCESSOR_CACHE.computeIfAbsent(key, k -> {
+            Method accessor = null;
+            try {
+                accessor = ClassUtils.getAccessor(clazz, name, true);
+            } catch (IncompatibleGetterOverloadException e) {
+                context.addCompilationError(new IncompatibleGetterOverloadError(clazz, e.getOldName(), e.getOldType(), e.getNewName(), e.getOldType()));
+            }
+            return accessor;
+        });
     }
 
     public static void clearAccessorCache() {

@@ -335,7 +335,7 @@ public class ExpressionTyper {
             for (OOPathChunk chunk : ((OOPathExpr) drlxExpr).getChunks()) {
                 final String fieldName = chunk.getField().toString();
 
-                final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, type, null);
+                final TypedExpression callExpr = DrlxParseUtil.nameExprToMethodCallExpr(fieldName, type, null, ruleContext);
                 if (callExpr == null) {
                     return empty();
                 }
@@ -415,7 +415,7 @@ public class ExpressionTyper {
     }
 
     private Optional<TypedExpression> nameExpr(String name, Class<?> typeCursor) {
-        TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null);
+        TypedExpression expression = nameExprToMethodCallExpr(name, typeCursor, null, ruleContext);
         if (expression != null) {
             context.addReactOnProperties(name);
             Expression plusThis = prepend(new NameExpr(THIS_PLACEHOLDER), expression.getExpression());
@@ -533,7 +533,7 @@ public class ExpressionTyper {
         for (Node part : childrenWithoutFirst) {
             if (part instanceof SimpleName) {
                 String field = part.toString();
-                TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous);
+                TypedExpression expression = nameExprToMethodCallExpr(field, typeCursor, previous, ruleContext);
                 if (expression == null) {
                     ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + field + " on " + typeCursor ) );
                     break;
@@ -554,7 +554,7 @@ public class ExpressionTyper {
             } else if (part instanceof InlineCastExpr && ((InlineCastExpr) part).getExpression() instanceof FieldAccessExpr) {
                 InlineCastExpr inlineCastExprPart = (InlineCastExpr) part;
                 final FieldAccessExpr fieldAccessExpr = (FieldAccessExpr) inlineCastExprPart.getExpression();
-                final TypedExpression toMethodCallExpr = nameExprToMethodCallExpr(fieldAccessExpr.getNameAsString(), typeCursor, previous);
+                final TypedExpression toMethodCallExpr = nameExprToMethodCallExpr(fieldAccessExpr.getNameAsString(), typeCursor, previous, ruleContext);
                 if (toMethodCallExpr == null) {
                     ruleContext.addCompilationError( new InvalidExpressionErrorResult( "Unknown field " + fieldAccessExpr.getNameAsString() + " on " + typeCursor ) );
                     break;
@@ -1029,7 +1029,7 @@ public class ExpressionTyper {
         TypedExpressionCursor teCursor;
         final java.lang.reflect.Type tc4 = originalTypeCursor;
         String firstName = firstNodeName.getIdentifier();
-        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName);
+        Method firstAccessor = DrlxParseUtil.getAccessor(toRawClass(tc4), firstName, ruleContext);
         if (firstAccessor != null) {
             context.addReactOnProperties(firstName);
             teCursor = new TypedExpressionCursor(new MethodCallExpr(new NameExpr(THIS_PLACEHOLDER), firstAccessor.getName()), firstAccessor.getGenericReturnType());
@@ -1066,7 +1066,7 @@ public class ExpressionTyper {
 
         Class<?> classCursor = toRawClass(typeCursor);
         if ( classCursor != null ) {
-            Method firstAccessor = DrlxParseUtil.getAccessor( !isInLineCast ? classCursor : patternType, firstName );
+            Method firstAccessor = DrlxParseUtil.getAccessor( !isInLineCast ? classCursor : patternType, firstName, ruleContext );
             if ( firstAccessor != null ) {
                 if ( !"".equals( firstName ) ) {
                     context.addReactOnProperties( firstName );

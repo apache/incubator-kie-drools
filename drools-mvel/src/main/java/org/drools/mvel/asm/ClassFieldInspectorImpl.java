@@ -33,6 +33,8 @@ import java.util.Set;
 import org.drools.core.base.ClassFieldInspector;
 import org.drools.core.base.ClassFieldReader;
 import org.drools.core.kie.impl.MessageImpl;
+import org.drools.core.util.ClassUtils;
+import org.drools.core.util.MethodUtils;
 import org.kie.api.io.Resource;
 import org.kie.internal.builder.InternalMessage;
 import org.kie.internal.builder.KnowledgeBuilderResult;
@@ -336,14 +338,27 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
             }
         } else if( ! void.class.isAssignableFrom( method.getReturnType() ) ) {
             Method existingMethod = getterMethods.get( fieldName );
-            if ( existingMethod != null && !isOverride( existingMethod, method ) ) {
-                if (method.getReturnType() != existingMethod.getReturnType() && method.getReturnType().isAssignableFrom(existingMethod.getReturnType())) {
-                    // a more specialized getter (covariant overload) has been already indexed, so skip this one
-                    return;
+            if ( existingMethod != null && !MethodUtils.isOverride( existingMethod, method ) ) {
+                if (method.getReturnType() != existingMethod.getReturnType()) {
+                    if (method.getReturnType().isAssignableFrom(existingMethod.getReturnType())) {
+                        // a more specialized getter (covariant overload) has been already indexed, so skip this one
+                        return;
+                    } else if (existingMethod.getReturnType().isAssignableFrom(method.getReturnType())) {
+                        // this method is a more specialized getter. Overwrite with this one
+                    } else {
+                        // returnType is different so it would likely produce a wrong result
+                        addResult( fieldName, new IncompatibleGetterOverloadError( classUnderInspection,
+                                                                         this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
+                                                                         method.getName(), method.getReturnType() ) );
+                    }
+                } else if (Modifier.isAbstract(method.getModifiers()) && Modifier.isAbstract(existingMethod.getModifiers())) {
+                        // If both are abstract, no need of Warning
                 } else {
-                    addResult( fieldName, new GetterOverloadWarning( classUnderInspection,
-                                                                     this.getterMethods.get( fieldName ).getName(), this.fieldTypes.get( fieldName ),
-                                                                     method.getName(), method.getReturnType() ) );
+                    Map<String, Integer> accessorPriorityMap = ClassUtils.accessorPriorityMap(fieldName);
+                    if (accessorPriorityMap.get(existingMethod.getName()) > accessorPriorityMap.get(method.getName())) {
+                        // existingMethod has higher priority
+                        return;
+                    }
                 }
             }
             this.getterMethods.put( fieldName,
@@ -353,11 +368,6 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
             this.fieldTypesField.put( fieldName,
                                       f );
         }
-    }
-
-    private boolean isOverride( Method oldMethod, Method newMethod ) {
-        return !oldMethod.getDeclaringClass().equals( newMethod.getDeclaringClass() ) &&
-               oldMethod.getDeclaringClass().isAssignableFrom( newMethod.getDeclaringClass() );
     }
 
     private String calcFieldName( String name,
@@ -573,5 +583,45 @@ public class ClassFieldInspectorImpl implements ClassFieldInspector {
 
     }
 
+    public static class IncompatibleGetterOverloadError implements KnowledgeBuilderResult {
+
+        private Class klass;
+        private String oldName;
+        private Class oldType;
+        private String newName;
+        private Class newType;
+
+        public IncompatibleGetterOverloadError( Class klass, String oldName, Class oldType, String newName, Class newType ) {
+            this.klass = klass;
+            this.oldName = oldName;
+            this.oldType = oldType;
+            this.newName = newName;
+            this.newType = newType;
+        }
+
+        public ResultSeverity getSeverity() {
+            return ResultSeverity.ERROR;
+        }
+
+
+        public String getMessage() {
+            return " Imcompatible Getter overloading detected in class " + klass.getName() + " : " + oldName + " (" + oldType + ") vs " + newName + " (" + newType + ") ";
+        }
+
+
+        public int[] getLines() {
+            return new int[ 0 ];
+        }
+
+        public Resource getResource() {
+            return null;
+        }
+
+        @Override
+        public InternalMessage asMessage(long id) {
+            return new MessageImpl(id, this);
+        }
+
+    }
 
 }
