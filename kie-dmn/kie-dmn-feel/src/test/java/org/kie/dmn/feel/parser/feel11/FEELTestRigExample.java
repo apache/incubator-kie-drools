@@ -22,18 +22,21 @@ import java.util.Map;
 import java.util.Scanner;
 
 import org.kie.dmn.feel.lang.Type;
+import org.kie.dmn.feel.lang.impl.MapBackedType;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.feel.lang.types.GenListType;
 
 public class FEELTestRigExample {
 
     public static void main(String[] args) throws Exception {
         try (Scanner sysin = new Scanner(System.in)) {
 
-            final String FEEL_EXPRESSION = "sum(my variable+2)";
+            final String FEEL_EXPRESSION = "my input[1].Value";
 
             // Set FEEL variables name+type in scope:
+            MapBackedType compositeType = new MapBackedType().addField( "Primary-Key", BuiltInType.STRING ).addField( "Value", BuiltInType.STRING );
             Map<String, Type> variablesInScopeTypes = new HashMap<>();
-            variablesInScopeTypes.put("my variable", BuiltInType.UNKNOWN);
+            variablesInScopeTypes.put("my input", new GenListType(compositeType) );
 
             FEELTestRig feelTestRig = new FEELTestRig(new String[]{"FEEL_1_1", "compilation_unit", "-tree", "-gui"}, variablesInScopeTypes, Collections.emptyMap());
             feelTestRig.process(FEEL_EXPRESSION);

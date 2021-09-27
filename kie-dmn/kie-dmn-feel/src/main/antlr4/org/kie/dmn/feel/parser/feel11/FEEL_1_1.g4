@@ -266,8 +266,8 @@ powerExpression
 
 filterPathExpression
     :   unaryExpression
-    |   filterPathExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
-    |   filterPathExpression DOT {helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
+    |   n0=filterPathExpression LBRACK {helper.enableDynamicResolution();} filter=expression {helper.disableDynamicResolution();} RBRACK
+    |   n1=filterPathExpression DOT {helper.asd($n1.ctx, this); helper.enableDynamicResolution();} qualifiedName {helper.disableDynamicResolution();}
     ;
 
 unaryExpression
@@ -389,12 +389,14 @@ interval
 
 // #20
 qualifiedName
+locals [ java.util.List<String> qns ]
 @init {
     String name = null;
     int count = 0;
     java.util.List<String> qn = new java.util.ArrayList<String>();
 }
 @after {
+    $qns = qn;
     for( int i = 0; i < count; i++ )
         helper.dismissScope();
 }

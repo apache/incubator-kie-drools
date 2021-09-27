@@ -16,16 +16,19 @@
 
 package org.kie.dmn.feel.parser.feel11;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.misc.Interval;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.xpath.XPath;
 import org.kie.dmn.api.feel.runtime.events.FEELEvent;
 import org.kie.dmn.feel.lang.CompositeType;
 import org.kie.dmn.feel.lang.Scope;
@@ -41,6 +44,7 @@ import org.kie.dmn.feel.lang.types.GenListType;
 import org.kie.dmn.feel.lang.types.ScopeImpl;
 import org.kie.dmn.feel.lang.types.SymbolTable;
 import org.kie.dmn.feel.lang.types.VariableSymbol;
+import org.kie.dmn.feel.parser.feel11.FEEL_1_1Parser.QualifiedNameContext;
 import org.kie.dmn.feel.runtime.events.UnknownVariableErrorEvent;
 import org.kie.dmn.feel.util.EvalHelper;
 import org.slf4j.Logger;
@@ -290,6 +294,14 @@ public class ParserHelper {
         int b = ctx.stop.getStopIndex();
         Interval interval = new Interval( a, b );
         return ctx.getStart().getInputStream().getText( interval );
+    }
+    
+    public static void asd(ParserRuleContext ctx, Parser parser) {
+        String string = FEEL_1_1Parser.ruleNames[ctx.getRuleIndex()];
+        QualifiedNameContext ruleContexts = ctx.getRuleContext(FEEL_1_1Parser.QualifiedNameContext.class, 1);
+        Collection<ParseTree> findAll = XPath.findAll(ctx, "//qualifiedName", parser);
+        System.out.println(ctx);
+        System.out.println(string);
     }
 
     public static List<Token> getAllTokens(
