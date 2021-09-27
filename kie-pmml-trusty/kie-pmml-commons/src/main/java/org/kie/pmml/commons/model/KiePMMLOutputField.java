@@ -56,7 +56,8 @@ public class KiePMMLOutputField extends AbstractKiePMMLComponent {
     static Optional<Object> getValueFromKiePMMLNameValuesByVariableName(final String variableName,
                                                                         final List<KiePMMLNameValue> kiePMMLNameValues) {
         return kiePMMLNameValues.stream()
-                .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(variableName))
+                .filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(variableName) &&
+                        kiePMMLNameValue.getValue() != null)
                 .map(KiePMMLNameValue::getValue)
                 .findFirst();
     }
