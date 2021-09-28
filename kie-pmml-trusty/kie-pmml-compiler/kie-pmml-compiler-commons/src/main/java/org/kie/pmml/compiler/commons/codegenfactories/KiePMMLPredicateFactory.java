@@ -22,6 +22,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.False;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
@@ -46,14 +47,13 @@ public class KiePMMLPredicateFactory {
 
     public static BlockStmt getKiePMMLPredicate(final String variableName,
                                                 final Predicate predicate,
-                                                final List<DerivedField> derivedFields,
-                                                final DataDictionary dataDictionary) {
+                                                final List<Field<?>> fields) {
         if (predicate instanceof SimplePredicate) {
-            return getSimplePredicateVariableDeclaration(variableName, (SimplePredicate) predicate, derivedFields, dataDictionary);
+            return getSimplePredicateVariableDeclaration(variableName, (SimplePredicate) predicate, fields);
         } else if (predicate instanceof SimpleSetPredicate) {
-            return getSimpleSetPredicateVariableDeclaration(variableName, (SimpleSetPredicate) predicate, derivedFields, dataDictionary);
+            return getSimpleSetPredicateVariableDeclaration(variableName, (SimpleSetPredicate) predicate);
         } else if (predicate instanceof CompoundPredicate) {
-            return getCompoundPredicateVariableDeclaration(variableName, (CompoundPredicate) predicate, derivedFields, dataDictionary);
+            return getCompoundPredicateVariableDeclaration(variableName, (CompoundPredicate) predicate, fields);
         } else if (predicate instanceof True) {
             return getTruePredicateVariableDeclaration(variableName, (True) predicate);
         } else if (predicate instanceof False) {

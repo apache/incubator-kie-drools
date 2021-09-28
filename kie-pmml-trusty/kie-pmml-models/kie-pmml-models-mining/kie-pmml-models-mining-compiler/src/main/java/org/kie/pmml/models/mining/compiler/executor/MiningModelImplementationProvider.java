@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -47,19 +47,19 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
 
     @Override
     public KiePMMLMiningModel getKiePMMLModel(final String packageName,
-                                              final DataDictionary dataDictionary,
+                                              final List<Field<?>> fields,
                                               final TransformationDictionary transformationDictionary,
                                               final MiningModel model,
                                               final HasClassLoader hasClassloader) {
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s", hasClassloader.getClass().getName()));
         }
-        return getKiePMMLMiningModel(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
+        return getKiePMMLMiningModel(fields, transformationDictionary, model, packageName, hasClassloader);
     }
 
     @Override
     public KiePMMLMiningModel getKiePMMLModelWithSources(final String packageName,
-                                                         final DataDictionary dataDictionary,
+                                                         final List<Field<?>> fields,
                                                          final TransformationDictionary transformationDictionary,
                                                          final MiningModel model,
                                                          final HasClassLoader hasClassloader) {
@@ -69,7 +69,8 @@ public class MiningModelImplementationProvider implements ModelImplementationPro
         }
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
         final Map<String, String> sourcesMap =
-                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(dataDictionary, transformationDictionary,
+                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(fields,
+                                                                          transformationDictionary,
                                                                           model, packageName,
                                                                           hasClassloader,
                                                                           nestedModels);

@@ -46,6 +46,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class PMMLTreeModelEvaluatorTest {
 
@@ -81,7 +82,7 @@ public class PMMLTreeModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof TreeModel);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
-                                                pmml.getDataDictionary(),
+                                                getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                 pmml.getTransformationDictionary(),
                                                 (TreeModel) pmml.getModels().get(0),
                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));

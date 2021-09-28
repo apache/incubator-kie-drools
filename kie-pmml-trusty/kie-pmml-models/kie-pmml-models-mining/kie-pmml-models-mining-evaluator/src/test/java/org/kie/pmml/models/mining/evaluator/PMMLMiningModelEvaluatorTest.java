@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.mining.evaluator;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -69,7 +70,8 @@ public class PMMLMiningModelEvaluatorTest {
 
     private final static List<MULTIPLE_MODEL_METHOD> RAW_OBJECT_METHODS = Arrays.asList(MAJORITY_VOTE,
                                                                                         SELECT_ALL,
-                                                                                        SELECT_FIRST);
+                                                                                        SELECT_FIRST,
+                                                                                        MODEL_CHAIN);
     private final static List<MULTIPLE_MODEL_METHOD> VALUE_WEIGHT_METHODS = Arrays.asList(MAX,
                                                                                           SUM,
                                                                                           MEDIAN,
@@ -77,8 +79,7 @@ public class PMMLMiningModelEvaluatorTest {
                                                                                           WEIGHTED_SUM,
                                                                                           WEIGHTED_MEDIAN,
                                                                                           WEIGHTED_AVERAGE);
-    private final static List<MULTIPLE_MODEL_METHOD> NOT_IMPLEMENTED_METHODS = Arrays.asList(MODEL_CHAIN,
-                                                                                             WEIGHTED_MAJORITY_VOTE);
+    private final static List<MULTIPLE_MODEL_METHOD> NOT_IMPLEMENTED_METHODS = Arrays.asList(WEIGHTED_MAJORITY_VOTE);
     private PMMLMiningModelEvaluator evaluator;
 
     @Before
@@ -107,9 +108,9 @@ public class PMMLMiningModelEvaluatorTest {
                 .withSegmentation(kiePMMLSegmentation)
                 .withOutputFieldsMap(outputFieldsMap)
                 .build();
-        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
-        inputData.put("FIRST_KEY", new KiePMMLNameValue("FIRST_NAME", prediction));
-        inputData.put("SECOND_KEY", new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"));
+        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
+        inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", prediction), new ArrayList<>()));
+        inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
         assertNotNull(retrieved);
         assertEquals(OK.getName(), retrieved.getResultCode());
@@ -134,9 +135,9 @@ public class PMMLMiningModelEvaluatorTest {
                 .withSegmentation(kiePMMLSegmentation)
                 .withOutputFieldsMap(outputFieldsMap)
                 .build();
-        final LinkedHashMap<String, KiePMMLNameValue> inputData = new LinkedHashMap<>();
-        inputData.put("FIRST_KEY", new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"));
-        inputData.put("SECOND_KEY", new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"));
+        final LinkedHashMap<String, PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple> inputData = new LinkedHashMap<>();
+        inputData.put("FIRST_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("FIRST_NAME", "FIRST_VALUE"), new ArrayList<>()));
+        inputData.put("SECOND_KEY", new PMMLMiningModelEvaluator.KiePMMLNameValueProbabilityMapTuple(new KiePMMLNameValue("SECOND_NAME", "SECOND_VALUE"), new ArrayList<>()));
         PMML4Result retrieved = evaluator.getPMML4Result(kiePMMLMiningModel, inputData);
         assertNotNull(retrieved);
         assertEquals(FAIL.getName(), retrieved.getResultCode());

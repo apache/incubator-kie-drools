@@ -34,6 +34,7 @@ import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
@@ -42,7 +43,9 @@ public class KiePMMLRowFactoryTest {
 
     private static final String TRANSFORMATIONS_SAMPLE = "TransformationsSample.pmml";
     private static final String MAPVALUED = "mapvalued";
-    private static Row ROW;
+    private static final String DATAENCODED = "dataencoded";
+    private static Row MAPVALUED_ROW;
+    private static Row DATAENCODED_ROW;
 
     @BeforeClass
     public static void setup() throws Exception {
@@ -53,14 +56,21 @@ public class KiePMMLRowFactoryTest {
                 .filter(derivedField -> MAPVALUED.equals(derivedField.getName().getValue()))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Missing derived field " + MAPVALUED));
-        ROW = ((MapValues) mapValued.getExpression()).getInlineTable().getRows().get(0);
+        MAPVALUED_ROW = ((MapValues) mapValued.getExpression()).getInlineTable().getRows().get(0);
+        DerivedField dataEncoded = pmmlModel.getTransformationDictionary()
+                .getDerivedFields()
+                .stream()
+                .filter(derivedField -> DATAENCODED.equals(derivedField.getName().getValue()))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Missing derived field " + MAPVALUED));
+        DATAENCODED_ROW = ((MapValues) dataEncoded.getExpression()).getInlineTable().getRows().get(0);
     }
 
     @Test
-    public void getRowVariableDeclaration() {
+    public void getMappedValueRowVariableDeclaration() {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
-                                                                          ROW);
+                                                                          MAPVALUED_ROW);
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
                                                                               "    Map<String, Object> " +
                                                                               "%1$s_columnValues = Stream.of" +
@@ -73,6 +83,28 @@ public class KiePMMLRowFactoryTest {
                                                                               "KiePMMLRow(%1$s_columnValues);" +
                                                                               "\n" +
                                                                               "}", variableName));
+        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
+        List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
+        commonValidateCompilationWithImports(retrieved, imports);
+    }
+
+    @Test
+    public void getDataEncodedRowVariableDeclaration() {
+        String variableName = "variableName";
+        BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
+                                                                          DATAENCODED_ROW);
+        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
+                                                                              "    Map<String, Object> " +
+                                                                              "%1$s_columnValues = Stream.of" +
+                                                                              "(new Object[][] { { \"data:output\", " +
+                                                                              "\"0.0\" }, { \"data:input\", \"0\" } }).collect(Collectors" +
+                                                                              ".toMap(data -> (String) data[0], data " +
+                                                                              "-> data[1]));\n" +
+                                                                              "    KiePMMLRow %1$s = new " +
+                                                                              "KiePMMLRow(%1$s_columnValues);" +
+                                                                              "\n" +
+                                                                              "}", variableName));
+        assertEquals(expected.toString(), retrieved.toString());
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);

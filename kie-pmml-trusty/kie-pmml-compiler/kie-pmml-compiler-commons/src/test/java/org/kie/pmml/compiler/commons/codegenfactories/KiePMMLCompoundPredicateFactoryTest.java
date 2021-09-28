@@ -28,6 +28,7 @@ import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.junit.Test;
@@ -38,6 +39,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimpleSetPredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getSimplePredicate;
@@ -88,8 +90,9 @@ public class KiePMMLCompoundPredicateFactoryTest {
                 .map(valueString -> "\"" + valueString + "\"")
                 .collect(Collectors.joining(","));
 
+        final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
         BlockStmt retrieved = KiePMMLCompoundPredicateFactory.getCompoundPredicateVariableDeclaration(variableName,
-                                                                                                      compoundPredicate, Collections.emptyList(), dataDictionary);
+                                                                                                      compoundPredicate, fields);
         Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
                                                                               "    KiePMMLSimplePredicate " +
                                                                               "%1$s_0 = " +

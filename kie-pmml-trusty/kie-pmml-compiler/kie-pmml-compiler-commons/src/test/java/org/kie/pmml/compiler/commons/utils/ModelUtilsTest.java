@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,7 @@ import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.FieldName;
 import org.dmg.pmml.MiningField;
 import org.dmg.pmml.MiningSchema;
@@ -59,6 +61,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getArray;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataTypes;
@@ -109,14 +112,15 @@ public class ModelUtilsTest {
         miningSchema.addMiningFields(miningField);
         final Model model = new RegressionModel();
         model.setMiningSchema(miningSchema);
-        Optional<String> retrieved = ModelUtils.getTargetFieldName(dataDictionary, model);
+        final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
+        Optional<String> retrieved = ModelUtils.getTargetFieldName(fields, model);
         assertFalse(retrieved.isPresent());
         usageType = MiningField.UsageType.PREDICTED;
         miningField = getMiningField(fieldName, usageType);
         miningSchema = new MiningSchema();
         miningSchema.addMiningFields(miningField);
         model.setMiningSchema(miningSchema);
-        retrieved = ModelUtils.getTargetFieldName(dataDictionary, model);
+        retrieved = ModelUtils.getTargetFieldName(fields, model);
         assertTrue(retrieved.isPresent());
         assertEquals(fieldName, retrieved.get());
     }
@@ -133,7 +137,7 @@ public class ModelUtilsTest {
         miningSchema.addMiningFields(miningField);
         final Model model = new RegressionModel();
         model.setMiningSchema(miningSchema);
-        DATA_TYPE retrieved = ModelUtils.getTargetFieldType(dataDictionary, model);
+        DATA_TYPE retrieved = ModelUtils.getTargetFieldType(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(DATA_TYPE.STRING, retrieved);
     }
@@ -150,7 +154,7 @@ public class ModelUtilsTest {
         miningSchema.addMiningFields(miningField);
         final Model model = new RegressionModel();
         model.setMiningSchema(miningSchema);
-        ModelUtils.getTargetFieldType(dataDictionary, model);
+        ModelUtils.getTargetFieldType(getFieldsFromDataDictionary(dataDictionary), model);
     }
 
     @Test
@@ -166,7 +170,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(dataDictionary, model);
+        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());
     }
@@ -184,7 +188,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(dataDictionary, model);
+        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
         retrieved.forEach(kiePMMLNameOpType -> {
@@ -216,7 +220,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(dataDictionary, model);
+        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
         retrieved.forEach(kiePMMLNameOpType -> {
@@ -249,7 +253,7 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
-        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(dataDictionary, model);
+        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
         retrieved.forEach(kiePMMLNameOpType -> {
@@ -282,7 +286,7 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
-        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(dataDictionary, model);
+        List<KiePMMLNameOpType> retrieved = ModelUtils.getTargetFields(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
         retrieved.forEach(kiePMMLNameOpType -> {
@@ -310,7 +314,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(dataDictionary, model);
+        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertEquals(miningSchema.getMiningFields().size(), retrieved.size());
         assertTrue(retrieved instanceof LinkedHashMap);
@@ -340,7 +344,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(dataDictionary, model);
+        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());
     }
@@ -362,7 +366,7 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
-        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(dataDictionary, model);
+        Map<String, DATA_TYPE> retrieved = ModelUtils.getTargetFieldsTypeMap(getFieldsFromDataDictionary(dataDictionary), model);
         assertNotNull(retrieved);
         assertTrue(retrieved.isEmpty());
     }
@@ -378,7 +382,7 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         dataDictionary.getDataFields().forEach(dataField -> {
-                                                   OP_TYPE retrieved = ModelUtils.getOpType(dataDictionary, model,
+                                                   OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                                                             dataField.getName().getValue());
                                                    assertNotNull(retrieved);
                                                    OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
@@ -396,7 +400,7 @@ public class ModelUtilsTest {
             dataField.setName(FieldName.create(fieldName));
             dataDictionary.addDataFields(dataField);
         });
-        ModelUtils.getOpType(dataDictionary, model,
+        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                              "NOT_EXISTING");
     }
 
@@ -414,7 +418,7 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         miningSchema.getMiningFields().forEach(miningField -> {
-            OP_TYPE retrieved = ModelUtils.getOpType(dataDictionary, model,
+            OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                      miningField.getName().getValue());
             assertNotNull(retrieved);
             OP_TYPE expected = OP_TYPE.byName(miningField.getOpType().value());
@@ -437,7 +441,7 @@ public class ModelUtilsTest {
             miningSchema.addMiningFields(miningField);
         });
         model.setMiningSchema(miningSchema);
-        ModelUtils.getOpType(dataDictionary, model,
+        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                              "NOT_EXISTING");
     }
 
@@ -459,8 +463,9 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
+        getFieldsFromDataDictionary(dataDictionary);
         targets.getTargets().forEach(target -> {
-            OP_TYPE retrieved = ModelUtils.getOpType(dataDictionary, model,
+            OP_TYPE retrieved = ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                                                      target.getField().getValue());
             assertNotNull(retrieved);
             OP_TYPE expected = OP_TYPE.byName(target.getOpType().value());
@@ -488,25 +493,28 @@ public class ModelUtilsTest {
         });
         model.setMiningSchema(miningSchema);
         model.setTargets(targets);
-        ModelUtils.getOpType(dataDictionary, model,
+        ModelUtils.getOpType(getFieldsFromDataDictionary(dataDictionary), model,
                              "NOT_EXISTING");
     }
 
     @Test
-    public void getOpTypeFromDataDictionary() {
-        Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromDataDictionary(null, "vsd");
+    public void getOpTypeFromFields() {
+        Optional<OP_TYPE> opType = ModelUtils.getOpTypeFromFields(null, "vsd");
         assertNotNull(opType);
         assertFalse(opType.isPresent());
         final DataDictionary dataDictionary = new DataDictionary();
-        opType = ModelUtils.getOpTypeFromDataDictionary(dataDictionary, "vsd");
+        final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
+        opType = ModelUtils.getOpTypeFromFields(fields, "vsd");
         assertNotNull(opType);
         assertFalse(opType.isPresent());
         IntStream.range(0, 3).forEach(i -> {
             final DataField dataField = getRandomDataField();
             dataDictionary.addDataFields(dataField);
         });
+        fields.clear();
+        fields.addAll(getFieldsFromDataDictionary(dataDictionary));
         dataDictionary.getDataFields().forEach(dataField -> {
-            Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromDataDictionary(dataDictionary, dataField.getName().getValue());
+            Optional<OP_TYPE> retrieved = ModelUtils.getOpTypeFromFields(fields, dataField.getName().getValue());
             assertNotNull(retrieved);
             assertTrue(retrieved.isPresent());
             OP_TYPE expected = OP_TYPE.byName(dataField.getOpType().value());
@@ -569,7 +577,7 @@ public class ModelUtilsTest {
                 .stream()
                 .map(dataField -> {
                          DerivedField toReturn = new DerivedField();
-                         toReturn.setName(dataField.getName());
+                         toReturn.setName(FieldName.create("DER_" + dataField.getName().getValue()));
                          DataType dataType = getRandomDataType();
                          while (dataType.equals(dataField.getDataType())) {
                              dataType = getRandomDataType();
@@ -578,14 +586,24 @@ public class ModelUtilsTest {
                          return toReturn;
                      })
                 .collect(Collectors.toList());
+        final List<Field<?>> fields = new ArrayList<>();
+        dataDictionary.getDataFields().stream()
+                .map(Field.class::cast)
+                .forEach(fields::add);
+        derivedFields.stream()
+                    .map(Field.class::cast)
+                    .forEach(fields::add);
         dataDictionary.getDataFields().forEach(dataField -> {
             String fieldName = dataField.getName().getValue();
-            DataType retrieved = ModelUtils.getDataType(derivedFields, dataDictionary, fieldName);
+            DataType retrieved = ModelUtils.getDataType(fields, fieldName);
             assertNotNull(retrieved);
-            DerivedField derivedField = derivedFields.stream()
-                    .filter(derFld -> fieldName.equals(derFld.getName().getValue()))
-                    .findFirst()
-                    .orElseThrow(() -> new RuntimeException("Missing expected DerivedField " + fieldName));
+            DataType expected = dataField.getDataType();
+            assertEquals(expected, retrieved);
+        });
+        derivedFields.forEach(derivedField -> {
+            String fieldName = derivedField.getName().getValue();
+            DataType retrieved = ModelUtils.getDataType(fields, fieldName);
+            assertNotNull(retrieved);
             DataType expected = derivedField.getDataType();
             assertEquals(expected, retrieved);
         });
@@ -599,7 +617,7 @@ public class ModelUtilsTest {
             dataDictionary.addDataFields(dataField);
         });
         dataDictionary.getDataFields().forEach(dataField -> {
-            DATA_TYPE retrieved = ModelUtils.getDataType(dataDictionary, dataField.getName().getValue());
+            DATA_TYPE retrieved = ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), dataField.getName().getValue());
             assertNotNull(retrieved);
             DATA_TYPE expected = DATA_TYPE.byName(dataField.getDataType().value());
             assertEquals(expected, retrieved);
@@ -615,7 +633,7 @@ public class ModelUtilsTest {
             dataField.setName(FieldName.create(fieldName));
             dataDictionary.addDataFields(dataField);
         });
-        ModelUtils.getDataType(dataDictionary, "NOT_EXISTING");
+        ModelUtils.getDATA_TYPE(getFieldsFromDataDictionary(dataDictionary), "NOT_EXISTING");
     }
 
     @Test

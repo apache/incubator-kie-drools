@@ -17,12 +17,13 @@ package org.kie.pmml.compiler.commons.mocks;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -58,7 +59,7 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
 
     @Override
     public KiePMMLTestingModel getKiePMMLModel(final String packageName,
-                                            final DataDictionary dataDictionary,
+                                               final List<Field<?>> fields,
                                             final TransformationDictionary transformationDictionary,
                                             final TestModel model,
                                             final HasClassLoader hasClassLoader) {
@@ -70,16 +71,16 @@ public class TestingModelImplementationProvider implements ModelImplementationPr
 
     @Override
     public KiePMMLTestingModel getKiePMMLModelWithSources(final String packageName,
-                                                       final DataDictionary dataDictionary,
+                                                          final List<Field<?>> fields,
                                                        final TransformationDictionary transformationDictionary,
                                                        final TestModel model,
                                                        final HasClassLoader hasClassLoader) {
-        final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(dataDictionary, transformationDictionary
+        final Map<String, String> sourcesMap = getKiePMMLTestModelSourcesMap(fields, transformationDictionary
                 , model, packageName);
         return new KiePMMLTestingModelWithSources(model.getModelName(), packageName, sourcesMap);
     }
 
-    private Map<String, String> getKiePMMLTestModelSourcesMap(final DataDictionary dataDictionary,
+    private Map<String, String> getKiePMMLTestModelSourcesMap(final List<Field<?>> fields,
                                                               final TransformationDictionary transformationDictionary,
                                                               final TestModel model,
                                                               final String packageName) {

@@ -46,6 +46,7 @@ import org.kie.pmml.models.scorecard.model.KiePMMLCharacteristic;
 import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPredicateFactoryTest.getSimpleSetPredicate;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getSimplePredicate;
@@ -117,7 +118,7 @@ public class KiePMMLCharacteristicFactoryTest {
         characteristic.setReasonCode(REASON_CODE);
 
 
-        BlockStmt retrieved = KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration(variableName, characteristic, Collections.emptyList(), dataDictionary);
+        BlockStmt retrieved = KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration(variableName, characteristic, getFieldsFromDataDictionary(dataDictionary));
         Statement expected = JavaParserUtils
                 .parseBlock(String.format("{\n" +
                                                   "    KiePMMLSimplePredicate %1$s_0_Predicate_0 = " +

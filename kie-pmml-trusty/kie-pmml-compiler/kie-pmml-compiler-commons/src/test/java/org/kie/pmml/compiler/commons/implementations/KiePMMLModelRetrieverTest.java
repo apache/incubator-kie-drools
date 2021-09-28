@@ -17,13 +17,17 @@
 package org.kie.pmml.compiler.commons.implementations;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.MiningSchema;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.Output;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.mining.MiningModel;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -36,10 +40,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndTransformationDictionary;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataField;
+import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPMMLWithMiningRandomTestModel;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getPMMLWithRandomTestModel;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomDataType;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getRandomMiningSchema;
@@ -50,6 +57,7 @@ public class KiePMMLModelRetrieverTest {
 
     private static final String MULTIPLE_TARGETS_SOURCE = "MultipleTargetsFieldSample.pmml";
     private static final String ONE_MINING_TARGET_SOURCE = "OneMiningTargetFieldSample.pmml";
+    private static final String MINING_MODEL_WITH_NESTED_REFERS_SOURCE = "MiningWithNestedRefers.pmml";
     private static final String PACKAGE_NAME = "packagename";
     private PMML pmmlModel;
 
@@ -58,7 +66,8 @@ public class KiePMMLModelRetrieverTest {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(MULTIPLE_TARGETS_SOURCE), MULTIPLE_TARGETS_SOURCE);
         pmmlModel.getModels().set(0, new TestModel());
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(PACKAGE_NAME,
-                                                                                                      pmmlModel.getDataDictionary(),
+                                                                                                      getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                                                             pmmlModel.getTransformationDictionary()),
                                                                                                       pmmlModel.getTransformationDictionary(),
                                                                                                       pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
@@ -70,7 +79,8 @@ public class KiePMMLModelRetrieverTest {
     public void getFromCommonDataAndTransformationDictionaryAndModelWithoutProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
         final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModel(PACKAGE_NAME,
-                                                                                                      pmmlModel.getDataDictionary(),
+                                                                                                      getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                                                             pmmlModel.getTransformationDictionary()),
                                                                                                       pmmlModel.getTransformationDictionary(),
                                                                                                       pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
@@ -80,31 +90,52 @@ public class KiePMMLModelRetrieverTest {
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesWithProvider() {
         pmmlModel = getPMMLWithRandomTestModel();
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME,
+                                                                                                                 getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                                                                                      pmmlModel.getTransformationDictionary()),
+                                                                                                                 pmmlModel.getTransformationDictionary(),
+                                                                                                                 pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
     }
 
     @Test
     public void getFromDataDictionaryAndModelWithSourcesWithoutProvider() throws Exception {
         pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), null);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSources(PACKAGE_NAME, getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                                                                                      pmmlModel.getTransformationDictionary()),
+                                                                                                                 pmmlModel.getTransformationDictionary(),
+                                                                                                                 pmmlModel.getModels().get(0), null);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
     }
 
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiledWithProvider() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
+        pmmlModel = getPMMLWithMiningRandomTestModel();
+        MiningModel parentModel = (MiningModel)pmmlModel.getModels().get(0);
+        Model model = parentModel.getSegmentation().getSegments().get(0).getModel();
         final HasClassLoaderMock hasClassLoaderMock = new HasClassLoaderMock();
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), hasClassLoaderMock);
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(PACKAGE_NAME,
+                                                                                                                         getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                         pmmlModel.getTransformationDictionary()),
+                                                                                                                         pmmlModel.getTransformationDictionary(),
+                                                                                                                         model, hasClassLoaderMock);
         assertNotNull(retrieved);
+        assertTrue(retrieved.isPresent());
     }
 
     @Test
     public void getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiledWithoutProvider() throws Exception {
-        pmmlModel = KiePMMLUtil.load(getFileInputStream(ONE_MINING_TARGET_SOURCE), ONE_MINING_TARGET_SOURCE);
+        pmmlModel = KiePMMLUtil.load(getFileInputStream(MINING_MODEL_WITH_NESTED_REFERS_SOURCE), MINING_MODEL_WITH_NESTED_REFERS_SOURCE);
         final HasClassLoaderMock hasClassLoaderMock = new HasClassLoaderMock();
-        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(PACKAGE_NAME, pmmlModel.getDataDictionary(), pmmlModel.getTransformationDictionary(), pmmlModel.getModels().get(0), hasClassLoaderMock);
+        MiningModel parentModel = (MiningModel) pmmlModel.getModels().get(0);
+        Model model = parentModel.getSegmentation().getSegments().get(0).getModel();
+        final Optional<KiePMMLModel> retrieved = getFromCommonDataAndTransformationDictionaryAndModelWithSourcesCompiled(PACKAGE_NAME,
+                                                                                                                         getFieldsFromDataDictionaryAndTransformationDictionary(pmmlModel.getDataDictionary(),
+                                                                                                                                                                                pmmlModel.getTransformationDictionary()),
+                                                                                                                         pmmlModel.getTransformationDictionary(),
+                                                                                                                         model,
+                                                                                                                         hasClassLoaderMock);
         assertNotNull(retrieved);
         assertFalse(retrieved.isPresent());
     }
@@ -123,9 +154,10 @@ public class KiePMMLModelRetrieverTest {
                                                                               miningField.getOpType(),
                                                                               getRandomDataType())).toArray(DataField[]::new));
         final Output output = getRandomOutput();
+        final List<Field<?>> fields = getFieldsFromDataDictionary(dataDictionary);
         KiePMMLTestingModel populated =
                 (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                            dataDictionary,
+                                                                                            fields,
                                                                                             miningSchema, output);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
@@ -133,7 +165,7 @@ public class KiePMMLModelRetrieverTest {
                                                  Collections.emptyList(),
                                                  MINING_FUNCTION.REGRESSION).build();
         populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                dataDictionary,
+                                                                                                fields,
                                                                                                 miningSchema, null);
         assertEquals(miningSchema.getMiningFields().size(), populated.getMiningFields().size());
         assertTrue(populated.getOutputFields().isEmpty());
@@ -141,7 +173,7 @@ public class KiePMMLModelRetrieverTest {
                                                  Collections.emptyList(),
                                                  MINING_FUNCTION.REGRESSION).build();
         populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                dataDictionary, null,
+                                                                                                fields, null,
                                                                                                 output);
         assertTrue(populated.getMiningFields().isEmpty());
         assertEquals(output.getOutputFields().size(), populated.getOutputFields().size());
@@ -149,7 +181,7 @@ public class KiePMMLModelRetrieverTest {
                                                  Collections.emptyList(),
                                                  MINING_FUNCTION.REGRESSION).build();
         populated = (KiePMMLTestingModel) KiePMMLModelRetriever.getPopulatedWithPMMLModelFields(toPopulate,
-                                                                                                dataDictionary, null,
+                                                                                                fields, null,
                                                                                                 null);
         assertTrue(populated.getMiningFields().isEmpty());
         assertTrue(populated.getOutputFields().isEmpty());
