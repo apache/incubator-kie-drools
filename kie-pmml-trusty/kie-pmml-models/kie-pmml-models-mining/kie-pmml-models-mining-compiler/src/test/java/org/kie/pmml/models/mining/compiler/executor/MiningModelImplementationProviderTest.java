@@ -43,6 +43,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class MiningModelImplementationProviderTest {
 
@@ -125,7 +126,7 @@ public class MiningModelImplementationProviderTest {
         final PMML pmml = getPMML(source);
         final KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                      pmml.getDataDictionary(),
+                                                                      getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                       pmml.getTransformationDictionary(),
                                                                       (MiningModel) pmml.getModels().get(0),
                                                                       new HasKnowledgeBuilderMock(knowledgeBuilder));
@@ -138,7 +139,7 @@ public class MiningModelImplementationProviderTest {
         final PMML pmml = getPMML(source);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLMiningModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
-                                                                                 pmml.getDataDictionary(),
+                                                                                 getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (MiningModel) pmml.getModels().get(0),
                                                                                  new HasKnowledgeBuilderMock(knowledgeBuilder));

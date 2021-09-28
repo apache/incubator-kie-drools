@@ -179,6 +179,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
     public void populateGetProbabilityMapMethodSupported() {
         SUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             KiePMMLRegressionTableClassificationFactory.populateGetProbabilityMapMethod(normalizationMethod,
+                                                                                        false,
                                                                                         modelTemplate);
             MethodDeclaration methodDeclaration =
                     modelTemplate.getMethodsByName("getProbabilityMap").get(0);
@@ -193,6 +194,7 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
         UNSUPPORTED_NORMALIZATION_METHODS.forEach(normalizationMethod -> {
             try {
                 KiePMMLRegressionTableClassificationFactory.populateGetProbabilityMapMethod(normalizationMethod,
+                                                                                            false,
                                                                                             modelTemplate);
                 fail("Expecting KiePMMLInternalException with normalizationMethod " + normalizationMethod);
             } catch (Exception e) {
@@ -203,24 +205,10 @@ public class KiePMMLRegressionTableClassificationFactoryTest extends AbstractKie
 
     @Test
     public void populateIsBinaryMethod() {
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 1, modelTemplate);
+        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(false, modelTemplate);
         commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 2, modelTemplate);
+        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(true, modelTemplate);
         commonEvaluateIsBinaryMethod(modelTemplate, true);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CATEGORICAL, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 1, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 2, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.CONTINUOUS, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 1, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 2, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
-        KiePMMLRegressionTableClassificationFactory.populateIsBinaryMethod(OpType.ORDINAL, 3, modelTemplate);
-        commonEvaluateIsBinaryMethod(modelTemplate, false);
     }
 
     private void commonEvaluateIsBinaryMethod(final ClassOrInterfaceDeclaration tableTemplate, final boolean expected) {

@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.models.drools.utils.KiePMMLASTTestUtils.getFieldTypeMap;
 
 public class KiePMMLScorecardModelASTFactoryTest {
@@ -54,7 +55,7 @@ public class KiePMMLScorecardModelASTFactoryTest {
     public void getKiePMMLDroolsSampleAST() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(samplePmml.getDataDictionary(), samplePmml.getTransformationDictionary(),  scorecardModel.getLocalTransformations());
         List<KiePMMLDroolsType> types = Collections.emptyList();
-        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(samplePmml.getDataDictionary(), scorecardModel, fieldTypeMap, types);
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelASTFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(samplePmml.getDataDictionary()), scorecardModel, fieldTypeMap, types);
         assertNotNull(retrieved);
         assertEquals(types, retrieved.getTypes());
         assertFalse(retrieved.getRules().isEmpty());

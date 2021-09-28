@@ -63,7 +63,7 @@ public class KiePMMLSimpleSetPredicateFactoryTest {
         dataField.setDataType(DataType.DOUBLE);
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
-        BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName, simpleSetPredicate, Collections.emptyList(), dataDictionary);
+        BlockStmt retrieved = KiePMMLSimpleSetPredicateFactory.getSimpleSetPredicateVariableDeclaration(variableName, simpleSetPredicate);
         Statement expected = JavaParserUtils.parseBlock(String.format("{" +
                                                                               "KiePMMLSimpleSetPredicate " +
                                                                               "%1$s = KiePMMLSimpleSetPredicate.builder(\"%2$s\", Collections.emptyList(), %3$s, %4$s)\n" +

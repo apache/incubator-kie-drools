@@ -33,6 +33,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.mining.Segment;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,6 +50,7 @@ import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionaryAndDerivedFields;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLSegmentFactory.KIE_PMML_SEGMENT_TEMPLATE;
@@ -70,10 +72,10 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentsSourcesMap() {
         final List<Segment> segments = MINING_MODEL.getSegmentation().getSegments();
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentsSourcesMap(
                 PACKAGE_NAME,
-                DERIVED_FIELDS,
-                DATA_DICTIONARY,
+                fields,
                 TRANSFORMATION_DICTIONARY,
                 segments,
                 new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
@@ -89,9 +91,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getSegmentSourcesMap() {
         final Segment segment = MINING_MODEL.getSegmentation().getSegments().get(0);
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
-                                                                                         DERIVED_FIELDS,
-                                                                                         DATA_DICTIONARY,
+                                                                                         fields,
                                                                                          TRANSFORMATION_DICTIONARY,
                                                                                          segment,
                                                                                          new HasKnowledgeBuilderMock(KNOWLEDGE_BUILDER),
@@ -117,9 +119,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         } catch (Exception e) {
             assertTrue(e instanceof ClassNotFoundException);
         }
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMapCompiled(PACKAGE_NAME,
-                                                                                                 DERIVED_FIELDS,
-                                                                                                 DATA_DICTIONARY,
+                                                                                                 fields,
                                                                                                  TRANSFORMATION_DICTIONARY,
                                                                                                  segment,
                                                                                                  hasKnowledgeBuilderMock,
@@ -136,9 +138,9 @@ public class KiePMMLSegmentFactoryTest extends AbstractKiePMMLFactoryTest {
         final String kiePMMLModelClass = PACKAGE_NAME + "." + regressionModelName;
         final Map<String, String> sourcesMap = new HashMap<>();
         sourcesMap.put(kiePMMLModelClass, String.format("public class %s {}", regressionModelName));
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndDerivedFields(DATA_DICTIONARY, DERIVED_FIELDS);
         final Map<String, String> retrieved = KiePMMLSegmentFactory.getSegmentSourcesMap(PACKAGE_NAME,
-                                                                                         DERIVED_FIELDS,
-                                                                                         DATA_DICTIONARY,
+                                                                                         fields,
                                                                                          segment);
         commonEvaluateMap(retrieved, segment);
     }

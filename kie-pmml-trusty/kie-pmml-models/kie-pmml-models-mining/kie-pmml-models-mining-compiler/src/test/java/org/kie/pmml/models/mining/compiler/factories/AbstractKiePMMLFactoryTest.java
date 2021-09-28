@@ -46,7 +46,7 @@ public abstract class AbstractKiePMMLFactoryTest {
     protected static DataDictionary DATA_DICTIONARY;
     protected static TransformationDictionary TRANSFORMATION_DICTIONARY;
     protected static MiningModel MINING_MODEL;
-    protected static  List<DerivedField> DERIVED_FIELDS;
+    protected static List<DerivedField> DERIVED_FIELDS;
     protected static KnowledgeBuilderImpl KNOWLEDGE_BUILDER;
 
     protected static void innerSetup() throws JAXBException, SAXException, IOException {

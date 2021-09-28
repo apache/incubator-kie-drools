@@ -27,8 +27,7 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.CompoundPredicate;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.Predicate;
 import org.kie.pmml.api.enums.BOOLEAN_OPERATOR;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -67,8 +66,7 @@ public class KiePMMLCompoundPredicateFactory {
 
     static BlockStmt getCompoundPredicateVariableDeclaration(final String variableName,
                                                              final CompoundPredicate compoundPredicate,
-                                                             final List<DerivedField> derivedFields,
-                                                             final DataDictionary dataDictionary) {
+                                                             final List<Field<?>> fields) {
         final MethodDeclaration methodDeclaration =
                 COMPOUND_PREDICATE_TEMPLATE.getMethodsByName(GETKIEPMMLCOMPOUNDPREDICATE).get(0).clone();
         final BlockStmt compoundPredicateBody =
@@ -82,7 +80,7 @@ public class KiePMMLCompoundPredicateFactory {
         for (Predicate predicate : compoundPredicate.getPredicates()) {
             String nestedVariableName = String.format("%s_%s", variableName, counter);
             arguments.add(new NameExpr(nestedVariableName));
-            BlockStmt toAdd = getKiePMMLPredicate(nestedVariableName, predicate, derivedFields, dataDictionary);
+            BlockStmt toAdd = getKiePMMLPredicate(nestedVariableName, predicate, fields);
             toAdd.getStatements().forEach(toReturn::addStatement);
             counter ++;
         }

@@ -27,8 +27,7 @@ import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.scorecard.Attribute;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
@@ -69,15 +68,14 @@ public class KiePMMLAttributeFactory {
 
     static BlockStmt getAttributeVariableDeclaration(final String variableName,
                                                      final Attribute attribute,
-                                                     final List<DerivedField> derivedFields,
-                                                     final DataDictionary dataDictionary) {
+                                                     final List<Field<?>> fields) {
         final MethodDeclaration methodDeclaration = ATTRIBUTE_TEMPLATE.getMethodsByName(GETKIEPMMLATTRIBUTE).get(0).clone();
         final BlockStmt attributeBody = methodDeclaration.getBody().orElseThrow(() -> new KiePMMLException(String.format(MISSING_BODY_TEMPLATE, methodDeclaration)));
         final VariableDeclarator variableDeclarator = getVariableDeclarator(attributeBody, ATTRIBUTE) .orElseThrow(() -> new KiePMMLException(String.format(MISSING_VARIABLE_IN_BODY, ATTRIBUTE, attributeBody)));
         variableDeclarator.setName(variableName);
         final BlockStmt toReturn = new BlockStmt();
         String predicateVariableName =  String.format("%s_Predicate", variableName);
-        BlockStmt toAdd = getKiePMMLPredicate(predicateVariableName, attribute.getPredicate(), derivedFields, dataDictionary);
+        BlockStmt toAdd = getKiePMMLPredicate(predicateVariableName, attribute.getPredicate(), fields);
         toAdd.getStatements().forEach(toReturn::addStatement);
 
         final Expression complexPartialScoreExpression;

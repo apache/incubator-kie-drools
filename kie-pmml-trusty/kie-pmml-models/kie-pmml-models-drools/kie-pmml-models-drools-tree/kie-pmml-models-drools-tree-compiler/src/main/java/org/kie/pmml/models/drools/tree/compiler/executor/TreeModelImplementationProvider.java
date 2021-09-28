@@ -18,7 +18,7 @@ package org.kie.pmml.models.drools.tree.compiler.executor;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -44,14 +44,14 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLTreeModel getKiePMMLDroolsModel(final DataDictionary dataDictionary,
+    public KiePMMLTreeModel getKiePMMLDroolsModel(final List<Field<?>> fields,
                                                   final TransformationDictionary transformationDictionary,
                                                   final TreeModel model,
                                                   final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                   final String packageName,
                                                   final HasClassLoader hasClassLoader) {
         try {
-            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary,
+            return KiePMMLTreeModelFactory.getKiePMMLTreeModel(fields,
                                                                transformationDictionary,
                                                                model,
                                                                fieldTypeMap,
@@ -63,15 +63,15 @@ public class TreeModelImplementationProvider extends DroolsModelProvider<TreeMod
     }
 
     @Override
-    public KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                 final TreeModel model,
                                                 final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                 final List<KiePMMLDroolsType> types){
-        return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
+        return KiePMMLTreeModelFactory.getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
 
     @Override
-    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName);
+    public Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields, final TransformationDictionary transformationDictionary, final TreeModel model, final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap, final String packageName) {
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(fields, transformationDictionary, model, fieldTypeMap, packageName);
     }
 }

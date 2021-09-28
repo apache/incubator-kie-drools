@@ -57,6 +57,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getDerivedFields;
@@ -106,8 +107,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     public void getKiePMMLCharacteristics() {
         final KiePMMLCharacteristics retrieved =
                 KiePMMLCharacteristicsFactory.getKiePMMLCharacteristics(basicComplexPartialScoreCharacteristics,
-                                                                        Collections.emptyList(),
-                                                                        basicComplexPartialScoreDataDictionary,
+                                                                        getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
                                                                         PACKAGE_NAME,
                                                                         new HasClassLoaderMock());
         assertNotNull(retrieved);
@@ -116,12 +116,10 @@ public class KiePMMLCharacteristicsFactoryTest {
     @Test
     public void getKiePMMLCharacteristicsSourcesMap() {
         final Map<String, String> retrieved =
-                KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap
-                        (basicComplexPartialScoreCharacteristics,
-                         Collections.emptyList(),
-                         basicComplexPartialScoreDataDictionary,
-                         CONTAINER_CLASS_NAME,
-                         PACKAGE_NAME);
+                KiePMMLCharacteristicsFactory.getKiePMMLCharacteristicsSourcesMap(basicComplexPartialScoreCharacteristics,
+                                                                                  getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
+                                                                                  CONTAINER_CLASS_NAME,
+                                                                                  PACKAGE_NAME);
         assertNotNull(retrieved);
         assertEquals(1, retrieved.size());
         String expected = String.format(PACKAGE_CLASS_TEMPLATE, PACKAGE_NAME, CONTAINER_CLASS_NAME);
@@ -137,8 +135,7 @@ public class KiePMMLCharacteristicsFactoryTest {
     public void setCharacteristicsVariableDeclaration() {
         KiePMMLCharacteristicsFactory.setCharacteristicsVariableDeclaration(CONTAINER_CLASS_NAME,
                                                                             basicComplexPartialScoreCharacteristics,
-                                                                            Collections.emptyList(),
-                                                                            basicComplexPartialScoreDataDictionary,
+                                                                            getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
                                                                             characteristicsTemplate);
         List<Class<?>> imports = Arrays.asList(KiePMMLApply.class,
                                                KiePMMLAttribute.class,
@@ -163,8 +160,7 @@ public class KiePMMLCharacteristicsFactoryTest {
         assertTrue(characteristicsTemplate.getMethodsByName(expectedMethod).isEmpty());
         KiePMMLCharacteristicsFactory.addGetCharacteristicMethod(characteristicName,
                                                                  basicComplexPartialScoreFirstCharacteristic,
-                                                                 Collections.emptyList(),
-                                                                 basicComplexPartialScoreDataDictionary,
+                                                                 getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
                                                                  characteristicsTemplate);
         assertEquals(1, characteristicsTemplate.getMethodsByName(expectedMethod).size());
         MethodDeclaration retrieved = characteristicsTemplate.getMethodsByName(expectedMethod).get(0);
@@ -228,5 +224,4 @@ public class KiePMMLCharacteristicsFactoryTest {
                                                Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
-
 }

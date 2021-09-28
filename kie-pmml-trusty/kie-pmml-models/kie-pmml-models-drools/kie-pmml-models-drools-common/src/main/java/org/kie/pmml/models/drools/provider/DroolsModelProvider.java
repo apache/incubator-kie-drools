@@ -24,8 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.LocalTransformations;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
@@ -48,7 +47,6 @@ import org.kie.pmml.kie.dependencies.HasKnowledgeBuilder;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsAST;
 import org.kie.pmml.models.drools.ast.KiePMMLDroolsType;
 import org.kie.pmml.models.drools.ast.factories.KiePMMLDataDictionaryASTFactory;
-import org.kie.pmml.models.drools.ast.factories.KiePMMLDerivedFieldASTFactory;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModel;
 import org.kie.pmml.models.drools.commons.model.KiePMMLDroolsModelWithSources;
 import org.kie.pmml.models.drools.tuples.KiePMMLOriginalTypeGeneratedType;
@@ -56,7 +54,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.toList;
-
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.models.drools.commons.factories.KiePMMLDescrFactory.getBaseDescr;
@@ -69,10 +66,12 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     private static final Logger logger = LoggerFactory.getLogger(DroolsModelProvider.class.getName());
 
     @Override
-    public E getKiePMMLModel(final String packageName, final DataDictionary dataDictionary,
-                             final TransformationDictionary transformationDictionary, final T model,
+    public E getKiePMMLModel(final String packageName,
+                             final List<Field<?>> fields,
+                             final TransformationDictionary transformationDictionary,
+                             final T model,
                              final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, transformationDictionary, model);
+        logger.trace("getKiePMMLModel {} {} {}", packageName, fields, model);
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s",
                                                      hasClassloader.getClass().getName()));
@@ -80,10 +79,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) hasClassloader;
         KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary, model
-                , fieldTypeMap);
-        E toReturn = getKiePMMLDroolsModel(dataDictionary, transformationDictionary, model, fieldTypeMap, packageName
-                , hasClassloader);
+        KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(fields, model, fieldTypeMap);
+        E toReturn = getKiePMMLDroolsModel(fields, transformationDictionary, model, fieldTypeMap, packageName, hasClassloader);
         PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, toReturn.getKModulePackageName());
         // Needed to compile Rules from PackageDescr
         CompositePackageDescr compositePackageDescr = new CompositePackageDescr(null, packageDescr);
@@ -92,28 +89,32 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary,
-                                        final TransformationDictionary transformationDictionary, final T model,
+    public E getKiePMMLModelWithSources(final String packageName,
+                                        final List<Field<?>> fields,
+                                        final TransformationDictionary transformationDictionary,
+                                        final T model,
                                         final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, hasClassloader);
+        logger.trace("getKiePMMLModelWithSources {} {} {}", fields, model, hasClassloader);
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s",
                                                      hasClassloader.getClass().getName()));
         }
         try {
             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary,
-                                                                          model, fieldTypeMap);
-            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary
-                    , model, fieldTypeMap, packageName);
+            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(fields,
+                                                                          model,
+                                                                          fieldTypeMap);
+            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(fields,
+                                                                             transformationDictionary,
+                    model, fieldTypeMap, packageName);
             PackageDescr packageDescr = getPackageDescr(kiePMMLDroolsAST, packageName);
             HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) hasClassloader;
             KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
             String pkgUUID = getPkgUUID(knowledgeBuilder.getReleaseId(), packageName);
             packageDescr.setPreferredPkgUUID(pkgUUID);
             Map<String, String> rulesSourceMap = Collections.unmodifiableMap(getRulesSourceMap(packageDescr));
-            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, pkgUUID, sourcesMap
-                    , rulesSourceMap);
+            E toReturn = (E) new KiePMMLDroolsModelWithSources(model.getModelName(), packageName, pkgUUID, sourcesMap,
+                                                               rulesSourceMap);
             knowledgeBuilder.registerPackage(packageDescr);
             return toReturn;
         } catch (Exception e) {
@@ -122,10 +123,12 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
     }
 
     @Override
-    public E getKiePMMLModelWithSourcesCompiled(final String packageName, final DataDictionary dataDictionary,
-                                        final TransformationDictionary transformationDictionary, final T model,
-                                        final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {}", dataDictionary, model, hasClassloader);
+    public E getKiePMMLModelWithSourcesCompiled(final String packageName,
+                                                final List<Field<?>> fields,
+                                                final TransformationDictionary transformationDictionary,
+                                                final T model,
+                                                final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModelWithSourcesCompiled {} {} {}", fields, model, hasClassloader);
         if (!(hasClassloader instanceof HasKnowledgeBuilder)) {
             throw new KiePMMLException(String.format("Expecting HasKnowledgeBuilder, received %s",
                                                      hasClassloader.getClass().getName()));
@@ -134,10 +137,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
             HasKnowledgeBuilder hasKnowledgeBuilder = (HasKnowledgeBuilder) hasClassloader;
             KnowledgeBuilderImpl knowledgeBuilder = (KnowledgeBuilderImpl) hasKnowledgeBuilder.getKnowledgeBuilder();
             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(dataDictionary, transformationDictionary,
-                                                                          model, fieldTypeMap);
-            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(dataDictionary, transformationDictionary
-                    , model, fieldTypeMap, packageName);
+            KiePMMLDroolsAST kiePMMLDroolsAST = getKiePMMLDroolsASTCommon(fields, model, fieldTypeMap);
+            Map<String, String> sourcesMap = getKiePMMLDroolsModelSourcesMap(fields, transformationDictionary, model, fieldTypeMap, packageName);
             String className = getSanitizedClassName(model.getModelName());
             String fullClassName = packageName + "." + className;
             hasClassloader.compileAndLoadClass(sourcesMap, fullClassName);
@@ -160,30 +161,66 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
         return getBaseDescr(kiePMMLDroolsAST, packageName);
     }
 
-    public abstract E getKiePMMLDroolsModel(final DataDictionary dataDictionary,
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param transformationDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @param packageName
+     * @param hasClassLoader
+     * @return
+     */
+    public abstract E getKiePMMLDroolsModel(final List<Field<?>> fields,
                                             final TransformationDictionary transformationDictionary,
                                             final T model,
                                             final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                             final String packageName,
                                             final HasClassLoader hasClassLoader);
 
-    public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param model
+     * @param fieldTypeMap
+     * @param types
+     * @return
+     */
+    public abstract KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                          final T model,
                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                          final List<KiePMMLDroolsType> types);
 
-    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final DataDictionary dataDictionary,
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param transformationDictionary
+     * @param model
+     * @param fieldTypeMap
+     * @param packageName
+     * @return
+     * @throws IOException
+     */
+    public abstract Map<String, String> getKiePMMLDroolsModelSourcesMap(final List<Field<?>> fields,
                                                                         final TransformationDictionary transformationDictionary,
                                                                         final T model,
                                                                         final Map<String,
                                                                                 KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                                         final String packageName) throws IOException;
 
-    protected KiePMMLDroolsAST getKiePMMLDroolsASTCommon(final DataDictionary dataDictionary,
-                                                         final TransformationDictionary transformationDictionary,
+    /**
+     *
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary, DerivedFields from Transformations/LocalTransformations, OutputFields
+     * @param model
+     * @param fieldTypeMap
+     * @return
+     */
+    protected KiePMMLDroolsAST getKiePMMLDroolsASTCommon(final List<Field<?>> fields,
                                                          final T model,
                                                          final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap) {
-        addTransformationsDerivedFields(fieldTypeMap, transformationDictionary, model.getLocalTransformations());
         List<KiePMMLDroolsType> types = fieldTypeMap.values()
                 .stream().map(kiePMMLOriginalTypeGeneratedType -> {
                     String type =
@@ -191,21 +228,8 @@ public abstract class DroolsModelProvider<T extends Model, E extends KiePMMLDroo
                     return new KiePMMLDroolsType(kiePMMLOriginalTypeGeneratedType.getGeneratedType(), type);
                 })
                 .collect(Collectors.toList());
-        types.addAll(KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(dataDictionary));
-        return getKiePMMLDroolsAST(dataDictionary, model, fieldTypeMap, types);
-    }
-
-    protected void addTransformationsDerivedFields(final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
-                                                   final TransformationDictionary transformationDictionary,
-                                                   final LocalTransformations localTransformations) {
-        KiePMMLDerivedFieldASTFactory kiePMMLDerivedFieldASTFactory =
-                KiePMMLDerivedFieldASTFactory.factory(fieldTypeMap);
-        if (transformationDictionary != null && transformationDictionary.getDerivedFields() != null) {
-            kiePMMLDerivedFieldASTFactory.declareTypes(transformationDictionary.getDerivedFields());
-        }
-        if (localTransformations != null && localTransformations.getDerivedFields() != null) {
-            kiePMMLDerivedFieldASTFactory.declareTypes(localTransformations.getDerivedFields());
-        }
+        types.addAll(KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(fields));
+        return getKiePMMLDroolsAST(fields, model, fieldTypeMap, types);
     }
 
     protected Map<String, String> getRulesSourceMap(PackageDescr packageDescr) {

@@ -27,8 +27,6 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
 import org.dmg.pmml.SimpleSetPredicate;
 import org.kie.pmml.api.enums.ARRAY_TYPE;
 import org.kie.pmml.api.enums.IN_NOTIN;
@@ -67,9 +65,7 @@ public class KiePMMLSimpleSetPredicateFactory {
         // Avoid instantiation
     }
 
-    static BlockStmt getSimpleSetPredicateVariableDeclaration(final String variableName, final SimpleSetPredicate simpleSetPredicate,
-                                                              final List<DerivedField> derivedFields,
-                                                              final DataDictionary dataDictionary) {
+    static BlockStmt getSimpleSetPredicateVariableDeclaration(final String variableName, final SimpleSetPredicate simpleSetPredicate) {
         final MethodDeclaration methodDeclaration =
                 SIMPLESET_PREDICATE_TEMPLATE.getMethodsByName(GETKIEPMMLSIMPLESETPREDICATE).get(0).clone();
         final BlockStmt simpleSetPredicateBody =

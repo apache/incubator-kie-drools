@@ -52,6 +52,16 @@ public class KiePMMLGetProbabilityMapMethodTemplate {
         return toReturn;
     }
 
+    protected LinkedHashMap<String, Double> getNONEBinaryProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
+       LinkedHashMap<String, Double> toReturn = new LinkedHashMap<>();
+       String[] resultMapKeys = resultMap.keySet().toArray(new String[0]);
+       String key = resultMapKeys[0];
+       double value = java.lang.Math.max(0.0, Math.min(1.0 , resultMap.get(key)));
+       toReturn.put(key, value);
+       toReturn.put(resultMapKeys[1], 1 - value);
+       return toReturn;
+   }
+
     protected LinkedHashMap<String, Double> getLOGITProbabilityMap(final LinkedHashMap<String, Double> resultMap) {
         DoubleUnaryOperator firstItemOperator = aDouble -> 1 / (1 + Math.exp(0 - aDouble));
         DoubleUnaryOperator secondItemOperator = aDouble -> 1 - aDouble;
