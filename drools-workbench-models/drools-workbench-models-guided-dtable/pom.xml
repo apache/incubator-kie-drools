@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-workbench-models</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-workbench-models-guided-dtable</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools Workbench - Guided Decision Table Model</name>
   <description>Drools Workbench - Guided Decision Table Model</description>
@@ -20,17 +19,6 @@
   </properties>
 
   <dependencies>
-
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
 
     <!-- Internal dependencies -->
     <dependency>
@@ -97,24 +85,5 @@
         <directory>src/main/resources</directory>
       </resource>
     </resources>
-
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.workbench.models.guided.dtable.*
-            </Export-Package>
-            <Import-Package>
-              *
-            </Import-Package>
-            <Bundle-Activator>org.drools.workbench.models.guided.dtable.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 </project>
