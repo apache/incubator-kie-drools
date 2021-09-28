@@ -383,7 +383,7 @@ public class DefaultSolverTest {
 
         assertThatCode(() -> {
             solver.solve(solution);
-        }).hasMessageContaining("Thrown exception in constraint provider");
+        }).hasStackTraceContaining("Thrown exception in constraint provider");
 
         meterRegistry.getClock().addSeconds(1);
         meterRegistry.publish(solver);
