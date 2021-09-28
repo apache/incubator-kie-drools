@@ -50,6 +50,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 @RunWith(Parameterized.class)
 public class PMMLScorecardModelEvaluatorTest {
@@ -92,7 +93,7 @@ public class PMMLScorecardModelEvaluatorTest {
         assertTrue(pmml.getModels().get(0) instanceof Scorecard);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         kiePMMLModel = provider.getKiePMMLModel(PACKAGE_NAME,
-                                                pmml.getDataDictionary(),
+                                                getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                 pmml.getTransformationDictionary(),
                                                 (Scorecard) pmml.getModels().get(0),
                                                 new HasKnowledgeBuilderMock(knowledgeBuilder));

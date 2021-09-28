@@ -19,7 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.OutputField;
 import org.dmg.pmml.scorecard.Scorecard;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -51,18 +51,18 @@ public class KiePMMLScorecardModelASTFactory extends KiePMMLAbstractModelASTFact
      * It also <b>populate</b> the <b>fieldNameTypeNameMap</b> with mapping between
      * original field' name and <b>original type/generated type</b> tupla
      *
-     * @param dataDictionary
+     * @param fields
      * @param model
      * @param fieldTypeMap
      * @param types
      * @return
      */
-    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final DataDictionary dataDictionary,
+    public static KiePMMLDroolsAST getKiePMMLDroolsAST(final List<Field<?>> fields,
                                                        final Scorecard model,
                                                        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                        final List<KiePMMLDroolsType> types) {
-        logger.trace("getKiePMMLDroolsAST {} {} {}", dataDictionary, model, fieldTypeMap);
-        DATA_TYPE targetType = getTargetFieldType(dataDictionary, model);
+        logger.trace("getKiePMMLDroolsAST {} {} {}", fields, model, fieldTypeMap);
+        DATA_TYPE targetType = getTargetFieldType(fields, model);
         List<OutputField> outputFields =  model.getOutput() != null ? model.getOutput().getOutputFields() : Collections.emptyList();
         KiePMMLScorecardModelCharacteristicASTFactory factory = KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, outputFields, targetType);
         if (model.isUseReasonCodes()) {

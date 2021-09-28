@@ -27,8 +27,8 @@ import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.MiningFunction;
 import org.dmg.pmml.OpType;
 import org.dmg.pmml.OutputField;
@@ -60,14 +60,14 @@ public class KiePMMLRegressionModelFactory {
     private KiePMMLRegressionModelFactory() {
     }
 
-    public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final DataDictionary dataDictionary,
+    public static KiePMMLRegressionModel getKiePMMLRegressionModelClasses(final List<Field<?>> fields,
                                                                           final TransformationDictionary transformationDictionary,
                                                                           final RegressionModel model,
                                                                           final String packageName,
                                                                           final HasClassLoader hasClassLoader) throws IOException, IllegalAccessException, InstantiationException {
-        logger.trace("getKiePMMLRegressionModelClasses {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLRegressionModelClasses {} {}", fields, model);
         String className = getSanitizedClassName(model.getModelName());
-        Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary
+        Map<String, String> sourcesMap = getKiePMMLRegressionModelSourcesMap(fields, transformationDictionary
                 , model, packageName);
         String fullClassName = packageName + "." + className;
         try {
@@ -78,20 +78,20 @@ public class KiePMMLRegressionModelFactory {
         }
     }
 
-    public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final DataDictionary dataDictionary,
+    public static Map<String, String> getKiePMMLRegressionModelSourcesMap(final List<Field<?>> fields,
                                                                           final TransformationDictionary transformationDictionary,
                                                                           final RegressionModel model,
                                                                           final String packageName) throws IOException {
-        logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        logger.trace("getKiePMMLRegressionModelSourcesMap {} {} {}", fields, model, packageName);
 
         String className = getSanitizedClassName(model.getModelName());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
                                                                                  KIE_PMML_REGRESSION_MODEL_TEMPLATE_JAVA, KIE_PMML_REGRESSION_MODEL_TEMPLATE);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
-        String targetFieldName = getTargetFieldName(dataDictionary, model).orElse(null);
+        String targetFieldName = getTargetFieldName(fields, model).orElse(null);
         List<OutputField> outputFields =  model.getOutput() != null ? model.getOutput().getOutputFields() : Collections.emptyList();
-        Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(dataDictionary, model,
+        Map<String, KiePMMLTableSourceCategory> tablesSourceMap = getRegressionTablesMap(fields, model,
                                                                                          targetFieldName,
                                                                                          outputFields, packageName);
         String nestedTable = tablesSourceMap.size() == 1 ? tablesSourceMap.keySet().iterator().next() :
@@ -104,7 +104,7 @@ public class KiePMMLRegressionModelFactory {
                         .orElseThrow(() -> new KiePMMLException("Failed to find expected " +
                                                                         "KiePMMLRegressionTableClassification"));
         setConstructor(model,
-                       dataDictionary,
+                       fields,
                        transformationDictionary,
                        modelTemplate,
                        nestedTable);
@@ -115,12 +115,14 @@ public class KiePMMLRegressionModelFactory {
         return toReturn;
     }
 
-    static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final DataDictionary dataDictionary,
+    static Map<String, KiePMMLTableSourceCategory> getRegressionTablesMap(final List<Field<?>> fields,
                                                                           final RegressionModel model,
                                                                           final String targetFieldName,
                                                                           final List<OutputField> outputFields,
                                                                           final String packageName) {
-        final DataField targetDataField = dataDictionary.getDataFields().stream()
+        final DataField targetDataField = fields.stream()
+                .filter(DataField.class::isInstance)
+                .map(DataField.class::cast)
                 .filter(field -> Objects.equals(targetFieldName, field.getName().getValue()))
                 .findFirst().orElse(null);
         final OpType opType = targetDataField != null ? targetDataField.getOpType() : null;
@@ -144,12 +146,12 @@ public class KiePMMLRegressionModelFactory {
     }
 
     static void setConstructor(final RegressionModel regressionModel,
-                               final DataDictionary dataDictionary,
+                               final List<Field<?>> fields,
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate,
                                final String nestedTable) {
         KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      dataDictionary,
+                                      fields,
                                       transformationDictionary,
                                       regressionModel);
         final ConstructorDeclaration constructorDeclaration =

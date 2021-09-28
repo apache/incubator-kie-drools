@@ -1,4 +1,4 @@
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:data="http://jpmml.org/jpmml-model/InlineTable" version="4.2"
       xsi:schemaLocation="http://www.dmg.org/PMML-4_2
       http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
       xmlns="http://www.dmg.org/PMML-4_2">
@@ -124,6 +124,21 @@
             <band>2</band>
             <state>NY</state>
             <out>30000</out>
+          </row>
+        </InlineTable>
+      </MapValues>
+    </DerivedField>
+    <DerivedField name="dataencoded" optype="categorical" dataType="double">
+      <MapValues outputColumn="data:output">
+        <FieldColumnPair field="FLAG_OWN_CAR" column="data:input"/>
+        <InlineTable>
+          <row>
+            <data:input>0</data:input>
+            <data:output>0.0</data:output>
+          </row>
+          <row>
+            <data:input>1</data:input>
+            <data:output>1.0</data:output>
           </row>
         </InlineTable>
       </MapValues>

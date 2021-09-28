@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class ClusteringModelImplementationProviderTest {
 
@@ -40,6 +41,16 @@ public class ClusteringModelImplementationProviderTest {
     private static final String PACKAGE_NAME = "singleiriskmeansclustering";
 
     private static final ClusteringModelImplementationProvider PROVIDER = new ClusteringModelImplementationProvider();
+
+    private static ClusteringModel getModel(PMML pmml) {
+        assertNotNull(pmml);
+        assertEquals(1, pmml.getModels().size());
+
+        Model model = pmml.getModels().get(0);
+        assertTrue(model instanceof ClusteringModel);
+
+        return (ClusteringModel) model;
+    }
 
     @Test
     public void getPMMLModelType() {
@@ -52,10 +63,10 @@ public class ClusteringModelImplementationProviderTest {
         ClusteringModel model = getModel(pmml);
 
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                pmml.getDataDictionary(),
-                pmml.getTransformationDictionary(),
-                model,
-                new HasClassLoaderMock());
+                                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
+                                                                    pmml.getTransformationDictionary(),
+                                                                    model,
+                                                                    new HasClassLoaderMock());
 
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof Serializable);
@@ -67,10 +78,10 @@ public class ClusteringModelImplementationProviderTest {
         ClusteringModel model = getModel(pmml);
 
         KiePMMLClusteringModel retrieved = PROVIDER.getKiePMMLModelWithSources(PACKAGE_NAME,
-                pmml.getDataDictionary(),
-                pmml.getTransformationDictionary(),
-                model,
-                new HasClassLoaderMock());
+                                                                               getFieldsFromDataDictionary(pmml.getDataDictionary()),
+                                                                               pmml.getTransformationDictionary(),
+                                                                               model,
+                                                                               new HasClassLoaderMock());
 
         assertNotNull(retrieved);
         assertTrue(retrieved instanceof KiePMMLClusteringModelWithSources);
@@ -87,15 +98,5 @@ public class ClusteringModelImplementationProviderTest {
         for (Class<?> clazz : compiled.values()) {
             assertTrue(clazz instanceof Serializable);
         }
-    }
-
-    private static ClusteringModel getModel(PMML pmml) {
-        assertNotNull(pmml);
-        assertEquals(1, pmml.getModels().size());
-
-        Model model = pmml.getModels().get(0);
-        assertTrue(model instanceof ClusteringModel);
-
-        return (ClusteringModel) model;
     }
 }

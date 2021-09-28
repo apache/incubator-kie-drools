@@ -20,7 +20,6 @@ import java.util.Map;
 
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.tree.TreeModel;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.memorycompiler.KieMemoryCompiler;
@@ -35,6 +34,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class TreeModelImplementationProviderTest {
 
@@ -56,7 +56,7 @@ public class TreeModelImplementationProviderTest {
     @Test
     public void getKiePMMLModel() {
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                    pmml.getDataDictionary(),
+                                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                     pmml.getTransformationDictionary(),
                                                                     (TreeModel) pmml.getModels().get(0),
                                                                     new HasClassLoaderMock());
@@ -67,7 +67,7 @@ public class TreeModelImplementationProviderTest {
     @Test
     public void getKiePMMLModelWithSources() {
         final KiePMMLTreeModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
-                                                                                 pmml.getDataDictionary(),
+                                                                               getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (TreeModel) pmml.getModels().get(0),
                                                                                new HasClassLoaderMock());

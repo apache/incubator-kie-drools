@@ -18,8 +18,9 @@ package org.kie.pmml.compiler.commons.codegenfactories;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.xml.namespace.QName;
 
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
@@ -35,6 +36,8 @@ import com.github.javaparser.ast.expr.ObjectCreationExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.Row;
+import org.jpmml.model.inlinetable.InputCell;
+import org.jpmml.model.inlinetable.OutputCell;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.w3c.dom.Element;
@@ -110,17 +113,44 @@ public class KiePMMLRowFactory {
     }
 
     static Map<String, Object> getRowDataMap(Row source) {
+        Map<String, Object> toReturn = new HashMap<>();
         List<Element> elements = source.getContent().stream()
                 .filter(Element.class::isInstance)
                 .map(Element.class::cast)
                 .collect(Collectors.toList());
-        Map<String, Object> toReturn = new HashMap<>();
-        elements.forEach(el -> populateWithElement(toReturn, el));
+        if (!elements.isEmpty()) {
+            elements.forEach(el -> populateWithElement(toReturn, el));
+        } else {
+            InputCell inputCell = source.getContent().stream()
+                    .filter(InputCell.class::isInstance)
+                    .map(InputCell.class::cast)
+                    .findFirst()
+                    .orElse(null);
+            OutputCell outputCell = source.getContent().stream()
+                    .filter(OutputCell.class::isInstance)
+                    .map(OutputCell.class::cast)
+                    .findFirst()
+                    .orElse(null);
+            populateWithCells(toReturn, inputCell, outputCell);
+        }
         return toReturn;
 
     }
 
     static void populateWithElement(Map<String, Object> toPopulate, Element source) {
         toPopulate.put(source.getTagName(), source.getFirstChild().getTextContent());
+    }
+
+    static void populateWithCells(Map<String, Object> toPopulate, InputCell inputCell, OutputCell outputCell) {
+        if (inputCell != null) {
+            toPopulate.put(getPrefixedName(inputCell.getName()), inputCell.getValue());
+        }
+        if (outputCell != null) {
+            toPopulate.put(getPrefixedName(outputCell.getName()), outputCell.getValue());
+        }
+    }
+
+    private static String getPrefixedName(QName qName) {
+       return String.format("%s:%s", qName.getPrefix(), qName.getLocalPart());
     }
 }

@@ -32,8 +32,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
-import org.dmg.pmml.DataDictionary;
-import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.dmg.pmml.scorecard.Characteristics;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -67,16 +66,14 @@ public class KiePMMLCharacteristicsFactory {
     }
 
     public static KiePMMLCharacteristics getKiePMMLCharacteristics(final Characteristics characteristics,
-                                                                   final List<DerivedField> derivedFields,
-                                                                   final DataDictionary dataDictionary,
+                                                                   final List<Field<?>> fields,
                                                                    final String packageName,
                                                                    final HasClassLoader hasClassLoader) {
         logger.trace("getKiePMMLCharacteristics {} {}", packageName, characteristics);
         String className = KiePMMLModelUtils.getGeneratedClassName("Characteristics");
         String fullClassName = packageName + "." + className;
         final Map<String, String> sourcesMap = getKiePMMLCharacteristicsSourcesMap(characteristics,
-                                                                                   derivedFields,
-                                                                                   dataDictionary,
+                                                                                   fields,
                                                                                    className, packageName);
         try {
             Class<?> kiePMMLCharacteristicsClass = hasClassLoader.compileAndLoadClass(sourcesMap, fullClassName);
@@ -87,8 +84,7 @@ public class KiePMMLCharacteristicsFactory {
     }
 
     static Map<String, String> getKiePMMLCharacteristicsSourcesMap(final Characteristics characteristics,
-                                                                   final List<DerivedField> derivedFields,
-                                                                   final DataDictionary dataDictionary,
+                                                                   final List<Field<?>> fields,
                                                                    final String characteristicsClassName,
                                                                    final String packageName) {
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(characteristicsClassName,
@@ -97,7 +93,7 @@ public class KiePMMLCharacteristicsFactory {
         final ClassOrInterfaceDeclaration characteristicsTemplate =
                 cloneCU.getClassByName(characteristicsClassName)
                         .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + KIE_PMML_CHARACTERISTICS_TEMPLATE));
-        setCharacteristicsVariableDeclaration(characteristicsClassName, characteristics, derivedFields, dataDictionary, characteristicsTemplate);
+        setCharacteristicsVariableDeclaration(characteristicsClassName, characteristics, fields, characteristicsTemplate);
         Map<String, String> toReturn = new HashMap<>();
         String fullClassName = packageName + "." + characteristicsClassName;
         toReturn.put(fullClassName, cloneCU.toString());
@@ -106,14 +102,13 @@ public class KiePMMLCharacteristicsFactory {
 
     static void setCharacteristicsVariableDeclaration(final String characteristicsClassName,
                                                       final Characteristics characteristics,
-                                                      final List<DerivedField> derivedFields,
-                                                      final DataDictionary dataDictionary,
+                                                      final List<Field<?>> fields,
                                                       final ClassOrInterfaceDeclaration characteristicsTemplate) {
         int counter = 0;
         NodeList<Expression> arguments = new NodeList<>();
         for (Characteristic characteristic : characteristics.getCharacteristics()) {
             String characteristicVariableName = String.format("%s_%s", characteristicsClassName, counter);
-            addGetCharacteristicMethod(characteristicVariableName, characteristic, derivedFields, dataDictionary, characteristicsTemplate);
+            addGetCharacteristicMethod(characteristicVariableName, characteristic, fields, characteristicsTemplate);
             MethodCallExpr toAdd = new MethodCallExpr();
             toAdd.setScope(new NameExpr(characteristicsClassName));
             toAdd.setName("get" + characteristicVariableName);
@@ -134,10 +129,9 @@ public class KiePMMLCharacteristicsFactory {
 
     static void addGetCharacteristicMethod(final String characteristicVariableName,
                                            final Characteristic characteristic,
-                                           final List<DerivedField> derivedFields,
-                                           final DataDictionary dataDictionary,
+                                           final List<Field<?>> fields,
                                            final ClassOrInterfaceDeclaration characteristicsTemplate) {
-        BlockStmt toAdd = getCharacteristicVariableDeclaration(characteristicVariableName, characteristic, derivedFields, dataDictionary);
+        BlockStmt toAdd = getCharacteristicVariableDeclaration(characteristicVariableName, characteristic, fields);
         toAdd.addStatement(new ReturnStmt(characteristicVariableName));
         final MethodDeclaration methodDeclaration =
                 characteristicsTemplate.addMethod("get" + characteristicVariableName).setBody(toAdd);

@@ -45,6 +45,9 @@ import org.dmg.pmml.SimpleSetPredicate;
 import org.dmg.pmml.Target;
 import org.dmg.pmml.TargetValue;
 import org.dmg.pmml.TransformationDictionary;
+import org.dmg.pmml.mining.MiningModel;
+import org.dmg.pmml.mining.Segment;
+import org.dmg.pmml.mining.Segmentation;
 import org.dmg.pmml.regression.CategoricalPredictor;
 import org.dmg.pmml.regression.NumericPredictor;
 import org.dmg.pmml.regression.PredictorTerm;
@@ -68,6 +71,14 @@ public class PMMLModelTestUtils {
         DataDictionary dataDictionary = getRandomDataDictionary();
         toReturn.setDataDictionary(dataDictionary);
         toReturn.addModels(getRandomTestModel(dataDictionary));
+        return toReturn;
+    }
+
+    public static PMML getPMMLWithMiningRandomTestModel() {
+        PMML toReturn = new PMML();
+        DataDictionary dataDictionary = getRandomDataDictionary();
+        toReturn.setDataDictionary(dataDictionary);
+        toReturn.addModels(getRandomMiningModel(dataDictionary));
         return toReturn;
     }
 
@@ -108,16 +119,36 @@ public class PMMLModelTestUtils {
         return toReturn;
     }
 
-    public static TestModel getRandomTestModel() {
+    public static TestModel getRandomTestModel(DataDictionary dataDictionary) {
         TestModel toReturn = new TestModel();
+        List<DataField> dataFields = dataDictionary.getDataFields();
+        MiningSchema miningSchema = new MiningSchema();
+        IntStream.range(0, dataFields.size() -1)
+                .forEach(i -> {
+                    DataField dataField = dataFields.get(i);
+                    MiningField miningField = new MiningField();
+                    miningField.setName(dataField.getName());
+                    miningField.setUsageType(MiningField.UsageType.ACTIVE);
+                    miningSchema.addMiningFields(miningField);
+                });
+        DataField lastDataField = dataFields.get(dataFields.size()-1);
+        MiningField predictedMiningField = new MiningField();
+        predictedMiningField.setName(lastDataField.getName());
+        predictedMiningField.setUsageType(MiningField.UsageType.PREDICTED);
+        miningSchema.addMiningFields(predictedMiningField);
+        Output output = new Output();
+        OutputField outputField = new OutputField();
+        outputField.setName(FieldName.create("OUTPUT_" + lastDataField.getName().getValue()));
+        outputField.setDataType(lastDataField.getDataType());
+        outputField.setOpType(getRandomOpType());
         toReturn.setModelName(RandomStringUtils.random(6, true, false));
-        toReturn.setMiningSchema(getRandomMiningSchema());
-        toReturn.setOutput(getRandomOutput());
+        toReturn.setMiningSchema(miningSchema);
+        toReturn.setOutput(output);
         return toReturn;
     }
 
-    public static TestModel getRandomTestModel(DataDictionary dataDictionary) {
-        TestModel toReturn = new TestModel();
+    public static MiningModel getRandomMiningModel(DataDictionary dataDictionary) {
+        MiningModel toReturn = new MiningModel();
         List<DataField> dataFields = dataDictionary.getDataFields();
         MiningSchema miningSchema = new MiningSchema();
         IntStream.range(0, dataFields.size() -1)
@@ -141,6 +172,12 @@ public class PMMLModelTestUtils {
         toReturn.setModelName(RandomStringUtils.random(6, true, false));
         toReturn.setMiningSchema(miningSchema);
         toReturn.setOutput(output);
+        TestModel testModel = getRandomTestModel(dataDictionary);
+        Segment segment = new Segment();
+        segment.setModel(testModel);
+        Segmentation segmentation = new Segmentation();
+        segmentation.addSegments(segment);
+        toReturn.setSegmentation(segmentation);
         return toReturn;
     }
 

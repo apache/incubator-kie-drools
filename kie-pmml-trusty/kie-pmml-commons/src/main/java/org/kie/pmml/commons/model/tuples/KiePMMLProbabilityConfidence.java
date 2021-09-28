@@ -22,9 +22,9 @@ package org.kie.pmml.commons.model.tuples;
 public class KiePMMLProbabilityConfidence {
 
     private final double probability;
-    private final double confidence;
+    private final Double confidence;
 
-    public KiePMMLProbabilityConfidence(double probability, double confidence) {
+    public KiePMMLProbabilityConfidence(double probability, Double confidence) {
         this.probability = probability;
         this.confidence = confidence;
     }
@@ -33,7 +33,7 @@ public class KiePMMLProbabilityConfidence {
         return probability;
     }
 
-    public double getConfidence() {
+    public Double getConfidence() {
         return confidence;
     }
 }

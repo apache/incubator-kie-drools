@@ -35,6 +35,7 @@ import org.kie.test.util.filesystem.FileUtils;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 
 public class ScorecardModelImplementationProviderTest {
 
@@ -52,10 +53,10 @@ public class ScorecardModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLScorecardModel retrieved = PROVIDER.getKiePMMLModel(PACKAGE_NAME,
-                                                                         pmml.getDataDictionary(),
-                                                                            pmml.getTransformationDictionary(),
-                                                                            (Scorecard) pmml.getModels().get(0),
-                                                                            new HasKnowledgeBuilderMock(knowledgeBuilder));
+                                                                         getFieldsFromDataDictionary(pmml.getDataDictionary()),
+                                                                         pmml.getTransformationDictionary(),
+                                                                         (Scorecard) pmml.getModels().get(0),
+                                                                         new HasKnowledgeBuilderMock(knowledgeBuilder));
         assertNotNull(retrieved);
         commonVerifyIsDeepCloneable(retrieved);
     }
@@ -65,7 +66,7 @@ public class ScorecardModelImplementationProviderTest {
         final PMML pmml = getPMML(SOURCE_1);
         KnowledgeBuilderImpl knowledgeBuilder = new KnowledgeBuilderImpl();
         final KiePMMLDroolsModel retrieved = PROVIDER.getKiePMMLModelWithSources("PACKAGE_NAME",
-                                                                                 pmml.getDataDictionary(),
+                                                                                 getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                                                  pmml.getTransformationDictionary(),
                                                                                  (Scorecard) pmml.getModels().get(0),
                                                                                  new HasKnowledgeBuilderMock(knowledgeBuilder));

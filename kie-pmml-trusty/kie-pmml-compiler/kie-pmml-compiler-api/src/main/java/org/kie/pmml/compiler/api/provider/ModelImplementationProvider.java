@@ -15,9 +15,10 @@
  */
 package org.kie.pmml.compiler.api.provider;
 
+import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -40,42 +41,56 @@ public interface ModelImplementationProvider<T extends Model, E extends KiePMMLM
      * Method to be called for a <b>runtime</b> compilation
      *
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param dataDictionary
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModel(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
+    E getKiePMMLModel(final String packageName,
+                      final List<Field<?>> fields,
+                      final TransformationDictionary transformationDictionary,
+                      final T model,
+                      final HasClassLoader hasClassloader);
 
     /**
      * Method to be called following a <b>kie-maven-plugin</b> invocation
      *
-     * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param dataDictionary
+     * @param packageName
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param transformationDictionary
      * @param model
-     * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
+     * @param hasClassloader
      * @return
      * @throws KiePMMLInternalException
      */
-    E getKiePMMLModelWithSources(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader);
+    E getKiePMMLModelWithSources(final String packageName,
+                                 final List<Field<?>> fields,
+                                 final TransformationDictionary transformationDictionary,
+                                 final T model,
+                                 final HasClassLoader hasClassloader);
 
     /**
-     * Method provided only to have <b>drools</b> models working when invoked by a <code>KiePMMLMiningModel</code>
+     * Method provided only to have <b>drools</b> models working when invoked by a <code>MiningModel</code>
      * Default implementation provided for <b>not-drools</b> models.
      *
      * @param packageName the package into which put all the generated classes out of the given <code>Model</code>
-     * @param dataDictionary
-     * @param transformationDictionary
+     * @param fields Should contain all fields retrieved from model, i.e. DataFields from DataDictionary,
+     *      * DerivedFields from Transformations/LocalTransformations, OutputFields
      * @param model
      * @param hasClassloader Using <code>HasClassloader</code> to avoid coupling with drools
      * @return
      * @throws KiePMMLInternalException
      */
-    default E getKiePMMLModelWithSourcesCompiled(final String packageName, final DataDictionary dataDictionary, final TransformationDictionary transformationDictionary, final T model, final HasClassLoader hasClassloader) {
-        E toReturn = getKiePMMLModelWithSources(packageName, dataDictionary, transformationDictionary, model, hasClassloader);
+    default E getKiePMMLModelWithSourcesCompiled(final String packageName,
+                                                 final List<Field<?>> fields,
+                                                 final TransformationDictionary transformationDictionary,
+                                                 final T model,
+                                                 final HasClassLoader hasClassloader) {
+        E toReturn = getKiePMMLModelWithSources(packageName, fields, transformationDictionary, model, hasClassloader);
         final Map<String, String> sourcesMap = ((HasSourcesMap)toReturn).getSourcesMap();
         String className = getSanitizedClassName(model.getModelName());
         String fullClassName = packageName + "." + className;

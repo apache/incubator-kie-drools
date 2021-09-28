@@ -15,9 +15,10 @@
 */
 package org.kie.pmml.models.clustering.compiler.executor;
 
+import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.ClusteringModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -46,23 +47,23 @@ private static final Logger logger = LoggerFactory.getLogger(ClusteringModelImpl
 
     @Override
     public KiePMMLClusteringModel getKiePMMLModel(final String packageName,
-                                                    final DataDictionary dataDictionary,
-                                                    final TransformationDictionary transformationDictionary,
-                                                    final ClusteringModel model,
-                                                    final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
-        return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
+                                                  final List<Field<?>> fields,
+                                                  final TransformationDictionary transformationDictionary,
+                                                  final ClusteringModel model,
+                                                  final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModel {} {} {} {}", packageName, fields, model, hasClassloader);
+        return KiePMMLClusteringModelFactory.getKiePMMLClusteringModel(fields, transformationDictionary, model, packageName, hasClassloader);
     }
 
     @Override
     public KiePMMLClusteringModel getKiePMMLModelWithSources(final String packageName,
-                                                             final DataDictionary dataDictionary,
+                                                             final List<Field<?>> fields,
                                                              final TransformationDictionary transformationDictionary,
                                                              final ClusteringModel  model,
                                                              final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, fields, model, hasClassloader);
         try {
-            final Map<String, String> sourcesMap = KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
+            final Map<String, String> sourcesMap = KiePMMLClusteringModelFactory.getKiePMMLClusteringModelSourcesMap(fields, transformationDictionary, model, packageName);
             return new KiePMMLClusteringModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);

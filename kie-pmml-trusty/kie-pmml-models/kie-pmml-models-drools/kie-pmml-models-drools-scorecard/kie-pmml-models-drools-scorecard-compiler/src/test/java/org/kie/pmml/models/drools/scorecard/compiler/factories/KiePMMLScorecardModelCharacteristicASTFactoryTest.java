@@ -28,6 +28,7 @@ import org.dmg.pmml.Array;
 import org.dmg.pmml.CompoundPredicate;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.PMML;
 import org.dmg.pmml.SimplePredicate;
 import org.dmg.pmml.SimpleSetPredicate;
@@ -59,6 +60,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.DONE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getTargetFieldType;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.PATH_PATTERN;
 import static org.kie.pmml.models.drools.ast.factories.KiePMMLAbstractModelASTFactory.STATUS_PATTERN;
@@ -511,8 +513,9 @@ public class KiePMMLScorecardModelCharacteristicASTFactoryTest {
 
     private KiePMMLScorecardModelCharacteristicASTFactory getKiePMMLScorecardModelCharacteristicASTFactory() {
         final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = new HashMap<>();
-        DATA_TYPE targetType = getTargetFieldType(samplePmml.getDataDictionary(), scorecardModel);
-        KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(samplePmml.getDataDictionary());
+        final List<Field<?>> fields = getFieldsFromDataDictionary(samplePmml.getDataDictionary());
+        DATA_TYPE targetType = getTargetFieldType(fields, scorecardModel);
+        KiePMMLDataDictionaryASTFactory.factory(fieldTypeMap).declareTypes(fields);
         assertFalse(fieldTypeMap.isEmpty());
         return KiePMMLScorecardModelCharacteristicASTFactory.factory(fieldTypeMap, Collections.emptyList(), targetType);
     }
