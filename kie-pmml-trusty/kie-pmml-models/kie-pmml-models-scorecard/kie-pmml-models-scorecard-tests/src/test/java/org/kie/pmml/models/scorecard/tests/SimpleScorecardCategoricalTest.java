@@ -16,9 +16,11 @@
 
 package org.kie.pmml.models.scorecard.tests;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
@@ -30,6 +32,8 @@ import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
@@ -38,6 +42,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
     private static final String TARGET_FIELD = "Score";
     private static final String REASON_CODE1_FIELD = "Reason Code 1";
     private static final String REASON_CODE2_FIELD = "Reason Code 2";
+    private static final String[] CATEGORY = new String[] { "classA", "classB", "classC", "classD", "classE", "NA" };
     private static PMMLRuntime pmmlRuntime;
 
     private String input1;
@@ -54,7 +59,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -81,4 +86,25 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE1_FIELD)).isEqualTo(reasonCode1);
         Assertions.assertThat(pmml4Result.getResultVariables().get(REASON_CODE2_FIELD)).isEqualTo(reasonCode2);
     }
+
+    @Test
+    public void testSimpleScorecardCategoricalVerifyNoException() {
+        final List<Map<String, Object>> samples = getSamples();
+        samples.forEach(inputData -> {
+            PMML4Result retrieved = evaluate(pmmlRuntime, inputData, MODEL_NAME);
+            assertNotNull(retrieved);
+        });
+    }
+
+    private List<Map<String, Object>> getSamples() {
+        final List<Map<String, Object>> toReturn = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            final Map<String, Object> toAdd = new HashMap<>();
+            toAdd.put("input1", CATEGORY[i % CATEGORY.length]);
+            toAdd.put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
+            toReturn.add(toAdd);
+        }
+        return toReturn;
+    }
+
 }
