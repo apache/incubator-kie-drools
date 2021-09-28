@@ -25,9 +25,8 @@ import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataType;
-import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.SimplePredicate;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.OPERATOR;
@@ -68,8 +67,7 @@ public class KiePMMLSimplePredicateFactory {
 
     static BlockStmt getSimplePredicateVariableDeclaration(final String variableName,
                                                            final SimplePredicate simplePredicate,
-                                                           final List<DerivedField> derivedFields,
-                                                           final DataDictionary dataDictionary) {
+                                                           final List<Field<?>> fields) {
         final MethodDeclaration methodDeclaration =
                 SIMPLE_PREDICATE_TEMPLATE.getMethodsByName(GETKIEPMMLSIMPLEPREDICATE).get(0).clone();
         final BlockStmt simplePredicateBody =
@@ -86,7 +84,7 @@ public class KiePMMLSimplePredicateFactory {
         final MethodCallExpr builder = getChainedMethodCallExprFrom("builder", initializer);
         builder.setArgument(0, new StringLiteralExpr(simplePredicate.getField().getValue()));
         builder.setArgument(2, operatorExpr);
-        DataType dataType = getDataType(derivedFields, dataDictionary, simplePredicate.getField().getValue());
+        DataType dataType = getDataType(fields, simplePredicate.getField().getValue());
         Object actualValue = DATA_TYPE.byName(dataType.value()).getActualValue(simplePredicate.getValue());
         getChainedMethodCallExprFrom("withValue", initializer).setArgument(0, getExpressionForObject(actualValue));
         simplePredicateBody.getStatements().forEach(toReturn::addStatement);

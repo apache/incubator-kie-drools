@@ -18,7 +18,7 @@ package org.kie.pmml.models.mining.compiler.factories;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,15 +33,11 @@ import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.MiningFunction;
-import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.mining.MiningModel;
-import org.dmg.pmml.mining.Segmentation;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
@@ -59,6 +55,7 @@ import static org.junit.Assert.fail;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.mining.compiler.factories.KiePMMLMiningModelFactory.SEGMENTATIONNAME_TEMPLATE;
@@ -81,7 +78,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
 
     @Test
     public void getKiePMMLMiningModel() {
-        final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(DATA_DICTIONARY,
+        final KiePMMLMiningModel retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModel(getFieldsFromDataDictionary(DATA_DICTIONARY),
                                                                                              TRANSFORMATION_DICTIONARY,
                                                                                              MINING_MODEL,
                                                                                              PACKAGE_NAME,
@@ -97,7 +94,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
     public void getKiePMMLMiningModelSourcesMap() {
         final String packageName = "packagename";
         final List<KiePMMLModel> nestedModels = new ArrayList<>();
-        final Map<String, String> retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(DATA_DICTIONARY,
+        final Map<String, String> retrieved = KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMap(getFieldsFromDataDictionary(DATA_DICTIONARY),
                                                                                                         TRANSFORMATION_DICTIONARY,
                                                                                                         MINING_MODEL,
                                                                                                         packageName,
@@ -132,7 +129,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
             }
         });
         final Map<String, String> retrieved =
-                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMapCompiled(DATA_DICTIONARY,
+                KiePMMLMiningModelFactory.getKiePMMLMiningModelSourcesMapCompiled(getFieldsFromDataDictionary(DATA_DICTIONARY),
                                                                                                                 TRANSFORMATION_DICTIONARY,
                                                                                                                 MINING_MODEL,
                                                                                                                 PACKAGE_NAME,
@@ -161,7 +158,7 @@ public class KiePMMLMiningModelFactoryTest extends AbstractKiePMMLFactoryTest {
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         String segmentationClass = "SEGMENTATIONCLASS";
         KiePMMLMiningModelFactory.setConstructor(model,
-                                                 new DataDictionary(),
+                                                 Collections.emptyList(),
                                                  new TransformationDictionary(),
                                                  modelTemplate,
                                                  segmentationClass);

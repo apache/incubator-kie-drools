@@ -50,6 +50,7 @@ import static org.kie.pmml.commons.Constants.MISSING_CONSTRUCTOR_IN_BODY;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.Constants.PACKAGE_CLASS_TEMPLATE;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE;
 import static org.kie.pmml.models.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE_JAVA;
@@ -88,23 +89,23 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModel() {
-        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel
-                (basicComplexPartialScoreDataDictionary,
-                 basicComplexPartialScoreTransformationDictionary,
-                 basicComplexPartialScore,
-                 PACKAGE_NAME,
-                 new HasClassLoaderMock());
+        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(
+                getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
+                basicComplexPartialScoreTransformationDictionary,
+                basicComplexPartialScore,
+                PACKAGE_NAME,
+                new HasClassLoaderMock());
         assertNotNull(retrieved);
     }
 
     @Test
     public void getKiePMMLScorecardModelSourcesMap() {
         final Map<String, String> retrieved =
-                KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap
-                        (basicComplexPartialScoreDataDictionary,
-                         basicComplexPartialScoreTransformationDictionary,
-                         basicComplexPartialScore,
-                         PACKAGE_NAME);
+                KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(
+                        getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
+                        basicComplexPartialScoreTransformationDictionary,
+                        basicComplexPartialScore,
+                        PACKAGE_NAME);
         assertNotNull(retrieved);
         assertEquals(2, retrieved.size());
         String expected = String.format(PACKAGE_CLASS_TEMPLATE, PACKAGE_NAME,
@@ -120,12 +121,12 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void setConstructor() {
         String fullCharacteristicsClassName = PACKAGE_NAME + ".fullCharacteristicsClassName";
-        KiePMMLScorecardModelFactory.setConstructor
-                (basicComplexPartialScore,
-                 basicComplexPartialScoreDataDictionary,
-                 basicComplexPartialScoreTransformationDictionary,
-                 scorecardTemplate,
-                 fullCharacteristicsClassName);
+        KiePMMLScorecardModelFactory.setConstructor(
+                basicComplexPartialScore,
+                getFieldsFromDataDictionary(basicComplexPartialScoreDataDictionary),
+                basicComplexPartialScoreTransformationDictionary,
+                scorecardTemplate,
+                fullCharacteristicsClassName);
         final ConstructorDeclaration constructorDeclaration =
                 scorecardTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, scorecardTemplate.getName())));
         final BlockStmt body = constructorDeclaration.getBody();
@@ -134,15 +135,15 @@ public class KiePMMLScorecardModelFactoryTest {
                         .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         Statement expected = JavaParserUtils
                 .parseStatement(String.format("super(\"%1$s\", Collections.emptyList()" +
-                                                  ", new %2$s" +
-                                                  "(), %3$s, %4$s, %5$s, %6$s);\n",
+                                                      ", new %2$s" +
+                                                      "(), %3$s, %4$s, %5$s, %6$s);\n",
                                               getSanitizedClassName(basicComplexPartialScore.getModelName()),
-                                          fullCharacteristicsClassName,
-                                          basicComplexPartialScore.getInitialScore(),
-                                          basicComplexPartialScore.isUseReasonCodes(),
-                                          REASONCODE_ALGORITHM.class.getName() + "." + REASONCODE_ALGORITHM.byName(basicComplexPartialScore.getReasonCodeAlgorithm().value()),
-                                          basicComplexPartialScore.getBaselineScore()
-                                          ));
+                                              fullCharacteristicsClassName,
+                                              basicComplexPartialScore.getInitialScore(),
+                                              basicComplexPartialScore.isUseReasonCodes(),
+                                              REASONCODE_ALGORITHM.class.getName() + "." + REASONCODE_ALGORITHM.byName(basicComplexPartialScore.getReasonCodeAlgorithm().value()),
+                                              basicComplexPartialScore.getBaselineScore()
+                ));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
     }
 }

@@ -68,6 +68,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getCategoricalPredictor;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getDataDictionary;
@@ -139,7 +140,7 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelClasses() throws IOException, IllegalAccessException, InstantiationException {
-        KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(dataDictionary,
+        KiePMMLRegressionModel retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelClasses(getFieldsFromDataDictionary(dataDictionary),
                                                                                                           transformationDictionary,
                                                                                                           regressionModel,
                                                                                                           PACKAGE_NAME,
@@ -156,7 +157,10 @@ public class KiePMMLRegressionModelFactoryTest {
 
     @Test
     public void getKiePMMLRegressionModelSourcesMap() throws IOException {
-        Map<String, String> retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(dataDictionary, transformationDictionary, regressionModel, PACKAGE_NAME);
+        Map<String, String> retrieved = KiePMMLRegressionModelFactory.getKiePMMLRegressionModelSourcesMap(getFieldsFromDataDictionary(dataDictionary),
+                                                                                                           transformationDictionary,
+                                                                                                           regressionModel,
+                                                                                                           PACKAGE_NAME);
         assertNotNull(retrieved);
         int expectedSize = regressionTables.size()
                 + 2; // One for classification and one for the whole model
@@ -167,7 +171,7 @@ public class KiePMMLRegressionModelFactoryTest {
     public void getRegressionTablesMap() throws IOException {
         String targetFieldName = "targetFieldName";
         Map<String, KiePMMLTableSourceCategory> retrieved = KiePMMLRegressionModelFactory
-                .getRegressionTablesMap(dataDictionary,
+                .getRegressionTablesMap(getFieldsFromDataDictionary(dataDictionary),
                                         regressionModel,
                                         targetFieldName,
                                         Collections.emptyList(),
@@ -186,7 +190,7 @@ public class KiePMMLRegressionModelFactoryTest {
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(regressionModel.getMiningFunction().value());
         final ClassOrInterfaceDeclaration modelTemplate = MODEL_TEMPLATE.clone();
         KiePMMLRegressionModelFactory.setConstructor(regressionModel,
-                                                     dataDictionary,
+                                                     getFieldsFromDataDictionary(dataDictionary),
                                                      transformationDictionary,
                                                      modelTemplate,
                                                      nestedTable);
