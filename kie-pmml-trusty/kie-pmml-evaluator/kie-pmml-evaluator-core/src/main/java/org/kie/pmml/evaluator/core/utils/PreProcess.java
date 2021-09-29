@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.evaluator.core.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -51,6 +50,7 @@ public class PreProcess {
      */
     public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
         verifyMissingValues(model, context);
+        convertInputData(model, context);
         addMissingValuesReplacements(model, context);
         final PMMLRequestData requestData = context.getRequestData();
         final ProcessingDTO toReturn = createProcessingDTO(model, requestData.getMappedRequestParams());
@@ -85,6 +85,65 @@ public class PreProcess {
         final List<String> missingFields = requiredFieldsList.stream()
                         .filter(fieldName -> !mappedRequestParams.containsKey(fieldName))
                                 .collect(Collectors.toList());
+        if (!missingFields.isEmpty()) {
+            String error =  String.format("Missing required field(s): %s", String.join(", ", missingFields));
+            logger.error(error);
+            throw new KiePMMLException(error);
+        }
+    }
+
+    /**
+     * Try to convert input data to expected data-type, throwing exception when data are not convertible
+     * @param model
+     * @param context
+     */
+    static void convertInputData(final KiePMMLModel model, final PMMLContext context) {
+        logger.debug("convertInputData {} {}", model, context);
+        final PMMLRequestData requestData = context.getRequestData();
+        Collection<ParameterInfo> requestParams = requestData.getRequestParams();
+        model.getMiningFields().forEach(miningField -> {
+            ParameterInfo parameterInfo = requestParams.stream()
+                    .filter(paramInfo ->  miningField.getName().equals(paramInfo.getName()))
+                    .findFirst()
+                    .orElse(null);
+            if (parameterInfo != null) {
+                Object originalValue = parameterInfo.getValue();
+                Object requiredValue = miningField.getDataType().getActualValue(originalValue);
+                parameterInfo.setType(miningField.getDataType().getMappedClass());
+                parameterInfo.setValue(requiredValue);
+            }
+        });
+    }
+
+    /**
+     * Verify the invalid values if defined in original PMML as <b>invalidValueTreatment</b>.
+     * <p>
+     *     invalidValueTreatment: This field specifies how invalid input values are handled.
+     *     returnInvalid is the default and specifies that, when an invalid input is encountered,
+     *     the model should return a value indicating an invalid result has been returned.
+     *     asIs means to use the input without modification. asMissing specifies that an invalid
+     *     input value should be treated as a missing value and follow the behavior specified by
+     *     the missingValueReplacement attribute if present (see above). If asMissing is specified
+     *     but there is no respective missingValueReplacement present, a missing value is passed on
+     *     for eventual handling by successive transformations via DerivedFields or in the actual
+     *     mining model. asValue specifies that an invalid input value should be replaced with the
+     *     value specified by attribute invalidValueReplacement which must be present in this case,
+     *     or the PMML is invalid.
+     * </p>
+     *
+     * @param model
+     * @param context
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD">INVALID-VALUE-TREATMENT-METHOD</a>
+     */
+    static void verifyInvalidValues(final KiePMMLModel model, final PMMLContext context) {
+        logger.debug("verifyInvalidValues {} {}", model, context);
+        final PMMLRequestData requestData = context.getRequestData();
+        final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
+        final List<String> requiredFieldsList = model.getRequiredFieldsList();
+        final List<String> missingFields = requiredFieldsList.stream()
+                .filter(fieldName -> !mappedRequestParams.containsKey(fieldName))
+                .collect(Collectors.toList());
         if (!missingFields.isEmpty()) {
             String error =  String.format("Missing required field(s): %s", String.join(", ", missingFields));
             logger.error(error);

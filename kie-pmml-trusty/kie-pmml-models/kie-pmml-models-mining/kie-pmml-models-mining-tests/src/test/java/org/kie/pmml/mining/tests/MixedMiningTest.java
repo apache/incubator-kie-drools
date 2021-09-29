@@ -31,6 +31,8 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Parameterized.class)
 public class MixedMiningTest extends AbstractPMMLTest {
 
@@ -167,6 +169,34 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
         inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test
+    public void testMixedMiningConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", String.valueOf(age));
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", String.valueOf(validLicense));
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", "34.1");
+        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningNotConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", true);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }
