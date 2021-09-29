@@ -20,11 +20,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -34,10 +32,8 @@ import org.drools.core.base.UndefinedCalendarExcption;
 import org.drools.core.time.impl.PseudoClockScheduler;
 import org.drools.core.util.DateUtils;
 import org.drools.testcoverage.common.model.Alarm;
-import org.drools.testcoverage.common.model.Cheese;
 import org.drools.testcoverage.common.model.FactA;
 import org.drools.testcoverage.common.model.FactB;
-import org.drools.testcoverage.common.model.Person;
 import org.drools.testcoverage.common.model.Pet;
 import org.drools.testcoverage.common.model.StockTick;
 import org.drools.testcoverage.common.util.KieBaseTestConfiguration;
@@ -65,15 +61,14 @@ import org.kie.api.time.SessionPseudoClock;
 
 import static java.util.Arrays.asList;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(Parameterized.class)
-public class TimerAndCalendarTest {
+public class TimerAndCalendarWithPseudoTimeTest {
 
     private final KieBaseTestConfiguration kieBaseTestConfiguration;
 
-    public TimerAndCalendarTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
+    public TimerAndCalendarWithPseudoTimeTest(final KieBaseTestConfiguration kieBaseTestConfiguration) {
         this.kieBaseTestConfiguration = kieBaseTestConfiguration;
     }
 
@@ -82,105 +77,26 @@ public class TimerAndCalendarTest {
         return TestParametersUtil.getKieBaseStreamConfigurations(true);
     }
 
-    @Test(timeout = 15000)
-    public void testDuration() throws Exception {
-        final String drl = "package org.drools.compiler.test;\n" +
-                "\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "rule delayed\n" +
-                "    duration 100\n" +
-                "    when\n" +
-                "        cheese : Cheese( )\n" +
-                "    then\n" +
-                "        list.add( cheese );\n" +
-                "end ";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            final Cheese brie = new Cheese("brie", 12);
-            ksession.insert(brie);
-
-            ksession.fireAllRules();
-            // now check for update
-            assertEquals(0, list.size());
-            // sleep for 500ms
-            Thread.sleep(500);
-            ksession.fireAllRules();
-            // now check for update
-            assertEquals(1, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testDurationWithNoLoop() throws Exception {
-        final String drl = "package org.drools.compiler.test;\n" +
-                "\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "import " + Person.class.getCanonicalName() + ";\n" +
-                "\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "rule delayed\n" +
-                "    timer 100\n" +
-                "    no-loop true\n" +
-                "    when\n" +
-                "        cheese : Cheese( )\n" +
-                "    then\n" +
-                "        list.add( cheese );\n" +
-                "end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            final Cheese brie = new Cheese("brie", 12);
-            ksession.insert(brie);
-            ksession.fireAllRules();
-
-            // now check for update
-            assertEquals(0, list.size());
-
-            // sleep for 300ms
-            Thread.sleep(300);
-
-            ksession.fireAllRules();
-            // now check for update
-            assertEquals(1, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
     @Test(timeout = 10000)
     public void testDurationMemoryLeakonRepeatedUpdate() {
         final String drl =
-            "package org.drools.compiler.test\n" +
-            "import " + Alarm.class.getCanonicalName() + "\n" +
-            "global java.util.List list;" +
-            "rule \"COMPTEUR\"\n" +
-            "  timer (int: 50s)\n" +
-            "  when\n" +
-            "    $alarm : Alarm( number < 5 )\n" +
-            "  then\n" +
-            "    $alarm.incrementNumber();\n" +
-            "    list.add( $alarm );\n" +
-            "    update($alarm);\n" + 
-            "end\n";
+                "package org.drools.compiler.test\n" +
+                           "import " + Alarm.class.getCanonicalName() + "\n" +
+                           "global java.util.List list;" +
+                           "rule \"COMPTEUR\"\n" +
+                           "  timer (int: 50s)\n" +
+                           "  when\n" +
+                           "    $alarm : Alarm( number < 5 )\n" +
+                           "  then\n" +
+                           "    $alarm.incrementNumber();\n" +
+                           "    list.add( $alarm );\n" +
+                           "    update($alarm);\n" +
+                           "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler timeService = ksession.getSessionClock();
             timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
@@ -203,54 +119,6 @@ public class TimerAndCalendarTest {
     }
 
     @Test(timeout = 10000)
-    public void testFireRuleAfterDuration() throws Exception {
-        final String drl = "package org.drools.compiler.test;\n" +
-                "import " + Cheese.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "rule delayed\n" +
-                "    duration 100\n" +
-                "    when\n" +
-                "        cheese : Cheese( $type:type == \"brie\" )\n" +
-                "    then\n" +
-                "        list.add( cheese );\n" +
-                "        insert(new Cheese(\"stilton\", 42));\n" +
-                "        delete(cheese);\n" +
-                "end\n" +
-                "\n" +
-                "rule after_delayed\n" +
-                "    when\n" +
-                "        cheese : Cheese( $type:type == \"stilton\" )\n" +
-                "    then\n" +
-                "        list.add( cheese );\n" +
-                "end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            final Cheese brie = new Cheese("brie", 12);
-            ksession.insert(brie);
-            ksession.fireAllRules();
-
-            // now check for update
-            assertEquals(0, list.size());
-
-            // sleep for 300ms
-            Thread.sleep(300);
-
-            ksession.fireAllRules();
-
-            // now check for update
-            assertEquals(2, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
     public void testNoProtocolIntervalTimer() {
         testIntervalTimer(true);
     }
@@ -262,17 +130,19 @@ public class TimerAndCalendarTest {
 
     private void testIntervalTimer(final boolean noProtocol) {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-                    (noProtocol ? "  duration (30s 10s) " : "  timer (int:30s 10s) ") +
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           (noProtocol ? "  duration (30s 10s) " : "  timer (int:30s 10s) ") +
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -311,16 +181,18 @@ public class TimerAndCalendarTest {
     public void testIntervalTimerWithoutFire() {
         final String drl =
                 "package org.simple \n" +
-                        "global java.util.List list \n" +
-                        "rule xxx \n" +
-                        "  timer (int:30s 10s) " +
-                        "when \n" +
-                        "then \n" +
-                        "  list.add(\"fired\"); \n" +
-                        "end  \n";
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  timer (int:30s 10s) " +
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration kieSessionConfiguration =
+                KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
         kieSessionConfiguration.setOption(TimedRuleExecutionOption.YES);
         final KieSession ksession = kbase.newKieSession(kieSessionConfiguration, null);
         try {
@@ -350,18 +222,20 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testExprIntervalTimerRaceCondition() {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  timer (expr: $i, $i) \n" +
-            "when \n" +
-            "   $i : Long() \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  timer (expr: $i, $i) \n" +
+                           "when \n" +
+                           "   $i : Long() \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
 
@@ -414,33 +288,37 @@ public class TimerAndCalendarTest {
 
     private void wrongTimerExpression(final String timer) {
         final String drl =
-            "package org.simple \n" +
-            "rule xxx \n" +
-            "  timer (" + timer + ") " +
-            "when \n" +
-            "then \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "rule xxx \n" +
+                           "  timer (" + timer + ") " +
+                           "when \n" +
+                           "then \n" +
+                           "end  \n";
 
-        final KieBuilder kieBuilder = KieUtil.getKieBuilderFromDrls(kieBaseTestConfiguration,
-                                                                    false,
-                                                                    drl);
+        final KieBuilder kieBuilder = KieUtil
+            .getKieBuilderFromDrls(
+                                   kieBaseTestConfiguration,
+                                       false,
+                                       drl);
         Assertions.assertThat(kieBuilder.getResults().getMessages()).isNotEmpty();
     }
 
     @Test(timeout = 10000)
     public void testCronTimer() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  timer (cron:15 * * * * ?) " +
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  timer (cron:15 * * * * ?) " +
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -477,21 +355,23 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testCalendarNormalRuleSingleCalendar() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\"\n" +
-            "when \n" +
-            "  String()\n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\"\n" +
+                           "when \n" +
+                           "  String()\n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
         final Calendar calFalse = timestamp -> false;
         final Calendar calTrue = timestamp -> true;
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -530,13 +410,14 @@ public class TimerAndCalendarTest {
     @Test
     public void testUndefinedCalendar() {
         final String drl =
-            "rule xxx \n" +
-            "  calendars \"cal1\"\n" +
-            "when \n" +
-            "then \n" +
-            "end  \n";
+                "rule xxx \n" +
+                           "  calendars \"cal1\"\n" +
+                           "when \n" +
+                           "then \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
             try {
@@ -552,18 +433,20 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testCalendarNormalRuleMultipleCalendars() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\", \"cal2\"\n" +
-            "when \n" +
-            "  String()\n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\", \"cal2\"\n" +
+                           "when \n" +
+                           "  String()\n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final Calendar calFalse = timestamp -> false;
 
@@ -609,18 +492,20 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testCalendarsWithCron() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\", \"cal2\"\n" +
-            "  timer (cron:15 * * * * ?) " +
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\", \"cal2\"\n" +
+                           "  timer (cron:15 * * * * ?) " +
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -689,18 +574,20 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testCalendarsWithIntervals() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\", \"cal2\"\n" +
-            "  timer (15s 60s) " + //int: protocol is assume
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\", \"cal2\"\n" +
+                           "  timer (15s 60s) " + //int: protocol is assume
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -769,73 +656,20 @@ public class TimerAndCalendarTest {
     @Test(timeout = 10000)
     public void testCalendarsWithIntervalsAndStartAndEnd() throws Exception {
         final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\"\n" +
-            "  timer (0d 1d; start=3-JAN-2010, end=5-JAN-2010) " + //int: protocol is assume
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\"\n" +
+                           "  timer (0d 1d; start=3-JAN-2010, end=5-JAN-2010) " + //int: protocol is assume
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
-        try {
-            final List list = new ArrayList();
-            final PseudoClockScheduler timeService = ksession.getSessionClock();
-            final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
-            final Date date = df.parse("1-JAN-2010");
-
-            final Calendar cal1 = timestamp -> true;
-
-            final long oneDay = 60 * 60 * 24;
-            ksession.getCalendars().set("cal1", cal1);
-            ksession.setGlobal("list", list);
-
-            timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
-            ksession.fireAllRules();
-            assertEquals(0, list.size());
-
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
-            ksession.fireAllRules();
-            assertEquals(0, list.size());
-
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);  // day 3
-            ksession.fireAllRules();
-            assertEquals(1, list.size());
-
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
-            ksession.fireAllRules();
-            assertEquals(2, list.size());
-
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
-            ksession.fireAllRules();
-            assertEquals(3, list.size());
-
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
-            ksession.fireAllRules();
-            assertEquals(3, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
-        final String drl =
-            "package org.simple \n" +
-            "global java.util.List list \n" +
-            "rule xxx \n" +
-            "  calendars \"cal1\"\n" +
-            "  timer (0d 1d; start=3-JAN-2010, repeat-limit=4) " + //int: protocol is assume
-            "when \n" +
-            "then \n" +
-            "  list.add(\"fired\"); \n" +
-            "end  \n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
             final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -864,7 +698,64 @@ public class TimerAndCalendarTest {
             ksession.fireAllRules();
             assertEquals(2, list.size());
 
-            timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
+            ksession.fireAllRules();
+            assertEquals(3, list.size());
+
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(3, list.size());
+        } finally {
+            ksession.dispose();
+        }
+    }
+
+    @Test(timeout = 10000)
+    public void testCalendarsWithIntervalsAndStartAndLimit() throws Exception {
+        final String drl =
+                "package org.simple \n" +
+                           "global java.util.List list \n" +
+                           "rule xxx \n" +
+                           "  calendars \"cal1\"\n" +
+                           "  timer (0d 1d; start=3-JAN-2010, repeat-limit=4) " + //int: protocol is assume
+                           "when \n" +
+                           "then \n" +
+                           "  list.add(\"fired\"); \n" +
+                           "end  \n";
+
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        try {
+            final List list = new ArrayList();
+            final PseudoClockScheduler timeService = ksession.getSessionClock();
+            final DateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.UK);
+            final Date date = df.parse("1-JAN-2010");
+
+            final Calendar cal1 = timestamp -> true;
+
+            final long oneDay = 60 * 60 * 24;
+            ksession.getCalendars().set("cal1", cal1);
+            ksession.setGlobal("list", list);
+
+            timeService.advanceTime(date.getTime(), TimeUnit.MILLISECONDS);
+            ksession.fireAllRules();
+            assertEquals(0, list.size());
+
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(0, list.size());
+
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 3
+            ksession.fireAllRules();
+            assertEquals(1, list.size());
+
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS);
+            ksession.fireAllRules();
+            assertEquals(2, list.size());
+
+            timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
             ksession.fireAllRules();
             assertEquals(3, list.size());
 
@@ -883,19 +774,21 @@ public class TimerAndCalendarTest {
             Locale.setDefault(Locale.UK); // Because of the date strings in the DRL, fixable with JBRULES-3444
             final String drl =
                     "package org.simple \n" +
-                            "global java.util.List list \n" +
-                            "rule xxx \n" +
-                            "  date-effective \"2-JAN-2010\"\n" +
-                            "  date-expires \"6-JAN-2010\"\n" +
-                            "  calendars \"cal1\"\n" +
-                            "  timer (cron: 0 0 0 * * ?) " +
-                            "when \n" +
-                            "then \n" +
-                            "  list.add(\"fired\"); \n" +
-                            "end  \n";
+                               "global java.util.List list \n" +
+                               "rule xxx \n" +
+                               "  date-effective \"2-JAN-2010\"\n" +
+                               "  date-expires \"6-JAN-2010\"\n" +
+                               "  calendars \"cal1\"\n" +
+                               "  timer (cron: 0 0 0 * * ?) " +
+                               "when \n" +
+                               "then \n" +
+                               "  list.add(\"fired\"); \n" +
+                               "end  \n";
 
-            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-            final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+            final KieBase kbase = KieBaseUtil
+                .getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+            final KieSession ksession =
+                    kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
             try {
                 final List list = new ArrayList();
                 final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -924,7 +817,7 @@ public class TimerAndCalendarTest {
                 ksession.fireAllRules();
                 assertEquals(2, list.size());
 
-                timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
                 ksession.fireAllRules();
                 assertEquals(3, list.size());
 
@@ -946,20 +839,22 @@ public class TimerAndCalendarTest {
             Locale.setDefault(Locale.UK); // Because of the date strings in the DRL, fixable with JBRULES-3444
             final String drl =
                     "package org.simple \n" +
-                            "global java.util.List list \n" +
-                            "rule xxx \n" +
-                            "  date-effective \"2-JAN-2010\"\n" +
-                            "  calendars \"cal1\"\n" +
-                            // FIXME: I have to set the repeate-limit to 6 instead of 4 becuase
-                            // it is incremented regardless of the effective date
-                            "  timer (cron: 0 0 0 * * ?; repeat-limit=6) " +
-                            "when \n" +
-                            "then \n" +
-                            "  list.add(\"fired\"); \n" +
-                            "end  \n";
+                               "global java.util.List list \n" +
+                               "rule xxx \n" +
+                               "  date-effective \"2-JAN-2010\"\n" +
+                               "  calendars \"cal1\"\n" +
+                               // FIXME: I have to set the repeate-limit to 6 instead of 4 becuase
+                               // it is incremented regardless of the effective date
+                               "  timer (cron: 0 0 0 * * ?; repeat-limit=6) " +
+                               "when \n" +
+                               "then \n" +
+                               "  list.add(\"fired\"); \n" +
+                               "end  \n";
 
-            final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-            final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+            final KieBase kbase = KieBaseUtil
+                .getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+            final KieSession ksession =
+                    kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
             try {
                 final List list = new ArrayList();
                 final PseudoClockScheduler timeService = ksession.getSessionClock();
@@ -988,7 +883,7 @@ public class TimerAndCalendarTest {
                 ksession.fireAllRules();
                 assertEquals(2, list.size());
 
-                timeService.advanceTime(oneDay, TimeUnit.SECONDS);   // day 5
+                timeService.advanceTime(oneDay, TimeUnit.SECONDS); // day 5
                 ksession.fireAllRules();
                 assertEquals(3, list.size());
 
@@ -1004,119 +899,34 @@ public class TimerAndCalendarTest {
     }
 
     @Test(timeout = 10000)
-    public void testTimerWithNot() throws Exception {
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromClasspathResources("timer-and-calendar-test", kieBaseTestConfiguration,
-                                                                           "org/drools/compiler/integrationtests/test_Timer_With_Not.drl");
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            ksession.fireAllRules();
-            Thread.sleep(200);
-            ksession.fireAllRules();
-            Thread.sleep(200);
-            ksession.fireAllRules();
-            // now check that rule "wrap A" fired once, creating one B
-            assertEquals(2, ksession.getFactCount());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testHaltWithTimer() throws Exception {
-        final String drl = "// fire once, for a String, create an Integer, halt!\n" +
-                "rule x\n" +
-                "timer(int:0 1000)\n" +
-                "when\n" +
-                "    $s: String( this == \"halt\" )\n" +
-                "then\n" +
-                "    insert( new Integer(1) );\n" +
-                "    drools.halt();\n" +
-                "end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        new Thread(ksession::fireUntilHalt).start();
-        try {
-            Thread.sleep(1000);
-            final FactHandle handle = ksession.insert("halt");
-            Thread.sleep(2000);
-
-            // now check that rule "halt" fired once, creating one Integer
-            assertEquals(2, ksession.getFactCount());
-            ksession.delete(handle);
-        } finally {
-            ksession.halt();
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testTimerRemoval() throws InterruptedException {
-        final String drl = "package org.drools.compiler.test\n" +
-                "import " + TimeUnit.class.getName() + "\n" +
-                "global java.util.List list \n" +
-                "global " + CountDownLatch.class.getName() + " latch\n" +
-                "rule TimerRule \n" +
-                "   timer (int:100 50) \n" +
-                "when \n" +
-                "then \n" +
-                "        //forces it to pause until main thread is ready\n" +
-                "        latch.await(10, TimeUnit.MINUTES); \n" +
-                "        list.add(list.size()); \n" +
-                " end";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final CountDownLatch latch = new CountDownLatch(1);
-            final List<Integer> list = Collections.synchronizedList(new ArrayList<>());
-            ksession.setGlobal("list", list);
-            ksession.setGlobal("latch", latch);
-
-            ksession.fireAllRules();
-            Thread.sleep(500); // this makes sure it actually enters a rule
-            kbase.removeRule("org.drools.compiler.test", "TimerRule");
-            ksession.fireAllRules();
-            latch.countDown();
-            Thread.sleep(500); // allow the last rule, if we were in the middle of one to actually fire, before clearing
-            ksession.fireAllRules();
-            list.clear();
-            Thread.sleep(500); // now wait to see if any more fire, they shouldn't
-            ksession.fireAllRules();
-            assertEquals(0, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
     public void testIntervalTimerWithLongExpressions() {
         final String drl = "package org.simple;\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "declare Bean\n" +
-                "  delay   : long = 30000\n" +
-                "  period  : long = 10000\n" +
-                "end\n" +
-                "\n" +
-                "rule init \n" +
-                "when \n" +
-                "then \n" +
-                " insert( new Bean() );\n" +
-                "end \n" +
-                "\n" +
-                "rule xxx\n" +
-                "  salience ($d) \n" +
-                "  timer( expr: $d, $p; start=3-JAN-2010 )\n" +
-                "when\n" +
-                "  Bean( $d : delay, $p : period )\n" +
-                "then\n" +
-                "  list.add( \"fired\" );\n" +
-                "end";
+                           "global java.util.List list;\n" +
+                           "\n" +
+                           "declare Bean\n" +
+                           "  delay   : long = 30000\n" +
+                           "  period  : long = 10000\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule init \n" +
+                           "when \n" +
+                           "then \n" +
+                           " insert( new Bean() );\n" +
+                           "end \n" +
+                           "\n" +
+                           "rule xxx\n" +
+                           "  salience ($d) \n" +
+                           "  timer( expr: $d, $p; start=3-JAN-2010 )\n" +
+                           "when\n" +
+                           "  Bean( $d : delay, $p : period )\n" +
+                           "then\n" +
+                           "  list.add( \"fired\" );\n" +
+                           "end";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
 
@@ -1156,30 +966,32 @@ public class TimerAndCalendarTest {
     public void testIntervalTimerAfterEnd() {
         // DROOLS-5908
         final String drl = "package org.simple;\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "declare Bean\n" +
-                "  delay   : long = 30000\n" +
-                "  period  : long = 10000\n" +
-                "end\n" +
-                "\n" +
-                "rule init \n" +
-                "when \n" +
-                "then \n" +
-                " insert( new Bean() );\n" +
-                "end \n" +
-                "\n" +
-                "rule xxx\n" +
-                "  salience ($d) \n" +
-                "  timer( expr: $d, $p; end=3-JAN-2010 )\n" +
-                "when\n" +
-                "  Bean( $d : delay, $p : period )\n" +
-                "then\n" +
-                "  list.add( \"fired\" );\n" +
-                "end";
+                           "global java.util.List list;\n" +
+                           "\n" +
+                           "declare Bean\n" +
+                           "  delay   : long = 30000\n" +
+                           "  period  : long = 10000\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule init \n" +
+                           "when \n" +
+                           "then \n" +
+                           " insert( new Bean() );\n" +
+                           "end \n" +
+                           "\n" +
+                           "rule xxx\n" +
+                           "  salience ($d) \n" +
+                           "  timer( expr: $d, $p; end=3-JAN-2010 )\n" +
+                           "when\n" +
+                           "  Bean( $d : delay, $p : period )\n" +
+                           "then\n" +
+                           "  list.add( \"fired\" );\n" +
+                           "end";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
 
@@ -1217,31 +1029,33 @@ public class TimerAndCalendarTest {
 
     private void checkIntervalTimerWithStringExpressions(final boolean useExprForStart, final String startTime) {
         final String drl = "package org.simple;\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "declare Bean\n" +
-                "  delay   : String = \"30s\"\n" +
-                "  period  : long = 60000\n" +
-                "  start   : String = \"3-JAN-2010\"\n" +
-                "end\n" +
-                "\n" +
-                "rule init \n" +
-                "when \n" +
-                "then \n" +
-                " insert( new Bean() );\n" +
-                "end \n" +
-                "\n" +
-                "rule xxx\n" +
-                "  salience ($d) \n" +
-                "  timer( expr: $d, $p; start=" + (useExprForStart ? "$s" : "3-JAN-2010") + " )\n" +
-                "when\n" +
-                "  Bean( $d : delay, $p : period, $s : start )\n" +
-                "then\n" +
-                "  list.add( \"fired\" );\n" +
-                "end";
+                           "global java.util.List list;\n" +
+                           "\n" +
+                           "declare Bean\n" +
+                           "  delay   : String = \"30s\"\n" +
+                           "  period  : long = 60000\n" +
+                           "  start   : String = \"3-JAN-2010\"\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule init \n" +
+                           "when \n" +
+                           "then \n" +
+                           " insert( new Bean() );\n" +
+                           "end \n" +
+                           "\n" +
+                           "rule xxx\n" +
+                           "  salience ($d) \n" +
+                           "  timer( expr: $d, $p; start=" + (useExprForStart ? "$s" : "3-JAN-2010") + " )\n" +
+                           "when\n" +
+                           "  Bean( $d : delay, $p : period, $s : start )\n" +
+                           "then\n" +
+                           "  list.add( \"fired\" );\n" +
+                           "end";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final List list = new ArrayList();
 
@@ -1303,23 +1117,18 @@ public class TimerAndCalendarTest {
 
     @Test(timeout = 10000)
     public void testIntervalTimerExpressionWithOr() {
-        final String drl = "package org.kie.test\n"
-                + "global java.util.List list\n"
-                + "import " + FactA.class.getCanonicalName() + "\n"
-                + "import " + FactB.class.getCanonicalName() + "\n"
-                + "import " + Pet.class.getCanonicalName() + "\n"
-                + "rule r1 timer (expr: f1.field2, f1.field2; repeat-limit=3)\n"
-                + "when\n"
-                + "    foo: FactB()\n"
-                + "    ( Pet()  and f1 : FactA( field1 == 'f1') ) or \n"
-                + "    f1 : FactA(field1 == 'f2') \n"
-                + "then\n"
-                + "    list.add( f1 );\n"
-                + "    foo.setF1( 'xxx' );\n"
-                + "end\n" + "\n";
+        final String drl = "package org.kie.test\n" + "global java.util.List list\n" + "import " +
+                           FactA.class.getCanonicalName() + "\n" + "import " + FactB.class.getCanonicalName() + "\n" +
+                           "import " + Pet.class.getCanonicalName() + "\n" +
+                           "rule r1 timer (expr: f1.field2, f1.field2; repeat-limit=3)\n" + "when\n" +
+                           "    foo: FactB()\n" + "    ( Pet()  and f1 : FactA( field1 == 'f1') ) or \n" +
+                           "    f1 : FactA(field1 == 'f2') \n" + "then\n" + "    list.add( f1 );\n" +
+                           "    foo.setF1( 'xxx' );\n" + "end\n" + "\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler timeService = ksession.getSessionClock();
             timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
@@ -1377,18 +1186,14 @@ public class TimerAndCalendarTest {
 
     @Test(timeout = 10000)
     public void testExprTimeRescheduled() {
-        final String drl = "package org.kie.test\n"
-                + "global java.util.List list\n"
-                + "import " + FactA.class.getCanonicalName() + "\n"
-                + "rule r1 timer (expr: f1.field2, f1.field4)\n"
-                + "when\n"
-                + "    f1 : FactA() \n"
-                + "then\n"
-                + "    list.add( f1 );\n"
-                + "end\n" + "\n";
+        final String drl = "package org.kie.test\n" + "global java.util.List list\n" + "import " +
+                           FactA.class.getCanonicalName() + "\n" + "rule r1 timer (expr: f1.field2, f1.field4)\n" +
+                           "when\n" + "    f1 : FactA() \n" + "then\n" + "    list.add( f1 );\n" + "end\n" + "\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final PseudoClockScheduler timeService = ksession.getSessionClock();
             timeService.advanceTime(new Date().getTime(), TimeUnit.MILLISECONDS);
@@ -1453,164 +1258,45 @@ public class TimerAndCalendarTest {
         }
     }
 
-    @Test(timeout = 10000)
-    @Ignore
-    public void testHaltAfterSomeTimeThenRestart() throws Exception {
-        final String drl = "package org.kie.test;" +
-                "global java.util.List list; \n" +
-                "\n" +
-                "\n" +
-                "rule FireAtWill\n" +
-                "timer(int:0 100)\n" +
-                "when  \n" +
-                "then \n" +
-                "  list.add( 0 );\n" +
-                "end\n" +
-                "\n" +
-                "rule ImDone\n" +
-                "when\n" +
-                "  String( this == \"halt\" )\n" +
-                "then\n" +
-                "  drools.halt();\n" +
-                "end\n" +
-                "\n" +
-                "rule Hi \n" +
-                "salience 10 \n" +
-                "when \n" +
-                "  String( this == \"trigger\" ) \n" +
-                "then \n " +
-                "  list.add( 5 ); \n" +
-                "end \n" +
-                "\n" +
-                "rule Lo \n" +
-                "salience -5 \n" +
-                "when \n" +
-                "  String( this == \"trigger\" ) \n" +
-                "then \n " +
-                "  list.add( -5 ); \n" +
-                "end \n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            new Thread(ksession::fireUntilHalt).start();
-            Thread.sleep(250);
-
-            assertEquals(asList(0, 0, 0), list);
-
-            ksession.insert("halt");
-            ksession.insert("trigger");
-            Thread.sleep(300);
-            assertEquals(asList(0, 0, 0), list);
-
-            new Thread(ksession::fireUntilHalt).start();
-            Thread.sleep(200);
-
-            assertEquals(asList(0, 0, 0, 5, 0, -5, 0, 0), list);
-        } finally {
-            ksession.halt();
-            ksession.dispose();
-        }
-    }
-
-    @Test(timeout = 10000)
-    public void testHaltAfterSomeTimeThenRestartButNoLongerHolding() throws Exception {
-        final String drl = "package org.kie.test;" +
-                "global java.util.List list; \n" +
-                "\n" +
-                "\n" +
-                "rule FireAtWill\n" +
-                "   timer(int:0 200)\n" +
-                "when  \n" +
-                "  eval(true)" +
-                "  String( this == \"trigger\" )" +
-                "then \n" +
-                "  list.add( 0 );\n" +
-                "end\n" +
-                "\n" +
-                "rule ImDone\n" +
-                "when\n" +
-                "  String( this == \"halt\" )\n" +
-                "then\n" +
-                "  drools.halt();\n" +
-                "end\n" +
-                "\n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession();
-
-        final List list = new ArrayList();
-        ksession.setGlobal("list", list);
-
-        final FactHandle handle = ksession.insert("trigger");
-
-        new Thread(ksession::fireUntilHalt).start();
-        try {
-            Thread.sleep(350);
-            assertEquals(2, list.size()); // delay 0, repeat after 100
-            assertEquals(asList(0, 0), list);
-
-            ksession.insert("halt");
-
-            Thread.sleep(200);
-            ksession.delete(handle);
-            assertEquals(2, list.size()); // halted, no more rule firing
-
-            new Thread(ksession::fireUntilHalt).start();
-            try {
-                Thread.sleep(200);
-
-                assertEquals(2, list.size());
-                assertEquals(asList(0, 0), list);
-            } finally {
-                ksession.halt();
-            }
-        } finally {
-            ksession.halt();
-            ksession.dispose();
-        }
-    }
-
     @Test
     public void testExpiredPropagations() {
         // DROOLS-244
         final String drl = "package org.drools.test;\n" +
-                "\n" +
-                "import " + StockTick.class.getCanonicalName() + ";\n" +
-                "global java.util.List list;\n" +
-                "\n" +
-                "declare StockTick\n" +
-                "    @role( event )\n" +
-                "    @timestamp( time )\n" +
-                "end\n" +
-                "\n" +
-                "declare window ATicks\n" +
-                " StockTick( company == \"AAA\" ) over window:time( 1s ) " +
-                " from entry-point \"AAA\"\n" +
-                "end\n" +
-                "\n" +
-                "declare window BTicks\n" +
-                " StockTick( company == \"BBB\" ) over window:time( 1s ) " +
-                " from entry-point \"BBB\"\n" +
-                "end\n" +
-                "\n" +
-                "rule Ticks \n" +
-                " when\n" +
-                " String()\n" +
-                " accumulate( $x : StockTick() from window ATicks, $a : count( $x ) )\n" +
-                " accumulate( $y : StockTick() from window BTicks, $b : count( $y ) )\n" +
-                " accumulate( $z : StockTick() over window:time( 1s ), $c : count( $z ) )\n" +
-                " then\n" +
-                " list.add( $a );\n" +
-                " list.add( $b );\n" +
-                " list.add( $c );\n" +
-                "end";
+                           "\n" +
+                           "import " + StockTick.class.getCanonicalName() + ";\n" +
+                           "global java.util.List list;\n" +
+                           "\n" +
+                           "declare StockTick\n" +
+                           "    @role( event )\n" +
+                           "    @timestamp( time )\n" +
+                           "end\n" +
+                           "\n" +
+                           "declare window ATicks\n" +
+                           " StockTick( company == \"AAA\" ) over window:time( 1s ) " +
+                           " from entry-point \"AAA\"\n" +
+                           "end\n" +
+                           "\n" +
+                           "declare window BTicks\n" +
+                           " StockTick( company == \"BBB\" ) over window:time( 1s ) " +
+                           " from entry-point \"BBB\"\n" +
+                           "end\n" +
+                           "\n" +
+                           "rule Ticks \n" +
+                           " when\n" +
+                           " String()\n" +
+                           " accumulate( $x : StockTick() from window ATicks, $a : count( $x ) )\n" +
+                           " accumulate( $y : StockTick() from window BTicks, $b : count( $y ) )\n" +
+                           " accumulate( $z : StockTick() over window:time( 1s ), $c : count( $z ) )\n" +
+                           " then\n" +
+                           " list.add( $a );\n" +
+                           " list.add( $b );\n" +
+                           " list.add( $c );\n" +
+                           "end";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSession ksession = kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSession ksession =
+                kbase.newKieSession(KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration(), null);
         try {
             final ArrayList list = new ArrayList();
             ksession.setGlobal("list", list);
@@ -1660,15 +1346,16 @@ public class TimerAndCalendarTest {
     public void testCronFire() {
         // BZ-1059372
         final String drl = "package test.drools\n" +
-                "rule TestRule " +
-                "  timer (cron:* * * * * ?) " +
-                "when\n" +
-                "    String() " +
-                "    Integer() " +
-                "then\n" +
-                "end\n";
+                           "rule TestRule " +
+                           "  timer (cron:* * * * * ?) " +
+                           "when\n" +
+                           "    String() " +
+                           "    Integer() " +
+                           "then\n" +
+                           "end\n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
         final KieSession ksession = kbase.newKieSession();
         try {
             final int repetitions = 10000;
@@ -1688,23 +1375,26 @@ public class TimerAndCalendarTest {
     public void testRaceConditionWithTimedRuleExectionOption() throws Exception {
         // BZ-1073880
         final String drl = "package org.simple \n" +
-                "global java.util.List list \n" +
-                "rule xxx @Propagation(EAGER)\n" +
-                "  timer (int:30s 10s) "
-                + "when \n" +
-                "  $s: String()\n" +
-                "then \n" +
-                "  list.add($s); \n" +
-                "end  \n";
+                           "global java.util.List list \n" +
+                           "rule xxx @Propagation(EAGER)\n" +
+                           "  timer (int:30s 10s) " + "when \n" +
+                           "  $s: String()\n" +
+                           "then \n" +
+                           "  list.add($s); \n" +
+                           "end  \n";
 
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
+        final KieBase kbase =
+                KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
+        final KieSessionConfiguration kieSessionConfiguration =
+                KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
         kieSessionConfiguration.setOption(TimedRuleExecutionOption.YES);
         final KieSession ksession = kbase.newKieSession(kieSessionConfiguration, null);
         try {
             final CyclicBarrier barrier = new CyclicBarrier(2);
             final AtomicBoolean aBool = new AtomicBoolean(true);
             final AgendaEventListener agendaEventListener = new DefaultAgendaEventListener() {
+
+                @Override
                 public void afterMatchFired(final org.kie.api.event.rule.AfterMatchFiredEvent event) {
                     try {
                         if (aBool.get()) {
@@ -1791,81 +1481,4 @@ public class TimerAndCalendarTest {
         }
     }
 
-    @Test
-    public void testSharedTimers() {
-        // DROOLS-451
-        final String drl = "package org.simple \n" +
-                "global java.util.List list \n" +
-                "rule R1\n" +
-                "  timer (int:30s 10s) " +
-                "when \n" +
-                "  $i: Integer()\n" +
-                "then \n" +
-                "  list.add(\"1\"); \n" +
-                "end  \n" +
-                "rule R2\n" +
-                "  timer (int:30s 10s) " +
-                "when \n" +
-                "  $i: Integer()\n" +
-                "then \n" +
-                "  list.add(\"2\"); \n" +
-                "end  \n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_PSEUDO.getKieSessionConfiguration();
-        kieSessionConfiguration.setOption(TimedRuleExecutionOption.YES);
-        final KieSession ksession = kbase.newKieSession(kieSessionConfiguration, null);
-        try {
-            final List<String> list = new ArrayList<>();
-            ksession.setGlobal("list", list);
-
-            final SessionClock clock = ksession.getSessionClock();
-            final SessionPseudoClock pseudoClock = (SessionPseudoClock) clock;
-
-            ksession.insert(1);
-            ksession.fireAllRules();
-            pseudoClock.advanceTime(35, TimeUnit.SECONDS);
-            ksession.fireAllRules();
-            assertEquals(2, list.size());
-            assertTrue(list.containsAll(asList("1", "2")));
-        } finally {
-            ksession.dispose();
-        }
-    }
-
-    @Test
-    public void testIntervalRuleInsertion() throws Exception {
-        // DROOLS-620
-        // Does not fail when using pseudo clock due to the subsequent call to fireAllRules
-        final String drl =
-                "package org.simple\n" +
-                        "global java.util.List list\n" +
-                        "import " + Alarm.class.getCanonicalName() + "\n" +
-                        "rule \"Interval Alarm\"\n" +
-                        "timer(int: 1s 1s)\n" +
-                        "when " +
-                        "    not Alarm()\n" +
-                        "then\n" +
-                        "    insert(new Alarm());\n" +
-                        "    list.add(\"fired\"); \n" +
-                        "end\n";
-
-        final KieBase kbase = KieBaseUtil.getKieBaseFromKieModuleFromDrl("timer-and-calendar-test", kieBaseTestConfiguration, drl);
-        final KieSessionConfiguration kieSessionConfiguration = KieSessionTestConfiguration.STATEFUL_REALTIME.getKieSessionConfiguration();
-        kieSessionConfiguration.setOption(TimedRuleExecutionOption.YES);
-        final KieSession ksession = kbase.newKieSession(kieSessionConfiguration, null);
-        try {
-            final List list = new ArrayList();
-            ksession.setGlobal("list", list);
-
-            ksession.fireAllRules();
-            assertEquals(0, list.size());
-            Thread.sleep(900);
-            assertEquals(0, list.size());
-            Thread.sleep(500);
-            assertEquals(1, list.size());
-        } finally {
-            ksession.dispose();
-        }
-    }
 }
