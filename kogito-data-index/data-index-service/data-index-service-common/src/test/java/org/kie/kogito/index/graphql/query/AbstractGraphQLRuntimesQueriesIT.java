@@ -15,6 +15,9 @@
  */
 package org.kie.kogito.index.graphql.query;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Inject;
@@ -25,18 +28,23 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.kie.kogito.index.api.KogitoRuntimeClient;
 import org.kie.kogito.index.event.KogitoJobCloudEvent;
 import org.kie.kogito.index.event.KogitoProcessCloudEvent;
+import org.kie.kogito.index.event.KogitoUserTaskCloudEvent;
 import org.kie.kogito.index.graphql.GraphQLSchemaManager;
+import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.AbstractIndexingIT;
 import org.kie.kogito.persistence.protobuf.ProtobufService;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import io.restassured.http.ContentType;
 
 import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.kie.kogito.index.TestUtils.getJob;
 import static org.kie.kogito.index.TestUtils.getJobCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessCloudEvent;
 import static org.kie.kogito.index.TestUtils.getProcessInstance;
+import static org.kie.kogito.index.TestUtils.getUserTaskCloudEvent;
 import static org.kie.kogito.index.model.ProcessInstanceState.ACTIVE;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
@@ -211,6 +219,97 @@ public abstract class AbstractGraphQLRuntimesQueriesIT extends AbstractIndexingI
         verify(dataIndexApiClient).rescheduleJob(eq("http://localhost:8080/jobs"),
                 eq(getJob(jobId, processId, processInstanceId, null, null, "SCHEDULED")),
                 eq(data));
+    }
+
+    @Test
+    void testGetTaskSchema() {
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+        String taskId = UUID.randomUUID().toString();
+        String user = "jdoe";
+        List<String> groups = Arrays.asList("managers", "users", "IT");
+
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+                null, "InProgress", user);
+
+        indexUserTaskCloudEvent(event);
+        checkOkResponse("{ \"query\" : \"{UserTaskInstances (where: {id: {equal:\\\"" + taskId + "\\\" }}){ " +
+                "schema ( user: \\\"" + user + "\\\", groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"] )" +
+                "}}\"}");
+        ArgumentCaptor<UserTaskInstance> userTaskInstanceCaptor = ArgumentCaptor.forClass(UserTaskInstance.class);
+
+        verify(dataIndexApiClient).getUserTaskSchema(eq("http://localhost:8080"),
+                userTaskInstanceCaptor.capture(),
+                eq(user), eq(groups));
+        assertUserTaskInstance(userTaskInstanceCaptor.getValue(), taskId, processId, processInstanceId, user);
+    }
+
+    @Test
+    void testUpdateTask() {
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+        String taskId = UUID.randomUUID().toString();
+        String user = "jdoe";
+        List<String> groups = Arrays.asList("managers", "users", "IT");
+        String taskInfo = "{ description: \\\"NewDescription\\\"}";
+
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+                null, "InProgress", user);
+
+        indexUserTaskCloudEvent(event);
+        checkOkResponse("{ \"query\" : \"mutation { TaskUpdate ( " +
+                "id: \\\"" + processInstanceId + "\\\", " +
+                "taskId: \\\"" + taskId + "\\\"" +
+                "user: \\\"" + user + "\\\", " +
+                "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"]," +
+                "taskInfo:  " + taskInfo + "" +
+                ")}\"}");
+        ArgumentCaptor<UserTaskInstance> userTaskInstanceCaptor = ArgumentCaptor.forClass(UserTaskInstance.class);
+        ArgumentCaptor<Map> taskInfoCaptor = ArgumentCaptor.forClass(Map.class);
+
+        verify(dataIndexApiClient).updateUserTask(eq("http://localhost:8080"),
+                userTaskInstanceCaptor.capture(),
+                eq(user), eq(groups), taskInfoCaptor.capture());
+        assertThat(taskInfoCaptor.getValue().get("description")).isEqualTo("NewDescription");
+        assertUserTaskInstance(userTaskInstanceCaptor.getValue(), taskId, processId, processInstanceId, user);
+    }
+
+    @Test
+    void testPartialUpdateTask() {
+        String processId = "travels";
+        String processInstanceId = UUID.randomUUID().toString();
+        String taskId = UUID.randomUUID().toString();
+        String user = "jdoe";
+        List<String> groups = Arrays.asList("managers", "users", "IT");
+        String taskInfo = "{ description: \\\"NewDescription\\\"}";
+
+        KogitoUserTaskCloudEvent event = getUserTaskCloudEvent(taskId, processId, processInstanceId, null,
+                null, "InProgress", user);
+
+        indexUserTaskCloudEvent(event);
+        checkOkResponse("{ \"query\" : \"mutation { TaskPartialUpdate ( " +
+                "id: \\\"" + processInstanceId + "\\\", " +
+                "taskId: \\\"" + taskId + "\\\"" +
+                "user: \\\"" + user + "\\\", " +
+                "groups: [\\\"managers\\\", \\\"users\\\", \\\"IT\\\"]," +
+                "taskInfo:  " + taskInfo +
+                ")}\"}");
+        ArgumentCaptor<UserTaskInstance> userTaskInstanceCaptor = ArgumentCaptor.forClass(UserTaskInstance.class);
+        ArgumentCaptor<Map> taskInfoCaptor = ArgumentCaptor.forClass(Map.class);
+
+        verify(dataIndexApiClient).partialUpdateUserTask(eq("http://localhost:8080"),
+                userTaskInstanceCaptor.capture(),
+                eq(user), eq(groups), taskInfoCaptor.capture());
+        assertThat(taskInfoCaptor.getValue().get("description")).isEqualTo("NewDescription");
+        assertUserTaskInstance(userTaskInstanceCaptor.getValue(), taskId, processId, processInstanceId, user);
+    }
+
+    private void assertUserTaskInstance(UserTaskInstance userTaskInstance, String taskId, String processId,
+            String processInstanceId, String actualOwner) {
+        assertThat(userTaskInstance.getId()).isEqualTo(taskId);
+        assertThat(userTaskInstance.getProcessId()).isEqualTo(processId);
+        assertThat(userTaskInstance.getProcessInstanceId()).isEqualTo(processInstanceId);
+        assertThat(userTaskInstance.getActualOwner()).isEqualTo(actualOwner);
     }
 
     private void checkOkResponse(String body) {

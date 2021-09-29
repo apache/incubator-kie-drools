@@ -22,6 +22,8 @@ type Mutation {
     NodeInstanceCancel(id:String, nodeInstanceId:String): String
     JobCancel(id: String): String
     JobReschedule(id: String, data: String): String
+    TaskUpdate(id: String, taskId: String, user:String, groups:[String], taskInfo: UserTaskInfoArgument): String
+    TaskPartialUpdate(id: String, taskId: String, user:String, groups:[String], taskInfo: UserTaskInfoArgument): String
 }
 
 type ProcessInstance {
@@ -292,6 +294,7 @@ type UserTaskInstance {
     referenceName: String
     lastUpdate: DateTime!
     endpoint: String
+    schema(user: String, groups:[String]): String
 }
 
 type UserTaskInstanceMeta {
@@ -352,6 +355,17 @@ input UserTaskInstanceMetaArgument {
     completed: DateArgument
     started: DateArgument
     referenceName: StringArgument
+}
+input UserTaskInfoArgument {
+    description: String
+    priority: String
+    actualOwner: String
+    adminGroups: [String!]
+    adminUsers: [String!]
+    excludedUsers: [String!]
+    potentialGroups: [String!]
+    potentialUsers: [String!]
+    inputParams: String
 }
 
 input UserTaskInstanceOrderBy {

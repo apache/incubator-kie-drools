@@ -28,6 +28,7 @@ import javax.inject.Inject;
 import org.kie.kogito.index.model.Job;
 import org.kie.kogito.index.model.Node;
 import org.kie.kogito.index.model.ProcessInstance;
+import org.kie.kogito.index.model.UserTaskInstance;
 import org.kie.kogito.index.service.DataIndexServiceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,6 +59,10 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
 
     public static final String CANCEL_JOB_PATH = "/%s";
     public static final String RESCHEDULE_JOB_PATH = "/%s";
+
+    public static final String GET_TASK_SCHEMA_PATH = "/%s/%s/%s/%s/schema";
+    public static final String UPDATE_TASK_PATH = "/management/processes/%s/instances/%s/tasks/%s";
+    public static final String PARTIAL_UPDATE_TASK_PATH = "/management/processes/%s/instances/%s/tasks/%s";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(KogitoRuntimeClientImpl.class);
     private Vertx vertx;
@@ -161,6 +166,45 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
 
     }
 
+    @Override
+    public CompletableFuture<String> getUserTaskSchema(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups) {
+        String requestURI = format(GET_TASK_SCHEMA_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(),
+                userTaskInstance.getName(), userTaskInstance.getId()) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendGetClientRequest(getWebClient(serviceURL), requestURI,
+                "Get User Task schema for task:" + userTaskInstance.getName() + " with id: " + userTaskInstance.getId(),
+                null);
+    }
+
+    @Override
+    public CompletableFuture<String> updateUserTask(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, Map taskInfo) {
+        String requestURI = format(UPDATE_TASK_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(),
+                userTaskInstance.getId()) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendPutClientRequest(getWebClient(serviceURL),
+                requestURI,
+                "Update UserTask: " + userTaskInstance.getName() + " with id: " + userTaskInstance.getId(),
+                new JsonObject(taskInfo));
+    }
+
+    @Override
+    public CompletableFuture<String> partialUpdateUserTask(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, Map taskInfo) {
+        String requestURI = format(PARTIAL_UPDATE_TASK_PATH, userTaskInstance.getProcessId(), userTaskInstance.getProcessInstanceId(),
+                userTaskInstance.getId()) + "?" + getUserGroupsURIParameter(user, groups);
+        return sendPatchClientRequest(getWebClient(serviceURL), requestURI,
+                "Partial update UserTask:" + userTaskInstance.getName() + " with id: " + userTaskInstance.getId(),
+                new JsonObject(taskInfo));
+    }
+
+    private String getUserGroupsURIParameter(String user, List<String> groups) {
+        final StringBuilder builder = new StringBuilder();
+        if (user != null && groups != null) {
+            builder.append("user=" + user);
+            groups.stream().forEach(group -> builder.append("&group=" + group));
+        }
+        return builder.toString();
+    }
+
     protected CompletableFuture sendDeleteClientRequest(WebClient webClient, String requestURI, String logMessage) {
         CompletableFuture future = new CompletableFuture<>();
         webClient.delete(requestURI)
@@ -189,11 +233,29 @@ public class KogitoRuntimeClientImpl implements KogitoRuntimeClient {
         return future;
     }
 
-    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, String jsonBody) {
+    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, String jsonObject) {
+        return sendPutClientRequest(webClient, requestURI, logMessage, new JsonObject(jsonObject));
+    }
+
+    protected CompletableFuture sendPutClientRequest(WebClient webClient, String requestURI, String logMessage, JsonObject jsonObject) {
         CompletableFuture future = new CompletableFuture<>();
         webClient.put(requestURI)
                 .putHeader("Authorization", getAuthHeader())
-                .sendJson(new JsonObject(jsonBody), res -> {
+                .sendJson(jsonObject, res -> {
+                    if (res.succeeded() && (res.result().statusCode() == 200)) {
+                        future.complete(res.result().bodyAsString());
+                    } else {
+                        future.completeExceptionally(new DataIndexServiceException(getErrorMessage(logMessage, res.result())));
+                    }
+                });
+        return future;
+    }
+
+    protected CompletableFuture sendPatchClientRequest(WebClient webClient, String requestURI, String logMessage, JsonObject jsonBody) {
+        CompletableFuture future = new CompletableFuture<>();
+        webClient.patch(requestURI)
+                .putHeader("Authorization", getAuthHeader())
+                .sendJson(jsonBody, res -> {
                     if (res.succeeded() && (res.result().statusCode() == 200)) {
                         future.complete(res.result().bodyAsString());
                     } else {

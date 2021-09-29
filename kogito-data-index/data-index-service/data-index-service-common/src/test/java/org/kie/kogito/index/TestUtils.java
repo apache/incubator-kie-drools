@@ -224,7 +224,7 @@ public final class TestUtils {
         return job;
     }
 
-    private static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state,
+    public static UserTaskInstance getUserTaskInstance(String taskId, String processId, String processInstanceId, String rootProcessInstanceId, String rootProcessId, String state,
             String actualOwner) {
         UserTaskInstance task = new UserTaskInstance();
         task.setId(taskId);
