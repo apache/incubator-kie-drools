@@ -48,9 +48,6 @@
   </scm>
 
   <modules>
-    <module>drools-bom</module>
-    <module>kie-dmn-bom</module>
-    <module>kie-pmml-bom</module>
     <module>kie-memory-compiler</module>
     <module>drools-core-reflective</module>
     <module>drools-core-dynamic</module>
