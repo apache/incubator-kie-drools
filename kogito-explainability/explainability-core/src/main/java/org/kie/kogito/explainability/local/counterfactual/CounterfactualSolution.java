@@ -45,6 +45,7 @@ public class CounterfactualSolution {
     }
 
     private List<Output> goal;
+    private double goalThreshold;
 
     private PredictionProvider model;
 
@@ -63,12 +64,14 @@ public class CounterfactualSolution {
             PredictionProvider model,
             List<Output> goal,
             UUID solutionId,
-            UUID executionId) {
+            UUID executionId,
+            double goalThreshold) {
         this.entities = entities;
         this.model = model;
         this.goal = goal;
         this.solutionId = solutionId;
         this.executionId = executionId;
+        this.goalThreshold = goalThreshold;
     }
 
     @PlanningScore(bendableHardLevelsSize = 3, bendableSoftLevelsSize = 2)
@@ -114,5 +117,9 @@ public class CounterfactualSolution {
 
     public void setPredictionOutputs(List<PredictionOutput> predictionOutputs) {
         this.predictionOutputs = predictionOutputs;
+    }
+
+    public double getGoalThreshold() {
+        return goalThreshold;
     }
 }

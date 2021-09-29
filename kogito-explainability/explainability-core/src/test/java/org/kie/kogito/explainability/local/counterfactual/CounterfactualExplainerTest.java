@@ -83,13 +83,14 @@ import static org.mockito.Mockito.when;
 
 class CounterfactualExplainerTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(CounterfactualExplainerTest.class);
+    private static final Logger logger =
+            LoggerFactory.getLogger(CounterfactualExplainerTest.class);
+    final long predictionTimeOut = 10L;
+    final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
+    final Long steps = 30_000L;
+    final double DEFAULT_GOAL_THRESHOLD = 0.01;
 
     private static final Long MAX_RUNNING_TIME_SECONDS = 60L;
-
-    private final long predictionTimeOut = 10L;
-    private final TimeUnit predictionTimeUnit = TimeUnit.MINUTES;
-    private final Long steps = 30_000L;
 
     private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory;
     private SolverManager<CounterfactualSolution, UUID> solverManager;
@@ -105,14 +106,15 @@ class CounterfactualExplainerTest {
             List<Boolean> constraints,
             DataDomain dataDomain,
             List<Feature> features,
-            PredictionProvider model) throws InterruptedException, ExecutionException, TimeoutException {
+            PredictionProvider model,
+            double goalThresold) throws InterruptedException, ExecutionException, TimeoutException {
         final TerminationConfig terminationConfig = new TerminationConfig().withScoreCalculationCountLimit(steps);
         final SolverConfig solverConfig = SolverConfigBuilder
                 .builder().withTerminationConfig(terminationConfig).build();
         solverConfig.setRandomSeed(randomSeed);
         solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
         final CounterfactualConfig counterfactualConfig = new CounterfactualConfig();
-        counterfactualConfig.withSolverConfig(solverConfig);
+        counterfactualConfig.withSolverConfig(solverConfig).withGoalThreshold(goalThresold);
         final CounterfactualExplainer explainer = new CounterfactualExplainer(counterfactualConfig);
         final PredictionInput input = new PredictionInput(features);
         PredictionOutput output = new PredictionOutput(goal);
@@ -210,7 +212,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         double totalSum = 0;
         for (CounterfactualEntity entity : result.getEntities()) {
@@ -259,7 +262,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
         double totalSum = 0;
@@ -319,7 +323,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -364,7 +369,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -379,9 +385,19 @@ class CounterfactualExplainerTest {
         assertTrue(result.isValid());
     }
 
+    /**
+     * Search for a counterfactual using categorical features with the Symbolic arithmetic model.
+     * The outcome match is strict (goal threshold of zero).
+     * The CF should be invalid with this number of iterations.
+     *
+     * @param seed
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TimeoutException
+     */
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
-    void testCounterfactualCategorical(int seed) throws ExecutionException, InterruptedException, TimeoutException {
+    void testCounterfactualCategoricalStrictFail(int seed) throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
         random.setSeed(seed);
         final List<Output> goal = List.of(new Output("result", Type.NUMBER, new Value(25.0), 0.0d));
@@ -404,7 +420,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSymbolicArithmeticModel());
+                        TestUtils.getSymbolicArithmeticModel(),
+                        0.0);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -442,6 +459,86 @@ class CounterfactualExplainerTest {
             }
         }
         final double epsilon = 0.1;
+        assertFalse(result.isValid());
+        assertTrue(opResult <= 25.0 + epsilon);
+        assertTrue(opResult >= 25.0 - epsilon);
+    }
+
+    /**
+     * Search for a counterfactual using categorical features with the Symbolic arithmetic model.
+     * The outcome match is not strict (goal threshold of 0.01).
+     * The CF should be valid with this number of iterations.
+     *
+     * @param seed
+     * @throws ExecutionException
+     * @throws InterruptedException
+     * @throws TimeoutException
+     */
+    @ParameterizedTest
+    @ValueSource(ints = { 0, 1, 2 })
+    void testCounterfactualCategoricalNotStrict(int seed) throws ExecutionException, InterruptedException, TimeoutException {
+        Random random = new Random();
+        random.setSeed(seed);
+        final List<Output> goal = List.of(new Output("result", Type.NUMBER, new Value(25.0), 0.0d));
+
+        List<Feature> features = new LinkedList<>();
+        List<FeatureDomain> featureBoundaries = new LinkedList<>();
+        List<Boolean> constraints = new LinkedList<>();
+        features.add(FeatureFactory.newNumericalFeature("x-1", 5.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 100.0));
+        constraints.add(false);
+        features.add(FeatureFactory.newNumericalFeature("x-2", 40.0));
+        featureBoundaries.add(NumericalFeatureDomain.create(0.0, 100.0));
+        constraints.add(false);
+        features.add(FeatureFactory.newCategoricalFeature("operand", "*"));
+        featureBoundaries.add(CategoricalFeatureDomain.create("+", "-", "/", "*"));
+        constraints.add(false);
+        final DataDomain dataDomain = new DataDomain(featureBoundaries);
+
+        final CounterfactualResult result =
+                runCounterfactualSearch((long) seed, goal,
+                        constraints,
+                        dataDomain, features,
+                        TestUtils.getSymbolicArithmeticModel(),
+                        0.01);
+
+        final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
+
+        Stream<Feature> counterfactualFeatures = counterfactualEntities
+                .stream()
+                .map(CounterfactualEntity::asFeature);
+        String operand = counterfactualFeatures
+                .filter(feature -> feature.getName().equals("operand"))
+                .findFirst()
+                .get()
+                .getValue()
+                .asString();
+
+        List<Feature> numericalFeatures = counterfactualEntities
+                .stream()
+                .map(CounterfactualEntity::asFeature)
+                .filter(feature -> !feature.getName().equals("operand"))
+                .collect(Collectors.toList());
+
+        double opResult = 0.0;
+        for (Feature feature : numericalFeatures) {
+            switch (operand) {
+                case "+":
+                    opResult += feature.getValue().asNumber();
+                    break;
+                case "-":
+                    opResult -= feature.getValue().asNumber();
+                    break;
+                case "*":
+                    opResult *= feature.getValue().asNumber();
+                    break;
+                case "/":
+                    opResult /= feature.getValue().asNumber();
+                    break;
+            }
+        }
+        final double epsilon = 0.5;
+        assertTrue(result.isValid());
         assertTrue(opResult <= 25.0 + epsilon);
         assertTrue(opResult >= 25.0 - epsilon);
     }
@@ -482,7 +579,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        model);
+                        model,
+                        DEFAULT_GOAL_THRESHOLD);
 
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
@@ -542,7 +640,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        model);
+                        model,
+                        DEFAULT_GOAL_THRESHOLD);
         final List<CounterfactualEntity> counterfactualEntities = result.getEntities();
 
         double totalSum = 0;
@@ -601,7 +700,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, perturbedFeatures,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         assertFalse(result.isValid());
     }
@@ -639,7 +739,7 @@ class CounterfactualExplainerTest {
 
         @SuppressWarnings("unchecked")
         final Consumer<CounterfactualResult> assertIntermediateCounterfactualNotNull = mock(Consumer.class);
-        final CounterfactualConfig counterfactualConfig = new CounterfactualConfig().withSolverConfig(solverConfig);
+        final CounterfactualConfig counterfactualConfig = new CounterfactualConfig().withSolverConfig(solverConfig).withGoalThreshold(0.01);
         final CounterfactualExplainer counterfactualExplainer =
                 new CounterfactualExplainer(counterfactualConfig);
 
@@ -897,7 +997,8 @@ class CounterfactualExplainerTest {
                 runCounterfactualSearch((long) seed, goal,
                         constraints,
                         dataDomain, features,
-                        TestUtils.getSumThresholdModel(center, epsilon));
+                        TestUtils.getSumThresholdModel(center, epsilon),
+                        DEFAULT_GOAL_THRESHOLD);
 
         assertTrue(!result.getEntities().get(0).isChanged() || !result.getEntities().get(1).isChanged());
         assertTrue(result.isValid());

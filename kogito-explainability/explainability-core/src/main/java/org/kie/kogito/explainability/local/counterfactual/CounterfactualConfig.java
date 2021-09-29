@@ -29,8 +29,11 @@ import org.optaplanner.core.config.solver.SolverManagerConfig;
  */
 public class CounterfactualConfig {
 
+    private static final double DEFAULT_GOAL_THRESHOLD = 0.01;
+
     private Executor executor = ForkJoinPool.commonPool();
     private SolverConfig solverConfig = SolverConfigBuilder.builder().build();
+    private double goalThreshold = DEFAULT_GOAL_THRESHOLD;
     private Function<SolverConfig, SolverManager<CounterfactualSolution, UUID>> solverManagerFactory =
             solverConfig -> SolverManager.create(solverConfig, new SolverManagerConfig());
 
@@ -53,6 +56,11 @@ public class CounterfactualConfig {
         return this;
     }
 
+    public CounterfactualConfig withGoalThreshold(double threshold) {
+        this.goalThreshold = threshold;
+        return this;
+    }
+
     public SolverConfig getSolverConfig() {
         return solverConfig;
     }
@@ -62,4 +70,7 @@ public class CounterfactualConfig {
         return this;
     }
 
+    public double getGoalThreshold() {
+        return goalThreshold;
+    }
 }
