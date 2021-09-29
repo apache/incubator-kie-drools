@@ -12,9 +12,9 @@
   <RegressionModel modelName="MissingDataRegression" functionName="regression" algorithmName="least squares">
     <MiningSchema>
       <MiningField name="result" usageType="predicted" />
-      <MiningField name="x" missingValueReplacement="5"/>
-      <MiningField name="y" missingValueReplacement="classB"/>
-      <MiningField name="z" missingValueTreatment="returnInvalid"/>
+      <MiningField name="x" usageType="active" missingValueReplacement="5"/>
+      <MiningField name="y" usageType="active" missingValueReplacement="classB"/>
+      <MiningField name="z" usageType="active" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
       <OutputField name="Predicted_result" optype="continuous" dataType="double" feature="predictedValue"/>

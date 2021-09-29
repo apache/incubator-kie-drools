@@ -31,8 +31,6 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(Parameterized.class)
 public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest {
 
@@ -63,7 +61,7 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         this.expectedResult = expectedResult;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -132,36 +130,6 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         inputData.put("temperature", temperature);
         inputData.put("humidity", humidity);
         inputData.put("text_input", TEXT_INPUT);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
-    }
-
-    @Test
-    public void testSampleMineTreeModelWithTransformationsConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("temperature", String.valueOf(temperature));
-        inputData.put("humidity", String.valueOf(humidity));
-        inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", "34.1");
-        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void testSampleMineTreeModelWithTransformationsNotConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("temperature", temperature);
-        inputData.put("humidity", humidity);
-        inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", true);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void testSampleMineTreeModelWithTransformationsInvalidValue() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("temperature", temperature);
-        inputData.put("humidity", humidity);
-        inputData.put("text_input", TEXT_INPUT);
-        inputData.put("input3", 4.1);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

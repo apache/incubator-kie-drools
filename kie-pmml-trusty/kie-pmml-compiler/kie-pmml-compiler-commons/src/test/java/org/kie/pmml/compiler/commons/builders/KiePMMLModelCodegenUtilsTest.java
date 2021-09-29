@@ -17,61 +17,54 @@
 package org.kie.pmml.compiler.commons.builders;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-import com.github.javaparser.ast.CompilationUnit;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.ast.stmt.Statement;
-import org.dmg.pmml.Model;
+import javax.xml.bind.JAXBException;
+
+import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.PMML;
-import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.exceptions.KiePMMLException;
-import org.kie.pmml.compiler.api.dto.CommonCompilationDTO;
-import org.kie.pmml.compiler.api.dto.CompilationDTO;
-import org.kie.pmml.compiler.commons.mocks.HasClassLoaderMock;
-import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
+import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
+import org.xml.sax.SAXException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE;
-import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE_JAVA;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.test.util.filesystem.FileUtils.getFileContent;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
+import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getMissingValueReplacementsMap;
+import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getRequiredFieldsList;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelCodegenUtilsTest {
 
-    private static final String MODEL_FILE = "TreeSample.pmml";
-    private static final String TEST_01_SOURCE = "KiePMMLModelCodegenUtilsTest_01.txt";
-    private static final String PACKAGE_NAME = "packagename";
-    private static PMML pmml;
-    private static Model model;
-    private static ClassOrInterfaceDeclaration modelTemplate;
+    private static final String MODEL_FILE = "MissingDataRegression.pmml";
 
-    @BeforeClass
-    public static void setup() throws Exception {
-        pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
-        model = pmml.getModels().get(0);
-        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit("className", "packageName",
-                                                                                 KIE_PMML_TEST_MODEL_TEMPLATE_JAVA,
-                                                                                 KIE_PMML_TEST_MODEL_TEMPLATE);
-        modelTemplate = cloneCU.getClassByName("className")
-                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + "className"));
+    @Test
+    public void testGetMissingValueReplacementsMap() throws IOException, JAXBException, SAXException {
+        PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
+
+        Map<String, Pair<DATA_TYPE, String>> retrieved = getMissingValueReplacementsMap(getFieldsFromDataDictionary(pmml.getDataDictionary()), pmml.getModels().get(0));
+
+        assertTrue(retrieved.containsKey("x"));
+        assertEquals(DATA_TYPE.DOUBLE, retrieved.get("x").a);
+        assertEquals("5", retrieved.get("x").b);
+
+        assertTrue(retrieved.containsKey("y"));
+        assertEquals(DATA_TYPE.STRING, retrieved.get("y").a);
+        assertEquals("classB", retrieved.get("y").b);
     }
 
     @Test
-    public void init() throws IOException {
-        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
-        final CompilationDTO compilationDTO = CommonCompilationDTO.fromGeneratedPackageNameAndFields(PACKAGE_NAME,
-                                                                                                     pmml,
-                                                                                                     model,
-                                                                                                     new HasClassLoaderMock());
-        KiePMMLModelCodegenUtils.init(compilationDTO, modelTemplate);
-        BlockStmt body = constructorDeclaration.getBody();
-        String text = getFileContent(TEST_01_SOURCE);
-        Statement expected = JavaParserUtils.parseConstructorBlock(text);
-        assertTrue(JavaParserUtils.equalsNode(expected, body));
+    public void testGetRequiredFieldsList() throws IOException, JAXBException, SAXException {
+        PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
+
+        List<String> retrieved = getRequiredFieldsList(pmml.getModels().get(0));
+
+        assertFalse(retrieved.contains("x"));
+        assertFalse(retrieved.contains("y"));
+        assertTrue(retrieved.contains("z"));
     }
+
 }

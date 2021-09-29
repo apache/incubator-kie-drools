@@ -9,10 +9,7 @@
     </DataField>
     <DataField name="number_of_claims" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
-    <DataField name="input3" optype="continuous" dataType="double">
-      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6" />
-      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6" />
-    </DataField>
+    <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">

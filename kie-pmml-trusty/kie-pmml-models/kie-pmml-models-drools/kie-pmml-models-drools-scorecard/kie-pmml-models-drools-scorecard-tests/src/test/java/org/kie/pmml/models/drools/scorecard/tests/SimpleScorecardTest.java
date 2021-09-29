@@ -31,8 +31,6 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
-import static org.junit.Assert.assertNotNull;
-
 @RunWith(Parameterized.class)
 public class SimpleScorecardTest extends AbstractPMMLTest {
 
@@ -57,7 +55,7 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         this.reasonCode2 = reasonCode2;
     }
 
-    @BeforeClass
+  @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -92,33 +90,6 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         final Map<String, Object> inputData = new HashMap<>();
         inputData.put("input1", input1);
         inputData.put("input2", input2);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
-    }
-
-    @Test
-    public void testSimpleScorecardConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", String.valueOf(input1));
-        inputData.put("input2", String.valueOf(input2));
-        inputData.put("input3", "34.1");
-        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void testSimpleScorecardNotConvertible() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", input1);
-        inputData.put("input2", input2);
-        inputData.put("input3", true);
-        evaluate(pmmlRuntime, inputData, MODEL_NAME);
-    }
-
-    @Test(expected = KiePMMLException.class)
-    public void testSimpleScorecardInvalidValue() {
-        final Map<String, Object> inputData = new HashMap<>();
-        inputData.put("input1", input1);
-        inputData.put("input2", input2);
-        inputData.put("input3", 4.1);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }
