@@ -81,20 +81,9 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
         try {
             DecisionTableEvaluator decisionTableEvaluator = new DecisionTableEvaluator( feel, dTableModel, evalCtx, events );
 
-            for (int i = 0; i < decisionTableEvaluator.getInputs().length; i++) {
-                DTableModel.DColumnModel column = dTableModel.getColumns().get(i);
-                FEELEvent error = column.validate( evalCtx, decisionTableEvaluator.getInputs()[i].getValue() );
-                if ( error != null ) {
-                    MsgUtil.reportMessage( logger,
-                                           DMNMessage.Severity.ERROR,
-                                           ((DMNBaseNode)node).getSource(),
-                                           (DMNResultImpl ) dmnResult,
-                                           null,
-                                           error,
-                                           Msg.FEEL_ERROR,
-                                           error.getMessage() );
-                    return new EvaluatorResultImpl( null, EvaluatorResult.ResultType.FAILURE );
-                }
+            EvaluatorResultImpl validationResult = validateColumns((DMNResultImpl) dmnResult, evalCtx, decisionTableEvaluator);
+            if (validationResult != null) {
+                return validationResult;
             }
 
             DMNUnit unit = getDMNUnit()
@@ -119,6 +108,25 @@ public abstract class AbstractModelEvaluator implements DMNExpressionEvaluator {
             DMNRuntimeEventManagerUtils.fireAfterEvaluateDecisionTable( eventManager, node.getName(), dTableModel.getDtName(), dmnResult,
                     (eventResults != null ? eventResults.matchedRules : null), (eventResults != null ? eventResults.fired : null));
         }
+    }
+
+    private EvaluatorResultImpl validateColumns(DMNResultImpl dmnResult, EvaluationContext evalCtx, DecisionTableEvaluator decisionTableEvaluator) {
+        for (int i = 0; i < decisionTableEvaluator.getInputs().length; i++) {
+            DTableModel.DColumnModel column = dTableModel.getColumns().get(i);
+            FEELEvent error = column.validate(evalCtx, decisionTableEvaluator.getInputs()[i].getValue() );
+            if ( error != null ) {
+                MsgUtil.reportMessage( logger,
+                                       DMNMessage.Severity.ERROR,
+                                       ((DMNBaseNode)node).getSource(),
+                                       dmnResult,
+                                       null,
+                                       error,
+                                       Msg.FEEL_ERROR,
+                                       error.getMessage() );
+                return new EvaluatorResultImpl( null, EvaluatorResult.ResultType.FAILURE );
+            }
+        }
+        return null;
     }
 
     private EvaluationContext createEvaluationContext( List<FEELEvent> events, DMNRuntimeEventManager eventManager, DMNResult dmnResult ) {

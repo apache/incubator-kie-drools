@@ -18,7 +18,6 @@ package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.math.BigDecimal;
 import java.util.Map;
-import java.util.Optional;
 
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
@@ -39,68 +38,76 @@ import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.drools.core.reteoo.AlphaNode;
 import org.drools.model.Index;
-import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.feel.lang.CompilerContext;
 import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.feel.lang.types.BuiltInType;
+import org.kie.dmn.model.api.UnaryTests;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseType;
 import static java.lang.String.format;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceIntegerLiteralExprWith;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceStringLiteralExprWith;
 
 public class TableCell {
 
     private final String input;
     private final DMNFEELHelper feel;
-    private final DMNCompilerContext ctx;
+    private final CompilerContext compilerContext;
     private final TableIndex tableIndex;
     private final String columnName;
     private final Type type;
 
-    private final String unaryTestClassName;
-    private final String unaryTestClassNameWithPackage;
+    private String className;
+    private String classNameWithPackage;
 
     private static final String CREATE_ALPHA_NODE_METHOD = "createAlphaNode";
     private static final String CREATE_INDEX_NODE_METHOD = "createIndex";
-    public static final String PACKAGE = "org.kie.dmn.core.alphasupport";
-
-    private Optional<String> output = Optional.empty();
-
-    public void setOutput(String s) {
-        output = Optional.of(s);
-    }
+    public static final String ALPHANETWORK_STATIC_PACKAGE = "org.kie.dmn.core.alphasupport";
 
     public static class TableCellFactory {
 
         final DMNFEELHelper feel;
-        final DMNCompilerContext ctx;
+        final CompilerContext compilerContext;
 
-        public TableCellFactory(DMNFEELHelper feel, DMNCompilerContext ctx) {
+        public TableCellFactory(DMNFEELHelper feel, CompilerContext compilerContext) {
             this.feel = feel;
-            this.ctx = ctx;
+            this.compilerContext = compilerContext;
         }
 
         public TableCell createInputCell(TableIndex tableIndex, String input, String columnName, Type columnType) {
-            return new TableCell(feel, ctx, tableIndex, input, columnName, columnType);
+            return new TableCell(feel, compilerContext, tableIndex, input, columnName, columnType);
+        }
+
+        public TableCell createOutputCell(TableIndex tableIndex, String input, String columnName, Type columnType) {
+            TableCell outputCell = new TableCell(feel, compilerContext, tableIndex, input, columnName, columnType);
+            outputCell.className = tableIndex.appendOutputSuffix("");
+            outputCell.classNameWithPackage = ALPHANETWORK_STATIC_PACKAGE + "." + outputCell.className;
+            return outputCell;
+        }
+
+        public ColumnDefinition createColumnDefinition(int columnIndex, String decisionTableName, String columnName, UnaryTests inputValues, Type type) {
+            return new ColumnDefinition(columnIndex, decisionTableName, columnName, inputValues, type, feel, compilerContext);
         }
     }
 
     private TableCell(DMNFEELHelper feel,
-                      DMNCompilerContext ctx,
+                      CompilerContext compilerContext,
                       TableIndex tableIndex,
                       String input,
                       String columnName,
                       Type columnType) {
         this.feel = feel;
-        this.ctx = ctx;
+        this.compilerContext = compilerContext;
         this.tableIndex = tableIndex;
         this.columnName = columnName;
         this.input = input;
         this.type = columnType;
-        this.unaryTestClassName = tableIndex.appendTableIndexSuffix("UnaryTest");
-        this.unaryTestClassNameWithPackage = PACKAGE + "." + unaryTestClassName;
+        this.className = tableIndex.appendTableIndexSuffix("UnaryTest");
+        this.classNameWithPackage = ALPHANETWORK_STATIC_PACKAGE + "." + className;
     }
 
     private String addIndex(BlockStmt stmt) {
@@ -152,7 +159,7 @@ public class TableCell {
         return input.startsWith("\"") && input.endsWith("\"");
     }
 
-    public void addNodeCreation(BlockStmt stmt, ClassOrInterfaceDeclaration alphaNetworkCreationClass, MethodDeclaration testMethodDefinition) {
+    public String addNodeCreation(BlockStmt stmt, ClassOrInterfaceDeclaration alphaNetworkCreationClass, MethodDeclaration testMethodDefinition) {
         com.github.javaparser.ast.type.Type alphaNodeType = StaticJavaParser.parseType(AlphaNode.class.getCanonicalName());
         String alphaNodeName = tableIndex.appendTableIndexSuffix("alphaNode");
         VariableDeclarationExpr variable = new VariableDeclarationExpr(alphaNodeType, alphaNodeName);
@@ -166,8 +173,9 @@ public class TableCell {
         Expression methodReference = new MethodReferenceExpr(new ThisExpr(), NodeList.nodeList(), testMethodName);
         alphaNetworkCreationClass.addMember(unaryTestMethod);
 
-        unaryTestMethod.findFirst(NameExpr.class, n -> n.toString().equals("UnaryTestRXCX")).ifPresent(n -> n.replace(new NameExpr(unaryTestClassNameWithPackage)));
-        unaryTestMethod.findFirst(IntegerLiteralExpr.class, n -> n.asInt() == 99999).ifPresent(n -> n.replace(new IntegerLiteralExpr(tableIndex.columnIndex())));
+        replaceSimpleNameWith(unaryTestMethod, "UnaryTestRXCX", classNameWithPackage);
+        replaceStringLiteralExprWith(unaryTestMethod, "UnaryTestRXCX", classNameWithPackage);
+        replaceIntegerLiteralExprWith(unaryTestMethod, 99999, tableIndex.columnIndex());
 
         Expression alphaNodeCreation;
         if (tableIndex.isFirstColumn()) {
@@ -189,40 +197,70 @@ public class TableCell {
         final Expression expr = new AssignExpr(variable, alphaNodeCreation, AssignExpr.Operator.ASSIGN);
         stmt.addStatement(expr);
 
-        output.ifPresent(o -> {
-            Expression resultSinkMethodCallExpr = new MethodCallExpr(alphaNodeCreationName(),
-                                                                     "addResultSink",
-                                                                     NodeList.nodeList(
-                                                                             new NameExpr(alphaNodeName),
-                                                                             new NameExpr(o))); // why is this already quoted?
-            stmt.addStatement(resultSinkMethodCallExpr);
-        });
+        return alphaNodeName;
     }
 
     private NameExpr alphaNodeCreationName() {
         return new NameExpr("alphaNetworkCreation");
     }
 
-    public void addUnaryTestClass(Map<String, String> allClasses) {
-        ClassOrInterfaceDeclaration sourceCode = feel.generateUnaryTestsSource(
+    public void compileUnaryTestAndAddTo(Map<String, String> allClasses) {
+        UnaryTestClass unaryTestClass = new UnaryTestClass(input, feel, compilerContext, type);
+        unaryTestClass.compileUnaryTestAndAddTo(allClasses, className, classNameWithPackage, ALPHANETWORK_STATIC_PACKAGE);
+    }
+
+    public void compiledFeelExpressionAndAddTo(Map<String, String> allGeneratedClasses) {
+        CompilationUnit sourceCode = feel.generateFeelExpressionCompilationUnit(
                 input,
-                ctx,
-                type,
-                false);
+                compilerContext);
 
-        replaceSimpleNameWith(sourceCode, "TemplateCompiledFEELUnaryTests", unaryTestClassName);
+        replaceSimpleNameWith(sourceCode, "TemplateCompiledFEELExpression", className);
 
-        sourceCode.setName(unaryTestClassName);
+        sourceCode.findFirst(ClassOrInterfaceDeclaration.class).ifPresent(c -> c.setName(className));
 
-        CompilationUnit cu = new CompilationUnit(PACKAGE);
-        ClassOrInterfaceDeclaration classOrInterfaceDeclaration = cu.addClass(unaryTestClassName);
-        classOrInterfaceDeclaration.replace(sourceCode);
+        sourceCode.setPackageDeclaration(ALPHANETWORK_STATIC_PACKAGE);
+        allGeneratedClasses.put(classNameWithPackage, sourceCode.toString());
+    }
 
-        allClasses.put(unaryTestClassNameWithPackage, cu.toString());
+    public void addOutputNode(ClassOrInterfaceDeclaration alphaNetworkCreationClass,
+                              MethodDeclaration outputMethodDefinitionTemplate,
+                              BlockStmt creationStatements, String lastAlphaNodeName) {
+
+        String testMethodName = tableIndex.appendOutputSuffix("output");
+        MethodReferenceExpr methodReference = createFeelOutputExpression(alphaNetworkCreationClass,
+                                                                         outputMethodDefinitionTemplate,
+                                                                         testMethodName);
+
+        Expression resultSinkMethodCallExpr = new MethodCallExpr(alphaNodeCreationName(),
+                                                                 "addResultSink",
+                                                                 NodeList.nodeList(
+                                                                         new NameExpr(lastAlphaNodeName),
+                                                                         new IntegerLiteralExpr(tableIndex.rowIndex()),
+                                                                         new StringLiteralExpr(this.columnName),
+                                                                         methodReference)
+        );
+        creationStatements.addStatement(resultSinkMethodCallExpr);
+    }
+
+    public MethodReferenceExpr createFeelOutputExpression(ClassOrInterfaceDeclaration alphaNetworkCreationClass,
+                                                          MethodDeclaration outputMethodDefinitionTemplate,
+                                                          String outputMethodName) {
+        MethodDeclaration unaryTestMethod = outputMethodDefinitionTemplate.clone();
+        unaryTestMethod.setName(outputMethodName);
+        MethodReferenceExpr methodReference = new MethodReferenceExpr(new ThisExpr(), NodeList.nodeList(), outputMethodName);
+        alphaNetworkCreationClass.addMember(unaryTestMethod);
+
+        unaryTestMethod.findFirst(NameExpr.class, n -> n.toString().equals("OutputRXCX")).ifPresent(n -> n.replace(new NameExpr(classNameWithPackage)));
+
+        return methodReference;
     }
 
     public void addToCells(TableCell[][] cells) {
-        tableIndex.addToCells(cells, this);
+        cells[tableIndex.rowIndex()][tableIndex.columnIndex()] = this;
+    }
+
+    public void addToOutputCells(TableCell[][] outputCells) {
+        outputCells[tableIndex.rowIndex()][tableIndex.columnIndex()] = this;
     }
 }
 

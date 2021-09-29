@@ -83,7 +83,7 @@ public class Functions {
         DirectCompilerResult r = DirectCompilerResult.of(
                 Functions.internal(list, new NameExpr(fnName)),
                 BuiltInType.FUNCTION);
-        r.addFieldDesclaration(Constants.function(fnName, lambda));
+        r.addFieldDeclaration(Constants.function(fnName, lambda));
         return r;
     }
 
