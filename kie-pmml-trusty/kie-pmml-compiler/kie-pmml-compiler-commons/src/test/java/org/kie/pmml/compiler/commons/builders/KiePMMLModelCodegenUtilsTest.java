@@ -17,6 +17,7 @@
 package org.kie.pmml.compiler.commons.builders;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
@@ -29,9 +30,11 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getMissingValueReplacementsMap;
+import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getRequiredFieldsList;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelCodegenUtilsTest {
@@ -42,15 +45,26 @@ public class KiePMMLModelCodegenUtilsTest {
     public void testGetMissingValueReplacementsMap() throws IOException, JAXBException, SAXException {
         PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
 
-        Map<String, Pair<DATA_TYPE, String>> output = getMissingValueReplacementsMap(getFieldsFromDataDictionary(pmml.getDataDictionary()), pmml.getModels().get(0));
+        Map<String, Pair<DATA_TYPE, String>> retrieved = getMissingValueReplacementsMap(getFieldsFromDataDictionary(pmml.getDataDictionary()), pmml.getModels().get(0));
 
-        assertTrue(output.containsKey("x"));
-        assertEquals(DATA_TYPE.DOUBLE, output.get("x").a);
-        assertEquals("5", output.get("x").b);
+        assertTrue(retrieved.containsKey("x"));
+        assertEquals(DATA_TYPE.DOUBLE, retrieved.get("x").a);
+        assertEquals("5", retrieved.get("x").b);
 
-        assertTrue(output.containsKey("y"));
-        assertEquals(DATA_TYPE.STRING, output.get("y").a);
-        assertEquals("classB", output.get("y").b);
+        assertTrue(retrieved.containsKey("y"));
+        assertEquals(DATA_TYPE.STRING, retrieved.get("y").a);
+        assertEquals("classB", retrieved.get("y").b);
+    }
+
+    @Test
+    public void testGetRequiredFieldsList() throws IOException, JAXBException, SAXException {
+        PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
+
+        List<String> retrieved = getRequiredFieldsList(pmml.getModels().get(0));
+
+        assertFalse(retrieved.contains("x"));
+        assertFalse(retrieved.contains("y"));
+        assertTrue(retrieved.contains("z"));
     }
 
 }

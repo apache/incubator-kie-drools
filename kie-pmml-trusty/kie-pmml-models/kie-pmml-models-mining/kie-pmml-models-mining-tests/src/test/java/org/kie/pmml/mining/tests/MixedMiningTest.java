@@ -27,6 +27,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
@@ -102,6 +103,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("residenceState", residenceState);
         inputData.put("validLicense", validLicense);
         inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 34.1);
 
         PMML4Result pmml4Result = evaluate(pmmlRuntime, inputData, MODEL_NAME);
 
@@ -153,5 +155,18 @@ public class MixedMiningTest extends AbstractPMMLTest {
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_MAPVALUED_FIELD)).isEqualTo(expected);
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isNotNull();
         Assertions.assertThat(pmml4Result.getResultVariables().get(OUT_TEXT_INDEX_NORMALIZATION_FIELD)).isEqualTo(1.0);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningWithoutRequired() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

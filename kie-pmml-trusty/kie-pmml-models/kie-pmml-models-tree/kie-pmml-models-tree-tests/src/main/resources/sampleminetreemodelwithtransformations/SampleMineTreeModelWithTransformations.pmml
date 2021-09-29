@@ -1,5 +1,6 @@
-<PMML version="4.2" xsi:schemaLocation="http://www.dmg.org/PMML-4_2 http://www.dmg.org/v4-2-1/pmml-4-2.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xmlns="http://www.dmg.org/PMML-4_2">
+<PMML version="4.4" xsi:schemaLocation="http://www.dmg.org/PMML-4_4 http://www.dmg.org/v4-2-1/pmml-4-4.xsd"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xmlns="http://www.dmg.org/PMML-4_4">
   <Header>
     <Application name="Drools-PMML" version="7.0.0-SNAPSHOT" />
   </Header>
@@ -13,6 +14,7 @@
       <Value value="nothing" />
     </DataField>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -101,9 +103,10 @@
       <MiningField name="humidity"  usageType="active" />
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
       <MiningField name="decision" usageType="predicted" />
+      <MiningField name="input3" usageType="active" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
-      <OutputField name="weatherdecision" targetField="decision" />
+      <OutputField name="weatherdecision" targetField="decision" dataType="string" />
       <OutputField name="out_der_temperature" dataType="double" feature="transformedValue">
         <FieldRef field="der_temperature"/>
       </OutputField>

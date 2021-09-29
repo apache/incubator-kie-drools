@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -32,11 +33,13 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -132,12 +135,16 @@ public class KiePMMLModelFactoryUtilsTest {
                 .mapToObj(i -> ModelUtils.convertToKieOutputField(getRandomOutputField(),
                                                                              getRandomDataField()))
                 .collect(Collectors.toList());
+        List<String> requiredFieldsList = IntStream.range(0, 2)
+                .mapToObj(i -> "FIELD-" + i)
+                .collect(Collectors.toList());
         KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
                                                             constructorDeclaration,
                                                             name,
                                                             miningFields,
                                                             outputFields,
-                                                            Collections.emptyMap());
+                                                            Collections.emptyMap(),
+                                                            requiredFieldsList);
         commonVerifySuperInvocation(generatedClassName, name);
         List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(), "miningFields",
                                                                "add");
@@ -149,6 +156,10 @@ public class KiePMMLModelFactoryUtilsTest {
         addMethodCall = retrieved.get(0);
         arguments = addMethodCall.getArguments();
         commonVerifyOutputFieldsObjectCreation(arguments, outputFields);
+
+        List<AssignExpr> assignExprList = getAssignExprList(constructorDeclaration.getBody(), 1,
+                                                                 "requiredFieldsList");
+        commonVerifyRequiredFieldsList(assignExprList.get(0), requiredFieldsList);
     }
 
     @Test
@@ -647,6 +658,19 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(expected, superInvocation.toString()); // modified by invocation
     }
 
+    private void commonVerifyRequiredFieldsList(AssignExpr assignRequiredFieldsList, List<String> requiredFieldsList) {
+        MethodCallExpr methodCallExpr = assignRequiredFieldsList.getValue().asMethodCallExpr();
+        assertEquals(Arrays.class.getCanonicalName(), methodCallExpr.getScope().get().toString());
+        assertEquals("asList", methodCallExpr.getName().asString());
+        NodeList<Expression> arguments = methodCallExpr.getArguments();
+        assertEquals(requiredFieldsList.size(), arguments.size());
+        arguments.forEach(argument -> assertTrue(argument instanceof StringLiteralExpr));
+        requiredFieldsList.forEach(requiredField -> {
+            assertTrue(arguments.stream()
+                    .anyMatch(argument -> requiredField.equals(argument.asStringLiteralExpr().asString())));
+        });
+    }
+
 
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
@@ -666,6 +690,26 @@ public class KiePMMLModelFactoryUtilsTest {
                 .filter(expression -> expression instanceof MethodCallExpr)
                 .map(expression -> (MethodCallExpr) expression)
                 .filter(methodCallExpr -> evaluateMethodCallExpr(methodCallExpr, scope, method))
+                .collect(Collectors.toList());
+        assertEquals(expectedSize, toReturn.size());
+        return toReturn;
+    }
+
+    /**
+     * Return a <code>List&lt;AssignExpr&gt;</code> where every element <b>target' name</b> is <code>target</code>
+     * @param blockStmt
+     * @param expectedSize
+     * @param target
+     * @return
+     */
+    private List<AssignExpr> getAssignExprList(BlockStmt blockStmt, int expectedSize, String target) {
+        Stream<Statement> statementStream = getStatementStream(blockStmt);
+        List<AssignExpr> toReturn =  statementStream
+                .filter(Statement::isExpressionStmt)
+                .map(expressionStmt -> ((ExpressionStmt) expressionStmt).getExpression())
+                .filter(expression -> expression instanceof AssignExpr)
+                .map(expression -> (AssignExpr) expression)
+                .filter(methodCallExpr -> target.equals(methodCallExpr.getTarget().toString()))
                 .collect(Collectors.toList());
         assertEquals(expectedSize, toReturn.size());
         return toReturn;

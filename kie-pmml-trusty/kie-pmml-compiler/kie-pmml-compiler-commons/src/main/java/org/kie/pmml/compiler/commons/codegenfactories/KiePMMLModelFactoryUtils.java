@@ -26,6 +26,7 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -64,6 +65,8 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldF
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.assignExprFrom;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
@@ -101,16 +104,22 @@ public class KiePMMLModelFactoryUtils {
 
     /**
      * Set the <b>name</b> parameter on <b>super</b> invocation and populate the <b>miningFields/outputFields</b>
+     *
      * @param generatedClassName
      * @param constructorDeclaration
      * @param name
+     * @param miningFields
+     * @param outputFields
+     * @param missingValueReplacements
+     * @param requiredFieldsList
      */
     public static void setKiePMMLModelConstructor(final String generatedClassName,
                                                   final ConstructorDeclaration constructorDeclaration,
                                                   final String name,
                                                   final List<MiningField> miningFields,
                                                   final List<OutputField> outputFields,
-                                                  final Map<String, Pair<DATA_TYPE, String>> missingValueReplacements) {
+                                                  final Map<String, Pair<DATA_TYPE, String>> missingValueReplacements,
+                                                  final List<String> requiredFieldsList) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
@@ -123,6 +132,10 @@ public class KiePMMLModelFactoryUtils {
                 entry -> literalExprFrom(entry.getValue().a, entry.getValue().b)
         ));
         addMapPopulationExpressions(missingValueReplacementsExpr, body, "missingValueReplacementMap");
+
+        final ExpressionStmt requiredFieldsListExpression = createArraysAsListFromList(requiredFieldsList);
+        final AssignExpr assignRequiredFieldsListExpression = assignExprFrom("requiredFieldsList", requiredFieldsListExpression.getExpression());
+        body.addStatement(assignRequiredFieldsListExpression);
     }
 
     public static void addGetCreatedKiePMMLOutputFieldsMethod(final ClassOrInterfaceDeclaration modelTemplate, final List<org.dmg.pmml.OutputField> outputFields) {
@@ -223,7 +236,7 @@ public class KiePMMLModelFactoryUtils {
                             new StringLiteralExpr(miningField.getInvalidValueReplacement())
                             : new NullLiteralExpr();
                     Expression allowedValues = miningField.getAllowedValues() != null ?
-                            CommonCodegenUtils.createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
+                            createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
                             : new NullLiteralExpr();
                     Expression intervals = miningField.getIntervals() != null ?
                             createIntervalsExpression(miningField.getIntervals())
@@ -302,7 +315,7 @@ public class KiePMMLModelFactoryUtils {
                             new NameExpr(rsltF.getClass().getName() + "." + rsltF.name())
                             : new NullLiteralExpr();
                     Expression allowedValues = outputField.getAllowedValues() != null ?
-                            CommonCodegenUtils.createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
+                            createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
                             : new NullLiteralExpr();
                     toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature, allowedValues));
                     return toReturn;

@@ -31,6 +31,7 @@ import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.Field;
+import org.dmg.pmml.MissingValueTreatmentMethod;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -92,7 +93,14 @@ public class KiePMMLModelCodegenUtils {
             targetFieldExpression = new NullLiteralExpr();
         }
         Map<String, Pair<DATA_TYPE, String>> missingValueReplacements = getMissingValueReplacementsMap(fields, pmmlModel);
-        setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, name, miningFields, outputFields, missingValueReplacements);
+        List<String> requiredFieldsList = getRequiredFieldsList(pmmlModel);
+        setKiePMMLModelConstructor(generatedClassName,
+                                   constructorDeclaration,
+                                   name,
+                                   miningFields,
+                                   outputFields,
+                                   missingValueReplacements,
+                                   requiredFieldsList);
         addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, pmmlModel.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", pmmlMODELExpression);
@@ -112,7 +120,7 @@ public class KiePMMLModelCodegenUtils {
                 .collect(Collectors.toMap(i -> i.getName().getValue(),
                                           i -> DATA_TYPE.byName(i.getDataType().value()),
                                           (prevDataType, newDataType) -> newDataType));
-        return pmmlModel.getMiningSchema() == null
+        return pmmlModel.getMiningSchema() == null || pmmlModel.getMiningSchema().getMiningFields() == null
                 ? Collections.emptyMap()
                 : pmmlModel.getMiningSchema().getMiningFields().stream()
                         .filter(mf -> mf.getMissingValueReplacement() instanceof String)
@@ -120,5 +128,14 @@ public class KiePMMLModelCodegenUtils {
                                 mf -> mf.getName().getValue(),
                                 mf -> new Pair<>(dataTypeMap.get(mf.getName().getValue()), (String) mf.getMissingValueReplacement())
                         ));
+    }
+
+    static List<String> getRequiredFieldsList(Model pmmlModel) {
+        return pmmlModel.getMiningSchema() == null || pmmlModel.getMiningSchema().getMiningFields() == null
+                ? Collections.emptyList()
+                : pmmlModel.getMiningSchema().getMiningFields().stream()
+                .filter(mf -> MissingValueTreatmentMethod.RETURN_INVALID.equals(mf.getMissingValueTreatment()))
+                .map(mf -> mf.getName().getValue())
+                .collect(Collectors.toList());
     }
 }

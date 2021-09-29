@@ -45,6 +45,7 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
     protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
+    protected List<String> requiredFieldsList = new ArrayList<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
@@ -77,6 +78,10 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Object> getMissingValueReplacementMap() {
         return Collections.unmodifiableMap(missingValueReplacementMap);
+    }
+
+    public List<String> getRequiredFieldsList() {
+        return Collections.unmodifiableList(requiredFieldsList);
     }
 
     /**
@@ -205,13 +210,25 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
         }
 
         public Builder<T> withOutputFieldsMap(Map<String, Object> outputFieldsMap) {
-            toBuild.outputFieldsMap.putAll(outputFieldsMap);
+            if (outputFieldsMap != null) {
+                toBuild.outputFieldsMap.putAll(outputFieldsMap);
+            }
             return this;
         }
 
         public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
-            toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
+            if (missingValueReplacementMap != null) {
+                toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
+            }
             return this;
         }
+
+        public Builder<T> withRequiredFieldsList(List<String> requiredFieldsList) {
+            if (requiredFieldsList != null) {
+                toBuild.requiredFieldsList.addAll(requiredFieldsList);
+            }
+            return this;
+        }
+
     }
 }

@@ -16,6 +16,7 @@
 
 package org.kie.pmml.evaluator.core.utils;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,6 +30,7 @@ import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
+import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
@@ -56,6 +58,40 @@ public class PreProcessTest {
     private static final String PARAM_2 = "PARAM_2";
     private static final Double value1 = 100.0;
     private static final Double value2 = 5.0;
+
+    @Test
+    public void verifyMissingValuesNotMissing() {
+        List<String> requiredFieldsList = new ArrayList<>();
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withRequiredFieldsList(requiredFieldsList)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("age", 123);
+        pmmlRequestData.addRequestParam("work", "work");
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyMissingValues(model, pmmlContext);
+        requiredFieldsList.add("age");
+        requiredFieldsList.add("work");
+        model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withRequiredFieldsList(requiredFieldsList)
+                .build();
+        PreProcess.verifyMissingValues(model, pmmlContext);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void verifyMissingValuesMissing() {
+        List<String> requiredFieldsList = new ArrayList<>();
+        requiredFieldsList.add("place");
+        requiredFieldsList.add("city");
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+                .withRequiredFieldsList(requiredFieldsList)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("age", 123);
+        pmmlRequestData.addRequestParam("work", "work");
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyMissingValues(model, pmmlContext);
+    }
 
     @Test
     public void addMissingValuesReplacements() {

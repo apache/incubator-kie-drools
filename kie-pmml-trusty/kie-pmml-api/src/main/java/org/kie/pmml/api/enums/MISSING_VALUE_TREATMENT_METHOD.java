@@ -31,7 +31,8 @@ public enum MISSING_VALUE_TREATMENT_METHOD {
     REGRESSION("regression"),
     CLUSTERING("clustering"),
     TIME_SERIES("timeSeries"),
-    MIXED("mixed");
+    MIXED("mixed"),
+    RETURN_INVALID("returnInvalid");
 
     private String name;
 
@@ -40,7 +41,7 @@ public enum MISSING_VALUE_TREATMENT_METHOD {
     }
 
     public static MISSING_VALUE_TREATMENT_METHOD byName(String name) {
-        return Arrays.stream(MISSING_VALUE_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MINING_FUNCTION with name: " + name));
+        return Arrays.stream(MISSING_VALUE_TREATMENT_METHOD.values()).filter(value -> Objects.equals(name, value.name)).findFirst().orElseThrow(() -> new KieEnumException("Failed to find MISSING_VALUE_TREATMENT_METHOD with name: " + name));
     }
 
     public String getName() {

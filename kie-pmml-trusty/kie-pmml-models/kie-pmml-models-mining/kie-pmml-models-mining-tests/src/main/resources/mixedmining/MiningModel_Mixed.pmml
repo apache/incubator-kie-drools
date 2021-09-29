@@ -33,6 +33,7 @@
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
     <DataField name="overallScore" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double"/>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -140,6 +141,7 @@
       <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
       <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="input3" usageType="active" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
       <OutputField name="Number of Claims" feature="predictedValue" dataType="double" optype="continuous"/>
