@@ -18,6 +18,7 @@ package org.kie.kogito.explainability.local.lime.optim;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
@@ -32,6 +33,7 @@ import org.optaplanner.core.config.localsearch.LocalSearchPhaseConfig;
 import org.optaplanner.core.config.localsearch.LocalSearchType;
 import org.optaplanner.core.config.phase.PhaseConfig;
 import org.optaplanner.core.config.score.director.ScoreDirectorFactoryConfig;
+import org.optaplanner.core.config.solver.EnvironmentMode;
 import org.optaplanner.core.config.solver.SolverConfig;
 import org.optaplanner.core.config.solver.SolverManagerConfig;
 import org.optaplanner.core.config.solver.termination.TerminationConfig;
@@ -49,11 +51,13 @@ public class LimeConfigOptimizer {
     private static final boolean DEFAULT_WEIGHTING_ENTITIES = true;
 
     private long timeLimit;
+    private int stepCountLimit;
     private boolean proximityEntities;
     private boolean samplingEntities;
     private boolean encodingEntities;
     private boolean weightingEntities;
     private EasyScoreCalculator<LimeConfigSolution, SimpleBigDecimalScore> scoreCalculator;
+    private boolean deterministic;
 
     public LimeConfigOptimizer() {
         this.timeLimit = DEFAULT_TIME_LIMIT;
@@ -62,10 +66,17 @@ public class LimeConfigOptimizer {
         this.samplingEntities = DEFAULT_SAMPLING_ENTITIES;
         this.encodingEntities = DEFAULT_ENCODING_ENTITIES;
         this.weightingEntities = DEFAULT_WEIGHTING_ENTITIES;
+        this.deterministic = false;
+        this.stepCountLimit = 0;
     }
 
     public LimeConfigOptimizer withTimeLimit(long timeLimit) {
         this.timeLimit = timeLimit;
+        return this;
+    }
+
+    public LimeConfigOptimizer withStepCountLimit(int stepCountLimit) {
+        this.stepCountLimit = stepCountLimit;
         return this;
     }
 
@@ -130,22 +141,34 @@ public class LimeConfigOptimizer {
         }
 
         LimeConfigSolution initialSolution = new LimeConfigSolution(config, predictions, entities, model);
-        SolverConfig solverConfig = new SolverConfig();
 
-        solverConfig.withEntityClasses(NumericLimeConfigEntity.class, BooleanLimeConfigEntity.class);
-
-        solverConfig.withSolutionClass(LimeConfigSolution.class);
+        SolverConfig solverConfig = new SolverConfig()
+                .withEntityClasses(NumericLimeConfigEntity.class, BooleanLimeConfigEntity.class)
+                .withSolutionClass(LimeConfigSolution.class);
 
         ScoreDirectorFactoryConfig scoreDirectorFactoryConfig = new ScoreDirectorFactoryConfig();
         scoreDirectorFactoryConfig.setEasyScoreCalculatorClass(scoreCalculator.getClass());
         solverConfig.setScoreDirectorFactoryConfig(scoreDirectorFactoryConfig);
 
         TerminationConfig terminationConfig = new TerminationConfig();
-        terminationConfig.setSecondsSpentLimit(timeLimit);
+        if (timeLimit > 0) {
+            terminationConfig.setSecondsSpentLimit(timeLimit);
+        }
         solverConfig.setTerminationConfig(terminationConfig);
 
         LocalSearchPhaseConfig localSearchPhaseConfig = new LocalSearchPhaseConfig();
+        if (deterministic) {
+            Optional<Long> seed = config.getPerturbationContext().getSeed();
+            seed.ifPresent(solverConfig::setRandomSeed);
+            solverConfig.setEnvironmentMode(EnvironmentMode.REPRODUCIBLE);
+        } else {
+            logger.debug("non reproducible execution, set the seed inside initial LimeConfig's PerturbationContext and enable deterministic execution to fix this");
+        }
         localSearchPhaseConfig.setLocalSearchType(LocalSearchType.LATE_ACCEPTANCE);
+
+        if (stepCountLimit > 0) {
+            localSearchPhaseConfig.setTerminationConfig(new TerminationConfig().withStepCountLimit(stepCountLimit));
+        }
 
         @SuppressWarnings("rawtypes")
         List<PhaseConfig> phaseConfigs = new ArrayList<>();
@@ -183,6 +206,11 @@ public class LimeConfigOptimizer {
 
     public LimeConfigOptimizer forStabilityScore() {
         this.scoreCalculator = new LimeStabilityScoreCalculator();
+        return this;
+    }
+
+    public LimeConfigOptimizer withDeterministicExecution(boolean deterministic) {
+        this.deterministic = deterministic;
         return this;
     }
 }

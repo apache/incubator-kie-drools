@@ -222,11 +222,10 @@ class TypeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
-    void testPerturbCompositeFeature(int seed) {
+    @ValueSource(longs = { 0, 1, 2, 3, 4 })
+    void testPerturbCompositeFeature(long seed) {
         Random random = new Random();
-        random.setSeed(seed);
-        PerturbationContext perturbationContext = new PerturbationContext(random, 2);
+        PerturbationContext perturbationContext = new PerturbationContext(seed, random, 2);
         List<Feature> features = new LinkedList<>();
         features.add(new Feature("f1", Type.TEXT, new Value("foo bar")));
         features.add(new Feature("f2", Type.NUMBER, new Value(1d)));
@@ -260,11 +259,10 @@ class TypeTest {
     @ParameterizedTest
     @EnumSource
     void testPerturb(Type type) {
-        for (int seed = 0; seed < 5; seed++) {
+        for (long seed = 0; seed < 5; seed++) {
             Value v = new Value(1.0);
             Random random = new Random();
-            random.setSeed(seed);
-            PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+            PerturbationContext perturbationContext = new PerturbationContext(seed, random, 1);
             Value perturbed = type.perturb(v, perturbationContext);
             assertNotEquals(v, perturbed, type.name());
         }
@@ -274,10 +272,9 @@ class TypeTest {
     @EnumSource
     void testEncode(Type type) {
         EncodingParams params = new EncodingParams(1, 0.1);
-        for (int seed = 0; seed < 5; seed++) {
+        for (long seed = 0; seed < 5; seed++) {
             Random random = new Random();
-            random.setSeed(seed);
-            PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+            PerturbationContext perturbationContext = new PerturbationContext(seed, random, random.nextInt());
             Value target = type.randomValue(perturbationContext);
             Value[] values = new Value[random.nextInt(10)];
             for (int i = 0; i < values.length; i++) {
@@ -294,12 +291,11 @@ class TypeTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = { 0, 1, 2, 3, 4 })
-    void testEncodeNumericSymmetric(int seed) {
+    @ValueSource(longs = { 0, 1, 2, 3, 4 })
+    void testEncodeNumericSymmetric(long seed) {
         Random random = new Random();
-        random.setSeed(seed);
         EncodingParams params = new EncodingParams(1, 0.1);
-        PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+        PerturbationContext perturbationContext = new PerturbationContext(seed, random, random.nextInt());
         Value target = Type.NUMBER.randomValue(perturbationContext);
         Value[] values = new Value[6];
         for (int i = 0; i < values.length / 2; i++) {
@@ -318,8 +314,7 @@ class TypeTest {
     void testEncodeNaN() {
         EncodingParams params = new EncodingParams(1, 0.1);
         Random random = new Random();
-        random.setSeed(4);
-        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        PerturbationContext perturbationContext = new PerturbationContext(4L, random, 1);
         Value target = Type.NUMBER.randomValue(perturbationContext);
         Value[] values = new Value[6];
         for (int i = 0; i < values.length - 1; i++) {
@@ -335,10 +330,9 @@ class TypeTest {
     @ParameterizedTest
     @EnumSource
     void testRandomValue(Type type) {
-        for (int seed = 0; seed < 5; seed++) {
+        for (long seed = 0; seed < 5; seed++) {
             Random random = new Random();
-            random.setSeed(seed);
-            PerturbationContext perturbationContext = new PerturbationContext(random, random.nextInt());
+            PerturbationContext perturbationContext = new PerturbationContext(seed, random, random.nextInt());
             Value value = type.randomValue(perturbationContext);
             assertNotNull(value);
             assertDoesNotThrow(() -> type.drop(value));

@@ -568,11 +568,10 @@ class CounterfactualExplainerTest {
 
     @ParameterizedTest
     @ValueSource(ints = { 0, 1, 2 })
-    void testNoCounterfactualPossible(int seed)
+    void testNoCounterfactualPossible(long seed)
             throws ExecutionException, InterruptedException, TimeoutException {
         Random random = new Random();
-        random.setSeed(seed);
-        final PerturbationContext perturbationContext = new PerturbationContext(random, 4);
+        final PerturbationContext perturbationContext = new PerturbationContext(seed, random, 4);
         final List<Output> goal = List.of(new Output("inside", Type.BOOLEAN, new Value(true), 0.0));
 
         List<Feature> features = new LinkedList<>();

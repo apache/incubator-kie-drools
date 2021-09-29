@@ -24,6 +24,7 @@ import java.util.concurrent.TimeoutException;
 import org.kie.kogito.explainability.local.lime.LimeConfig;
 import org.kie.kogito.explainability.local.lime.LimeExplainer;
 import org.kie.kogito.explainability.model.Prediction;
+import org.kie.kogito.explainability.model.PredictionProvider;
 import org.kie.kogito.explainability.utils.ExplainabilityMetrics;
 import org.kie.kogito.explainability.utils.LocalSaliencyStability;
 import org.optaplanner.core.api.score.buildin.simplebigdecimal.SimpleBigDecimalScore;
@@ -57,19 +58,19 @@ public class LimeStabilityScoreCalculator implements EasyScoreCalculator<LimeCon
         BigDecimal stabilityScore = BigDecimal.ZERO;
         List<Prediction> predictions = solution.getPredictions();
         if (!predictions.isEmpty()) {
-            stabilityScore = getStabilityScore(solution, config, predictions);
+            stabilityScore = getStabilityScore(solution.getModel(), config, predictions);
         }
         return SimpleBigDecimalScore.of(stabilityScore);
     }
 
-    private BigDecimal getStabilityScore(LimeConfigSolution solution, LimeConfig config, List<Prediction> predictions) {
+    private BigDecimal getStabilityScore(PredictionProvider model, LimeConfig config, List<Prediction> predictions) {
         double succeededEvaluations = 0;
         BigDecimal stabilityScore = BigDecimal.ZERO;
         LimeExplainer limeExplainer = new LimeExplainer(config);
         for (Prediction prediction : predictions) {
             try {
-                LocalSaliencyStability stability = ExplainabilityMetrics.getLocalSaliencyStability(solution.getModel(),
-                        prediction, limeExplainer, TWO.intValue(), NUM_RUNS);
+                LocalSaliencyStability stability = ExplainabilityMetrics.getLocalSaliencyStability(model, prediction,
+                        limeExplainer, TWO.intValue(), NUM_RUNS);
                 for (String decision : stability.getDecisions()) {
                     BigDecimal decisionMarginalScore = getDecisionMarginalScore(stability, decision);
                     stabilityScore = stabilityScore.add(decisionMarginalScore);

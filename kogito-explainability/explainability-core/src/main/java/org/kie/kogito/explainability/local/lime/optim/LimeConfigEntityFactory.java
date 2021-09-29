@@ -53,8 +53,11 @@ class LimeConfigEntityFactory {
                         limeConfigEntity.asDouble())));
         processors.put(SAMPLING_SEPARABLE_DATASET_RATIO, (limeConfig, limeConfigEntity) -> limeConfig.withSeparableDatasetRatio(limeConfigEntity.asDouble()));
         processors.put(SAMPLING_SIZE, (limeConfig, limeConfigEntity) -> limeConfig.withSamples((int) limeConfigEntity.asDouble()));
-        processors.put(SAMPLING_PERTURBATIONS, (limeConfig, limeConfigEntity) -> limeConfig.withPerturbationContext(new PerturbationContext(limeConfig.getPerturbationContext().getRandom(),
-                (int) limeConfigEntity.asDouble())));
+        processors.put(SAMPLING_PERTURBATIONS, (limeConfig, limeConfigEntity) -> limeConfig.withPerturbationContext(
+                limeConfig.getPerturbationContext().getSeed().isPresent()
+                        ? new PerturbationContext(limeConfig.getPerturbationContext().getSeed().get(), limeConfig.getPerturbationContext().getRandom(),
+                                (int) limeConfigEntity.asDouble())
+                        : new PerturbationContext(limeConfig.getPerturbationContext().getRandom(), (int) limeConfigEntity.asDouble())));
         processors.put(PROXIMITY_FILTER_ENABLED, (limeConfig, limeConfigEntity) -> limeConfig.withProximityFilter(limeConfigEntity.asBoolean()));
         processors.put(WEIGHTING_PENALIZE_BALANCE_SPARSE, (limeConfig, limeConfigEntity) -> limeConfig.withPenalizeBalanceSparse(limeConfigEntity.asBoolean()));
         processors.put(SAMPLING_ADAPT_DATASET_VARIANCE, (limeConfig, limeConfigEntity) -> limeConfig.withAdaptiveVariance(limeConfigEntity.asBoolean()));

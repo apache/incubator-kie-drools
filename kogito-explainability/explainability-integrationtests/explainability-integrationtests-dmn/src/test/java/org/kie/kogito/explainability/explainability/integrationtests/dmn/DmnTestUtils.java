@@ -109,11 +109,10 @@ public class DmnTestUtils {
     private static List<PredictionInput> getPredictionInputs(PredictionInput predictionInput) {
         List<PredictionInput> predictionInputs = new ArrayList<>();
         Random random = new Random();
-        random.setSeed(4);
         int noOfPerturbations = predictionInput.getFeatures().size();
         for (int i = 0; i < 100; i++) {
             List<Feature> perturbFeatures = DataUtils.perturbFeatures(predictionInput.getFeatures(),
-                    new PerturbationContext(random, noOfPerturbations));
+                    new PerturbationContext(4L, random, noOfPerturbations));
             predictionInputs.add(new PredictionInput(perturbFeatures));
         }
         return predictionInputs;

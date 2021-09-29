@@ -107,5 +107,22 @@ public class LocalSaliencyStability {
         List<String> getPositiveFeatureNames() {
             return positiveFeatureNames;
         }
+
+        @Override
+        public String toString() {
+            return "SaliencyFrequencyMetadata{" +
+                    "positiveFeatureNames=" + positiveFeatureNames +
+                    ", positiveFrequencyScore=" + positiveFrequencyScore +
+                    ", negativeFeatureNames=" + negativeFeatureNames +
+                    ", negativeFrequencyScore=" + negativeFrequencyScore +
+                    '}';
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "LocalSaliencyStability{" +
+                "map=" + map +
+                '}';
     }
 }

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -127,27 +128,45 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
                         return completedFuture(getSaliencies(linearizedTargetInputFeatures, actualOutputs, limeInputsList));
                     } catch (DatasetNotSeparableException e) {
                         if (noOfRetries > 0) {
-                            PerturbationContext newPerturbationContext;
-                            int newNoOfSamples;
-                            if (limeConfig.isAdaptDatasetVariance()) {
-                                int nextPerturbationSize = Math.max(perturbationContext.getNoOfPerturbations() + 1,
-                                        linearizedTargetInputFeatures.size() / noOfRetries);
-                                // make sure to stay within the max no. of features boundaries
-                                nextPerturbationSize = Math.min(linearizedTargetInputFeatures.size() - 1, nextPerturbationSize);
-                                newPerturbationContext = new PerturbationContext(perturbationContext.getRandom(),
-                                        nextPerturbationSize);
-                                newNoOfSamples = noOfSamples + noOfSamples / limeConfig.getNoOfRetries();
-                            } else {
-                                newPerturbationContext = perturbationContext;
-                                newNoOfSamples = noOfSamples;
-                            }
-                            return explainRetryCycle(model, originalInput, linearizedTargetInputFeatures,
-                                    actualOutputs, noOfRetries - 1, newNoOfSamples,
-                                    newPerturbationContext);
+                            return explain(model, originalInput, linearizedTargetInputFeatures, actualOutputs, noOfRetries, noOfSamples, perturbationContext);
                         }
                         throw e;
                     }
                 });
+    }
+
+    private CompletableFuture<Map<String, Saliency>> explain(PredictionProvider model, PredictionInput originalInput, List<Feature> linearizedTargetInputFeatures, List<Output> actualOutputs,
+            int noOfRetries, int noOfSamples, PerturbationContext perturbationContext) {
+        PerturbationContext newPerturbationContext;
+        int newNoOfSamples;
+        if (limeConfig.isAdaptDatasetVariance()) {
+            newPerturbationContext = getNewPerturbationContext(linearizedTargetInputFeatures, noOfRetries, perturbationContext);
+            newNoOfSamples = noOfSamples + noOfSamples / limeConfig.getNoOfRetries();
+        } else {
+            newPerturbationContext = perturbationContext;
+            newNoOfSamples = noOfSamples;
+        }
+        return explainRetryCycle(model, originalInput, linearizedTargetInputFeatures,
+                actualOutputs, noOfRetries - 1, newNoOfSamples,
+                newPerturbationContext);
+    }
+
+    private PerturbationContext getNewPerturbationContext(List<Feature> linearizedTargetInputFeatures, int noOfRetries, PerturbationContext perturbationContext) {
+        PerturbationContext newPerturbationContext;
+        int nextPerturbationSize = Math.max(perturbationContext.getNoOfPerturbations() + 1,
+                linearizedTargetInputFeatures.size() / noOfRetries);
+        // make sure to stay within the max no. of features boundaries
+        nextPerturbationSize = Math.min(linearizedTargetInputFeatures.size() - 1, nextPerturbationSize);
+        Optional<Long> optionalSeed = perturbationContext.getSeed();
+        if (optionalSeed.isPresent()) {
+            Long seed = optionalSeed.get();
+            newPerturbationContext = new PerturbationContext(seed, perturbationContext.getRandom(),
+                    nextPerturbationSize);
+        } else {
+            newPerturbationContext = new PerturbationContext(perturbationContext.getRandom(),
+                    nextPerturbationSize);
+        }
+        return newPerturbationContext;
     }
 
     /**

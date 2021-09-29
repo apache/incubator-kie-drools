@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.explainability.model;
 
+import java.util.Optional;
 import java.util.Random;
 
 /**
@@ -25,12 +26,24 @@ import java.util.Random;
  */
 public class PerturbationContext {
 
+    private final Optional<Long> seed;
+
     private final Random random;
 
     private final int noOfPerturbations;
 
     public PerturbationContext(Random random, int noOfPerturbations) {
+        this.seed = Optional.empty();
         this.random = random;
+        this.noOfPerturbations = noOfPerturbations;
+    }
+
+    public PerturbationContext(Long seed, Random random, int noOfPerturbations) {
+        this.seed = Optional.ofNullable(seed);
+        this.random = random;
+        if (seed != null) {
+            random.setSeed(seed);
+        }
         this.noOfPerturbations = noOfPerturbations;
     }
 
@@ -42,11 +55,16 @@ public class PerturbationContext {
         return random;
     }
 
+    public Optional<Long> getSeed() {
+        return seed;
+    }
+
     @Override
     public String toString() {
         return "PerturbationContext{" +
                 "random=" + random +
                 ", noOfPerturbations=" + noOfPerturbations +
+                ", seed=" + seed +
                 '}';
     }
 }
