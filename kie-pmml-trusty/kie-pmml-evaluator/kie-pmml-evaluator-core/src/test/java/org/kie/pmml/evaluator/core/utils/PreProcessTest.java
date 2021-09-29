@@ -23,6 +23,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.junit.Test;
 import org.kie.api.pmml.PMMLRequestData;
@@ -31,6 +33,7 @@ import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.ProcessingDTO;
 import org.kie.pmml.commons.model.expressions.KiePMMLApply;
@@ -62,7 +65,8 @@ public class PreProcessTest {
     @Test
     public void verifyMissingValuesNotMissing() {
         List<String> requiredFieldsList = new ArrayList<>();
-        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
                 .withRequiredFieldsList(requiredFieldsList)
                 .build();
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
@@ -83,7 +87,8 @@ public class PreProcessTest {
         List<String> requiredFieldsList = new ArrayList<>();
         requiredFieldsList.add("place");
         requiredFieldsList.add("city");
-        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
                 .withRequiredFieldsList(requiredFieldsList)
                 .build();
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
@@ -94,11 +99,61 @@ public class PreProcessTest {
     }
 
     @Test
+    public void convertInputDataConvertibles() {
+        List<MiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
+                    DATA_TYPE dataType = DATA_TYPE.values()[i];
+                    return new MiningField("FIELD-" + i, null, null, dataType, null, null, null, null, null, null);
+                })
+                .collect(Collectors.toList());
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", 123);
+        pmmlRequestData.addRequestParam("FIELD-1", "123");
+        pmmlRequestData.addRequestParam("FIELD-2", "1.23");
+        Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
+        assertEquals(123, mappedRequestParams.get("FIELD-0").getValue());
+        assertEquals("123", mappedRequestParams.get("FIELD-1").getValue());
+        assertEquals("1.23", mappedRequestParams.get("FIELD-2").getValue());
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.convertInputData(model, pmmlContext);
+        assertEquals("123", mappedRequestParams.get("FIELD-0").getValue());
+        assertEquals(123, mappedRequestParams.get("FIELD-1").getValue());
+        assertEquals(1.23f, mappedRequestParams.get("FIELD-2").getValue());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void convertInputDataNotConvertibles() {
+        List<MiningField> miningFields = IntStream.range(0, 3).mapToObj(i -> {
+                    DATA_TYPE dataType = DATA_TYPE.values()[i];
+                    return new MiningField("FIELD-" + i, null, null, dataType, null, null, null, null, null, null);
+                })
+                .collect(Collectors.toList());
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", 123);
+        pmmlRequestData.addRequestParam("FIELD-1", true);
+        pmmlRequestData.addRequestParam("FIELD-2", "123");
+        Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
+        assertEquals(123, mappedRequestParams.get("FIELD-0").getValue());
+        assertEquals(true, mappedRequestParams.get("FIELD-1").getValue());
+        assertEquals("123", mappedRequestParams.get("FIELD-2").getValue());
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.convertInputData(model, pmmlContext);
+    }
+
+    @Test
     public void addMissingValuesReplacements() {
         Map<String, Object> missingValueReplacementMap = new HashMap<>();
         missingValueReplacementMap.put("fieldA", "one");
         missingValueReplacementMap.put("fieldB", 2);
-        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(), MINING_FUNCTION.REGRESSION)
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
                 .withMissingValueReplacementMap(missingValueReplacementMap)
                 .build();
         PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
@@ -131,8 +186,10 @@ public class PreProcessTest {
         //        <FieldRef>PARAM_2</FieldRef>
         //      </Apply>
         // </DefineFunction>
-        final KiePMMLParameterField kiePMMLParameterField1 = KiePMMLParameterField.builder(PARAM_1, Collections.emptyList()).build();
-        final KiePMMLParameterField kiePMMLParameterField2 = KiePMMLParameterField.builder(PARAM_2, Collections.emptyList()).build();
+        final KiePMMLParameterField kiePMMLParameterField1 = KiePMMLParameterField.builder(PARAM_1,
+                                                                                           Collections.emptyList()).build();
+        final KiePMMLParameterField kiePMMLParameterField2 = KiePMMLParameterField.builder(PARAM_2,
+                                                                                           Collections.emptyList()).build();
         final KiePMMLFieldRef kiePMMLFieldRef1 = new KiePMMLFieldRef(PARAM_1, Collections.emptyList(), null);
         final KiePMMLFieldRef kiePMMLFieldRef2 = new KiePMMLFieldRef(PARAM_2, Collections.emptyList(), null);
         final KiePMMLApply kiePMMLApplyRef = KiePMMLApply.builder("NAMEREF", Collections.emptyList(), "/")
@@ -141,7 +198,8 @@ public class PreProcessTest {
         final KiePMMLDefineFunction defineFunction = new KiePMMLDefineFunction(CUSTOM_FUNCTION, Collections.emptyList(),
                                                                                DATA_TYPE.DOUBLE,
                                                                                OP_TYPE.CONTINUOUS,
-                                                                               Arrays.asList(kiePMMLParameterField1, kiePMMLParameterField2),
+                                                                               Arrays.asList(kiePMMLParameterField1,
+                                                                                             kiePMMLParameterField2),
                                                                                kiePMMLApplyRef);
 
         // <DerivedField name="CUSTOM_REF_FIELD" optype="continuous" dataType="double">
@@ -161,7 +219,7 @@ public class PreProcessTest {
                                                                              kiePMMLApply).build();
         // From TransformationDictionary
         KiePMMLTransformationDictionary transformationDictionary = KiePMMLTransformationDictionary.builder(
-                "transformationDictionary", Collections.emptyList())
+                        "transformationDictionary", Collections.emptyList())
                 .withDefineFunctions(Collections.singletonList(defineFunction))
                 .withDerivedFields(Collections.singletonList(derivedField))
                 .build();
@@ -173,8 +231,10 @@ public class PreProcessTest {
         final PMMLRequestData pmmlRequestData = new PMMLRequestData();
         pmmlRequestData.addRequestParam(INPUT_FIELD, value1);
         Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        final List<KiePMMLNameValue> kiePMMLNameValues = PreProcess.getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        Optional<KiePMMLNameValue> retrieved = kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(INPUT_FIELD)).findFirst();
+        final List<KiePMMLNameValue> kiePMMLNameValues =
+                PreProcess.getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
+        Optional<KiePMMLNameValue> retrieved =
+                kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(INPUT_FIELD)).findFirst();
         assertTrue(retrieved.isPresent());
         assertEquals(value1, retrieved.get().getValue());
 
@@ -185,9 +245,9 @@ public class PreProcessTest {
         Object expected = value1 / value2;
         assertTrue(mappedRequestParams.containsKey(CUSTOM_REF_FIELD));
         assertEquals(expected, mappedRequestParams.get(CUSTOM_REF_FIELD).getValue());
-        retrieved = kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(CUSTOM_REF_FIELD)).findFirst();
+        retrieved =
+                kiePMMLNameValues.stream().filter(kiePMMLNameValue -> kiePMMLNameValue.getName().equals(CUSTOM_REF_FIELD)).findFirst();
         assertTrue(retrieved.isPresent());
         assertEquals(expected, retrieved.get().getValue());
     }
-
 }

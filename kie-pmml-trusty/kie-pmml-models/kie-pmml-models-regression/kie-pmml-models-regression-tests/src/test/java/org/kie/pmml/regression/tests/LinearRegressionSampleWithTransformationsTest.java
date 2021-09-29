@@ -32,6 +32,8 @@ import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
 
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(Parameterized.class)
 public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLTest {
 
@@ -174,6 +176,28 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("salary", salary);
         inputData.put("car_location", car_location);
         inputData.put("text_input", TEXT_INPUT);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test
+    public void testLinearRegressionSampleWithTransformationsConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", String.valueOf(age));
+        inputData.put("salary",String.valueOf(salary));
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", "34.1");
+        assertNotNull(evaluate(pmmlRuntime, inputData, MODEL_NAME));
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testLinearRegressionSampleWithTransformationsNotConvertible() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", age);
+        inputData.put("salary", salary);
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", true);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }
