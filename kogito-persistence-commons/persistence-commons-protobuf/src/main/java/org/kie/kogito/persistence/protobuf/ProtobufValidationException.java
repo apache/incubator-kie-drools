@@ -23,4 +23,8 @@ public class ProtobufValidationException extends Exception {
     public ProtobufValidationException(String message) {
         super(message);
     }
+
+    public ProtobufValidationException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

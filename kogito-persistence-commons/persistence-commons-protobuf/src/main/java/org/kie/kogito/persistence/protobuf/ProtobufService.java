@@ -124,7 +124,7 @@ public class ProtobufService {
         try {
             schemaEvent.fire(new SchemaRegisteredEvent(new SchemaDescriptor(processId + ".proto", content, entityIndexedDescriptors, new ProcessDescriptor(processId, fullTypeName)), SCHEMA_TYPE));
         } catch (RuntimeException ex) {
-            throw new ProtobufValidationException(ex.getMessage());
+            throw new ProtobufValidationException(ex.getMessage(), ex);
         }
         domainModelEvent.fire(new FileDescriptorRegisteredEvent(desc));
     }
