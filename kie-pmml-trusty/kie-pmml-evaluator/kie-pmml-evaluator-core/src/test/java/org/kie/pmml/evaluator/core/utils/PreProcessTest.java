@@ -30,9 +30,11 @@ import org.junit.Test;
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
 import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.OP_TYPE;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.Interval;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -139,12 +141,160 @@ public class PreProcessTest {
         pmmlRequestData.addRequestParam("FIELD-0", 123);
         pmmlRequestData.addRequestParam("FIELD-1", true);
         pmmlRequestData.addRequestParam("FIELD-2", "123");
-        Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
-        assertEquals(123, mappedRequestParams.get("FIELD-0").getValue());
-        assertEquals(true, mappedRequestParams.get("FIELD-1").getValue());
-        assertEquals("123", mappedRequestParams.get("FIELD-2").getValue());
         PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
         PreProcess.convertInputData(model, pmmlContext);
+    }
+
+    @Test
+    public void verifyInvalidValuesNotInvalid() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null, null, null, null, Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null, null, null, null, Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null, null, null, null, null, intervals);
+
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "123");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.4);
+        pmmlRequestData.addRequestParam("FIELD-2", 9.3);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+        pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "125");
+        pmmlRequestData.addRequestParam("FIELD-1", 1.25);
+        pmmlRequestData.addRequestParam("FIELD-2", 13.9);
+        pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void verifyInvalidValuesInvalidReturnInvalid() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID, null, null, Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null, INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID, null, null, Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null, INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID, null, null, null, intervals);
+
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "122");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+    }
+
+    @Test
+    public void verifyInvalidValuesInvalidAsMissing() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_MISSING, null, null, Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null, INVALID_VALUE_TREATMENT_METHOD.AS_MISSING, null, null, Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null, INVALID_VALUE_TREATMENT_METHOD.AS_MISSING, null, null, null, intervals);
+
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "122");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+        assertTrue(pmmlRequestData.getRequestParams().isEmpty());
+    }
+
+    @Test
+    public void verifyInvalidValuesInvalidAsValueWithReplacement() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, "123",
+                                                   Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, "1.23",
+                                                   Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, "12.3",
+                                                   null, intervals);
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "122");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+        Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
+        assertEquals("123", mappedRequestParams.get("FIELD-0").getValue());
+        assertEquals(1.23, mappedRequestParams.get("FIELD-1").getValue());
+        assertEquals(12.3, mappedRequestParams.get("FIELD-2").getValue());
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void verifyInvalidValuesInvalidAsValueWithoutReplacement() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, null,
+                                                   Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, null,
+                                                   Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_VALUE, null, null,
+                                                   null, intervals);
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "122");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+    }
+
+    @Test
+    public void verifyInvalidValuesInvalidAsIs() {
+        MiningField miningField0 = new MiningField("FIELD-0", null, null, DATA_TYPE.STRING, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_IS, null, "123",
+                                                   Arrays.asList("123", "124", "125"), null);
+        MiningField miningField1 = new MiningField("FIELD-1", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_IS, null, "1.23",
+                                                   Arrays.asList("1.23", "12.4", "1.25"), null);
+        List<Interval> intervals = Arrays.asList(new Interval(0.0, 12.4), new Interval(12.6, 14.5));
+        MiningField miningField2 = new MiningField("FIELD-2", null, null, DATA_TYPE.DOUBLE, null,
+                                                   INVALID_VALUE_TREATMENT_METHOD.AS_IS, null, "12.3",
+                                                   null, intervals);
+        List<MiningField> miningFields = Arrays.asList(miningField0, miningField1, miningField2);
+        KiePMMLTestingModel model = KiePMMLTestingModel.builder("TESTINGMODEL", Collections.emptyList(),
+                                                                MINING_FUNCTION.REGRESSION)
+                .withMiningFields(miningFields)
+                .build();
+        PMMLRequestData pmmlRequestData = new PMMLRequestData("123", "modelName");
+        pmmlRequestData.addRequestParam("FIELD-0", "122");
+        pmmlRequestData.addRequestParam("FIELD-1", 12.5);
+        pmmlRequestData.addRequestParam("FIELD-2", 14.6);
+        PMMLContext pmmlContext = new PMMLContextImpl(pmmlRequestData);
+        PreProcess.verifyInvalidValues(model, pmmlContext);
+        Map<String, ParameterInfo> mappedRequestParams = pmmlRequestData.getMappedRequestParams();
+        assertEquals("122", mappedRequestParams.get("FIELD-0").getValue());
+        assertEquals(12.5, mappedRequestParams.get("FIELD-1").getValue());
+        assertEquals(14.6, mappedRequestParams.get("FIELD-2").getValue());
     }
 
     @Test
