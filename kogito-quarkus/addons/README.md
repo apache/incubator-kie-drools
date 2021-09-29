@@ -7,6 +7,7 @@ In this module you will find all the add-ons supported by the community for Quar
 | Add-On Description   | Artifact ID                        | Since                  |
 |----------------------|------------------------------------|------------------|
 | Events Decisions     | kogito-addons-quarkus-events-decisions | 1.2.0 |
+| Events Rules         | kogito-addons-quarkus-events-rules | 1.12.0 |
 | Events Smallrye      | kogito-addons-quarkus-events-smallrye | 0.3.0 |
 | Explainability       | kogito-addons-quarkus-explainability | 0.15.0 |
 | Jobs Management      | kogito-addons-quarkus-jobs-management | 0.6.0 |

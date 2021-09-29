@@ -1,0 +1,12 @@
+name: Kogito Add-On Events Rules
+description: Kogito Add-On for processing events on Rules (DRL) based projects
+metadata:
+  keywords:
+    - kogito
+    - rules
+    - drools
+    - DRL
+    - Kafka
+  guide: https://quarkus.io/guides/kogito-drl
+  categories:
+    - "business-automation"

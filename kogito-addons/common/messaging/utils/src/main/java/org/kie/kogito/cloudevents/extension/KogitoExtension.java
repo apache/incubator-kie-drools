@@ -19,14 +19,14 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import io.cloudevents.CloudEventExtension;
 import io.cloudevents.CloudEventExtensions;
-import io.cloudevents.core.extensions.impl.ExtensionUtils;
 import io.cloudevents.core.provider.ExtensionProvider;
+
+import static org.kie.kogito.cloudevents.extension.KogitoExtensionUtils.readBooleanExtension;
+import static org.kie.kogito.cloudevents.extension.KogitoExtensionUtils.readStringExtension;
 
 public class KogitoExtension implements CloudEventExtension {
 
@@ -56,22 +56,6 @@ public class KogitoExtension implements CloudEventExtension {
         ExtensionProvider.getInstance().registerExtension(KogitoExtension.class, KogitoExtension::new);
     }
 
-    private static void readStringExtension(CloudEventExtensions extensions, String key, Consumer<String> consumer) {
-        Optional.ofNullable(extensions.getExtension(key))
-                // there seems to be a bug in the cloudevents sdk so that, when a extension attributes is null,
-                // it returns a "null" String instead of a real null object
-                .filter(obj -> !("null".equals(obj)))
-                .map(Object::toString)
-                .ifPresent(consumer);
-    }
-
-    private static void readBooleanExtension(CloudEventExtensions extensions, String key, Consumer<Boolean> consumer) {
-        Optional.ofNullable(extensions.getExtension(key))
-                .filter(Boolean.class::isInstance)
-                .map(Boolean.class::cast)
-                .ifPresent(consumer);
-    }
-
     @Override
     public void readFrom(CloudEventExtensions extensions) {
         readStringExtension(extensions, KOGITO_EXECUTION_ID, this::setExecutionId);
@@ -97,8 +81,9 @@ public class KogitoExtension implements CloudEventExtension {
                 return isDmnFullResult();
             case KOGITO_DMN_FILTERED_CTX:
                 return isDmnFilteredCtx();
+            default:
+                return null;
         }
-        throw ExtensionUtils.generateInvalidKeyException(this.getClass(), key);
     }
 
     @Override
@@ -163,15 +148,13 @@ public class KogitoExtension implements CloudEventExtension {
             return false;
         }
         KogitoExtension that = (KogitoExtension) o;
-        return Objects.equals(executionId, that.executionId) &&
-                Objects.equals(dmnModelName, that.dmnModelName) &&
-                Objects.equals(dmnModelNamespace, that.dmnModelNamespace) &&
-                Objects.equals(dmnEvaluateDecision, that.dmnEvaluateDecision);
+        return Objects.equals(executionId, that.executionId) && Objects.equals(dmnModelName, that.dmnModelName) && Objects.equals(dmnModelNamespace, that.dmnModelNamespace)
+                && Objects.equals(dmnEvaluateDecision, that.dmnEvaluateDecision) && Objects.equals(dmnFullResult, that.dmnFullResult) && Objects.equals(dmnFilteredCtx, that.dmnFilteredCtx);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(executionId, dmnModelName, dmnModelNamespace, dmnEvaluateDecision);
+        return Objects.hash(executionId, dmnModelName, dmnModelNamespace, dmnEvaluateDecision, dmnFullResult, dmnFilteredCtx);
     }
 
     @Override

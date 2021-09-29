@@ -172,7 +172,7 @@ class EventDrivenDecisionControllerTest {
         mockDecisionModel();
 
         controller = new EventDrivenDecisionController(decisionModelsMock, mock(ConfigBean.class), eventEmitterMock, testEventReceiver);
-        controller.setup();
+        controller.subscribe();
     }
 
     @Test
@@ -184,14 +184,15 @@ class EventDrivenDecisionControllerTest {
 
         // option #1: parameters via constructor + parameterless setup
         EventDrivenDecisionController controller1 = new EventDrivenDecisionController(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock);
-        controller1.setup();
+        controller1.subscribe();
         verify(eventReceiverMock).subscribe(any(), any());
 
         reset(eventReceiverMock);
 
         // option #2: parameterless via constructor + parameters via setup (introduced for Quarkus CDI)
         EventDrivenDecisionController controller2 = new EventDrivenDecisionController();
-        controller2.setup(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock);
+        controller2.init(decisionModelsMock, configMock, eventEmitterMock, eventReceiverMock);
+        controller2.subscribe();
         verify(eventReceiverMock).subscribe(any(), any());
     }
 

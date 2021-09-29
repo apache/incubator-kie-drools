@@ -102,6 +102,13 @@ public class RuleUnitGenerator implements RuleFileGenerator {
                 .collect(toList());
     }
 
+    public List<QueryEventDrivenExecutorGenerator> queryEventDrivenExecutors() {
+        return queries.stream()
+                .filter(query -> !query.hasParameters())
+                .map(query -> new QueryEventDrivenExecutorGenerator(ruleUnit, query, context))
+                .collect(toList());
+    }
+
     @Override
     public String generatedFilePath() {
         return generator.generatedFilePath();

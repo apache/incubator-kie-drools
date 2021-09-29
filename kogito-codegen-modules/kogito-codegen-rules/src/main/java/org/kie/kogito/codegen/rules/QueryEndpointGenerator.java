@@ -18,16 +18,11 @@ package org.kie.kogito.codegen.rules;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import org.drools.compiler.compiler.DroolsError;
 import org.drools.modelcompiler.builder.QueryModel;
 import org.kie.internal.ruleunit.RuleUnitDescription;
 import org.kie.kogito.codegen.api.GeneratedFile;
 import org.kie.kogito.codegen.api.context.KogitoBuildContext;
-import org.kie.kogito.codegen.api.context.impl.JavaKogitoBuildContext;
-import org.kie.kogito.codegen.api.template.TemplatedGenerator;
 import org.kie.kogito.codegen.core.BodyDeclarationComparator;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -52,84 +47,23 @@ import com.github.javaparser.ast.stmt.ThrowStmt;
 import com.github.javaparser.ast.stmt.TryStmt;
 import com.github.javaparser.ast.type.Type;
 
-import static com.github.javaparser.StaticJavaParser.parseClassOrInterfaceType;
 import static com.github.javaparser.StaticJavaParser.parseStatement;
-import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.kie.kogito.codegen.api.Generator.REST_TYPE;
-import static org.kie.kogito.codegen.rules.IncrementalRuleCodegen.TEMPLATE_RULE_FOLDER;
+import static org.kie.kogito.codegen.rules.RuleCodegenUtils.setGeneric;
+import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toKebabCase;
+import static org.kie.kogito.codegen.rules.RuleCodegenUtils.toNonPrimitiveType;
 
-public class QueryEndpointGenerator implements RuleFileGenerator {
+public class QueryEndpointGenerator extends AbstractQueryEntrypointGenerator {
 
-    private final RuleUnitDescription ruleUnit;
-    private final QueryModel query;
-
-    private final String name;
-    private final KogitoBuildContext context;
     private final String endpointName;
-    private final String queryClassName;
-    private final String targetClassName;
-    private final TemplatedGenerator generator;
 
-    public QueryEndpointGenerator(RuleUnitDescription ruleUnit,
-            QueryModel query,
-            KogitoBuildContext context) {
-        this.ruleUnit = ruleUnit;
-        this.query = query;
-        this.name = toCamelCase(query.getName());
-        this.context = context;
-        this.endpointName = toKebabCase(name);
-
-        this.queryClassName = ruleUnit.getSimpleName() + "Query" + name;
-        this.targetClassName = queryClassName + "Endpoint";
-        this.generator = TemplatedGenerator.builder()
-                .withPackageName(query.getNamespace())
-                .withTemplateBasePath(TEMPLATE_RULE_FOLDER)
-                .withTargetTypeName(targetClassName)
-                .withFallbackContext(JavaKogitoBuildContext.CONTEXT_NAME)
-                .build(context, "RestQuery");
+    public QueryEndpointGenerator(RuleUnitDescription ruleUnit, QueryModel query, KogitoBuildContext context) {
+        super(ruleUnit, query, context, "Endpoint", "RestQuery");
+        this.endpointName = toKebabCase(queryName);
     }
 
     public QueryGenerator getQueryGenerator() {
-        return new QueryGenerator(context, ruleUnit, query, name);
-    }
-
-    @Override
-    public String generatedFilePath() {
-        return generator.generatedFilePath();
-    }
-
-    @Override
-    public boolean validate() {
-        return !query.getBindings().isEmpty();
-    }
-
-    @Override
-    public DroolsError getError() {
-        if (query.getBindings().isEmpty()) {
-            return new NoBindingQuery(query);
-        }
-        return null;
-    }
-
-    public static class NoBindingQuery extends DroolsError {
-
-        private static final int[] ERROR_LINES = new int[0];
-
-        private final QueryModel query;
-
-        public NoBindingQuery(QueryModel query) {
-            this.query = query;
-        }
-
-        @Override
-        public String getMessage() {
-            return "Query " + query.getName() + " has no bound variable. At least one binding is required to determine the value returned by this query";
-        }
-
-        @Override
-        public int[] getLines() {
-            return ERROR_LINES;
-        }
+        return new QueryGenerator(context, ruleUnit, query, queryName);
     }
 
     @Override
@@ -266,7 +200,7 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
 
     private void interpolateStrings(StringLiteralExpr vv) {
         String interpolated = vv.getValue()
-                .replace("$name$", name)
+                .replace("$name$", queryName)
                 .replace("$endpointName$", endpointName)
                 .replace("$queryName$", query.getName())
                 .replace("$prometheusName$", endpointName);
@@ -275,45 +209,5 @@ public class QueryEndpointGenerator implements RuleFileGenerator {
 
     private void setUnitGeneric(Type type) {
         setGeneric(type, ruleUnit);
-    }
-
-    static void setGeneric(Type type, RuleUnitDescription ruleUnit) {
-        type.asClassOrInterfaceType().setTypeArguments(toClassOrInterfaceType(ruleUnit.getCanonicalName()));
-    }
-
-    static void setGeneric(Type type, String typeArgument) {
-        type.asClassOrInterfaceType().setTypeArguments(parseClassOrInterfaceType(toNonPrimitiveType(typeArgument)));
-    }
-
-    private static String toNonPrimitiveType(String type) {
-        switch (type) {
-            case "int":
-                return "Integer";
-            case "long":
-                return "Long";
-            case "double":
-                return "Double";
-            case "float":
-                return "Float";
-            case "short":
-                return "Short";
-            case "byte":
-                return "Byte";
-            case "char":
-                return "Character";
-            case "boolean":
-                return "Boolean";
-        }
-        return type;
-    }
-
-    private static String toCamelCase(String inputString) {
-        return Stream.of(inputString.split(" "))
-                .map(s -> s.length() > 1 ? s.substring(0, 1).toUpperCase() + s.substring(1) : s.substring(0, 1).toUpperCase())
-                .collect(Collectors.joining());
-    }
-
-    private static String toKebabCase(String inputString) {
-        return inputString.replaceAll("(.)(\\p{Upper})", "$1-$2").toLowerCase();
     }
 }

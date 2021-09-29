@@ -34,6 +34,6 @@ public class SpringBootEventDrivenDecisionController extends EventDrivenDecision
 
     @PostConstruct
     private void onPostConstruct() {
-        setup();
+        subscribe();
     }
 }

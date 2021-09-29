@@ -42,6 +42,7 @@ public class QuarkusEventDrivenDecisionController extends EventDrivenDecisionCon
 
     @PostConstruct
     private void onPostConstruct() {
-        setup(decisionModels, config, eventEmitter, eventReceiver);
+        init(decisionModels, config, eventEmitter, eventReceiver);
+        subscribe();
     }
 }

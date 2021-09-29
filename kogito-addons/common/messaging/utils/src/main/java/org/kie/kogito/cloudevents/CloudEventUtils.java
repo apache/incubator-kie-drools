@@ -118,8 +118,12 @@ public final class CloudEventUtils {
     }
 
     public static <T> Optional<T> decodeData(CloudEvent event, Class<T> dataClass) {
+        return decodeData(event, dataClass, Mapper.mapper());
+    }
+
+    public static <T> Optional<T> decodeData(CloudEvent event, Class<T> dataClass, ObjectMapper mapper) {
         try {
-            final PojoCloudEventData<T> cloudEventData = mapData(event, PojoCloudEventDataMapper.from(Mapper.mapper(), dataClass));
+            final PojoCloudEventData<T> cloudEventData = mapData(event, PojoCloudEventDataMapper.from(mapper, dataClass));
             if (cloudEventData == null) {
                 return Optional.empty();
             }

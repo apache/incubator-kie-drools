@@ -71,15 +71,14 @@ public class EventDrivenDecisionController {
         this.eventReceiver = eventReceiver;
     }
 
-    protected void setup(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
+    protected void init(DecisionModels decisionModels, ConfigBean config, EventEmitter eventEmitter, EventReceiver eventReceiver) {
         this.decisionModels = decisionModels;
         this.config = config;
         this.eventEmitter = eventEmitter;
         this.eventReceiver = eventReceiver;
-        setup();
     }
 
-    protected void setup() {
+    protected void subscribe() {
         eventReceiver.subscribe(this::handleRequest, new SubscriptionInfo<>(new JsonStringToObject(CloudEventUtils.Mapper.mapper()),
                 CloudEvent.class));
     }

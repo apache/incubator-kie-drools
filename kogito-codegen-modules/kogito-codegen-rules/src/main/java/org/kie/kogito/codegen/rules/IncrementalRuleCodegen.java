@@ -320,6 +320,12 @@ public class IncrementalRuleCodegen extends AbstractGenerator {
             generatedFiles.add(ruleUnitInstance.generate());
 
             ruleUnit.pojo(ruleUnitHelper).ifPresent(p -> generatedFiles.add(p.generate()));
+
+            if (context().getAddonsConfig().useEventDrivenRules()) {
+                ruleUnit.queryEventDrivenExecutors().stream()
+                        .map(QueryEventDrivenExecutorGenerator::generate)
+                        .forEach(generatedFiles::add);
+            }
         }
     }
 
