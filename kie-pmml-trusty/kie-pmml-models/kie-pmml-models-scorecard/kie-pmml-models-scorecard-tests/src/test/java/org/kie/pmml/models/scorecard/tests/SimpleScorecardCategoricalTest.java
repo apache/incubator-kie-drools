@@ -22,6 +22,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Assert;
@@ -92,14 +94,10 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
     }
 
     private List<Map<String, Object>> getSamples() {
-        final List<Map<String, Object>> toReturn = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            final Map<String, Object> toAdd = new HashMap<>();
-            toAdd.put("input1", CATEGORY[i % CATEGORY.length]);
-            toAdd.put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
-            toReturn.add(toAdd);
-        }
-        return toReturn;
+        return IntStream.range(0, 10).boxed().map(i -> new HashMap<String, Object>() {{
+            put("input1", CATEGORY[i % CATEGORY.length]);
+            put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
+        }}).collect(Collectors.toList());
     }
 
 }
