@@ -33,6 +33,8 @@ import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.kie.pmml.api.utils.ConverterTypeUtil.convert;
+
 /**
  * Class meant to provide static methods related to <b>pre-process</b> manipulation
  */
@@ -152,11 +154,13 @@ public class PreProcess {
             if (parameterInfo != null) {
                 boolean match = true;
                 Object originalValue = parameterInfo.getValue();
-                if (miningField.getAllowedValues() != null) {
-                    String originalValueString = originalValue.toString();
+                if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty() ) {
                     match = miningField.getAllowedValues().stream()
-                            .anyMatch(originalValueString::equals);
-                } else if (miningField.getIntervals() != null) {
+                            .anyMatch(allowedValue -> {
+                                Object allowedObject = convert(originalValue.getClass(), allowedValue);
+                                return originalValue.equals(allowedObject);
+                            });
+                } else if (miningField.getIntervals() != null && !miningField.getIntervals().isEmpty()) {
                     double originalValueNumber = ((Number) originalValue).doubleValue();
                     match = miningField.getIntervals().stream()
                             .anyMatch(interval -> originalValueNumber >= interval.getLeftMargin().doubleValue() &&

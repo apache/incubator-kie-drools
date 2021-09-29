@@ -77,7 +77,7 @@ public class MixedMiningTest extends AbstractPMMLTest {
         this.expectedResult = expectedResult;
     }
 
-  @BeforeClass
+    @BeforeClass
     public static void setupClass() {
         pmmlRuntime = getPMMLRuntime(FILE_NAME);
     }
@@ -197,6 +197,20 @@ public class MixedMiningTest extends AbstractPMMLTest {
         inputData.put("validLicense", validLicense);
         inputData.put("text_input", TEXT_INPUT);
         inputData.put("input3", true);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
+
+    @Test(expected = KiePMMLException.class)
+    public void testMixedMiningInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("categoricalX", categoricalX);
+        inputData.put("categoricalY", categoricalY);
+        inputData.put("age", age);
+        inputData.put("occupation", occupation);
+        inputData.put("residenceState", residenceState);
+        inputData.put("validLicense", validLicense);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
 }

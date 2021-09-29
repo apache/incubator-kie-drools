@@ -200,4 +200,15 @@ public class LinearRegressionSampleWithTransformationsTest extends AbstractPMMLT
         inputData.put("input3", true);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
+
+    @Test(expected = KiePMMLException.class)
+    public void testLinearRegressionSampleInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("age", age);
+        inputData.put("salary", salary);
+        inputData.put("car_location", car_location);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
 }

@@ -3,7 +3,10 @@
   <DataDictionary>
     <DataField name="input1" optype="continuous" dataType="double"/>
     <DataField name="input2" optype="continuous" dataType="double"/>
-    <DataField name="input3" optype="continuous" dataType="double"/>
+    <DataField name="input3" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6" />
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6" />
+    </DataField>
     <DataField name="score" optype="continuous" dataType="double"/>
   </DataDictionary>
   <Scorecard modelName="SimpleScorecard" functionName="regression" useReasonCodes="true" reasonCodeAlgorithm="pointsBelow" initialScore="5" baselineMethod="other">
