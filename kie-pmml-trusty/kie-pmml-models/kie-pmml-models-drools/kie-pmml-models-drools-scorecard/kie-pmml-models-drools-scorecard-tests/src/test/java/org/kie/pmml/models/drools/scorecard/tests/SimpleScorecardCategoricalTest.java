@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,8 +32,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
@@ -89,11 +88,7 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
     @Test
     public void testSimpleScorecardCategoricalVerifyNoException() {
-        final List<Map<String, Object>> samples = getSamples();
-        samples.forEach(inputData -> {
-            PMML4Result retrieved = evaluate(pmmlRuntime, inputData, MODEL_NAME);
-            assertNotNull(retrieved);
-        });
+        getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME)).forEach(Assert::assertNotNull);
     }
 
     private List<Map<String, Object>> getSamples() {
