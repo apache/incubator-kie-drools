@@ -39,6 +39,11 @@ public class TableIndex {
         return String.format("%sR%sC%s", sourceString, row + 1, column + 1);
     }
 
+    public String appendOutputSuffix(String prefix) {
+        // DMN DTable are 1Based
+        return String.format("%sR%sC%sFeelExpression", prefix, row + 1, column + 1);
+    }
+
     public InputClause getColumn(List<InputClause> columns) {
         return columns.get(column);
     }
@@ -51,8 +56,11 @@ public class TableIndex {
         return column;
     }
 
-    public void addToCells(TableCell[][] cells, TableCell tableCell) {
-        cells[row][column] = tableCell;
+    public int rowIndex() {
+        return row;
     }
 
+    public TableIndex outputTableIndex(int outputColumnIndex) {
+        return new TableIndex(row, outputColumnIndex);
+    }
 }

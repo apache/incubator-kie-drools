@@ -28,22 +28,22 @@ import org.drools.model.Variable;
 
 import static org.drools.model.DSL.declarationOf;
 
-public class NetworkBuilderContext {
+public class AlphaNetworkBuilderContext {
 
     public InternalKnowledgeBase kBase;
     public BuildContext buildContext;
-    public Variable<TableContext> variable;
+    public Variable<PropertyEvaluator> variable;
     public Declaration declaration;
     public ObjectTypeNode otn;
 
     public ResultCollector resultCollector;
 
-    public NetworkBuilderContext(ResultCollector resultCollector) {
-        kBase = (InternalKnowledgeBase) KnowledgeBaseFactory.newKnowledgeBase();
+    public AlphaNetworkBuilderContext(ResultCollector resultCollector) {
+        kBase = KnowledgeBaseFactory.newKnowledgeBase();
         buildContext = new BuildContext(kBase);
         EntryPointNode entryPoint = buildContext.getKnowledgeBase().getRete().getEntryPointNodes().values().iterator().next();
-        ClassObjectType objectType = new ClassObjectType(TableContext.class);
-        variable = declarationOf(TableContext.class, "$ctx");
+        ClassObjectType objectType = new ClassObjectType(PropertyEvaluator.class);
+        variable = declarationOf(PropertyEvaluator.class, "$ctx");
 
         Pattern pattern = new Pattern(1, objectType, "$ctx");
         declaration = pattern.getDeclaration();

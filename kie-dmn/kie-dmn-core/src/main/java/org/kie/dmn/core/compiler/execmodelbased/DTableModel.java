@@ -84,7 +84,7 @@ public class DTableModel {
         this.tableName = CodegenStringUtil.escapeIdentifier( tableName );
         this.hitPolicy = fromString(dt.getHitPolicy().value() + (dt.getAggregation() != null ? " " + dt.getAggregation().value() : ""));
         this.columns = dt.getInput().stream()
-                         .map(c -> new DColumnModel(c, model)).collect(toList());
+                         .map(c -> new DColumnModel(c, model, dtName)).collect(toList());
         this.outputs = dt.getOutput().stream()
                 .map( DOutputModel::new ).collect( toList() );
         this.rows = dt.getRule().stream().map( DRowModel::new ).collect( toList() );
@@ -295,6 +295,7 @@ public class DTableModel {
 
     public static class DColumnModel {
         private final InputClause inputClause;
+        private String dtName;
         private final String name;
         private final Type type;
         private final DMNType dmnType;
@@ -302,8 +303,9 @@ public class DTableModel {
         private List<UnaryTest> inputTests;
         protected CompiledFEELExpression compiledInputClause;
 
-        DColumnModel(InputClause inputClause, DMNModelImpl model) {
+        DColumnModel(InputClause inputClause, DMNModelImpl model, String dtName) {
             this.inputClause = inputClause;
+            this.dtName = dtName;
             LiteralExpression expr = inputClause.getInputExpression();
             this.name = expr.getText();
             this.type = determineTypeFromName( expr.getTypeRef() != null ? expr.getTypeRef().getLocalPart() : null );
@@ -338,11 +340,12 @@ public class DTableModel {
                 }
                 if ( !satisfies ) {
                     String values = getInputValuesText( inputClause );
-                    return new InvalidInputEvent( FEELEvent.Severity.ERROR,
-                            inputClause.getInputExpression() + "='" + parameter + "' does not match any of the valid values " + values + " for decision table '" + getName() + "'.",
-                            getName(),
-                            null,
-                            values );
+                    String errorMessage = String.format("%s='%s' does not match any of the valid values %s for decision table '%s'.",
+                                                        inputClause.getLabel(),
+                                                        parameter,
+                                                        values,
+                                                        dtName);
+                    return new InvalidInputEvent(FEELEvent.Severity.ERROR, errorMessage, getName(), null, values);
                 }
             }
             return null;

@@ -19,8 +19,10 @@ package org.kie.dmn.core;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.kie.api.builder.Message;
 import org.kie.dmn.api.core.DMNContext;
 import org.kie.dmn.api.core.DMNMessage;
 import org.kie.dmn.api.core.DMNModel;
@@ -33,14 +35,18 @@ import org.kie.dmn.feel.runtime.events.HitPolicyViolationEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.hasItems;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.isA;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest {
@@ -68,12 +74,15 @@ public class DMNDecisionTableHitPolicyTest extends BaseInterpretedVsCompiledTest
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "0004-simpletable-U");
         assertThat(dmnModel, notNullValue());
 
+        // Risk Category is constrained to "High", "Low", "Medium" and "ASD" is not allowed
         final DMNContext context = getSimpleTableContext(BigDecimal.valueOf(18), "ASD", false);
         final DMNResult dmnResult = runtime.evaluateAll(dmnModel, context);
         final DMNContext result = dmnResult.getContext();
 
         assertThat(result.get("Approval Status"), nullValue());
         assertTrue(dmnResult.getMessages().size() > 0);
+        DMNMessage message = dmnResult.getMessages().iterator().next();
+        assertEquals(message.getText(), "DMN: RiskCategory='ASD' does not match any of the valid values \"High\", \"Low\", \"Medium\" for decision table '_0004-simpletable-U'. (DMN id: _0004-simpletable-U, FEEL expression evaluation error) ");
     }
 
     @Test

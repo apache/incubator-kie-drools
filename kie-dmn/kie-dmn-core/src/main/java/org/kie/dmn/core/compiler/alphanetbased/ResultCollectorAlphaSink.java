@@ -23,25 +23,33 @@ import org.drools.core.reteoo.ModifyPreviousTuples;
 import org.drools.core.reteoo.ObjectSource;
 import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
+import org.drools.model.functions.Function1;
+import org.drools.model.functions.Predicate1;
+import org.kie.dmn.feel.lang.EvaluationContext;
 
 public class ResultCollectorAlphaSink extends LeftInputAdapterNode {
 
-    private Object result;
-    private ResultCollector resultCollector;
+    private final int row;
+    private final String columnName;
+    private final ResultCollector resultCollector;
+    private final Function1<EvaluationContext, Object> outputEvaluationFunction;
 
-    public ResultCollectorAlphaSink(int id, ObjectSource source, BuildContext context, Object result, ResultCollector resultCollector) {
+    public ResultCollectorAlphaSink(int id, ObjectSource source,
+                                    BuildContext context,
+                                    int row,
+                                    String columnName,
+                                    ResultCollector resultCollector,
+                                    Function1<EvaluationContext, Object> outputEvaluationFunction) {
         super(id, source, context);
-        this.result = result;
+        this.row = row;
+        this.columnName = columnName;
         this.resultCollector = resultCollector;
-    }
-
-    public ResultCollectorAlphaSink() {
-        super(); // java:S2060
+        this.outputEvaluationFunction = outputEvaluationFunction;
     }
 
     @Override
     public void assertObject(InternalFactHandle factHandle, PropagationContext propagationContext, InternalWorkingMemory workingMemory) {
-        resultCollector.addResult(result);
+        resultCollector.addResult(row, columnName, outputEvaluationFunction);
     }
 
     @Override

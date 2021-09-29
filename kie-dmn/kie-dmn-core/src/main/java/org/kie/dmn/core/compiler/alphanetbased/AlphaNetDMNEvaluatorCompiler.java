@@ -1,5 +1,5 @@
 /*
- * Copyright 2020 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2021 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,24 +17,27 @@
 package org.kie.dmn.core.compiler.alphanetbased;
 
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.drools.ancompiler.CompiledNetwork;
 import org.drools.ancompiler.CompiledNetworkSource;
 import org.drools.ancompiler.ObjectTypeNodeCompiler;
-import org.drools.core.reteoo.ObjectTypeNode;
 import org.kie.dmn.core.api.DMNExpressionEvaluator;
 import org.kie.dmn.core.ast.DMNBaseNode;
 import org.kie.dmn.core.compiler.DMNCompilerContext;
 import org.kie.dmn.core.compiler.DMNCompilerImpl;
 import org.kie.dmn.core.compiler.DMNEvaluatorCompiler;
 import org.kie.dmn.core.compiler.DMNFEELHelper;
+import org.kie.dmn.core.compiler.alphanetbased.evaluator.OutputClausesWithType;
 import org.kie.dmn.core.impl.DMNModelImpl;
+import org.kie.dmn.feel.lang.CompilerContext;
+import org.kie.dmn.feel.lang.Type;
 import org.kie.dmn.model.api.DecisionTable;
 import org.kie.memorycompiler.KieMemoryCompiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 
 public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
@@ -45,45 +48,60 @@ public class AlphaNetDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     }
 
     @Override
-    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String decisionTableName, DecisionTable decisionTable) {
+    protected DMNExpressionEvaluator compileDecisionTable(DMNCompilerContext dmnCompilerContext,
+                                                          DMNModelImpl dmnModelImpl,
+                                                          DMNBaseNode dmnBaseNode,
+                                                          String decisionTableName,
+                                                          DecisionTable decisionTable) {
 
-        DMNFEELHelper feelHelper = ctx.getFeelHelper();
+        DMNFEELHelper feelHelper = dmnCompilerContext.getFeelHelper();
+        CompilerContext compilerContext = dmnCompilerContext.toCompilerContext();
 
-        // Parse every cell in Decision Table
-        TableCell.TableCellFactory tableCellFactory = new TableCell.TableCellFactory(feelHelper, ctx);
+        // Parse every cell in the Decision Table
+        TableCell.TableCellFactory tableCellFactory = new TableCell.TableCellFactory(feelHelper, compilerContext);
         TableCellParser tableCellParser = new TableCellParser(tableCellFactory);
-        DTQNameToTypeResolver resolver = new DTQNameToTypeResolver(compiler, model, node.getSource(), decisionTable);
-        TableCells tableCells = tableCellParser.parseCells(decisionTable, resolver);
+        DTQNameToTypeResolver resolver = new DTQNameToTypeResolver(compiler, dmnModelImpl, dmnBaseNode.getSource(), decisionTable);
+        TableCells tableCells = tableCellParser.parseCells(decisionTable, resolver, decisionTableName);
 
-        // Generate source code
         GeneratedSources allGeneratedSources = new GeneratedSources();
 
-        Map<String, String> unaryTestClasses = tableCells.createUnaryTestClasses();
-        allGeneratedSources.addUnaryTestClasses(unaryTestClasses);
+        // Compile FEEL unary tests to Java source code with row,column index.
+        // i.e. second row third column will have the UnaryTestR2C3.java name
+        Map<String, String> feelTestClasses = tableCells.createFEELSourceClasses();
+        allGeneratedSources.putAllGeneratedFEELTestClasses(feelTestClasses);
 
+        // Generate classes for DMNAlphaNetwork
         DMNAlphaNetworkCompiler dmnAlphaNetworkCompiler = new DMNAlphaNetworkCompiler();
         GeneratedSources generatedSources = dmnAlphaNetworkCompiler.generateSourceCode(decisionTable, tableCells, decisionTableName, allGeneratedSources);
 
         // Instantiate Alpha Network
-        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(generatedSources.getAllClasses(), this.getClass().getClassLoader());
+        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(generatedSources.getAllGeneratedSources(), this.getClass().getClassLoader());
         DMNCompiledAlphaNetwork dmnCompiledAlphaNetwork = generatedSources.newInstanceOfAlphaNetwork(compiledClasses);
 
+        // We need the RETE to create the ANC
         dmnCompiledAlphaNetwork.initRete();
-        CompiledNetwork compiledAlphaNetwork = dmnCompiledAlphaNetwork.createCompiledAlphaNetwork(this);
+
+        // Generate the ANC
+        ObjectTypeNodeCompiler objectTypeNodeCompiler = new ObjectTypeNodeCompiler(dmnCompiledAlphaNetwork.getObjectTypeNode());
+        CompiledNetworkSource compiledNetworkSource = objectTypeNodeCompiler.generateSource();
+        generatedSources.dumpGeneratedAlphaNetwork(compiledNetworkSource);
+
+        // Second compilation, this time for the generated ANC sources
+        Map<String, Class<?>> compiledANC = KieMemoryCompiler.compile(Collections.singletonMap(
+                compiledNetworkSource.getName(), compiledNetworkSource.getSource()), this.getRootClassLoader());
+
+        Class<?> aClass = compiledANC.get(compiledNetworkSource.getName());
+        CompiledNetwork compiledAlphaNetwork = compiledNetworkSource.createInstanceAndSet(aClass);
         dmnCompiledAlphaNetwork.setCompiledAlphaNetwork(compiledAlphaNetwork);
 
-        return new AlphaNetDMNExpressionEvaluator(dmnCompiledAlphaNetwork)
-                .initParameters(feelHelper, ctx, decisionTableName, node);
-    }
+        // FeelDecisionTable is used at runtime to evaluate Hit Policy / Output values
+        // TODO DT-ANC probably need to have all the types in here
+        Map<String, Type> variableTypes = new HashMap<>();
+        OutputClausesWithType outputClausesWithType = new OutputClausesWithType(dmnModelImpl, decisionTable);
+        List<OutputClausesWithType.OutputClauseWithType> outputs = outputClausesWithType.inferTypeForOutputClauses(decisionTable.getOutput());
 
-    public CompiledNetwork createCompiledAlphaNetwork(ObjectTypeNode otn) {
-        ObjectTypeNodeCompiler objectTypeNodeCompiler = new ObjectTypeNodeCompiler(otn);
-        CompiledNetworkSource compiledNetworkSource = objectTypeNodeCompiler.generateSource();
+        FeelDecisionTable feelDecisionTable = new FeelDecisionTable(decisionTableName, outputs, feelHelper, variableTypes, dmnModelImpl.getTypeRegistry().unknown());
 
-        Map<String, Class<?>> compiledClasses = KieMemoryCompiler.compile(Collections.singletonMap(
-                        compiledNetworkSource.getName(), compiledNetworkSource.getSource()), this.getRootClassLoader());
-
-        Class<?> aClass = compiledClasses.get(compiledNetworkSource.getName());
-        return compiledNetworkSource.createInstanceAndSet(aClass);
+        return new AlphaNetDMNExpressionEvaluator(dmnCompiledAlphaNetwork, feelHelper, decisionTableName, feelDecisionTable, dmnBaseNode);
     }
 }
