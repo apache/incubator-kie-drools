@@ -155,4 +155,14 @@ public class SampleMineTreeModelWithTransformationsTest extends AbstractPMMLTest
         inputData.put("input3", true);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
+
+    @Test(expected = KiePMMLException.class)
+    public void testSampleMineTreeModelWithTransformationsInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("temperature", temperature);
+        inputData.put("humidity", humidity);
+        inputData.put("text_input", TEXT_INPUT);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
 }

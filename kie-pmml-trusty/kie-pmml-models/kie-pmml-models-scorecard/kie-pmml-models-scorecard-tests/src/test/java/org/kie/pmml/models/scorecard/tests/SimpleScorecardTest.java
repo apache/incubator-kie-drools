@@ -112,4 +112,13 @@ public class SimpleScorecardTest extends AbstractPMMLTest {
         inputData.put("input3", true);
         evaluate(pmmlRuntime, inputData, MODEL_NAME);
     }
+
+    @Test(expected = KiePMMLException.class)
+    public void testSimpleScorecardInvalidValue() {
+        final Map<String, Object> inputData = new HashMap<>();
+        inputData.put("input1", input1);
+        inputData.put("input2", input2);
+        inputData.put("input3", 4.1);
+        evaluate(pmmlRuntime, inputData, MODEL_NAME);
+    }
 }
