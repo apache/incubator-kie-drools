@@ -16,20 +16,45 @@
 
 package org.kie.kogito.incubation.common;
 
+import java.util.Map;
+import java.util.Objects;
+
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DataContextTest {
     public static class Address {
         String street;
+
+        @Override
+        public boolean equals(Object o) {
+            return (o instanceof Address)
+                    && Objects.equals(((Address) o).street, street);
+        }
+
     }
 
     public static class User implements DataContext, DefaultCastable {
         String firstName;
         String lastName;
         Address addr;
+
+        @Override
+        public boolean equals(Object o) {
+            if (o instanceof User) {
+                User user = (User) o;
+                return Objects.equals(firstName, user.firstName)
+                        && Objects.equals(lastName, user.lastName)
+                        && Objects.equals(addr, user.addr);
+            } else
+                return false;
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(firstName, lastName, addr);
+        }
     }
 
     @Test
@@ -70,5 +95,21 @@ public class DataContextTest {
         assertNotEquals(Address.class, ctx.get("addr").getClass());
         Address addr = InternalObjectMapper.convertValue(ctx.get("addr"), Address.class);
         assertEquals("Abbey Rd.", addr.street);
+    }
+
+    @Test
+    public void getTypedValueFromMap() {
+        User u = new User();
+        u.firstName = "Paul";
+        u.lastName = "McCartney";
+        u.addr = new Address();
+        u.addr.street = "Abbey Rd.";
+
+        MapDataContext mdc = MapDataContext.of(Map.of("Paul", u));
+        User paul = (User) mdc.get("Paul");
+        User user = mdc.get("Paul", User.class);
+        assertNotNull(user);
+        assertEquals(paul, user);
+
     }
 }

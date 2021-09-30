@@ -73,7 +73,7 @@ public class MapDataContext implements MapLikeDataContext {
 
     @Override
     public <T> T get(String key, Class<T> expectedType) {
-        return null;
+        return InternalObjectMapper.convertValue(map.get(key), expectedType);
     }
 
     // required to unwrap the map to the root of the mapped object
