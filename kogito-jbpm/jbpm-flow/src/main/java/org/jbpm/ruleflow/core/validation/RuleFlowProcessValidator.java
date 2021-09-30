@@ -23,11 +23,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 import org.drools.core.time.impl.CronExpression;
+import org.jbpm.process.core.ContextContainer;
 import org.jbpm.process.core.Work;
 import org.jbpm.process.core.context.exception.CompensationScope;
 import org.jbpm.process.core.context.variable.Variable;
+import org.jbpm.process.core.context.variable.VariableScope;
 import org.jbpm.process.core.datatype.DataType;
 import org.jbpm.process.core.event.EventFilter;
 import org.jbpm.process.core.event.EventTypeFilter;
@@ -71,6 +74,28 @@ import org.kie.api.definition.process.Connection;
 import org.kie.api.definition.process.NodeContainer;
 import org.kie.api.definition.process.Process;
 import org.kie.api.io.Resource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.github.javaparser.JavaParser;
+import com.github.javaparser.ParseResult;
+import com.github.javaparser.ParserConfiguration;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.Expression;
+import com.github.javaparser.ast.expr.MethodCallExpr;
+import com.github.javaparser.ast.expr.NameExpr;
+import com.github.javaparser.ast.expr.VariableDeclarationExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.printer.PrettyPrintVisitor;
+import com.github.javaparser.printer.PrettyPrinterConfiguration;
+import com.github.javaparser.resolution.UnsolvedSymbolException;
+import com.github.javaparser.symbolsolver.JavaSymbolSolver;
+import com.github.javaparser.symbolsolver.model.resolution.TypeSolver;
+import com.github.javaparser.symbolsolver.resolution.typesolvers.ReflectionTypeSolver;
+
+import static java.lang.String.format;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * Default implementation of a RuleFlow validator.
@@ -78,17 +103,18 @@ import org.kie.api.io.Resource;
 public class RuleFlowProcessValidator implements ProcessValidator {
 
     public static final String ASSOCIATIONS = "BPMN.Associations";
-
-    private static RuleFlowProcessValidator instance;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RuleFlowProcessValidator.class);
+    private static final String KCONTEXT = "kcontext";
+    private static RuleFlowProcessValidator INSTANCE;
 
     private RuleFlowProcessValidator() {
     }
 
     public static RuleFlowProcessValidator getInstance() {
-        if (instance == null) {
-            instance = new RuleFlowProcessValidator();
+        if (INSTANCE == null) {
+            INSTANCE = new RuleFlowProcessValidator();
         }
-        return instance;
+        return INSTANCE;
     }
 
     public ProcessValidationError[] validateProcess(final RuleFlowProcess process) {
@@ -400,6 +426,58 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                                 errors,
                                 droolsAction.getDialect() + " script language is not supported in Kogito.");
                     }
+
+                    TypeSolver typeSolver = new ReflectionTypeSolver();
+                    JavaSymbolSolver symbolSolver = new JavaSymbolSolver(typeSolver);
+                    JavaParser parser = new JavaParser(new ParserConfiguration().setSymbolResolver(symbolSolver));
+
+                    ParseResult<CompilationUnit> parse = parser.parse("import org.kie.kogito.internal.process.runtime.KogitoProcessContext;\n" +
+                            "import org.jbpm.process.instance.impl.Action;\n" +
+                            " class Test {\n" +
+                            "    Action action = kcontext -> {" + actionString + "};\n" +
+                            "}");
+
+                    if (parse.isSuccessful()) {
+                        CompilationUnit unit = parse.getResult().get();
+
+                        //Check local variables declaration
+                        Set<String> knownVariables = unit.findAll(VariableDeclarationExpr.class).stream().flatMap(v -> v.getVariables().stream()).map(v -> v.getNameAsString()).collect(toSet());
+
+                        knownVariables.add(KCONTEXT);
+                        knownVariables.addAll(Arrays.stream(process.getVariableScope().getVariableNames()).collect(toSet()));
+                        knownVariables.addAll(Arrays.asList(process.getGlobalNames()));
+
+                        if (actionNode.getParentContainer() instanceof ContextContainer) {
+                            ContextContainer contextContainer = (ContextContainer) actionNode.getParentContainer();
+                            VariableScope variableScope = (VariableScope) contextContainer.getDefaultContext(VariableScope.VARIABLE_SCOPE);
+                            if (variableScope != null) {
+                                knownVariables.addAll(Arrays.stream(variableScope.getVariableNames()).collect(toSet()));
+                            }
+                        }
+
+                        BlockStmt blockStmt = unit.findFirst(BlockStmt.class).get();
+                        try {
+                            resolveVariablesType(unit, knownVariables);
+                        } catch (UnsolvedSymbolException ex) {
+                            PrettyPrintVisitor v1 = new PrettyPrintVisitor(new PrettyPrinterConfiguration());
+                            blockStmt.accept(v1, null);
+                            LOGGER.error("\n" + v1);
+                            //Small hack to extract the variable name causing the issue
+                            //Name comes as "Solving x" where x is the variable name
+                            final String[] solving = ex.getName().split(" ");
+                            final String var = solving.length == 2 ? solving[1] : solving[0];
+                            addErrorMessage(process,
+                                    node,
+                                    errors,
+                                    format("uses unknown variable in the script: %s", var));
+                        }
+                    } else {
+                        addErrorMessage(process,
+                                node,
+                                errors,
+                                format("unable to parse Java content: %s", parse.getProblems().get(0).getMessage()));
+                    }
+
                     validateCompensationIntermediateOrEndEvent(actionNode,
                             process,
                             errors);
@@ -721,6 +799,37 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         "Unknown node type '" + node.getClass().getName() + "'"));
             }
         }
+    }
+
+    private void resolveVariablesType(com.github.javaparser.ast.Node node, Set<String> knownVariables) {
+        node.findAll(MethodCallExpr.class).stream()
+                .filter(m -> m.getScope().isPresent())
+                .forEach(m -> {
+                    Expression expression = m.getScope().get();
+                    if (expression.isNameExpr() && !knownVariables.contains(expression.asNameExpr().getNameAsString())) {
+                        expression.calculateResolvedType();
+                    }
+                });
+        node.findAll(AssignExpr.class).stream()
+                .forEach(m -> {
+                    Expression expression = m.getTarget();
+                    if (expression.isNameExpr() && !knownVariables.contains(expression.asNameExpr().getNameAsString())) {
+                        expression.calculateResolvedType();
+                    }
+                });
+        resolveVariablesTypes(node, knownVariables);
+    }
+
+    private void resolveVariablesTypes(com.github.javaparser.ast.Node node, Set<String> knownVariables) {
+        node.findAll(MethodCallExpr.class).stream()
+                .flatMap(m -> m.getArguments().stream())
+                .forEach(arg -> {
+                    if (arg.isMethodCallExpr() || arg.isBinaryExpr()) {
+                        resolveVariablesTypes(arg, knownVariables);
+                    } else {
+                        arg.findAll(NameExpr.class).stream().filter(ex -> !knownVariables.contains(ex.getNameAsString())).forEach(ex -> ex.calculateResolvedType());
+                    }
+                });
     }
 
     private void checkAllNodesConnectedToStart(final NodeContainer container,

@@ -67,8 +67,7 @@
     <bpmn2:scriptTask id="ScriptTask_3" name="Script Salida Error">
       <bpmn2:incoming>SequenceFlow_4</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_6</bpmn2:outgoing>
-      <bpmn2:script>System.out.println(&quot;Error: Al salir, event: &quot;+event);
-//System.out.println(&quot;Error: Al salir, pasoVariable= &quot;+pasoVariable);</bpmn2:script>
+      <bpmn2:script>System.out.println(&quot;Error: Al salir, event: &quot;+event);</bpmn2:script>
     </bpmn2:scriptTask>
     <bpmn2:endEvent id="EndEvent_1" name="Fin Main">
       <bpmn2:incoming>SequenceFlow_7</bpmn2:incoming>

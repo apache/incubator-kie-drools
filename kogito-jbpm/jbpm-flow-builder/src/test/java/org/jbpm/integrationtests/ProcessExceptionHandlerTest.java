@@ -189,7 +189,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "      </variables>\n" +
                         "      <exceptionHandlers>\n" +
                         "        <exceptionHandler faultName=\"MyFault\" type=\"action\" faultVariable=\"FaultVariable\" >\n" +
-                        "          <action type=\"expression\" name=\"Trigger\" dialect=\"java\" >context.getProcessInstance().signalEvent(\"MyEvent\", null);</action>\n" +
+                        "          <action type=\"expression\" name=\"Trigger\" dialect=\"java\" >kcontext.getProcessInstance().signalEvent(\"MyEvent\", null);</action>\n" +
                         "        </exceptionHandler>\n" +
                         "      </exceptionHandlers>\n" +
                         "      <nodes>\n" +
@@ -200,7 +200,7 @@ public class ProcessExceptionHandlerTest extends AbstractBaseTest {
                         "          </eventFilters>\n" +
                         "        </eventNode>\n" +
                         "        <actionNode id=\"3\" name=\"Action\" >\n" +
-                        "          <action type=\"expression\" dialect=\"java\" >list.add(context.getVariable(\"FaultVariable\"));</action>\n" +
+                        "          <action type=\"expression\" dialect=\"java\" >list.add(kcontext.getVariable(\"FaultVariable\"));</action>\n" +
                         "        </actionNode>\n" +
                         "      </nodes>\n" +
                         "      <connections>\n" +

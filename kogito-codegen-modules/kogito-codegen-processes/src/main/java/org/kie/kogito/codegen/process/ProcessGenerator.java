@@ -481,18 +481,18 @@ public class ProcessGenerator {
                 // add message produces as field
                 if (trigger.getType().equals(TriggerMetaData.TriggerType.ProduceMessage)) {
                     String producerFieldType = packageName + "." + typeName + "MessageProducer_" + trigger.getOwnerId();
-                    String producerFielName = "producer_" + trigger.getOwnerId();
+                    String producerFieldName = "producer_" + trigger.getOwnerId();
 
-                    FieldDeclaration producerFieldieldDeclaration = new FieldDeclaration()
-                            .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, producerFieldType), producerFielName));
-                    cls.addMember(producerFieldieldDeclaration);
+                    FieldDeclaration producerFieldDeclaration = new FieldDeclaration()
+                            .addVariable(new VariableDeclarator(new ClassOrInterfaceType(null, producerFieldType), producerFieldName));
+                    cls.addMember(producerFieldDeclaration);
 
                     if (context.hasDI()) {
-                        context.getDependencyInjectionAnnotator().withInjection(producerFieldieldDeclaration);
+                        context.getDependencyInjectionAnnotator().withInjection(producerFieldDeclaration);
                     } else {
 
                         AssignExpr assignExpr = new AssignExpr(
-                                new FieldAccessExpr(new ThisExpr(), producerFielName),
+                                new FieldAccessExpr(new ThisExpr(), producerFieldName),
                                 new ObjectCreationExpr().setType(producerFieldType),
                                 AssignExpr.Operator.ASSIGN);
 

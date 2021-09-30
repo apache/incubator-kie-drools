@@ -76,8 +76,8 @@ public class ProcessStartTest extends AbstractBaseTest {
                         "      </triggers>\n" +
                         "    </start>\n" +
                         "    <actionNode id=\"2\" name=\"Action\" >\n" +
-                        "      <action type=\"expression\" dialect=\"java\" >myList.add(context.getVariable(\"SomeVar\"));\n" +
-                        "myList.add(context.getVariable(\"SomeOtherVar\"));</action>\n" +
+                        "      <action type=\"expression\" dialect=\"java\" >myList.add(kcontext.getVariable(\"SomeVar\"));\n" +
+                        "myList.add(kcontext.getVariable(\"SomeOtherVar\"));</action>\n" +
                         "    </actionNode>\n" +
                         "    <end id=\"3\" name=\"End\" />\n" +
                         "  </nodes>\n" +
@@ -156,8 +156,8 @@ public class ProcessStartTest extends AbstractBaseTest {
                         "      </triggers>\n" +
                         "    </start>\n" +
                         "    <actionNode id=\"2\" name=\"Action\" >\n" +
-                        "      <action type=\"expression\" dialect=\"java\" >myList.add(context.getVariable(\"SomeVar\"));\n" +
-                        "myList.add(context.getVariable(\"SomeOtherVar\"));</action>\n" +
+                        "      <action type=\"expression\" dialect=\"java\" >myList.add(kcontext.getVariable(\"SomeVar\"));\n" +
+                        "myList.add(kcontext.getVariable(\"SomeOtherVar\"));</action>\n" +
                         "    </actionNode>\n" +
                         "    <end id=\"3\" name=\"End\" />\n" +
                         "  </nodes>\n" +

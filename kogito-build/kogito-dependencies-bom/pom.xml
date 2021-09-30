@@ -165,6 +165,11 @@
         <artifactId>javaparser-core</artifactId>
         <version>${version.com.github.javaparser}</version>
       </dependency>
+      <dependency>
+        <groupId>com.github.javaparser</groupId>
+        <artifactId>javaparser-symbol-solver-core</artifactId>
+        <version>${version.com.github.javaparser}</version>
+      </dependency>
 
       <!-- marshalling -->
       <dependency>

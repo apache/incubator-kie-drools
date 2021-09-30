@@ -153,7 +153,7 @@ public class ProcessEventListenerTest extends AbstractBaseTest {
                     "      </eventFilters>\n" +
                     "    </eventNode>\n" +
                     "    <actionNode id=\"3\" name=\"Signal Event\" >\n" +
-                    "      <action type=\"expression\" dialect=\"java\" >context.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
+                    "      <action type=\"expression\" dialect=\"java\" >kcontext.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
                     "    </actionNode>\n" +
                     "    <join id=\"4\" name=\"Join\" type=\"1\" />\n" +
                     "    <end id=\"5\" name=\"End\" />\n" +

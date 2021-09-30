@@ -57,7 +57,7 @@ public class ProcessEventTest extends AbstractBaseTest {
                         "      </eventFilters>\n" +
                         "    </eventNode>\n" +
                         "    <actionNode id=\"3\" name=\"Signal Event\" >\n" +
-                        "      <action type=\"expression\" dialect=\"java\" >context.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
+                        "      <action type=\"expression\" dialect=\"java\" >kcontext.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
                         "    </actionNode>\n" +
                         "    <join id=\"4\" name=\"Join\" type=\"1\" />\n" +
                         "    <end id=\"5\" name=\"End\" />\n" +
@@ -251,7 +251,7 @@ public class ProcessEventTest extends AbstractBaseTest {
                         "    <composite id=\"2\" name=\"CompositeNode\" >\n" +
                         "      <nodes>\n" +
                         "        <actionNode id=\"1\" name=\"Signal Event\" >\n" +
-                        "          <action type=\"expression\" dialect=\"java\" >context.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
+                        "          <action type=\"expression\" dialect=\"java\" >kcontext.getProcessInstance().signalEvent(\"MyEvent\", \"MyValue\");</action>\n" +
                         "        </actionNode>\n" +
                         "        <eventNode id=\"2\" name=\"Event\" variableName=\"MyVar\" >\n" +
                         "          <eventFilters>\n" +
