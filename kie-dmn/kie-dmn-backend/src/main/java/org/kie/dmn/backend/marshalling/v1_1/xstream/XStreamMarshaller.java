@@ -27,7 +27,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
@@ -91,7 +90,7 @@ import org.kie.dmn.model.v1_1.TPerformanceIndicator;
 import org.kie.dmn.model.v1_1.TRelation;
 import org.kie.dmn.model.v1_1.TTextAnnotation;
 import org.kie.dmn.model.v1_1.TUnaryTests;
-import org.kie.soup.xstream.XStreamUtils;
+import org.kie.utll.xml.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;

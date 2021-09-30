@@ -18,7 +18,6 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.VariableDeclarationExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.util.Drools;
 import org.drools.model.Model;
 import org.drools.modelcompiler.CanonicalKieModule;
@@ -28,6 +27,7 @@ import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.builder.model.KieSessionModel;
 import org.kie.api.conf.SessionsPoolOption;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static com.github.javaparser.StaticJavaParser.parseExpression;
 import static com.github.javaparser.StaticJavaParser.parseStatement;

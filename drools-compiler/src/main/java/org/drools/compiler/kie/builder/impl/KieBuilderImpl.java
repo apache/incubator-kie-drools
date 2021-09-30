@@ -28,10 +28,6 @@ import java.util.function.Supplier;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.AFReleaseId;
-import org.appformer.maven.support.AFReleaseIdImpl;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.DecisionTableFactory;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -59,6 +55,9 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
@@ -69,7 +68,6 @@ import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.core.util.Drools.hasXSTream;
 import static org.drools.core.util.StringUtils.codeAwareIndexOf;
 
@@ -99,7 +97,7 @@ public class KieBuilderImpl
     private InternalKieModule kModule;
 
     private byte[] pomXml;
-    private AFReleaseId releaseId;
+    private ReleaseId releaseId;
 
     private KieModuleModel kModuleModel;
 
@@ -169,8 +167,8 @@ public class KieBuilderImpl
 
             // add all the pom dependencies to this builder ... not sure this is a good idea (?)
             KieRepositoryImpl repository = (KieRepositoryImpl) ks.getRepository();
-            for ( AFReleaseId dep : actualPomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
-                KieModule depModule = repository.getKieModule( adapt( dep, actualPomModel ), actualPomModel );
+            for ( ReleaseId dep : actualPomModel.getDependencies( DependencyFilter.COMPILE_FILTER ) ) {
+                KieModule depModule = repository.getKieModule( dep, actualPomModel );
                 if ( depModule != null ) {
                     addKieDependency( depModule );
                 }
@@ -227,7 +225,7 @@ public class KieBuilderImpl
             addKBasesFilesToTrg();
             markSource();
 
-            MemoryKieModule memoryKieModule = new MemoryKieModule( adapt( releaseId ), kModuleModel, trgMfs );
+            MemoryKieModule memoryKieModule = new MemoryKieModule( releaseId, kModuleModel, trgMfs );
 
             if ( kieDependencies != null && !kieDependencies.isEmpty() ) {
                 for ( KieModule kieModule : kieDependencies ) {
@@ -263,9 +261,9 @@ public class KieBuilderImpl
         CompilationCacheProvider.get().writeKieModuleMetaInfo( kModule, trgMfs );
     }
 
-    public static String getCompilationCachePath( AFReleaseId releaseId,
+    public static String getCompilationCachePath( ReleaseId releaseId,
                                                   String kbaseName ) {
-        return ( (AFReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
+        return ( (ReleaseIdImpl) releaseId ).getCompilationCachePathPrefix() + kbaseName.replace( '.', '/' ) + "/kbase.cache";
     }
 
     public static void buildKieModule( InternalKieModule kModule,
@@ -335,7 +333,7 @@ public class KieBuilderImpl
         }
         trgMfs = trgMfs.clone();
         init(pomModel);
-        kModule = kModule.cloneForIncrementalCompilation( adapt( releaseId ), kModuleModel, trgMfs );
+        kModule = kModule.cloneForIncrementalCompilation( releaseId, kModuleModel, trgMfs );
     }
 
     private void addMetaInfBuilder() {
@@ -606,7 +604,7 @@ public class KieBuilderImpl
     }
 
     public static void validatePomModel( PomModel pomModel ) {
-        AFReleaseId pomReleaseId = pomModel.getReleaseId();
+        ReleaseId pomReleaseId = pomModel.getReleaseId();
         if ( StringUtils.isEmpty( pomReleaseId.getGroupId() ) || StringUtils.isEmpty( pomReleaseId.getArtifactId() ) || StringUtils.isEmpty( pomReleaseId.getVersion() ) ) {
             throw new RuntimeException( "Maven pom.properties exists but ReleaseId content is malformed" );
         }
@@ -625,7 +623,7 @@ public class KieBuilderImpl
         addMetaInfBuilder();
 
         if ( pomXml != null ) {
-            AFReleaseIdImpl g = (AFReleaseIdImpl) releaseId;
+            ReleaseIdImpl g = (ReleaseIdImpl) releaseId;
             trgMfs.write( g.getPomXmlPath(),
                           pomXml,
                           true );
@@ -642,7 +640,7 @@ public class KieBuilderImpl
         }
     }
 
-    public static String generatePomXml( AFReleaseId releaseId ) {
+    public static String generatePomXml( ReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n" );
         sBuilder.append( "         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n" );
@@ -668,7 +666,7 @@ public class KieBuilderImpl
         return sBuilder.toString();
     }
 
-    public static String generatePomProperties( AFReleaseId releaseId ) {
+    public static String generatePomProperties( ReleaseId releaseId ) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append( "groupId=" );
         sBuilder.append( releaseId.getGroupId() );

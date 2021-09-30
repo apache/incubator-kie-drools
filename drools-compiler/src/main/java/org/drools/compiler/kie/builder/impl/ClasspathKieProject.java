@@ -36,10 +36,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
 
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.event.KieModuleDiscovered;
 import org.drools.compiler.kie.builder.impl.event.KieServicesEventListerner;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
@@ -48,6 +46,8 @@ import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.memorycompiler.resources.KiePath;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -356,7 +356,7 @@ public class ClasspathKieProject extends AbstractKieProject {
 
                 KieBuilderImpl.validatePomModel( pomModel ); // throws an exception if invalid
 
-                org.appformer.maven.support.AFReleaseId gav = pomModel.getReleaseId();
+                ReleaseId gav = pomModel.getReleaseId();
 
                 String str =  KieBuilderImpl.generatePomProperties( gav );
                 log.info( "Recursed up folders, found and used pom.xml " + file );

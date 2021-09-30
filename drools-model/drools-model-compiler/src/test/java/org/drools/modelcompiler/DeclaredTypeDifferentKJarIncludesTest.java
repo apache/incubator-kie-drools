@@ -1,8 +1,6 @@
 package org.drools.modelcompiler;
 
-import org.appformer.maven.support.AFReleaseId;
 import org.drools.compiler.kie.builder.impl.DrlProject;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.core.io.impl.ByteArrayResource;
 import org.junit.Test;
 import org.kie.api.KieBase;
@@ -13,10 +11,11 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieSession;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.asList;
-import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.*;
+import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_DSL;
 import static org.drools.modelcompiler.BaseModelTest.RUN_TYPE.PATTERN_WITH_ALPHA_NETWORK;
 import static org.junit.Assert.assertEquals;
 
@@ -120,7 +119,7 @@ public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
         kieServices.newKieBuilder(childFileSystem).buildAll(buildProjectClass());
     }
 
-    private static String generatePomXmlWithDependencies(AFReleaseId releaseId, ReleaseId... dependencies) {
+    private static String generatePomXmlWithDependencies(ReleaseId releaseId, ReleaseId... dependencies) {
         StringBuilder sBuilder = new StringBuilder();
         sBuilder.append("<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" \n");
         sBuilder.append("         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\"> \n");
@@ -144,7 +143,7 @@ public class DeclaredTypeDifferentKJarIncludesTest extends BaseModelTest {
         return sBuilder.toString();
     }
 
-    private static void toGAV(AFReleaseId releaseId, StringBuilder sBuilder) {
+    private static void toGAV(ReleaseId releaseId, StringBuilder sBuilder) {
         sBuilder.append("    <groupId>");
         sBuilder.append(releaseId.getGroupId());
         sBuilder.append("</groupId> \n");

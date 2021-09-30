@@ -37,8 +37,8 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-xstream</artifactId>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-xml</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>

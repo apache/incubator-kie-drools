@@ -18,7 +18,6 @@ package org.drools.modelcompiler.builder;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.lang.descr.GlobalDescr;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
@@ -26,6 +25,7 @@ import org.drools.core.definitions.impl.KnowledgePackageImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.drools.core.util.StringUtils.generateUUID;
 import static org.drools.core.util.StringUtils.getPkgUUID;

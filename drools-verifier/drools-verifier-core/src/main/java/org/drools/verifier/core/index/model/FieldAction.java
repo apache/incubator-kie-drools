@@ -23,7 +23,6 @@ import org.drools.verifier.core.index.keys.Values;
 import org.drools.verifier.core.index.matchers.FieldMatchers;
 import org.drools.verifier.core.maps.KeyDefinition;
 import org.drools.verifier.core.util.PortablePreconditions;
-import org.kie.soup.project.datamodel.oracle.DataType;
 
 public class FieldAction
         extends Action {
@@ -32,11 +31,9 @@ public class FieldAction
     private static final KeyDefinition FACT_TYPE__FIELD_NAME = KeyDefinition.newKeyDefinition().withId("factType.fieldName").build();
 
     private final Field field;
-    private final DataType.DataTypes dataType;
 
     public FieldAction(final Field field,
                        final Column column,
-                       final DataType.DataTypes dataType,
                        final Values values,
                        final AnalyzerConfiguration configuration) {
         super(column,
@@ -46,8 +43,6 @@ public class FieldAction
 
         this.field = PortablePreconditions.checkNotNull("field",
                                                         field);
-        this.dataType = PortablePreconditions.checkNotNull("dataType",
-                                                           dataType);
     }
 
     public static FieldMatchers field() {
@@ -56,10 +51,6 @@ public class FieldAction
 
     public Field getField() {
         return field;
-    }
-
-    public DataType.DataTypes getDataType() {
-        return dataType;
     }
 
     public static KeyDefinition[] keyDefinitions() {

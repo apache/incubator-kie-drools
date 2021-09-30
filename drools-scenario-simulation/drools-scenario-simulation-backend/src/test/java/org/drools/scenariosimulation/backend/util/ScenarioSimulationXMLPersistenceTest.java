@@ -20,8 +20,8 @@ import java.util.Map;
 
 import org.assertj.core.api.Assertions;
 import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
+import org.drools.scenariosimulation.api.model.imports.Import;
 import org.junit.Test;
-import org.kie.soup.project.datamodel.imports.Import;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 

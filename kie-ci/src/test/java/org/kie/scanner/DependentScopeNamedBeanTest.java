@@ -17,12 +17,12 @@ package org.kie.scanner;
 
 import java.io.InputStream;
 
-import org.appformer.maven.integration.MavenPomModelGenerator;
-import org.appformer.maven.support.PomModel;
-import org.appformer.maven.support.PomModelGenerator;
 import org.junit.Test;
+import org.kie.maven.integration.MavenPomModelGenerator;
+import org.kie.util.maven.support.PomModel;
+import org.kie.util.maven.support.PomModelGenerator;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.fail;
 
 public class DependentScopeNamedBeanTest {
 

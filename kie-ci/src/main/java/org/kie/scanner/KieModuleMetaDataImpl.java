@@ -32,21 +32,21 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
-import org.appformer.maven.support.AFReleaseId;
-import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
 import org.drools.core.rule.TypeMetaInfo;
 import org.drools.reflective.classloader.ProjectClassLoader;
 import org.eclipse.aether.artifact.Artifact;
+import org.kie.api.builder.ReleaseId;
+import org.kie.maven.integration.ArtifactResolver;
+import org.kie.maven.integration.DependencyDescriptor;
+import org.kie.util.maven.support.DependencyFilter;
 
-import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
 import static org.drools.core.util.IoUtils.readBytesFromZipEntry;
+import static org.kie.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
@@ -66,11 +66,11 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
 
     private ProjectClassLoader classLoader;
 
-    private AFReleaseId releaseId;
+    private ReleaseId releaseId;
 
     private InternalKieModule kieModule;
 
-    public KieModuleMetaDataImpl(AFReleaseId releaseId, DependencyFilter dependencyFilter) {
+    public KieModuleMetaDataImpl(ReleaseId releaseId, DependencyFilter dependencyFilter) {
         this.releaseId = releaseId;
         this.dependencyFilter = dependencyFilter;
         init(getResolverFor(releaseId, false));
@@ -166,7 +166,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
             addArtifact(artifactResolver.resolveArtifact(releaseId));
         }
         if ( kieModule != null && kieModule.getPomModel() != null ) {
-            for ( AFReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
+            for ( ReleaseId releaseId : kieModule.getPomModel().getDependencies(dependencyFilter) ) {
                 addArtifact( artifactResolver.resolveArtifact( releaseId ) );
             }
         } else {

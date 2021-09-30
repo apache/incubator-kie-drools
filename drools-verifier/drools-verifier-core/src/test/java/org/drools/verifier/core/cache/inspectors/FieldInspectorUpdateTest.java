@@ -32,7 +32,6 @@ import org.drools.verifier.core.index.model.ObjectField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -91,7 +90,6 @@ public class FieldInspectorUpdateTest {
     private FieldAction makeAction(final Field field) {
         final FieldAction fieldAction = new FieldAction(field,
                                                         mock(Column.class),
-                                                        DataType.DataTypes.NUMERIC,
                                                         new Values(11),
                                                         configurationMock);
         final ArrayList<Action> actionsList = new ArrayList<>();

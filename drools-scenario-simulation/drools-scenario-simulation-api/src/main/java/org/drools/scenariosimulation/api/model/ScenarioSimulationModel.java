@@ -17,8 +17,8 @@
 package org.drools.scenariosimulation.api.model;
 
 import com.thoughtworks.xstream.annotations.XStreamAsAttribute;
-import org.kie.soup.project.datamodel.imports.HasImports;
-import org.kie.soup.project.datamodel.imports.Imports;
+import org.drools.scenariosimulation.api.model.imports.HasImports;
+import org.drools.scenariosimulation.api.model.imports.Imports;
 
 public class ScenarioSimulationModel
         implements HasImports {
