@@ -63,65 +63,11 @@ public class PreProcess {
                 : Collections.emptyList();
         final PMMLRequestData requestData = context.getRequestData();
         convertInputData(notTargetMiningFields, requestData);
-        verifyInvalidValues(notTargetMiningFields, requestData);
-        verifyMissingValues(notTargetMiningFields, requestData);
+        verifyFixInvalidValues(notTargetMiningFields, requestData);
+        verifyAddMissingValues(notTargetMiningFields, requestData);
         final ProcessingDTO toReturn = createProcessingDTO(model, requestData.getMappedRequestParams());
         executeTransformations(toReturn, requestData);
         return toReturn;
-    }
-
-    static ProcessingDTO createProcessingDTO(final KiePMMLModel model,
-                                             final Map<String, ParameterInfo> mappedRequestParams) {
-        final List<KiePMMLNameValue> kiePMMLNameValues =
-                getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
-        return new ProcessingDTO(model, kiePMMLNameValues);
-    }
-
-    /**
-     * Verify the missing values if defined in original PMML as <b>missingValueTreatment</b>.
-     * <p>
-     * missingValueTreatment: In a PMML consumer this field is for information only,
-     * unless the value is returnInvalid, in which case if a missing value is encountered
-     * in the given field, the model should return a value indicating an invalid result;
-     * </p>
-     * @param notTargetMiningFields
-     * @param requestData
-     * @see
-     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
-     */
-    static void verifyMissingValues(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
-        logger.debug("verifyMissingValues {} {}", notTargetMiningFields, requestData);
-        Collection<ParameterInfo> requestParams = requestData.getRequestParams();
-        notTargetMiningFields
-                .forEach(miningField -> {
-                    ParameterInfo parameterInfo = requestParams.stream()
-                            .filter(paramInfo -> miningField.getName().equals(paramInfo.getName()))
-                            .findFirst()
-                            .orElse(null);
-                    if (parameterInfo == null) {
-                        MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
-                                miningField.getMissingValueTreatmentMethod() != null ?
-                                        miningField.getMissingValueTreatmentMethod()
-                                        : MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID;
-                        switch (missingValueTreatmentMethod) {
-                            case RETURN_INVALID:
-                                throw new KiePMMLException("Missing required value for " + miningField.getName());
-                            case AS_IS:
-                            case AS_MEAN:
-                            case AS_MODE:
-                            case AS_MEDIAN:
-                                String missingValueReplacement = miningField.getMissingValueReplacement();
-                                if (missingValueReplacement != null) {
-                                    Object requiredValue =
-                                            miningField.getDataType().getActualValue(missingValueReplacement);
-                                    requestData.addRequestParam(miningField.getName(), requiredValue);
-                                }
-                                break;
-                            default:
-                                throw new KiePMMLException("Unmanaged INVALID_VALUE_TREATMENT_METHOD " + missingValueTreatmentMethod);
-                        }
-                    }
-                });
     }
 
     /**
@@ -168,7 +114,8 @@ public class PreProcess {
      * @see
      * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD">INVALID-VALUE-TREATMENT-METHOD</a>
      */
-    static void verifyInvalidValues(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
+    static void verifyFixInvalidValues(final List<MiningField> notTargetMiningFields,
+                                       final PMMLRequestData requestData) {
         logger.debug("verifyInvalidValues {} {}", notTargetMiningFields, requestData);
         final Collection<ParameterInfo> requestParams = requestData.getRequestParams();
         final List<ParameterInfo> toRemove = new ArrayList<>();
@@ -178,51 +125,49 @@ public class PreProcess {
                     .findFirst()
                     .orElse(null);
             if (parameterInfo != null) {
-                boolean match = true;
-                Object originalValue = parameterInfo.getValue();
-                if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty()) {
-                    match = miningField.getAllowedValues().stream()
-                            .anyMatch(allowedValue -> {
-                                Object allowedObject = convert(originalValue.getClass(), allowedValue);
-                                return originalValue.equals(allowedObject);
-                            });
-                } else if (miningField.getIntervals() != null && !miningField.getIntervals().isEmpty()) {
-                    double originalValueNumber = ((Number) originalValue).doubleValue();
-                    match = miningField.getIntervals().stream()
-                            .anyMatch(interval -> originalValueNumber >= interval.getLeftMargin().doubleValue() &&
-                                    originalValueNumber <= interval.getRightMargin().doubleValue());
-                }
+                boolean match = isMatching(parameterInfo, miningField);
                 if (!match) {
-                    INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
-                            miningField.getInvalidValueTreatmentMethod() != null ?
-                                    miningField.getInvalidValueTreatmentMethod()
-                                    : INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID;
-                    switch (invalidValueTreatmentMethod) {
-                        case RETURN_INVALID:
-                            throw new KiePMMLException("Invalid value " + originalValue + " for " + miningField.getName());
-                        case AS_MISSING:
-                            toRemove.add(parameterInfo);
-                            break;
-                        case AS_VALUE:
-                            String invalidValueReplacement = miningField.getInvalidValueReplacement();
-                            if (invalidValueReplacement == null) {
-                                throw new KiePMMLException("Missing required invalidValueReplacement for " + miningField.getName());
-                            } else {
-                                Object requiredValue =
-                                        miningField.getDataType().getActualValue(invalidValueReplacement);
-                                parameterInfo.setType(miningField.getDataType().getMappedClass());
-                                parameterInfo.setValue(requiredValue);
-                            }
-                            break;
-                        case AS_IS:
-                            break;
-                        default:
-                            throw new KiePMMLException("Unmanaged INVALID_VALUE_TREATMENT_METHOD " + invalidValueTreatmentMethod);
-                    }
+                    manageInvalidValues(miningField, parameterInfo, toRemove);
                 }
                 toRemove.forEach(requestData::removeRequestParam);
             }
         });
+    }
+
+    /**
+     * Verify the missing values if defined in original PMML as <b>missingValueTreatment</b>,
+     * <b>eventually adding default ones</b>.
+     * <p>
+     * missingValueTreatment: In a PMML consumer this field is for information only,
+     * unless the value is returnInvalid, in which case if a missing value is encountered
+     * in the given field, the model should return a value indicating an invalid result;
+     * </p>
+     * @param notTargetMiningFields
+     * @param requestData
+     * @see
+     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
+     */
+    static void verifyAddMissingValues(final List<MiningField> notTargetMiningFields,
+                                       final PMMLRequestData requestData) {
+        logger.debug("verifyMissingValues {} {}", notTargetMiningFields, requestData);
+        Collection<ParameterInfo> requestParams = requestData.getRequestParams();
+        notTargetMiningFields
+                .forEach(miningField -> {
+                    ParameterInfo parameterInfo = requestParams.stream()
+                            .filter(paramInfo -> miningField.getName().equals(paramInfo.getName()))
+                            .findFirst()
+                            .orElse(null);
+                    if (parameterInfo == null) {
+                        manageMissingValues(miningField, requestData);
+                    }
+                });
+    }
+
+    static ProcessingDTO createProcessingDTO(final KiePMMLModel model,
+                                             final Map<String, ParameterInfo> mappedRequestParams) {
+        final List<KiePMMLNameValue> kiePMMLNameValues =
+                getKiePMMLNameValuesFromParameterInfos(mappedRequestParams.values());
+        return new ProcessingDTO(model, kiePMMLNameValues);
     }
 
     /**
@@ -250,6 +195,101 @@ public class PreProcess {
         return parameterInfos.stream()
                 .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Manage the <b>invalid value</b> of the given <code>ParameterInfo</code> depending on the
+     * <code>INVALID_VALUE_TREATMENT_METHOD</code>
+     * of the given <code>MiningField</code>, <b>eventually adding the ParameterInfo to the list of the ones to be
+     * removed from input data</b>
+     * @param miningField
+     * @param parameterInfo
+     * @param toRemove
+     */
+    static void manageInvalidValues(final MiningField miningField, final ParameterInfo parameterInfo,
+                                    final List<ParameterInfo> toRemove) {
+        INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
+                miningField.getInvalidValueTreatmentMethod() != null ?
+                        miningField.getInvalidValueTreatmentMethod()
+                        : INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID;
+        Object originalValue = parameterInfo.getValue();
+        switch (invalidValueTreatmentMethod) {
+            case RETURN_INVALID:
+                throw new KiePMMLException("Invalid value " + originalValue + " for " + miningField.getName());
+            case AS_MISSING:
+                toRemove.add(parameterInfo);
+                break;
+            case AS_IS:
+                break;
+            case AS_VALUE:
+                String invalidValueReplacement = miningField.getInvalidValueReplacement();
+                if (invalidValueReplacement == null) {
+                    throw new KiePMMLException("Missing required invalidValueReplacement for " + miningField.getName());
+                } else {
+                    Object requiredValue =
+                            miningField.getDataType().getActualValue(invalidValueReplacement);
+                    parameterInfo.setType(miningField.getDataType().getMappedClass());
+                    parameterInfo.setValue(requiredValue);
+                }
+                break;
+            default:
+                throw new KiePMMLException("Unmanaged INVALID_VALUE_TREATMENT_METHOD " + invalidValueTreatmentMethod);
+        }
+    }
+
+    /**
+     * Manage the <b>missing value</b> depending on the <code>INVALID_VALUE_TREATMENT_METHOD</code>
+     * of the given <code>MiningField</code>, <b>eventually adding default ont to input data</b>
+     * @param miningField
+     * @param requestData
+     */
+    static void manageMissingValues(final MiningField miningField, final PMMLRequestData requestData) {
+        MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
+                miningField.getMissingValueTreatmentMethod() != null ?
+                        miningField.getMissingValueTreatmentMethod()
+                        : MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID;
+        switch (missingValueTreatmentMethod) {
+            case RETURN_INVALID:
+                throw new KiePMMLException("Missing required value for " + miningField.getName());
+            case AS_IS:
+            case AS_MEAN:
+            case AS_MODE:
+            case AS_MEDIAN:
+            case AS_VALUE:
+                String missingValueReplacement = miningField.getMissingValueReplacement();
+                if (missingValueReplacement != null) {
+                    Object requiredValue =
+                            miningField.getDataType().getActualValue(missingValueReplacement);
+                    requestData.addRequestParam(miningField.getName(), requiredValue);
+                }
+                break;
+            default:
+                throw new KiePMMLException("Unmanaged INVALID_VALUE_TREATMENT_METHOD " + missingValueTreatmentMethod);
+        }
+    }
+
+    /**
+     * Verify if the value of the given <code>ParameterInfo</code> is allowed for the given <code>MiningField</code>
+     * @param parameterInfo
+     * @param miningField
+     * @return
+     */
+    static boolean isMatching(final ParameterInfo parameterInfo, final MiningField miningField) {
+        boolean toReturn = true;
+        Object originalValue = parameterInfo.getValue();
+        if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty()) {
+            toReturn = miningField.getAllowedValues().stream()
+                    .anyMatch(allowedValue -> {
+                        Object allowedObject = convert(originalValue.getClass(), allowedValue);
+                        return originalValue.equals(allowedObject);
+                    });
+        } else if (miningField.getIntervals() != null && !miningField.getIntervals().isEmpty()) {
+            double originalValueNumber = ((Number) originalValue).doubleValue();
+            toReturn = miningField.getIntervals().stream()
+                    .anyMatch(interval -> originalValueNumber >= interval.getLeftMargin().doubleValue() &&
+                            originalValueNumber <= interval.getRightMargin().doubleValue());
+        }
+        return toReturn;
     }
 
     private static boolean isTarget(MiningField miningField) {
