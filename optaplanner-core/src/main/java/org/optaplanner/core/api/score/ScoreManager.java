@@ -16,6 +16,8 @@
 
 package org.optaplanner.core.api.score;
 
+import java.util.UUID;
+
 import org.optaplanner.core.api.domain.solution.PlanningScore;
 import org.optaplanner.core.api.domain.solution.PlanningSolution;
 import org.optaplanner.core.api.score.calculator.EasyScoreCalculator;
@@ -23,9 +25,11 @@ import org.optaplanner.core.api.score.constraint.ConstraintMatch;
 import org.optaplanner.core.api.score.constraint.ConstraintMatchTotal;
 import org.optaplanner.core.api.score.constraint.Indictment;
 import org.optaplanner.core.api.solver.SolverFactory;
+import org.optaplanner.core.api.solver.SolverManager;
 import org.optaplanner.core.impl.score.DefaultScoreManager;
 import org.optaplanner.core.impl.score.director.InnerScoreDirectorFactory;
 import org.optaplanner.core.impl.solver.DefaultSolverFactory;
+import org.optaplanner.core.impl.solver.DefaultSolverManager;
 
 /**
  * A stateless service to help calculate {@link Score}, {@link ConstraintMatchTotal},
@@ -58,6 +62,20 @@ public interface ScoreManager<Solution_, Score_ extends Score<Score_>> {
                 (InnerScoreDirectorFactory<Solution_, Score_>) ((DefaultSolverFactory<Solution_>) solverFactory)
                         .getScoreDirectorFactory();
         return new DefaultScoreManager<>(scoreDirectorFactory);
+    }
+
+    /**
+     * Uses a {@link SolverManager} to build a {@link ScoreManager}.
+     *
+     * @param solverManager never null
+     * @return never null
+     * @param <Solution_> the solution type, the class with the {@link PlanningSolution} annotation
+     * @param <Score_> the actual score type
+     * @param <ProblemId_> the ID type of a submitted problem, such as {@link Long} or {@link UUID}
+     */
+    static <Solution_, Score_ extends Score<Score_>, ProblemId_> ScoreManager<Solution_, Score_> create(
+            SolverManager<Solution_, ProblemId_> solverManager) {
+        return create(((DefaultSolverManager<Solution_, ProblemId_>) solverManager).getSolverFactory());
     }
 
     // ************************************************************************
