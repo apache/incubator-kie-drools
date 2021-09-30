@@ -44,8 +44,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     protected MINING_FUNCTION miningFunction;
     protected String targetField;
     protected Map<String, Object> outputFieldsMap = new HashMap<>();
-    protected Map<String, Object> missingValueReplacementMap = new HashMap<>();
-    protected List<String> requiredFieldsList = new ArrayList<>();
     protected List<MiningField> miningFields = new ArrayList<>();
     protected List<OutputField> outputFields = new ArrayList<>();
     protected List<KiePMMLOutputField> kiePMMLOutputFields = new ArrayList<>();
@@ -74,14 +72,6 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Object> getOutputFieldsMap() {
         return Collections.unmodifiableMap(outputFieldsMap);
-    }
-
-    public Map<String, Object> getMissingValueReplacementMap() {
-        return Collections.unmodifiableMap(missingValueReplacementMap);
-    }
-
-    public List<String> getRequiredFieldsList() {
-        return Collections.unmodifiableList(requiredFieldsList);
     }
 
     /**
@@ -123,7 +113,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
     }
 
     public List<KiePMMLOutputField> getKiePMMLOutputFields() {
-        return kiePMMLOutputFields != null  ? Collections.unmodifiableList(kiePMMLOutputFields) : Collections.emptyList();
+        return kiePMMLOutputFields != null ? Collections.unmodifiableList(kiePMMLOutputFields) :
+                Collections.emptyList();
     }
 
     public KiePMMLTransformationDictionary getTransformationDictionary() {
@@ -136,7 +127,8 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
 
     public Map<String, Double> getProbabilityMap() {
         final LinkedHashMap<String, Double> probabilityResultMap = getProbabilityResultMap();
-        return probabilityResultMap != null ? Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
+        return probabilityResultMap != null ?
+                Collections.unmodifiableMap(getFixedProbabilityMap(probabilityResultMap)) : Collections.emptyMap();
     }
 
     public Object getPredictedDisplayValue() {
@@ -215,20 +207,5 @@ public abstract class KiePMMLModel extends AbstractKiePMMLComponent implements P
             }
             return this;
         }
-
-        public Builder<T> withMissingValueReplacementMap(Map<String, Object> missingValueReplacementMap) {
-            if (missingValueReplacementMap != null) {
-                toBuild.missingValueReplacementMap.putAll(missingValueReplacementMap);
-            }
-            return this;
-        }
-
-        public Builder<T> withRequiredFieldsList(List<String> requiredFieldsList) {
-            if (requiredFieldsList != null) {
-                toBuild.requiredFieldsList.addAll(requiredFieldsList);
-            }
-            return this;
-        }
-
     }
 }
