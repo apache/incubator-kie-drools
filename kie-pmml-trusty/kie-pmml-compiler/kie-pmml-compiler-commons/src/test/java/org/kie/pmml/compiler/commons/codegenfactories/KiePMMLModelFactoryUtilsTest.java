@@ -16,8 +16,6 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -33,13 +31,11 @@ import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
 import com.github.javaparser.ast.body.MethodDeclaration;
-import com.github.javaparser.ast.expr.AssignExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
 import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.ObjectCreationExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
@@ -133,33 +129,25 @@ public class KiePMMLModelFactoryUtilsTest {
                 .collect(Collectors.toList());
         List<OutputField> outputFields = IntStream.range(0, 2)
                 .mapToObj(i -> ModelUtils.convertToKieOutputField(getRandomOutputField(),
-                                                                             getRandomDataField()))
-                .collect(Collectors.toList());
-        List<String> requiredFieldsList = IntStream.range(0, 2)
-                .mapToObj(i -> "FIELD-" + i)
+                                                                  getRandomDataField()))
                 .collect(Collectors.toList());
         KiePMMLModelFactoryUtils.setKiePMMLModelConstructor(generatedClassName,
                                                             constructorDeclaration,
                                                             name,
                                                             miningFields,
-                                                            outputFields,
-                                                            Collections.emptyMap(),
-                                                            requiredFieldsList);
+                                                            outputFields);
         commonVerifySuperInvocation(generatedClassName, name);
-        List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(), "miningFields",
+        List<MethodCallExpr> retrieved = getMethodCallExprList(constructorDeclaration.getBody(), miningFields.size(),
+                                                               "miningFields",
                                                                "add");
         MethodCallExpr addMethodCall = retrieved.get(0);
         NodeList<Expression> arguments = addMethodCall.getArguments();
         commonVerifyMiningFieldsObjectCreation(arguments, miningFields);
         retrieved = getMethodCallExprList(constructorDeclaration.getBody(), outputFields.size(), "outputFields",
-                                                               "add");
+                                          "add");
         addMethodCall = retrieved.get(0);
         arguments = addMethodCall.getArguments();
         commonVerifyOutputFieldsObjectCreation(arguments, outputFields);
-
-        List<AssignExpr> assignExprList = getAssignExprList(constructorDeclaration.getBody(), 1,
-                                                                 "requiredFieldsList");
-        commonVerifyRequiredFieldsList(assignExprList.get(0), requiredFieldsList);
     }
 
     @Test
@@ -172,7 +160,8 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(1, classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").size());
         assertEquals(1, classOrInterfaceDeclaration.getMethodsByName("createLocalTransformations").size());
         MethodDeclaration expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
-                                                                         ".KiePMMLTransformationDictionary createTransformationDictionary() {\n" +
+                                                                         ".KiePMMLTransformationDictionary " +
+                                                                         "createTransformationDictionary() {\n" +
                                                                          "    KiePMMLParameterField " +
                                                                          "CONSTANT_FUNCTION_0 = KiePMMLParameterField" +
                                                                          ".builder(\"empty\", Collections.emptyList()" +
@@ -475,7 +464,8 @@ public class KiePMMLModelFactoryUtilsTest {
                                                                          ".build();\n" +
                                                                          "    return transformationDictionary;\n" +
                                                                          "}");
-        MethodDeclaration retrieved = classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
+        MethodDeclaration retrieved =
+                classOrInterfaceDeclaration.getMethodsByName("createTransformationDictionary").get(0);
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         expected = JavaParserUtils.parseMethod("private org.kie.pmml.commons.transformations" +
                                                        ".KiePMMLLocalTransformations createLocalTransformations() {\n" +
@@ -534,7 +524,7 @@ public class KiePMMLModelFactoryUtilsTest {
         List<Interval> intervals = IntStream.range(0, 3)
                 .mapToObj(i -> {
                     int leftMargin = new Random().nextInt(40);
-                    int rightMargin = leftMargin +13;
+                    int rightMargin = leftMargin + 13;
                     return new Interval(leftMargin, rightMargin);
                 })
                 .collect(Collectors.toList());
@@ -554,7 +544,7 @@ public class KiePMMLModelFactoryUtilsTest {
             assertEquals(Interval.class.getCanonicalName(), objCrt.getType().asString());
             Optional<Interval> intervalOpt = intervals.stream()
                     .filter(interval -> String.valueOf(interval.getLeftMargin()).equals(objCrt.getArgument(0).asNameExpr().toString()) &&
-                            String.valueOf(interval.getRightMargin()).equals(objCrt.getArgument(1).asNameExpr().toString()) )
+                            String.valueOf(interval.getRightMargin()).equals(objCrt.getArgument(1).asNameExpr().toString()))
                     .findFirst();
             assertTrue(intervalOpt.isPresent());
         });
@@ -598,7 +588,7 @@ public class KiePMMLModelFactoryUtilsTest {
         commonVerifyOutputFieldsObjectCreation(retrieved, outputFields);
     }
 
-    private void commonVerifyMiningFieldsObjectCreation(List <Expression> toVerify, List<MiningField> miningFields) {
+    private void commonVerifyMiningFieldsObjectCreation(List<Expression> toVerify, List<MiningField> miningFields) {
         toVerify.forEach(expression -> {
             assertTrue(expression instanceof ObjectCreationExpr);
             ObjectCreationExpr objCrt = (ObjectCreationExpr) expression;
@@ -609,31 +599,38 @@ public class KiePMMLModelFactoryUtilsTest {
             assertTrue(miningFieldOpt.isPresent());
             MiningField miningField = miningFieldOpt.get();
             assertEquals(MiningField.class.getCanonicalName(), objCrt.getType().asString());
-            String expected = miningField.getUsageType() != null ? FIELD_USAGE_TYPE.class.getCanonicalName() + "." + miningField.getUsageType() : "null";
+            String expected = miningField.getUsageType() != null ?
+                    FIELD_USAGE_TYPE.class.getCanonicalName() + "." + miningField.getUsageType() : "null";
             assertEquals(expected, objCrt.getArgument(1).toString());
-            expected = miningField.getOpType() != null ? OP_TYPE.class.getCanonicalName() + "." + miningField.getOpType() : "null";
+            expected = miningField.getOpType() != null ?
+                    OP_TYPE.class.getCanonicalName() + "." + miningField.getOpType() : "null";
             assertEquals(expected, objCrt.getArgument(2).toString());
-            expected = miningField.getDataType() != null ? DATA_TYPE.class.getCanonicalName() + "." + miningField.getDataType() : "null";
+            expected = miningField.getDataType() != null ?
+                    DATA_TYPE.class.getCanonicalName() + "." + miningField.getDataType() : "null";
             assertEquals(expected, objCrt.getArgument(3).toString());
-            expected = miningField.getMissingValueTreatmentMethod() != null ? MISSING_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getMissingValueTreatmentMethod() : "null";
+            expected = miningField.getMissingValueTreatmentMethod() != null ?
+                    MISSING_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getMissingValueTreatmentMethod() : "null";
             assertEquals(expected, objCrt.getArgument(4).toString());
-            expected = miningField.getInvalidValueTreatmentMethod() != null ? INVALID_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getInvalidValueTreatmentMethod() : "null";
+            expected = miningField.getInvalidValueTreatmentMethod() != null ?
+                    INVALID_VALUE_TREATMENT_METHOD.class.getCanonicalName() + "." + miningField.getInvalidValueTreatmentMethod() : "null";
             assertEquals(expected, objCrt.getArgument(5).toString());
-            expected = miningField.getMissingValueReplacement() != null ? miningField.getMissingValueReplacement() : "null";
+            expected = miningField.getMissingValueReplacement() != null ? miningField.getMissingValueReplacement() :
+                    "null";
             assertEquals(expected, objCrt.getArgument(6).toString());
-            expected = miningField.getInvalidValueReplacement() != null ? miningField.getInvalidValueReplacement() : "null";
+            expected = miningField.getInvalidValueReplacement() != null ? miningField.getInvalidValueReplacement() :
+                    "null";
             assertEquals(expected, objCrt.getArgument(7).toString());
             expected = "java.util.Arrays.asList()";
             assertEquals(expected, objCrt.getArgument(8).toString());
             assertEquals(expected, objCrt.getArgument(9).toString());
-            });
+        });
     }
 
-    private void commonVerifyOutputFieldsObjectCreation(List <Expression> toVerify, List<OutputField> outputFields) {
+    private void commonVerifyOutputFieldsObjectCreation(List<Expression> toVerify, List<OutputField> outputFields) {
         toVerify.forEach(argument -> {
             assertTrue(argument instanceof ObjectCreationExpr);
             ObjectCreationExpr objCrt = (ObjectCreationExpr) argument;
-            assertEquals(OutputField.class.getCanonicalName(),  objCrt.getType().asString());
+            assertEquals(OutputField.class.getCanonicalName(), objCrt.getType().asString());
             Optional<OutputField> outputFieldOpt = outputFields.stream()
                     .filter(miningField -> miningField.getName().equals(objCrt.getArgument(0).asStringLiteralExpr().asString()))
                     .findFirst();
@@ -658,20 +655,6 @@ public class KiePMMLModelFactoryUtilsTest {
         assertEquals(expected, superInvocation.toString()); // modified by invocation
     }
 
-    private void commonVerifyRequiredFieldsList(AssignExpr assignRequiredFieldsList, List<String> requiredFieldsList) {
-        MethodCallExpr methodCallExpr = assignRequiredFieldsList.getValue().asMethodCallExpr();
-        assertEquals(Arrays.class.getCanonicalName(), methodCallExpr.getScope().get().toString());
-        assertEquals("asList", methodCallExpr.getName().asString());
-        NodeList<Expression> arguments = methodCallExpr.getArguments();
-        assertEquals(requiredFieldsList.size(), arguments.size());
-        arguments.forEach(argument -> assertTrue(argument instanceof StringLiteralExpr));
-        requiredFieldsList.forEach(requiredField -> {
-            assertTrue(arguments.stream()
-                    .anyMatch(argument -> requiredField.equals(argument.asStringLiteralExpr().asString())));
-        });
-    }
-
-
     /**
      * Return a <code>List&lt;MethodCallExpr&gt;</code> where every element <b>scope' name</b> is <code>scope</code>
      * and every element <b>name</b> is <code>method</code>
@@ -684,32 +667,12 @@ public class KiePMMLModelFactoryUtilsTest {
     private List<MethodCallExpr> getMethodCallExprList(BlockStmt blockStmt, int expectedSize, String scope,
                                                        String method) {
         Stream<Statement> statementStream = getStatementStream(blockStmt);
-        List<MethodCallExpr> toReturn =  statementStream
+        List<MethodCallExpr> toReturn = statementStream
                 .filter(Statement::isExpressionStmt)
                 .map(expressionStmt -> ((ExpressionStmt) expressionStmt).getExpression())
                 .filter(expression -> expression instanceof MethodCallExpr)
                 .map(expression -> (MethodCallExpr) expression)
                 .filter(methodCallExpr -> evaluateMethodCallExpr(methodCallExpr, scope, method))
-                .collect(Collectors.toList());
-        assertEquals(expectedSize, toReturn.size());
-        return toReturn;
-    }
-
-    /**
-     * Return a <code>List&lt;AssignExpr&gt;</code> where every element <b>target' name</b> is <code>target</code>
-     * @param blockStmt
-     * @param expectedSize
-     * @param target
-     * @return
-     */
-    private List<AssignExpr> getAssignExprList(BlockStmt blockStmt, int expectedSize, String target) {
-        Stream<Statement> statementStream = getStatementStream(blockStmt);
-        List<AssignExpr> toReturn =  statementStream
-                .filter(Statement::isExpressionStmt)
-                .map(expressionStmt -> ((ExpressionStmt) expressionStmt).getExpression())
-                .filter(expression -> expression instanceof AssignExpr)
-                .map(expression -> (AssignExpr) expression)
-                .filter(methodCallExpr -> target.equals(methodCallExpr.getTarget().toString()))
                 .collect(Collectors.toList());
         assertEquals(expectedSize, toReturn.size());
         return toReturn;
@@ -730,7 +693,6 @@ public class KiePMMLModelFactoryUtilsTest {
                 methodCallExpr.getName().asString().equals(method);
     }
 
-
     private Stream<Statement> getStatementStream(BlockStmt blockStmt) {
         final NodeList<Statement> statements = blockStmt.getStatements();
         return StreamSupport.stream(
@@ -738,5 +700,4 @@ public class KiePMMLModelFactoryUtilsTest {
                         statements.iterator(),
                         Spliterator.ORDERED), false);
     }
-
 }

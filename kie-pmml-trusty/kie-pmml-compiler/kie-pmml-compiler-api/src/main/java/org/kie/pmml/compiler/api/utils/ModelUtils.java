@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.kie.pmml.compiler.api.utils;
+package org.kie.pmml.compiler.commons.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -233,17 +233,17 @@ public class ModelUtils {
     /**
      * <code>DATA_TYPE</code> of the given <b>field</b>
      * @param fields
-     * @param fieldName
+     * @param targetFieldName
      * @return
      */
-    public static DATA_TYPE getDATA_TYPE(final List<Field<?>> fields, String fieldName) {
+    public static DATA_TYPE getDATA_TYPE(final List<Field<?>> fields, String targetFieldName) {
         Optional<DATA_TYPE> toReturn = fields.stream()
-                .filter(fld -> Objects.equals(fieldName, fld.getName().getValue()))
+                .filter(fld -> Objects.equals(targetFieldName, fld.getName().getValue()))
                 .findFirst()
                 .map(dataField -> DATA_TYPE.byName(dataField.getDataType().value()));
-        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DATA_TYPE for " +
+        return toReturn.orElseThrow(() -> new KiePMMLInternalException(String.format("Failed to find DataType for " +
                                                                                              "field %s",
-                                                                                     fieldName)));
+                                                                                     targetFieldName)));
     }
 
     /**
@@ -297,7 +297,7 @@ public class ModelUtils {
      */
     public static List<org.kie.pmml.api.models.MiningField> convertToKieMiningFieldList(final MiningSchema toConvert,
                                                                                         final List<Field<?>> fields) {
-        if (toConvert == null || !toConvert.hasMiningFields()) {
+        if (toConvert == null) {
             return Collections.emptyList();
         }
         return toConvert.getMiningFields()
@@ -524,24 +524,16 @@ public class ModelUtils {
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
 
-    public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
-                                                                                             final TransformationDictionary transformationDictionary) {
+    public static List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+                                                                                             final TransformationDictionary transformationDictionary,
+                                                                                             final Model model) {
         final List<Field<?>> toReturn = new ArrayList<>();
-        if (dataDictionary != null && dataDictionary.hasDataFields()) {
-            dataDictionary.getDataFields().stream().map(Field.class::cast)
-                    .forEach(toReturn::add);
-        }
+        dataDictionary.getDataFields().stream().map(Field.class::cast)
+                .forEach(toReturn::add);
         if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
             transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
                     .forEach(toReturn::add);
         }
-        return toReturn;
-    }
-
-    public static List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
-                                                                                             final TransformationDictionary transformationDictionary,
-                                                                                             final Model model) {
-        final List<Field<?>> toReturn = getFieldsFromDataDictionaryAndTransformationDictionary(dataDictionary, transformationDictionary);
         LocalTransformations localTransformations = model.getLocalTransformations();
         if (localTransformations != null && localTransformations.hasDerivedFields()) {
             localTransformations.getDerivedFields().stream().map(Field.class::cast)

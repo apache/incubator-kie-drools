@@ -17,14 +17,18 @@ package org.kie.pmml.evaluator.core.utils;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.kie.api.pmml.PMMLRequestData;
 import org.kie.api.pmml.ParameterInfo;
+import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
+import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
 import org.kie.pmml.commons.model.ProcessingDTO;
@@ -53,11 +57,14 @@ public class PreProcess {
      * @return
      */
     public static ProcessingDTO preProcess(final KiePMMLModel model, final PMMLContext context) {
-        verifyMissingValues(model, context);
-        convertInputData(model, context);
-        verifyInvalidValues(model, context);
-        addMissingValuesReplacements(model, context);
+        final List<MiningField> notTargetMiningFields = model.getMiningFields() != null ?
+                model.getMiningFields().stream().filter(miningField -> !isTarget(miningField))
+                        .collect(Collectors.toList())
+                : Collections.emptyList();
         final PMMLRequestData requestData = context.getRequestData();
+        convertInputData(notTargetMiningFields, requestData);
+        verifyInvalidValues(notTargetMiningFields, requestData);
+        verifyMissingValues(notTargetMiningFields, requestData);
         final ProcessingDTO toReturn = createProcessingDTO(model, requestData.getMappedRequestParams());
         executeTransformations(toReturn, requestData);
         return toReturn;
@@ -77,36 +84,56 @@ public class PreProcess {
      * unless the value is returnInvalid, in which case if a missing value is encountered
      * in the given field, the model should return a value indicating an invalid result;
      * </p>
-     * @param model
-     * @param context
+     * @param notTargetMiningFields
+     * @param requestData
      * @see
      * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
      */
-    static void verifyMissingValues(final KiePMMLModel model, final PMMLContext context) {
-        logger.debug("verifyMissingValues {} {}", model, context);
-        final PMMLRequestData requestData = context.getRequestData();
-        final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
-        final List<String> requiredFieldsList = model.getRequiredFieldsList();
-        final List<String> missingFields = requiredFieldsList.stream()
-                .filter(fieldName -> !mappedRequestParams.containsKey(fieldName))
-                .collect(Collectors.toList());
-        if (!missingFields.isEmpty()) {
-            String error = String.format("Missing required field(s): %s", String.join(", ", missingFields));
-            logger.error(error);
-            throw new KiePMMLException(error);
-        }
+    static void verifyMissingValues(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
+        logger.debug("verifyMissingValues {} {}", notTargetMiningFields, requestData);
+        Collection<ParameterInfo> requestParams = requestData.getRequestParams();
+        notTargetMiningFields
+                .forEach(miningField -> {
+                    ParameterInfo parameterInfo = requestParams.stream()
+                            .filter(paramInfo -> miningField.getName().equals(paramInfo.getName()))
+                            .findFirst()
+                            .orElse(null);
+                    if (parameterInfo == null) {
+                        MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
+                                miningField.getMissingValueTreatmentMethod() != null ?
+                                        miningField.getMissingValueTreatmentMethod()
+                                        : MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID;
+                        switch (missingValueTreatmentMethod) {
+                            case RETURN_INVALID:
+                                throw new KiePMMLException("Missing required value for " + miningField.getName());
+                            case AS_IS:
+                            case AS_MEAN:
+                            case AS_MODE:
+                            case AS_MEDIAN:
+                                String missingValueReplacement = miningField.getMissingValueReplacement();
+                                if (missingValueReplacement != null) {
+                                    Object requiredValue =
+                                            miningField.getDataType().getActualValue(missingValueReplacement);
+                                    requestData.addRequestParam(miningField.getName(), requiredValue);
+                                }
+                                break;
+                            default:
+                                throw new KiePMMLException("Unmanaged INVALID_VALUE_TREATMENT_METHOD " + missingValueTreatmentMethod);
+                        }
+                    }
+                });
     }
 
     /**
-     * Try to convert input data to expected data-type, throwing exception when data are not convertible
-     * @param model
-     * @param context
+     * Try to convert input data to expected data-type, throwing exception when data are not
+     * convertible
+     * @param notTargetMiningFields
+     * @param requestData
      */
-    static void convertInputData(final KiePMMLModel model, final PMMLContext context) {
-        logger.debug("convertInputData {} {}", model, context);
-        final PMMLRequestData requestData = context.getRequestData();
+    static void convertInputData(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
+        logger.debug("convertInputData {} {}", notTargetMiningFields, requestData);
         Collection<ParameterInfo> requestParams = requestData.getRequestParams();
-        model.getMiningFields().forEach(miningField -> {
+        notTargetMiningFields.forEach(miningField -> {
             ParameterInfo parameterInfo = requestParams.stream()
                     .filter(paramInfo -> miningField.getName().equals(paramInfo.getName()))
                     .findFirst()
@@ -136,17 +163,16 @@ public class PreProcess {
      * value specified by attribute invalidValueReplacement which must be present in this case,
      * or the PMML is invalid.
      * </p>
-     * @param model
-     * @param context
+     * @param notTargetMiningFields
+     * @param requestData
      * @see
      * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_INVALID-VALUE-TREATMENT-METHOD">INVALID-VALUE-TREATMENT-METHOD</a>
      */
-    static void verifyInvalidValues(final KiePMMLModel model, final PMMLContext context) {
-        logger.debug("verifyInvalidValues {} {}", model, context);
-        final PMMLRequestData requestData = context.getRequestData();
+    static void verifyInvalidValues(final List<MiningField> notTargetMiningFields, final PMMLRequestData requestData) {
+        logger.debug("verifyInvalidValues {} {}", notTargetMiningFields, requestData);
         final Collection<ParameterInfo> requestParams = requestData.getRequestParams();
         final List<ParameterInfo> toRemove = new ArrayList<>();
-        model.getMiningFields().forEach(miningField -> {
+        notTargetMiningFields.forEach(miningField -> {
             ParameterInfo parameterInfo = requestParams.stream()
                     .filter(paramInfo -> miningField.getName().equals(paramInfo.getName()))
                     .findFirst()
@@ -154,7 +180,7 @@ public class PreProcess {
             if (parameterInfo != null) {
                 boolean match = true;
                 Object originalValue = parameterInfo.getValue();
-                if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty() ) {
+                if (miningField.getAllowedValues() != null && !miningField.getAllowedValues().isEmpty()) {
                     match = miningField.getAllowedValues().stream()
                             .anyMatch(allowedValue -> {
                                 Object allowedObject = convert(originalValue.getClass(), allowedValue);
@@ -167,8 +193,10 @@ public class PreProcess {
                                     originalValueNumber <= interval.getRightMargin().doubleValue());
                 }
                 if (!match) {
-                    INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod = miningField.getInvalidValueTreatmentMethod() != null ? miningField.getInvalidValueTreatmentMethod()
-                            : INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID;
+                    INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
+                            miningField.getInvalidValueTreatmentMethod() != null ?
+                                    miningField.getInvalidValueTreatmentMethod()
+                                    : INVALID_VALUE_TREATMENT_METHOD.RETURN_INVALID;
                     switch (invalidValueTreatmentMethod) {
                         case RETURN_INVALID:
                             throw new KiePMMLException("Invalid value " + originalValue + " for " + miningField.getName());
@@ -180,7 +208,8 @@ public class PreProcess {
                             if (invalidValueReplacement == null) {
                                 throw new KiePMMLException("Missing required invalidValueReplacement for " + miningField.getName());
                             } else {
-                                Object requiredValue = miningField.getDataType().getActualValue(invalidValueReplacement);
+                                Object requiredValue =
+                                        miningField.getDataType().getActualValue(invalidValueReplacement);
                                 parameterInfo.setType(miningField.getDataType().getMappedClass());
                                 parameterInfo.setValue(requiredValue);
                             }
@@ -192,31 +221,6 @@ public class PreProcess {
                     }
                 }
                 toRemove.forEach(requestData::removeRequestParam);
-            }
-        });
-    }
-
-    /**
-     * Add missing input values if defined in original PMML as <b>missingValueReplacement</b>.
-     * <p>
-     * "missingValueReplacement: If this attribute is specified then a missing input value is automatically replaced
-     * by the given value.
-     * That is, the model itself works as if the given value was found in the original input. "
-     * @param model
-     * @param context
-     * @see
-     * <a href="http://dmg.org/pmml/v4-4/MiningSchema.html#xsdType_MISSING-VALUE-TREATMENT-METHOD">MISSING-VALUE-TREATMENT-METHOD</a>
-     */
-    static void addMissingValuesReplacements(final KiePMMLModel model, final PMMLContext context) {
-        logger.debug("addMissingValuesReplacements {} {}", model, context);
-        final PMMLRequestData requestData = context.getRequestData();
-        final Map<String, ParameterInfo> mappedRequestParams = requestData.getMappedRequestParams();
-        final Map<String, Object> missingValueReplacementMap = model.getMissingValueReplacementMap();
-        missingValueReplacementMap.forEach((fieldName, missingValueReplacement) -> {
-            if (!mappedRequestParams.containsKey(fieldName)) {
-                logger.debug("missingValueReplacement {} {}", fieldName, missingValueReplacement);
-                requestData.addRequestParam(fieldName, missingValueReplacement);
-                context.addMissingValueReplaced(fieldName, missingValueReplacement);
             }
         });
     }
@@ -241,9 +245,16 @@ public class PreProcess {
         }
     }
 
-    static List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(final Collection<ParameterInfo> parameterInfos) {
+    static List<KiePMMLNameValue> getKiePMMLNameValuesFromParameterInfos(
+            final Collection<ParameterInfo> parameterInfos) {
         return parameterInfos.stream()
                 .map(parameterInfo -> new KiePMMLNameValue(parameterInfo.getName(), parameterInfo.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    private static boolean isTarget(MiningField miningField) {
+        FIELD_USAGE_TYPE fieldUsageType = miningField.getUsageType() != null ?
+                miningField.getUsageType() : FIELD_USAGE_TYPE.ACTIVE;
+        return fieldUsageType == FIELD_USAGE_TYPE.TARGET || fieldUsageType == FIELD_USAGE_TYPE.PREDICTED;
     }
 }
