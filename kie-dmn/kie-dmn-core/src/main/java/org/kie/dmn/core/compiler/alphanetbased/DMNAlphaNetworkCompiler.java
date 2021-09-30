@@ -16,11 +16,9 @@
 
 package org.kie.dmn.core.compiler.alphanetbased;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.NodeList;
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
@@ -31,13 +29,18 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ArrayType;
 import org.kie.dmn.feel.codegen.feel11.CodegenStringUtil;
+import org.kie.dmn.model.api.BuiltinAggregator;
 import org.kie.dmn.model.api.DecisionTable;
+import org.kie.dmn.model.api.HitPolicy;
 import org.kie.dmn.model.api.InputClause;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.github.javaparser.StaticJavaParser.parseType;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.blockHasComment;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.parseJavaClassTemplateFromResources;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
+import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceStringLiteralExprWith;
 
 public class DMNAlphaNetworkCompiler {
 
@@ -50,38 +53,62 @@ public class DMNAlphaNetworkCompiler {
     public DMNAlphaNetworkCompiler() {
     }
 
-    public GeneratedSources generateSourceCode(DecisionTable decisionTable, TableCells tableCells, String decisionTableName, GeneratedSources allGeneratedSources) {
+    public GeneratedSources generateSourceCode(DecisionTable decisionTable,
+                                               TableCells tableCells,
+                                               String decisionTableName,
+                                               GeneratedSources allGeneratedSources) {
 
         String escapedDecisionTableName = String.format("DMNAlphaNetwork_%s", CodegenStringUtil.escapeIdentifier(decisionTableName));
 
         initTemplate();
         setDMNAlphaNetworkClassName(escapedDecisionTableName);
         initPropertyNames(decisionTable.getInput());
+        initHitPolicy(decisionTable.getHitPolicy(), decisionTable.getAggregation());
 
-        BlockStmt alphaNetworkStatements = new BlockStmt();
-        tableCells.addAlphaNetworkNode(alphaNetworkStatements, allGeneratedSources);
-
-        BlockStmt alphaNetworkBlock = dmnAlphaNetworkClass
-                .findFirst(BlockStmt.class, block -> blockHasComment(block, " Alpha network creation statements"))
-                .orElseThrow(RuntimeException::new);
-
-        alphaNetworkBlock.replace(alphaNetworkStatements);
+        generateAlphaNetworkStatements(tableCells, allGeneratedSources);
+        generateValidationStatements(tableCells, allGeneratedSources);
 
         String alphaNetworkClassWithPackage = String.format("org.kie.dmn.core.alphasupport.%s", escapedDecisionTableName);
         allGeneratedSources.addNewAlphaNetworkClass(alphaNetworkClassWithPackage, template.toString());
 
         allGeneratedSources.logGeneratedClasses();
+        allGeneratedSources.dumpGeneratedClasses();
 
         return allGeneratedSources;
     }
 
-    private static boolean blockHasComment(BlockStmt block, String comment) {
-        return block.getComment().filter(c -> comment.equals(c.getContent()))
-                .isPresent();
+    private void generateAlphaNetworkStatements(TableCells tableCells, GeneratedSources allGeneratedSources) {
+        BlockStmt alphaNetworkStatements = new BlockStmt();
+        tableCells.addAlphaNetworkNode(alphaNetworkStatements, allGeneratedSources);
+
+        BlockStmt alphaNetworkBlock = dmnAlphaNetworkClass
+                .findFirst(BlockStmt.class, block -> blockHasComment(block, "Alpha network creation statements"))
+                .orElseThrow(RuntimeException::new);
+
+        alphaNetworkBlock.replace(alphaNetworkStatements);
+    }
+
+    private void generateValidationStatements(TableCells tableCells, GeneratedSources allGeneratedSources) {
+
+        BlockStmt validationBlock = dmnAlphaNetworkClass
+                .findFirst(BlockStmt.class, block -> blockHasComment(block, "Validation Column"))
+                .orElseThrow(RuntimeException::new);
+
+        tableCells.addColumnValidationStatements(validationBlock, allGeneratedSources);
+        validationBlock.remove();
+    }
+
+    private void initHitPolicy(HitPolicy hitPolicy, BuiltinAggregator aggregation) {
+        String hitPolicyName = String.format("%s %s",
+                                             hitPolicy.value(),
+                                             aggregation != null ? aggregation.value() : "").trim();
+
+        replaceStringLiteralExprWith(dmnAlphaNetworkClass, "HIT_POLICY_NAME", hitPolicyName);
     }
 
     private void initTemplate() {
-        template = getMethodTemplate();
+        template = parseJavaClassTemplateFromResources(this.getClass(),
+                                                       "/org/kie/dmn/core/alphasupport/DMNAlphaNetworkTemplate.java");
         dmnAlphaNetworkClass = template.getClassByName("DMNAlphaNetworkTemplate")
                 .orElseThrow(() -> new RuntimeException("Cannot find class"));
         dmnAlphaNetworkClass.removeComment();
@@ -104,11 +131,5 @@ public class DMNAlphaNetworkCompiler {
 
         template.findAll(StringLiteralExpr.class, n -> n.asString().equals("PROPERTY_NAMES"))
                 .forEach(r -> r.replace(array));
-    }
-
-    private CompilationUnit getMethodTemplate() {
-        InputStream resourceAsStream = this.getClass()
-                .getResourceAsStream("/org/kie/dmn/core/alphasupport/DMNAlphaNetworkTemplate.java");
-        return StaticJavaParser.parse(resourceAsStream);
     }
 }

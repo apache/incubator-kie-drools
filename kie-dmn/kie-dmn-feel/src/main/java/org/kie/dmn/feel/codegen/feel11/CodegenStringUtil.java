@@ -16,10 +16,19 @@
 
 package org.kie.dmn.feel.codegen.feel11;
 
+import java.io.InputStream;
+
 import javax.lang.model.SourceVersion;
 
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.Node;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.expr.IntegerLiteralExpr;
 import com.github.javaparser.ast.expr.SimpleName;
+import com.github.javaparser.ast.expr.StringLiteralExpr;
+import com.github.javaparser.ast.stmt.BlockStmt;
 
 public class CodegenStringUtil {
 
@@ -52,5 +61,38 @@ public class CodegenStringUtil {
     public static void replaceSimpleNameWith(Node source, String oldName, String newName) {
         source.findAll(SimpleName.class, ne -> ne.toString().equals(oldName))
                 .forEach(r -> r.replace(new SimpleName(newName)));
+    }
+
+    public static void replaceStringLiteralExprWith(Node source, String oldName, String newName) {
+        source.findFirst(StringLiteralExpr.class, n -> n.getValue().equals(oldName))
+                .ifPresent(s -> s.replace(new StringLiteralExpr(newName)));
+    }
+
+    public static void replaceIntegerLiteralExprWith(Node source, int oldValue, int newValue) {
+        source.findFirst(IntegerLiteralExpr.class, n -> n.asInt() == oldValue).ifPresent(n -> n.replace(new IntegerLiteralExpr(newValue)));
+    }
+
+    public static boolean blockHasComment(BlockStmt block, String comment) {
+        return block.getComment().filter(c -> comment.trim().equals(c.getContent().trim()))
+                .isPresent();
+    }
+
+    public static CompilationUnit parseJavaClassTemplateFromResources(Class<?> resourceClass, String templateName) {
+        InputStream resourceAsStream = resourceClass.getResourceAsStream(templateName);
+        if(resourceAsStream == null) {
+            throw new RuntimeException("Cannot find template: " + templateName);
+        }
+        CompilationUnit compilationUnit = StaticJavaParser.parse(resourceAsStream);
+        compilationUnit.removeComment();
+        return compilationUnit;
+    }
+
+    public static MethodDeclaration findMethodTemplate(ClassOrInterfaceDeclaration alphaNodeCreationClass, String methodName) {
+        MethodDeclaration methodTemplate = alphaNodeCreationClass
+                .findFirst(MethodDeclaration.class, md -> md.getNameAsString().equals(methodName))
+                .orElseThrow(() -> new RuntimeException("Cannot find method: " + methodName + " in class " + alphaNodeCreationClass));
+        methodTemplate.remove();
+        methodTemplate.setComment(null);
+        return methodTemplate;
     }
 }

@@ -499,7 +499,7 @@ public class CompiledFEELSupport {
         MethodCallExpr list = new MethodCallExpr(compiledFeelSemanticMappingsFQN(), "list", new NodeList<>(new NameExpr(constantName)));
 
         DirectCompilerResult directCompilerResult = DirectCompilerResult.of(list, BuiltInType.LIST);
-        directCompilerResult.addFieldDesclaration(fd);
+        directCompilerResult.addFieldDeclaration(fd);
         return directCompilerResult;
 
     }

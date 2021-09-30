@@ -57,7 +57,7 @@ public class DMNDecisionTableAlphaSupportingTest extends BaseInterpretedVsAlphaN
     }
 
     @Test
-    public void testSimpleDecisionTableHitPolicyCollectMax() {
+    public void testSimpleTableMultipleTests() {
         final DMNRuntime runtime = DMNRuntimeUtil.createRuntime("an-simpletable-multipletests.dmn", this.getClass());
         final DMNModel dmnModel = runtime.getModel("https://github.com/kiegroup/kie-dmn", "an-simpletable-multipletests");
         MatcherAssert.assertThat(dmnModel, notNullValue());
