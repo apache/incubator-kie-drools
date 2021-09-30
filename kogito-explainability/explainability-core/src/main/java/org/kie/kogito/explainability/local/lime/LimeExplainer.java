@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.tuple.Pair;
 import org.kie.kogito.explainability.local.LocalExplainer;
 import org.kie.kogito.explainability.local.LocalExplanationException;
+import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
 import org.kie.kogito.explainability.model.FeatureImportance;
@@ -118,7 +119,7 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
             PerturbationContext perturbationContext) {
 
         List<PredictionInput> perturbedInputs = getPerturbedInputs(originalInput.getFeatures(), perturbationContext,
-                noOfSamples);
+                noOfSamples, model);
 
         return model.predictAsync(perturbedInputs)
                 .thenCompose(predictionOutputs -> {
@@ -336,13 +337,29 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
     }
 
     private List<PredictionInput> getPerturbedInputs(List<Feature> features, PerturbationContext perturbationContext,
-            int size) {
+            int size, PredictionProvider predictionProvider) {
         List<PredictionInput> perturbedInputs = new ArrayList<>();
 
-        // generate feature distributions, if possible
-        Map<String, FeatureDistribution> featureDistributionsMap = DataUtils.boostrapFeatureDistributions(
-                limeConfig.getDataDistribution(), perturbationContext, 2 * size,
-                1, size);
+        DataDistribution dataDistribution = limeConfig.getDataDistribution();
+
+        Map<String, FeatureDistribution> featureDistributionsMap;
+        if (!dataDistribution.isEmpty()) {
+            Map<String, HighScoreNumericFeatureZones> numericFeatureZonesMap;
+            int max = limeConfig.getBoostrapInputs();
+            if (limeConfig.isHighScoreFeatureZones()) {
+                numericFeatureZonesMap = HighScoreNumericFeatureZonesProvider
+                        .getHighScoreFeatureZones(dataDistribution, predictionProvider, features, max);
+            } else {
+                numericFeatureZonesMap = new HashMap<>();
+            }
+
+            // generate feature distributions, if possible
+            featureDistributionsMap = DataUtils.boostrapFeatureDistributions(
+                    dataDistribution, perturbationContext, 2 * size,
+                    1, Math.min(size, max), numericFeatureZonesMap);
+        } else {
+            featureDistributionsMap = new HashMap<>();
+        }
 
         for (int i = 0; i < size; i++) {
             List<Feature> newFeatures = DataUtils.perturbFeatures(features, perturbationContext, featureDistributionsMap);
@@ -350,5 +367,4 @@ public class LimeExplainer implements LocalExplainer<Map<String, Saliency>> {
         }
         return perturbedInputs;
     }
-
 }

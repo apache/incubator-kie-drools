@@ -158,6 +158,31 @@ class FraudScoringDmnLimeExplainerTest {
     }
 
     @Test
+    void testExplanationWithDataDistribution() throws ExecutionException, InterruptedException, TimeoutException {
+        PredictionProvider model = getModel();
+
+        List<PredictionInput> samples = DmnTestUtils.randomFraudScoringInputs();
+        List<PredictionInput> inputs = samples.subList(0, 10);
+
+        Random random = new Random();
+        random.setSeed(0);
+        PerturbationContext perturbationContext = new PerturbationContext(random, 1);
+        LimeConfig initialConfig = new LimeConfig()
+                .withSamples(10)
+                .withDataDistribution(new PredictionInputsDataDistribution(inputs))
+                .withPerturbationContext(perturbationContext);
+
+        LimeExplainer limeExplainer = new LimeExplainer(initialConfig);
+        PredictionInput testPredictionInput = getTestInput();
+        List<PredictionOutput> testPredictionOutputs = model.predictAsync(List.of(testPredictionInput))
+                .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
+        Prediction instance = new SimplePrediction(testPredictionInput, testPredictionOutputs.get(0));
+
+        assertDoesNotThrow(() -> ValidationUtils.validateLocalSaliencyStability(model, instance, limeExplainer, 1,
+                0.5, 0.5));
+    }
+
+    @Test
     void testExplanationImpactScoreWithOptimization() throws ExecutionException, InterruptedException, TimeoutException {
         PredictionProvider model = getModel();
 

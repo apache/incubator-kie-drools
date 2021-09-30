@@ -21,6 +21,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -359,7 +360,7 @@ class DataUtilsTest {
         DataDistribution dataDistribution = new IndependentFeaturesDataDistribution(List.of(
                 new GenericFeatureDistribution(mockedNumericFeature, values)));
         Map<String, FeatureDistribution> featureDistributionMap = DataUtils.boostrapFeatureDistributions(dataDistribution,
-                perturbationContext, 10, 1, 500);
+                perturbationContext, 10, 1, 500, new HashMap<>());
         assertThat(featureDistributionMap).isNotNull();
         assertThat(featureDistributionMap).isNotEmpty();
         FeatureDistribution actual = featureDistributionMap.get(mockedNumericFeature.getName());

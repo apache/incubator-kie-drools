@@ -94,6 +94,11 @@ public class PredictionInputsDataDistribution implements DataDistribution {
     }
 
     @Override
+    public boolean isEmpty() {
+        return this.inputs.isEmpty();
+    }
+
+    @Override
     public String toString() {
         return "PredictionInputsDataDistribution{" +
                 "inputs=" + inputs +

@@ -71,4 +71,9 @@ public class GenericFeatureDistribution implements FeatureDistribution {
         Collections.shuffle(copy);
         return copy;
     }
+
+    @Override
+    public boolean isEmpty() {
+        return values.isEmpty();
+    }
 }

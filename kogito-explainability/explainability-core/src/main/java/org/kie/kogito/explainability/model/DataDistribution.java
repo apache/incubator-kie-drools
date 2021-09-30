@@ -49,4 +49,11 @@ public interface DataDistribution {
      * @return a list of feature distributions
      */
     List<FeatureDistribution> asFeatureDistributions();
+
+    /**
+     * Check whether this data distribution is empty.
+     *
+     * @return {@code true} if empty, {@code false} otherwise
+     */
+    boolean isEmpty();
 }

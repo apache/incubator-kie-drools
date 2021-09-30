@@ -33,6 +33,7 @@ import org.kie.kogito.explainability.local.LocalExplanationException;
 import org.kie.kogito.explainability.model.DataDistribution;
 import org.kie.kogito.explainability.model.Feature;
 import org.kie.kogito.explainability.model.FeatureDistribution;
+import org.kie.kogito.explainability.model.FeatureFactory;
 import org.kie.kogito.explainability.model.FeatureImportance;
 import org.kie.kogito.explainability.model.GenericFeatureDistribution;
 import org.kie.kogito.explainability.model.IndependentFeaturesDataDistribution;
@@ -185,13 +186,13 @@ class LimeExplainerTest {
         int nf = 4;
         List<Feature> features = new ArrayList<>();
         for (int i = 0; i < nf; i++) {
-            Feature mockedNumericFeature = TestUtils.getMockedNumericFeature(i);
-            features.add(mockedNumericFeature);
+            Feature numericalFeature = FeatureFactory.newNumericalFeature("f-" + i, Double.NaN);
+            features.add(numericalFeature);
             List<Value> values = new ArrayList<>();
             for (int r = 0; r < 4; r++) {
                 values.add(Type.NUMBER.randomValue(perturbationContext));
             }
-            featureDistributions.add(new GenericFeatureDistribution(mockedNumericFeature, values));
+            featureDistributions.add(new GenericFeatureDistribution(numericalFeature, values));
         }
 
         DataDistribution dataDistribution = new IndependentFeaturesDataDistribution(featureDistributions);
@@ -201,7 +202,7 @@ class LimeExplainerTest {
                 .withSamples(10);
         LimeExplainer limeExplainer = new LimeExplainer(limeConfig);
         PredictionInput input = new PredictionInput(features);
-        PredictionProvider model = TestUtils.getSumSkipModel(0);
+        PredictionProvider model = TestUtils.getSumThresholdModel(random.nextDouble(), random.nextDouble());
         PredictionOutput output = model.predictAsync(List.of(input))
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit())
                 .get(0);
@@ -211,7 +212,7 @@ class LimeExplainerTest {
                 .get(Config.INSTANCE.getAsyncTimeout(), Config.INSTANCE.getAsyncTimeUnit());
         assertThat(saliencyMap).isNotNull();
 
-        String decisionName = "sum-but0";
+        String decisionName = "inside";
         Saliency saliency = saliencyMap.get(decisionName);
         assertThat(saliency).isNotNull();
     }
