@@ -265,7 +265,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
 
     private boolean isKJar(File jar) {
         try (ZipFile zipFile = new ZipFile( jar )) {
-            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH );
+            ZipEntry zipEntry = zipFile.getEntry( KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
             return zipEntry != null;
         } catch (IOException e) {
             throw new RuntimeException("Failed to open Zip file '" + jar.getAbsolutePath() + "'!", e);

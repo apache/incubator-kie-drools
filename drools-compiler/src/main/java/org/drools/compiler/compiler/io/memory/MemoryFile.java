@@ -22,9 +22,8 @@ import java.io.Serializable;
 
 import org.drools.compiler.compiler.io.File;
 import org.drools.compiler.compiler.io.Folder;
-import org.drools.compiler.compiler.io.Path;
 import org.drools.core.io.impl.InputStreamResource;
-import org.drools.core.util.StringUtils;
+import org.kie.memorycompiler.resources.KiePath;
 
 public class MemoryFile implements File,
                                    Serializable {
@@ -49,24 +48,16 @@ public class MemoryFile implements File,
         return new ByteArrayInputStream( mfs.getFileContents( this ) );
     }
     
-    public Path getPath() {
-        return getRelativePath();
+    public KiePath getPath() {
+        return folder.getPath().resolve(name);
     }            
-    
-    public Path getRelativePath() {
-        if ( !StringUtils.isEmpty( folder.getPath().toPortableString() ) ) {
-            return new MemoryPath( folder.getPath().toPortableString() + "/" + name );
-        } else {
-            return new MemoryPath( name );
-        }
-    }    
     
     public Folder getFolder() {
         return this.folder;
     }
     
     public boolean exists() {
-        return mfs.existsFile( getRelativePath().toPortableString() );
+        return mfs.existsFile( getPath() );
     }        
 
 

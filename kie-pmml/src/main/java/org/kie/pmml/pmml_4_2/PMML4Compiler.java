@@ -16,7 +16,6 @@
 
 package org.kie.pmml.pmml_4_2;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -30,7 +29,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import javax.xml.XMLConstants;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -484,7 +482,7 @@ public class PMML4Compiler {
 
         if (resource.getSourcePath() != null) {
             String originalPath = resource.getSourcePath();
-            int start = originalPath.lastIndexOf(File.separator);
+            int start = originalPath.lastIndexOf('/');
             byteArrayResource.setSourcePath("generated-sources/" + originalPath.substring(start) + ".pmml");
         } else {
             byteArrayResource.setSourcePath("generated-sources/" + helper.getContext() + ".pmml");

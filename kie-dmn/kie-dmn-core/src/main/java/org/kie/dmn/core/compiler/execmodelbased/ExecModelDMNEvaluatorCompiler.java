@@ -46,14 +46,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.stream.Collectors.joining;
-
 import static org.drools.modelcompiler.builder.JavaParserCompiler.getCompiler;
 import static org.kie.dmn.feel.codegen.feel11.CodegenStringUtil.replaceSimpleNameWith;
 
 public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
 
     static final Logger logger = LoggerFactory.getLogger(ExecModelDMNEvaluatorCompiler.class);
-    private GeneratorsEnum[] GENERATORS_WITHOUT_EXPRESSIONS = new GeneratorsEnum[] {
+    private static final GeneratorsEnum[] GENERATORS_WITHOUT_EXPRESSIONS = new GeneratorsEnum[] {
             GeneratorsEnum.EVALUATOR,
             GeneratorsEnum.UNIT,
             GeneratorsEnum.EXEC_MODEL,
@@ -80,7 +79,7 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
         }
     }
 
-    private ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
+    private final ProjectClassLoader projectClassLoader = ProjectClassLoader.createProjectClassLoader();
 
     @Override
     protected DMNExpressionEvaluator compileDecisionTable( DMNCompilerContext ctx, DMNModelImpl model, DMNBaseNode node, String dtName, DecisionTable dt ) {
@@ -150,14 +149,15 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
     private AbstractModelEvaluator createInvoker(String pkgName, String clasName) {
         try {
             Class<?> evalClass = projectClassLoader.loadClass(pkgName + "." + clasName + "Evaluator");
-            return (AbstractModelEvaluator) evalClass.newInstance();
+            return (AbstractModelEvaluator) evalClass.getConstructor().newInstance();
         } catch (Exception e) {
             throw new UnsupportedOperationException("Unknown decision table: " + clasName, e);
         }
     }
 
     private void defineClassInClassLoader(MemoryFileSystem trgMfs) {
-        trgMfs.getFileNames().stream().forEach(f -> projectClassLoader.defineClass(f.replace('/', '.').substring(0, f.length() - ".class".length()), trgMfs.getBytes(f)));
+        trgMfs.getFilePaths()
+                .forEach(path -> projectClassLoader.defineClass(path.asClassName(), trgMfs.getBytes(path)));
     }
 
     private void compileGeneratedClass(MemoryFileSystem srcMfs, MemoryFileSystem trgMfs, String[] fileNames) {
@@ -230,8 +230,6 @@ public class ExecModelDMNEvaluatorCompiler extends DMNEvaluatorCompiler {
             sb.append( IntStream.range( 0, dTableModel.getRows().size() ).mapToObj( i -> "rule_" + clasName + "_" + i + "()" ).collect( joining(", ") ) );
             sb.append( " );\n" );
             sb.append( "    }\n" );
-
-            int exprCounter = 0;
 
             sb.append( "\n" );
             sb.append( "    private static final UnitData<DecisionTableEvaluator> var_evaluator = D.unitData(DecisionTableEvaluator.class, \"evaluator\");\n" );

@@ -27,9 +27,7 @@ public interface Folder extends FileSystemItem {
     boolean create();
     
     Folder getFolder(String name);
-    
-    Path getPath();
-    
+
     Folder getParent();
     
     Collection<? extends FileSystemItem> getMembers();

@@ -41,12 +41,6 @@ import org.drools.core.builder.conf.impl.ResourceConfigurationImpl;
 import org.drools.core.io.internal.InternalResource;
 import org.drools.core.util.IoUtils;
 import org.drools.core.util.StringUtils;
-import org.kie.memorycompiler.CompilationProblem;
-import org.kie.memorycompiler.CompilationResult;
-import org.kie.memorycompiler.JavaCompiler;
-import org.kie.memorycompiler.JavaCompilerFactory;
-import org.kie.memorycompiler.JavaConfiguration;
-import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
 import org.kie.api.builder.KieFileSystem;
@@ -65,6 +59,13 @@ import org.kie.api.io.ResourceType;
 import org.kie.internal.builder.IncrementalResults;
 import org.kie.internal.builder.InternalKieBuilder;
 import org.kie.internal.builder.KieBuilderSet;
+import org.kie.memorycompiler.CompilationProblem;
+import org.kie.memorycompiler.CompilationResult;
+import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.JavaCompilerFactory;
+import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,6 +86,8 @@ public class KieBuilderImpl
 
     private static final String RESOURCES_ROOT_DOT_SEPARATOR = RESOURCES_ROOT.replace( '/', '.' );
     private static final String SPRING_BOOT_ROOT = "BOOT-INF.classes.";
+
+    private static final KiePath POM_PATH = KiePath.of("pom.xml");
 
     private static final String[] SUPPORTED_RESOURCES_ROOTS = new String[] { RESOURCES_ROOT_DOT_SEPARATOR, SPRING_BOOT_ROOT };
 
@@ -293,26 +296,25 @@ public class KieBuilderImpl
     }
 
     private void addKBasesFilesToTrg() {
-        for ( String fileName : srcMfs.getFileNames() ) {
-            String normalizedName = fileName.replace( File.separatorChar, '/' );
-            if ( normalizedName.startsWith( RESOURCES_ROOT ) ) {
-                copySourceToTarget( normalizedName );
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            if ( filePath.startsWith( RESOURCES_ROOT ) ) {
+                copySourceToTarget( filePath );
             }
         }
     }
 
-    String copySourceToTarget( String fileName ) {
-        if ( !fileName.startsWith( RESOURCES_ROOT ) ) {
+    String copySourceToTarget( KiePath filePath ) {
+        if ( !filePath.startsWith( RESOURCES_ROOT ) ) {
             return null;
         }
-        Resource resource = getResource( srcMfs, fileName );
-        String trgFileName = fileName.substring( RESOURCES_ROOT.length() );
+        Resource resource = getResource( srcMfs, filePath );
+        KiePath trgFileName = filePath.substring( RESOURCES_ROOT.length() );
         if ( resource != null ) {
             trgMfs.write( trgFileName, resource, true );
         } else {
             trgMfs.remove( trgFileName );
         }
-        return trgFileName;
+        return trgFileName.asString();
     }
 
     public void setkModule( final MemoryKieModule kModule ) {
@@ -337,10 +339,10 @@ public class KieBuilderImpl
     }
 
     private void addMetaInfBuilder() {
-        for ( String fileName : srcMfs.getFileNames()) {
-            if ( fileName.startsWith( RESOURCES_ROOT ) && !isKieExtension( fileName ) ) {
-                trgMfs.write( fileName.substring( RESOURCES_ROOT.length() - 1 ),
-                              getResource( srcMfs, fileName ),
+        for ( KiePath filePath : srcMfs.getFilePaths()) {
+            if ( filePath.startsWith( RESOURCES_ROOT ) && !isKieExtension( filePath.asString() ) ) {
+                trgMfs.write( filePath.substring( RESOURCES_ROOT.length() ),
+                              getResource( srcMfs, filePath ),
                               true );
             }
         }
@@ -578,8 +580,8 @@ public class KieBuilderImpl
      */
     public void setPomModel( PomModel pomModel ) {
         this.pomModel = pomModel;
-        if ( srcMfs.isAvailable( "pom.xml" ) ) {
-            this.pomXml = srcMfs.getBytes( "pom.xml" );
+        if ( srcMfs.isAvailable( POM_PATH ) ) {
+            this.pomXml = srcMfs.getBytes( POM_PATH );
         }
     }
 
@@ -611,8 +613,8 @@ public class KieBuilderImpl
     }
 
     public static byte[] getOrGeneratePomXml( ResourceReader mfs ) {
-        if ( mfs.isAvailable( "pom.xml" ) ) {
-            return mfs.getBytes( "pom.xml" );
+        if ( mfs.isAvailable( POM_PATH ) ) {
+            return mfs.getBytes( POM_PATH );
         } else {
             // There is no pom.xml, and thus no ReleaseId, so generate a pom.xml from the global detault.
             return generatePomXml( KieServices.Factory.get().getRepository().getDefaultReleaseId() ).getBytes( IoUtils.UTF8_CHARSET );
@@ -685,23 +687,22 @@ public class KieBuilderImpl
 
     private void compileJavaClasses( ClassLoader classLoader, Predicate<String> classFilter ) {
         List<String> classFiles = new ArrayList<>();
-        for ( String fileName : srcMfs.getFileNames() ) {
-            if ( fileName.endsWith( ".class" ) ) {
-                trgMfs.write( fileName,
-                              getResource( srcMfs, fileName ),
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            if ( filePath.endsWith( ".class" ) ) {
+                trgMfs.write( filePath,
+                              getResource( srcMfs, filePath ),
                               true );
-                classFiles.add( fileName.substring( 0,
-                                                    fileName.length() - ".class".length() ) );
+                classFiles.add( filePath.substring( 0, filePath.asString().length() - ".class".length() ).asString() );
             }
         }
 
         List<String> javaFiles = new ArrayList<>();
         List<String> javaTestFiles = new ArrayList<>();
-        for ( String fileName : srcMfs.getFileNames() ) {
+        for ( KiePath filePath : srcMfs.getFilePaths() ) {
+            String fileName = filePath.asString();
             if ( isJavaSourceFile( fileName )
                     && noClassFileForGivenSourceFile( classFiles, fileName )
                     && notVetoedByFilter( classFilter, fileName ) ) {
-                fileName = fileName.replace( File.separatorChar, '/' );
 
                 if ( !fileName.startsWith( JAVA_ROOT ) && !fileName.startsWith( JAVA_TEST_ROOT ) ) {
                     results.addMessage( Level.WARNING, fileName, "Found Java file out of the Java source folder: \"" + fileName + "\"" );
@@ -818,7 +819,7 @@ public class KieBuilderImpl
         return new KieBuilderSetImpl( this ).build();
     }
 
-    private static Resource getResource( ResourceReader resourceReader, String pResourceName ) {
+    private static Resource getResource( ResourceReader resourceReader, KiePath pResourceName ) {
         if (resourceReader instanceof MemoryFileSystem) {
             return (( MemoryFileSystem ) resourceReader).getResource( pResourceName );
         }

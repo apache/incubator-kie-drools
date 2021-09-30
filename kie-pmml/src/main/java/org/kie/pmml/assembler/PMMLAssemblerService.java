@@ -50,6 +50,7 @@ import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
 import org.kie.memorycompiler.JavaCompilerFactory;
 import org.kie.memorycompiler.JavaConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.pmml.pmml_4_2.PMML4Compiler;
 import org.kie.pmml.pmml_4_2.PMML4Exception;
@@ -231,8 +232,8 @@ public class PMMLAssemblerService implements KieAssemblerService {
                 compileJavaClasses(javaConf, rootClassLoader, javaFileNames, JAVA_ROOT, src, trgMfs);
                 Map<String, byte[]> classesMap = new HashMap<>();
 
-                for (String name : trgMfs.getFileNames()) {
-                    classesMap.put(name, trgMfs.getBytes(name));
+                for (KiePath name : trgMfs.getFilePaths()) {
+                    classesMap.put(name.asString(), trgMfs.getBytes(name));
                 }
                 if (!classesMap.isEmpty()) {
                     ProjectClassLoader projectClassLoader = (ProjectClassLoader) rootClassLoader;
@@ -247,9 +248,9 @@ public class PMMLAssemblerService implements KieAssemblerService {
 
     private List<String> getJavaFileNames(ResourceReader src) {
         List<String> javaFileNames = new ArrayList<>();
-        for (String fname : src.getFileNames()) {
+        for (KiePath fname : src.getFilePaths()) {
             if (fname.endsWith(".java")) {
-                javaFileNames.add(fname);
+                javaFileNames.add(fname.asString());
             }
         }
         return javaFileNames;

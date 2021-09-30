@@ -29,6 +29,7 @@ import org.drools.core.io.internal.InternalResource;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
@@ -39,8 +40,8 @@ public abstract class BaseResource
     private ResourceType              resourceType;
     private ResourceConfigurationImpl configuration;
 
-    private String                sourcePath;
-    private String                targetPath;
+    private KiePath                sourcePath;
+    private KiePath targetPath;
     private String                description;
 
     private List<String>          categories;
@@ -51,8 +52,8 @@ public abstract class BaseResource
                                             ClassNotFoundException {
         resourceType = (ResourceType) in.readObject();
         configuration = (ResourceConfigurationImpl) in.readObject();
-        sourcePath = (String) in.readObject();
-        targetPath = (String) in.readObject();
+        sourcePath = (KiePath) in.readObject();
+        targetPath = (KiePath) in.readObject();
         description = (String) in.readObject();
         categories = (List<String>) in.readObject();
         bytes = (byte[]) in.readObject();
@@ -103,26 +104,26 @@ public abstract class BaseResource
     }
 
     public String getSourcePath() {
-        return sourcePath;
+        return sourcePath == null ? null : sourcePath.asString();
     }
 
     public String getTargetPath() {
-        return targetPath;
+        return targetPath == null ? null : targetPath.asString();
     }
 
     public InternalResource setSourcePath(String path) {
-        this.sourcePath = path;
+        this.sourcePath = path == null ? null : KiePath.of( path );
         return this;
     }
 
     public InternalResource setTargetPath(String path) {
-        this.targetPath = path;
+        this.targetPath = path == null ? null : KiePath.of( path );
         return this;
     }
 
     public List<String> getCategories() {
         if ( categories == null ) {
-            categories = new ArrayList<String>();
+            categories = new ArrayList<>();
         }
         return categories;
     }
@@ -167,7 +168,7 @@ public abstract class BaseResource
             return false;
         }
         Resource that = (Resource) o;
-        return sourcePath != null ? sourcePath.equals(that.getSourcePath()) : that.getSourcePath() == null;
+        return getSourcePath() != null ? getSourcePath().equals(that.getSourcePath()) : that.getSourcePath() == null;
 
     }
 

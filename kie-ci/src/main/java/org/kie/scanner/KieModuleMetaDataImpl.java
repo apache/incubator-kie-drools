@@ -98,7 +98,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
     private void indexKieModule( InternalKieModule kieModule ) {
         for (String file : kieModule.getFileNames()) {
             if (!indexClass(file)) {
-                if (file.endsWith( KieModuleModelImpl.KMODULE_INFO_JAR_PATH )) {
+                if (file.endsWith( KieModuleModelImpl.KMODULE_INFO_JAR_PATH.asString() )) {
                     indexMetaInfo(kieModule.getBytes(file));
                 }
             }
@@ -213,7 +213,7 @@ public class KieModuleMetaDataImpl implements KieModuleMetaData {
                     forms.put(pathName, new String(readBytesFromZipEntry(jarFile, entry), UTF8_CHARSET));
                 }
                 if (!indexClass(pathName)) {
-                    if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                    if (pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH.asString())) {
                         indexMetaInfo(readBytesFromZipEntry(jarFile, entry));
                     }
                 }

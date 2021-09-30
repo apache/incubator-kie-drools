@@ -144,7 +144,7 @@ public class KieRepositoryImpl
     private KieModule checkClasspathForKieModule(ReleaseId releaseId) {
         ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
 
-        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH );
+        URL kmoduleUrl = contextClassLoader.getResource( KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
         if (kmoduleUrl == null) {
             return null;
         }
@@ -166,7 +166,7 @@ public class KieRepositoryImpl
                 pathToKmodule = new URL( pomPropertiesUrl.getProtocol(),
                                          pomPropertiesUrl.getHost(),
                                          pomPropertiesUrl.getPort(),
-                                         pathToJar + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH );
+                                         pathToJar + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
                 
                 // URLConnection.getContentLength() returns -1 if the content length is not known, unable to locate and read from the kmodule
                 // if URL backed by 'file:' then FileURLConnection.getContentLength() returns 0, as per java.io.File.length() returns 0L if the file does not exist. (the same also for WildFly's VFS FileURLConnection) 
@@ -279,10 +279,10 @@ public class KieRepositoryImpl
                     if (!urlPath.endsWith("/")) {
                         urlPath = urlPath + "/";
                     }
-                    urlPath = urlPath + KieModuleModelImpl.KMODULE_JAR_PATH;
+                    urlPath = urlPath + KieModuleModelImpl.KMODULE_JAR_PATH.asString();
 
                 } else {
-                    urlPath = "jar:" + urlPath + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH;
+                    urlPath = "jar:" + urlPath + "!/" + KieModuleModelImpl.KMODULE_JAR_PATH.asString();
                 }
                 kModule = ClasspathKieProject.fetchKModule(new URL(urlPath));
                 log.debug("Fetched KieModule from resource: " + resource);

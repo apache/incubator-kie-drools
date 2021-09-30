@@ -37,7 +37,6 @@ import org.drools.compiler.kie.builder.impl.BuildContext;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.KieBuilderImpl;
 import org.drools.compiler.kie.builder.impl.MemoryKieModule;
-import org.drools.compiler.kie.builder.impl.ResultsImpl;
 import org.drools.core.util.IoUtils;
 import org.drools.modelcompiler.CanonicalKieModule;
 import org.drools.modelcompiler.builder.CanonicalModelKieProject;
@@ -86,7 +85,7 @@ public class GenerateModel {
                                            "target",
                                            "generated-sources",
                                            "bootstrap",
-                                           f.getPath().toPortableString());
+                                           f.getPath().asString());
 
             try {
                 Files.deleteIfExists(newFile); //NOSONAR javasecurity:S2083 base dir kieDmnValidationBaseDir is provided as configuration by design, static analysis exclusion applies to these 3 lines

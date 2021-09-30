@@ -139,8 +139,7 @@ public final class ClassUtils {
     }
 
     public static String convertClassToResourcePath(final String pName) {
-        return pName.replace( '.',
-                              '/' ) + ".class";
+        return pName.replace( '.', '/' ) + ".class";
     }
 
     /**
@@ -150,21 +149,6 @@ public final class ClassUtils {
     public static String stripExtension(final String pResourceName) {
         final int i = pResourceName.lastIndexOf('.');
         return pResourceName.substring( 0, i );
-    }
-
-    public static String toJavaCasing(final String pName) {
-        final char[] name = pName.toLowerCase().toCharArray();
-        name[0] = Character.toUpperCase( name[0] );
-        return new String( name );
-    }
-
-    public static String clazzName(final File base,
-                                   final File file) {
-        final int rootLength = base.getAbsolutePath().length();
-        final String absFileName = file.getAbsolutePath();
-        final int p = absFileName.lastIndexOf('.');
-        final String relFileName = absFileName.substring(rootLength + 1, p);
-        return relFileName.replace(File.separatorChar, '.');
     }
 
     public static String relative(final File base,

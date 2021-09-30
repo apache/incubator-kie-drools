@@ -18,6 +18,8 @@ package org.drools.compiler.compiler.io;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.kie.memorycompiler.resources.KiePath;
+
 
 public interface File extends FileSystemItem {
     String getName();
@@ -30,5 +32,5 @@ public interface File extends FileSystemItem {
 
     void create(InputStream is) throws IOException;
     
-    Path getPath();
+    KiePath getPath();
 }

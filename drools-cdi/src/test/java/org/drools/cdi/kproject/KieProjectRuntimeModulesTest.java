@@ -16,6 +16,15 @@
 
 package org.drools.cdi.kproject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.drools.compiler.kie.builder.impl.FileKieModule;
 import org.drools.compiler.kie.builder.impl.KieContainerImpl;
 import org.drools.compiler.kie.builder.impl.KieModuleKieProject;
@@ -28,15 +37,6 @@ import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.runtime.KieContainer;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -45,7 +45,7 @@ import static org.junit.Assert.assertTrue;
 public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
 
     @Test
-    public void createMultpleJarAndFileResources() throws IOException,
+    public void createMultipleJarAndFileResources() throws IOException,
                                                   ClassNotFoundException,
                                                   InterruptedException {
         KieModuleModel kProjModel1 = createKieModule( "jar1", true );
@@ -128,14 +128,23 @@ public class KieProjectRuntimeModulesTest extends AbstractKnowledgeTest {
         KieContainer kieContainer = KieServices.Factory.get().newKieContainer(releaseId);
         assertNotNull(kieContainer);
 
-        InputStream is = kieContainer.getClassLoader().getResourceAsStream("/META-INF/beans.xml");
+        InputStream is = kieContainer.getClassLoader().getResourceAsStream("META-INF/beans.xml");
         assertNotNull(is);
         byte[] bytesFromStream = readBytesFromInputStream(is);
 
-        Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("/META-INF/beans.xml");
+        Enumeration<URL> foundResources = kieContainer.getClassLoader().getResources("META-INF/beans.xml");
         assertNotNull(foundResources);
 
-        List<URL> resourcesAsList = Collections.list(foundResources);
+        List<URL> resourcesAsList = Collections
+                .list(foundResources)
+                .stream()
+                /*
+                 * This module depenency have beans.xml files
+                 * which are found when calling `getResources` with a relative path.
+                 */
+                .filter(url -> !url.toString().contains("drools-cdi"))
+                .collect(Collectors.toList());
+
         assertNotNull(resourcesAsList);
         assertEquals(1, resourcesAsList.size());
 

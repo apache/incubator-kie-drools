@@ -16,7 +16,6 @@
 
 package org.drools.verifier.report.html;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.zip.ZipOutputStream;
@@ -44,21 +43,21 @@ public class HTMLReportWriter extends ReportModeller
 
         // Base files
         // index.htm
-        writeToFile( UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.HTML_FILE_INDEX,
+        writeToFile( UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.HTML_FILE_INDEX,
                      formPage( UrlFactory.THIS_FOLDER,
                                ComponentsReportVisitor.visitObjectTypeCollection( UrlFactory.THIS_FOLDER,
                                                                                   data.<ObjectType> getAll( VerifierComponentType.OBJECT_TYPE ) ) ) );
 
         // packages.htm
-        writeToFile( UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.HTML_FILE_PACKAGES,
+        writeToFile( UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.HTML_FILE_PACKAGES,
                      formPage( UrlFactory.THIS_FOLDER,
                                ComponentsReportVisitor.visitRulePackageCollection( UrlFactory.THIS_FOLDER,
                                                                                    data.<RulePackage> getAll( VerifierComponentType.RULE_PACKAGE ) ) ) );
 
         // Rules
-        String ruleFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.RULE_FOLDER;
+        String ruleFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.RULE_FOLDER;
         for ( VerifierRule rule : data.<VerifierRule> getAll( VerifierComponentType.RULE ) ) {
-            writeToFile( ruleFolder + File.separator + rule.getPath() + ".htm",
+            writeToFile( ruleFolder + "/" + rule.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitRule( UrlFactory.PREVIOUS_FOLDER,
                                                                       rule,
@@ -66,9 +65,9 @@ public class HTMLReportWriter extends ReportModeller
         }
 
         // ObjectTypes
-        String objectTypeFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.OBJECT_TYPE_FOLDER;
+        String objectTypeFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.OBJECT_TYPE_FOLDER;
         for ( ObjectType objectType : data.<ObjectType> getAll( VerifierComponentType.OBJECT_TYPE ) ) {
-            writeToFile( objectTypeFolder + File.separator + objectType.getPath() + ".htm",
+            writeToFile( objectTypeFolder + "/" + objectType.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitObjectType( UrlFactory.PREVIOUS_FOLDER,
                                                                             objectType,
@@ -76,9 +75,9 @@ public class HTMLReportWriter extends ReportModeller
         }
 
         // Fields
-        String fieldFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.FIELD_FOLDER;
+        String fieldFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.FIELD_FOLDER;
         for ( Field field : data.<Field> getAll( VerifierComponentType.FIELD ) ) {
-            writeToFile( fieldFolder + File.separator + field.getPath() + ".htm",
+            writeToFile( fieldFolder + "/" + field.getPath() + ".htm",
                          formPage( UrlFactory.PREVIOUS_FOLDER,
                                    ComponentsReportVisitor.visitField( UrlFactory.PREVIOUS_FOLDER,
                                                                        field,
@@ -89,12 +88,12 @@ public class HTMLReportWriter extends ReportModeller
         writeMessages( result );
 
         // css files
-        String cssFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.CSS_FOLDER;
-        writeToFile( cssFolder + File.separator + UrlFactory.CSS_BASIC,
+        String cssFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.CSS_FOLDER;
+        writeToFile( cssFolder + "/" + UrlFactory.CSS_BASIC,
                      ComponentsReportVisitor.getCss( UrlFactory.CSS_BASIC ) );
 
         // Image files
-        String imagesFolder = UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.IMAGES_FOLDER;
+        String imagesFolder = UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.IMAGES_FOLDER;
 
         copyFile( imagesFolder,
                   "hdrlogo_drools50px.gif" );
@@ -117,7 +116,7 @@ public class HTMLReportWriter extends ReportModeller
                                                                                 result.getBySeverity( Severity.NOTE ),
                                                                                 data );
 
-        writeToFile( UrlFactory.SOURCE_FOLDER + File.separator + UrlFactory.HTML_FILE_VERIFIER_MESSAGES,
+        writeToFile( UrlFactory.SOURCE_FOLDER + "/" + UrlFactory.HTML_FILE_VERIFIER_MESSAGES,
                      formPage( UrlFactory.THIS_FOLDER,
                                errors + warnings + notes ) );
     }

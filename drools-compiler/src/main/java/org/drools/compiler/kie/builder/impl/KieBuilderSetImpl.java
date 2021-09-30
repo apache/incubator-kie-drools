@@ -45,9 +45,9 @@ import org.kie.internal.builder.KieBuilderSet;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.KnowledgeBuilderResult;
 import org.kie.internal.builder.ResultSeverity;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static java.util.Arrays.asList;
-
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 
 public class KieBuilderSetImpl implements KieBuilderSet {
@@ -111,7 +111,7 @@ public class KieBuilderSetImpl implements KieBuilderSet {
         kieBuilder.cloneKieModuleForIncrementalCompilation();
         for (String file : srcFiles) {
             if ( !file.endsWith( ".properties" ) ) {
-                String trgFile = kieBuilder.copySourceToTarget(file);
+                String trgFile = kieBuilder.copySourceToTarget(KiePath.of(file));
                 if (trgFile != null) {
                     filesToBuild.add(trgFile);
                 }

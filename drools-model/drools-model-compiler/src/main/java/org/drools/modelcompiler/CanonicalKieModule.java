@@ -96,6 +96,7 @@ import org.kie.internal.builder.KnowledgeBuilderFactory;
 import org.kie.internal.builder.ResourceChange;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
+import org.kie.memorycompiler.resources.KiePath;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -311,12 +312,12 @@ public class CanonicalKieModule implements InternalKieModule {
                 InternalKieModule includeModule = kieProject.getKieModuleForKBase(include);
                 if (includeModule == null) {
                     String text = "Unable to build KieBase, could not find include: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.asString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 if (!(includeModule instanceof CanonicalKieModule)) {
                     String text = "It is not possible to mix drl based and executable model based projects. Found a drl project: " + include;
-                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text).setKieBaseName(kBaseModel.getName());
+                    buildContext.getMessages().addMessage(Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.asString(), text).setKieBaseName(kBaseModel.getName());
                     continue;
                 }
                 KieBaseModelImpl includeKBaseModel = (KieBaseModelImpl) kieProject.getKieBaseModel(include);
@@ -832,6 +833,11 @@ public class CanonicalKieModule implements InternalKieModule {
     @Override
     public byte[] getBytes(String pResourceName) {
         return internalKieModule.getBytes(pResourceName);
+    }
+
+    @Override
+    public byte[] getBytes(KiePath resourcePath) {
+        return internalKieModule.getBytes(resourcePath);
     }
 
     @Override

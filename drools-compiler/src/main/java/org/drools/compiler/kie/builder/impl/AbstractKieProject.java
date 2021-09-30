@@ -230,7 +230,7 @@ public abstract class AbstractKieProject implements KieProject {
             if (includeModule == null) {
                 String text = "Unable to build KieBase, could not find include: " + include;
                 log.error(text);
-                buildContext.getMessages().addMessage( Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH, text ).setKieBaseName( kBaseModel.getName() );
+                buildContext.getMessages().addMessage( Message.Level.ERROR, KieModuleModelImpl.KMODULE_SRC_PATH.asString(), text ).setKieBaseName( kBaseModel.getName() );
                 allIncludesAreValid = false;
                 continue;
             }
