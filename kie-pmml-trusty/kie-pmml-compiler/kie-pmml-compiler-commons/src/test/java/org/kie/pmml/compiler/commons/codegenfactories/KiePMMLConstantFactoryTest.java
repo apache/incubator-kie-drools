@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -29,22 +30,21 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLConstantFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLConstantFactoryTest_01.txt";
+
     @Test
-    public void getConstantVariableDeclaration() {
+    public void getConstantVariableDeclaration() throws IOException {
         String variableName = "variableName";
         Object value = 2342.21;
         Constant constant = new Constant();
         constant.setValue(value);
         BlockStmt retrieved = KiePMMLConstantFactory.getConstantVariableDeclaration(variableName, constant);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                                                  "KiePMMLConstant %1$s = new " +
-                                                                                  "KiePMMLConstant(\"%1$s\", " +
-                                                                                  "Collections" +
-                                                                                  ".emptyList(), %2$s, null);" +
-                                                                                  "}", variableName, value));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, value));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);

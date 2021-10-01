@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -34,9 +35,9 @@ import org.kie.pmml.commons.model.expressions.KiePMMLRow;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLRowFactoryTest {
@@ -44,6 +45,8 @@ public class KiePMMLRowFactoryTest {
     private static final String TRANSFORMATIONS_SAMPLE = "TransformationsSample.pmml";
     private static final String MAPVALUED = "mapvalued";
     private static final String DATAENCODED = "dataencoded";
+    private static final String TEST_01_SOURCE = "KiePMMLRowFactoryTest_01.txt";
+    private static final String TEST_02_SOURCE = "KiePMMLRowFactoryTest_02.txt";
     private static Row MAPVALUED_ROW;
     private static Row DATAENCODED_ROW;
 
@@ -67,44 +70,24 @@ public class KiePMMLRowFactoryTest {
     }
 
     @Test
-    public void getMappedValueRowVariableDeclaration() {
+    public void getMappedValueRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
                                                                           MAPVALUED_ROW);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    Map<String, Object> " +
-                                                                              "%1$s_columnValues = Stream.of" +
-                                                                              "(new Object[][] { { \"band\", \"1\" }," +
-                                                                              " { \"state\", \"MN\" }, { \"out\", " +
-                                                                              "\"10000\" } }).collect(Collectors" +
-                                                                              ".toMap(data -> (String) data[0], data " +
-                                                                              "-> data[1]));\n" +
-                                                                              "    KiePMMLRow %1$s = new " +
-                                                                              "KiePMMLRow(%1$s_columnValues);" +
-                                                                              "\n" +
-                                                                              "}", variableName));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getDataEncodedRowVariableDeclaration() {
+    public void getDataEncodedRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
         BlockStmt retrieved = KiePMMLRowFactory.getRowVariableDeclaration(variableName,
                                                                           DATAENCODED_ROW);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    Map<String, Object> " +
-                                                                              "%1$s_columnValues = Stream.of" +
-                                                                              "(new Object[][] { { \"data:output\", " +
-                                                                              "\"0.0\" }, { \"data:input\", \"0\" } }).collect(Collectors" +
-                                                                              ".toMap(data -> (String) data[0], data " +
-                                                                              "-> data[1]));\n" +
-                                                                              "    KiePMMLRow %1$s = new " +
-                                                                              "KiePMMLRow(%1$s_columnValues);" +
-                                                                              "\n" +
-                                                                              "}", variableName));
-        assertEquals(expected.toString(), retrieved.toString());
+        String text = getFileContent(TEST_02_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collectors.class, KiePMMLRow.class, Map.class, Stream.class);
         commonValidateCompilationWithImports(retrieved, imports);

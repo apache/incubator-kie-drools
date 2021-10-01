@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -32,11 +33,14 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLDiscretizeBinFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLDiscretizeBinFactoryTest_01.txt";
+
     @Test
-    public void getDiscretizeBinVariableDeclaration() {
+    public void getDiscretizeBinVariableDeclaration() throws IOException {
         String variableName = "variableName";
         double leftMargin = 45.32;
 
@@ -52,25 +56,14 @@ public class KiePMMLDiscretizeBinFactoryTest {
         discretizeBin.setInterval(interval);
 
         BlockStmt retrieved = KiePMMLDiscretizeBinFactory.getDiscretizeBinVariableDeclaration(variableName,
-                                                                                    discretizeBin);
+                                                                                              discretizeBin);
         String closureString =
                 CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
-
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLInterval " +
-                                                                              "%1$s_Interval = new " +
-                                                                              "KiePMMLInterval(%2$s, " +
-                                                                              "null, " +
-                                                                              "%3$s);\n" +
-                                                                              "    KiePMMLDiscretizeBin " +
-                                                                              "%1$s = new " +
-                                                                              "KiePMMLDiscretizeBin(\"%1$s\", " +
-                                                                              "Collections.emptyList(), " +
-                                                                              "\"%4$s\", %1$s_Interval);\n" +
-                                                                              "}", variableName, leftMargin, closureString, binValue));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, leftMargin, closureString,
+                                                                      binValue));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLDiscretizeBin.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
-
 }

@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,43 +35,30 @@ import org.kie.pmml.commons.model.expressions.KiePMMLApply;
 import org.kie.pmml.commons.model.expressions.KiePMMLConstant;
 import org.kie.pmml.commons.transformations.KiePMMLDerivedField;
 import org.kie.pmml.commons.transformations.KiePMMLLocalTransformations;
-import org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransformationsFactory;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
-public class KiePMMLLocalTranformationsFactoryTest {
+public class KiePMMLLocalTransformationsFactoryTest {
 
     private static final String CUSTOM_FUNCTION = "CUSTOM_FUNCTION";
     private static final String PARAM_1 = "PARAM_1";
     private static final String PARAM_2 = "PARAM_2";
     private static final Double value1 = 100.0;
+    private static final String TEST_01_SOURCE = "KiePMMLLocalTransformationsFactoryTest_01.txt";
 
     @Test
-    public void getKiePMMLTransformationDictionaryVariableDeclaration() {
+    public void getKiePMMLTransformationDictionaryVariableDeclaration() throws IOException {
         LocalTransformations localTransformations = new LocalTransformations();
         localTransformations.addDerivedFields(getDerivedFields());
 
-        BlockStmt retrieved = KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
-        Statement expected = JavaParserUtils
-                .parseBlock("{\n" +
-                                    "    KiePMMLConstant localTransformationsDerivedField_0_0 = new KiePMMLConstant" +
-                                    "(\"localTransformationsDerivedField_0_0\", Collections.emptyList(), 100.0);\n" +
-                                    "    KiePMMLDerivedField localTransformationsDerivedField_0 = KiePMMLDerivedField" +
-                                    ".builder(\"PARAM_20\", Collections.emptyList(), \"double\", \"continuous\", " +
-                                    "localTransformationsDerivedField_0_0).withDisplayName(null).build();\n" +
-                                    "    KiePMMLConstant localTransformationsDerivedField_1_0 = new KiePMMLConstant" +
-                                    "(\"localTransformationsDerivedField_1_0\", Collections.emptyList(), 100.0);\n" +
-                                    "    KiePMMLDerivedField localTransformationsDerivedField_1 = KiePMMLDerivedField" +
-                                    ".builder(\"PARAM_21\", Collections.emptyList(), \"double\", \"continuous\", " +
-                                    "localTransformationsDerivedField_1_0).withDisplayName(null).build();\n" +
-                                    "    KiePMMLLocalTransformations localTransformations = " +
-                                    "KiePMMLLocalTransformations.builder(\"localTransformations\", Collections" +
-                                    ".emptyList()).withDerivedFields(Arrays.asList" +
-                                    "(localTransformationsDerivedField_0, localTransformationsDerivedField_1)).build" +
-                                    "();\n" +
-                                    "}");
+        BlockStmt retrieved =
+                KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(text);
+        assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLApply.class,
                                                KiePMMLDerivedField.class,

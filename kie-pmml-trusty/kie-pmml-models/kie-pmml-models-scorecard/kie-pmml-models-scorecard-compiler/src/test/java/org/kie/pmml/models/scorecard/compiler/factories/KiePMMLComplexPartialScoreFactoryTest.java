@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.scorecard.compiler.factories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,28 +36,28 @@ import org.kie.pmml.models.scorecard.model.KiePMMLComplexPartialScore;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLComplexPartialScoreFactoryTest {
 
     private static final Double value1 = 100.0;
+    private static final String TEST_01_SOURCE = "KiePMMLComplexPartialScoreFactoryTest_01.txt";
+    private static final String TEST_02_SOURCE = "KiePMMLComplexPartialScoreFactoryTest_02.txt";
+    private static final String TEST_03_SOURCE = "KiePMMLComplexPartialScoreFactoryTest_03.txt";
 
     @Test
-    public void getComplexPartialScoreVariableDeclaration() {
+    public void getComplexPartialScoreVariableDeclaration() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);
         ComplexPartialScore complexPartialScore = new ComplexPartialScore();
         complexPartialScore.setExpression(constant);
-        BlockStmt retrieved = KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName, complexPartialScore);
-        Statement expected = JavaParserUtils
-                .parseBlock(String.format("{\n" +
-                                                  "    KiePMMLConstant variableName_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0\", Collections.emptyList(), %1$s, null);\n" +
-                                                  "    KiePMMLComplexPartialScore %2$s = new KiePMMLComplexPartialScore" +
-                                                  "(\"%2$s\", Collections.emptyList()," +
-                                                  " variableName_0);\n" +
-                                                  "}", constant.getValue(),
-                                          variableName));
+        BlockStmt retrieved =
+                KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
+                                                                                            complexPartialScore);
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, constant.getValue(),
+                                                                      variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLComplexPartialScore.class,
@@ -65,21 +66,18 @@ public class KiePMMLComplexPartialScoreFactoryTest {
     }
 
     @Test
-    public void getComplexPartialScoreVariableDeclarationWithFieldRef() {
+    public void getComplexPartialScoreVariableDeclarationWithFieldRef() throws IOException {
         final String variableName = "variableName";
         FieldRef fieldRef = new FieldRef();
         fieldRef.setField(FieldName.create("FIELD_REF"));
         ComplexPartialScore complexPartialScore = new ComplexPartialScore();
         complexPartialScore.setExpression(fieldRef);
-        BlockStmt retrieved = KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName, complexPartialScore);
-        Statement expected = JavaParserUtils
-                .parseBlock(String.format("{\n" +
-                                                  "    KiePMMLFieldRef variableName_0 = new KiePMMLFieldRef" +
-                                                  "(\"%1$s\", Collections.emptyList(), null);\n" +
-                                                  "    KiePMMLComplexPartialScore %2$s = new KiePMMLComplexPartialScore" +
-                                                  "(\"%2$s\", Collections.emptyList(), variableName_0);\n" +
-                                                  "}", fieldRef.getField().getValue(),
-                                          variableName));
+        BlockStmt retrieved =
+                KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
+                                                                                            complexPartialScore);
+        String text = getFileContent(TEST_02_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, fieldRef.getField().getValue(),
+                                                                      variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class,
                                                KiePMMLComplexPartialScore.class,
@@ -88,7 +86,7 @@ public class KiePMMLComplexPartialScoreFactoryTest {
     }
 
     @Test
-    public void getComplexPartialScoreVariableDeclarationWithApply() {
+    public void getComplexPartialScoreVariableDeclarationWithApply() throws IOException {
         final String variableName = "variableName";
         Constant constant = new Constant();
         constant.setValue(value1);
@@ -99,27 +97,16 @@ public class KiePMMLComplexPartialScoreFactoryTest {
         apply.addExpressions(constant, fieldRef);
         ComplexPartialScore complexPartialScore = new ComplexPartialScore();
         complexPartialScore.setExpression(apply);
-        BlockStmt retrieved = KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName, complexPartialScore);
-        Statement expected = JavaParserUtils
-                .parseBlock(String.format("{\n" +
-                                                  "    KiePMMLConstant variableName_0_0 = new KiePMMLConstant" +
-                                                  "(\"variableName_0_0\", Collections.emptyList(), %1$s, null);\n" +
-                                                  "    KiePMMLFieldRef variableName_0_1 = new KiePMMLFieldRef" +
-                                                  "(\"%2$s\", Collections.emptyList(), null);\n" +
-                                                  "    KiePMMLApply variableName_0 = KiePMMLApply.builder" +
-                                                  "(\"variableName_0\", Collections.emptyList(), \"%3$s\")" +
-                                                  ".withDefaultValue(null).withMapMissingTo(null)" +
-                                                  ".withInvalidValueTreatmentMethod(\"%4$s\")" +
-                                                  ".withKiePMMLExpressions(Arrays.asList(variableName_0_0, " +
-                                                  "variableName_0_1)).build();\n" +
-                                                  "    KiePMMLComplexPartialScore %5$s = new KiePMMLComplexPartialScore" +
-                                                  "(\"%5$s\", Collections.emptyList(), variableName_0);\n" +
-                                                  "}",
-                                          constant.getValue(),
-                                          fieldRef.getField().getValue(),
-                                          apply.getFunction(),
-                                          apply.getInvalidValueTreatment().value(),
-                                          variableName));
+        BlockStmt retrieved =
+                KiePMMLComplexPartialScoreFactory.getComplexPartialScoreVariableDeclaration(variableName,
+                                                                                            complexPartialScore);
+        String text = getFileContent(TEST_03_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text,
+                                                                      constant.getValue(),
+                                                                      fieldRef.getField().getValue(),
+                                                                      apply.getFunction(),
+                                                                      apply.getInvalidValueTreatment().value(),
+                                                                      variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class,
                                                KiePMMLFieldRef.class,
