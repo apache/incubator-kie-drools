@@ -31,6 +31,7 @@ import org.junit.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.api.CommonTestingUtils.getOP_TYPEString;
