@@ -22,6 +22,11 @@ See the following examples to explore more about this capability.
 - [pmml-event-driven-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/pmml-event-driven-quarkus)
 - [pmml-event-driven-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/pmml-event-driven-springboot)
 
+### Rules Event Driven
+
+- [ruleunit-event-driven-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/ruleunit-event-driven-quarkus)
+- [ruleunit-event-driven-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/ruleunit-event-driven-springboot)
+
 ### Quarkus Smallrye
 
 - [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-travel-agency)
