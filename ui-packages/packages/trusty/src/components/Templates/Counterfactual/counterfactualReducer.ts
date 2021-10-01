@@ -214,8 +214,7 @@ const updateCFStatus = (state: CFState): CFState => {
 
 const areRequiredParametersSet = (state: CFState): boolean => {
   return (
-    areInputsSelected(state.searchDomains) &&
-    state.goals.filter(goal => goal.role !== CFGoalRole.ORIGINAL).length > 0
+    areInputsSelected(state.searchDomains) && areGoalsSelected(state.goals)
   );
 };
 
@@ -229,6 +228,18 @@ const areInputsSelected = (inputs: CFSearchInput[]) => {
     selectedInputs.every(
       input => input.domain || typeof input.value === 'boolean'
     )
+  );
+};
+
+const areGoalsSelected = (goals: CFGoal[]) => {
+  return (
+    goals.filter(
+      goal =>
+        !(
+          goal.role == CFGoalRole.ORIGINAL ||
+          goal.role == CFGoalRole.UNSUPPORTED
+        )
+    ).length > 0
   );
 };
 
