@@ -16,6 +16,7 @@
 
   <modules>
     <module>decisions</module>
+    <module>predictions</module>
     <module>rules</module>
   </modules>
 

@@ -25,6 +25,8 @@ public final class CloudEventExtensionConstants {
 
     // whenever a new extension is added, please add to the CloudEventExtensionConstantsTest to verify the CE spec requirements
 
+    public static final String PMML_FULL_RESULT = "kogitopmmlfullresult";
+    public static final String PMML_MODEL_NAME = "kogitopmmlmodelname";
     public static final String PROCESS_INSTANCE_ID = "kogitoprocinstanceid";
     public static final String PROCESS_REFERENCE_ID = "kogitoprocrefid";
     public static final String PROCESS_INSTANCE_STATE = "kogitoprocist";

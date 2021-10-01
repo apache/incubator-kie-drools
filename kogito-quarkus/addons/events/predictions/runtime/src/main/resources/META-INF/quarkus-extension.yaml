@@ -1,0 +1,11 @@
+name: Kogito Add-On Events Predictions
+description: Kogito Add-On for processing events on Predictions (PMML) based projects
+metadata:
+  keywords:
+    - kogito
+    - predictions
+    - PMML
+    - Kafka
+  guide: https://quarkus.io/guides/kogito-pmml
+  categories:
+    - "business-automation"

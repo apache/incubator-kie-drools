@@ -20,6 +20,7 @@ import java.util.function.Function;
 
 import org.kie.api.KieBase;
 import org.kie.api.runtime.KieRuntimeFactory;
+import org.kie.kogito.prediction.PredictionModelNotFoundException;
 import org.kie.kogito.prediction.PredictionModels;
 import org.kie.pmml.evaluator.core.utils.KnowledgeBaseUtils;
 
@@ -42,7 +43,7 @@ public abstract class AbstractPredictionModels implements PredictionModels {
                 .filter(kieBase -> KnowledgeBaseUtils.getModel(kieBase, s).isPresent())
                 .map(kieRuntimeFactories::get)
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Failed to find KieRuntimeFactory for model " + s));
+                .orElseThrow(() -> new PredictionModelNotFoundException("Failed to find KieRuntimeFactory for model " + s));
         functionReference.set(function);
     }
 

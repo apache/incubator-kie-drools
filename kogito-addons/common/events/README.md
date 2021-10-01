@@ -17,6 +17,11 @@ See the following examples to explore more about this capability.
 - [dmn-event-driven-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-event-driven-quarkus)
 - [dmn-event-driven-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/dmn-event-driven-springboot)
 
+### PMML Event Driven
+
+- [pmml-event-driven-quarkus](https://github.com/kiegroup/kogito-examples/tree/stable/pmml-event-driven-quarkus)
+- [pmml-event-driven-springboot](https://github.com/kiegroup/kogito-examples/tree/stable/pmml-event-driven-springboot)
+
 ### Quarkus Smallrye
 
 - [kogito-travel-agency](https://github.com/kiegroup/kogito-examples/tree/stable/kogito-travel-agency)
