@@ -125,20 +125,26 @@ exports[`KogitoEmptyState component tests Refresh test 1`] = `
               onClick={[MockFunction]}
               variant="primary"
             >
-              <button
-                aria-disabled={false}
-                aria-label={null}
-                className="pf-c-button pf-m-primary"
-                data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                data-ouia-component-type="PF4/Button"
-                data-ouia-safe={true}
-                disabled={false}
+              <ButtonBase
+                innerRef={null}
                 onClick={[MockFunction]}
-                role={null}
-                type="button"
+                variant="primary"
               >
-                Refresh
-              </button>
+                <button
+                  aria-disabled={false}
+                  aria-label={null}
+                  className="pf-c-button pf-m-primary"
+                  data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe={true}
+                  disabled={false}
+                  onClick={[MockFunction]}
+                  role={null}
+                  type="button"
+                >
+                  Refresh
+                </button>
+              </ButtonBase>
             </Button>
           </div>
         </div>
@@ -209,20 +215,26 @@ exports[`KogitoEmptyState component tests Reset test 1`] = `
               onClick={[MockFunction]}
               variant="link"
             >
-              <button
-                aria-disabled={false}
-                aria-label={null}
-                className="pf-c-button pf-m-link"
-                data-ouia-component-id="OUIA-Generated-Button-link-1"
-                data-ouia-component-type="PF4/Button"
-                data-ouia-safe={true}
-                disabled={false}
+              <ButtonBase
+                innerRef={null}
                 onClick={[MockFunction]}
-                role={null}
-                type="button"
+                variant="link"
               >
-                Reset to default
-              </button>
+                <button
+                  aria-disabled={false}
+                  aria-label={null}
+                  className="pf-c-button pf-m-link"
+                  data-ouia-component-id="OUIA-Generated-Button-link-1"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe={true}
+                  disabled={false}
+                  onClick={[MockFunction]}
+                  role={null}
+                  type="button"
+                >
+                  Reset to default
+                </button>
+              </ButtonBase>
             </Button>
           </div>
         </div>

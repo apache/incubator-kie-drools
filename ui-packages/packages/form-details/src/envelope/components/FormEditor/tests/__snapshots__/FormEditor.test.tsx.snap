@@ -1,0 +1,427 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormEditor test call refresh 1`] = `
+<ForwardRef
+  code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
+  contentChange={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span><span>2</span></div>",
+      },
+    }
+  }
+  formContent={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span></div>",
+      },
+    }
+  }
+  isConfig={true}
+  setContentChange={[MockFunction]}
+  setFormContent={[MockFunction]}
+>
+  <div
+    data-ouia-component-type="form-view"
+    data-ouia-safe={true}
+  >
+    <CodeEditor
+      code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
+      customControls={
+        <React.Fragment>
+          <CodeEditorControl
+            aria-label="Execute code"
+            icon={
+              <PlayIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Execute code"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+        </React.Fragment>
+      }
+      height="800px"
+      isCopyEnabled={true}
+      isDarkTheme={false}
+      isLanguageLabelVisible={true}
+      isLineNumbersVisible={true}
+      isMinimapVisible={false}
+      isReadOnly={false}
+      language="json"
+      onChange={[Function]}
+      onEditorDidMount={[Function]}
+    >
+      <MockedComponent />
+    </CodeEditor>
+  </div>
+</ForwardRef>
+`;
+
+exports[`FormEditor test render config 1`] = `
+<ForwardRef
+  code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
+  contentChange={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span><span>2</span></div>",
+      },
+    }
+  }
+  formContent={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span></div>",
+      },
+    }
+  }
+  isConfig={true}
+  setContentChange={[MockFunction]}
+  setFormContent={[MockFunction]}
+>
+  <div
+    data-ouia-component-type="form-view"
+    data-ouia-safe={true}
+  >
+    <CodeEditor
+      code="{\\"1\\":\\"1\\",\\"2\\":\\"2\\"}"
+      customControls={
+        <React.Fragment>
+          <CodeEditorControl
+            aria-label="Execute code"
+            icon={
+              <PlayIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Execute code"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+        </React.Fragment>
+      }
+      height="800px"
+      isCopyEnabled={true}
+      isDarkTheme={false}
+      isLanguageLabelVisible={true}
+      isLineNumbersVisible={true}
+      isMinimapVisible={false}
+      isReadOnly={false}
+      language="json"
+      onChange={[Function]}
+      onEditorDidMount={[Function]}
+    >
+      <MockedComponent />
+    </CodeEditor>
+  </div>
+</ForwardRef>
+`;
+
+exports[`FormEditor test render source - html 1`] = `
+<ForwardRef
+  code="<div><span>1</span></div>"
+  contentChange={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span><span>2</span></div>",
+      },
+    }
+  }
+  formContent={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span></div>",
+      },
+    }
+  }
+  formType="html"
+  isSource={true}
+  setContentChange={[MockFunction]}
+  setFormContent={[MockFunction]}
+>
+  <div
+    data-ouia-component-type="form-view"
+    data-ouia-safe={true}
+  >
+    <CodeEditor
+      code="<div><span>1</span></div>"
+      customControls={
+        <React.Fragment>
+          <CodeEditorControl
+            aria-label="Execute code"
+            icon={
+              <PlayIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Execute code"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+        </React.Fragment>
+      }
+      height="800px"
+      isCopyEnabled={true}
+      isDarkTheme={false}
+      isLanguageLabelVisible={true}
+      isLineNumbersVisible={true}
+      isMinimapVisible={false}
+      isReadOnly={false}
+      language="html"
+      onChange={[Function]}
+      onEditorDidMount={[Function]}
+    >
+      <MockedComponent />
+    </CodeEditor>
+  </div>
+</ForwardRef>
+`;
+
+exports[`FormEditor test render source - tsx 1`] = `
+<ForwardRef
+  code="<React.FC><div><span>1</span></div></React.FC>"
+  contentChange={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span><span>2</span></div>",
+      },
+    }
+  }
+  formContent={
+    Object {
+      "formConfiguration": Object {
+        "resources": Object {
+          "scripts": Object {},
+          "styles": Object {},
+        },
+        "schema": "{\\"$schema\\":\\"http://json-schema.org/draft-07/schema#\\",\\"type\\":\\"object\\",\\"properties\\":{\\"candidate\\":{\\"type\\":\\"object\\",\\"properties\\":{\\"email\\":{\\"type\\":\\"string\\"},\\"name\\":{\\"type\\":\\"string\\"},\\"salary\\":{\\"type\\":\\"integer\\"},\\"skills\\":{\\"type\\":\\"string\\"}},\\"input\\":true},\\"approve\\":{\\"type\\":\\"boolean\\",\\"output\\":true}}}",
+      },
+      "name": "from1",
+      "source": Object {
+        "source-content": "<div><span>1</span></div>",
+      },
+    }
+  }
+  formType="tsx"
+  isSource={true}
+  setContentChange={[MockFunction]}
+  setFormContent={[MockFunction]}
+>
+  <div
+    data-ouia-component-type="form-view"
+    data-ouia-safe={true}
+  >
+    <CodeEditor
+      code="<React.FC><div><span>1</span></div></React.FC>"
+      customControls={
+        <React.Fragment>
+          <CodeEditorControl
+            aria-label="Execute code"
+            icon={
+              <PlayIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Execute code"
+          />
+          <CodeEditorControl
+            aria-label="Undo changes"
+            icon={
+              <UndoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Undo changes"
+          />
+          <CodeEditorControl
+            aria-label="Redo changes"
+            icon={
+              <RedoIcon
+                className="pf-global--primary-color--100"
+                color="currentColor"
+                noVerticalAlign={false}
+                size="sm"
+              />
+            }
+            isVisible={true}
+            onClick={[Function]}
+            toolTipText="Redo changes"
+          />
+        </React.Fragment>
+      }
+      height="800px"
+      isCopyEnabled={true}
+      isDarkTheme={false}
+      isLanguageLabelVisible={true}
+      isLineNumbersVisible={true}
+      isMinimapVisible={false}
+      isReadOnly={false}
+      language="typescript"
+      onChange={[Function]}
+      onEditorDidMount={[Function]}
+    >
+      <MockedComponent />
+    </CodeEditor>
+  </div>
+</ForwardRef>
+`;

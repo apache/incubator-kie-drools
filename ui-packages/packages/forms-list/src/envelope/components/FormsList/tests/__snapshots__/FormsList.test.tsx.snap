@@ -78,6 +78,7 @@ exports[`forms list tests render forms list - gallery 1`] = `
                       className="pf-c-toggle-group__button"
                       id="tableView"
                       onClick={[Function]}
+                      type="button"
                     >
                       <ToggleGroupItemElement
                         variant="icon"
@@ -114,16 +115,6 @@ exports[`forms list tests render forms list - gallery 1`] = `
                     </button>
                   </div>
                 </ToggleGroupItem>
-                <Divider
-                  component="div"
-                  isVertical={true}
-                  key="0 divider"
-                >
-                  <div
-                    className="pf-c-divider pf-m-vertical"
-                    role="separator"
-                  />
-                </Divider>
                 <ToggleGroupItem
                   aria-label="card view icon button"
                   buttonId="cardsView"
@@ -146,6 +137,7 @@ exports[`forms list tests render forms list - gallery 1`] = `
                       className="pf-c-toggle-group__button pf-m-selected"
                       id="cardsView"
                       onClick={[Function]}
+                      type="button"
                     >
                       <ToggleGroupItemElement
                         variant="icon"
@@ -200,12 +192,12 @@ exports[`forms list tests render forms list - gallery 1`] = `
           Object {
             "lastModified": 2020-07-11T18:30:00.000Z,
             "name": "form1",
-            "type": "tsx",
+            "type": "TSX",
           },
           Object {
             "lastModified": 2020-07-11T18:30:00.000Z,
             "name": "form2",
-            "type": "html",
+            "type": "HTML",
           },
         ]
       }
@@ -293,6 +285,7 @@ exports[`forms list tests render forms list - table 1`] = `
                       className="pf-c-toggle-group__button pf-m-selected"
                       id="tableView"
                       onClick={[Function]}
+                      type="button"
                     >
                       <ToggleGroupItemElement
                         variant="icon"
@@ -329,16 +322,6 @@ exports[`forms list tests render forms list - table 1`] = `
                     </button>
                   </div>
                 </ToggleGroupItem>
-                <Divider
-                  component="div"
-                  isVertical={true}
-                  key="0 divider"
-                >
-                  <div
-                    className="pf-c-divider pf-m-vertical"
-                    role="separator"
-                  />
-                </Divider>
                 <ToggleGroupItem
                   aria-label="card view icon button"
                   buttonId="cardsView"
@@ -361,6 +344,7 @@ exports[`forms list tests render forms list - table 1`] = `
                       className="pf-c-toggle-group__button"
                       id="cardsView"
                       onClick={[Function]}
+                      type="button"
                     >
                       <ToggleGroupItemElement
                         variant="icon"

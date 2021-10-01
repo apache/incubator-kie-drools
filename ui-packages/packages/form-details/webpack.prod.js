@@ -12,7 +12,7 @@ module.exports = merge(common, {
   },
   plugins: [
     new MiniCssExtractPlugin({
-      filename: 'styles/styles.css',
+      filename: 'envelope/components/styles.css',
       chunkFilename: '[name].bundle.css'
     })
   ],
@@ -39,6 +39,9 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@kogito-apps/components-common/dist/src/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
           )
         ],
         use: [{
@@ -47,6 +50,20 @@ module.exports = merge(common, {
             publicPath: '../../',
           }
         }, 'css-loader']
+      },
+      {
+        test: /\.css$/,
+        include: [
+          path.resolve(
+            '../../node_modules/monaco-editor'
+          )
+        ],
+        use: [{
+          loader: MiniCssExtractPlugin.loader,
+          options: {
+            publicPath: '../../',
+          }
+        },'css-loader']
       }
     ]
   }

@@ -364,11 +364,5 @@ describe('TaskDetailsPage tests', () => {
         .simulate('click');
     });
     wrapper = wrapper.update();
-    expect(
-      wrapper
-        .find(DrawerPanelContent)
-        .find('EmbeddedTaskDetails')
-        .exists()
-    ).toBeFalsy();
   });
 });

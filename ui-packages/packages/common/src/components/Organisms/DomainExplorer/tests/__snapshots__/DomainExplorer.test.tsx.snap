@@ -240,21 +240,29 @@ exports[`Domain Explorer component Check error response for getQueryFields query
                           onClick={[Function]}
                           variant="link"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id="OUIA-Generated-Button-link-3"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
                             id="display-error"
+                            innerRef={null}
+                            isInline={true}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="link"
                           >
-                            See more details
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-link pf-m-inline"
+                              data-ouia-component-id="OUIA-Generated-Button-link-3"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              id="display-error"
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              See more details
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </div>
                     </EmptyStateBody>
@@ -263,21 +271,28 @@ exports[`Domain Explorer component Check error response for getQueryFields query
                       onClick={[Function]}
                       variant="primary"
                     >
-                      <button
-                        aria-disabled={false}
-                        aria-label={null}
-                        className="pf-c-button pf-m-primary"
-                        data-ouia-component-id="OUIA-Generated-Button-primary-3"
-                        data-ouia-component-type="PF4/Button"
-                        data-ouia-safe={true}
-                        disabled={false}
+                      <ButtonBase
                         id="goback-button"
+                        innerRef={null}
                         onClick={[Function]}
-                        role={null}
-                        type="button"
+                        variant="primary"
                       >
-                        Go back
-                      </button>
+                        <button
+                          aria-disabled={false}
+                          aria-label={null}
+                          className="pf-c-button pf-m-primary"
+                          data-ouia-component-id="OUIA-Generated-Button-primary-3"
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          id="goback-button"
+                          onClick={[Function]}
+                          role={null}
+                          type="button"
+                        >
+                          Go back
+                        </button>
+                      </ButtonBase>
                     </Button>
                   </div>
                 </div>
@@ -453,45 +468,54 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                     onClick={[Function]}
                     variant="plain"
                   >
-                    <button
+                    <ButtonBase
                       aria-controls="data-toolbar-with-chip-groups-expandable-content-23"
-                      aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
-                      className="pf-c-button pf-m-plain"
-                      data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                      data-ouia-component-type="PF4/Button"
-                      data-ouia-safe={true}
-                      disabled={false}
+                      innerRef={null}
                       onClick={[Function]}
-                      role={null}
-                      type="button"
+                      variant="plain"
                     >
-                      <FilterIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
+                      <button
+                        aria-controls="data-toolbar-with-chip-groups-expandable-content-23"
+                        aria-disabled={false}
+                        aria-haspopup={false}
+                        aria-label="Show Filters"
+                        className="pf-c-button pf-m-plain"
+                        data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
+                        onClick={[Function]}
+                        role={null}
+                        type="button"
                       >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 512 512"
-                          width="1em"
+                        <FilterIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <path
-                            d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
-                          />
-                        </svg>
-                      </FilterIcon>
-                    </button>
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                            />
+                          </svg>
+                        </FilterIcon>
+                      </button>
+                    </ButtonBase>
                   </Button>
                 </div>
                 <ToolbarFilter
@@ -635,6 +659,8 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                             data-ouia-safe={true}
                           >
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label=""
                               aria-labelledby="Select a field"
                               chipGroupComponent={null}
@@ -653,6 +679,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={true}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               maxHeight="60vh"
@@ -663,6 +690,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="Select a field"
                               removeSelectionAriaLabel="Remove"
@@ -671,6 +699,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -689,6 +718,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-50"
                                     isActive={false}
                                     isDisabled={false}
@@ -806,6 +836,8 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               </GenerateId>
                             </Select>
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label="Location"
                               aria-labelledby=""
                               chipGroupComponent={null}
@@ -824,6 +856,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={false}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               menuAppendTo="inline"
@@ -833,6 +866,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="operator"
                               removeSelectionAriaLabel="Remove"
@@ -841,6 +875,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -859,6 +894,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-51"
                                     isActive={false}
                                     isDisabled={false}
@@ -1025,22 +1061,30 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                               onClick={[Function]}
                               variant="primary"
                             >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id="OUIA-Generated-Button-primary-5"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                              <ButtonBase
                                 id="button-with-string"
+                                innerRef={null}
+                                isDisabled={true}
                                 onClick={[Function]}
-                                role={null}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id="OUIA-Generated-Button-primary-5"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  role={null}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </ButtonBase>
                             </Button>
                           </div>
                         </ToolbarItem>
@@ -1141,6 +1185,7 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                           key="Filters"
                           numChips={3}
                           onClick={[Function]}
+                          onOverflowChipClick={[Function]}
                           tooltipPosition="top"
                         >
                           <GenerateId
@@ -1203,46 +1248,56 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                                             ouiaId="close"
                                             variant="plain"
                                           >
-                                            <button
-                                              aria-disabled={false}
+                                            <ButtonBase
                                               aria-label="close"
                                               aria-labelledby="remove_pf-random-id-11 pf-random-id-11"
-                                              className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id="close"
-                                              data-ouia-component-type="PF4/Button"
-                                              data-ouia-safe={true}
-                                              disabled={false}
                                               id="remove_pf-random-id-11"
+                                              innerRef={null}
                                               onClick={[Function]}
-                                              role={null}
-                                              type="button"
+                                              ouiaId="close"
+                                              variant="plain"
                                             >
-                                              <TimesIcon
-                                                aria-hidden="true"
-                                                color="currentColor"
-                                                noVerticalAlign={false}
-                                                size="sm"
+                                              <button
+                                                aria-disabled={false}
+                                                aria-label="close"
+                                                aria-labelledby="remove_pf-random-id-11 pf-random-id-11"
+                                                className="pf-c-button pf-m-plain"
+                                                data-ouia-component-id="close"
+                                                data-ouia-component-type="PF4/Button"
+                                                data-ouia-safe={true}
+                                                disabled={false}
+                                                id="remove_pf-random-id-11"
+                                                onClick={[Function]}
+                                                role={null}
+                                                type="button"
                                               >
-                                                <svg
+                                                <TimesIcon
                                                   aria-hidden="true"
-                                                  aria-labelledby={null}
-                                                  fill="currentColor"
-                                                  height="1em"
-                                                  role="img"
-                                                  style={
-                                                    Object {
-                                                      "verticalAlign": "-0.125em",
-                                                    }
-                                                  }
-                                                  viewBox="0 0 352 512"
-                                                  width="1em"
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <path
-                                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                  />
-                                                </svg>
-                                              </TimesIcon>
-                                            </button>
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
+                                                      }
+                                                    }
+                                                    viewBox="0 0 352 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                    />
+                                                  </svg>
+                                                </TimesIcon>
+                                              </button>
+                                            </ButtonBase>
                                           </Button>
                                         </div>
                                       </GenerateId>
@@ -1547,20 +1602,27 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                           onClick={[Function]}
                           variant="link"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id="OUIA-Generated-Button-link-4"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
+                            innerRef={null}
+                            isInline={true}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="link"
                           >
-                            Reset to default
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-link pf-m-inline"
+                              data-ouia-component-id="OUIA-Generated-Button-link-4"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Reset to default
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </div>
                     </ToolbarItem>
@@ -1698,20 +1760,27 @@ exports[`Domain Explorer component Mock query testing 1`] = `
                 onClick={[Function]}
                 variant="link"
               >
-                <button
-                  aria-disabled={false}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link pf-m-inline"
-                  data-ouia-component-id="OUIA-Generated-Button-link-5"
-                  data-ouia-component-type="PF4/Button"
-                  data-ouia-safe={true}
-                  disabled={false}
+                <ButtonBase
+                  innerRef={null}
+                  isInline={true}
                   onClick={[Function]}
-                  role={null}
-                  type="button"
+                  variant="link"
                 >
-                  Reset to default
-                </button>
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-link pf-m-inline"
+                    data-ouia-component-id="OUIA-Generated-Button-link-5"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    Reset to default
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </ToolbarItem>
@@ -1956,45 +2025,54 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                     onClick={[Function]}
                     variant="plain"
                   >
-                    <button
+                    <ButtonBase
                       aria-controls="data-toolbar-with-chip-groups-expandable-content-7"
-                      aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
-                      className="pf-c-button pf-m-plain"
-                      data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                      data-ouia-component-type="PF4/Button"
-                      data-ouia-safe={true}
-                      disabled={false}
+                      innerRef={null}
                       onClick={[Function]}
-                      role={null}
-                      type="button"
+                      variant="plain"
                     >
-                      <FilterIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
+                      <button
+                        aria-controls="data-toolbar-with-chip-groups-expandable-content-7"
+                        aria-disabled={false}
+                        aria-haspopup={false}
+                        aria-label="Show Filters"
+                        className="pf-c-button pf-m-plain"
+                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
+                        onClick={[Function]}
+                        role={null}
+                        type="button"
                       >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 512 512"
-                          width="1em"
+                        <FilterIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <path
-                            d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
-                          />
-                        </svg>
-                      </FilterIcon>
-                    </button>
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                            />
+                          </svg>
+                        </FilterIcon>
+                      </button>
+                    </ButtonBase>
                   </Button>
                 </div>
                 <ToolbarFilter
@@ -2138,6 +2216,8 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                             data-ouia-safe={true}
                           >
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label=""
                               aria-labelledby="Select a field"
                               chipGroupComponent={null}
@@ -2156,6 +2236,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={true}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               maxHeight="60vh"
@@ -2166,6 +2247,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="Select a field"
                               removeSelectionAriaLabel="Remove"
@@ -2174,6 +2256,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -2192,6 +2275,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-16"
                                     isActive={false}
                                     isDisabled={false}
@@ -2309,6 +2393,8 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               </GenerateId>
                             </Select>
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label="Location"
                               aria-labelledby=""
                               chipGroupComponent={null}
@@ -2327,6 +2413,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={false}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               menuAppendTo="inline"
@@ -2336,6 +2423,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="operator"
                               removeSelectionAriaLabel="Remove"
@@ -2344,6 +2432,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -2362,6 +2451,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-17"
                                     isActive={false}
                                     isDisabled={false}
@@ -2528,22 +2618,30 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                               onClick={[Function]}
                               variant="primary"
                             >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id="OUIA-Generated-Button-primary-2"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                              <ButtonBase
                                 id="button-with-string"
+                                innerRef={null}
+                                isDisabled={true}
                                 onClick={[Function]}
-                                role={null}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  role={null}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </ButtonBase>
                             </Button>
                           </div>
                         </ToolbarItem>
@@ -2644,6 +2742,7 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                           key="Filters"
                           numChips={3}
                           onClick={[Function]}
+                          onOverflowChipClick={[Function]}
                           tooltipPosition="top"
                         >
                           <GenerateId
@@ -2706,46 +2805,56 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                                             ouiaId="close"
                                             variant="plain"
                                           >
-                                            <button
-                                              aria-disabled={false}
+                                            <ButtonBase
                                               aria-label="close"
                                               aria-labelledby="remove_pf-random-id-5 pf-random-id-5"
-                                              className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id="close"
-                                              data-ouia-component-type="PF4/Button"
-                                              data-ouia-safe={true}
-                                              disabled={false}
                                               id="remove_pf-random-id-5"
+                                              innerRef={null}
                                               onClick={[Function]}
-                                              role={null}
-                                              type="button"
+                                              ouiaId="close"
+                                              variant="plain"
                                             >
-                                              <TimesIcon
-                                                aria-hidden="true"
-                                                color="currentColor"
-                                                noVerticalAlign={false}
-                                                size="sm"
+                                              <button
+                                                aria-disabled={false}
+                                                aria-label="close"
+                                                aria-labelledby="remove_pf-random-id-5 pf-random-id-5"
+                                                className="pf-c-button pf-m-plain"
+                                                data-ouia-component-id="close"
+                                                data-ouia-component-type="PF4/Button"
+                                                data-ouia-safe={true}
+                                                disabled={false}
+                                                id="remove_pf-random-id-5"
+                                                onClick={[Function]}
+                                                role={null}
+                                                type="button"
                                               >
-                                                <svg
+                                                <TimesIcon
                                                   aria-hidden="true"
-                                                  aria-labelledby={null}
-                                                  fill="currentColor"
-                                                  height="1em"
-                                                  role="img"
-                                                  style={
-                                                    Object {
-                                                      "verticalAlign": "-0.125em",
-                                                    }
-                                                  }
-                                                  viewBox="0 0 352 512"
-                                                  width="1em"
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <path
-                                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                  />
-                                                </svg>
-                                              </TimesIcon>
-                                            </button>
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
+                                                      }
+                                                    }
+                                                    viewBox="0 0 352 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                    />
+                                                  </svg>
+                                                </TimesIcon>
+                                              </button>
+                                            </ButtonBase>
                                           </Button>
                                         </div>
                                       </GenerateId>
@@ -3050,20 +3159,27 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                           onClick={[Function]}
                           variant="link"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id="OUIA-Generated-Button-link-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
+                            innerRef={null}
+                            isInline={true}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="link"
                           >
-                            Reset to default
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-link pf-m-inline"
+                              data-ouia-component-id="OUIA-Generated-Button-link-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Reset to default
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </div>
                     </ToolbarItem>
@@ -3201,20 +3317,27 @@ exports[`Domain Explorer component Snapshot test with default prop 1`] = `
                 onClick={[Function]}
                 variant="link"
               >
-                <button
-                  aria-disabled={false}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link pf-m-inline"
-                  data-ouia-component-id="OUIA-Generated-Button-link-2"
-                  data-ouia-component-type="PF4/Button"
-                  data-ouia-safe={true}
-                  disabled={false}
+                <ButtonBase
+                  innerRef={null}
+                  isInline={true}
                   onClick={[Function]}
-                  role={null}
-                  type="button"
+                  variant="link"
                 >
-                  Reset to default
-                </button>
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-link pf-m-inline"
+                    data-ouia-component-id="OUIA-Generated-Button-link-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    Reset to default
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </ToolbarItem>
@@ -3459,45 +3582,54 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                     onClick={[Function]}
                     variant="plain"
                   >
-                    <button
+                    <ButtonBase
                       aria-controls="data-toolbar-with-chip-groups-expandable-content-33"
-                      aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
-                      className="pf-c-button pf-m-plain"
-                      data-ouia-component-id="OUIA-Generated-Button-plain-3"
-                      data-ouia-component-type="PF4/Button"
-                      data-ouia-safe={true}
-                      disabled={false}
+                      innerRef={null}
                       onClick={[Function]}
-                      role={null}
-                      type="button"
+                      variant="plain"
                     >
-                      <FilterIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
+                      <button
+                        aria-controls="data-toolbar-with-chip-groups-expandable-content-33"
+                        aria-disabled={false}
+                        aria-haspopup={false}
+                        aria-label="Show Filters"
+                        className="pf-c-button pf-m-plain"
+                        data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
+                        onClick={[Function]}
+                        role={null}
+                        type="button"
                       >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 512 512"
-                          width="1em"
+                        <FilterIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <path
-                            d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
-                          />
-                        </svg>
-                      </FilterIcon>
-                    </button>
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                            />
+                          </svg>
+                        </FilterIcon>
+                      </button>
+                    </ButtonBase>
                   </Button>
                 </div>
                 <ToolbarFilter
@@ -3641,6 +3773,8 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                             data-ouia-safe={true}
                           >
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label=""
                               aria-labelledby="Select a field"
                               chipGroupComponent={null}
@@ -3659,6 +3793,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={true}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               maxHeight="60vh"
@@ -3669,6 +3804,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="Select a field"
                               removeSelectionAriaLabel="Remove"
@@ -3677,6 +3813,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -3695,6 +3832,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-72"
                                     isActive={false}
                                     isDisabled={false}
@@ -3812,6 +3950,8 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               </GenerateId>
                             </Select>
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label="Location"
                               aria-labelledby=""
                               chipGroupComponent={null}
@@ -3830,6 +3970,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={false}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               menuAppendTo="inline"
@@ -3839,6 +3980,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="operator"
                               removeSelectionAriaLabel="Remove"
@@ -3847,6 +3989,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="single"
                               width=""
                             >
@@ -3865,6 +4008,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-73"
                                     isActive={false}
                                     isDisabled={false}
@@ -4031,22 +4175,30 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                               onClick={[Function]}
                               variant="primary"
                             >
-                              <button
-                                aria-disabled={true}
-                                aria-label={null}
-                                className="pf-c-button pf-m-primary pf-m-disabled"
-                                data-ouia-component-id="OUIA-Generated-Button-primary-9"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={true}
+                              <ButtonBase
                                 id="button-with-string"
+                                innerRef={null}
+                                isDisabled={true}
                                 onClick={[Function]}
-                                role={null}
-                                tabIndex={null}
-                                type="button"
+                                variant="primary"
                               >
-                                Apply Filter
-                              </button>
+                                <button
+                                  aria-disabled={true}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-primary pf-m-disabled"
+                                  data-ouia-component-id="OUIA-Generated-Button-primary-9"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={true}
+                                  id="button-with-string"
+                                  onClick={[Function]}
+                                  role={null}
+                                  tabIndex={null}
+                                  type="button"
+                                >
+                                  Apply Filter
+                                </button>
+                              </ButtonBase>
                             </Button>
                           </div>
                         </ToolbarItem>
@@ -4147,6 +4299,7 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                           key="Filters"
                           numChips={3}
                           onClick={[Function]}
+                          onOverflowChipClick={[Function]}
                           tooltipPosition="top"
                         >
                           <GenerateId
@@ -4209,46 +4362,56 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                                             ouiaId="close"
                                             variant="plain"
                                           >
-                                            <button
-                                              aria-disabled={false}
+                                            <ButtonBase
                                               aria-label="close"
                                               aria-labelledby="remove_pf-random-id-17 pf-random-id-17"
-                                              className="pf-c-button pf-m-plain"
-                                              data-ouia-component-id="close"
-                                              data-ouia-component-type="PF4/Button"
-                                              data-ouia-safe={true}
-                                              disabled={false}
                                               id="remove_pf-random-id-17"
+                                              innerRef={null}
                                               onClick={[Function]}
-                                              role={null}
-                                              type="button"
+                                              ouiaId="close"
+                                              variant="plain"
                                             >
-                                              <TimesIcon
-                                                aria-hidden="true"
-                                                color="currentColor"
-                                                noVerticalAlign={false}
-                                                size="sm"
+                                              <button
+                                                aria-disabled={false}
+                                                aria-label="close"
+                                                aria-labelledby="remove_pf-random-id-17 pf-random-id-17"
+                                                className="pf-c-button pf-m-plain"
+                                                data-ouia-component-id="close"
+                                                data-ouia-component-type="PF4/Button"
+                                                data-ouia-safe={true}
+                                                disabled={false}
+                                                id="remove_pf-random-id-17"
+                                                onClick={[Function]}
+                                                role={null}
+                                                type="button"
                                               >
-                                                <svg
+                                                <TimesIcon
                                                   aria-hidden="true"
-                                                  aria-labelledby={null}
-                                                  fill="currentColor"
-                                                  height="1em"
-                                                  role="img"
-                                                  style={
-                                                    Object {
-                                                      "verticalAlign": "-0.125em",
-                                                    }
-                                                  }
-                                                  viewBox="0 0 352 512"
-                                                  width="1em"
+                                                  color="currentColor"
+                                                  noVerticalAlign={false}
+                                                  size="sm"
                                                 >
-                                                  <path
-                                                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                  />
-                                                </svg>
-                                              </TimesIcon>
-                                            </button>
+                                                  <svg
+                                                    aria-hidden="true"
+                                                    aria-labelledby={null}
+                                                    fill="currentColor"
+                                                    height="1em"
+                                                    role="img"
+                                                    style={
+                                                      Object {
+                                                        "verticalAlign": "-0.125em",
+                                                      }
+                                                    }
+                                                    viewBox="0 0 352 512"
+                                                    width="1em"
+                                                  >
+                                                    <path
+                                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                    />
+                                                  </svg>
+                                                </TimesIcon>
+                                              </button>
+                                            </ButtonBase>
                                           </Button>
                                         </div>
                                       </GenerateId>
@@ -4553,20 +4716,27 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                           onClick={[Function]}
                           variant="link"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id="OUIA-Generated-Button-link-8"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
+                            innerRef={null}
+                            isInline={true}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="link"
                           >
-                            Reset to default
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-link pf-m-inline"
+                              data-ouia-component-id="OUIA-Generated-Button-link-8"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Reset to default
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </div>
                     </ToolbarItem>
@@ -4704,20 +4874,27 @@ exports[`Domain Explorer component check assertions on rememberedParams 1`] = `
                 onClick={[Function]}
                 variant="link"
               >
-                <button
-                  aria-disabled={false}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link pf-m-inline"
-                  data-ouia-component-id="OUIA-Generated-Button-link-9"
-                  data-ouia-component-type="PF4/Button"
-                  data-ouia-safe={true}
-                  disabled={false}
+                <ButtonBase
+                  innerRef={null}
+                  isInline={true}
                   onClick={[Function]}
-                  role={null}
-                  type="button"
+                  variant="link"
                 >
-                  Reset to default
-                </button>
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-link pf-m-inline"
+                    data-ouia-component-id="OUIA-Generated-Button-link-9"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    Reset to default
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </ToolbarItem>

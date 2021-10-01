@@ -23,12 +23,13 @@ import {
   FormDetailsDriver
 } from '../api';
 import { FormDetailsChannelApiImpl } from './FormDetailsChannelApiImpl';
+import { FormInfo } from '@kogito-apps/forms-list';
 import { ContainerType } from '@kogito-tooling/envelope/dist/api';
 import { init } from '../envelope';
-
 export interface Props {
   targetOrigin: string;
   driver: FormDetailsDriver;
+  formData: FormInfo;
 }
 
 export const EmbeddedFormDetails = React.forwardRef<FormDetailsApi, Props>(
@@ -53,10 +54,15 @@ export const EmbeddedFormDetails = React.forwardRef<FormDetailsApi, Props>(
             }
           }
         });
-        return envelopeServer.envelopeApi.requests.formDetails__init({
-          origin: envelopeServer.origin,
-          envelopeServerId: envelopeServer.id
-        });
+        return envelopeServer.envelopeApi.requests.formDetails__init(
+          {
+            origin: envelopeServer.origin,
+            envelopeServerId: envelopeServer.id
+          },
+          {
+            ...props.formData
+          }
+        );
       },
       []
     );

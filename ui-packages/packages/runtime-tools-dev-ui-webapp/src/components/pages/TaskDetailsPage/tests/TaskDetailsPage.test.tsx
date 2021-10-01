@@ -355,20 +355,5 @@ describe('TaskDetailsPage tests', () => {
     expect(
       detailsPanel.find('EmbeddedTaskDetails').props().userTask
     ).toStrictEqual(userTask);
-
-    // close details drawer
-    await act(async () => {
-      detailsPanel
-        .find(DrawerCloseButton)
-        .find('button')
-        .simulate('click');
-    });
-    wrapper = wrapper.update();
-    expect(
-      wrapper
-        .find(DrawerPanelContent)
-        .find('EmbeddedTaskDetails')
-        .exists()
-    ).toBeFalsy();
   });
 });

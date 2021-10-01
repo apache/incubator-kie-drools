@@ -174,7 +174,7 @@ describe('CounterfactualAnalysis', () => {
     wrapper
       .find('CounterfactualInputDomainEdit ActionListItem:first-child Button')
       .simulate('click');
-
+    wrapper.find('.pf-c-drawer__panel').simulate('transitionEnd');
     expect(wrapper.find('CounterfactualInputDomainEdit')).toHaveLength(0);
     expect(
       wrapper
@@ -222,7 +222,7 @@ describe('CounterfactualAnalysis', () => {
     wrapper
       .find('CounterfactualInputDomainEdit ActionListItem:first-child Button')
       .simulate('click');
-
+    wrapper.find('.pf-c-drawer__panel').simulate('transitionEnd');
     expect(wrapper.find('CounterfactualInputDomainEdit')).toHaveLength(0);
     expect(wrapper.find('CounterfactualCategoricalDomainEdit')).toHaveLength(0);
 
@@ -292,7 +292,7 @@ describe('CounterfactualAnalysis', () => {
     wrapper
       .find('CounterfactualOutcomeSelection CounterfactualOutcomeEdit')
       .at(0)
-      .find('Touchspin Button')
+      .find('NumberInput Button')
       .at(1)
       .simulate('click');
 

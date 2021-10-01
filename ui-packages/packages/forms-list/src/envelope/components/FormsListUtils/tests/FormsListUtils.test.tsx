@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+import { FormType } from '../../../../api/FormsListEnvelopeApi';
 import {
   getDateColumn,
   getFormNameColumn,
@@ -38,9 +39,9 @@ describe('forms list utils tests', () => {
     expect(result.path).toEqual('type');
   });
   it('get form lable', () => {
-    const result1 = getFormTypeLabel('html');
-    expect(result1.props.children).toEqual('HTML');
-    const result2 = getFormTypeLabel('tsx');
+    const result1 = getFormTypeLabel(FormType.HTML);
+    expect(result1.props.children).toEqual(FormType.HTML);
+    const result2 = getFormTypeLabel(FormType.TSX);
     expect(result2.props.children).toEqual('REACT');
   });
 });

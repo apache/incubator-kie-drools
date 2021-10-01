@@ -9,6 +9,9 @@ const PORT = process.env.PORT || '9000';
 module.exports = merge(common, {
   mode: 'development',
   devtool: 'source-map',
+  output: {
+    publicPath: "/"
+  },
   devServer: {
     contentBase: './dist',
     host: HOST,
@@ -19,13 +22,14 @@ module.exports = merge(common, {
     hot: true,
     overlay: true,
     open: true,
-    proxy: {
-      '/svg': {
-          target: 'http://localhost:4000',
+    proxy: [
+      {
+        context:['/svg','/forms'],
+        target: 'http://localhost:4000',
           secure: false,
           changeOrigin: true
-      },
-    },
+      }
+    ]
   },
   plugins: [
     new HtmlWebpackPlugin({
@@ -80,6 +84,12 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/task-form/dist/envelope/styles.css'
           ),
           path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'
           ),
           path.resolve(
@@ -87,10 +97,23 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/styles/styles.css'
+          )
+        ],
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.css$/,
+        include: [
+          path.resolve(
+            '../../node_modules/monaco-editor'
           )
         ],
         use: ['style-loader', 'css-loader']
       }
+      
     ]
   },
   resolve: {

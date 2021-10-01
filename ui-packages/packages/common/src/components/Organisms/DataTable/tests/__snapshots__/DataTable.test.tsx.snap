@@ -135,6 +135,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
     isStickyHeader={false}
+    isTreeTable={false}
     onSort={[Function]}
     ouiaSafe={true}
     role="grid"
@@ -185,6 +186,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
             "extraParams": Object {
               "actionResolver": undefined,
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -231,6 +233,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
             "extraParams": Object {
               "actionResolver": undefined,
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -278,6 +281,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
             "extraParams": Object {
               "actionResolver": undefined,
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -324,6 +328,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
             "extraParams": Object {
               "actionResolver": undefined,
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -371,6 +376,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
             "extraParams": Object {
               "actionResolver": undefined,
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -411,6 +417,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
       data-ouia-safe={true}
       gridBreakPoint="grid-md"
       isStickyHeader={false}
+      isTreeTable={false}
       ouiaSafe={true}
       renderers={
         Object {
@@ -435,6 +442,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
         data-ouia-safe={true}
         gridBreakPoint="grid-md"
         isStickyHeader={false}
+        isTreeTable={false}
         ouiaSafe={true}
         role="grid"
         variant={null}
@@ -448,6 +456,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
           gridBreakPoint="grid-md"
           innerRef={null}
           isStickyHeader={false}
+          isTreeTable={false}
           ouiaSafe={true}
           role="grid"
           variant={null}
@@ -485,6 +494,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -531,6 +541,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -578,6 +589,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -624,6 +636,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -671,6 +684,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -778,6 +792,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   "extraParams": Object {
                                     "actionResolver": undefined,
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -824,6 +839,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   "extraParams": Object {
                                     "actionResolver": undefined,
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -871,6 +887,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   "extraParams": Object {
                                     "actionResolver": undefined,
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -917,6 +934,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   "extraParams": Object {
                                     "actionResolver": undefined,
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -964,6 +982,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                   "extraParams": Object {
                                     "actionResolver": undefined,
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1349,6 +1368,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -1395,6 +1415,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -1442,6 +1463,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -1488,6 +1510,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -1535,6 +1558,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                       "extraParams": Object {
                         "actionResolver": undefined,
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -1839,6 +1863,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1885,6 +1910,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1932,6 +1958,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1978,6 +2005,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -2025,6 +2053,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                           "extraParams": Object {
                             "actionResolver": undefined,
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -2447,6 +2476,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -2493,6 +2523,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -2540,6 +2571,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -2586,6 +2618,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -2633,6 +2666,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -3017,6 +3051,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -3063,6 +3098,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -3110,6 +3146,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -3156,6 +3193,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -3203,6 +3241,7 @@ exports[`DataTable component tests Should render DataTable correctly 1`] = `
                                     "extraParams": Object {
                                       "actionResolver": undefined,
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,

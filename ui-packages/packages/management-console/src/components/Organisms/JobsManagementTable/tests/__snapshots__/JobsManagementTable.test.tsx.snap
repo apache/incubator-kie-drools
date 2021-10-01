@@ -159,6 +159,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
     expandId="expandable-toggle"
     gridBreakPoint="grid-md"
     isStickyHeader={false}
+    isTreeTable={false}
     onSelect={[Function]}
     onSort={[Function]}
     ouiaSafe={true}
@@ -440,6 +441,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -487,6 +489,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -534,6 +537,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -582,6 +586,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -630,6 +635,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -678,6 +684,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -726,6 +733,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -775,6 +783,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
             "extraParams": Object {
               "actionResolver": [Function],
               "actions": undefined,
+              "actionsToggle": undefined,
               "allRowsSelected": false,
               "areActionsDisabled": undefined,
               "canSelectAll": true,
@@ -815,6 +824,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
       data-ouia-safe={true}
       gridBreakPoint="grid-md"
       isStickyHeader={false}
+      isTreeTable={false}
       ouiaSafe={true}
       renderers={
         Object {
@@ -839,6 +849,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
         data-ouia-safe={true}
         gridBreakPoint="grid-md"
         isStickyHeader={false}
+        isTreeTable={false}
         ouiaSafe={true}
         role="grid"
         variant={null}
@@ -852,6 +863,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
           gridBreakPoint="grid-md"
           innerRef={null}
           isStickyHeader={false}
+          isTreeTable={false}
           ouiaSafe={true}
           role="grid"
           variant={null}
@@ -890,6 +902,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -937,6 +950,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -984,6 +998,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1032,6 +1047,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1080,6 +1096,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1128,6 +1145,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1176,6 +1194,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1225,6 +1244,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -1333,6 +1353,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1380,6 +1401,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1427,6 +1449,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1475,6 +1498,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1523,6 +1547,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1571,6 +1596,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1619,6 +1645,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1668,6 +1695,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                   "extraParams": Object {
                                     "actionResolver": [Function],
                                     "actions": undefined,
+                                    "actionsToggle": undefined,
                                     "allRowsSelected": false,
                                     "areActionsDisabled": undefined,
                                     "canSelectAll": true,
@@ -1752,7 +1780,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                           data-key={0}
                                           data-label=""
                                           onMouseEnter={[Function]}
-                                          scope=""
+                                          scope={null}
                                         >
                                           <SelectColumn
                                             aria-label="Select all rows"
@@ -2321,7 +2349,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                           data-key={7}
                                           data-label=""
                                           onMouseEnter={[Function]}
-                                          scope=""
+                                          scope={null}
                                         />
                                       </ThBase>
                                     </Th>
@@ -2358,6 +2386,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2405,6 +2434,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2452,6 +2482,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2500,6 +2531,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2548,6 +2580,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2596,6 +2629,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2644,6 +2678,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -2693,6 +2728,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                       "extraParams": Object {
                         "actionResolver": [Function],
                         "actions": undefined,
+                        "actionsToggle": undefined,
                         "allRowsSelected": false,
                         "areActionsDisabled": undefined,
                         "canSelectAll": true,
@@ -4154,6 +4190,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4201,6 +4238,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4248,6 +4286,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4296,6 +4335,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4344,6 +4384,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4392,6 +4433,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4440,6 +4482,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -4489,6 +4532,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                           "extraParams": Object {
                             "actionResolver": [Function],
                             "actions": undefined,
+                            "actionsToggle": undefined,
                             "allRowsSelected": false,
                             "areActionsDisabled": undefined,
                             "canSelectAll": true,
@@ -6304,6 +6348,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6351,6 +6396,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6398,6 +6444,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6446,6 +6493,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6494,6 +6542,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6542,6 +6591,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6590,6 +6640,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -6639,6 +6690,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -7176,9 +7228,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                     }
                                                   }
                                                   trigger={
-                                                    <span
-                                                      aria-describedby="pf-tooltip-1"
-                                                    >
+                                                    <span>
                                                       6e74a57
                                                     </span>
                                                   }
@@ -7187,9 +7237,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                   <FindRefWrapper
                                                     onFoundRef={[Function]}
                                                   >
-                                                    <span
-                                                      aria-describedby="pf-tooltip-1"
-                                                    >
+                                                    <span>
                                                       6e74a57
                                                     </span>
                                                   </FindRefWrapper>
@@ -7419,6 +7467,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         data-label=""
                                         isVisible={true}
                                         key="col-7-row-0"
+                                        style={
+                                          Object {
+                                            "paddingRight": 0,
+                                            "width": "auto",
+                                          }
+                                        }
                                       >
                                         <Td
                                           className="pf-c-table__action"
@@ -7426,6 +7480,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                           data-key={7}
                                           dataLabel={null}
                                           onMouseEnter={[Function]}
+                                          style={
+                                            Object {
+                                              "paddingRight": 0,
+                                              "width": "auto",
+                                            }
+                                          }
                                           textCenter={false}
                                         >
                                           <TdBase
@@ -7435,6 +7495,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                             dataLabel={null}
                                             innerRef={null}
                                             onMouseEnter={[Function]}
+                                            style={
+                                              Object {
+                                                "paddingRight": 0,
+                                                "width": "auto",
+                                              }
+                                            }
                                             textCenter={false}
                                           >
                                             <td
@@ -7442,6 +7508,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                               data-key={7}
                                               data-label={null}
                                               onMouseEnter={[Function]}
+                                              style={
+                                                Object {
+                                                  "paddingRight": 0,
+                                                  "width": "auto",
+                                                }
+                                              }
                                             >
                                               <ActionsColumn
                                                 dropdownDirection="down"
@@ -7462,6 +7534,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                       "extraParams": Object {
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
+                                                        "actionsToggle": undefined,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
                                                         "canSelectAll": true,
@@ -7887,6 +7960,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -7934,6 +8008,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -7981,6 +8056,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8029,6 +8105,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8077,6 +8154,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8125,6 +8203,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8173,6 +8252,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8222,6 +8302,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -8847,9 +8928,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                     }
                                                   }
                                                   trigger={
-                                                    <span
-                                                      aria-describedby="pf-tooltip-2"
-                                                    >
+                                                    <span>
                                                       dad3aa8
                                                     </span>
                                                   }
@@ -8858,9 +8937,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                   <FindRefWrapper
                                                     onFoundRef={[Function]}
                                                   >
-                                                    <span
-                                                      aria-describedby="pf-tooltip-2"
-                                                    >
+                                                    <span>
                                                       dad3aa8
                                                     </span>
                                                   </FindRefWrapper>
@@ -9114,6 +9191,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         data-label=""
                                         isVisible={true}
                                         key="col-7-row-1"
+                                        style={
+                                          Object {
+                                            "paddingRight": 0,
+                                            "width": "auto",
+                                          }
+                                        }
                                       >
                                         <Td
                                           className="pf-c-table__action"
@@ -9121,6 +9204,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                           data-key={7}
                                           dataLabel={null}
                                           onMouseEnter={[Function]}
+                                          style={
+                                            Object {
+                                              "paddingRight": 0,
+                                              "width": "auto",
+                                            }
+                                          }
                                           textCenter={false}
                                         >
                                           <TdBase
@@ -9130,6 +9219,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                             dataLabel={null}
                                             innerRef={null}
                                             onMouseEnter={[Function]}
+                                            style={
+                                              Object {
+                                                "paddingRight": 0,
+                                                "width": "auto",
+                                              }
+                                            }
                                             textCenter={false}
                                           >
                                             <td
@@ -9137,6 +9232,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                               data-key={7}
                                               data-label={null}
                                               onMouseEnter={[Function]}
+                                              style={
+                                                Object {
+                                                  "paddingRight": 0,
+                                                  "width": "auto",
+                                                }
+                                              }
                                             >
                                               <ActionsColumn
                                                 dropdownDirection="down"
@@ -9157,6 +9258,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                       "extraParams": Object {
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
+                                                        "actionsToggle": undefined,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
                                                         "canSelectAll": true,
@@ -9662,6 +9764,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9709,6 +9812,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9756,6 +9860,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9804,6 +9909,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9852,6 +9958,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9900,6 +10007,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9948,6 +10056,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -9997,6 +10106,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                     "extraParams": Object {
                                       "actionResolver": [Function],
                                       "actions": undefined,
+                                      "actionsToggle": undefined,
                                       "allRowsSelected": false,
                                       "areActionsDisabled": undefined,
                                       "canSelectAll": true,
@@ -10622,9 +10732,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                     }
                                                   }
                                                   trigger={
-                                                    <span
-                                                      aria-describedby="pf-tooltip-3"
-                                                    >
+                                                    <span>
                                                       2234dde
                                                     </span>
                                                   }
@@ -10633,9 +10741,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                   <FindRefWrapper
                                                     onFoundRef={[Function]}
                                                   >
-                                                    <span
-                                                      aria-describedby="pf-tooltip-3"
-                                                    >
+                                                    <span>
                                                       2234dde
                                                     </span>
                                                   </FindRefWrapper>
@@ -10889,6 +10995,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                         data-label=""
                                         isVisible={true}
                                         key="col-7-row-2"
+                                        style={
+                                          Object {
+                                            "paddingRight": 0,
+                                            "width": "auto",
+                                          }
+                                        }
                                       >
                                         <Td
                                           className="pf-c-table__action"
@@ -10896,6 +11008,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                           data-key={7}
                                           dataLabel={null}
                                           onMouseEnter={[Function]}
+                                          style={
+                                            Object {
+                                              "paddingRight": 0,
+                                              "width": "auto",
+                                            }
+                                          }
                                           textCenter={false}
                                         >
                                           <TdBase
@@ -10905,6 +11023,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                             dataLabel={null}
                                             innerRef={null}
                                             onMouseEnter={[Function]}
+                                            style={
+                                              Object {
+                                                "paddingRight": 0,
+                                                "width": "auto",
+                                              }
+                                            }
                                             textCenter={false}
                                           >
                                             <td
@@ -10912,6 +11036,12 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                               data-key={7}
                                               data-label={null}
                                               onMouseEnter={[Function]}
+                                              style={
+                                                Object {
+                                                  "paddingRight": 0,
+                                                  "width": "auto",
+                                                }
+                                              }
                                             >
                                               <ActionsColumn
                                                 dropdownDirection="down"
@@ -10932,6 +11062,7 @@ exports[`Jobs management table component tests Snapshot with default props 1`] =
                                                       "extraParams": Object {
                                                         "actionResolver": [Function],
                                                         "actions": undefined,
+                                                        "actionsToggle": undefined,
                                                         "allRowsSelected": false,
                                                         "areActionsDisabled": undefined,
                                                         "canSelectAll": true,

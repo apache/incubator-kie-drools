@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-import { FormFilter, FormInfo, FormsListDriver } from '../../../api';
+import { FormFilter, FormInfo, FormsListDriver, FormType } from '../../../api';
 
 export const formList: FormInfo[] = [
   {
     name: 'form1',
-    type: 'tsx',
+    type: FormType.TSX,
     lastModified: new Date('2020-07-11T18:30:00.000Z')
   },
   {
     name: 'form2',
-    type: 'html',
+    type: FormType.HTML,
     lastModified: new Date('2020-07-11T18:30:00.000Z')
   }
 ];

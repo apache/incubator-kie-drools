@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { componentOuiaProps, OUIAProps } from '@kogito-apps/ouia-tools';
-import { useHistory } from 'react-router-dom';
 import { FormDetailsGatewayApi } from '../../../channel/FormDetails';
 import { useFormDetailsGatewayApi } from '../../../channel/FormDetails/FormDetailsContext';
 import { EmbeddedFormDetails } from '@kogito-apps/form-details';
+import { FormInfo } from '@kogito-apps/forms-list';
 
-const FormDetailsContainer: React.FC<OUIAProps> = ({ ouiaId, ouiaSafe }) => {
-  const history = useHistory();
+interface FormDetailSContainerProps {
+  formData: FormInfo;
+}
+const FormDetailsContainer: React.FC<FormDetailSContainerProps & OUIAProps> = ({
+  formData,
+  ouiaId,
+  ouiaSafe
+}) => {
   const gatewayApi: FormDetailsGatewayApi = useFormDetailsGatewayApi();
-  useEffect(() => {
-    const unSubscribeHandler = gatewayApi.onOpenFormDetailsListener({
-      onOpen(name: string) {
-        history.push(`/`);
-        history.push(`/Forms/${name}`);
-      }
-    });
-
-    return () => {
-      unSubscribeHandler.unSubscribe();
-    };
-  }, []);
 
   return (
     <EmbeddedFormDetails
       {...componentOuiaProps(ouiaId, 'form-details-container', ouiaSafe)}
       driver={gatewayApi}
       targetOrigin={'*'}
+      formData={formData}
     />
   );
 };

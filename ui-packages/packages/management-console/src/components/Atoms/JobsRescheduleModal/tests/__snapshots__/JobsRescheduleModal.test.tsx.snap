@@ -373,6 +373,7 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                 }
               }
               paused={false}
+              preventScrollOnDeactivate={false}
             >
               <div
                 className="pf-l-bullseye"
@@ -411,43 +412,51 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                         onClick={[MockFunction]}
                         variant="plain"
                       >
-                        <button
-                          aria-disabled={false}
+                        <ButtonBase
                           aria-label="Close"
-                          className="pf-c-button pf-m-plain"
-                          data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                          className=""
+                          innerRef={null}
                           onClick={[MockFunction]}
-                          role={null}
-                          type="button"
+                          variant="plain"
                         >
-                          <TimesIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label="Close"
+                            className="pf-c-button pf-m-plain"
+                            data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[MockFunction]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 352 512"
-                              width="1em"
+                            <TimesIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              />
-                            </svg>
-                          </TimesIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 352 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                />
+                              </svg>
+                            </TimesIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </ModalBoxCloseButton>
                     <ModalBoxHeader
@@ -570,45 +579,52 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                                         id="Time-now"
                                         onClick={[Function]}
                                       >
-                                        <button
-                                          aria-disabled={false}
-                                          aria-label={null}
-                                          className="pf-c-button pf-m-primary kogito-management-console--jobsModal__TimeNow"
-                                          data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                                          data-ouia-component-type="PF4/Button"
-                                          data-ouia-safe={true}
-                                          disabled={false}
+                                        <ButtonBase
+                                          className="kogito-management-console--jobsModal__TimeNow"
                                           id="Time-now"
+                                          innerRef={null}
                                           onClick={[Function]}
-                                          role={null}
-                                          type="button"
                                         >
-                                          <OutlinedClockIcon
-                                            color="currentColor"
-                                            noVerticalAlign={false}
-                                            size="sm"
+                                          <button
+                                            aria-disabled={false}
+                                            aria-label={null}
+                                            className="pf-c-button pf-m-primary kogito-management-console--jobsModal__TimeNow"
+                                            data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                                            data-ouia-component-type="PF4/Button"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="Time-now"
+                                            onClick={[Function]}
+                                            role={null}
+                                            type="button"
                                           >
-                                            <svg
-                                              aria-hidden={true}
-                                              aria-labelledby={null}
-                                              fill="currentColor"
-                                              height="1em"
-                                              role="img"
-                                              style={
-                                                Object {
-                                                  "verticalAlign": "-0.125em",
-                                                }
-                                              }
-                                              viewBox="0 0 512 512"
-                                              width="1em"
+                                            <OutlinedClockIcon
+                                              color="currentColor"
+                                              noVerticalAlign={false}
+                                              size="sm"
                                             >
-                                              <path
-                                                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"
-                                              />
-                                            </svg>
-                                          </OutlinedClockIcon>
-                                           Now
-                                        </button>
+                                              <svg
+                                                aria-hidden={true}
+                                                aria-labelledby={null}
+                                                fill="currentColor"
+                                                height="1em"
+                                                role="img"
+                                                style={
+                                                  Object {
+                                                    "verticalAlign": "-0.125em",
+                                                  }
+                                                }
+                                                viewBox="0 0 512 512"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"
+                                                />
+                                              </svg>
+                                            </OutlinedClockIcon>
+                                             Now
+                                          </button>
+                                        </ButtonBase>
                                       </Button>
                                     </div>
                                   </div>
@@ -773,39 +789,51 @@ exports[`Job reschedule modal tests test job reschedule modal 1`] = `
                           onClick={[Function]}
                           variant="primary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-primary"
-                            data-ouia-component-id="OUIA-Generated-Button-primary-2"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
                             id="apply-button"
+                            innerRef={null}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="primary"
                           >
-                            Apply
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-primary"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              id="apply-button"
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Apply
+                            </button>
+                          </ButtonBase>
                         </Button>
                         <Button
                           key="cancel-reschedule"
                           variant="secondary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-secondary"
-                            data-ouia-component-id="OUIA-Generated-Button-secondary-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
-                            role={null}
-                            type="button"
+                          <ButtonBase
+                            innerRef={null}
+                            variant="secondary"
                           >
-                            Cancel
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-secondary"
+                              data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              role={null}
+                              type="button"
+                            >
+                              Cancel
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </footer>
                     </ModalBoxFooter>
@@ -1308,6 +1336,7 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                 }
               }
               paused={false}
+              preventScrollOnDeactivate={false}
             >
               <div
                 className="pf-l-bullseye"
@@ -1346,43 +1375,51 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                         onClick={[MockFunction]}
                         variant="plain"
                       >
-                        <button
-                          aria-disabled={false}
+                        <ButtonBase
                           aria-label="Close"
-                          className="pf-c-button pf-m-plain"
-                          data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                          className=""
+                          innerRef={null}
                           onClick={[MockFunction]}
-                          role={null}
-                          type="button"
+                          variant="plain"
                         >
-                          <TimesIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label="Close"
+                            className="pf-c-button pf-m-plain"
+                            data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[MockFunction]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 352 512"
-                              width="1em"
+                            <TimesIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              />
-                            </svg>
-                          </TimesIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 352 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                />
+                              </svg>
+                            </TimesIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </ModalBoxCloseButton>
                     <ModalBoxHeader
@@ -1505,45 +1542,52 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                                         id="Time-now"
                                         onClick={[Function]}
                                       >
-                                        <button
-                                          aria-disabled={false}
-                                          aria-label={null}
-                                          className="pf-c-button pf-m-primary kogito-management-console--jobsModal__TimeNow"
-                                          data-ouia-component-id="OUIA-Generated-Button-primary-3"
-                                          data-ouia-component-type="PF4/Button"
-                                          data-ouia-safe={true}
-                                          disabled={false}
+                                        <ButtonBase
+                                          className="kogito-management-console--jobsModal__TimeNow"
                                           id="Time-now"
+                                          innerRef={null}
                                           onClick={[Function]}
-                                          role={null}
-                                          type="button"
                                         >
-                                          <OutlinedClockIcon
-                                            color="currentColor"
-                                            noVerticalAlign={false}
-                                            size="sm"
+                                          <button
+                                            aria-disabled={false}
+                                            aria-label={null}
+                                            className="pf-c-button pf-m-primary kogito-management-console--jobsModal__TimeNow"
+                                            data-ouia-component-id="OUIA-Generated-Button-primary-3"
+                                            data-ouia-component-type="PF4/Button"
+                                            data-ouia-safe={true}
+                                            disabled={false}
+                                            id="Time-now"
+                                            onClick={[Function]}
+                                            role={null}
+                                            type="button"
                                           >
-                                            <svg
-                                              aria-hidden={true}
-                                              aria-labelledby={null}
-                                              fill="currentColor"
-                                              height="1em"
-                                              role="img"
-                                              style={
-                                                Object {
-                                                  "verticalAlign": "-0.125em",
-                                                }
-                                              }
-                                              viewBox="0 0 512 512"
-                                              width="1em"
+                                            <OutlinedClockIcon
+                                              color="currentColor"
+                                              noVerticalAlign={false}
+                                              size="sm"
                                             >
-                                              <path
-                                                d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"
-                                              />
-                                            </svg>
-                                          </OutlinedClockIcon>
-                                           Now
-                                        </button>
+                                              <svg
+                                                aria-hidden={true}
+                                                aria-labelledby={null}
+                                                fill="currentColor"
+                                                height="1em"
+                                                role="img"
+                                                style={
+                                                  Object {
+                                                    "verticalAlign": "-0.125em",
+                                                  }
+                                                }
+                                                viewBox="0 0 512 512"
+                                                width="1em"
+                                              >
+                                                <path
+                                                  d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm0 448c-110.5 0-200-89.5-200-200S145.5 56 256 56s200 89.5 200 200-89.5 200-200 200zm61.8-104.4l-84.9-61.7c-3.1-2.3-4.9-5.9-4.9-9.7V116c0-6.6 5.4-12 12-12h32c6.6 0 12 5.4 12 12v141.7l66.8 48.6c5.4 3.9 6.5 11.4 2.6 16.8L334.6 349c-3.9 5.3-11.4 6.5-16.8 2.6z"
+                                                />
+                                              </svg>
+                                            </OutlinedClockIcon>
+                                             Now
+                                          </button>
+                                        </ButtonBase>
                                       </Button>
                                     </div>
                                   </div>
@@ -1722,39 +1766,51 @@ exports[`Job reschedule modal tests test reschedule with null interval/limit 1`]
                           onClick={[Function]}
                           variant="primary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-primary"
-                            data-ouia-component-id="OUIA-Generated-Button-primary-4"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
                             id="apply-button"
+                            innerRef={null}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="primary"
                           >
-                            Apply
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-primary"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-4"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              id="apply-button"
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Apply
+                            </button>
+                          </ButtonBase>
                         </Button>
                         <Button
                           key="cancel-reschedule"
                           variant="secondary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-secondary"
-                            data-ouia-component-id="OUIA-Generated-Button-secondary-2"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
-                            role={null}
-                            type="button"
+                          <ButtonBase
+                            innerRef={null}
+                            variant="secondary"
                           >
-                            Cancel
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-secondary"
+                              data-ouia-component-id="OUIA-Generated-Button-secondary-2"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              role={null}
+                              type="button"
+                            >
+                              Cancel
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </footer>
                     </ModalBoxFooter>

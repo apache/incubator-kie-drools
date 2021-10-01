@@ -74,6 +74,8 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                         className="pf-c-toolbar__item kogito-management-console__state-dropdown-list"
                       >
                         <Select
+                          aria-describedby=""
+                          aria-invalid={false}
                           aria-label="Status"
                           aria-labelledby=""
                           chipGroupComponent={null}
@@ -92,6 +94,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                           isCreatable={false}
                           isDisabled={false}
                           isGrouped={false}
+                          isInputValuePersisted={false}
                           isOpen={false}
                           isPlain={false}
                           menuAppendTo="inline"
@@ -101,6 +104,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                           onFilter={null}
                           onSelect={[Function]}
                           onToggle={[Function]}
+                          onTypeaheadInputChanged={null}
                           ouiaSafe={true}
                           placeholderText="Status"
                           removeSelectionAriaLabel="Remove"
@@ -113,6 +117,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                           toggleIcon={null}
                           toggleId={null}
                           typeAheadAriaLabel=""
+                          validated="default"
                           variant="checkbox"
                           width=""
                         >
@@ -131,6 +136,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                                 className=""
                                 handleTypeaheadKeys={[Function]}
                                 hasClearButton={false}
+                                hasFooter={false}
                                 id="pf-select-toggle-id-1"
                                 isActive={false}
                                 isDisabled={false}
@@ -360,6 +366,7 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                             key="Status"
                             numChips={3}
                             onClick={[Function]}
+                            onOverflowChipClick={[Function]}
                             tooltipPosition="top"
                           >
                             <GenerateId
@@ -422,46 +429,56 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                                               ouiaId="close"
                                               variant="plain"
                                             >
-                                              <button
-                                                aria-disabled={false}
+                                              <ButtonBase
                                                 aria-label="close"
                                                 aria-labelledby="remove_pf-random-id-3 pf-random-id-3"
-                                                className="pf-c-button pf-m-plain"
-                                                data-ouia-component-id="close"
-                                                data-ouia-component-type="PF4/Button"
-                                                data-ouia-safe={true}
-                                                disabled={false}
                                                 id="remove_pf-random-id-3"
+                                                innerRef={null}
                                                 onClick={[Function]}
-                                                role={null}
-                                                type="button"
+                                                ouiaId="close"
+                                                variant="plain"
                                               >
-                                                <TimesIcon
-                                                  aria-hidden="true"
-                                                  color="currentColor"
-                                                  noVerticalAlign={false}
-                                                  size="sm"
+                                                <button
+                                                  aria-disabled={false}
+                                                  aria-label="close"
+                                                  aria-labelledby="remove_pf-random-id-3 pf-random-id-3"
+                                                  className="pf-c-button pf-m-plain"
+                                                  data-ouia-component-id="close"
+                                                  data-ouia-component-type="PF4/Button"
+                                                  data-ouia-safe={true}
+                                                  disabled={false}
+                                                  id="remove_pf-random-id-3"
+                                                  onClick={[Function]}
+                                                  role={null}
+                                                  type="button"
                                                 >
-                                                  <svg
+                                                  <TimesIcon
                                                     aria-hidden="true"
-                                                    aria-labelledby={null}
-                                                    fill="currentColor"
-                                                    height="1em"
-                                                    role="img"
-                                                    style={
-                                                      Object {
-                                                        "verticalAlign": "-0.125em",
-                                                      }
-                                                    }
-                                                    viewBox="0 0 352 512"
-                                                    width="1em"
+                                                    color="currentColor"
+                                                    noVerticalAlign={false}
+                                                    size="sm"
                                                   >
-                                                    <path
-                                                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                    />
-                                                  </svg>
-                                                </TimesIcon>
-                                              </button>
+                                                    <svg
+                                                      aria-hidden="true"
+                                                      aria-labelledby={null}
+                                                      fill="currentColor"
+                                                      height="1em"
+                                                      role="img"
+                                                      style={
+                                                        Object {
+                                                          "verticalAlign": "-0.125em",
+                                                        }
+                                                      }
+                                                      viewBox="0 0 352 512"
+                                                      width="1em"
+                                                    >
+                                                      <path
+                                                        d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                      />
+                                                    </svg>
+                                                  </TimesIcon>
+                                                </button>
+                                              </ButtonBase>
                                             </Button>
                                           </div>
                                         </GenerateId>
@@ -503,21 +520,29 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                         onClick={[Function]}
                         variant="primary"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-primary"
-                          data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
                           id="apply-filter"
+                          innerRef={null}
+                          isDisabled={false}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="primary"
                         >
-                          Apply Filter
-                        </button>
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-primary"
+                            data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            id="apply-filter"
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
+                          >
+                            Apply Filter
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </ToolbarItem>
@@ -620,20 +645,27 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline"
-                          data-ouia-component-id="OUIA-Generated-Button-link-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          Reset to default
-                        </button>
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline"
+                            data-ouia-component-id="OUIA-Generated-Button-link-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
+                          >
+                            Reset to default
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </ToolbarItem>
@@ -771,20 +803,27 @@ exports[`Jobs management filters component tests Snapshot with default props 1`]
               onClick={[Function]}
               variant="link"
             >
-              <button
-                aria-disabled={false}
-                aria-label={null}
-                className="pf-c-button pf-m-link pf-m-inline"
-                data-ouia-component-id="OUIA-Generated-Button-link-2"
-                data-ouia-component-type="PF4/Button"
-                data-ouia-safe={true}
-                disabled={false}
+              <ButtonBase
+                innerRef={null}
+                isInline={true}
                 onClick={[Function]}
-                role={null}
-                type="button"
+                variant="link"
               >
-                Reset to default
-              </button>
+                <button
+                  aria-disabled={false}
+                  aria-label={null}
+                  className="pf-c-button pf-m-link pf-m-inline"
+                  data-ouia-component-id="OUIA-Generated-Button-link-2"
+                  data-ouia-component-type="PF4/Button"
+                  data-ouia-safe={true}
+                  disabled={false}
+                  onClick={[Function]}
+                  role={null}
+                  type="button"
+                >
+                  Reset to default
+                </button>
+              </ButtonBase>
             </Button>
           </div>
         </ToolbarItem>

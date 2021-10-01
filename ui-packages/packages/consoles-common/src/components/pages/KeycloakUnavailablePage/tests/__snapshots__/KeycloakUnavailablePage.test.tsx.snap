@@ -114,20 +114,27 @@ exports[`KeycloakUnavailablePage test render the page 1`] = `
                 onClick={[Function]}
                 variant="link"
               >
-                <button
-                  aria-disabled={false}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link pf-m-inline"
-                  data-ouia-component-id="OUIA-Generated-Button-link-1"
-                  data-ouia-component-type="PF4/Button"
-                  data-ouia-safe={true}
-                  disabled={false}
+                <ButtonBase
+                  innerRef={null}
+                  isInline={true}
                   onClick={[Function]}
-                  role={null}
-                  type="button"
+                  variant="link"
                 >
-                  click here to retry
-                </button>
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-link pf-m-inline"
+                    data-ouia-component-id="OUIA-Generated-Button-link-1"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    click here to retry
+                  </button>
+                </ButtonBase>
               </Button>
             </span>
           </div>

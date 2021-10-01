@@ -22,6 +22,7 @@ exports[`Execution table renders a list of executions 1`] = `
   expandId="expandable-toggle"
   gridBreakPoint="grid-md"
   isStickyHeader={false}
+  isTreeTable={false}
   ouiaId="exec-table"
   ouiaSafe={true}
   role="grid"
@@ -114,6 +115,7 @@ exports[`Execution table renders a loading error message when data loading fails
   expandId="expandable-toggle"
   gridBreakPoint="grid-md"
   isStickyHeader={false}
+  isTreeTable={false}
   ouiaId="exec-table"
   ouiaSafe={true}
   role="grid"
@@ -182,6 +184,7 @@ exports[`Execution table renders loading skeletons when the data is loading 1`] 
   expandId="expandable-toggle"
   gridBreakPoint="grid-md"
   isStickyHeader={false}
+  isTreeTable={false}
   ouiaId="exec-table"
   ouiaSafe={true}
   role="grid"
@@ -522,6 +525,7 @@ exports[`Execution table renders loading skeletons when the data is not yet fetc
   expandId="expandable-toggle"
   gridBreakPoint="grid-md"
   isStickyHeader={false}
+  isTreeTable={false}
   ouiaId="exec-table"
   ouiaSafe={true}
   role="grid"
@@ -862,6 +866,7 @@ exports[`Execution table renders no result message if no executions are found 1`
   expandId="expandable-toggle"
   gridBreakPoint="grid-md"
   isStickyHeader={false}
+  isTreeTable={false}
   ouiaId="exec-table"
   ouiaSafe={true}
   role="grid"

@@ -24,12 +24,12 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
       Object {
         "lastModified": 2020-07-11T18:30:00.000Z,
         "name": "form1",
-        "type": "tsx",
+        "type": "TSX",
       },
       Object {
         "lastModified": 2020-07-11T18:30:00.000Z,
         "name": "form2",
-        "type": "html",
+        "type": "HTML",
       },
     ]
   }
@@ -65,7 +65,7 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
               Object {
                 "lastModified": 2020-07-11T18:30:00.000Z,
                 "name": "form1",
-                "type": "tsx",
+                "type": "TSX",
               }
             }
             key="0"
@@ -120,6 +120,9 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                     >
                       <h1
                         className="pf-u-font-weight-bold"
+                        data-ouia-component-id="OUIA-Generated-Text-1"
+                        data-ouia-component-type="PF4/Text"
+                        data-ouia-safe={true}
                         data-pf-content={true}
                       >
                         form1
@@ -169,9 +172,12 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                                 >
                                   <p
                                     className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-2"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
                                     data-pf-content={true}
                                   >
-                                    tsx
+                                    TSX
                                   </p>
                                 </Text>
                               </div>
@@ -207,6 +213,9 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                                 >
                                   <p
                                     className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-3"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
                                     data-pf-content={true}
                                   >
                                     <t
@@ -257,7 +266,7 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
               Object {
                 "lastModified": 2020-07-11T18:30:00.000Z,
                 "name": "form2",
-                "type": "html",
+                "type": "HTML",
               }
             }
             key="1"
@@ -312,6 +321,9 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                     >
                       <h1
                         className="pf-u-font-weight-bold"
+                        data-ouia-component-id="OUIA-Generated-Text-4"
+                        data-ouia-component-type="PF4/Text"
+                        data-ouia-safe={true}
                         data-pf-content={true}
                       >
                         form2
@@ -361,9 +373,12 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                                 >
                                   <p
                                     className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-5"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
                                     data-pf-content={true}
                                   >
-                                    html
+                                    HTML
                                   </p>
                                 </Text>
                               </div>
@@ -399,6 +414,9 @@ exports[`forms gallery tests renders gallery of forms 1`] = `
                                 >
                                   <p
                                     className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-6"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
                                     data-pf-content={true}
                                   >
                                     <t
@@ -452,12 +470,12 @@ exports[`forms gallery tests renders loading component 1`] = `
       Object {
         "lastModified": 2020-07-11T18:30:00.000Z,
         "name": "form1",
-        "type": "tsx",
+        "type": "TSX",
       },
       Object {
         "lastModified": 2020-07-11T18:30:00.000Z,
         "name": "form2",
-        "type": "html",
+        "type": "HTML",
       },
     ]
   }

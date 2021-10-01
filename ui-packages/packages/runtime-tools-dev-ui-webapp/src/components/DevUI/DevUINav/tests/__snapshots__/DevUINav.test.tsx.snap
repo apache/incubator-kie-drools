@@ -41,6 +41,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="process-instances"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
@@ -50,6 +51,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -57,6 +59,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                     data-ouia-navigation-name="process-instances"
                     href="/ProcessInstances"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Processes
                   </a>
@@ -79,6 +82,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="jobs-management"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/JobsManagement"
               >
                 <LinkAnchor
@@ -88,6 +92,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                   href="/JobsManagement"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -95,6 +100,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                     data-ouia-navigation-name="jobs-management"
                     href="/JobsManagement"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Jobs
                   </a>
@@ -117,6 +123,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="task-inbox"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/TaskInbox"
               >
                 <LinkAnchor
@@ -126,6 +133,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                   href="/TaskInbox"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -133,6 +141,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                     data-ouia-navigation-name="task-inbox"
                     href="/TaskInbox"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Tasks
                   </a>
@@ -155,6 +164,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="forms-list-nav"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/Forms"
               >
                 <LinkAnchor
@@ -164,6 +174,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                   href="/Forms"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -171,6 +182,7 @@ exports[`DevUINav tests Snapshot testing with forms list props 1`] = `
                     data-ouia-navigation-name="forms-list-nav"
                     href="/Forms"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Forms
                   </a>
@@ -226,6 +238,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="process-instances"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
@@ -235,6 +248,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -242,6 +256,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     data-ouia-navigation-name="process-instances"
                     href="/ProcessInstances"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Processes
                   </a>
@@ -264,6 +279,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="jobs-management"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/JobsManagement"
               >
                 <LinkAnchor
@@ -273,6 +289,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                   href="/JobsManagement"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -280,6 +297,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     data-ouia-navigation-name="jobs-management"
                     href="/JobsManagement"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Jobs
                   </a>
@@ -302,6 +320,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="task-inbox"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/TaskInbox"
               >
                 <LinkAnchor
@@ -311,6 +330,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                   href="/TaskInbox"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -318,6 +338,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     data-ouia-navigation-name="task-inbox"
                     href="/TaskInbox"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Tasks
                   </a>
@@ -340,6 +361,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="forms-list-nav"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/Forms"
               >
                 <LinkAnchor
@@ -349,6 +371,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                   href="/Forms"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -356,6 +379,7 @@ exports[`DevUINav tests Snapshot testing with jobs management props 1`] = `
                     data-ouia-navigation-name="forms-list-nav"
                     href="/Forms"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Forms
                   </a>
@@ -411,6 +435,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="process-instances"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
@@ -420,6 +445,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -427,6 +453,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     data-ouia-navigation-name="process-instances"
                     href="/ProcessInstances"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Processes
                   </a>
@@ -449,6 +476,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="jobs-management"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/JobsManagement"
               >
                 <LinkAnchor
@@ -458,6 +486,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                   href="/JobsManagement"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -465,6 +494,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     data-ouia-navigation-name="jobs-management"
                     href="/JobsManagement"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Jobs
                   </a>
@@ -487,6 +517,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="task-inbox"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/TaskInbox"
               >
                 <LinkAnchor
@@ -496,6 +527,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                   href="/TaskInbox"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -503,6 +535,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     data-ouia-navigation-name="task-inbox"
                     href="/TaskInbox"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Tasks
                   </a>
@@ -525,6 +558,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="forms-list-nav"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/Forms"
               >
                 <LinkAnchor
@@ -534,6 +568,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                   href="/Forms"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -541,6 +576,7 @@ exports[`DevUINav tests Snapshot testing with process list props 1`] = `
                     data-ouia-navigation-name="forms-list-nav"
                     href="/Forms"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Forms
                   </a>

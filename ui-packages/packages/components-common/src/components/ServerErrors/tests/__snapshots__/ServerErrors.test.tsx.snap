@@ -83,21 +83,29 @@ exports[`ServerErrors component tests snapshot testing  1`] = `
                       onClick={[Function]}
                       variant="link"
                     >
-                      <button
-                        aria-disabled={false}
-                        aria-label={null}
-                        className="pf-c-button pf-m-link pf-m-inline"
-                        data-ouia-component-id="OUIA-Generated-Button-link-1"
-                        data-ouia-component-type="PF4/Button"
-                        data-ouia-safe={true}
-                        disabled={false}
+                      <ButtonBase
                         id="display-error"
+                        innerRef={null}
+                        isInline={true}
                         onClick={[Function]}
-                        role={null}
-                        type="button"
+                        variant="link"
                       >
-                        See more details
-                      </button>
+                        <button
+                          aria-disabled={false}
+                          aria-label={null}
+                          className="pf-c-button pf-m-link pf-m-inline"
+                          data-ouia-component-id="OUIA-Generated-Button-link-1"
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          id="display-error"
+                          onClick={[Function]}
+                          role={null}
+                          type="button"
+                        >
+                          See more details
+                        </button>
+                      </ButtonBase>
                     </Button>
                   </div>
                 </EmptyStateBody>
@@ -188,21 +196,29 @@ exports[`ServerErrors component tests snapshot testing with small variant  1`] =
                   onClick={[Function]}
                   variant="link"
                 >
-                  <button
-                    aria-disabled={false}
-                    aria-label={null}
-                    className="pf-c-button pf-m-link pf-m-inline"
-                    data-ouia-component-id="OUIA-Generated-Button-link-4"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe={true}
-                    disabled={false}
+                  <ButtonBase
                     id="display-error"
+                    innerRef={null}
+                    isInline={true}
                     onClick={[Function]}
-                    role={null}
-                    type="button"
+                    variant="link"
                   >
-                    See more details
-                  </button>
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-link pf-m-inline"
+                      data-ouia-component-id="OUIA-Generated-Button-link-4"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      id="display-error"
+                      onClick={[Function]}
+                      role={null}
+                      type="button"
+                    >
+                      See more details
+                    </button>
+                  </ButtonBase>
                 </Button>
               </div>
             </EmptyStateBody>
@@ -297,41 +313,54 @@ exports[`ServerErrors component tests snapshot with children  1`] = `
                       onClick={[Function]}
                       variant="link"
                     >
-                      <button
-                        aria-disabled={false}
-                        aria-label={null}
-                        className="pf-c-button pf-m-link pf-m-inline"
-                        data-ouia-component-id="OUIA-Generated-Button-link-2"
-                        data-ouia-component-type="PF4/Button"
-                        data-ouia-safe={true}
-                        disabled={false}
+                      <ButtonBase
                         id="display-error"
+                        innerRef={null}
+                        isInline={true}
                         onClick={[Function]}
-                        role={null}
-                        type="button"
+                        variant="link"
                       >
-                        See more details
-                      </button>
+                        <button
+                          aria-disabled={false}
+                          aria-label={null}
+                          className="pf-c-button pf-m-link pf-m-inline"
+                          data-ouia-component-id="OUIA-Generated-Button-link-2"
+                          data-ouia-component-type="PF4/Button"
+                          data-ouia-safe={true}
+                          disabled={false}
+                          id="display-error"
+                          onClick={[Function]}
+                          role={null}
+                          type="button"
+                        >
+                          See more details
+                        </button>
+                      </ButtonBase>
                     </Button>
                   </div>
                 </EmptyStateBody>
                 <Button
                   onClick={[MockFunction]}
                 >
-                  <button
-                    aria-disabled={false}
-                    aria-label={null}
-                    className="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe={true}
-                    disabled={false}
+                  <ButtonBase
+                    innerRef={null}
                     onClick={[MockFunction]}
-                    role={null}
-                    type="button"
                   >
-                    Go back
-                  </button>
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-primary"
+                      data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[MockFunction]}
+                      role={null}
+                      type="button"
+                    >
+                      Go back
+                    </button>
+                  </ButtonBase>
                 </Button>
               </div>
             </div>

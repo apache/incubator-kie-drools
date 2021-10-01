@@ -39,6 +39,7 @@ exports[`TaskConsoleNav tests Snapshot 1`] = `
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="task-inbox"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/TaskInbox"
               >
                 <LinkAnchor
@@ -48,6 +49,7 @@ exports[`TaskConsoleNav tests Snapshot 1`] = `
                   href="/TaskInbox"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -55,6 +57,7 @@ exports[`TaskConsoleNav tests Snapshot 1`] = `
                     data-ouia-navigation-name="task-inbox"
                     href="/TaskInbox"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Task Inbox
                   </a>
@@ -110,6 +113,7 @@ exports[`TaskConsoleNav tests Snapshot with pathname 1`] = `
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="task-inbox"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/TaskInbox"
               >
                 <LinkAnchor
@@ -119,6 +123,7 @@ exports[`TaskConsoleNav tests Snapshot with pathname 1`] = `
                   href="/TaskInbox"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -126,6 +131,7 @@ exports[`TaskConsoleNav tests Snapshot with pathname 1`] = `
                     data-ouia-navigation-name="task-inbox"
                     href="/TaskInbox"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Task Inbox
                   </a>

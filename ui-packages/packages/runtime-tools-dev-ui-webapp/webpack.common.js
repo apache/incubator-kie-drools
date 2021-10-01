@@ -6,13 +6,19 @@ const webpack = require('webpack');
 const BG_IMAGES_DIRNAME = 'bgimages';
 const CopyPlugin = require("copy-webpack-plugin");
 const FileManagerPlugin = require('filemanager-webpack-plugin');
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 module.exports = {
   entry: {
     standalone: path.resolve(__dirname, 'src', 'standalone', 'standalone.ts'),
-    envelope: path.resolve(__dirname, 'src', 'standalone', 'EnvelopeApp.ts')
+    envelope: path.resolve(__dirname, 'src', 'standalone', 'EnvelopeApp.ts'),
+    'resources/form-displayer': './src/resources/form-displayer.ts'
   },
   plugins: [
+    new MonacoWebpackPlugin({
+      languages: ['typescript', 'html', 'json'],
+      globalAPI: true
+    }),
     new webpack.EnvironmentPlugin({
       KOGITO_APP_VERSION: 'DEV',
       KOGITO_APP_NAME: 'Runtime tools dev-ui'
@@ -26,11 +32,13 @@ module.exports = {
       events: {
         onEnd: {
           copy: [
-            { source: './dist/envelope.js', destination: './dist/resources/webapp/envelope.js' },
+            { source: './dist/*.js', destination: './dist/resources/webapp' },
+            { source: './dist/*.map', destination: './dist/resources/webapp' },
+            { source: './dist/fonts', destination: './dist/resources/webapp' }
           ]
         },
       },
-    }),
+    })
   ],
   module: {
     rules: [
@@ -87,6 +95,15 @@ module.exports = {
           path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'
           ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/monaco-editor/esm/vs/base/browser/ui/codicons/codicon/codicon.ttf'
+          )
         ],
         use: {
           loader: 'file-loader',
@@ -159,6 +176,12 @@ module.exports = {
             '../../node_modules/@kogito-apps/process-list/dist/static'
           ),
           path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/static'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/static'
+          ),
+          path.resolve(
             '../../node_modules/@kogito-apps/task-form/dist/static'
           ),
         ],
@@ -176,8 +199,7 @@ module.exports = {
     ]
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    publicPath: '/'
+    path: path.resolve(__dirname, 'dist')
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],

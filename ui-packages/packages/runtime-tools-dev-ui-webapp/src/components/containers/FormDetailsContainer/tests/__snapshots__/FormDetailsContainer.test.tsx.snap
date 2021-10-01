@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormDetailsContainer tests Snapshot 1`] = `
+<FormDetailsContainer
+  formData={
+    Object {
+      "lastModified": 2021-08-23T13:26:02.130Z,
+      "name": "form1",
+      "type": "html",
+    }
+  }
+>
+  <ForwardRef
+    data-ouia-component-type="form-details-container"
+    data-ouia-safe={true}
+    driver={FormDetailsGatewayApiImpl {}}
+    formData={
+      Object {
+        "lastModified": 2021-08-23T13:26:02.130Z,
+        "name": "form1",
+        "type": "html",
+      }
+    }
+    targetOrigin="*"
+  >
+    <ForwardRef>
+      <div />
+    </ForwardRef>
+  </ForwardRef>
+</FormDetailsContainer>
+`;

@@ -1764,7 +1764,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           }
                           trigger={
                             <ErrorCircleOIcon
-                              aria-describedby="pf-tooltip-537"
                               className="kogito-process-details--timeline-status"
                               color="var(--pf-global--danger-color--100)"
                             />
@@ -1775,7 +1774,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                             onFoundRef={[Function]}
                           >
                             <ErrorCircleOIcon
-                              aria-describedby="pf-tooltip-537"
                               className="kogito-process-details--timeline-status"
                               color="var(--pf-global--danger-color--100)"
                             >
@@ -1801,6 +1799,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           >
                             <p
                               className=""
+                              data-ouia-component-id="OUIA-Generated-Text-150"
+                              data-ouia-component-type="PF4/Text"
+                              data-ouia-safe={true}
                               data-pf-content={true}
                             >
                               End Event 1
@@ -1864,7 +1865,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     }
                                     trigger={
                                       <UserIcon
-                                        aria-describedby="pf-tooltip-538"
                                         className="pf-u-ml-sm"
                                         color="var(--pf-global--icon--Color--light)"
                                       />
@@ -1875,7 +1875,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                       onFoundRef={[Function]}
                                     >
                                       <UserIcon
-                                        aria-describedby="pf-tooltip-538"
                                         className="pf-u-ml-sm"
                                         color="var(--pf-global--icon--Color--light)"
                                       >
@@ -1890,6 +1889,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               >
                                 <small
                                   className=""
+                                  data-ouia-component-id="OUIA-Generated-Text-151"
+                                  data-ouia-component-type="PF4/Text"
+                                  data-ouia-safe={true}
                                   data-pf-content={true}
                                 >
                                   Active
@@ -1979,7 +1981,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           }
                           trigger={
                             <OnRunningIcon
-                              aria-describedby="pf-tooltip-539"
                               className="kogito-process-details--timeline-status"
                             />
                           }
@@ -1989,7 +1990,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                             onFoundRef={[Function]}
                           >
                             <OnRunningIcon
-                              aria-describedby="pf-tooltip-539"
                               className="kogito-process-details--timeline-status"
                             >
                               <MockedIcon />
@@ -2014,6 +2014,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           >
                             <p
                               className=""
+                              data-ouia-component-id="OUIA-Generated-Text-152"
+                              data-ouia-component-type="PF4/Text"
+                              data-ouia-safe={true}
                               data-pf-content={true}
                             >
                               Book flight
@@ -2023,6 +2026,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               >
                                 <small
                                   className=""
+                                  data-ouia-component-id="OUIA-Generated-Text-153"
+                                  data-ouia-component-type="PF4/Text"
+                                  data-ouia-safe={true}
                                   data-pf-content={true}
                                 >
                                   Active
@@ -2112,7 +2118,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           }
                           trigger={
                             <OnRunningIcon
-                              aria-describedby="pf-tooltip-540"
                               className="kogito-process-details--timeline-status"
                             />
                           }
@@ -2122,7 +2127,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                             onFoundRef={[Function]}
                           >
                             <OnRunningIcon
-                              aria-describedby="pf-tooltip-540"
                               className="kogito-process-details--timeline-status"
                             >
                               <MockedIcon />
@@ -2147,6 +2151,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                           >
                             <p
                               className=""
+                              data-ouia-component-id="OUIA-Generated-Text-154"
+                              data-ouia-component-type="PF4/Text"
+                              data-ouia-safe={true}
                               data-pf-content={true}
                             >
                               StartProcess
@@ -2210,7 +2217,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                     }
                                     trigger={
                                       <UserIcon
-                                        aria-describedby="pf-tooltip-541"
                                         className="pf-u-ml-sm"
                                         color="var(--pf-global--icon--Color--light)"
                                       />
@@ -2221,7 +2227,6 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                                       onFoundRef={[Function]}
                                     >
                                       <UserIcon
-                                        aria-describedby="pf-tooltip-541"
                                         className="pf-u-ml-sm"
                                         color="var(--pf-global--icon--Color--light)"
                                       >
@@ -2236,6 +2241,9 @@ exports[`ProcessDetailsTimelinePanel component tests test job actions on nodes t
                               >
                                 <small
                                   className=""
+                                  data-ouia-component-id="OUIA-Generated-Text-155"
+                                  data-ouia-component-type="PF4/Text"
+                                  data-ouia-safe={true}
                                   data-pf-content={true}
                                 >
                                   Active

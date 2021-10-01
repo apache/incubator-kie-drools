@@ -39,6 +39,18 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/@patternfly/react-table/node_modules/@patternfly/react-styles/css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
+          )
+        ],
+        use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.css$/,
+        include: [
+          path.resolve(
+            '../../node_modules/monaco-editor'
           )
         ],
         use: ['style-loader', 'css-loader']
@@ -46,6 +58,6 @@ module.exports = merge(common, {
     ]
   },
   output: {
-    filename: 'src/components/styles.css'
+    filename: 'envelope/components/styles.css'
   }
 });

@@ -140,6 +140,9 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                     >
                       <p
                         class=""
+                        data-ouia-component-id="OUIA-Generated-Text-1"
+                        data-ouia-component-type="PF4/Text"
+                        data-ouia-safe="true"
                         data-pf-content="true"
                       >
                         404-not found
@@ -224,6 +227,7 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                 }
               }
               paused={false}
+              preventScrollOnDeactivate={false}
             >
               <div
                 className="pf-l-bullseye"
@@ -262,43 +266,51 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                         onClick={[MockFunction]}
                         variant="plain"
                       >
-                        <button
-                          aria-disabled={false}
+                        <ButtonBase
                           aria-label="Close"
-                          className="pf-c-button pf-m-plain"
-                          data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                          className=""
+                          innerRef={null}
                           onClick={[MockFunction]}
-                          role={null}
-                          type="button"
+                          variant="plain"
                         >
-                          <TimesIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label="Close"
+                            className="pf-c-button pf-m-plain"
+                            data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[MockFunction]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 352 512"
-                              width="1em"
+                            <TimesIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              />
-                            </svg>
-                          </TimesIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 352 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                />
+                              </svg>
+                            </TimesIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </ModalBoxCloseButton>
                     <ModalBoxHeader
@@ -349,6 +361,9 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                                 <Text>
                                   <p
                                     className=""
+                                    data-ouia-component-id="OUIA-Generated-Text-1"
+                                    data-ouia-component-type="PF4/Text"
+                                    data-ouia-safe={true}
                                     data-pf-content={true}
                                   >
                                     404-not found
@@ -368,19 +383,24 @@ exports[`Process details error modal tests Snapshot test with default props 1`] 
                           key="confirm-selection"
                           variant="primary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-primary"
-                            data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
-                            role={null}
-                            type="button"
+                          <ButtonBase
+                            innerRef={null}
+                            variant="primary"
                           >
-                            OK
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-primary"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              role={null}
+                              type="button"
+                            >
+                              OK
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </footer>
                     </ModalBoxFooter>

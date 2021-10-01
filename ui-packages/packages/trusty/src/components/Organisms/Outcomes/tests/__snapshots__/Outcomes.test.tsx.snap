@@ -150,44 +150,52 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -288,44 +296,52 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-2"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-2"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -428,44 +444,52 @@ exports[`Outcomes renders a list of simple outcomes as cards 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-3"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-3"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -1075,44 +1099,52 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-9"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-9"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -1595,44 +1627,52 @@ exports[`Outcomes renders a recommendation outcome as a list of cards 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-10"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-10"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -1891,44 +1931,52 @@ exports[`Outcomes renders a skipped decision with no outcome 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-12"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-12"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -2820,44 +2868,52 @@ exports[`Outcomes renders an outcome with a composed structure 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-11"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-11"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -3150,44 +3206,52 @@ exports[`Outcomes renders an outcome with a list of properties 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-7"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-7"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>
@@ -3424,44 +3488,52 @@ exports[`Outcomes renders an outcome with an array of values 1`] = `
                         onClick={[Function]}
                         variant="link"
                       >
-                        <button
-                          aria-disabled={false}
-                          aria-label={null}
-                          className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
-                          data-ouia-component-id="OUIA-Generated-Button-link-8"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                        <ButtonBase
+                          className="outcome-cards__card__explanation-link"
+                          innerRef={null}
+                          isInline={true}
                           onClick={[Function]}
-                          role={null}
-                          type="button"
+                          variant="link"
                         >
-                          View Details 
-                          <LongArrowAltRightIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label={null}
+                            className="pf-c-button pf-m-link pf-m-inline outcome-cards__card__explanation-link"
+                            data-ouia-component-id="OUIA-Generated-Button-link-8"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[Function]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 448 512"
-                              width="1em"
+                            View Details 
+                            <LongArrowAltRightIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
-                              />
-                            </svg>
-                          </LongArrowAltRightIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 448 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M313.941 216H12c-6.627 0-12 5.373-12 12v56c0 6.627 5.373 12 12 12h301.941v46.059c0 21.382 25.851 32.09 40.971 16.971l86.059-86.059c9.373-9.373 9.373-24.569 0-33.941l-86.059-86.059c-15.119-15.119-40.971-4.411-40.971 16.971V216z"
+                                />
+                              </svg>
+                            </LongArrowAltRightIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </div>
                   </CardFooter>

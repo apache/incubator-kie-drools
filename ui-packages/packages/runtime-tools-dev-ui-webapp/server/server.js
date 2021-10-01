@@ -84,6 +84,10 @@ app.get(
 
 app.get('/:processId/:taskName/schema', controller.getTaskDefinitionForm);
 
+app.get('/forms/list', controller.getForms);
+
+app.get('/forms/formName/:formName',controller.getFormContent);
+
 const taskDetailsError = ['5cead49f-7649-410a-89ff-840cc52adf52'];
 
 const checkStatesFilters = (userTaskInstance, states) => {

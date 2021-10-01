@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FormDetailsEnvelopeView tests Snapshot 1`] = `null`;
+
+exports[`FormDetailsEnvelopeView tests Snapshot 2`] = `
+<ForwardRef
+  channelApi={
+    Object {
+      "notifications": [MockFunction],
+      "requests": Object {
+        "formDetails__getFormContent": [MockFunction],
+      },
+      "subscribe": [MockFunction],
+      "unsubscribe": [MockFunction],
+    }
+  }
+>
+  <FormDetailsContextProvider>
+    <MockedFormDetails
+      driver={
+        FormDetailsEnvelopeViewDriver {
+          "channelApi": Object {
+            "notifications": [MockFunction],
+            "requests": Object {
+              "formDetails__getFormContent": [MockFunction],
+            },
+            "subscribe": [MockFunction],
+            "unsubscribe": [MockFunction],
+          },
+        }
+      }
+      isEnvelopeConnectedToChannel={true}
+    />
+  </FormDetailsContextProvider>
+</ForwardRef>
+`;

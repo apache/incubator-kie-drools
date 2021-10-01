@@ -171,6 +171,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-1"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Process Id: 
@@ -196,6 +199,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-2"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Process Instance Id:
@@ -221,6 +227,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-3"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Status: 
@@ -245,6 +254,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-4"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Priority: 
@@ -269,6 +281,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-5"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 RepeatInterval: 
@@ -292,6 +307,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-6"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 RepeatLimit: 
@@ -315,6 +333,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-7"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 ScheduledId: 
@@ -338,6 +359,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-8"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Retries: 
@@ -361,6 +385,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-9"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Execution counter: 
@@ -384,6 +411,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class=""
+                                data-ouia-component-id="OUIA-Generated-Text-10"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Last Updated: 
@@ -411,6 +441,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                             >
                               <h6
                                 class="kogito-management-console--jobsModal__text"
+                                data-ouia-component-id="OUIA-Generated-Text-11"
+                                data-ouia-component-type="PF4/Text"
+                                data-ouia-safe="true"
                                 data-pf-content="true"
                               >
                                 Callback Endpoint:
@@ -502,6 +535,7 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                 }
               }
               paused={false}
+              preventScrollOnDeactivate={false}
             >
               <div
                 className="pf-l-bullseye"
@@ -540,43 +574,51 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                         onClick={[MockFunction]}
                         variant="plain"
                       >
-                        <button
-                          aria-disabled={false}
+                        <ButtonBase
                           aria-label="Close"
-                          className="pf-c-button pf-m-plain"
-                          data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                          data-ouia-component-type="PF4/Button"
-                          data-ouia-safe={true}
-                          disabled={false}
+                          className=""
+                          innerRef={null}
                           onClick={[MockFunction]}
-                          role={null}
-                          type="button"
+                          variant="plain"
                         >
-                          <TimesIcon
-                            color="currentColor"
-                            noVerticalAlign={false}
-                            size="sm"
+                          <button
+                            aria-disabled={false}
+                            aria-label="Close"
+                            className="pf-c-button pf-m-plain"
+                            data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                            data-ouia-component-type="PF4/Button"
+                            data-ouia-safe={true}
+                            disabled={false}
+                            onClick={[MockFunction]}
+                            role={null}
+                            type="button"
                           >
-                            <svg
-                              aria-hidden={true}
-                              aria-labelledby={null}
-                              fill="currentColor"
-                              height="1em"
-                              role="img"
-                              style={
-                                Object {
-                                  "verticalAlign": "-0.125em",
-                                }
-                              }
-                              viewBox="0 0 352 512"
-                              width="1em"
+                            <TimesIcon
+                              color="currentColor"
+                              noVerticalAlign={false}
+                              size="sm"
                             >
-                              <path
-                                d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                              />
-                            </svg>
-                          </TimesIcon>
-                        </button>
+                              <svg
+                                aria-hidden={true}
+                                aria-labelledby={null}
+                                fill="currentColor"
+                                height="1em"
+                                role="img"
+                                style={
+                                  Object {
+                                    "verticalAlign": "-0.125em",
+                                  }
+                                }
+                                viewBox="0 0 352 512"
+                                width="1em"
+                              >
+                                <path
+                                  d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                />
+                              </svg>
+                            </TimesIcon>
+                          </button>
+                        </ButtonBase>
                       </Button>
                     </ModalBoxCloseButton>
                     <ModalBoxHeader
@@ -661,6 +703,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-1"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Process Id: 
@@ -700,6 +745,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-2"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Process Instance Id:
@@ -739,6 +787,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-3"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Status: 
@@ -777,6 +828,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-4"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Priority: 
@@ -815,6 +869,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-5"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   RepeatInterval: 
@@ -852,6 +909,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-6"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   RepeatLimit: 
@@ -889,6 +949,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-7"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   ScheduledId: 
@@ -926,6 +989,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-8"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Retries: 
@@ -963,6 +1029,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-9"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Execution counter: 
@@ -1000,6 +1069,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className=""
+                                                  data-ouia-component-id="OUIA-Generated-Text-10"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Last Updated: 
@@ -1060,6 +1132,9 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                                               >
                                                 <h6
                                                   className="kogito-management-console--jobsModal__text"
+                                                  data-ouia-component-id="OUIA-Generated-Text-11"
+                                                  data-ouia-component-type="PF4/Text"
+                                                  data-ouia-safe={true}
                                                   data-pf-content={true}
                                                 >
                                                   Callback Endpoint:
@@ -1094,19 +1169,24 @@ exports[`Job details modal tests Snapshot testing 1`] = `
                           key="confirm-selection"
                           variant="primary"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-primary"
-                            data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
-                            role={null}
-                            type="button"
+                          <ButtonBase
+                            innerRef={null}
+                            variant="primary"
                           >
-                            OK
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-primary"
+                              data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              role={null}
+                              type="button"
+                            >
+                              OK
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </footer>
                     </ModalBoxFooter>

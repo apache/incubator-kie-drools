@@ -2,11 +2,11 @@ const restData = require('./rest');
 const graphData = require('./graphql');
 const path = require('path');
 const _ = require('lodash');
+const fs = require('fs');
 const confirmTravelForm = require('./forms/ConfirmTravel');
 const applyForVisaForm = require('./forms/ApplyForVisa');
 const emptyForm = require('./forms/EmptyForm');
 const formData = require('../MockData/forms/formData');
-
 const tasksUnableToTransition = [
   '047ec38d-5d57-4330-8c8d-9bd67b53a529',
   '841b9dba-3d91-4725-9de3-f9f4853b417e'
@@ -23,7 +23,7 @@ const taskWithEmptyForm = [
 ];
 
 
-const processSvg = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b','8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop', '2d962eef-45b8-48a9-ad4e-9cde0ad6af88', 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e']
+const processSvg = ['8035b580-6ae4-4aa8-9ec0-e18e19809e0b', '8035b580-6ae4-4aa8-9ec0-e18e19809e0blmnop', '2d962eef-45b8-48a9-ad4e-9cde0ad6af88', 'c54ca5b0-b975-46e2-a9a0-6a86bf7ac21e']
 module.exports = controller = {
   showError: (req, res) => {
     console.log('called', req.params.processId, req.params.processInstanceId);
@@ -206,18 +206,18 @@ module.exports = controller = {
   },
   dispatchSVG: (req, res) => {
     try {
-      if(processSvg.includes(req.params.id)){
-        if(req.params.processId === 'travels') {
-          res.sendFile(path.resolve(__dirname+'/../static/travels.svg'))
+      if (processSvg.includes(req.params.id)) {
+        if (req.params.processId === 'travels') {
+          res.sendFile(path.resolve(__dirname + '/../static/travels.svg'))
         } else if (req.params.processId === 'flightBooking') {
-          res.sendFile(path.resolve(__dirname+'/../static/flightBooking.svg'))
+          res.sendFile(path.resolve(__dirname + '/../static/flightBooking.svg'))
         } else if (req.params.processId === 'hotelBooking') {
-          res.sendFile(path.resolve(__dirname+'/../static/hotelBooking.svg'))
+          res.sendFile(path.resolve(__dirname + '/../static/hotelBooking.svg'))
         }
       } else {
         res.send(null);
       }
-    } catch(error){
+    } catch (error) {
       res.status(404).send(error)
     }
   },
@@ -282,6 +282,45 @@ module.exports = controller = {
     );
 
     res.send(JSON.stringify(getTaskSchema(req.params.taskName, true)));
+  },
+
+  getForms: (req, res) => {
+    const formFilterNames = req.query.names.split(';');
+    if (formFilterNames[0].length === 0) {
+      res.send(formData)
+    } else {
+      const filteredForms = [];
+      formFilterNames.forEach((name) => {
+        formData.forEach((form) => {
+          if (form.name === name) {
+            filteredForms.push(form);
+          }
+        });
+      });
+      res.send(filteredForms)
+    }
+  },
+
+  getFormContent: (req, res) => {
+    let sourceString;
+    const formName = req.params.formName;
+    const formInfo = formData.filter((datum) => datum.name === formName);
+    const configString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.config`),'utf8');
+    if (formInfo[0].type.toLowerCase() === 'html') {
+      sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.html`),'utf8');
+    } else if (formInfo[0].type.toLowerCase() === 'tsx') {
+      sourceString = fs.readFileSync(path.join(`${__dirname}/forms/examples/${formName}.tsx`),'utf8');
+    }
+    const response ={
+      Form:{
+        name:formName,
+        source:{
+          'source-content':sourceString
+        },
+        formConfiguration:JSON.parse(configString)
+      }
+    }
+    res.send(response);
   }
 };
 

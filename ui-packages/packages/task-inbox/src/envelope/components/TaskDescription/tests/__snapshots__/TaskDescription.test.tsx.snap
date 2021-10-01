@@ -107,9 +107,7 @@ exports[`TaskDescription test Render task description with task des 1`] = `
               }
             }
             trigger={
-              <span
-                aria-describedby="pf-tooltip-1"
-              >
+              <span>
                 Apply for visa
                  
                 <TextContent
@@ -129,9 +127,7 @@ exports[`TaskDescription test Render task description with task des 1`] = `
             <FindRefWrapper
               onFoundRef={[Function]}
             >
-              <span
-                aria-describedby="pf-tooltip-1"
-              >
+              <span>
                 Apply for visa
                  
                 <TextContent
@@ -146,6 +142,9 @@ exports[`TaskDescription test Render task description with task des 1`] = `
                     >
                       <small
                         className="pf-u-display-inline"
+                        data-ouia-component-id="OUIA-Generated-Text-1"
+                        data-ouia-component-type="PF4/Text"
+                        data-ouia-safe={true}
                         data-pf-content={true}
                       >
                         45a73

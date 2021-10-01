@@ -43,9 +43,9 @@ const FormCard: React.FC<FormCardProps & OUIAProps> = ({
 }) => {
   const getLabel = (): string | JSX.Element => {
     switch (formData.type) {
-      case 'html':
+      case 'HTML':
         return <Label variant="outline">HTML</Label>;
-      case 'tsx':
+      case 'TSX':
         return <Label variant="outline">REACT</Label>;
       /* istanbul ignore next */
       default:

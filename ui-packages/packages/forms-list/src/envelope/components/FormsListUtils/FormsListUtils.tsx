@@ -22,9 +22,9 @@ import { Label } from '@patternfly/react-core';
 
 export const getFormTypeLabel = value => {
   switch (value) {
-    case 'html':
+    case 'HTML':
       return <Label variant="outline">HTML</Label>;
-    case 'tsx':
+    case 'TSX':
       return <Label variant="outline">REACT</Label>;
     /* istanbul ignore next */
     default:

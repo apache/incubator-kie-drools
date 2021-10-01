@@ -119,6 +119,25 @@
               </resources>
             </configuration>
           </execution>
+          <execution>
+            <id>copy-envelope-resources</id>
+            <phase>process-resources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${basedir}/target/classes/dev-static/</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>${path.to.webapp.app}/dist/resources</directory>
+                  <includes>
+                    <include>form-displayer.html</include>
+                    <include>form-displayer.js</include>
+                  </includes>
+                </resource>
+              </resources>
+            </configuration>
+          </execution>
         </executions>
       </plugin>
     </plugins>

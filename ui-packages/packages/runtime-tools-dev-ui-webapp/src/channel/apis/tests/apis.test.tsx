@@ -31,7 +31,8 @@ import {
   handleProcessVariableUpdate,
   handleNodeInstanceRetrigger,
   handleNodeInstanceCancel,
-  getForms
+  getForms,
+  getFormContent
 } from '../apis';
 import {
   BulkProcessInstanceActionResponse,
@@ -831,6 +832,48 @@ describe('handle node instance cancel', () => {
     mockedAxios.get.mockRejectedValue({ errorMessage: 'failed to load data' });
     try {
       await getForms(['form1']);
+    } catch (error) {
+      expect(error).toEqual({
+        errorMessage: 'failed to load data'
+      });
+    }
+  });
+
+  it('get form content query test - success', async () => {
+    const formName = 'form1';
+    const formContent = {
+      Form: {
+        name: 'html_ITInterview',
+        source: {
+          'source-content': `<div>test source</div>`
+        },
+        formConfiguration: {
+          resources: {
+            styles: {
+              'bootstrap.min.css':
+                'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css'
+            },
+            scripts: {
+              1: '1'
+            }
+          },
+          schema:
+            '{"$schema":"http://json-schema.org/draft-07/schema#","type":"object","properties":{"candidate":{"type":"object","properties":{"email":{"type":"string"},"name":{"type":"string"},"salary":{"type":"integer"},"skills":{"type":"string"}},"input":true},"approve":{"type":"boolean","output":true}}}'
+        }
+      }
+    };
+    mockedAxios.get.mockResolvedValue({
+      data: formContent
+    });
+    const result = await getFormContent(formName);
+    expect(result).toEqual(formContent.Form);
+  });
+
+  it('get form content query test - failure', async () => {
+    const formName = 'form1';
+    mockedAxios.get.mockRejectedValue({ errorMessage: 'failed to load data' });
+    try {
+      await getFormContent(formName);
     } catch (error) {
       expect(error).toEqual({
         errorMessage: 'failed to load data'

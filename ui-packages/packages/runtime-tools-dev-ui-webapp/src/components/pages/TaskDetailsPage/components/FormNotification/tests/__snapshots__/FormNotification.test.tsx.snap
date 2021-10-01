@@ -39,8 +39,10 @@ exports[`FormNotification test Notification with custom action 1`] = `
       aria-label="Success Alert"
       className="pf-c-alert pf-m-inline pf-m-success"
       data-ouia-component-id="OUIA-Generated-Alert-success-2"
-      data-ouia-component-type="PF4/Alert"
+      data-ouia-component-type="form-notification-alert"
       data-ouia-safe={true}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
     >
       <Component
         variant="success"
@@ -95,43 +97,50 @@ exports[`FormNotification test Notification with custom action 1`] = `
             onClick={[MockFunction]}
             variant="plain"
           >
-            <button
-              aria-disabled={false}
+            <ButtonBase
               aria-label="Close Success alert: alert: The form has been submitted"
-              className="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-3"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+              innerRef={null}
               onClick={[MockFunction]}
-              role={null}
-              type="button"
+              variant="plain"
             >
-              <TimesIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
+              <button
+                aria-disabled={false}
+                aria-label="Close Success alert: alert: The form has been submitted"
+                className="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                role={null}
+                type="button"
               >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 352 512"
-                  width="1em"
+                <TimesIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
                 >
-                  <path
-                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                  />
-                </svg>
-              </TimesIcon>
-            </button>
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                    />
+                  </svg>
+                </TimesIcon>
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionCloseButton>
       </div>
@@ -147,20 +156,28 @@ exports[`FormNotification test Notification with custom action 1`] = `
             onClick={[MockFunction]}
             variant="link"
           >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-2"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+            <ButtonBase
+              className=""
+              innerRef={null}
+              isInline={true}
               onClick={[MockFunction]}
-              role={null}
-              type="button"
+              variant="link"
             >
-              Custom action
-            </button>
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-link pf-m-inline"
+                data-ouia-component-id="OUIA-Generated-Button-link-2"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                role={null}
+                type="button"
+              >
+                Custom action
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionLink>
       </div>
@@ -205,8 +222,10 @@ exports[`FormNotification test Notification with details 1`] = `
       aria-label="Danger Alert"
       className="pf-c-alert pf-m-inline pf-m-danger"
       data-ouia-component-id="OUIA-Generated-Alert-danger-1"
-      data-ouia-component-type="PF4/Alert"
+      data-ouia-component-type="form-notification-alert"
       data-ouia-safe={true}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
     >
       <Component
         variant="danger"
@@ -261,43 +280,50 @@ exports[`FormNotification test Notification with details 1`] = `
             onClick={[MockFunction]}
             variant="plain"
           >
-            <button
-              aria-disabled={false}
+            <ButtonBase
               aria-label="Close Danger alert: alert: The form has been submitted"
-              className="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-2"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+              innerRef={null}
               onClick={[MockFunction]}
-              role={null}
-              type="button"
+              variant="plain"
             >
-              <TimesIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
+              <button
+                aria-disabled={false}
+                aria-label="Close Danger alert: alert: The form has been submitted"
+                className="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                role={null}
+                type="button"
               >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 352 512"
-                  width="1em"
+                <TimesIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
                 >
-                  <path
-                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                  />
-                </svg>
-              </TimesIcon>
-            </button>
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                    />
+                  </svg>
+                </TimesIcon>
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionCloseButton>
       </div>
@@ -313,20 +339,28 @@ exports[`FormNotification test Notification with details 1`] = `
             onClick={[Function]}
             variant="link"
           >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+            <ButtonBase
+              className=""
+              innerRef={null}
+              isInline={true}
               onClick={[Function]}
-              role={null}
-              type="button"
+              variant="link"
             >
-              View details
-            </button>
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-link pf-m-inline"
+                data-ouia-component-id="OUIA-Generated-Button-link-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[Function]}
+                role={null}
+                type="button"
+              >
+                View details
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionLink>
       </div>
@@ -371,8 +405,10 @@ exports[`FormNotification test Notification with details 2`] = `
       aria-label="Danger Alert"
       className="pf-c-alert pf-m-inline pf-m-danger"
       data-ouia-component-id="OUIA-Generated-Alert-danger-1"
-      data-ouia-component-type="PF4/Alert"
+      data-ouia-component-type="form-notification-alert"
       data-ouia-safe={true}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
     >
       <Component
         variant="danger"
@@ -427,43 +463,50 @@ exports[`FormNotification test Notification with details 2`] = `
             onClick={[MockFunction]}
             variant="plain"
           >
-            <button
-              aria-disabled={false}
+            <ButtonBase
               aria-label="Close Danger alert: alert: The form has been submitted"
-              className="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-2"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+              innerRef={null}
               onClick={[MockFunction]}
-              role={null}
-              type="button"
+              variant="plain"
             >
-              <TimesIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
+              <button
+                aria-disabled={false}
+                aria-label="Close Danger alert: alert: The form has been submitted"
+                className="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                role={null}
+                type="button"
               >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 352 512"
-                  width="1em"
+                <TimesIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
                 >
-                  <path
-                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                  />
-                </svg>
-              </TimesIcon>
-            </button>
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                    />
+                  </svg>
+                </TimesIcon>
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionCloseButton>
       </div>
@@ -486,20 +529,28 @@ exports[`FormNotification test Notification with details 2`] = `
             onClick={[Function]}
             variant="link"
           >
-            <button
-              aria-disabled={false}
-              aria-label={null}
-              className="pf-c-button pf-m-link pf-m-inline"
-              data-ouia-component-id="OUIA-Generated-Button-link-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+            <ButtonBase
+              className=""
+              innerRef={null}
+              isInline={true}
               onClick={[Function]}
-              role={null}
-              type="button"
+              variant="link"
             >
-              View details
-            </button>
+              <button
+                aria-disabled={false}
+                aria-label={null}
+                className="pf-c-button pf-m-link pf-m-inline"
+                data-ouia-component-id="OUIA-Generated-Button-link-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[Function]}
+                role={null}
+                type="button"
+              >
+                View details
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionLink>
       </div>
@@ -535,8 +586,10 @@ exports[`FormNotification test Simple notification 1`] = `
       aria-label="Success Alert"
       className="pf-c-alert pf-m-inline pf-m-success"
       data-ouia-component-id="OUIA-Generated-Alert-success-1"
-      data-ouia-component-type="PF4/Alert"
+      data-ouia-component-type="form-notification-alert"
       data-ouia-safe={true}
+      onMouseEnter={[Function]}
+      onMouseLeave={[Function]}
     >
       <Component
         variant="success"
@@ -591,43 +644,50 @@ exports[`FormNotification test Simple notification 1`] = `
             onClick={[MockFunction]}
             variant="plain"
           >
-            <button
-              aria-disabled={false}
+            <ButtonBase
               aria-label="Close Success alert: alert: The form has been submitted"
-              className="pf-c-button pf-m-plain"
-              data-ouia-component-id="OUIA-Generated-Button-plain-1"
-              data-ouia-component-type="PF4/Button"
-              data-ouia-safe={true}
-              disabled={false}
+              innerRef={null}
               onClick={[MockFunction]}
-              role={null}
-              type="button"
+              variant="plain"
             >
-              <TimesIcon
-                color="currentColor"
-                noVerticalAlign={false}
-                size="sm"
+              <button
+                aria-disabled={false}
+                aria-label="Close Success alert: alert: The form has been submitted"
+                className="pf-c-button pf-m-plain"
+                data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                data-ouia-component-type="PF4/Button"
+                data-ouia-safe={true}
+                disabled={false}
+                onClick={[MockFunction]}
+                role={null}
+                type="button"
               >
-                <svg
-                  aria-hidden={true}
-                  aria-labelledby={null}
-                  fill="currentColor"
-                  height="1em"
-                  role="img"
-                  style={
-                    Object {
-                      "verticalAlign": "-0.125em",
-                    }
-                  }
-                  viewBox="0 0 352 512"
-                  width="1em"
+                <TimesIcon
+                  color="currentColor"
+                  noVerticalAlign={false}
+                  size="sm"
                 >
-                  <path
-                    d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                  />
-                </svg>
-              </TimesIcon>
-            </button>
+                  <svg
+                    aria-hidden={true}
+                    aria-labelledby={null}
+                    fill="currentColor"
+                    height="1em"
+                    role="img"
+                    style={
+                      Object {
+                        "verticalAlign": "-0.125em",
+                      }
+                    }
+                    viewBox="0 0 352 512"
+                    width="1em"
+                  >
+                    <path
+                      d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                    />
+                  </svg>
+                </TimesIcon>
+              </button>
+            </ButtonBase>
           </Button>
         </AlertActionCloseButton>
       </div>

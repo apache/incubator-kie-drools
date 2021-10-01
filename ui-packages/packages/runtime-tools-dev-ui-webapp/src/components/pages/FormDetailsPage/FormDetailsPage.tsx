@@ -15,23 +15,42 @@
  */
 
 import React, { useEffect } from 'react';
-import { Card, PageSection } from '@patternfly/react-core';
+import {
+  Card,
+  Label,
+  PageSection,
+  Text,
+  TextVariants
+} from '@patternfly/react-core';
 import { OUIAProps, ouiaPageTypeAndObjectId } from '@kogito-apps/ouia-tools';
-import { PageSectionHeader } from '@kogito-apps/consoles-common';
-import FormDetailsContainer from '../../containers/FromDetailsContainer/FormDetailsContainer';
+import FormDetailsContainer from '../../containers/FormDetailsContainer/FormDetailsContainer';
 import '../../styles.css';
+import { useHistory } from 'react-router-dom';
+import { FormInfo } from '@kogito-apps/forms-list';
+import { PageTitle } from '@kogito-apps/consoles-common';
+import Moment from 'react-moment';
 
 const FormDetailsPage: React.FC<OUIAProps> = () => {
   useEffect(() => {
     return ouiaPageTypeAndObjectId('form-detail');
   });
-
+  const history = useHistory();
+  const formData: FormInfo = history.location.state['formData'];
   return (
     <React.Fragment>
-      <PageSectionHeader titleText="Form Detail" />
+      <PageSection variant="light">
+        <PageTitle
+          title={formData.name}
+          extra={<Label variant="outline">{formData.type}</Label>}
+        />
+        <Text component={TextVariants.p} style={{ marginTop: '10px' }}>
+          <span style={{ fontWeight: 'bold' }}>Last modified:</span>{' '}
+          <Moment fromNow>{formData.lastModified}</Moment>
+        </Text>
+      </PageSection>
       <PageSection>
         <Card className="Dev-ui__card-size">
-          <FormDetailsContainer />
+          <FormDetailsContainer formData={formData} />
         </Card>
       </PageSection>
     </React.Fragment>

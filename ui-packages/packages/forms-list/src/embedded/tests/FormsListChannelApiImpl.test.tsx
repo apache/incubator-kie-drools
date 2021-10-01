@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { FormInfo, FormsListDriver } from '../../api';
+import { FormInfo, FormsListDriver, FormType } from '../../api';
 import { FormsListChannelApiImpl } from '../FormsListChannelApiImpl';
 import { MockedFormsListDriver } from './utils/Mocks';
 
@@ -48,8 +48,8 @@ describe('FormsListChannelApiImpl tests', () => {
   it('FormsList__openForm', () => {
     const formsData: FormInfo = {
       name: 'form1',
-      type: 'tsx',
-      lastModified: new Date(2020, 6, 2)
+      type: FormType.TSX,
+      lastModified: new Date(new Date('2020-07-11T18:30:00.000Z'))
     };
     api.formsList__openForm(formsData);
     expect(driver.openForm).toHaveBeenCalledWith(formsData);

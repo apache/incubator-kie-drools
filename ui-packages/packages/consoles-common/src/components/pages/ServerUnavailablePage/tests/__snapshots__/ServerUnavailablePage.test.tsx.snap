@@ -88,20 +88,26 @@ exports[`ServerUnavailablePage tests Snapshot with custom name 1`] = `
                   onClick={[MockFunction]}
                   variant="primary"
                 >
-                  <button
-                    aria-disabled={false}
-                    aria-label={null}
-                    className="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-2"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe={true}
-                    disabled={false}
+                  <ButtonBase
+                    innerRef={null}
                     onClick={[MockFunction]}
-                    role={null}
-                    type="button"
+                    variant="primary"
                   >
-                    Refresh
-                  </button>
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-primary"
+                      data-ouia-component-id="OUIA-Generated-Button-primary-2"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[MockFunction]}
+                      role={null}
+                      type="button"
+                    >
+                      Refresh
+                    </button>
+                  </ButtonBase>
                 </Button>
               </div>
             </div>
@@ -200,20 +206,26 @@ exports[`ServerUnavailablePage tests Snapshot with default name 1`] = `
                   onClick={[MockFunction]}
                   variant="primary"
                 >
-                  <button
-                    aria-disabled={false}
-                    aria-label={null}
-                    className="pf-c-button pf-m-primary"
-                    data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                    data-ouia-component-type="PF4/Button"
-                    data-ouia-safe={true}
-                    disabled={false}
+                  <ButtonBase
+                    innerRef={null}
                     onClick={[MockFunction]}
-                    role={null}
-                    type="button"
+                    variant="primary"
                   >
-                    Refresh
-                  </button>
+                    <button
+                      aria-disabled={false}
+                      aria-label={null}
+                      className="pf-c-button pf-m-primary"
+                      data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                      data-ouia-component-type="PF4/Button"
+                      data-ouia-safe={true}
+                      disabled={false}
+                      onClick={[MockFunction]}
+                      role={null}
+                      type="button"
+                    >
+                      Refresh
+                    </button>
+                  </ButtonBase>
                 </Button>
               </div>
             </div>

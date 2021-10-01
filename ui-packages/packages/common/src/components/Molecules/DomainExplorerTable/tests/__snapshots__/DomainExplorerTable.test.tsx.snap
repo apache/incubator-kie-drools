@@ -284,6 +284,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                     expandId="expandable-toggle"
                     gridBreakPoint="grid-md"
                     isStickyHeader={false}
+                    isTreeTable={false}
                     ouiaSafe={true}
                     role="grid"
                     rowLabeledBy="simple-node"
@@ -544,6 +545,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                     expandId="expandable-toggle"
                     gridBreakPoint="grid-md"
                     isStickyHeader={false}
+                    isTreeTable={false}
                     ouiaSafe={true}
                     role="grid"
                     rowLabeledBy="simple-node"
@@ -811,6 +813,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                     expandId="expandable-toggle"
                     gridBreakPoint="grid-md"
                     isStickyHeader={false}
+                    isTreeTable={false}
                     ouiaSafe={true}
                     role="grid"
                     rowLabeledBy="simple-node"
@@ -1071,6 +1074,7 @@ exports[`Domain Explorer Table Component check null value for process instance a
                     expandId="expandable-toggle"
                     gridBreakPoint="grid-md"
                     isStickyHeader={false}
+                    isTreeTable={false}
                     ouiaSafe={true}
                     role="grid"
                     rowLabeledBy="simple-node"

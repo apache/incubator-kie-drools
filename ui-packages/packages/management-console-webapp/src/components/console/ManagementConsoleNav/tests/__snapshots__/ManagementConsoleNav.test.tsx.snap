@@ -43,6 +43,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="process-instances"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
@@ -52,6 +53,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -59,6 +61,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                     data-ouia-navigation-name="process-instances"
                     href="/ProcessInstances"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Process Instances
                   </a>
@@ -82,6 +85,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="jobs-management"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/JobsManagement"
               >
                 <LinkAnchor
@@ -91,6 +95,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                   href="/JobsManagement"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -98,6 +103,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with jobs management props 
                     data-ouia-navigation-name="jobs-management"
                     href="/JobsManagement"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Jobs Management
                   </a>
@@ -155,6 +161,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                 className="pf-c-nav__link pf-m-current"
                 data-ouia-navigation-name="process-instances"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/ProcessInstances"
               >
                 <LinkAnchor
@@ -164,6 +171,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                   href="/ProcessInstances"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current="page"
@@ -171,6 +179,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                     data-ouia-navigation-name="process-instances"
                     href="/ProcessInstances"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Process Instances
                   </a>
@@ -194,6 +203,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                 className="pf-c-nav__link"
                 data-ouia-navigation-name="jobs-management"
                 onClick={[Function]}
+                tabIndex={null}
                 to="/JobsManagement"
               >
                 <LinkAnchor
@@ -203,6 +213,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                   href="/JobsManagement"
                   navigate={[Function]}
                   onClick={[Function]}
+                  tabIndex={null}
                 >
                   <a
                     aria-current={null}
@@ -210,6 +221,7 @@ exports[`ManagementConsoleNav tests Snapshot testing with process list props 1`]
                     data-ouia-navigation-name="jobs-management"
                     href="/JobsManagement"
                     onClick={[Function]}
+                    tabIndex={null}
                   >
                     Jobs Management
                   </a>

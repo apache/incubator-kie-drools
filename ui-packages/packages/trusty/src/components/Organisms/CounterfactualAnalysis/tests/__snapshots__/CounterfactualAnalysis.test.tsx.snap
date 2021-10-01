@@ -734,7 +734,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     }
                                                     trigger={
                                                       <Button
-                                                        aria-describedby="pf-tooltip-1"
                                                         aria-label="Run Counterfactual Analysis"
                                                         id="counterfactual-run"
                                                         isAriaDisabled={true}
@@ -750,31 +749,38 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                       onFoundRef={[Function]}
                                                     >
                                                       <Button
-                                                        aria-describedby="pf-tooltip-1"
                                                         aria-label="Run Counterfactual Analysis"
                                                         id="counterfactual-run"
                                                         isAriaDisabled={true}
                                                         onClick={[Function]}
                                                         variant="primary"
                                                       >
-                                                        <button
-                                                          aria-describedby="pf-tooltip-1"
-                                                          aria-disabled={true}
+                                                        <ButtonBase
                                                           aria-label="Run Counterfactual Analysis"
-                                                          className="pf-c-button pf-m-primary pf-m-aria-disabled"
-                                                          data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                                                          data-ouia-component-type="PF4/Button"
-                                                          data-ouia-safe={true}
-                                                          disabled={false}
                                                           id="counterfactual-run"
+                                                          innerRef={null}
+                                                          isAriaDisabled={true}
                                                           onClick={[Function]}
-                                                          onKeyPress={[Function]}
-                                                          role={null}
-                                                          tabIndex={null}
-                                                          type="button"
+                                                          variant="primary"
                                                         >
-                                                          Run Counterfactual
-                                                        </button>
+                                                          <button
+                                                            aria-disabled={true}
+                                                            aria-label="Run Counterfactual Analysis"
+                                                            className="pf-c-button pf-m-primary pf-m-aria-disabled"
+                                                            data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                                                            data-ouia-component-type="PF4/Button"
+                                                            data-ouia-safe={true}
+                                                            disabled={false}
+                                                            id="counterfactual-run"
+                                                            onClick={[Function]}
+                                                            onKeyPress={[Function]}
+                                                            role={null}
+                                                            tabIndex={null}
+                                                            type="button"
+                                                          >
+                                                            Run Counterfactual
+                                                          </button>
+                                                        </ButtonBase>
                                                       </Button>
                                                     </FindRefWrapper>
                                                   </Popper>
@@ -850,7 +856,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     }
                                                     trigger={
                                                       <Button
-                                                        aria-describedby="pf-tooltip-2"
                                                         id="counterfactual-setup-outcomes"
                                                         onClick={[Function]}
                                                         variant="secondary"
@@ -864,27 +869,32 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                       onFoundRef={[Function]}
                                                     >
                                                       <Button
-                                                        aria-describedby="pf-tooltip-2"
                                                         id="counterfactual-setup-outcomes"
                                                         onClick={[Function]}
                                                         variant="secondary"
                                                       >
-                                                        <button
-                                                          aria-describedby="pf-tooltip-2"
-                                                          aria-disabled={false}
-                                                          aria-label={null}
-                                                          className="pf-c-button pf-m-secondary"
-                                                          data-ouia-component-id="OUIA-Generated-Button-secondary-1"
-                                                          data-ouia-component-type="PF4/Button"
-                                                          data-ouia-safe={true}
-                                                          disabled={false}
+                                                        <ButtonBase
                                                           id="counterfactual-setup-outcomes"
+                                                          innerRef={null}
                                                           onClick={[Function]}
-                                                          role={null}
-                                                          type="button"
+                                                          variant="secondary"
                                                         >
-                                                          Set Up Outcomes
-                                                        </button>
+                                                          <button
+                                                            aria-disabled={false}
+                                                            aria-label={null}
+                                                            className="pf-c-button pf-m-secondary"
+                                                            data-ouia-component-id="OUIA-Generated-Button-secondary-1"
+                                                            data-ouia-component-type="PF4/Button"
+                                                            data-ouia-safe={true}
+                                                            disabled={false}
+                                                            id="counterfactual-setup-outcomes"
+                                                            onClick={[Function]}
+                                                            role={null}
+                                                            type="button"
+                                                          >
+                                                            Set Up Outcomes
+                                                          </button>
+                                                        </ButtonBase>
                                                       </Button>
                                                     </FindRefWrapper>
                                                   </Popper>
@@ -971,7 +981,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                     }
                                                     trigger={
                                                       <Button
-                                                        aria-describedby="pf-tooltip-3"
                                                         id="counterfactual-reset"
                                                         isInline={true}
                                                         onClick={[Function]}
@@ -986,28 +995,34 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                       onFoundRef={[Function]}
                                                     >
                                                       <Button
-                                                        aria-describedby="pf-tooltip-3"
                                                         id="counterfactual-reset"
                                                         isInline={true}
                                                         onClick={[Function]}
                                                         variant="link"
                                                       >
-                                                        <button
-                                                          aria-describedby="pf-tooltip-3"
-                                                          aria-disabled={false}
-                                                          aria-label={null}
-                                                          className="pf-c-button pf-m-link pf-m-inline"
-                                                          data-ouia-component-id="OUIA-Generated-Button-link-1"
-                                                          data-ouia-component-type="PF4/Button"
-                                                          data-ouia-safe={true}
-                                                          disabled={false}
+                                                        <ButtonBase
                                                           id="counterfactual-reset"
+                                                          innerRef={null}
+                                                          isInline={true}
                                                           onClick={[Function]}
-                                                          role={null}
-                                                          type="button"
+                                                          variant="link"
                                                         >
-                                                          Reset
-                                                        </button>
+                                                          <button
+                                                            aria-disabled={false}
+                                                            aria-label={null}
+                                                            className="pf-c-button pf-m-link pf-m-inline"
+                                                            data-ouia-component-id="OUIA-Generated-Button-link-1"
+                                                            data-ouia-component-type="PF4/Button"
+                                                            data-ouia-safe={true}
+                                                            disabled={false}
+                                                            id="counterfactual-reset"
+                                                            onClick={[Function]}
+                                                            role={null}
+                                                            type="button"
+                                                          >
+                                                            Reset
+                                                          </button>
+                                                        </ButtonBase>
                                                       </Button>
                                                     </FindRefWrapper>
                                                   </Popper>
@@ -1247,7 +1262,7 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                     <td
                                                                       className="pf-c-table__check"
                                                                       onMouseEnter={[Function]}
-                                                                      scope="col"
+                                                                      scope={null}
                                                                     >
                                                                       <SelectColumn
                                                                         aria-label="Select all rows"
@@ -1364,7 +1379,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 }
                                                                                 trigger={
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-10"
                                                                                     aria-label="Inputs to the decision model."
                                                                                     variant="plain"
                                                                                   >
@@ -1381,43 +1395,47 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                   onFoundRef={[Function]}
                                                                                 >
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-10"
                                                                                     aria-label="Inputs to the decision model."
                                                                                     variant="plain"
                                                                                   >
-                                                                                    <button
-                                                                                      aria-describedby="pf-tooltip-10"
-                                                                                      aria-disabled={false}
+                                                                                    <ButtonBase
                                                                                       aria-label="Inputs to the decision model."
-                                                                                      className="pf-c-button pf-m-plain"
-                                                                                      data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                                                                                      data-ouia-component-type="PF4/Button"
-                                                                                      data-ouia-safe={true}
-                                                                                      disabled={false}
-                                                                                      role={null}
-                                                                                      type="button"
+                                                                                      innerRef={null}
+                                                                                      variant="plain"
                                                                                     >
-                                                                                      <HelpIcon
-                                                                                        color="currentColor"
-                                                                                        noVerticalAlign={true}
-                                                                                        size="sm"
+                                                                                      <button
+                                                                                        aria-disabled={false}
+                                                                                        aria-label="Inputs to the decision model."
+                                                                                        className="pf-c-button pf-m-plain"
+                                                                                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                                                                                        data-ouia-component-type="PF4/Button"
+                                                                                        data-ouia-safe={true}
+                                                                                        disabled={false}
+                                                                                        role={null}
+                                                                                        type="button"
                                                                                       >
-                                                                                        <svg
-                                                                                          aria-hidden={true}
-                                                                                          aria-labelledby={null}
-                                                                                          fill="currentColor"
-                                                                                          height="1em"
-                                                                                          role="img"
-                                                                                          style={null}
-                                                                                          viewBox="0 0 1024 1024"
-                                                                                          width="1em"
+                                                                                        <HelpIcon
+                                                                                          color="currentColor"
+                                                                                          noVerticalAlign={true}
+                                                                                          size="sm"
                                                                                         >
-                                                                                          <path
-                                                                                            d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
-                                                                                          />
-                                                                                        </svg>
-                                                                                      </HelpIcon>
-                                                                                    </button>
+                                                                                          <svg
+                                                                                            aria-hidden={true}
+                                                                                            aria-labelledby={null}
+                                                                                            fill="currentColor"
+                                                                                            height="1em"
+                                                                                            role="img"
+                                                                                            style={null}
+                                                                                            viewBox="0 0 1024 1024"
+                                                                                            width="1em"
+                                                                                          >
+                                                                                            <path
+                                                                                              d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                                                                                            />
+                                                                                          </svg>
+                                                                                        </HelpIcon>
+                                                                                      </button>
+                                                                                    </ButtonBase>
                                                                                   </Button>
                                                                                 </FindRefWrapper>
                                                                               </Popper>
@@ -1525,7 +1543,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 }
                                                                                 trigger={
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-11"
                                                                                     aria-label="Limits the data used in the counterfactual."
                                                                                     variant="plain"
                                                                                   >
@@ -1542,43 +1559,47 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                   onFoundRef={[Function]}
                                                                                 >
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-11"
                                                                                     aria-label="Limits the data used in the counterfactual."
                                                                                     variant="plain"
                                                                                   >
-                                                                                    <button
-                                                                                      aria-describedby="pf-tooltip-11"
-                                                                                      aria-disabled={false}
+                                                                                    <ButtonBase
                                                                                       aria-label="Limits the data used in the counterfactual."
-                                                                                      className="pf-c-button pf-m-plain"
-                                                                                      data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                                                                                      data-ouia-component-type="PF4/Button"
-                                                                                      data-ouia-safe={true}
-                                                                                      disabled={false}
-                                                                                      role={null}
-                                                                                      type="button"
+                                                                                      innerRef={null}
+                                                                                      variant="plain"
                                                                                     >
-                                                                                      <HelpIcon
-                                                                                        color="currentColor"
-                                                                                        noVerticalAlign={true}
-                                                                                        size="sm"
+                                                                                      <button
+                                                                                        aria-disabled={false}
+                                                                                        aria-label="Limits the data used in the counterfactual."
+                                                                                        className="pf-c-button pf-m-plain"
+                                                                                        data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                                                                                        data-ouia-component-type="PF4/Button"
+                                                                                        data-ouia-safe={true}
+                                                                                        disabled={false}
+                                                                                        role={null}
+                                                                                        type="button"
                                                                                       >
-                                                                                        <svg
-                                                                                          aria-hidden={true}
-                                                                                          aria-labelledby={null}
-                                                                                          fill="currentColor"
-                                                                                          height="1em"
-                                                                                          role="img"
-                                                                                          style={null}
-                                                                                          viewBox="0 0 1024 1024"
-                                                                                          width="1em"
+                                                                                        <HelpIcon
+                                                                                          color="currentColor"
+                                                                                          noVerticalAlign={true}
+                                                                                          size="sm"
                                                                                         >
-                                                                                          <path
-                                                                                            d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
-                                                                                          />
-                                                                                        </svg>
-                                                                                      </HelpIcon>
-                                                                                    </button>
+                                                                                          <svg
+                                                                                            aria-hidden={true}
+                                                                                            aria-labelledby={null}
+                                                                                            fill="currentColor"
+                                                                                            height="1em"
+                                                                                            role="img"
+                                                                                            style={null}
+                                                                                            viewBox="0 0 1024 1024"
+                                                                                            width="1em"
+                                                                                          >
+                                                                                            <path
+                                                                                              d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                                                                                            />
+                                                                                          </svg>
+                                                                                        </HelpIcon>
+                                                                                      </button>
+                                                                                    </ButtonBase>
                                                                                   </Button>
                                                                                 </FindRefWrapper>
                                                                               </Popper>
@@ -1686,7 +1707,6 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                 }
                                                                                 trigger={
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-12"
                                                                                     aria-label="The original input value used by the decision model."
                                                                                     variant="plain"
                                                                                   >
@@ -1703,43 +1723,47 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                                   onFoundRef={[Function]}
                                                                                 >
                                                                                   <Button
-                                                                                    aria-describedby="pf-tooltip-12"
                                                                                     aria-label="The original input value used by the decision model."
                                                                                     variant="plain"
                                                                                   >
-                                                                                    <button
-                                                                                      aria-describedby="pf-tooltip-12"
-                                                                                      aria-disabled={false}
+                                                                                    <ButtonBase
                                                                                       aria-label="The original input value used by the decision model."
-                                                                                      className="pf-c-button pf-m-plain"
-                                                                                      data-ouia-component-id="OUIA-Generated-Button-plain-3"
-                                                                                      data-ouia-component-type="PF4/Button"
-                                                                                      data-ouia-safe={true}
-                                                                                      disabled={false}
-                                                                                      role={null}
-                                                                                      type="button"
+                                                                                      innerRef={null}
+                                                                                      variant="plain"
                                                                                     >
-                                                                                      <HelpIcon
-                                                                                        color="currentColor"
-                                                                                        noVerticalAlign={true}
-                                                                                        size="sm"
+                                                                                      <button
+                                                                                        aria-disabled={false}
+                                                                                        aria-label="The original input value used by the decision model."
+                                                                                        className="pf-c-button pf-m-plain"
+                                                                                        data-ouia-component-id="OUIA-Generated-Button-plain-3"
+                                                                                        data-ouia-component-type="PF4/Button"
+                                                                                        data-ouia-safe={true}
+                                                                                        disabled={false}
+                                                                                        role={null}
+                                                                                        type="button"
                                                                                       >
-                                                                                        <svg
-                                                                                          aria-hidden={true}
-                                                                                          aria-labelledby={null}
-                                                                                          fill="currentColor"
-                                                                                          height="1em"
-                                                                                          role="img"
-                                                                                          style={null}
-                                                                                          viewBox="0 0 1024 1024"
-                                                                                          width="1em"
+                                                                                        <HelpIcon
+                                                                                          color="currentColor"
+                                                                                          noVerticalAlign={true}
+                                                                                          size="sm"
                                                                                         >
-                                                                                          <path
-                                                                                            d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
-                                                                                          />
-                                                                                        </svg>
-                                                                                      </HelpIcon>
-                                                                                    </button>
+                                                                                          <svg
+                                                                                            aria-hidden={true}
+                                                                                            aria-labelledby={null}
+                                                                                            fill="currentColor"
+                                                                                            height="1em"
+                                                                                            role="img"
+                                                                                            style={null}
+                                                                                            viewBox="0 0 1024 1024"
+                                                                                            width="1em"
+                                                                                          >
+                                                                                            <path
+                                                                                              d="M521.3,576 C627.5,576 713.7,502 713.7,413.7 C713.7,325.4 627.6,253.6 521.3,253.6 C366,253.6 334.5,337.7 329.2,407.2 C329.2,414.3 335.2,416 343.5,416 L445,416 C450.5,416 458,415.5 460.8,406.5 C460.8,362.6 582.9,357.1 582.9,413.6 C582.9,441.9 556.2,470.9 521.3,473 C486.4,475.1 447.3,479.8 447.3,521.7 L447.3,553.8 C447.3,570.8 456.1,576 472,576 C487.9,576 521.3,576 521.3,576 M575.3,751.3 L575.3,655.3 C575.313862,651.055109 573.620137,646.982962 570.6,644 C567.638831,640.947672 563.552355,639.247987 559.3,639.29884 L463.3,639.29884 C459.055109,639.286138 454.982962,640.979863 452,644 C448.947672,646.961169 447.247987,651.047645 447.29884,655.3 L447.29884,751.3 C447.286138,755.544891 448.979863,759.617038 452,762.6 C454.961169,765.652328 459.047645,767.352013 463.3,767.30116 L559.3,767.30116 C563.544891,767.313862 567.617038,765.620137 570.6,762.6 C573.659349,759.643612 575.360354,755.553963 575.3,751.3 M512,896 C300.2,896 128,723.9 128,512 C128,300.3 300.2,128 512,128 C723.8,128 896,300.2 896,512 C896,723.8 723.7,896 512,896 M512.1,0 C229.7,0 0,229.8 0,512 C0,794.2 229.8,1024 512.1,1024 C794.4,1024 1024,794.3 1024,512 C1024,229.7 794.4,0 512.1,0"
+                                                                                            />
+                                                                                          </svg>
+                                                                                        </HelpIcon>
+                                                                                      </button>
+                                                                                    </ButtonBase>
                                                                                   </Button>
                                                                                 </FindRefWrapper>
                                                                               </Popper>
@@ -1897,49 +1921,65 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                           onClick={[Function]}
                                                                           variant="link"
                                                                         >
-                                                                          <button
-                                                                            aria-disabled={true}
-                                                                            aria-label={null}
-                                                                            className="pf-c-button pf-m-link pf-m-disabled pf-m-inline counterfactual-constraint-edit"
-                                                                            data-ouia-component-id="OUIA-Generated-Button-link-2"
-                                                                            data-ouia-component-type="PF4/Button"
-                                                                            data-ouia-safe={true}
-                                                                            disabled={true}
-                                                                            onClick={[Function]}
-                                                                            role={null}
-                                                                            tabIndex={null}
-                                                                            type="button"
-                                                                          >
-                                                                            <span
-                                                                              className="pf-c-button__icon pf-m-start"
-                                                                            >
+                                                                          <ButtonBase
+                                                                            className="counterfactual-constraint-edit"
+                                                                            icon={
                                                                               <PlusCircleIcon
                                                                                 color="currentColor"
                                                                                 noVerticalAlign={false}
                                                                                 size="sm"
+                                                                              />
+                                                                            }
+                                                                            innerRef={null}
+                                                                            isDisabled={true}
+                                                                            isInline={true}
+                                                                            onClick={[Function]}
+                                                                            variant="link"
+                                                                          >
+                                                                            <button
+                                                                              aria-disabled={true}
+                                                                              aria-label={null}
+                                                                              className="pf-c-button pf-m-link pf-m-disabled pf-m-inline counterfactual-constraint-edit"
+                                                                              data-ouia-component-id="OUIA-Generated-Button-link-2"
+                                                                              data-ouia-component-type="PF4/Button"
+                                                                              data-ouia-safe={true}
+                                                                              disabled={true}
+                                                                              onClick={[Function]}
+                                                                              role={null}
+                                                                              tabIndex={null}
+                                                                              type="button"
+                                                                            >
+                                                                              <span
+                                                                                className="pf-c-button__icon pf-m-start"
                                                                               >
-                                                                                <svg
-                                                                                  aria-hidden={true}
-                                                                                  aria-labelledby={null}
-                                                                                  fill="currentColor"
-                                                                                  height="1em"
-                                                                                  role="img"
-                                                                                  style={
-                                                                                    Object {
-                                                                                      "verticalAlign": "-0.125em",
-                                                                                    }
-                                                                                  }
-                                                                                  viewBox="0 0 512 512"
-                                                                                  width="1em"
+                                                                                <PlusCircleIcon
+                                                                                  color="currentColor"
+                                                                                  noVerticalAlign={false}
+                                                                                  size="sm"
                                                                                 >
-                                                                                  <path
-                                                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                                                                                  />
-                                                                                </svg>
-                                                                              </PlusCircleIcon>
-                                                                            </span>
-                                                                            Constraint
-                                                                          </button>
+                                                                                  <svg
+                                                                                    aria-hidden={true}
+                                                                                    aria-labelledby={null}
+                                                                                    fill="currentColor"
+                                                                                    height="1em"
+                                                                                    role="img"
+                                                                                    style={
+                                                                                      Object {
+                                                                                        "verticalAlign": "-0.125em",
+                                                                                      }
+                                                                                    }
+                                                                                    viewBox="0 0 512 512"
+                                                                                    width="1em"
+                                                                                  >
+                                                                                    <path
+                                                                                      d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                                                                                    />
+                                                                                  </svg>
+                                                                                </PlusCircleIcon>
+                                                                              </span>
+                                                                              Constraint
+                                                                            </button>
+                                                                          </ButtonBase>
                                                                         </Button>
                                                                       </ConstraintCell>
                                                                     </td>
@@ -2100,49 +2140,65 @@ exports[`CounterfactualAnalysis renders correctly 1`] = `
                                                                           onClick={[Function]}
                                                                           variant="link"
                                                                         >
-                                                                          <button
-                                                                            aria-disabled={true}
-                                                                            aria-label={null}
-                                                                            className="pf-c-button pf-m-link pf-m-disabled pf-m-inline counterfactual-constraint-edit"
-                                                                            data-ouia-component-id="OUIA-Generated-Button-link-3"
-                                                                            data-ouia-component-type="PF4/Button"
-                                                                            data-ouia-safe={true}
-                                                                            disabled={true}
-                                                                            onClick={[Function]}
-                                                                            role={null}
-                                                                            tabIndex={null}
-                                                                            type="button"
-                                                                          >
-                                                                            <span
-                                                                              className="pf-c-button__icon pf-m-start"
-                                                                            >
+                                                                          <ButtonBase
+                                                                            className="counterfactual-constraint-edit"
+                                                                            icon={
                                                                               <PlusCircleIcon
                                                                                 color="currentColor"
                                                                                 noVerticalAlign={false}
                                                                                 size="sm"
+                                                                              />
+                                                                            }
+                                                                            innerRef={null}
+                                                                            isDisabled={true}
+                                                                            isInline={true}
+                                                                            onClick={[Function]}
+                                                                            variant="link"
+                                                                          >
+                                                                            <button
+                                                                              aria-disabled={true}
+                                                                              aria-label={null}
+                                                                              className="pf-c-button pf-m-link pf-m-disabled pf-m-inline counterfactual-constraint-edit"
+                                                                              data-ouia-component-id="OUIA-Generated-Button-link-3"
+                                                                              data-ouia-component-type="PF4/Button"
+                                                                              data-ouia-safe={true}
+                                                                              disabled={true}
+                                                                              onClick={[Function]}
+                                                                              role={null}
+                                                                              tabIndex={null}
+                                                                              type="button"
+                                                                            >
+                                                                              <span
+                                                                                className="pf-c-button__icon pf-m-start"
                                                                               >
-                                                                                <svg
-                                                                                  aria-hidden={true}
-                                                                                  aria-labelledby={null}
-                                                                                  fill="currentColor"
-                                                                                  height="1em"
-                                                                                  role="img"
-                                                                                  style={
-                                                                                    Object {
-                                                                                      "verticalAlign": "-0.125em",
-                                                                                    }
-                                                                                  }
-                                                                                  viewBox="0 0 512 512"
-                                                                                  width="1em"
+                                                                                <PlusCircleIcon
+                                                                                  color="currentColor"
+                                                                                  noVerticalAlign={false}
+                                                                                  size="sm"
                                                                                 >
-                                                                                  <path
-                                                                                    d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
-                                                                                  />
-                                                                                </svg>
-                                                                              </PlusCircleIcon>
-                                                                            </span>
-                                                                            Constraint
-                                                                          </button>
+                                                                                  <svg
+                                                                                    aria-hidden={true}
+                                                                                    aria-labelledby={null}
+                                                                                    fill="currentColor"
+                                                                                    height="1em"
+                                                                                    role="img"
+                                                                                    style={
+                                                                                      Object {
+                                                                                        "verticalAlign": "-0.125em",
+                                                                                      }
+                                                                                    }
+                                                                                    viewBox="0 0 512 512"
+                                                                                    width="1em"
+                                                                                  >
+                                                                                    <path
+                                                                                      d="M256 8C119 8 8 119 8 256s111 248 248 248 248-111 248-248S393 8 256 8zm144 276c0 6.6-5.4 12-12 12h-92v92c0 6.6-5.4 12-12 12h-56c-6.6 0-12-5.4-12-12v-92h-92c-6.6 0-12-5.4-12-12v-56c0-6.6 5.4-12 12-12h92v-92c0-6.6 5.4-12 12-12h56c6.6 0 12 5.4 12 12v92h92c6.6 0 12 5.4 12 12v56z"
+                                                                                    />
+                                                                                  </svg>
+                                                                                </PlusCircleIcon>
+                                                                              </span>
+                                                                              Constraint
+                                                                            </button>
+                                                                          </ButtonBase>
                                                                         </Button>
                                                                       </ConstraintCell>
                                                                     </td>

@@ -8,6 +8,9 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 module.exports = merge(common, {
   mode: 'production',
   devtool: 'source-map',
+  output: {
+    publicPath: "./resources/webapp/"
+  },
   optimization: {
     minimizer: [new OptimizeCSSAssetsPlugin({})]
   },
@@ -68,6 +71,12 @@ module.exports = merge(common, {
             '../../node_modules/@kogito-apps/task-form/dist/envelope/styles.css'
           ),
           path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-displayer/dist/envelope/components/styles.css'
+          ),
+          path.resolve(
             '../../node_modules/react-calendar/dist/Calendar.css'
           ),
           path.resolve(
@@ -75,6 +84,12 @@ module.exports = merge(common, {
           ),
           path.resolve(
             '../../node_modules/react-datetime-picker/dist/DateTimePicker.css'
+          ),
+          path.resolve(
+            '../../node_modules/@kogito-apps/form-details/dist/styles/styles.css'
+          ),
+          path.resolve(
+            '../../node_modules/monaco-editor'
           )
         ],
         loaders: ['style-loader', 'css-loader']

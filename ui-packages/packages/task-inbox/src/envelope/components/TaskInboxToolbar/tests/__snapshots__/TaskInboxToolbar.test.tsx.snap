@@ -77,45 +77,54 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                     onClick={[Function]}
                     variant="plain"
                   >
-                    <button
+                    <ButtonBase
                       aria-controls="task-inbox-with-filter-expandable-content-2"
-                      aria-disabled={false}
                       aria-haspopup={false}
                       aria-label="Show Filters"
-                      className="pf-c-button pf-m-plain"
-                      data-ouia-component-id="OUIA-Generated-Button-plain-1"
-                      data-ouia-component-type="PF4/Button"
-                      data-ouia-safe={true}
-                      disabled={false}
+                      innerRef={null}
                       onClick={[Function]}
-                      role={null}
-                      type="button"
+                      variant="plain"
                     >
-                      <FilterIcon
-                        color="currentColor"
-                        noVerticalAlign={false}
-                        size="sm"
+                      <button
+                        aria-controls="task-inbox-with-filter-expandable-content-2"
+                        aria-disabled={false}
+                        aria-haspopup={false}
+                        aria-label="Show Filters"
+                        className="pf-c-button pf-m-plain"
+                        data-ouia-component-id="OUIA-Generated-Button-plain-1"
+                        data-ouia-component-type="PF4/Button"
+                        data-ouia-safe={true}
+                        disabled={false}
+                        onClick={[Function]}
+                        role={null}
+                        type="button"
                       >
-                        <svg
-                          aria-hidden={true}
-                          aria-labelledby={null}
-                          fill="currentColor"
-                          height="1em"
-                          role="img"
-                          style={
-                            Object {
-                              "verticalAlign": "-0.125em",
-                            }
-                          }
-                          viewBox="0 0 512 512"
-                          width="1em"
+                        <FilterIcon
+                          color="currentColor"
+                          noVerticalAlign={false}
+                          size="sm"
                         >
-                          <path
-                            d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
-                          />
-                        </svg>
-                      </FilterIcon>
-                    </button>
+                          <svg
+                            aria-hidden={true}
+                            aria-labelledby={null}
+                            fill="currentColor"
+                            height="1em"
+                            role="img"
+                            style={
+                              Object {
+                                "verticalAlign": "-0.125em",
+                              }
+                            }
+                            viewBox="0 0 512 512"
+                            width="1em"
+                          >
+                            <path
+                              d="M487.976 0H24.028C2.71 0-8.047 25.866 7.058 40.971L192 225.941V432c0 7.831 3.821 15.17 10.237 19.662l80 55.98C298.02 518.69 320 507.493 320 487.98V225.941l184.947-184.97C520.021 25.896 509.338 0 487.976 0z"
+                            />
+                          </svg>
+                        </FilterIcon>
+                      </button>
+                    </ButtonBase>
                   </Button>
                 </div>
                 <ForwardRef
@@ -144,6 +153,8 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                             className="pf-c-toolbar__item"
                           >
                             <Select
+                              aria-describedby=""
+                              aria-invalid={false}
                               aria-label="Status"
                               aria-labelledby=""
                               chipGroupComponent={null}
@@ -161,6 +172,7 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                               isCreatable={false}
                               isDisabled={false}
                               isGrouped={false}
+                              isInputValuePersisted={false}
                               isOpen={false}
                               isPlain={false}
                               menuAppendTo="inline"
@@ -170,6 +182,7 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                               onFilter={null}
                               onSelect={[Function]}
                               onToggle={[Function]}
+                              onTypeaheadInputChanged={null}
                               ouiaSafe={true}
                               placeholderText="Status"
                               removeSelectionAriaLabel="Remove"
@@ -183,6 +196,7 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                               toggleIcon={null}
                               toggleId={null}
                               typeAheadAriaLabel=""
+                              validated="default"
                               variant="checkbox"
                               width=""
                             >
@@ -201,6 +215,7 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                                     className=""
                                     handleTypeaheadKeys={[Function]}
                                     hasClearButton={false}
+                                    hasFooter={false}
                                     id="pf-select-toggle-id-1"
                                     isActive={false}
                                     isDisabled={false}
@@ -474,6 +489,7 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                                 key="Status"
                                 numChips={3}
                                 onClick={[Function]}
+                                onOverflowChipClick={[Function]}
                                 tooltipPosition="top"
                               >
                                 <GenerateId
@@ -536,46 +552,56 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                                                   ouiaId="close"
                                                   variant="plain"
                                                 >
-                                                  <button
-                                                    aria-disabled={false}
+                                                  <ButtonBase
                                                     aria-label="close"
                                                     aria-labelledby="remove_pf-random-id-3 pf-random-id-3"
-                                                    className="pf-c-button pf-m-plain"
-                                                    data-ouia-component-id="close"
-                                                    data-ouia-component-type="PF4/Button"
-                                                    data-ouia-safe={true}
-                                                    disabled={false}
                                                     id="remove_pf-random-id-3"
+                                                    innerRef={null}
                                                     onClick={[Function]}
-                                                    role={null}
-                                                    type="button"
+                                                    ouiaId="close"
+                                                    variant="plain"
                                                   >
-                                                    <TimesIcon
-                                                      aria-hidden="true"
-                                                      color="currentColor"
-                                                      noVerticalAlign={false}
-                                                      size="sm"
+                                                    <button
+                                                      aria-disabled={false}
+                                                      aria-label="close"
+                                                      aria-labelledby="remove_pf-random-id-3 pf-random-id-3"
+                                                      className="pf-c-button pf-m-plain"
+                                                      data-ouia-component-id="close"
+                                                      data-ouia-component-type="PF4/Button"
+                                                      data-ouia-safe={true}
+                                                      disabled={false}
+                                                      id="remove_pf-random-id-3"
+                                                      onClick={[Function]}
+                                                      role={null}
+                                                      type="button"
                                                     >
-                                                      <svg
+                                                      <TimesIcon
                                                         aria-hidden="true"
-                                                        aria-labelledby={null}
-                                                        fill="currentColor"
-                                                        height="1em"
-                                                        role="img"
-                                                        style={
-                                                          Object {
-                                                            "verticalAlign": "-0.125em",
-                                                          }
-                                                        }
-                                                        viewBox="0 0 352 512"
-                                                        width="1em"
+                                                        color="currentColor"
+                                                        noVerticalAlign={false}
+                                                        size="sm"
                                                       >
-                                                        <path
-                                                          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                        />
-                                                      </svg>
-                                                    </TimesIcon>
-                                                  </button>
+                                                        <svg
+                                                          aria-hidden="true"
+                                                          aria-labelledby={null}
+                                                          fill="currentColor"
+                                                          height="1em"
+                                                          role="img"
+                                                          style={
+                                                            Object {
+                                                              "verticalAlign": "-0.125em",
+                                                            }
+                                                          }
+                                                          viewBox="0 0 352 512"
+                                                          width="1em"
+                                                        >
+                                                          <path
+                                                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                          />
+                                                        </svg>
+                                                      </TimesIcon>
+                                                    </button>
+                                                  </ButtonBase>
                                                 </Button>
                                               </div>
                                             </GenerateId>
@@ -618,46 +644,56 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                                                   ouiaId="close"
                                                   variant="plain"
                                                 >
-                                                  <button
-                                                    aria-disabled={false}
+                                                  <ButtonBase
                                                     aria-label="close"
                                                     aria-labelledby="remove_pf-random-id-4 pf-random-id-4"
-                                                    className="pf-c-button pf-m-plain"
-                                                    data-ouia-component-id="close"
-                                                    data-ouia-component-type="PF4/Button"
-                                                    data-ouia-safe={true}
-                                                    disabled={false}
                                                     id="remove_pf-random-id-4"
+                                                    innerRef={null}
                                                     onClick={[Function]}
-                                                    role={null}
-                                                    type="button"
+                                                    ouiaId="close"
+                                                    variant="plain"
                                                   >
-                                                    <TimesIcon
-                                                      aria-hidden="true"
-                                                      color="currentColor"
-                                                      noVerticalAlign={false}
-                                                      size="sm"
+                                                    <button
+                                                      aria-disabled={false}
+                                                      aria-label="close"
+                                                      aria-labelledby="remove_pf-random-id-4 pf-random-id-4"
+                                                      className="pf-c-button pf-m-plain"
+                                                      data-ouia-component-id="close"
+                                                      data-ouia-component-type="PF4/Button"
+                                                      data-ouia-safe={true}
+                                                      disabled={false}
+                                                      id="remove_pf-random-id-4"
+                                                      onClick={[Function]}
+                                                      role={null}
+                                                      type="button"
                                                     >
-                                                      <svg
+                                                      <TimesIcon
                                                         aria-hidden="true"
-                                                        aria-labelledby={null}
-                                                        fill="currentColor"
-                                                        height="1em"
-                                                        role="img"
-                                                        style={
-                                                          Object {
-                                                            "verticalAlign": "-0.125em",
-                                                          }
-                                                        }
-                                                        viewBox="0 0 352 512"
-                                                        width="1em"
+                                                        color="currentColor"
+                                                        noVerticalAlign={false}
+                                                        size="sm"
                                                       >
-                                                        <path
-                                                          d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
-                                                        />
-                                                      </svg>
-                                                    </TimesIcon>
-                                                  </button>
+                                                        <svg
+                                                          aria-hidden="true"
+                                                          aria-labelledby={null}
+                                                          fill="currentColor"
+                                                          height="1em"
+                                                          role="img"
+                                                          style={
+                                                            Object {
+                                                              "verticalAlign": "-0.125em",
+                                                            }
+                                                          }
+                                                          viewBox="0 0 352 512"
+                                                          width="1em"
+                                                        >
+                                                          <path
+                                                            d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z"
+                                                          />
+                                                        </svg>
+                                                      </TimesIcon>
+                                                    </button>
+                                                  </ButtonBase>
                                                 </Button>
                                               </div>
                                             </GenerateId>
@@ -865,21 +901,29 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                             onClick={[Function]}
                             variant="primary"
                           >
-                            <button
-                              aria-disabled={false}
-                              aria-label={null}
-                              className="pf-c-button pf-m-primary"
-                              data-ouia-component-id="OUIA-Generated-Button-primary-1"
-                              data-ouia-component-type="PF4/Button"
-                              data-ouia-safe={true}
-                              disabled={false}
+                            <ButtonBase
                               id="apply-filter"
+                              innerRef={null}
+                              isDisabled={false}
                               onClick={[Function]}
-                              role={null}
-                              type="button"
+                              variant="primary"
                             >
-                              Apply Filter
-                            </button>
+                              <button
+                                aria-disabled={false}
+                                aria-label={null}
+                                className="pf-c-button pf-m-primary"
+                                data-ouia-component-id="OUIA-Generated-Button-primary-1"
+                                data-ouia-component-type="PF4/Button"
+                                data-ouia-safe={true}
+                                disabled={false}
+                                id="apply-filter"
+                                onClick={[Function]}
+                                role={null}
+                                type="button"
+                              >
+                                Apply Filter
+                              </button>
+                            </ButtonBase>
                           </Button>
                         </div>
                       </ToolbarItem>
@@ -961,7 +1005,6 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                           }
                           trigger={
                             <Button
-                              aria-describedby="pf-tooltip-2"
                               id="refresh"
                               onClick={[MockFunction]}
                               variant="plain"
@@ -979,50 +1022,55 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                             onFoundRef={[Function]}
                           >
                             <Button
-                              aria-describedby="pf-tooltip-2"
                               id="refresh"
                               onClick={[MockFunction]}
                               variant="plain"
                             >
-                              <button
-                                aria-describedby="pf-tooltip-2"
-                                aria-disabled={false}
-                                aria-label={null}
-                                className="pf-c-button pf-m-plain"
-                                data-ouia-component-id="OUIA-Generated-Button-plain-2"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={false}
+                              <ButtonBase
                                 id="refresh"
+                                innerRef={null}
                                 onClick={[MockFunction]}
-                                role={null}
-                                type="button"
+                                variant="plain"
                               >
-                                <SyncIcon
-                                  color="currentColor"
-                                  noVerticalAlign={false}
-                                  size="sm"
+                                <button
+                                  aria-disabled={false}
+                                  aria-label={null}
+                                  className="pf-c-button pf-m-plain"
+                                  data-ouia-component-id="OUIA-Generated-Button-plain-2"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={false}
+                                  id="refresh"
+                                  onClick={[MockFunction]}
+                                  role={null}
+                                  type="button"
                                 >
-                                  <svg
-                                    aria-hidden={true}
-                                    aria-labelledby={null}
-                                    fill="currentColor"
-                                    height="1em"
-                                    role="img"
-                                    style={
-                                      Object {
-                                        "verticalAlign": "-0.125em",
-                                      }
-                                    }
-                                    viewBox="0 0 512 512"
-                                    width="1em"
+                                  <SyncIcon
+                                    color="currentColor"
+                                    noVerticalAlign={false}
+                                    size="sm"
                                   >
-                                    <path
-                                      d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
-                                    />
-                                  </svg>
-                                </SyncIcon>
-                              </button>
+                                    <svg
+                                      aria-hidden={true}
+                                      aria-labelledby={null}
+                                      fill="currentColor"
+                                      height="1em"
+                                      role="img"
+                                      style={
+                                        Object {
+                                          "verticalAlign": "-0.125em",
+                                        }
+                                      }
+                                      viewBox="0 0 512 512"
+                                      width="1em"
+                                    >
+                                      <path
+                                        d="M440.65 12.57l4 82.77A247.16 247.16 0 0 0 255.83 8C134.73 8 33.91 94.92 12.29 209.82A12 12 0 0 0 24.09 224h49.05a12 12 0 0 0 11.67-9.26 175.91 175.91 0 0 1 317-56.94l-101.46-4.86a12 12 0 0 0-12.57 12v47.41a12 12 0 0 0 12 12H500a12 12 0 0 0 12-12V12a12 12 0 0 0-12-12h-47.37a12 12 0 0 0-11.98 12.57zM255.83 432a175.61 175.61 0 0 1-146-77.8l101.8 4.87a12 12 0 0 0 12.57-12v-47.4a12 12 0 0 0-12-12H12a12 12 0 0 0-12 12V500a12 12 0 0 0 12 12h47.35a12 12 0 0 0 12-12.6l-4.15-82.57A247.17 247.17 0 0 0 255.83 504c121.11 0 221.93-86.92 243.55-201.82a12 12 0 0 0-11.8-14.18h-49.05a12 12 0 0 0-11.67 9.26A175.86 175.86 0 0 1 255.83 432z"
+                                      />
+                                    </svg>
+                                  </SyncIcon>
+                                </button>
+                              </ButtonBase>
                             </Button>
                           </FindRefWrapper>
                         </Popper>
@@ -1127,20 +1175,27 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                           onClick={[Function]}
                           variant="link"
                         >
-                          <button
-                            aria-disabled={false}
-                            aria-label={null}
-                            className="pf-c-button pf-m-link pf-m-inline"
-                            data-ouia-component-id="OUIA-Generated-Button-link-1"
-                            data-ouia-component-type="PF4/Button"
-                            data-ouia-safe={true}
-                            disabled={false}
+                          <ButtonBase
+                            innerRef={null}
+                            isInline={true}
                             onClick={[Function]}
-                            role={null}
-                            type="button"
+                            variant="link"
                           >
-                            Reset to default
-                          </button>
+                            <button
+                              aria-disabled={false}
+                              aria-label={null}
+                              className="pf-c-button pf-m-link pf-m-inline"
+                              data-ouia-component-id="OUIA-Generated-Button-link-1"
+                              data-ouia-component-type="PF4/Button"
+                              data-ouia-safe={true}
+                              disabled={false}
+                              onClick={[Function]}
+                              role={null}
+                              type="button"
+                            >
+                              Reset to default
+                            </button>
+                          </ButtonBase>
                         </Button>
                       </div>
                     </ToolbarItem>
@@ -1356,20 +1411,27 @@ exports[`TaskInboxToolbar test Snapshot 1`] = `
                 onClick={[Function]}
                 variant="link"
               >
-                <button
-                  aria-disabled={false}
-                  aria-label={null}
-                  className="pf-c-button pf-m-link pf-m-inline"
-                  data-ouia-component-id="OUIA-Generated-Button-link-2"
-                  data-ouia-component-type="PF4/Button"
-                  data-ouia-safe={true}
-                  disabled={false}
+                <ButtonBase
+                  innerRef={null}
+                  isInline={true}
                   onClick={[Function]}
-                  role={null}
-                  type="button"
+                  variant="link"
                 >
-                  Reset to default
-                </button>
+                  <button
+                    aria-disabled={false}
+                    aria-label={null}
+                    className="pf-c-button pf-m-link pf-m-inline"
+                    data-ouia-component-id="OUIA-Generated-Button-link-2"
+                    data-ouia-component-type="PF4/Button"
+                    data-ouia-safe={true}
+                    disabled={false}
+                    onClick={[Function]}
+                    role={null}
+                    type="button"
+                  >
+                    Reset to default
+                  </button>
+                </ButtonBase>
               </Button>
             </div>
           </ToolbarItem>

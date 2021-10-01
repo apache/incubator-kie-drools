@@ -118,23 +118,32 @@ exports[`Jobs management page tests snapshot test with mock data 1`] = `
                               ouiaId="refresh-button"
                               variant="plain"
                             >
-                              <button
-                                aria-disabled={false}
+                              <ButtonBase
                                 aria-label="Refresh list"
-                                className="pf-c-button pf-m-plain"
-                                data-ouia-component-id="refresh-button"
-                                data-ouia-component-type="PF4/Button"
-                                data-ouia-safe={true}
-                                disabled={false}
                                 id="refresh-button"
+                                innerRef={null}
                                 onClick={[Function]}
-                                role={null}
-                                type="button"
+                                ouiaId="refresh-button"
+                                variant="plain"
                               >
-                                <SyncIcon>
-                                  <MockedIcon />
-                                </SyncIcon>
-                              </button>
+                                <button
+                                  aria-disabled={false}
+                                  aria-label="Refresh list"
+                                  className="pf-c-button pf-m-plain"
+                                  data-ouia-component-id="refresh-button"
+                                  data-ouia-component-type="PF4/Button"
+                                  data-ouia-safe={true}
+                                  disabled={false}
+                                  id="refresh-button"
+                                  onClick={[Function]}
+                                  role={null}
+                                  type="button"
+                                >
+                                  <SyncIcon>
+                                    <MockedIcon />
+                                  </SyncIcon>
+                                </button>
+                              </ButtonBase>
                             </Button>
                           </div>
                         </ToolbarItem>
@@ -930,20 +939,26 @@ exports[`Jobs management page tests test click handler on empty state & empty st
         onClick={[Function]}
         variant="link"
       >
-        <button
-          aria-disabled={false}
-          aria-label={null}
-          className="pf-c-button pf-m-link"
-          data-ouia-component-id="OUIA-Generated-Button-link-5"
-          data-ouia-component-type="PF4/Button"
-          data-ouia-safe={true}
-          disabled={false}
+        <ButtonBase
+          innerRef={null}
           onClick={[Function]}
-          role={null}
-          type="button"
+          variant="link"
         >
-          Reset to default
-        </button>
+          <button
+            aria-disabled={false}
+            aria-label={null}
+            className="pf-c-button pf-m-link"
+            data-ouia-component-id="OUIA-Generated-Button-link-5"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe={true}
+            disabled={false}
+            onClick={[Function]}
+            role={null}
+            type="button"
+          >
+            Reset to default
+          </button>
+        </ButtonBase>
       </Button>
     </div>
   </div>

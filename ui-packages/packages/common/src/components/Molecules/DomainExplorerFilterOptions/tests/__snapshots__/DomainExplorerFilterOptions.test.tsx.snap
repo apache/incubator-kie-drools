@@ -266,6 +266,8 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
       data-ouia-safe={true}
     >
       <Select
+        aria-describedby=""
+        aria-invalid={false}
         aria-label=""
         aria-labelledby="Select a field"
         chipGroupComponent={null}
@@ -284,6 +286,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         isCreatable={false}
         isDisabled={false}
         isGrouped={true}
+        isInputValuePersisted={false}
         isOpen={false}
         isPlain={false}
         maxHeight="60vh"
@@ -294,6 +297,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onFilter={null}
         onSelect={[Function]}
         onToggle={[Function]}
+        onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="Select a field"
         removeSelectionAriaLabel="Remove"
@@ -302,6 +306,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         toggleIcon={null}
         toggleId={null}
         typeAheadAriaLabel=""
+        validated="default"
         variant="single"
         width=""
       >
@@ -320,6 +325,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               className=""
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
+              hasFooter={false}
               id="pf-select-toggle-id-4"
               isActive={false}
               isDisabled={false}
@@ -437,6 +443,8 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         </GenerateId>
       </Select>
       <Select
+        aria-describedby=""
+        aria-invalid={false}
         aria-label="Location"
         aria-labelledby=""
         chipGroupComponent={null}
@@ -455,6 +463,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         isCreatable={false}
         isDisabled={false}
         isGrouped={false}
+        isInputValuePersisted={false}
         isOpen={false}
         isPlain={false}
         menuAppendTo="inline"
@@ -464,6 +473,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onFilter={null}
         onSelect={[Function]}
         onToggle={[Function]}
+        onTypeaheadInputChanged={null}
         ouiaSafe={true}
         placeholderText="operator"
         removeSelectionAriaLabel="Remove"
@@ -472,6 +482,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         toggleIcon={null}
         toggleId={null}
         typeAheadAriaLabel=""
+        validated="default"
         variant="single"
         width=""
       >
@@ -490,6 +501,7 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
               className=""
               handleTypeaheadKeys={[Function]}
               hasClearButton={false}
+              hasFooter={false}
               id="pf-select-toggle-id-5"
               isActive={false}
               isDisabled={false}
@@ -656,22 +668,30 @@ exports[`Domain explorer filter options component tests Snapshot test with defau
         onClick={[Function]}
         variant="primary"
       >
-        <button
-          aria-disabled={true}
-          aria-label={null}
-          className="pf-c-button pf-m-primary pf-m-disabled"
-          data-ouia-component-id="OUIA-Generated-Button-primary-1"
-          data-ouia-component-type="PF4/Button"
-          data-ouia-safe={true}
-          disabled={true}
+        <ButtonBase
           id="button-with-string"
+          innerRef={null}
+          isDisabled={true}
           onClick={[Function]}
-          role={null}
-          tabIndex={null}
-          type="button"
+          variant="primary"
         >
-          Apply Filter
-        </button>
+          <button
+            aria-disabled={true}
+            aria-label={null}
+            className="pf-c-button pf-m-primary pf-m-disabled"
+            data-ouia-component-id="OUIA-Generated-Button-primary-1"
+            data-ouia-component-type="PF4/Button"
+            data-ouia-safe={true}
+            disabled={true}
+            id="button-with-string"
+            onClick={[Function]}
+            role={null}
+            tabIndex={null}
+            type="button"
+          >
+            Apply Filter
+          </button>
+        </ButtonBase>
       </Button>
     </div>
   </ToolbarItem>

@@ -21,6 +21,7 @@ import FormDetails from './components/FormDetails/FormDetails';
 import FormDetailsEnvelopeViewDriver from './FormDetailsEnvelopeViewDriver';
 import '@patternfly/patternfly/patternfly.css';
 import { FormInfo } from '@kogito-apps/forms-list';
+import FormDetailsContextProvider from './components/contexts/FormDetailsContextProvider';
 
 export interface FormDetailsEnvelopeViewApi {
   initialize: (formData?: FormInfo) => void;
@@ -38,11 +39,12 @@ export const FormDetailsEnvelopeView = React.forwardRef<
     isEnvelopeConnectedToChannel,
     setEnvelopeConnectedToChannel
   ] = useState<boolean>(false);
-
+  const [formData, setFormData] = useState<FormInfo>(null);
   useImperativeHandle(
     forwardedRef,
     () => ({
-      initialize: () => {
+      initialize: (form: FormInfo) => {
+        setFormData(form);
         setEnvelopeConnectedToChannel(true);
       }
     }),
@@ -51,10 +53,13 @@ export const FormDetailsEnvelopeView = React.forwardRef<
 
   return (
     <React.Fragment>
-      <FormDetails
-        isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
-        driver={new FormDetailsEnvelopeViewDriver(props.channelApi)}
-      />
+      <FormDetailsContextProvider>
+        <FormDetails
+          isEnvelopeConnectedToChannel={isEnvelopeConnectedToChannel}
+          driver={new FormDetailsEnvelopeViewDriver(props.channelApi)}
+          formData={formData}
+        />
+      </FormDetailsContextProvider>
     </React.Fragment>
   );
 });

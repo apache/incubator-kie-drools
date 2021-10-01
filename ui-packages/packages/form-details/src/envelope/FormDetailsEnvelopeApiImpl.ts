@@ -22,6 +22,7 @@ import {
   FormDetailsEnvelopeApi
 } from '../api';
 import { FormDetailsEnvelopeContext } from './FormDetailsEnvelopeContext';
+import { FormInfo } from '@kogito-apps/forms-list';
 
 /**
  * Implementation of the FormDetailsEnvelopeApi
@@ -45,7 +46,10 @@ export class FormDetailsEnvelopeApiImpl implements FormDetailsEnvelopeApi {
     this.capturedInitRequestYet = true;
   }
 
-  formDetails__init = async (association: Association): Promise<void> => {
+  formDetails__init = async (
+    association: Association,
+    formData: FormInfo
+  ): Promise<void> => {
     this.args.envelopeBusController.associate(
       association.origin,
       association.envelopeServerId
@@ -56,6 +60,6 @@ export class FormDetailsEnvelopeApiImpl implements FormDetailsEnvelopeApi {
     }
 
     this.ackCapturedInitRequest();
-    this.args.view().initialize();
+    this.args.view().initialize(formData);
   };
 }

@@ -28,6 +28,8 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
+    "@kogito-apps/components-common": "^1.0.0",
+    "@kogito-apps/form-displayer": "^1.0.0",
     "@kogito-apps/forms-list": "^1.0.0"
   },
   "devDependencies": {
@@ -47,7 +49,10 @@
     ],
     "coveragePathIgnorePatterns": [
       "./src/static",
-      "dist/"
+      "dist/",
+      "./src/envelope/tests/mocks",
+      "./src/envelope/FormDetailsEnvelope.tsx",
+      "./src/envelope/components/contexts"
     ],
     "snapshotSerializers": [
       "enzyme-to-json/serializer"
@@ -60,7 +65,8 @@
       "**/tests/*.(ts|tsx|js)"
     ],
     "moduleNameMapper": {
-      "\\.(scss|sass|css)$": "identity-obj-proxy"
+      "\\.(scss|sass|css)$": "identity-obj-proxy",
+      "monaco-editor":"<rootDir>/__mocks__/monacoMock.js"
     }
   },
   "lint-staged": {

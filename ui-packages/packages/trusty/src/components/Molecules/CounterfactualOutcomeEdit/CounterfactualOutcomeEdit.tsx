@@ -7,7 +7,7 @@ import {
   TextContent,
   TextInput,
   TextVariants,
-  Touchspin
+  NumberInput
 } from '@patternfly/react-core';
 import { v4 as uuid } from 'uuid';
 import { CFGoal, CFGoalRole } from '../../../types';
@@ -157,7 +157,7 @@ const CounterfactualOutcomeNumber = (props: CounterfactualOutcomeEditProps) => {
   }, [goal.value]);
 
   return (
-    <Touchspin
+    <NumberInput
       value={numberValue}
       onMinus={onMinus}
       onChange={onChange}
