@@ -670,6 +670,7 @@ const runCFAnalysis = jest.fn();
 const cfResultsFinal: CFAnalysisResultsSets = {
   executionId: '123456',
   counterfactualId: '789456',
+  maxRunningTimeSeconds: 60,
   goals: [],
   searchDomains: [],
   solutions: [

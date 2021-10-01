@@ -169,9 +169,12 @@ export type CFAnalysisResetType = 'NEW' | 'EDIT';
 export interface CFAnalysisExecution {
   executionId: string;
   counterfactualId: string;
+  maxRunningTimeSeconds: number;
 }
 
-export interface CFAnalysisResult extends CFAnalysisExecution {
+export interface CFAnalysisResult {
+  executionId: string;
+  counterfactualId: string;
   type: 'counterfactual';
   valid: boolean;
   status: 'SUCCEEDED' | 'FAILED';

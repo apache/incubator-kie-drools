@@ -1,9 +1,15 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Progress, ProgressSize } from '@patternfly/react-core';
 
-const CounterfactualProgressBar = () => {
+type CounterfactualProgressBarProps = {
+  maxRunningTimeSeconds: number;
+};
+
+const CounterfactualProgressBar = (props: CounterfactualProgressBarProps) => {
+  const { maxRunningTimeSeconds } = props;
+
   const [value, setValue] = useState(0);
-  const timeLimit = 60;
+  const [timeLimit, setTimeLimit] = useState();
   const intervalID = useRef(null);
 
   useEffect(() => {
@@ -17,17 +23,26 @@ const CounterfactualProgressBar = () => {
     }
   }, [value, intervalID]);
 
+  useEffect(() => {
+    setTimeLimit(maxRunningTimeSeconds);
+  }, [maxRunningTimeSeconds]);
+
+  const label = useMemo(() => {
+    if (timeLimit) {
+      return timeLimit - value !== 0
+        ? `${timeLimit - value} seconds remaining`
+        : 'Wrapping up';
+    }
+    return `Pending...`;
+  }, [value]);
+
   return (
     <Progress
       value={(value * 100) / timeLimit}
       title="Calculating..."
       size={ProgressSize.sm}
       style={{ width: 400 }}
-      label={
-        timeLimit - value !== 0
-          ? `${timeLimit - value} seconds remaining`
-          : 'Wrapping up'
-      }
+      label={label}
     />
   );
 };

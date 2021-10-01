@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useMemo, useReducer, useState } from 'react';
 import {
   Drawer,
   DrawerContent,
@@ -29,7 +29,8 @@ import {
   CFExecutionStatus,
   CFSearchInput,
   ItemObject,
-  Outcome
+  Outcome,
+  RemoteDataStatus
 } from '../../../types';
 import './CounterfactualAnalysis.scss';
 
@@ -60,7 +61,9 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
     inputIndex: number;
   }>();
 
-  const { runCFAnalysis, cfResults } = useCounterfactualExecution(executionId);
+  const { runCFAnalysis, cfAnalysis, cfResults } = useCounterfactualExecution(
+    executionId
+  );
 
   const handleInputDomainEdit = (input: CFSearchInput, inputIndex: number) => {
     setInputDomainEdit({ input, inputIndex });
@@ -114,6 +117,12 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
       }
     }
   }, [cfResults]);
+
+  const maxRunningTimeSeconds = useMemo(() => {
+    if (cfAnalysis?.status === RemoteDataStatus.SUCCESS) {
+      return cfAnalysis.data.maxRunningTimeSeconds;
+    }
+  }, [cfAnalysis]);
 
   const panelContent = (
     <DrawerPanelContent widths={{ default: 'width_33' }}>
@@ -179,6 +188,7 @@ const CounterfactualAnalysis = (props: CounterfactualAnalysisProps) => {
                         goals={state.goals}
                         onRunAnalysis={onRunAnalysis}
                         onSetupNewAnalysis={onSetupNewAnalysis}
+                        maxRunningTimeSeconds={maxRunningTimeSeconds}
                       />
                       <CounterfactualTable
                         inputs={state.searchDomains}

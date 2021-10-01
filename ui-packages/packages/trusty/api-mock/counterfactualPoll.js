@@ -6,6 +6,8 @@ let executionId = null;
 let cfResults = [];
 let baseId = 0;
 
+const maxRunningTimeSeconds = 30;
+
 module.exports = (req, res, next) => {
   const _send = res.send;
   res.send = function(body) {
@@ -17,7 +19,8 @@ module.exports = (req, res, next) => {
             this,
             JSON.stringify({
               executionId: query.executionId,
-              counterfactualId: faker.random.uuid()
+              counterfactualId: faker.random.uuid(),
+              maxRunningTimeSeconds: maxRunningTimeSeconds
             })
           );
         } catch (e) {}
@@ -60,6 +63,7 @@ module.exports = (req, res, next) => {
               ...json,
               executionId: query.executionId,
               counterfactualId: query.counterfactualId,
+              maxRunningTimeSeconds: maxRunningTimeSeconds,
               solutions: cfResults
             })
           );

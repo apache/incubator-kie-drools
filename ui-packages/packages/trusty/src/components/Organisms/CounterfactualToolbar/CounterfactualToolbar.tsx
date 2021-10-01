@@ -25,10 +25,17 @@ type CounterfactualToolbarProps = {
   status: CFStatus;
   onRunAnalysis: () => void;
   onSetupNewAnalysis: (resetType: CFAnalysisResetType) => void;
+  maxRunningTimeSeconds: number;
 };
 
 const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
-  const { goals, status, onRunAnalysis, onSetupNewAnalysis } = props;
+  const {
+    goals,
+    status,
+    onRunAnalysis,
+    onSetupNewAnalysis,
+    maxRunningTimeSeconds
+  } = props;
   const [isOutcomeSelectionOpen, setIsOutcomeSelectionOpen] = useState(false);
   const [CFResetType, setCFResetType] = useState<CFAnalysisResetType>();
   const [isConfirmNewCFDialogOpen, setIsConfirmNewCFDialogOpen] = useState(
@@ -224,7 +231,9 @@ const CounterfactualToolbar = (props: CounterfactualToolbarProps) => {
           )}
           {status.executionStatus === CFExecutionStatus.RUNNING && (
             <ToolbarItem>
-              <CounterfactualProgressBar />
+              <CounterfactualProgressBar
+                maxRunningTimeSeconds={maxRunningTimeSeconds}
+              />
             </ToolbarItem>
           )}
         </ToolbarContent>

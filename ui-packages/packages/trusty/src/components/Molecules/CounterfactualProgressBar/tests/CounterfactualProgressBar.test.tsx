@@ -4,17 +4,25 @@ import CounterfactualProgressBar from '../CounterfactualProgressBar';
 import { act } from 'react-dom/test-utils';
 
 describe('CounterfactualProgressBar', () => {
-  test('renders a progress bar', () => {
+  test('renders a progress bar::60s', () => {
+    doTest(60, 5);
+  });
+
+  test('renders a progress bar::30s', () => {
+    doTest(30, 5);
+  });
+
+  function doTest(timeLimit: number, firstAdvance: number) {
     jest.useFakeTimers();
 
-    const timeLimit = 60;
-    const wrapper = mount(<CounterfactualProgressBar />);
+    const wrapper = mount(
+      <CounterfactualProgressBar maxRunningTimeSeconds={timeLimit} />
+    );
 
     expect(setInterval).toHaveBeenCalledTimes(1);
     expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 1000);
     expect(wrapper.find('Progress').props()['value']).toEqual(0);
 
-    const firstAdvance = 10;
     act(() => {
       jest.advanceTimersByTime(1000 * firstAdvance);
     });
@@ -27,7 +35,7 @@ describe('CounterfactualProgressBar', () => {
       `${timeLimit - firstAdvance} seconds remaining`
     );
 
-    const advanceToEnd = 50;
+    const advanceToEnd = timeLimit - firstAdvance;
     act(() => {
       jest.advanceTimersByTime(1000 * advanceToEnd);
     });
@@ -37,5 +45,5 @@ describe('CounterfactualProgressBar', () => {
     expect(wrapper.find('Progress').props()['label']).toMatch(`Wrapping up`);
 
     jest.useRealTimers();
-  });
+  }
 });
