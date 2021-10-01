@@ -22,8 +22,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,8 +34,6 @@ import org.junit.runners.Parameterized;
 import org.kie.api.pmml.PMML4Result;
 import org.kie.pmml.api.runtime.PMMLRuntime;
 import org.kie.pmml.models.tests.AbstractPMMLTest;
-
-import static org.junit.Assert.assertNotNull;
 
 @RunWith(Parameterized.class)
 public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
@@ -89,21 +90,13 @@ public class SimpleScorecardCategoricalTest extends AbstractPMMLTest {
 
     @Test
     public void testSimpleScorecardCategoricalVerifyNoException() {
-        final List<Map<String, Object>> samples = getSamples();
-        samples.forEach(inputData -> {
-            PMML4Result retrieved = evaluate(pmmlRuntime, inputData, MODEL_NAME);
-            assertNotNull(retrieved);
-        });
+        getSamples().stream().map(sample -> evaluate(pmmlRuntime, sample, MODEL_NAME)).forEach(Assert::assertNotNull);
     }
 
     private List<Map<String, Object>> getSamples() {
-        final List<Map<String, Object>> toReturn = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            final Map<String, Object> toAdd = new HashMap<>();
-            toAdd.put("input1", CATEGORY[i % CATEGORY.length]);
-            toAdd.put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
-            toReturn.add(toAdd);
-        }
-        return toReturn;
+        return IntStream.range(0, 10).boxed().map(i -> new HashMap<String, Object>() {{
+            put("input1", CATEGORY[i % CATEGORY.length]);
+            put("input2", CATEGORY[Math.abs(CATEGORY.length - i) % CATEGORY.length]);
+        }}).collect(Collectors.toList());
     }
 }
