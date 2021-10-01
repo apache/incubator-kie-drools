@@ -459,8 +459,7 @@ Alternatively to a `java.util.Duration` in ISO 8601 format, you can also use:
 
 Just like <<timeMillisSpentTermination,time spent termination>>, combinations are summed up.
 
-This termination should not be applied to Construction Heuristics as they only update the best solution at the end.
-Configuring it on a specific `Phase` (such as ``<localSearch>``), instead of on the `Solver` itself is often a better option.
+It is preffered to configure this termination on a specific `Phase` (such as ``<localSearch>``) instead of on the `Solver` itself.
 
 [NOTE]
 ====

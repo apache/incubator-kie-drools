@@ -38,9 +38,6 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
     protected EntityPlacer<Solution_> entityPlacer;
     protected ConstructionHeuristicDecider<Solution_> decider;
 
-    // TODO make this configurable or make it constant
-    protected final boolean skipBestSolutionCloningInSteps = true;
-
     public DefaultConstructionHeuristicPhase(int phaseIndex, String logIndentation, Termination<Solution_> termination) {
         super(phaseIndex, logIndentation, termination);
     }
@@ -106,13 +103,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
         Move<Solution_> undoStep = step.doMove(stepScope.getScoreDirector());
         stepScope.setUndoStep(undoStep);
         predictWorkingStepScore(stepScope, step);
-        if (!skipBestSolutionCloningInSteps) {
-            // Causes a planning clone, which is expensive
-            // For example, on cloud balancing 1200c-4800p this reduces performance by 18%
-            solver.getBestSolutionRecaller().processWorkingSolutionDuringStep(stepScope);
-        } else {
-            stepScope.setBestScoreImproved(true);
-        }
+        solver.getBestSolutionRecaller().processWorkingSolutionDuringConstructionHeuristicsStep(stepScope);
     }
 
     @Override
@@ -152,9 +143,7 @@ public class DefaultConstructionHeuristicPhase<Solution_> extends AbstractPhase<
 
     public void phaseEnded(ConstructionHeuristicPhaseScope<Solution_> phaseScope) {
         super.phaseEnded(phaseScope);
-        if (skipBestSolutionCloningInSteps) {
-            solver.getBestSolutionRecaller().updateBestSolution(phaseScope.getSolverScope());
-        }
+        solver.getBestSolutionRecaller().updateBestSolutionAndFire(phaseScope.getSolverScope());
         entityPlacer.phaseEnded(phaseScope);
         decider.phaseEnded(phaseScope);
         phaseScope.endingNow();

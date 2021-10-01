@@ -81,6 +81,17 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         }
     }
 
+    public void processWorkingSolutionDuringConstructionHeuristicsStep(AbstractStepScope<Solution_> stepScope) {
+        AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
+        SolverScope<Solution_> solverScope = phaseScope.getSolverScope();
+        stepScope.setBestScoreImproved(true);
+        phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
+        Solution_ newBestSolution = stepScope.getWorkingSolution();
+        // Construction heuristics don't fire intermediate best solution changed events.
+        // But the best solution and score are updated, so that unimproved* terminations work correctly.
+        updateBestSolutionWithoutFiring(solverScope, stepScope.getScore(), newBestSolution);
+    }
+
     public void processWorkingSolutionDuringStep(AbstractStepScope<Solution_> stepScope) {
         AbstractPhaseScope<Solution_> phaseScope = stepScope.getPhaseScope();
         Score score = stepScope.getScore();
@@ -90,7 +101,7 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution_ newBestSolution = stepScope.createOrGetClonedSolution();
-            updateBestSolution(solverScope, score, newBestSolution);
+            updateBestSolutionAndFire(solverScope, score, newBestSolution);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
@@ -108,19 +119,24 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         if (bestScoreImproved) {
             phaseScope.setBestSolutionStepIndex(stepScope.getStepIndex());
             Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
-            updateBestSolution(solverScope, score, newBestSolution);
+            updateBestSolutionAndFire(solverScope, score, newBestSolution);
         } else if (assertBestScoreIsUnmodified) {
             solverScope.assertScoreFromScratch(solverScope.getBestSolution());
         }
     }
 
-    public void updateBestSolution(SolverScope<Solution_> solverScope) {
+    public void updateBestSolutionAndFire(SolverScope<Solution_> solverScope) {
         Solution_ newBestSolution = solverScope.getScoreDirector().cloneWorkingSolution();
         Score newBestScore = solverScope.getSolutionDescriptor().getScore(newBestSolution);
-        updateBestSolution(solverScope, newBestScore, newBestSolution);
+        updateBestSolutionAndFire(solverScope, newBestScore, newBestSolution);
     }
 
-    protected void updateBestSolution(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
+    private void updateBestSolutionAndFire(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
+        updateBestSolutionWithoutFiring(solverScope, bestScore, bestSolution);
+        solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
+    }
+
+    private void updateBestSolutionWithoutFiring(SolverScope<Solution_> solverScope, Score bestScore, Solution_ bestSolution) {
         if (bestScore.isSolutionInitialized()) {
             if (!solverScope.isBestSolutionInitialized()) {
                 solverScope.setStartingInitializedScore(bestScore);
@@ -129,7 +145,6 @@ public class BestSolutionRecaller<Solution_> extends PhaseLifecycleListenerAdapt
         solverScope.setBestSolution(bestSolution);
         solverScope.setBestScore(bestScore);
         solverScope.setBestSolutionTimeMillis(System.currentTimeMillis());
-        solverEventSupport.fireBestSolutionChanged(solverScope, bestSolution);
     }
 
 }
