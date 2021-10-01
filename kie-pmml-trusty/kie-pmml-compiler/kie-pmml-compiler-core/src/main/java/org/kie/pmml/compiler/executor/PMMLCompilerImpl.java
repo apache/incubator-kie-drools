@@ -152,14 +152,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml,
                                                     final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
-        final List<Field<?>> fields = new ArrayList<>();
-        pmml.getDataDictionary().getDataFields().stream().map(Field.class::cast)
-                .forEach(fields::add);
         TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-        if (transformationDictionary.hasDerivedFields()) {
-            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
-                    .forEach(fields::add);
-        }
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionary(pmml.getDataDictionary(), transformationDictionary);
         return pmml
                 .getModels()
                 .stream()
