@@ -71,6 +71,9 @@ import org.drools.core.util.LinkedList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import static org.drools.core.phreak.PhreakNotNode.updateBlockersAndPropagate;
+import static org.drools.core.reteoo.BetaNode.getBetaMemory;
+
 public class RuleNetworkEvaluator {
 
     private static final Logger log = LoggerFactory.getLogger(RuleNetworkEvaluator.class);
@@ -871,9 +874,7 @@ public class RuleNetworkEvaluator {
         }
     }
 
-    public static void doUpdatesExistentialReorderRightMemory(BetaMemory bm,
-                                                              BetaNode betaNode,
-                                                              TupleSets<RightTuple> srcRightTuples) {
+    public static void doUpdatesExistentialReorderRightMemory(BetaMemory bm, BetaNode betaNode, TupleSets<RightTuple> srcRightTuples) {
         TupleMemory rtm = bm.getRightTupleMemory();
 
         boolean resumeFromCurrent = !(betaNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
@@ -889,53 +890,72 @@ public class RuleNetworkEvaluator {
         }
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            if (rightTuple.getMemory() != null) {
-
-                if (resumeFromCurrent) {
-                    if (rightTuple.getBlocked() != null) {
-                        // look for a non-staged right tuple first forward ...
-                        RightTuple tempRightTuple = ( RightTuple ) rightTuple.getNext();
-                        while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
-                            // next cannot be an updated or deleted rightTuple
-                            tempRightTuple = (RightTuple) tempRightTuple.getNext();
-                        }
-
-                        // ... and if cannot find one try backward
-                        if ( tempRightTuple == null ) {
-                            tempRightTuple = ( RightTuple ) rightTuple.getPrevious();
-                            while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
-                                // next cannot be an updated or deleted rightTuple
-                                tempRightTuple = (RightTuple) tempRightTuple.getPrevious();
-                            }
-                        }
-
-                        rightTuple.setTempNextRightTuple( tempRightTuple );
-                    }
-                }
-
-                rightTuple.setTempBlocked(rightTuple.getBlocked());
-                rightTuple.setBlocked(null);
-                rtm.remove(rightTuple);
-            }
+            doRemoveExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
         }
 
         for (RightTuple rightTuple = srcRightTuples.getUpdateFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext()) {
-            rtm.add( rightTuple );
-
-            if (resumeFromCurrent) {
-                if ( rightTuple.getBlocked() != null && rightTuple.getTempNextRightTuple() == null ) {
-                    // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
-                    rightTuple.setTempNextRightTuple( rightTuple );
-                }
-            }
-
-            doUpdatesReorderChildLeftTuple( rightTuple );
+            doAddExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
         }
 
         if ( rtm.getIndexType() != TupleMemory.IndexType.NONE) {
             for ( RightTuple rightTuple = srcRightTuples.getDeleteFirst(); rightTuple != null; rightTuple = rightTuple.getStagedNext() ) {
                 rtm.add( rightTuple );
             }
+        }
+    }
+
+    public static void doExistentialUpdatesReorderChildLeftTuple(InternalWorkingMemory wm, NotNode notNode, RightTuple rightTuple) {
+        BetaMemory bm = getBetaMemory(notNode, wm);
+        TupleMemory rtm = bm.getRightTupleMemory();
+
+        boolean resumeFromCurrent = !(notNode.isIndexedUnificationJoin() || rtm.getIndexType().isComparison());
+        doRemoveExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
+        doAddExistentialRightMemoryForReorder(rtm, resumeFromCurrent, rightTuple);
+
+        updateBlockersAndPropagate(notNode, rightTuple, wm, rtm, bm.getContext(), notNode.getRawConstraints(), !resumeFromCurrent, null, null, null);;
+    }
+
+    private static void doAddExistentialRightMemoryForReorder(TupleMemory rtm, boolean resumeFromCurrent, RightTuple rightTuple) {
+        rtm.add(rightTuple);
+
+        if (resumeFromCurrent) {
+            if ( rightTuple.getBlocked() != null && rightTuple.getTempNextRightTuple() == null ) {
+                // the next RightTuple was null, but current RightTuple was added back into the same bucket, so reset as root blocker to re-match can be attempted
+                rightTuple.setTempNextRightTuple(rightTuple);
+            }
+        }
+
+        doUpdatesReorderChildLeftTuple(rightTuple);
+    }
+
+    private static void doRemoveExistentialRightMemoryForReorder(TupleMemory rtm, boolean resumeFromCurrent, RightTuple rightTuple) {
+        if (rightTuple.getMemory() != null) {
+
+            if (resumeFromCurrent) {
+                if (rightTuple.getBlocked() != null) {
+                    // look for a non-staged right tuple first forward ...
+                    RightTuple tempRightTuple = ( RightTuple ) rightTuple.getNext();
+                    while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
+                        // next cannot be an updated or deleted rightTuple
+                        tempRightTuple = (RightTuple) tempRightTuple.getNext();
+                    }
+
+                    // ... and if cannot find one try backward
+                    if ( tempRightTuple == null ) {
+                        tempRightTuple = ( RightTuple ) rightTuple.getPrevious();
+                        while ( tempRightTuple != null && tempRightTuple.getStagedType() != LeftTuple.NONE ) {
+                            // next cannot be an updated or deleted rightTuple
+                            tempRightTuple = (RightTuple) tempRightTuple.getPrevious();
+                        }
+                    }
+
+                    rightTuple.setTempNextRightTuple( tempRightTuple );
+                }
+            }
+
+            rightTuple.setTempBlocked(rightTuple.getBlocked());
+            rightTuple.setBlocked(null);
+            rtm.remove(rightTuple);
         }
     }
 

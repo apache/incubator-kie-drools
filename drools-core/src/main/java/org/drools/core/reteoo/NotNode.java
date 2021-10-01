@@ -28,6 +28,7 @@ import org.drools.core.reteoo.builder.BuildContext;
 import org.drools.core.spi.PropagationContext;
 
 import static org.drools.core.phreak.AddRemoveRule.flushLeftTupleIfNecessary;
+import static org.drools.core.phreak.RuleNetworkEvaluator.doExistentialUpdatesReorderChildLeftTuple;
 
 public class NotNode extends BetaNode {
     private static final long serialVersionUID = 510l;
@@ -68,6 +69,11 @@ public class NotNode extends BetaNode {
     public void writeExternal(ObjectOutput out) throws IOException {
         super.writeExternal(out);
         out.writeBoolean( emptyBetaConstraints );
+    }
+
+    @Override
+    protected void reorderRightTuple(InternalWorkingMemory wm, RightTuple rightTuple) {
+        doExistentialUpdatesReorderChildLeftTuple(wm, this, rightTuple);
     }
 
     public boolean isEmptyBetaConstraints() {
