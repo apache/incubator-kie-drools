@@ -153,7 +153,8 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                                                     final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
         TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionary(pmml.getDataDictionary(), transformationDictionary);
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionary(pmml.getDataDictionary()
+                , transformationDictionary);
         return pmml
                 .getModels()
                 .stream()
@@ -163,35 +164,4 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
-//
-//    private List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
-//                                                                                  final TransformationDictionary transformationDictionary) {
-//        final List<Field<?>> toReturn = new ArrayList<>();
-//        if (dataDictionary != null) {
-//            dataDictionary.getDataFields().stream().map(Field.class::cast)
-//                    .forEach(toReturn::add);
-//        }
-//        if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
-//            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
-//                    .forEach(toReturn::add);
-//        }
-//        return toReturn;
-//    }
-//
-//    private List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
-//                                                                                       final TransformationDictionary transformationDictionary,
-//                                                                                       final Model model) {
-//        final List<Field<?>> toReturn = getFieldsFromDataDictionaryAndTransformationDictionary(dataDictionary, transformationDictionary);
-//        LocalTransformations localTransformations = model.getLocalTransformations();
-//        if (localTransformations != null && localTransformations.hasDerivedFields()) {
-//            localTransformations.getDerivedFields().stream().map(Field.class::cast)
-//                    .forEach(toReturn::add);
-//        }
-//        Output output =  model.getOutput();
-//        if (output != null && output.hasOutputFields()) {
-//            output.getOutputFields().stream().map(Field.class::cast)
-//                    .forEach(toReturn::add);
-//        }
-//        return toReturn;
-//    }
 }
