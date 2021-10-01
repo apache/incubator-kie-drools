@@ -67,7 +67,9 @@ class DecisionModelWrapper implements PredictionProvider {
                 if (!skippedDecisions.contains(decisionName)) {
                     Value value = new Value(decisionResult.getResult());
                     Type type;
-                    if (Double.isNaN(value.asNumber())) {
+                    if (value.getUnderlyingObject() instanceof Boolean) {
+                        type = Type.BOOLEAN;
+                    } else if (Double.isNaN(value.asNumber())) {
                         type = Type.TEXT;
                     } else {
                         type = Type.NUMBER;
