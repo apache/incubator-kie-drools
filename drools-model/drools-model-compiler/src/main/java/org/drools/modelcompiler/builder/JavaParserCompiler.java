@@ -40,6 +40,7 @@ import org.drools.reflective.classloader.ProjectClassLoader;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,9 +109,8 @@ public class JavaParserCompiler {
 
     private static List<String> getClassNames(ClassLoader classLoader, MemoryFileSystem trgMfs) {
         List<String> classNames = new ArrayList<>();
-        for (Map.Entry<String, byte[]> entry : trgMfs.getMap().entrySet()) {
-            String fileName = entry.getKey();
-            String className = fileName.substring( 0, fileName.length()-".class".length() ).replace( '/', '.' );
+        for (Map.Entry<KiePath, byte[]> entry : trgMfs.getMap().entrySet()) {
+            String className = entry.getKey().asClassName();
             classNames.add(className);
             if (classLoader instanceof ProjectClassLoader && ((ProjectClassLoader) classLoader).isDynamic()) {
                 ((ProjectClassLoader) classLoader).storeClass(className, entry.getValue());

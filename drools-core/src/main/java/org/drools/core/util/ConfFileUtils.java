@@ -24,6 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
+import org.kie.memorycompiler.resources.KiePath;
+
 public class ConfFileUtils {
    
     /**
@@ -36,8 +38,8 @@ public class ConfFileUtils {
         URL url = null;
         
         // User home 
-        String userHome = System.getProperty( "user.home" );
-        if ( userHome.endsWith( "\\" ) || userHome.endsWith( "/" ) ) {
+        String userHome = KiePath.of( System.getProperty( "user.home" ) ).asString();
+        if ( userHome.endsWith( "/" ) ) {
             url = getURLForFile( userHome + confName );
         } else {
             url = getURLForFile( userHome + "/" + confName );

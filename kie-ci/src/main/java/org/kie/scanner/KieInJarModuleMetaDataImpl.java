@@ -290,7 +290,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
                     forms.put(pathName, new String(blob, UTF8_CHARSET));
                 }
 
-                if (!indexClass(pathName) && pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH)) {
+                if (!indexClass(pathName) && pathName.endsWith(KieModuleModelImpl.KMODULE_INFO_JAR_PATH.asString())) {
                     indexMetaInfo(blob);
                 }
             }

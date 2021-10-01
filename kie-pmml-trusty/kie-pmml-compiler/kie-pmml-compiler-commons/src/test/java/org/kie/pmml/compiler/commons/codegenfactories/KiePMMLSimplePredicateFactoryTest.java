@@ -33,6 +33,7 @@ import org.kie.pmml.commons.model.predicates.KiePMMLSimplePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 
 public class KiePMMLSimplePredicateFactoryTest {
@@ -51,7 +52,7 @@ public class KiePMMLSimplePredicateFactoryTest {
         DataDictionary dataDictionary = new DataDictionary();
         dataDictionary.addDataFields(dataField);
 
-        BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate, Collections.emptyList(), dataDictionary);
+        BlockStmt retrieved = KiePMMLSimplePredicateFactory.getSimplePredicateVariableDeclaration(variableName, simplePredicate, getFieldsFromDataDictionary(dataDictionary));
         Statement expected = JavaParserUtils.parseBlock(String.format("{" +
                                                                               "KiePMMLSimplePredicate " +
                                                                               "%1$s = KiePMMLSimplePredicate.builder(\"%2$s\", Collections.emptyList(), %3$s)\n" +

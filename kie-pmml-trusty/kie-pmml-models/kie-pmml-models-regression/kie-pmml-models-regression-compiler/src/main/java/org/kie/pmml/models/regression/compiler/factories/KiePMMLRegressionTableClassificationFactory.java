@@ -90,7 +90,6 @@ public class KiePMMLRegressionTableClassificationFactory {
     }
 
     /**
-     *
      * @param regressionTablesMap Explicitly using a <code>LinkedHashMap</code> because insertion order matters
      * @param normalizationMethod
      * @param opType
@@ -99,7 +98,8 @@ public class KiePMMLRegressionTableClassificationFactory {
      * @param packageName
      * @return
      */
-    public static Map.Entry<String, String> getRegressionTable(final LinkedHashMap<String, KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<OutputField> outputFields, final String targetField, final String packageName) {
+    public static Map.Entry<String, String> getRegressionTable(final LinkedHashMap<String,
+            KiePMMLTableSourceCategory> regressionTablesMap, final RegressionModel.NormalizationMethod normalizationMethod, final OpType opType, final List<OutputField> outputFields, final String targetField, final String packageName) {
         logger.trace("getRegressionTable {}", regressionTablesMap);
         String className = "KiePMMLRegressionTableClassification" + classArity.addAndGet(1);
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName,
@@ -109,8 +109,9 @@ public class KiePMMLRegressionTableClassificationFactory {
         final REGRESSION_NORMALIZATION_METHOD regressionNormalizationMethod =
                 REGRESSION_NORMALIZATION_METHOD.byName(normalizationMethod.value());
         final OP_TYPE opTypePmml = opType != null ? OP_TYPE.byName(opType.value()) : null;
-        populateGetProbabilityMapMethod(normalizationMethod, tableTemplate);
-        populateIsBinaryMethod(opType, regressionTablesMap.size(), tableTemplate);
+        boolean isBinary = Objects.equals(OpType.CATEGORICAL, opType) && regressionTablesMap.size() == 2;
+        populateGetProbabilityMapMethod(normalizationMethod, isBinary, tableTemplate);
+        populateIsBinaryMethod(isBinary, tableTemplate);
         final ConstructorDeclaration constructorDeclaration =
                 tableTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, tableTemplate.getName())));
         setConstructor(constructorDeclaration, tableTemplate.getName(), targetField, regressionNormalizationMethod,
@@ -164,9 +165,14 @@ public class KiePMMLRegressionTableClassificationFactory {
      * @return
      */
     static void populateGetProbabilityMapMethod(final RegressionModel.NormalizationMethod normalizationMethod,
+                                                final boolean isBinary,
                                                 final ClassOrInterfaceDeclaration tableTemplate) {
         try {
-            String methodName = String.format("get%sProbabilityMap", normalizationMethod.name());
+            String normalizationName = normalizationMethod.name();
+            if (RegressionModel.NormalizationMethod.NONE.equals(normalizationMethod) && isBinary) {
+                normalizationName += "Binary";
+            }
+            String methodName = String.format("get%sProbabilityMap", normalizationName);
             templateEvaluate = getFromFileName(KIE_PMML_GET_PROBABILITY_MAP_METHOD_TEMPLATE_JAVA);
             cloneEvaluate = templateEvaluate.clone();
             ClassOrInterfaceDeclaration evaluateTemplateClass =
@@ -181,18 +187,17 @@ public class KiePMMLRegressionTableClassificationFactory {
 
     /**
      * Populate the <b>isBinary</b> <code>MethodDeclaration</code> of the class
-     * @param opType
-     * @param size
+     *
+     * @param isBinary
      * @param tableTemplate
      * @return
      */
-    static void populateIsBinaryMethod(final OpType opType, int size,
-                                               final ClassOrInterfaceDeclaration tableTemplate) {
+    static void populateIsBinaryMethod(final boolean isBinary,
+                                       final ClassOrInterfaceDeclaration tableTemplate) {
         try {
             final MethodDeclaration methodDeclaration = tableTemplate.getMethodsByName("isBinary").get(0);
-            boolean toReturn = Objects.equals(OpType.CATEGORICAL, opType) && size == 2;
             BlockStmt blockStmt = new BlockStmt();
-            blockStmt.addStatement(new ReturnStmt(new BooleanLiteralExpr(toReturn)));
+            blockStmt.addStatement(new ReturnStmt(new BooleanLiteralExpr(isBinary)));
             methodDeclaration.setBody(blockStmt);
         } catch (Exception e) {
             throw new KiePMMLInternalException(e.getMessage());

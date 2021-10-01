@@ -43,6 +43,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonEvaluateConstructor;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.getFromFileName;
 import static org.kie.pmml.models.drools.scorecard.compiler.factories.KiePMMLScorecardModelFactory.KIE_PMML_SCORECARD_MODEL_TEMPLATE;
@@ -73,10 +74,11 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModel() throws Exception {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(pmml.getDataDictionary(),
+        KiePMMLScorecardModel retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModel(getFieldsFromDataDictionary(dataDictionary),
                                                                                                 pmml.getTransformationDictionary(),
                                                                                                 scorecardModel,
                                                                                                 fieldTypeMap,
@@ -89,10 +91,11 @@ public class KiePMMLScorecardModelFactoryTest {
 
     @Test
     public void getKiePMMLScorecardModelSourcesMap()  {
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+        final DataDictionary dataDictionary = pmml.getDataDictionary();
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        Map<String, String> retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(pmml.getDataDictionary(),
+        Map<String, String> retrieved = KiePMMLScorecardModelFactory.getKiePMMLScorecardModelSourcesMap(getFieldsFromDataDictionary(dataDictionary),
                                                                                                         pmml.getTransformationDictionary(),
                                                                                                         scorecardModel,
                                                                                                         fieldTypeMap,
@@ -105,10 +108,10 @@ public class KiePMMLScorecardModelFactoryTest {
     @Test
     public void getKiePMMLDroolsAST() {
         final DataDictionary dataDictionary = pmml.getDataDictionary();
-        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(pmml.getDataDictionary(),
+        final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap = getFieldTypeMap(dataDictionary,
                                                                                            pmml.getTransformationDictionary(),
                                                                                            scorecardModel.getLocalTransformations());
-        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(dataDictionary, scorecardModel, fieldTypeMap, Collections.emptyList());
+        KiePMMLDroolsAST retrieved = KiePMMLScorecardModelFactory.getKiePMMLDroolsAST(getFieldsFromDataDictionary(dataDictionary), scorecardModel, fieldTypeMap, Collections.emptyList());
         assertNotNull(retrieved);
     }
 
@@ -117,7 +120,7 @@ public class KiePMMLScorecardModelFactoryTest {
         final String targetField = "overallScore";
         final ClassOrInterfaceDeclaration modelTemplate = classOrInterfaceDeclaration.clone();
         KiePMMLScorecardModelFactory.setConstructor(scorecardModel,
-                                                    pmml.getDataDictionary(),
+                                                    getFieldsFromDataDictionary(pmml.getDataDictionary()),
                                                     pmml.getTransformationDictionary(),
                                                     modelTemplate);
         Map<Integer, Expression> superInvocationExpressionsMap = new HashMap<>();

@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.kie.memorycompiler.resources.MemoryResourceStore;
 
@@ -136,8 +137,8 @@ public class KieMemoryCompiler {
         }
 
         Map<String, byte[]> toReturn = new HashMap<>();
-        for (Map.Entry<String, byte[]> entry : store.getResources().entrySet()) {
-            toReturn.put(toClassName( entry.getKey() ), entry.getValue());
+        for (Map.Entry<KiePath, byte[]> entry : store.getResources().entrySet()) {
+            toReturn.put(toClassName( entry.getKey().asString() ), entry.getValue());
         }
 
         return toReturn;
@@ -145,10 +146,6 @@ public class KieMemoryCompiler {
 
     private static String toJavaSource( String s ) {
         return s.replace( '.', '/' ) + ".java";
-    }
-
-    private static String toClassSource( String s ) {
-        return s.replace( '.', '/' ) + ".class";
     }
 
     private static String toClassName( String s ) {

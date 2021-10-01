@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
-
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.NestingKind;
 import javax.tools.Diagnostic;
@@ -48,12 +47,14 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.StandardLocation;
 import javax.tools.ToolProvider;
+
 import org.kie.memorycompiler.AbstractJavaCompiler;
 import org.kie.memorycompiler.CompilationProblem;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompilerSettings;
 import org.kie.memorycompiler.KieMemoryCompilerException;
 import org.kie.memorycompiler.StoreClassLoader;
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 import org.kie.memorycompiler.resources.ResourceStore;
 
@@ -78,7 +79,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
         try (StandardJavaFileManager jFileManager = compiler.getStandardFileManager(diagnostics, null, null)) {
             try {
                 jFileManager.setLocation( StandardLocation.CLASS_PATH, pSettings.getClasspathLocations() );
-                jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target" + File.separator + "classes")) );
+                jFileManager.setLocation( StandardLocation.CLASS_OUTPUT, Collections.singletonList(new File("target/classes")) );
             } catch (IOException e) {
                 // ignore if cannot set the classpath
             }
@@ -86,7 +87,7 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
             try (MemoryFileManager fileManager = new MemoryFileManager( jFileManager, pClassLoader )) {
                 final List<JavaFileObject> units = new ArrayList<JavaFileObject>();
                 for (final String sourcePath : pResourcePaths) {
-                    units.add( new CompilationUnit( sourcePath, pReader ) );
+                    units.add( new CompilationUnit( KiePath.of(sourcePath), pReader ) );
                 }
 
                 Iterable<String> options = new NativeJavaCompilerSettings( pSettings ).toOptionsList();
@@ -117,12 +118,12 @@ public class NativeJavaCompiler extends AbstractJavaCompiler {
 
         private final String content;
 
-        CompilationUnit(String name, String content) {
-            super(URI.create("memo:///" + name), Kind.SOURCE);
+        CompilationUnit(KiePath path, String content) {
+            super(URI.create("memo:///" + path.asString()), Kind.SOURCE);
             this.content = content;
         }
 
-        CompilationUnit(String name, ResourceReader pReader) {
+        CompilationUnit(KiePath name, ResourceReader pReader) {
             this(name, new String(pReader.getBytes(name), UTF8_CHARSET));
         }
 

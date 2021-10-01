@@ -26,10 +26,10 @@ import java.net.URLConnection;
 import java.net.URLStreamHandler;
 import java.nio.charset.StandardCharsets;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
-import org.kie.memorycompiler.resources.ResourceReader;
 import org.drools.compiler.compiler.io.FileSystemItem;
 import org.drools.compiler.compiler.io.Folder;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
@@ -43,6 +43,8 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.internal.utils.ServiceRegistry;
 import org.kie.internal.builder.KnowledgeBuilder;
 import org.kie.internal.builder.conf.AlphaNetworkCompilerOption;
+import org.kie.memorycompiler.resources.KiePath;
+import org.kie.memorycompiler.resources.ResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,11 @@ public class MemoryKieModule extends AbstractKieModule
 
     @Override
     public boolean isAvailable(String path) {
+        return isAvailable( KiePath.of(path) );
+    }
+
+    @Override
+    public boolean isAvailable(KiePath path) {
         return mfs.existsFile( path );
     }
 
@@ -81,13 +88,27 @@ public class MemoryKieModule extends AbstractKieModule
     }
 
     @Override
+    public byte[] getBytes(KiePath path) {
+        return mfs.getBytes( path );
+    }
+
+    @Override
     public InternalResource getResource( String fileName) {
-        return mfs.getResource( fileName );
+        return getResource( KiePath.of(fileName) );
+    }
+
+    public InternalResource getResource( KiePath path) {
+        return mfs.getResource( path );
+    }
+
+    @Override
+    public Collection<KiePath> getFilePaths() {
+        return mfs.getFilePaths();
     }
 
     @Override
     public Collection<String> getFileNames() {
-        return mfs.getFileNames();
+        return getFilePaths().stream().map(KiePath::asString).collect(Collectors.toList());
     }
 
     public MemoryFileSystem getMemoryFileSystem() {
@@ -180,11 +201,12 @@ public class MemoryKieModule extends AbstractKieModule
 
         @Override
         public URL getResource(String name) {
+            KiePath kiePath = KiePath.of(name);
             try {
-                if (mfs.existsFile(name)) {
-                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFileURLStreamHandler(mfs.getFile(name)));
-                } else if (mfs.existsFolder(name)) {
-                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFolderURLStreamHandler(mfs.getFolder(name)));
+                if (mfs.existsFile(kiePath)) {
+                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFileURLStreamHandler(mfs.getFile(kiePath)));
+                } else if (mfs.existsFolder(kiePath)) {
+                    return new URL(MEMORY_URL_PROTOCOL, null, -1, constructName(name), new MemoryFolderURLStreamHandler(mfs.getFolder(kiePath)));
                 } else {
                     return null;
                 }
@@ -204,10 +226,11 @@ public class MemoryKieModule extends AbstractKieModule
 
         @Override
         public InputStream getResourceAsStream(String name) throws IOException {
-            if (mfs.existsFile(name)) {
-                return mfs.getFile(name).getContents();
-            } else if (mfs.existsFolder(name)) {
-                return new FolderMembersInputStream(mfs.getFolder(name));
+            KiePath kiePath = KiePath.of(name);
+            if (mfs.existsFile(kiePath)) {
+                return mfs.getFile(kiePath).getContents();
+            } else if (mfs.existsFolder(kiePath)) {
+                return new FolderMembersInputStream(mfs.getFolder(kiePath));
             } else {
                 return null;
             }
@@ -314,7 +337,7 @@ public class MemoryKieModule extends AbstractKieModule
             if (members != null) {
                 for (FileSystemItem resource : members) {
                     // take just the name of the member, no the whole path
-                    sb.append(resource.getPath().toRelativePortableString(folder.getPath()));
+                    sb.append(resource.getPath().asString().substring(folder.getPath().asString().length()+1));
                     // append "\n" to be in sync with the JDK's ClassLoader (returns "\n" even on Windows)
                     sb.append("\n");
                 }

@@ -36,6 +36,7 @@ import org.drools.impact.analysis.graph.Graph;
 import org.drools.impact.analysis.graph.Link;
 import org.drools.impact.analysis.graph.Node;
 import org.drools.impact.analysis.graph.ReactivityType;
+import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +48,14 @@ public class GraphImageGenerator {
 
     private static final Logger logger = LoggerFactory.getLogger(GraphImageGenerator.class);
 
-    private static final String DEFAULT_OUTPUT_DIR = "target" + File.separator + "graph-output";
+    private static final KiePath DEFAULT_OUTPUT_DIR = KiePath.of("target/graph-output");
 
     private String graphName;
     private int width = 0; // when 0, auto-sized
     private int height = 0; // when 0, auto-sized
     private int totalMemory = 1000000000; // 1GB by default
     private int cmdLineEngineTimeout = 600; // 10 minutes by default
-    private String outputDir = DEFAULT_OUTPUT_DIR;
+    private KiePath outputDir = DEFAULT_OUTPUT_DIR;
 
     private Rank.RankDir rankDir = Rank.RankDir.LEFT_TO_RIGHT; // LEFT_TO_RIGHT gives a better view when you have a large number of nodes
     private double sep = 1; // interval between levels
@@ -83,11 +84,11 @@ public class GraphImageGenerator {
     }
 
     public String getOutputDir() {
-        return outputDir;
+        return outputDir.asString();
     }
 
     public void setOutputDir(String outputDir) {
-        this.outputDir = outputDir;
+        this.outputDir = KiePath.of(outputDir);
     }
 
     public int getWidth() {
@@ -163,7 +164,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".dot";
+            String filePath = outputDir.asString() + "/" + graphName + ".dot";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.DOT).toFile(new File(filePath));
             logger.info("--- Graph dot format is generated to " + filePath);
         } catch (IOException e) {
@@ -175,7 +176,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".png";
+            String filePath = outputDir.asString() + "/" + graphName + ".png";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.PNG).toFile(new File(filePath));
             logger.info("--- Graph png image is generated to " + filePath);
         } catch (IOException e) {
@@ -187,7 +188,7 @@ public class GraphImageGenerator {
         guru.nidi.graphviz.model.Graph graph = convertGraph(g);
 
         try {
-            String filePath = outputDir + File.separator + graphName + ".svg";
+            String filePath = outputDir.asString() + "/" + graphName + ".svg";
             Graphviz.fromGraph(graph).totalMemory(totalMemory).width(width).height(height).render(Format.SVG).toFile(new File(filePath));
             logger.info("--- Graph svg image is generated to " + filePath);
         } catch (IOException e) {

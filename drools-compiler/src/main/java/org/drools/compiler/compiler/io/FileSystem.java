@@ -16,15 +16,20 @@
 package org.drools.compiler.compiler.io;
 
 
+import org.kie.memorycompiler.resources.KiePath;
 
 public interface FileSystem {
     Folder getRootFolder();
     
-    File getFile(Path path);
-    File getFile(String path);
-    
-    Folder getFolder(Path path);
-    Folder getFolder(String path);    
+    File getFile(KiePath path);
+    default File getFile(String name) {
+        return getFile(KiePath.of(name));
+    }
+
+    Folder getFolder(KiePath path);
+    default Folder getFolder(String name) {
+        return getFolder(KiePath.of(name));
+    }
     
     boolean remove(File file);
     

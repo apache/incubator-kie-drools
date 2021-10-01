@@ -16,7 +16,9 @@
 package org.drools.compiler.compiler.io;
 
 
+import org.kie.memorycompiler.resources.KiePath;
+
 public interface FileSystemItem {
 
-    Path getPath();
+    KiePath getPath();
 }

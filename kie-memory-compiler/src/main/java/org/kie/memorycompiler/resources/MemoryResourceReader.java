@@ -15,7 +15,6 @@
 package org.kie.memorycompiler.resources;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -26,57 +25,39 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class MemoryResourceReader implements ResourceReader {
     
-    private Map<String, byte[]> resources = new ConcurrentHashMap<>();
+    private final Map<KiePath, byte[]> resources = new ConcurrentHashMap<>();
 
     private Set<String> modifiedResourcesSinceLastMark;
 
-    public boolean isAvailable( final String pResourceName ) {
-        if (resources == null) {
-            return false;
-        }
-
-        return resources.containsKey(pResourceName);
+    public boolean isAvailable( KiePath path ) {
+        return resources.containsKey(path);
     }
     
-    public void add( final String pResourceName, final byte[] pContent ) {
-        resources.put(pResourceName, pContent);
+    public void add( final String resourceName, final byte[] pContent ) {
+        KiePath normalizedName = KiePath.of(resourceName);
+        resources.put(normalizedName, pContent);
         if (modifiedResourcesSinceLastMark != null) {
-            modifiedResourcesSinceLastMark.add(pResourceName);
+            modifiedResourcesSinceLastMark.add(normalizedName.asString());
         }
     }
     
-    public void remove( final String pResourceName ) {
-        if (resources != null) {
-            resources.remove(pResourceName);
-        }
+    public void remove( KiePath path ) {
+        resources.remove(path);
     }
 
     public void mark() {
-        modifiedResourcesSinceLastMark = new HashSet<String>();
+        modifiedResourcesSinceLastMark = new HashSet<>();
     }
 
     public Collection<String> getModifiedResourcesSinceLastMark() {
         return modifiedResourcesSinceLastMark;
     }
 
-    public byte[] getBytes( final String pResourceName ) {
-        return (byte[]) resources.get(pResourceName);
+    public byte[] getBytes( KiePath path ) {
+        return resources.get(path);
     }
 
-    public Collection<String> getFileNames() {
-        if ( resources == null ) {
-            return Collections.emptySet();
-        }
-        
-        return resources.keySet();       
-    }
-    /**
-     * @deprecated
-     */
-    public String[] list() {
-        if (resources == null) {
-            return new String[0];
-        }
-        return (String[]) resources.keySet().toArray(new String[resources.size()]);
+    public Collection<KiePath> getFilePaths() {
+        return resources.keySet();
     }
 }

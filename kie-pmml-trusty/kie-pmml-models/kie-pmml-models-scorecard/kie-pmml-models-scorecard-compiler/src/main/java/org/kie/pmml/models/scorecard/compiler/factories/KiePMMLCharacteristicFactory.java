@@ -29,6 +29,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DerivedField;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.scorecard.Attribute;
 import org.dmg.pmml.scorecard.Characteristic;
 import org.kie.pmml.api.exceptions.KiePMMLException;
@@ -69,8 +70,7 @@ public class KiePMMLCharacteristicFactory {
 
     static BlockStmt getCharacteristicVariableDeclaration(final String variableName,
                                                           final Characteristic characteristic,
-                                                          final List<DerivedField> derivedFields,
-                                                          final DataDictionary dataDictionary) {
+                                                          final List<Field<?>> fields) {
         final MethodDeclaration methodDeclaration =
                 CHARACTERISTIC_TEMPLATE.getMethodsByName(GETKIEPMMLCHARACTERISTIC).get(0).clone();
         final BlockStmt characteristicBody =
@@ -83,7 +83,7 @@ public class KiePMMLCharacteristicFactory {
         NodeList<Expression> arguments = new NodeList<>();
         for (Attribute attribute : characteristic.getAttributes()) {
             String attributeVariableName = String.format("%s_%s", variableName, counter);
-            BlockStmt toAdd = getAttributeVariableDeclaration(attributeVariableName, attribute, derivedFields, dataDictionary);
+            BlockStmt toAdd = getAttributeVariableDeclaration(attributeVariableName, attribute, fields);
             toAdd.getStatements().forEach(toReturn::addStatement);
             arguments.add(new NameExpr(attributeVariableName));
             counter++;

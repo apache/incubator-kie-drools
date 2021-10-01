@@ -17,6 +17,7 @@ package org.kie.pmml.models.clustering.compiler.factories;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -32,7 +33,7 @@ import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
 import org.dmg.pmml.Array;
 import org.dmg.pmml.ComparisonMeasure;
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.clustering.Cluster;
 import org.dmg.pmml.clustering.ClusteringField;
@@ -73,16 +74,16 @@ public class KiePMMLClusteringModelFactory {
         // Avoid instantiation
     }
 
-    public static KiePMMLClusteringModel getKiePMMLClusteringModel(final DataDictionary dataDictionary,
+    public static KiePMMLClusteringModel getKiePMMLClusteringModel(final List<Field<?>> fields,
                                                                    final TransformationDictionary transformationDictionary,
                                                                    final ClusteringModel model,
                                                                    final String packageName,
                                                                    final HasClassLoader hasClassLoader) {
-        logger.trace("getKiePMMLClusteringModel {} {}", dataDictionary, model);
+        logger.trace("getKiePMMLClusteringModel {} {}", fields, model);
 
         String canonicalClassName = packageName + "." + getSanitizedClassName(model.getModelName());
 
-        Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(dataDictionary, transformationDictionary
+        Map<String, String> sourcesMap = getKiePMMLClusteringModelSourcesMap(fields, transformationDictionary
                 , model, packageName);
         try {
             Class<?> clusteringModelClass = hasClassLoader.compileAndLoadClass(sourcesMap, canonicalClassName);
@@ -92,12 +93,12 @@ public class KiePMMLClusteringModelFactory {
         }
     }
 
-    public static Map<String, String> getKiePMMLClusteringModelSourcesMap(final DataDictionary dataDictionary,
+    public static Map<String, String> getKiePMMLClusteringModelSourcesMap(final List<Field<?>> fields,
                                                                           final TransformationDictionary transformationDictionary,
                                                                           final ClusteringModel model,
                                                                           final String packageName) {
 
-        logger.trace("getKiePMMLClusteringModelSourcesMap {} {} {}", dataDictionary, model, packageName);
+        logger.trace("getKiePMMLClusteringModelSourcesMap {} {} {}", fields, model, packageName);
 
         String simpleClassName = getSanitizedClassName(model.getModelName());
 
@@ -106,7 +107,7 @@ public class KiePMMLClusteringModelFactory {
         ClassOrInterfaceDeclaration modelTemplate = compilationUnit.getClassByName(simpleClassName)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + simpleClassName));
         setConstructor(model,
-                       dataDictionary,
+                       fields,
                        transformationDictionary,
                        modelTemplate);
         Map<String, String> sourcesMap = new HashMap<>();
@@ -116,11 +117,11 @@ public class KiePMMLClusteringModelFactory {
     }
 
     static void setConstructor(final ClusteringModel clusteringModel,
-                               final DataDictionary dataDictionary,
+                               final List<Field<?>> fields,
                                final TransformationDictionary transformationDictionary,
                                final ClassOrInterfaceDeclaration modelTemplate) {
         KiePMMLModelCodegenUtils.init(modelTemplate,
-                                      dataDictionary,
+                                      fields,
                                       transformationDictionary,
                                       clusteringModel);
         final ConstructorDeclaration constructorDeclaration =

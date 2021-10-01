@@ -25,33 +25,36 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.ResourceReader;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
 
 public class DiskResourceReader implements ResourceReader {
     private final File root;
+    private final KiePath rootPath;
 
-    private Map<String, Integer> filesHashing;
+    private Map<KiePath, Integer> filesHashing;
 
-    public DiskResourceReader( final File pRoot ) {
-        root = pRoot;        
+    public DiskResourceReader( final File root ) {
+        this.root = root;
+        this.rootPath = KiePath.of(root.getAbsolutePath());
     }
     
-    public boolean isAvailable( final String pResourceName ) {
-        return new File(root, pResourceName).exists();
+    public boolean isAvailable( KiePath resourcePath ) {
+        return new File(root, resourcePath.asString()).exists();
     }
 
-    public byte[] getBytes( final String pResourceName ) {
+    public byte[] getBytes( KiePath resourcePath ) {
         try {
-            return readBytesFromInputStream(new FileInputStream(new File(root, pResourceName)));
+            return readBytesFromInputStream(new FileInputStream(new File(root, resourcePath.asString())));
         } catch(Exception e) {
             return null;
         }
     }
     
-    public Collection<String> getFileNames() {
-        List<String> list = new ArrayList();
+    public Collection<KiePath> getFilePaths() {
+        List<KiePath> list = new ArrayList<>();
         list(root, list);        
         return list;
     }
@@ -62,52 +65,40 @@ public class DiskResourceReader implements ResourceReader {
 
     public Collection<String> getModifiedResourcesSinceLastMark() {
         Set<String> modifiedResources = new HashSet<String>();
-        Map<String, Integer> newHashing = hashFiles();
-        for (Map.Entry<String, Integer> entry : newHashing.entrySet()) {
+        Map<KiePath, Integer> newHashing = hashFiles();
+        for (Map.Entry<KiePath, Integer> entry : newHashing.entrySet()) {
             Integer oldHashing = filesHashing.get(entry.getKey());
             if (oldHashing == null || !oldHashing.equals(entry.getValue())) {
-                modifiedResources.add(entry.getKey());
+                modifiedResources.add(entry.getKey().asString());
             }
         }
-        for (String oldFile : filesHashing.keySet()) {
+        for (KiePath oldFile : filesHashing.keySet()) {
             if (!newHashing.containsKey(oldFile)) {
-                modifiedResources.add(oldFile);
+                modifiedResources.add(oldFile.asString());
             }
         }
         return modifiedResources;
     }
 
-    private Map<String, Integer> hashFiles() {
-        Map<String, Integer> hashing = new HashMap<String, Integer>();
-        for (String fileName : getFileNames()) {
-            byte[] bytes = getBytes( fileName );
+    private Map<KiePath, Integer> hashFiles() {
+        Map<KiePath, Integer> hashing = new HashMap<>();
+        for (KiePath filePath : getFilePaths()) {
+            byte[] bytes = getBytes( filePath );
             if ( bytes != null ) {
-                hashing.put(fileName, Arrays.hashCode(bytes));
+                hashing.put(filePath, Arrays.hashCode(bytes));
             }
         }
         return hashing;
     }
 
-    /**
-     * @deprecated
-     */
-    public String[] list() {
-        final List<String> files = new ArrayList<String>();
-        list(root, files);
-        return files.toArray(new String[files.size()]);
-    }
-
-    /**
-     * @deprecated
-     */
-    private void list( final File pFile, final List pFiles ) {
+    private void list( final File pFile, final List<KiePath> pFiles ) {
         if (pFile.isDirectory()) {
             final File[] directoryFiles = pFile.listFiles();
             for (int i = 0; i < directoryFiles.length; i++) {
                 list(directoryFiles[i], pFiles);
             }
         } else {
-            pFiles.add(pFile.getAbsolutePath().substring(root.getAbsolutePath().length()+1));
+            pFiles.add( KiePath.of( pFile.getAbsolutePath().substring(rootPath.asString().length()+1) ) );
         }
     }   
     

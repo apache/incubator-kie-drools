@@ -34,6 +34,7 @@ import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceConfiguration;
 import org.kie.api.io.ResourceType;
 import org.kie.internal.io.ResourceTypeImpl;
+import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,11 +63,25 @@ public class KieFileSystemImpl
         return this;
     }
 
+    public KieFileSystem write(KiePath path, byte[] content) {
+        mfs.write( path, content, true );
+        return this;
+    }
+
     public KieFileSystem write(String path, String text) {
         return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
     }
 
+    public KieFileSystem write(KiePath path, String text) {
+        return write( path, text.getBytes( IoUtils.UTF8_CHARSET ) );
+    }
+
     public KieFileSystem write(String path, Resource resource) {
+        mfs.write( KiePath.of(path), resource );
+        return this;
+    }
+
+    public KieFileSystem write(KiePath path, Resource resource) {
         mfs.write( path, resource );
         return this;
     }

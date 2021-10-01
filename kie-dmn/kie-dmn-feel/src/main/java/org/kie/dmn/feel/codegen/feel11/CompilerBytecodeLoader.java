@@ -38,6 +38,7 @@ import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.kie.dmn.feel.util.ClassLoaderUtil;
 import org.kie.memorycompiler.CompilationResult;
 import org.kie.memorycompiler.JavaCompiler;
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.memorycompiler.resources.MemoryResourceReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,8 +74,8 @@ public class CompilerBytecodeLoader {
                 throw new UnsupportedOperationException("Cannot jit classload on this platform.");
             }
             Class<?> loadedClass = null;
-            for (Entry<String, byte[]> kv : pStore.getMap().entrySet() ) {
-                final String className = kv.getKey().substring(0, kv.getKey().lastIndexOf(".class")).replaceAll("/", ".");
+            for (Entry<KiePath, byte[]> kv : pStore.getMap().entrySet() ) {
+                final String className = kv.getKey().asClassName();
                 final Class<?> definedClass = defineClass(className, kv.getValue(), 0, kv.getValue().length);
                 if (string.equals(className)) {
                     loadedClass = definedClass;

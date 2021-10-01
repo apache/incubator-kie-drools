@@ -55,6 +55,7 @@ import org.kie.internal.builder.KnowledgeBuilderConfiguration;
 import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
+import org.kie.memorycompiler.resources.KiePath;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,7 +100,10 @@ public interface InternalKieModule extends KieModule, Serializable {
     boolean isAvailable( final String pResourceName );
     
     byte[] getBytes( final String pResourceName );
-    
+    default byte[] getBytes( final KiePath resourcePath ) {
+        return getBytes(resourcePath.asString());
+    }
+
     Collection<String> getFileNames();  
     
     File getFile();
@@ -165,7 +169,7 @@ public interface InternalKieModule extends KieModule, Serializable {
             return null;
         }
         try (ZipFile zipFile = new ZipFile(jar)) {
-            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH);
+            ZipEntry zipEntry = zipFile.getEntry(KieModuleModelImpl.KMODULE_JAR_PATH.asString());
             if (zipEntry != null) {
                 return internalCreateKieModule( releaseId, jar, zipFile, zipEntry );
             }

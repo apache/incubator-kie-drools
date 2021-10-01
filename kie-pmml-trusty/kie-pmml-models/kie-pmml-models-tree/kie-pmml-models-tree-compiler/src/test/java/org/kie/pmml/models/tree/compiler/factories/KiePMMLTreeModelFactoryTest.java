@@ -49,6 +49,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.commons.Constants.MISSING_DEFAULT_CONSTRUCTOR;
 import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedClassName;
+import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelFactory.KIE_PMML_TREE_MODEL_TEMPLATE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLTreeModelFactory.KIE_PMML_TREE_MODEL_TEMPLATE_JAVA;
@@ -81,13 +82,13 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void getKiePMMLTreeModel() {
-        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary1,
+        KiePMMLTreeModel retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(getFieldsFromDataDictionary(dataDictionary1),
                                                                                  transformationDictionary1,
                                                                                  treeModel1,
                                                                                  PACKAGE_NAME,
                                                                                  new HasClassLoaderMock());
         assertNotNull(retrieved);
-        retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary2,
+        retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModel(getFieldsFromDataDictionary(dataDictionary2),
                                                                 transformationDictionary2,
                                                                 treeModel2,
                                                                 PACKAGE_NAME,
@@ -97,12 +98,12 @@ public class KiePMMLTreeModelFactoryTest {
 
     @Test
     public void getKiePMMLTreeModelSourcesMap() {
-        Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary1,
+        Map<String, String> retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(getFieldsFromDataDictionary(dataDictionary1),
                                                                                               transformationDictionary1,
                                                                                               treeModel1,
                                                                                               PACKAGE_NAME);
         assertNotNull(retrieved);
-        retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary2,
+        retrieved = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(getFieldsFromDataDictionary(dataDictionary2),
                                                                           transformationDictionary2,
                                                                           treeModel2,
                                                                           PACKAGE_NAME);
@@ -118,7 +119,7 @@ public class KiePMMLTreeModelFactoryTest {
         String targetField = "whatIdo";
         String fullNodeClassName = "full.Node.ClassName";
         KiePMMLTreeModelFactory.setConstructor(treeModel1,
-                                               dataDictionary1,
+                                               getFieldsFromDataDictionary(dataDictionary1),
                                                transformationDictionary1,
                                                modelTemplate,
                                                fullNodeClassName);

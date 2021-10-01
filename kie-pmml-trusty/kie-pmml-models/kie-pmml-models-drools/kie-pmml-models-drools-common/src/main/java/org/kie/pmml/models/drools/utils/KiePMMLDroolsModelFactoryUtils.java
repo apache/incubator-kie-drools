@@ -15,6 +15,7 @@
  */
 package org.kie.pmml.models.drools.utils;
 
+import java.util.List;
 import java.util.Map;
 
 import com.github.javaparser.ast.CompilationUnit;
@@ -31,6 +32,7 @@ import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -60,7 +62,7 @@ public class KiePMMLDroolsModelFactoryUtils {
     }
 
     /**
-     * @param dataDictionary
+     * @param fields
      * @param model
      * @param fieldTypeMap
      * @param packageName
@@ -68,20 +70,20 @@ public class KiePMMLDroolsModelFactoryUtils {
      * @param modelClassName the name of the class used in the provided template
      * @return
      */
-    public static CompilationUnit getKiePMMLModelCompilationUnit(final DataDictionary dataDictionary,
+    public static CompilationUnit getKiePMMLModelCompilationUnit(final List<Field<?>> fields,
                                                                  final Model model,
                                                                  final Map<String, KiePMMLOriginalTypeGeneratedType> fieldTypeMap,
                                                                  final String packageName,
                                                                  final String javaTemplate,
                                                                  final String modelClassName) {
-        logger.trace("getKiePMMLModelCompilationUnit {} {} {}", dataDictionary, model, packageName);
+        logger.trace("getKiePMMLModelCompilationUnit {} {} {}", fields, model, packageName);
         String className = getSanitizedClassName(model.getModelName());
         CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit(className, packageName, javaTemplate, modelClassName);
         ClassOrInterfaceDeclaration modelTemplate = cloneCU.getClassByName(className)
                 .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + className));
         MINING_FUNCTION miningFunction = MINING_FUNCTION.byName(model.getMiningFunction().value());
         final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
-        String targetField = getTargetFieldName(dataDictionary, model).orElse(null);
+        String targetField = getTargetFieldName(fields, model).orElse(null);
         setConstructor(model, constructorDeclaration, modelTemplate.getName(), targetField, miningFunction);
         addFieldTypeMapPopulation(constructorDeclaration.getBody(), fieldTypeMap);
         final MethodDeclaration getKModulePackageNameMethod = modelTemplate.getMethodsByName(GETKMODULEPACKAGENAME_METHOD).get(0);

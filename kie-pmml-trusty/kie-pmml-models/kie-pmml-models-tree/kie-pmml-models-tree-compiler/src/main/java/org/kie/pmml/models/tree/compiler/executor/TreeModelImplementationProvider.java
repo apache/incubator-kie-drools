@@ -15,9 +15,10 @@
 */
 package org.kie.pmml.models.tree.compiler.executor;
 
+import java.util.List;
 import java.util.Map;
 
-import org.dmg.pmml.DataDictionary;
+import org.dmg.pmml.Field;
 import org.dmg.pmml.TransformationDictionary;
 import org.dmg.pmml.tree.TreeModel;
 import org.kie.pmml.api.enums.PMML_MODEL;
@@ -46,23 +47,23 @@ private static final Logger logger = LoggerFactory.getLogger(TreeModelImplementa
 
     @Override
     public KiePMMLTreeModel getKiePMMLModel(final String packageName,
-                                                    final DataDictionary dataDictionary,
-                                                    final TransformationDictionary transformationDictionary,
-                                                    final TreeModel model,
-                                                    final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModel {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
-        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(dataDictionary, transformationDictionary, model, packageName, hasClassloader);
+                                            final List<Field<?>> fields,
+                                            final TransformationDictionary transformationDictionary,
+                                            final TreeModel model,
+                                            final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModel {} {} {} {}", packageName, fields, model, hasClassloader);
+        return KiePMMLTreeModelFactory.getKiePMMLTreeModel(fields, transformationDictionary, model, packageName, hasClassloader);
     }
 
     @Override
     public KiePMMLTreeModel getKiePMMLModelWithSources(final String packageName,
-                                                             final DataDictionary dataDictionary,
-                                                             final TransformationDictionary transformationDictionary,
-                                                             final TreeModel  model,
-                                                             final HasClassLoader hasClassloader) {
-        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, dataDictionary, model, hasClassloader);
+                                                       final List<Field<?>> fields,
+                                                       final TransformationDictionary transformationDictionary,
+                                                       final TreeModel  model,
+                                                       final HasClassLoader hasClassloader) {
+        logger.trace("getKiePMMLModelWithSources {} {} {} {}", packageName, fields, model, hasClassloader);
         try {
-            final Map<String, String> sourcesMap = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(dataDictionary, transformationDictionary, model, packageName);
+            final Map<String, String> sourcesMap = KiePMMLTreeModelFactory.getKiePMMLTreeModelSourcesMap(fields, transformationDictionary, model, packageName);
             return new KiePMMLTreeModelWithSources(model.getModelName(), packageName, sourcesMap);
         } catch (Exception e) {
             throw new KiePMMLException(e);

@@ -69,7 +69,7 @@ public class DirectCompilerResult {
         return Collections.unmodifiableSet(fieldDeclarations);
     }
     
-    public boolean addFieldDesclaration(FieldDeclaration d) {
+    public boolean addFieldDeclaration(FieldDeclaration d) {
         return fieldDeclarations.add(d);
     }
 

@@ -139,21 +139,6 @@ public abstract class ClassUtils {
         return pResourceName.substring( 0, i );
     }
 
-    public static String toJavaCasing(final String pName) {
-        final char[] name = pName.toLowerCase().toCharArray();
-        name[0] = Character.toUpperCase( name[0] );
-        return new String( name );
-    }
-
-    public static String clazzName(final File base,
-                                   final File file) {
-        final int rootLength = base.getAbsolutePath().length();
-        final String absFileName = file.getAbsolutePath();
-        final int p = absFileName.lastIndexOf('.');
-        final String relFileName = absFileName.substring(rootLength + 1, p);
-        return relFileName.replace(File.separatorChar, '.');
-    }
-
     public static String relative(final File base,
                                   final File file) {
         final int rootLength = base.getAbsolutePath().length();

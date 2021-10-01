@@ -77,7 +77,7 @@ public class KiePMMLRow implements Serializable {
     }
 
     boolean isMatching(Object original, Object value) {
-        return Objects.equals(original, value);
+        return Objects.equals(original, value) || (original != null && value != null && Objects.equals(original.toString(), value.toString()));
     }
 
     boolean isRegexMatching(String original, String regex) {

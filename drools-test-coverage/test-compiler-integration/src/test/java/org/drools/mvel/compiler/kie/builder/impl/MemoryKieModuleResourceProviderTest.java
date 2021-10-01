@@ -25,6 +25,7 @@ import org.drools.reflective.ResourceProvider;
 import org.junit.Test;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.memorycompiler.resources.KiePath;
 import org.mockito.Mock;
 
 public class MemoryKieModuleResourceProviderTest {
@@ -37,7 +38,7 @@ public class MemoryKieModuleResourceProviderTest {
     @Test
     public void testGetResourceForEmptyFolder() throws Exception {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java"));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java" )));
 
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
@@ -49,9 +50,9 @@ public class MemoryKieModuleResourceProviderTest {
     @Test
     public void testGetResourceForFolderWithOnlySubFolders() throws Exception {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/org"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/com"));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/org" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/com" )));
 
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();
@@ -63,9 +64,9 @@ public class MemoryKieModuleResourceProviderTest {
     @Test
     public void testGetResourceForFolderWithFilesAndSubFolders() throws Exception {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/org"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/com"));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/org" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/com" )));
         mfs.setFileContents(new MemoryFile(mfs, "my-file1", mfs.getFolder("src/main/java")), new byte[10]);
         mfs.setFileContents(new MemoryFile(mfs, "my-file2", mfs.getFolder("src/main/java")), new byte[10]);
 
@@ -91,9 +92,9 @@ public class MemoryKieModuleResourceProviderTest {
     @Test
     public void testGetResourceAsStreamFolderWithOnlySubFolders() throws Exception {
         MemoryFileSystem mfs = new MemoryFileSystem();
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/org"));
-        mfs.createFolder(new MemoryFolder(mfs, "src/main/java/com"));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/org" )));
+        mfs.createFolder(new MemoryFolder(mfs, KiePath.of( "src/main/java/com" )));
 
         MemoryKieModule mkm = new MemoryKieModule(releaseId, kieModuleModel, mfs);
         ResourceProvider resourceProvider = mkm.createResourceProvider();

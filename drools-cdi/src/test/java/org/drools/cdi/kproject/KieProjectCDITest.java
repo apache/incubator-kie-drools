@@ -84,7 +84,7 @@ public class KieProjectCDITest extends AbstractKnowledgeTest {
             URLClassLoader urlClassLoader = new URLClassLoader( new URL[]{file1.toURI().toURL(), file2.toURI().toURL(), file3.toURI().toURL(), fol4.toURI().toURL() } );
             Thread.currentThread().setContextClassLoader( urlClassLoader );
             
-            Enumeration<URL> e = urlClassLoader.getResources( KieModuleModelImpl.KMODULE_JAR_PATH );
+            Enumeration<URL> e = urlClassLoader.getResources( KieModuleModelImpl.KMODULE_JAR_PATH.asString() );
             while ( e.hasMoreElements() ) {
                 URL url = e.nextElement();
                 System.out.println( url );

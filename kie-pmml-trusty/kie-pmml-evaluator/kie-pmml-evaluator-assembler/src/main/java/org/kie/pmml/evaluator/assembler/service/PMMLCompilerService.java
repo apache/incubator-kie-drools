@@ -15,7 +15,6 @@
  */
 package org.kie.pmml.evaluator.assembler.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.kie.api.io.Resource;
 import org.kie.api.io.ResourceWithConfiguration;
+import org.kie.memorycompiler.resources.KiePath;
 import org.kie.pmml.api.exceptions.ExternalException;
 import org.kie.pmml.api.exceptions.KiePMMLException;
 import org.kie.pmml.commons.HasRule;
@@ -181,12 +181,6 @@ public class PMMLCompilerService {
     }
 
     static String getFileName(final String fullPath) {
-        String toReturn = fullPath;
-        if (fullPath.contains(File.separator)) {
-            toReturn = fullPath.substring(fullPath.lastIndexOf(File.separator) + 1);
-        } else if (fullPath.contains("/")) {
-            toReturn = fullPath.substring(fullPath.lastIndexOf('/') + 1);
-        }
-        return toReturn;
+        return KiePath.of(fullPath).getFileName();
     }
 }

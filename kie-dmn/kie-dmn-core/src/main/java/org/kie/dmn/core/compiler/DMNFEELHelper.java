@@ -251,10 +251,8 @@ public class DMNFEELHelper {
                                                                      || (msg.getSourceId() != null && element.getId() != null && msg.getSourceId().equals(element.getId()))) );
     }
 
-    public ClassOrInterfaceDeclaration generateUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType, boolean isStatic) {
-        CompilerContext compilerContext =
-                ctx.toCompilerContext()
-                        .addInputVariableType("?", inputColumnType);
+    public ClassOrInterfaceDeclaration generateUnaryTestsSource(CompilerContext compilerContext, String unaryTests, Type inputColumnType, boolean isStatic) {
+        compilerContext.addInputVariableType("?", inputColumnType);
 
         ProcessedUnaryTest compiledUnaryTest = ((FEELImpl) feel).compileUnaryTests(unaryTests, compilerContext);
         CompilationUnit compilationUnit = compiledUnaryTest.getSourceCode().clone();
@@ -263,8 +261,8 @@ public class DMNFEELHelper {
                 .setStatic(isStatic);
     }
 
-    public ClassOrInterfaceDeclaration generateStaticUnaryTestsSource(String unaryTests, DMNCompilerContext ctx, Type inputColumnType) {
-        return generateUnaryTestsSource(unaryTests, ctx, inputColumnType, true);
+    public ClassOrInterfaceDeclaration generateStaticUnaryTestsSource(CompilerContext compilerContext, String unaryTests, Type inputColumnType) {
+        return generateUnaryTestsSource(compilerContext, unaryTests, inputColumnType, true);
     }
 
     public static class FEELEventsListenerImpl implements FEELEventListener {
@@ -300,10 +298,12 @@ public class DMNFEELHelper {
     }
 
     public ClassOrInterfaceDeclaration generateFeelExpressionSource(String input, CompilerContext compilerContext1) {
+        return generateFeelExpressionCompilationUnit(input, compilerContext1)
+                .getType(0)
+                .asClassOrInterfaceDeclaration().setStatic(true);
+    }
 
-        CompilationUnit compilationUnit = ((FEELImpl) feel).compileExpression(input, compilerContext1).getSourceCode();
-        return compilationUnit.getType(0)
-                .asClassOrInterfaceDeclaration()
-                .setStatic(true);
+    public CompilationUnit generateFeelExpressionCompilationUnit(String input, CompilerContext compilerContext1) {
+        return ((FEELImpl) feel).compileExpression(input, compilerContext1).getSourceCode();
     }
 }
