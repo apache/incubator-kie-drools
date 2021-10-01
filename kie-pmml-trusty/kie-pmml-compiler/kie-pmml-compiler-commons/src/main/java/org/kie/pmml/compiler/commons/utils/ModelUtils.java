@@ -524,16 +524,24 @@ public class ModelUtils {
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
     }
 
-    public static List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
-                                                                                             final TransformationDictionary transformationDictionary,
-                                                                                             final Model model) {
+    public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
+                                                                                             final TransformationDictionary transformationDictionary) {
         final List<Field<?>> toReturn = new ArrayList<>();
-        dataDictionary.getDataFields().stream().map(Field.class::cast)
-                .forEach(toReturn::add);
+        if (dataDictionary != null && dataDictionary.hasDataFields()) {
+            dataDictionary.getDataFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
         if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
             transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
                     .forEach(toReturn::add);
         }
+        return toReturn;
+    }
+
+    public static List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+                                                                                             final TransformationDictionary transformationDictionary,
+                                                                                             final Model model) {
+        final List<Field<?>> toReturn = getFieldsFromDataDictionaryAndTransformationDictionary(dataDictionary, transformationDictionary);
         LocalTransformations localTransformations = model.getLocalTransformations();
         if (localTransformations != null && localTransformations.hasDerivedFields()) {
             localTransformations.getDerivedFields().stream().map(Field.class::cast)

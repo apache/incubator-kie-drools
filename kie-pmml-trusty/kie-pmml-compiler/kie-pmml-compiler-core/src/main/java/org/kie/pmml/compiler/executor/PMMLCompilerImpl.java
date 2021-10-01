@@ -16,7 +16,6 @@
 package org.kie.pmml.compiler.executor;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryAndTransformationDictionary;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 
 /**
@@ -163,4 +163,35 @@ public class PMMLCompilerImpl implements PMMLCompiler {
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
+//
+//    private List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
+//                                                                                  final TransformationDictionary transformationDictionary) {
+//        final List<Field<?>> toReturn = new ArrayList<>();
+//        if (dataDictionary != null) {
+//            dataDictionary.getDataFields().stream().map(Field.class::cast)
+//                    .forEach(toReturn::add);
+//        }
+//        if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
+//            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
+//                    .forEach(toReturn::add);
+//        }
+//        return toReturn;
+//    }
+//
+//    private List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+//                                                                                       final TransformationDictionary transformationDictionary,
+//                                                                                       final Model model) {
+//        final List<Field<?>> toReturn = getFieldsFromDataDictionaryAndTransformationDictionary(dataDictionary, transformationDictionary);
+//        LocalTransformations localTransformations = model.getLocalTransformations();
+//        if (localTransformations != null && localTransformations.hasDerivedFields()) {
+//            localTransformations.getDerivedFields().stream().map(Field.class::cast)
+//                    .forEach(toReturn::add);
+//        }
+//        Output output =  model.getOutput();
+//        if (output != null && output.hasOutputFields()) {
+//            output.getOutputFields().stream().map(Field.class::cast)
+//                    .forEach(toReturn::add);
+//        }
+//        return toReturn;
+//    }
 }
