@@ -31,13 +31,13 @@ import static org.kie.kogito.persistence.api.query.QueryFilterFactory.orderBy;
 import static org.kie.kogito.persistence.api.query.SortDirection.ASC;
 
 @ApplicationScoped
-public class CounterfactualSlidingWindowExplainabilityResultsManager implements ExplainabilityResultsManager<CounterfactualExplainabilityResult> {
+public class CounterfactualExplainabilityResultsManagerSlidingWindow implements ExplainabilityResultsManager<CounterfactualExplainabilityResult> {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CounterfactualSlidingWindowExplainabilityResultsManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger(CounterfactualExplainabilityResultsManagerSlidingWindow.class);
 
     private final int lengthOfWindow;
 
-    public CounterfactualSlidingWindowExplainabilityResultsManager(@ConfigProperty(name = "trusty.explainability.counterfactual.results.window.length", defaultValue = "10") int lengthOfWindow) {
+    public CounterfactualExplainabilityResultsManagerSlidingWindow(@ConfigProperty(name = "trusty.explainability.counterfactual.results.window.length", defaultValue = "10") int lengthOfWindow) {
         if (lengthOfWindow < 1) {
             throw new IllegalArgumentException("The length of the result window must be at least one.");
         }

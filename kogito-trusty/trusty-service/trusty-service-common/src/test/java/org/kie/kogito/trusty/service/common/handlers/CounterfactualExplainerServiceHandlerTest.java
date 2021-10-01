@@ -45,15 +45,19 @@ public class CounterfactualExplainerServiceHandlerTest
 
     private static final Long SEQUENCE_ID = 1L;
 
-    private CounterfactualSlidingWindowExplainabilityResultsManager counterfactualExplainabilityResultsManager;
+    private CounterfactualExplainabilityResultsManagerSlidingWindow explainabilityResultsManagerSlidingWindow;
+    private CounterfactualExplainabilityResultsManagerDuplicates explainabilityResultsManagerDuplicates;
 
     @SuppressWarnings("rawtypes")
     private final Query query = mock(Query.class);
 
     @Override
     protected CounterfactualExplainerServiceHandler getHandler() {
-        counterfactualExplainabilityResultsManager = mock(CounterfactualSlidingWindowExplainabilityResultsManager.class);
-        return new CounterfactualExplainerServiceHandler(storageService, counterfactualExplainabilityResultsManager);
+        explainabilityResultsManagerSlidingWindow = mock(CounterfactualExplainabilityResultsManagerSlidingWindow.class);
+        explainabilityResultsManagerDuplicates = mock(CounterfactualExplainabilityResultsManagerDuplicates.class);
+        return new CounterfactualExplainerServiceHandler(storageService,
+                explainabilityResultsManagerSlidingWindow,
+                explainabilityResultsManagerDuplicates);
     }
 
     @Override
@@ -139,7 +143,7 @@ public class CounterfactualExplainerServiceHandlerTest
         handler.storeExplainabilityResult(EXECUTION_ID, result);
 
         verify(storage).put(eq(SOLUTION_ID), eq(result));
-        verify(counterfactualExplainabilityResultsManager).purge(eq(COUNTERFACTUAL_ID), eq(storage));
+        verify(explainabilityResultsManagerSlidingWindow).purge(eq(COUNTERFACTUAL_ID), eq(storage));
     }
 
     @Test

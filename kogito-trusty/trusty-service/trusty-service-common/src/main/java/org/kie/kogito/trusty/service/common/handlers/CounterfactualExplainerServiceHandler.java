@@ -40,18 +40,21 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
 
     private static final Logger LOG = LoggerFactory.getLogger(CounterfactualExplainerServiceHandler.class);
 
-    private final CounterfactualSlidingWindowExplainabilityResultsManager explainabilityResultsManager;
+    private final CounterfactualExplainabilityResultsManagerSlidingWindow explainabilityResultsManagerSlidingWindow;
+    private final CounterfactualExplainabilityResultsManagerDuplicates explainabilityResultsManagerDuplicates;
 
     //CDI proxy
     protected CounterfactualExplainerServiceHandler() {
-        this(null, null);
+        this(null, null, null);
     }
 
     @Inject
     public CounterfactualExplainerServiceHandler(TrustyStorageService storageService,
-            CounterfactualSlidingWindowExplainabilityResultsManager explainabilityResultsManager) {
+            CounterfactualExplainabilityResultsManagerSlidingWindow explainabilityResultsManagerSlidingWindow,
+            CounterfactualExplainabilityResultsManagerDuplicates explainabilityResultsManagerDuplicates) {
         super(storageService);
-        this.explainabilityResultsManager = explainabilityResultsManager;
+        this.explainabilityResultsManagerSlidingWindow = explainabilityResultsManagerSlidingWindow;
+        this.explainabilityResultsManagerDuplicates = explainabilityResultsManagerDuplicates;
     }
 
     @Override
@@ -109,12 +112,14 @@ public class CounterfactualExplainerServiceHandler extends BaseExplainerServiceH
         LOG.info("Storing Counterfactual Explainability result for execution {}", executionId);
         storage.put(solutionId, result);
 
+        LOG.info("Removing duplicate Counterfactual Explainability results for Counterfactual {}", counterfactualId);
+        explainabilityResultsManagerDuplicates.purge(counterfactualId, storage);
+
         LOG.info("Purging Counterfactual Explainability results storage for Counterfactual {}", counterfactualId);
-        explainabilityResultsManager.purge(counterfactualId, storage);
+        explainabilityResultsManagerSlidingWindow.purge(counterfactualId, storage);
     }
 
     private CounterfactualExplainabilityResult.Stage stageFrom(CounterfactualExplainabilityResultDto.Stage stage) {
         return stage.equals(CounterfactualExplainabilityResultDto.Stage.FINAL) ? CounterfactualExplainabilityResult.Stage.FINAL : CounterfactualExplainabilityResult.Stage.INTERMEDIATE;
     }
-
 }

@@ -64,7 +64,8 @@ public class ExplainerServiceHandlerRegistryTest {
         TrustyStorageService trustyStorage = mock(TrustyStorageService.class);
         limeExplainerServiceHandler = spy(new LIMEExplainerServiceHandler(trustyStorage));
         counterfactualExplainerServiceHandler = spy(new CounterfactualExplainerServiceHandler(trustyStorage,
-                mock(CounterfactualSlidingWindowExplainabilityResultsManager.class)));
+                mock(CounterfactualExplainabilityResultsManagerSlidingWindow.class),
+                mock(CounterfactualExplainabilityResultsManagerDuplicates.class)));
         Instance<ExplainerServiceHandler<?, ?>> explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler, counterfactualExplainerServiceHandler));
         registry = new ExplainerServiceHandlerRegistry(explanationHandlers);
@@ -180,5 +181,4 @@ public class ExplainerServiceHandlerRegistryTest {
 
         verify(counterfactualExplainerServiceHandler).explainabilityResultFrom(eq(dto), eq(decision));
     }
-
 }

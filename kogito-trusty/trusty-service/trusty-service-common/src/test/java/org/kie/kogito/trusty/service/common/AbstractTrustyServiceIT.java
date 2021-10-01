@@ -489,6 +489,102 @@ public abstract class AbstractTrustyServiceIT {
         assertNotNull(result);
     }
 
+    @Test
+    public void testStoreExplainabilityResult_Counterfactual_DuplicateRemoval_FinalThenIntermediate() {
+        String executionId = "myCFExecution1Store";
+        String counterfactualId = "myCFCounterfactualId";
+
+        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
+        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
+        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
+        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+
+        //First solution is the FINAL (for whatever reason, e.g. messaging delays, the INTERMEDIATE is received afterwards)
+        trustyService.storeExplainabilityResult(executionId,
+                new CounterfactualExplainabilityResult(executionId,
+                        counterfactualId,
+                        "solutionId1",
+                        0L,
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status",
+                        true,
+                        CounterfactualExplainabilityResult.Stage.FINAL,
+                        List.of(input1, input2),
+                        List.of(output1, output2)));
+
+        List<CounterfactualExplainabilityResult> result1 = trustyService.getCounterfactualResults(executionId, counterfactualId);
+        assertNotNull(result1);
+        assertEquals(1, result1.size());
+        assertEquals("solutionId1", result1.get(0).getSolutionId());
+        assertEquals(CounterfactualExplainabilityResult.Stage.FINAL, result1.get(0).getStage());
+
+        trustyService.storeExplainabilityResult(executionId,
+                new CounterfactualExplainabilityResult(executionId,
+                        counterfactualId,
+                        "solutionId2",
+                        0L,
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status",
+                        true,
+                        CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
+                        List.of(input1, input2),
+                        List.of(output1, output2)));
+
+        List<CounterfactualExplainabilityResult> result2 = trustyService.getCounterfactualResults(executionId, counterfactualId);
+        assertNotNull(result2);
+        assertEquals(1, result1.size());
+        assertEquals("solutionId1", result1.get(0).getSolutionId());
+        assertEquals(CounterfactualExplainabilityResult.Stage.FINAL, result1.get(0).getStage());
+    }
+
+    @Test
+    public void testStoreExplainabilityResult_Counterfactual_DuplicateRemoval_IntermediateThenFinal() {
+        String executionId = "myCFExecution1Store";
+        String counterfactualId = "myCFCounterfactualId";
+
+        TypedVariableWithValue input1 = TypedVariableWithValue.buildUnit("field1", "typeRef1", new IntNode(25));
+        TypedVariableWithValue input2 = TypedVariableWithValue.buildUnit("field2", "typeRef2", new IntNode(99));
+        TypedVariableWithValue output1 = TypedVariableWithValue.buildUnit("field3", "typeRef3", new IntNode(200));
+        TypedVariableWithValue output2 = TypedVariableWithValue.buildUnit("field4", "typeRef4", new IntNode(1000));
+
+        //First solution is the INTERMEDIATE then the FINAL
+        trustyService.storeExplainabilityResult(executionId,
+                new CounterfactualExplainabilityResult(executionId,
+                        counterfactualId,
+                        "solutionId1",
+                        0L,
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status",
+                        true,
+                        CounterfactualExplainabilityResult.Stage.INTERMEDIATE,
+                        List.of(input1, input2),
+                        List.of(output1, output2)));
+
+        List<CounterfactualExplainabilityResult> result1 = trustyService.getCounterfactualResults(executionId, counterfactualId);
+        assertNotNull(result1);
+        assertEquals(1, result1.size());
+        assertEquals("solutionId1", result1.get(0).getSolutionId());
+        assertEquals(CounterfactualExplainabilityResult.Stage.INTERMEDIATE, result1.get(0).getStage());
+
+        trustyService.storeExplainabilityResult(executionId,
+                new CounterfactualExplainabilityResult(executionId,
+                        counterfactualId,
+                        "solutionId2",
+                        0L,
+                        ExplainabilityStatus.SUCCEEDED,
+                        "status",
+                        true,
+                        CounterfactualExplainabilityResult.Stage.FINAL,
+                        List.of(input1, input2),
+                        List.of(output1, output2)));
+
+        List<CounterfactualExplainabilityResult> result2 = trustyService.getCounterfactualResults(executionId, counterfactualId);
+        assertNotNull(result2);
+        assertEquals(1, result2.size());
+        assertEquals("solutionId2", result2.get(0).getSolutionId());
+        assertEquals(CounterfactualExplainabilityResult.Stage.FINAL, result2.get(0).getStage());
+    }
+
     private void storeExecution(String executionId, Long timestamp) {
         DecisionInput decisionInput = new DecisionInput();
         decisionInput.setId("inputId");
@@ -552,5 +648,4 @@ public abstract class AbstractTrustyServiceIT {
                 "namespace");
         return trustyService.getModelById(identifier);
     }
-
 }

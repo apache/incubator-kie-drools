@@ -37,8 +37,9 @@ import org.kie.kogito.explainability.api.LIMEExplainabilityResultDto;
 import org.kie.kogito.explainability.api.SaliencyDto;
 import org.kie.kogito.trusty.service.common.TrustyService;
 import org.kie.kogito.trusty.service.common.TrustyServiceTestUtils;
+import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerDuplicates;
+import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerSlidingWindow;
 import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServiceHandler;
-import org.kie.kogito.trusty.service.common.handlers.CounterfactualSlidingWindowExplainabilityResultsManager;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
@@ -155,7 +156,8 @@ class ExplainabilityResultConsumerTest {
         trustyStorage = mock(TrustyStorageService.class);
         limeExplainerServiceHandler = new LIMEExplainerServiceHandler(trustyStorage);
         counterfactualExplainerServiceHandler = new CounterfactualExplainerServiceHandler(trustyStorage,
-                mock(CounterfactualSlidingWindowExplainabilityResultsManager.class));
+                mock(CounterfactualExplainabilityResultsManagerSlidingWindow.class),
+                mock(CounterfactualExplainabilityResultsManagerDuplicates.class));
         explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler,
                 counterfactualExplainerServiceHandler));

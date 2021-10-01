@@ -37,8 +37,9 @@ import org.kie.kogito.explainability.api.CounterfactualSearchDomainUnitDto;
 import org.kie.kogito.persistence.api.Storage;
 import org.kie.kogito.persistence.api.query.Query;
 import org.kie.kogito.tracing.typedvalue.TypedValue;
+import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerDuplicates;
+import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainabilityResultsManagerSlidingWindow;
 import org.kie.kogito.trusty.service.common.handlers.CounterfactualExplainerServiceHandler;
-import org.kie.kogito.trusty.service.common.handlers.CounterfactualSlidingWindowExplainabilityResultsManager;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandler;
 import org.kie.kogito.trusty.service.common.handlers.ExplainerServiceHandlerRegistry;
 import org.kie.kogito.trusty.service.common.handlers.LIMEExplainerServiceHandler;
@@ -108,7 +109,8 @@ public class TrustyServiceTest {
         trustyStorageServiceMock = mock(TrustyStorageService.class);
         limeExplainerServiceHandler = new LIMEExplainerServiceHandler(trustyStorageServiceMock);
         counterfactualExplainerServiceHandler = new CounterfactualExplainerServiceHandler(trustyStorageServiceMock,
-                mock(CounterfactualSlidingWindowExplainabilityResultsManager.class));
+                mock(CounterfactualExplainabilityResultsManagerSlidingWindow.class),
+                mock(CounterfactualExplainabilityResultsManagerDuplicates.class));
         explanationHandlers = mock(Instance.class);
         when(explanationHandlers.stream()).thenReturn(Stream.of(limeExplainerServiceHandler,
                 counterfactualExplainerServiceHandler));
@@ -628,5 +630,4 @@ public class TrustyServiceTest {
     private ModelIdentifier buildDmnModelIdentifier() {
         return new ModelIdentifier("groupId", "artifactId", "version", "name", "namespace");
     }
-
 }

@@ -35,7 +35,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class CounterfactualSlidingWindowExplainabilityResultsManagerTest {
+public class CounterfactualExplainabilityResultsManagerSlidingWindowTest {
 
     private static final String EXECUTION_ID = "executionId";
 
@@ -47,14 +47,14 @@ public class CounterfactualSlidingWindowExplainabilityResultsManagerTest {
 
     private Query query;
 
-    private CounterfactualSlidingWindowExplainabilityResultsManager manager;
+    private CounterfactualExplainabilityResultsManagerSlidingWindow manager;
 
     @BeforeEach
     @SuppressWarnings("unchecked")
     public void setup() {
         this.storage = mock(Storage.class);
         this.query = mock(Query.class);
-        this.manager = new CounterfactualSlidingWindowExplainabilityResultsManager(WINDOW_LENGTH);
+        this.manager = new CounterfactualExplainabilityResultsManagerSlidingWindow(WINDOW_LENGTH);
 
         when(storage.query()).thenReturn(query);
         when(query.sort(any())).thenReturn(query);
@@ -63,12 +63,12 @@ public class CounterfactualSlidingWindowExplainabilityResultsManagerTest {
 
     @Test
     public void testInstantiationWithInvalidWindowSizeOfZero() {
-        assertThrows(IllegalArgumentException.class, () -> new CounterfactualSlidingWindowExplainabilityResultsManager(0));
+        assertThrows(IllegalArgumentException.class, () -> new CounterfactualExplainabilityResultsManagerSlidingWindow(0));
     }
 
     @Test
     public void testInstantiationWithInvalidWindowSizeNegative() {
-        assertThrows(IllegalArgumentException.class, () -> new CounterfactualSlidingWindowExplainabilityResultsManager(-1));
+        assertThrows(IllegalArgumentException.class, () -> new CounterfactualExplainabilityResultsManagerSlidingWindow(-1));
     }
 
     @Test
