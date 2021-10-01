@@ -23,12 +23,11 @@ import org.drools.core.reteoo.LeftTuple;
 import org.drools.core.reteoo.LeftTupleSink;
 import org.drools.core.reteoo.NotNode;
 import org.drools.core.reteoo.RightTuple;
-import org.drools.core.reteoo.SubnetworkTuple;
 import org.drools.core.reteoo.TupleMemory;
+import org.drools.core.reteoo.TupleUtil;
 import org.drools.core.rule.ContextEntry;
 import org.drools.core.spi.PropagationContext;
 import org.drools.core.util.FastIterator;
-import org.drools.core.util.index.TupleList;
 
 import static org.drools.core.phreak.PhreakJoinNode.updateChildLeftTuple;
 
@@ -472,7 +471,13 @@ public class PhreakNotNode {
 
             // assign now, so we can remove from memory before doing any possible propagations
             boolean useComparisonIndex = rtm.getIndexType().isComparison();
-            RightTuple rootBlocker = useComparisonIndex ? null : (RightTuple) it.next(rightTuple);
+            RightTuple rootBlocker = null;
+            if (!useComparisonIndex) {
+                rootBlocker = TupleUtil.getRootTuple(rightTuple);
+                if (rootBlocker == rightTuple) {
+                    rootBlocker = (RightTuple) rightTuple.getNext();
+                }
+            }
 
             if (rightTuple.getMemory() != null) {
                 // it may have been staged and never actually added
