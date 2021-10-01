@@ -81,10 +81,14 @@ export const cfReducer = (state: CFState, action: cfActions): CFState => {
     case 'CF_TOGGLE_ALL_INPUTS': {
       const newState = {
         ...state,
-        searchDomains: state.searchDomains.map(input => ({
-          ...input,
-          isFixed: !action.payload.selected
-        }))
+        searchDomains: state.searchDomains.map(input =>
+          isSearchInputSupported(input)
+            ? {
+                ...input,
+                fixed: !action.payload.selected
+              }
+            : input
+        )
       };
       return updateCFStatus(newState);
     }
@@ -243,8 +247,16 @@ const areGoalsSelected = (goals: CFGoal[]) => {
   );
 };
 
+const isSearchInputSupported = (searchInput: CFSearchInput) => {
+  return isValueSupported(searchInput);
+};
+
 const isOutcomeSupported = (outcome: Outcome) => {
-  switch (typeof outcome.outcomeResult.value) {
+  return isValueSupported(outcome.outcomeResult);
+};
+
+const isValueSupported = (object: ItemObject) => {
+  switch (typeof object.value) {
     case 'boolean':
     case 'number':
     case 'string':

@@ -18,7 +18,7 @@ const initialState: CFState = {
       name: 'sd1',
       kind: 'UNIT',
       typeRef: 'number',
-      value: null,
+      value: 123,
       components: null,
       fixed: true
     }
@@ -97,11 +97,89 @@ describe('State::isDisabled::Goal_Then_SearchDomain', () => {
   });
 });
 
+describe('ToggleAll', () => {
+  test('InitialState::SingleSearchDomain', () => {
+    expect(initialState.searchDomains[0].fixed).toBeTruthy();
+    const state1 = toggleSearchDomains(initialState, true);
+    expect(state1.searchDomains[0].fixed).toBeFalsy();
+    const state2 = toggleSearchDomains(state1, false);
+    expect(state2.searchDomains[0].fixed).toBeTruthy();
+  });
+
+  test('InitialState::MultipleSearchDomains', () => {
+    const state1 = {
+      ...initialState,
+      searchDomains: [
+        {
+          name: 'sd1',
+          kind: 'UNIT',
+          typeRef: 'number',
+          value: 123,
+          components: null,
+          fixed: true
+        },
+        {
+          name: 'sd2',
+          kind: 'UNIT',
+          typeRef: 'string',
+          value: 'hello',
+          components: null,
+          fixed: true
+        }
+      ]
+    };
+    expect(state1.searchDomains[0].fixed).toBeTruthy();
+    expect(state1.searchDomains[1].fixed).toBeTruthy();
+    const state2 = toggleSearchDomains(state1, true);
+    expect(state2.searchDomains[0].fixed).toBeFalsy();
+    expect(state2.searchDomains[1].fixed).toBeFalsy();
+    const state3 = toggleSearchDomains(state2, false);
+    expect(state3.searchDomains[0].fixed).toBeTruthy();
+    expect(state3.searchDomains[1].fixed).toBeTruthy();
+  });
+
+  test('InitialState::MultipleSearchDomains::WithUnsupportedType', () => {
+    const state1 = {
+      ...initialState,
+      searchDomains: [
+        {
+          name: 'sd1',
+          kind: 'UNIT',
+          typeRef: 'number',
+          value: 123,
+          components: null,
+          fixed: true
+        },
+        {
+          name: 'sd2',
+          kind: 'STRUCTURE',
+          typeRef: 'tObject',
+          value: {},
+          components: null,
+          fixed: false
+        }
+      ]
+    };
+    expect(state1.searchDomains[0].fixed).toBeTruthy();
+    expect(state1.searchDomains[1].fixed).toBeFalsy();
+    const state2 = toggleSearchDomains(state1, true);
+    expect(state2.searchDomains[0].fixed).toBeFalsy();
+    expect(state2.searchDomains[1].fixed).toBeFalsy();
+    const state3 = toggleSearchDomains(state2, false);
+    expect(state3.searchDomains[0].fixed).toBeTruthy();
+    expect(state3.searchDomains[1].fixed).toBeFalsy();
+  });
+});
+
 const setSearchDomain = state => {
+  return setSearchDomainWithIndex(state, 0);
+};
+
+const setSearchDomainWithIndex = (state, searchInputIndex) => {
   //We need to first enable the Search Domain (i.e. checked in the UI)
   const enableSearchDomain = cfReducer(state, {
     type: 'CF_TOGGLE_INPUT',
-    payload: { searchInputIndex: 0 }
+    payload: { searchInputIndex: searchInputIndex }
   });
   //We can then set the values of the Search Domain
   return cfReducer(enableSearchDomain, {
@@ -178,5 +256,12 @@ const setGoalFixed = state => {
         originalValue: 'originalValue'
       }
     ]
+  });
+};
+
+const toggleSearchDomains = (state, selected) => {
+  return cfReducer(state, {
+    type: 'CF_TOGGLE_ALL_INPUTS',
+    payload: { selected: selected }
   });
 };
