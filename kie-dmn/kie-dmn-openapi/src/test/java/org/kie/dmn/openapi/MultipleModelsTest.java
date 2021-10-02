@@ -80,6 +80,7 @@ public class MultipleModelsTest extends BaseDMNOASTest {
         JsonSchema validator = getJSONSchema(syntheticJSONSchema);
 
         assertThat(validateUsing(validator, "{ \"asd\":123 }")).isNotEmpty();
-        assertThat(validateUsing(validator, "{ \"direction\":\"North\", \"asd\":123 }")).isEmpty();
+        assertThat(validateUsing(validator, "{ \"Applicant data\": {}, \"Requested product\": {}, \"Bureau data\": {}, \"Supporting documents\": null, \"Loan default data\": \"data...\" }")).isEmpty();
+        
     }
 }
