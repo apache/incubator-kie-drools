@@ -5,12 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.kie</groupId>
-    <artifactId>kie-api-parent</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <artifactId>kie-parent</artifactId>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-api</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Public API</name>
   <description>The Drools and jBPM public API which is backwards compatible between releases.</description>
@@ -54,28 +53,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              org.appformer.maven.support,
-              org.kie.soup.project.datamodel,
-              org.kie.soup.project.datamodel.commons,
-              *;resolution:=optional,
-              org.jbpm.runtime.manager.impl;resolution:=optional,
-              org.drools.compiler.kie.builder.impl,
-              org.drools.core.fluent.impl,
-              org.drools.core.builder.conf.impl;resolution:=optional,
-            </Import-Package>
-            <Export-Package>
-              org.kie.api.*
-            </Export-Package>
-            <Bundle-Activator>org.kie.api.internal.utils.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
@@ -148,20 +125,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-support</artifactId>
-    </dependency>
-    <dependency>
       <groupId>jakarta.xml.bind</groupId>
       <artifactId>jakarta.xml.bind-api</artifactId>
       <scope>provided</scope>
@@ -188,7 +151,7 @@
     <dependency>
       <groupId>jakarta.enterprise</groupId>
       <artifactId>jakarta.enterprise.cdi-api</artifactId>
-      <scope>provided</scope><!-- HACK for OSGi: should be <optional>true</optional> instead -->
+      <optional>true</optional>
     </dependency>
   </dependencies>
 </project>
