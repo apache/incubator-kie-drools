@@ -23,7 +23,6 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import javax.xml.namespace.QName;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -95,7 +94,7 @@ import org.kie.dmn.model.v1_3.dmndi.DMNStyle;
 import org.kie.dmn.model.v1_3.dmndi.DiagramElement;
 import org.kie.dmn.model.v1_3.dmndi.Dimension;
 import org.kie.dmn.model.v1_3.dmndi.Point;
-import org.kie.soup.xstream.XStreamUtils;
+import org.kie.utll.xml.XStreamUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

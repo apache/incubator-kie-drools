@@ -7,11 +7,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-model</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-model-compiler</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <properties>
     <java.module.name>org.drools.modelcompiler</java.module.name>
@@ -43,6 +42,10 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-maven-support</artifactId>
     </dependency>
     <dependency>
       <groupId>org.drools</groupId>
@@ -121,17 +124,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.modelcompiler.*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>

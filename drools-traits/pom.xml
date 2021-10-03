@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-traits</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Traits</name>
 
@@ -72,13 +71,12 @@
       <artifactId>kie-internal</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-xml</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.drools</groupId>
       <artifactId>drools-core-reflective</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-project-datamodel-commons</artifactId>
     </dependency>
 
     <dependency>
@@ -178,34 +176,6 @@
 
 
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.core.*
-            </Export-Package>
-            <Import-Package>
-              com.sun.tools.xjc.*;resolution:=optional,
-              org.drools.dynamic;resolution:=optional,
-              org.drools.persistence.api;resolution:=optional,
-              org.drools.template.parser;resolution:=optional,
-              org.drools.persistence.jpa;resolution:=optional,
-              org.drools.persistence.jpa.processinstance;resolution:=optional,
-              org.drools.reflective;resolution:=optional,
-              org.drools.reflective.classloader;resolution:=optional,
-              org.jbpm.persistence.api;resolution:=optional,
-              org.jbpm.marshalling.impl;resolution:=optional,
-              org.jbpm.process.instance.impl;resolution:=optional,
-              org.jbpm.process.instance.event;resolution:=optional,
-              *
-            </Import-Package>
-            <Bundle-Activator>org.drools.core.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>

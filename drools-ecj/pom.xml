@@ -19,14 +19,13 @@
     <parent>
         <artifactId>drools</artifactId>
         <groupId>org.drools</groupId>
-        <version>7.60.0-SNAPSHOT</version>
+        <version>8.13.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <name>Drools :: ECJ</name>
 
     <artifactId>drools-ecj</artifactId>
-    <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
     <properties>
         <java.module.name>org.drools.ecj</java.module.name>
@@ -75,25 +74,6 @@
                 </executions>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Import-Package>
-                            <!-- Hack/workaround: relying on ECJ package version [0,1) is needed as ECJ does not export specific package
-                                 versions (and thus the version defaults to 0.0.0). This is just a workaround as proper fix needs be done
-                                 in ECJ directly to export the versions correctly in the MANIFEST.MF. -->
-                            org.eclipse.jdt.*;version="[0,1)";resolution:=optional,
-                            *
-                        </Import-Package>
-                        <Export-Package>
-                            org.drools.ecj.*
-                        </Export-Package>
-                        <_removeheaders>Private-Package</_removeheaders>
-                    </instructions>
-                </configuration>
-            </plugin>
         </plugins>
     </build>
 </project>

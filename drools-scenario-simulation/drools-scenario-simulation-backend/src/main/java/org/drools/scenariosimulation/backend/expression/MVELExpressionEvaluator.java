@@ -23,8 +23,8 @@ import java.util.Optional;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import org.drools.mvel.MVELSafeHelper;
+import org.drools.mvel.util.MVELEvaluator;
 import org.drools.scenariosimulation.backend.util.JsonUtils;
-import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 import org.mvel2.MVEL;
 import org.mvel2.ParserConfiguration;
 import org.mvel2.ParserContext;

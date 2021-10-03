@@ -7,11 +7,10 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-dmn</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-dmn-feel</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>KIE :: Decision Model Notation :: FEEL</name>
 
@@ -133,23 +132,6 @@
       </testResource>
     </testResources>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              org.antlr.v4.runtime.*,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.kie.dmn.feel.*
-            </Export-Package>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-
       <plugin>
         <groupId>org.antlr</groupId>
         <artifactId>antlr4-maven-plugin</artifactId>

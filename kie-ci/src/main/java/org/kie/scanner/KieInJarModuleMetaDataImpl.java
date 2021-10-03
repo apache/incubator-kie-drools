@@ -32,10 +32,6 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.ArtifactResolver.ArtifactLocation;
-import org.appformer.maven.support.AFReleaseId;
-import org.appformer.maven.support.DependencyFilter;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kproject.models.KieModuleModelImpl;
 import org.drools.core.rule.KieModuleMetaInfo;
@@ -43,14 +39,17 @@ import org.drools.core.rule.TypeMetaInfo;
 import org.drools.core.util.ClassUtils;
 import org.drools.core.util.IoUtils;
 import org.drools.reflective.classloader.ProjectClassLoader;
+import org.kie.api.builder.ReleaseId;
+import org.kie.maven.integration.ArtifactResolver;
+import org.kie.util.maven.support.DependencyFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Collections.enumeration;
 import static java.util.stream.Collectors.toList;
-import static org.appformer.maven.integration.ArtifactResolver.getResolverFor;
 import static org.drools.core.util.ClassUtils.convertResourceToClassName;
 import static org.drools.core.util.IoUtils.UTF8_CHARSET;
+import static org.kie.maven.integration.ArtifactResolver.getResolverFor;
 
 public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
 
@@ -72,11 +71,11 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
 
     private ProjectClassLoader classLoader;
 
-    private AFReleaseId releaseId;
+    private ReleaseId releaseId;
 
     private InternalKieModule kieModule;
 
-    public KieInJarModuleMetaDataImpl(AFReleaseId releaseId, DependencyFilter dependencyFilter) {
+    public KieInJarModuleMetaDataImpl(ReleaseId releaseId, DependencyFilter dependencyFilter) {
         this.releaseId = releaseId;
         this.dependencyFilter = dependencyFilter;
         init(getResolverFor(getClass().getClassLoader(), releaseId, false));
@@ -226,7 +225,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
             return;
         }
 
-        List<AFReleaseId> releasesId = new ArrayList<>();
+        List<ReleaseId> releasesId = new ArrayList<>();
         if (releaseId != null) {
             releasesId.add(releaseId);
         }
@@ -234,13 +233,13 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
             releasesId.addAll(kieModule.getPomModel().getDependencies(dependencyFilter));
 
         } else {
-            List<AFReleaseId> dependencies = artifactResolver.getAllDependecies(dependencyFilter).stream().map(e -> e.getReleaseId()).collect(toList());
+            List<ReleaseId> dependencies = artifactResolver.getAllDependecies(dependencyFilter).stream().map(e -> e.getReleaseId()).collect(toList());
             releasesId.addAll(dependencies);
 
         }
 
-        for (AFReleaseId rId : releasesId) {
-            ArtifactLocation artifactLocation = artifactResolver.resolveArtifactLocation(rId);
+        for (ReleaseId rId : releasesId) {
+            ArtifactResolver.ArtifactLocation artifactLocation = artifactResolver.resolveArtifactLocation(rId);
             addArtifact(artifactLocation);
         }
 
@@ -249,7 +248,7 @@ public class KieInJarModuleMetaDataImpl implements KieModuleMetaData {
         packages.addAll(rulesByPackage.keySet());
     }
 
-    private void addArtifact(ArtifactLocation artifactLocation) {
+    private void addArtifact(ArtifactResolver.ArtifactLocation artifactLocation) {
         if (artifactLocation != null && artifactLocation.getArtifact().getExtension() != null && artifactLocation.getArtifact().getExtension().equals("jar")) {
             addJar(artifactLocation.toURL());
         }

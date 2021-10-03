@@ -6,12 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-templates</artifactId>
-  <packaging>bundle</packaging>
-  <!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Templates</name>
 
@@ -56,19 +54,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Export-Package>
-              org.drools.template.*
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

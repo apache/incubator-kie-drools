@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
-import org.appformer.maven.support.DependencyFilter;
 import org.drools.core.rule.TypeMetaInfo;
 import org.junit.Test;
 import org.kie.api.KieServices;
@@ -33,12 +32,16 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieModuleModel;
 import org.kie.api.definition.type.Role;
-import org.appformer.maven.integration.MavenRepository;
+import org.kie.maven.integration.MavenRepository;
+import org.kie.util.maven.support.DependencyFilter;
 
 import static java.util.Arrays.asList;
 import static junit.framework.TestCase.assertFalse;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.generatePomXml;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class KieModuleMetaDataTest extends AbstractKieCiTest {
 

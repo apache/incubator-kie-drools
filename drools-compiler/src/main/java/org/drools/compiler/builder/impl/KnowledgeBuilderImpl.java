@@ -63,8 +63,6 @@ import org.drools.compiler.compiler.DroolsWarningWrapper;
 import org.drools.compiler.compiler.DuplicateFunction;
 import org.drools.compiler.compiler.DuplicateRule;
 import org.drools.compiler.compiler.GlobalError;
-import org.drools.compiler.compiler.GuidedDecisionTableFactory;
-import org.drools.compiler.compiler.GuidedDecisionTableProvider;
 import org.drools.compiler.compiler.GuidedRuleTemplateFactory;
 import org.drools.compiler.compiler.GuidedRuleTemplateProvider;
 import org.drools.compiler.compiler.GuidedScoreCardFactory;
@@ -431,23 +429,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
         return generatedDrlToPackageDescr(resource, generatedDrl);
     }
 
-    public void addPackageFromGuidedDecisionTable(Resource resource) throws DroolsParserException,
-            IOException {
-        this.resource = resource;
-        addPackage(guidedDecisionTableToPackageDescr(resource));
-        this.resource = null;
-    }
-
-    PackageDescr guidedDecisionTableToPackageDescr(Resource resource) throws DroolsParserException, IOException {
-        GuidedDecisionTableProvider guidedDecisionTableProvider = GuidedDecisionTableFactory.getGuidedDecisionTableProvider();
-        if (guidedDecisionTableProvider == null) {
-            throw new MissingImplementationException(resource, "drools-workbench-models-guided-dtable");
-        }
-        ResourceConversionResult conversionResult = guidedDecisionTableProvider.loadFromInputStream(resource.getInputStream());
-        return conversionResultToPackageDescr(resource, conversionResult);
-    }
-
-
     private PackageDescr generatedDrlToPackageDescr(Resource resource, String generatedDrl) throws DroolsParserException {
         // dump the generated DRL if the dump dir was configured
         if (this.configuration.getDumpDir() != null) {
@@ -755,8 +736,6 @@ public class KnowledgeBuilderImpl implements InternalKnowledgeBuilder {
                 addPackageFromDrl(resource);
             } else if (ResourceType.TEMPLATE.equals(type)) {
                 addPackageFromTemplate(resource);
-            } else if (ResourceType.GDST.equals(type)) {
-                addPackageFromGuidedDecisionTable(resource);
             } else if (ResourceType.SCGD.equals(type)) {
                 addPackageFromGuidedScoreCard(resource);
             } else {

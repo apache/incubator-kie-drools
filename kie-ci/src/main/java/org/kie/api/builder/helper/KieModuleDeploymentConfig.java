@@ -20,12 +20,12 @@ import java.util.List;
 
 import org.drools.compiler.kie.builder.impl.KieRepositoryImpl;
 import org.drools.compiler.kie.builder.impl.KieServicesImpl;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieRepository;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.model.KieBaseModel;
 import org.kie.api.builder.model.KieModuleModel;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 public class KieModuleDeploymentConfig {
 

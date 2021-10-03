@@ -19,12 +19,11 @@
     <parent>
         <artifactId>drools</artifactId>
         <groupId>org.drools</groupId>
-        <version>7.60.0-SNAPSHOT</version>
+        <version>8.13.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>drools-mvel</artifactId>
-    <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
     <name>Drools :: MVEL</name>
 
@@ -36,17 +35,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.compendium</artifactId>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.mvel</groupId>
             <artifactId>mvel2</artifactId>
         </dependency>
@@ -57,10 +45,6 @@
         <dependency>
             <groupId>org.kie</groupId>
             <artifactId>kie-internal</artifactId>
-        </dependency>
-        <dependency>
-          <groupId>org.kie.soup</groupId>
-          <artifactId>kie-soup-project-datamodel-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.drools</groupId>
@@ -145,22 +129,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <configuration>
-                    <instructions>
-                        <Export-Package>
-                            org.drools.mvel.*
-                        </Export-Package>
-                        <Import-Package>
-                            *
-                        </Import-Package>
-                        <Bundle-Activator>org.drools.mvel.osgi.Activator</Bundle-Activator>
-                        <_removeheaders>Private-Package</_removeheaders>
-                    </instructions>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>

@@ -6,9 +6,7 @@
   <parent>
     <groupId>org.kie</groupId>
     <artifactId>kie-parent</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
-    <!-- relativePath causes out-of-date problems on hudson secondary nodes -->
-    <!--<relativePath>../droolsjbpm-build-bootstrap/pom.xml</relativePath>-->
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <groupId>org.drools</groupId>
@@ -50,6 +48,7 @@
   </scm>
 
   <modules>
+    <module>kie-util</module>
     <module>kie-memory-compiler</module>
     <module>drools-core-reflective</module>
     <module>drools-core-dynamic</module>
@@ -70,7 +69,6 @@
     <module>drools-decisiontables</module>
     <module>drools-examples</module>
     <module>kie-ci</module>
-    <module>kie-ci-osgi</module>
     <module>drools-model</module>
     <module>kie-dmn</module>
     <module>kie-pmml</module>
@@ -78,7 +76,6 @@
     <module>drools-scorecards</module>
     <module>drools-examples-api</module>
     <module>drools-examples-cdi</module>
-    <module>drools-workbench-models</module>
     <module>drools-test-coverage</module>
     <module>drools-scenario-simulation</module>
     <module>drools-metric</module>
@@ -102,8 +99,15 @@
         <scope>import</scope>
       </dependency>
       <dependency>
-        <groupId>org.kie.soup</groupId>
-        <artifactId>kie-soup-bom</artifactId>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-dmn-bom</artifactId>
+        <version>${version.org.kie}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.kie</groupId>
+        <artifactId>kie-pmml-bom</artifactId>
         <version>${version.org.kie}</version>
         <type>pom</type>
         <scope>import</scope>
@@ -122,6 +126,21 @@
             <reuseForks>true</reuseForks>
             <runOrder>hourly</runOrder>
           </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.jboss.maven.plugins</groupId>
+          <artifactId>maven-jdocbook-plugin</artifactId>
+          <version>${version.org.jboss.maven.plugins.maven-jdocbook-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>com.github.spotbugs</groupId>
+          <artifactId>spotbugs-maven-plugin</artifactId>
+          <version>${version.com.github.spotbugs-maven-plugin}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.revapi</groupId>
+          <artifactId>revapi-maven-plugin</artifactId>
+          <version>${version.org.revapi.revapi-maven-plugin}</version>
         </plugin>
       </plugins>
     </pluginManagement>

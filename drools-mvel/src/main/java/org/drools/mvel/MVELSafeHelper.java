@@ -14,8 +14,8 @@
 
 package org.drools.mvel;
 
+import org.drools.mvel.util.MVELEvaluator;
 import org.kie.internal.security.KiePolicyHelper;
-import org.kie.soup.project.datamodel.commons.util.MVELEvaluator;
 
 public class MVELSafeHelper {
 

@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-compiler</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Compiler</name>
 
@@ -52,21 +51,15 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie</groupId>
+      <artifactId>kie-util-maven-support</artifactId>
+    </dependency>
     <!-- External dependencies -->
-    <dependency>
-      <groupId>org.kie.soup</groupId>
-      <artifactId>kie-soup-maven-support</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>org.antlr</groupId>
       <artifactId>antlr</artifactId>
@@ -175,41 +168,6 @@
       </plugins>
     </pluginManagement>
 
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              com.sun.tools.xjc.*;resolution:=optional,
-              com.sun.codemodel;resolution:=optional,
-              javax.enterprise.*;resolution:=optional,
-              org.antlr.*;resolution:=optional,
-              org.osgi.*;resolution:=optional,
-              org.drools.core.base.accumulators;resolution:=optional,
-              org.drools.core.rule.builder.dialect.asm;resolution:=optional,
-              org.drools.ecj;resolution:=optional,
-              org.drools.mvel.asm;resolution:=optional,
-              org.drools.cdi;resolution:=optional,
-              org.drools.template.parser;resolution:=optional,
-              org.jbpm.process.instance.impl;resolution:=optional,
-              org.kie.dmn.core.assembler;resolution:=optional,
-              org.kie.dmn.core.runtime;resolution:=optional,
-              org.kie.dmn.core.weaver;resolution:=optional,
-              org.kie.scanner;resolution:=optional,
-              =org.kie.spring;resolution:=optional,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.drools.compiler.*
-            </Export-Package>
-            <Bundle-Activator>org.drools.compiler.osgi.Activator</Bundle-Activator>
-            <_removeheaders>Private-Package</_removeheaders>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
   </build>
 
   <profiles>

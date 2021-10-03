@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-persistence</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-persistence-jpa</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Persistence :: JPA</name>
   <description>JPA implementation for Drools</description>
@@ -46,36 +45,6 @@
     </testResources>
     
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              javassist.util.proxy;resolution:=optional,
-              javax.transaction;resolution:=optional,
-              javax.naming;resolution:=optional,
-              org.drools.container.spring.beans.persistence;resolution:=optional,
-              org.drools.core.marshalling.impl;resolution:=optional,
-              org.jbpm.persistence;resolution:=optional,
-              org.hibernate.proxy;resolution:=optional,
-              org.kie.spring.persistence;resolution:=optional,
-              org.hibernate;resolution:=optional,
-              org.hibernate.exception;resolution:=optional,
-              org.drools.persistence.api,
-              org.drools.persistence.jta,
-              org.drools.persistence.processinstance,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.drools.persistence.*
-            </Export-Package>
-            <Private-Package/>
-            <Bundle-Activator>org.drools.persistence.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
@@ -130,16 +99,6 @@
     <dependency>
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-xjc</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>

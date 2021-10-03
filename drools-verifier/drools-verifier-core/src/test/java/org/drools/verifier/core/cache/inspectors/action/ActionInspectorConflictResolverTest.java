@@ -29,7 +29,6 @@ import org.drools.verifier.core.index.model.ObjectField;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kie.soup.project.datamodel.oracle.DataType;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.Assert.assertFalse;
@@ -56,14 +55,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
 
         assertTrue(a.isRedundant(b));
@@ -79,14 +76,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Rambo");
 
         assertFalse(a.isRedundant(b));
@@ -102,14 +97,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "org.test2.Person",
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
 
         assertFalse(a.isRedundant(b));
@@ -124,14 +117,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.BOOLEAN,
                                                      true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "true");
 
         assertTrue(a.isRedundant(b));
@@ -146,14 +137,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.BOOLEAN,
                                                      true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "false");
 
         assertFalse(a.isRedundant(b));
@@ -168,14 +157,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Integer",
                                                                "age",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.NUMERIC_INTEGER,
                                                      20);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Integer",
                                                                "age",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "20");
 
         assertTrue(a.isRedundant(b));
@@ -190,14 +177,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Integer",
                                                                "age",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.NUMERIC_INTEGER,
                                                      20);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Integer",
                                                                "age",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "10");
 
         assertFalse(a.isRedundant(b));
@@ -213,14 +198,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Integer",
                                                                "birthDay",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.DATE,
                                                      date);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Integer",
                                                                "birthDay",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      format(date));
 
         assertTrue(a.isRedundant(b));
@@ -238,14 +221,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Integer",
                                                                "birthDay",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.DATE,
                                                      value);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Integer",
                                                                "birthDay",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "29-Dec-1981");
 
         assertFalse(a.isRedundant(b));
@@ -261,14 +242,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Rambo");
 
         assertTrue(a.conflicts(b));
@@ -283,14 +262,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.BOOLEAN,
                                                      true);
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "Boolean",
                                                                "isOldEnough",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "false");
 
         assertTrue(a.conflicts(b));
@@ -305,14 +282,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Address",
                                                                "String",
                                                                "street",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Rambo");
 
         assertFalse(a.conflicts(b));
@@ -327,14 +302,12 @@ public class ActionInspectorConflictResolverTest {
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
         ActionInspector b = createSetActionInspector(new Field(mock(ObjectField.class),
                                                                "Person",
                                                                "String",
                                                                "name",
                                                                new AnalyzerConfigurationMock()),
-                                                     DataType.DataTypes.STRING,
                                                      "Toni");
 
         assertFalse(a.conflicts(b));
@@ -350,7 +323,6 @@ public class ActionInspectorConflictResolverTest {
                                                                                "name",
                                                                                new AnalyzerConfigurationMock()),
                                                                      mock(Column.class),
-                                                                     DataType.DataTypes.BOOLEAN,
                                                                      new Values(true),
                                                                      new AnalyzerConfigurationMock()));
         ActionInspector b = createSetActionInspector(new FieldAction(new Field(mock(ObjectField.class),
@@ -359,7 +331,6 @@ public class ActionInspectorConflictResolverTest {
                                                                                "name",
                                                                                new AnalyzerConfigurationMock()),
                                                                      mock(Column.class),
-                                                                     DataType.DataTypes.STRING,
                                                                      new Values(true),
                                                                      new AnalyzerConfigurationMock()));
 
@@ -368,11 +339,9 @@ public class ActionInspectorConflictResolverTest {
     }
 
     private ActionInspector createSetActionInspector(final Field field,
-                                                     final DataType.DataTypes dataType,
                                                      final Comparable comparable) {
         return new FieldActionInspector(new FieldAction(field,
                                                         mock(Column.class),
-                                                        dataType,
                                                         new Values(comparable),
                                                         new AnalyzerConfigurationMock()),
                                         configuration);

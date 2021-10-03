@@ -22,7 +22,7 @@ import java.util.Set;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.DomDriver;
 
-import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class KieModuleMetaInfo implements Serializable {
 

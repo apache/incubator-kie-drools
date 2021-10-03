@@ -17,11 +17,11 @@ package org.kie.pmml.evaluator.assembler.factories;
 
 import java.io.File;
 
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.kie.api.KieBase;
 import org.kie.api.builder.ReleaseId;
 import org.kie.pmml.api.PMMLRuntimeFactory;
 import org.kie.pmml.api.runtime.PMMLRuntime;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 /**
  * Publicly-available facade to hide internal implementation details

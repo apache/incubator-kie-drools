@@ -112,7 +112,6 @@ public class DMNRuntimeListenerTest extends BaseInterpretedVsCompiledTest {
         kfs.writePomXML(DMNClassloaderTest.getPom(releaseId,
                                                   ks.newReleaseId("org.kie", "kie-dmn-api", Drools.getFullVersion()),
                                                   ks.newReleaseId("org.kie", "kie-dmn-model", Drools.getFullVersion()),
-                                                  ks.newReleaseId("org.kie.soup", "kie-soup-maven-support", Drools.getFullVersion()),
                                                   ks.newReleaseId("org.kie", "kie-api", Drools.getFullVersion()),
                                                   ks.newReleaseId("org.kie", "kie-internal", Drools.getFullVersion())
                                                   )

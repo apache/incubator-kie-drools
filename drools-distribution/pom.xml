@@ -6,7 +6,7 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-distribution</artifactId>
@@ -30,23 +30,6 @@
               <goals>
                 <goal>enforce</goal>
               </goals>
-              <configuration>
-                <rules>
-                  <banDuplicateClasses>
-                    <dependencies>
-                      <!-- kie-ci-osgi is an uberjar intended for OSGi environment. It is being excluded from the check
-                           as it contains hundreds of other classes, but that is expected. -->
-                      <dependency>
-                        <groupId>org.kie</groupId>
-                        <artifactId>kie-ci-osgi</artifactId>
-                        <ignoreClasses>
-                          <ignoreClass>*</ignoreClass>
-                        </ignoreClasses>
-                      </dependency>
-                    </dependencies>
-                  </banDuplicateClasses>
-                </rules>
-              </configuration>
             </execution>
           </executions>
         </plugin>
@@ -175,10 +158,6 @@
       <groupId>org.kie</groupId>
       <artifactId>kie-ci</artifactId>
       <classifier>sources</classifier>
-    </dependency>
-    <dependency>
-      <groupId>org.kie</groupId>
-      <artifactId>kie-ci-osgi</artifactId>
     </dependency>
 
     <!-- Examples -->

@@ -24,10 +24,6 @@ import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.integration.ArtifactResolver;
-import org.appformer.maven.integration.DependencyDescriptor;
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.kie.builder.impl.AbstractKieScanner;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
@@ -43,14 +39,17 @@ import org.kie.api.builder.Message;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.builder.Results;
 import org.kie.api.runtime.KieContainer;
+import org.kie.maven.integration.ArtifactResolver;
+import org.kie.maven.integration.DependencyDescriptor;
 import org.kie.scanner.management.KieScannerMBean;
 import org.kie.scanner.management.KieScannerMBeanImpl;
 import org.kie.scanner.management.MBeanUtils;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.InternalKieModule.createKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 
 public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyDescriptor, Artifact>> implements InternalKieScanner {
 
@@ -138,7 +137,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
 
     private InternalKieModule buildArtifact(Artifact artifact, ArtifactResolver resolver) {
         DependencyDescriptor dependencyDescriptor = new DependencyDescriptor(artifact);
-        ReleaseId releaseId = adapt( dependencyDescriptor.getReleaseId() );
+        ReleaseId releaseId = dependencyDescriptor.getReleaseId();
         InternalKieModule kieModule = createKieModule(releaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, resolver, resolver.getArtifactDependecies(dependencyDescriptor.toString()));
@@ -148,13 +147,13 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
     
     private void addDependencies(InternalKieModule kieModule, ArtifactResolver resolver, List<DependencyDescriptor> dependencies) {
         for (DependencyDescriptor dep : dependencies) {
-            InternalKieModule dependency = (InternalKieModule) KieServices.Factory.get().getRepository().getKieModule(adapt( dep.getReleaseId() ));
+            InternalKieModule dependency = (InternalKieModule) KieServices.Factory.get().getRepository().getKieModule(dep.getReleaseId());
             if (dependency != null) {
                 kieModule.addKieDependency(dependency);
             } else {
                 Artifact depArtifact = resolver.resolveArtifact(dep.getReleaseId());
                 if (depArtifact != null && isKJar(depArtifact.getFile())) {
-                    ReleaseId depReleaseId = adapt( new DependencyDescriptor(depArtifact).getReleaseId() );
+                    ReleaseId depReleaseId = new DependencyDescriptor(depArtifact).getReleaseId();
                     InternalKieModule zipKieModule = createKieModule(depReleaseId, depArtifact.getFile());
                     if (zipKieModule != null) {
                         kieModule.addKieDependency(zipKieModule);
@@ -194,13 +193,13 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
     }
 
     private boolean updateKieModule(DependencyDescriptor oldDependency, Artifact artifact) {
-        org.appformer.maven.support.AFReleaseId newReleaseId = new DependencyDescriptor( artifact).getReleaseId();
-        InternalKieModule kieModule = createKieModule(adapt( newReleaseId ), artifact.getFile());
+        ReleaseId newReleaseId = new DependencyDescriptor( artifact).getReleaseId();
+        InternalKieModule kieModule = createKieModule(newReleaseId, artifact.getFile());
         if (kieModule != null) {
             addDependencies(kieModule, artifactResolver, artifactResolver.getArtifactDependecies(newReleaseId.toString()));
             ResultsImpl messages = kieModule.build();
             if ( messages.filterMessages(Message.Level.ERROR).isEmpty()) {
-                Results updateMessages = kieContainer.updateDependencyToVersion(adapt( oldDependency.getArtifactReleaseId() ), adapt( newReleaseId ));
+                Results updateMessages = kieContainer.updateDependencyToVersion(oldDependency.getArtifactReleaseId(), newReleaseId);
                 oldDependency.setArtifactVersion(artifact.getVersion());
                 messages.getMessages().addAll( updateMessages.getMessages() ); // append all update Results into build Results to notify listeners
             }
@@ -230,7 +229,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
         }
 
         for (DependencyDescriptor dep : artifactResolver.getAllDependecies()) {
-            ReleaseId artifactId = adapt( dep.getReleaseIdWithoutVersion() );
+            ReleaseId artifactId = dep.getReleaseIdWithoutVersion();
             DependencyDescriptor oldDep = usedDependencies.get(artifactId);
             if (oldDep != null) {
                 newArtifact = artifactResolver.resolveArtifact(dep.getReleaseId());
@@ -256,7 +255,7 @@ public class KieRepositoryScannerImpl extends AbstractKieScanner<Map<DependencyD
                      log.debug( artifact + " resolved to  " + artifact.getFile() );
                  }
                  if ( isKJar( artifact.getFile() ) ) {
-                     depsMap.put( adapt( dep.getReleaseIdWithoutVersion() ), new DependencyDescriptor( artifact ) );
+                     depsMap.put( dep.getReleaseIdWithoutVersion(), new DependencyDescriptor( artifact ) );
                  }
             }
         }

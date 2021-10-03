@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.model.Dependency;
-import org.appformer.maven.integration.MavenRepository;
-import org.appformer.maven.integration.embedder.MavenEmbedderUtils;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.drools.compiler.kie.builder.impl.InternalKieScanner;
 import org.drools.compiler.kie.builder.impl.KieFileSystemImpl;
+import org.drools.compiler.kie.builder.impl.event.KieScannerStatusChangeEventImpl;
+import org.drools.compiler.kie.builder.impl.event.KieScannerUpdateResultsEventImpl;
 import org.drools.core.util.FileManager;
 import org.hamcrest.CoreMatchers;
 import org.junit.After;
@@ -50,20 +50,19 @@ import org.kie.api.event.kiescanner.KieScannerStatusChangeEvent;
 import org.kie.api.event.kiescanner.KieScannerUpdateResultsEvent;
 import org.kie.api.runtime.KieContainer;
 import org.kie.api.runtime.KieSession;
-import org.drools.compiler.kie.builder.impl.event.KieScannerStatusChangeEventImpl;
-import org.drools.compiler.kie.builder.impl.event.KieScannerUpdateResultsEventImpl;
+import org.kie.maven.integration.MavenRepository;
+import org.kie.maven.integration.embedder.MavenEmbedderUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static java.util.Arrays.asList;
-
-import static org.appformer.maven.integration.MavenRepository.getMavenRepository;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.kie.maven.integration.MavenRepository.getMavenRepository;
 import static org.kie.scanner.KieMavenRepository.getKieMavenRepository;
 
 

@@ -6,11 +6,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools-persistence</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>drools-persistence-api</artifactId>
-  <packaging>bundle</packaging><!-- bundle = jar + OSGi metadata -->
 
   <name>Drools :: Persistence :: API</name>
   <description>Persistence APIs for Drools</description>
@@ -48,16 +47,6 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.compendium</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>com.google.protobuf</groupId>
       <artifactId>protobuf-java</artifactId>
     </dependency>
@@ -87,34 +76,4 @@
 
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <extensions>true</extensions>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              javax.transaction;resolution:=optional,
-              javax.naming;resolution:=optional,
-              org.drools.container.spring.beans.persistence;resolution:=optional,
-              org.drools.core.marshalling.impl;resolution:=optional,
-              org.drools.persistence;resolution:=optional,
-              org.drools.persistence.jpa;resolution:=optional,
-              org.jbpm.persistence.api;resolution:=optional,
-              org.jbpm.persistence;resolution:=optional,
-              org.kie.spring.persistence;resolution:=optional,
-              *
-            </Import-Package>
-            <Export-Package>
-              org.drools.persistence.api,
-              org.drools.persistence.jta,
-              org.drools.persistence.processinstance
-            </Export-Package>
-          </instructions>
-        </configuration>
-      </plugin>
-    </plugins>
-  </build>
 </project>

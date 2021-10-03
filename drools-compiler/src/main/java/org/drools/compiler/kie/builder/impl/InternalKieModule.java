@@ -28,8 +28,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.appformer.maven.support.DependencyFilter;
-import org.appformer.maven.support.PomModel;
 import org.drools.compiler.compiler.io.memory.MemoryFileSystem;
 import org.drools.compiler.kie.util.ChangeSetBuilder;
 import org.drools.compiler.kie.util.KieJarChangeSet;
@@ -56,13 +54,14 @@ import org.kie.internal.builder.ResourceChangeSet;
 import org.kie.internal.utils.ClassLoaderResolver;
 import org.kie.internal.utils.NoDepsClassLoaderResolver;
 import org.kie.memorycompiler.resources.KiePath;
+import org.kie.util.maven.support.DependencyFilter;
+import org.kie.util.maven.support.PomModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.buildKieModule;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.filterFileInKBase;
 import static org.drools.compiler.kie.builder.impl.KieBuilderImpl.setDefaultsforEmptyKieModule;
-import static org.drools.compiler.kproject.ReleaseIdImpl.adapt;
 import static org.drools.reflective.classloader.ProjectClassLoader.createProjectClassLoader;
 
 public interface InternalKieModule extends KieModule, Serializable {
@@ -186,7 +185,7 @@ public interface InternalKieModule extends KieModule, Serializable {
         try (InputStream xmlStream = zipFile.getInputStream( zipEntry )) {
             KieModuleModel kieModuleModel = KieModuleModelImpl.fromXML( xmlStream );
             setDefaultsforEmptyKieModule( kieModuleModel );
-            return kieModuleModel != null ? InternalKieModuleProvider.get( adapt( releaseId ), kieModuleModel, jar ) : null;
+            return kieModuleModel != null ? InternalKieModuleProvider.get( releaseId, kieModuleModel, jar ) : null;
         } catch (Exception e) {
             throw new MalformedKieModuleException( e );
         }

@@ -22,11 +22,10 @@
   <parent>
     <groupId>org.drools</groupId>
     <artifactId>drools</artifactId>
-    <version>7.60.0-SNAPSHOT</version>
+    <version>8.13.0-SNAPSHOT</version>
   </parent>
 
   <artifactId>kie-pmml</artifactId>
-  <packaging>bundle</packaging>
 
   <name>KIE :: PMML - Compiler </name>
   <description>Support for PMML-Encoded Predictive Models</description>
@@ -56,12 +55,6 @@
     <dependency>
       <groupId>org.kie</groupId>
       <artifactId>kie-internal</artifactId>
-    </dependency>
-
-    <dependency>
-      <groupId>org.osgi</groupId>
-      <artifactId>org.osgi.core</artifactId>
-      <scope>provided</scope>
     </dependency>
 
     <dependency>
@@ -117,22 +110,6 @@
 
   <build>
     <plugins>
-      <plugin>
-        <groupId>org.apache.felix</groupId>
-        <artifactId>maven-bundle-plugin</artifactId>
-        <configuration>
-          <instructions>
-            <Import-Package>
-              org.drools.ruleunit;resolution:=optional,
-              org.drools.ruleunit.impl;resolution:=optional,
-              org.drools.ruleunit.executor;resolution:=optional,
-              *
-            </Import-Package>
-            <Export-Package>*</Export-Package>
-            <Bundle-Activator>org.kie.pmml.pmml_4_2.osgi.Activator</Bundle-Activator>
-          </instructions>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>build-helper-maven-plugin</artifactId>

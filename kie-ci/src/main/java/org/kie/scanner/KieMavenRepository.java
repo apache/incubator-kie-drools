@@ -19,11 +19,11 @@ package org.kie.scanner;
 import java.io.File;
 
 import org.apache.maven.project.MavenProject;
-import org.appformer.maven.integration.Aether;
-import org.appformer.maven.integration.MavenRepository;
-import org.appformer.maven.support.AFReleaseId;
 import org.drools.compiler.kie.builder.impl.InternalKieModule;
 import org.eclipse.aether.repository.RemoteRepository;
+import org.kie.api.builder.ReleaseId;
+import org.kie.maven.integration.Aether;
+import org.kie.maven.integration.MavenRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,7 +58,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param kieModule The kieModule containing the kjar to be deployed
      * @param pomfile The pom file to be deployed together with the kjar
      */
-    public void deployArtifact( AFReleaseId releaseId,
+    public void deployArtifact( ReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
         RemoteRepository repository = getRemoteRepositoryFromDistributionManagement( pomfile );
@@ -78,7 +78,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param pomfile The pom file to be deployed together with the kjar
      */
     public void deployArtifact( RemoteRepository repository,
-                                AFReleaseId releaseId,
+                                ReleaseId releaseId,
                                 InternalKieModule kieModule,
                                 File pomfile ) {
         File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );
@@ -93,7 +93,7 @@ public class KieMavenRepository extends MavenRepository {
      * @param kieModule The kieModule containing the kjar to be installed
      * @param pomfile The pom file to be installed together with the kjar
      */
-    public void installArtifact( AFReleaseId releaseId,
+    public void installArtifact( ReleaseId releaseId,
                                  InternalKieModule kieModule,
                                  File pomfile ) {
         File jarFile = bytesToFile( releaseId, kieModule.getBytes(), ".jar" );

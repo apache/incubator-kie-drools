@@ -35,9 +35,9 @@ import org.drools.scenariosimulation.api.model.ScenarioSimulationModel;
 import org.drools.scenariosimulation.api.model.ScesimModelDescriptor;
 import org.drools.scenariosimulation.api.model.Settings;
 import org.drools.scenariosimulation.api.model.Simulation;
+import org.drools.scenariosimulation.api.model.imports.Import;
 import org.drools.scenariosimulation.backend.interfaces.ThrowingConsumer;
-import org.kie.soup.project.datamodel.imports.Import;
-import org.kie.soup.xstream.XStreamUtils;
+import org.kie.utll.xml.XStreamUtils;
 import org.w3c.dom.Document;
 
 import static org.drools.scenariosimulation.api.utils.ConstantsHolder.BACKGROUND_NODE;

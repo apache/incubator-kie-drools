@@ -28,7 +28,6 @@ import org.drools.compiler.builder.impl.KnowledgeBuilderConfigurationImpl;
 import org.drools.compiler.builder.impl.KnowledgeBuilderImpl;
 import org.drools.compiler.compiler.DialectCompiletimeRegistry;
 import org.drools.compiler.compiler.PackageRegistry;
-import org.drools.compiler.kproject.ReleaseIdImpl;
 import org.drools.compiler.lang.descr.PackageDescr;
 import org.drools.core.definitions.InternalKnowledgePackage;
 import org.drools.core.io.impl.InputStreamResource;
@@ -47,6 +46,7 @@ import org.kie.api.builder.KieFileSystem;
 import org.kie.api.builder.ReleaseId;
 import org.kie.api.runtime.KieContainer;
 import org.kie.internal.builder.KnowledgeBuilderResult;
+import org.kie.util.maven.support.ReleaseIdImpl;
 
 import static org.drools.mvel.parser.Providers.provider;
 import static org.junit.Assert.assertEquals;

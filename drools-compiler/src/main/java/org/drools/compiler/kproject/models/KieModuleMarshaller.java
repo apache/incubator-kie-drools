@@ -40,7 +40,7 @@ import org.kie.api.builder.model.KieModuleModel;
 import org.xml.sax.SAXException;
 
 import static org.drools.core.util.IoUtils.readBytesFromInputStream;
-import static org.kie.soup.xstream.XStreamUtils.createNonTrustingXStream;
+import static org.kie.utll.xml.XStreamUtils.createNonTrustingXStream;
 
 public class KieModuleMarshaller {
 
