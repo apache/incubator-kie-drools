@@ -26,6 +26,6 @@ public class InfinispanTrustyServiceContainer extends KogitoGenericContainer<Inf
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServer);
         addEnv("TRUSTY_EXPLAINABILITY_ENABLED", String.valueOf(explainabilityEnabled));
         addExposedPort(8080);
-        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 3));
+        waitingFor(Wait.forListeningPort());
     }
 }

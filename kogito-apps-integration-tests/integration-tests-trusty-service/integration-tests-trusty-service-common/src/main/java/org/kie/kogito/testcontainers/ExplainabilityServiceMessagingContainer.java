@@ -24,6 +24,6 @@ public class ExplainabilityServiceMessagingContainer extends KogitoGenericContai
         addEnv("KAFKA_BOOTSTRAP_SERVERS", kafkaBootstrapServers);
         addEnv("TRUSTY_EXPLAINABILITY_NUMBEROFSAMPLES", String.valueOf(numberOfSamples));
         addExposedPort(8080);
-        waitingFor(Wait.forLogMessage(".*Successfully joined group.*", 1));
+        waitingFor(Wait.forListeningPort());
     }
 }
