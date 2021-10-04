@@ -16,7 +16,6 @@
 package org.kie.pmml.compiler.executor;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +42,7 @@ import static org.kie.pmml.commons.utils.KiePMMLModelUtils.getSanitizedPackageNa
 import static org.kie.pmml.compiler.commons.factories.KiePMMLFactoryFactory.getFactorySourceCode;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModel;
 import static org.kie.pmml.compiler.commons.implementations.KiePMMLModelRetriever.getFromCommonDataAndTransformationDictionaryAndModelWithSources;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryAndTransformationDictionary;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 
 /**
@@ -152,14 +152,9 @@ public class PMMLCompilerImpl implements PMMLCompiler {
     private List<KiePMMLModel> getModelsWithSources(final String packageName, final PMML pmml,
                                                     final HasClassLoader hasClassloader) {
         logger.trace("getModels {}", pmml);
-        final List<Field<?>> fields = new ArrayList<>();
-        pmml.getDataDictionary().getDataFields().stream().map(Field.class::cast)
-                .forEach(fields::add);
         TransformationDictionary transformationDictionary = pmml.getTransformationDictionary();
-        if (transformationDictionary.hasDerivedFields()) {
-            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
-                    .forEach(fields::add);
-        }
+        final List<Field<?>> fields = getFieldsFromDataDictionaryAndTransformationDictionary(pmml.getDataDictionary()
+                , transformationDictionary);
         return pmml
                 .getModels()
                 .stream()

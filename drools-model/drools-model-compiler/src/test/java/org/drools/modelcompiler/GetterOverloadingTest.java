@@ -19,7 +19,6 @@ package org.drools.modelcompiler;
 
 import java.util.List;
 
-import org.junit.Ignore;
 import org.junit.Test;
 import org.kie.api.KieServices;
 import org.kie.api.builder.KieBuilder;
@@ -91,7 +90,6 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Ignore("This test randomly fails with STANDARD_DRL until Mvel is updated")
     @Test
     public void testBooleanAccessorOverload() {
         // ClassC implements both isResource() and getResource() for boolean (This is acceptable according to Javabeans spec)
@@ -242,7 +240,6 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Ignore("This test randomly fails with STANDARD_DRL until Mvel is updated")
     @Test
     public void testAcceptableStringAccessorOverload() {
         // ClassG implements getName(), getname() and name() for String
@@ -393,7 +390,6 @@ public class GetterOverloadingTest extends BaseModelTest {
         }
     }
 
-    @Ignore("This test randomly fails with STANDARD_DRL until Mvel is updated")
     @Test
     public void testPossibleBooleanAccessorOverload() {
         // ClassL implements 5 possible getters

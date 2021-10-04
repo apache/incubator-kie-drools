@@ -28,6 +28,7 @@ import org.kie.pmml.api.enums.FIELD_USAGE_TYPE;
 import org.kie.pmml.api.enums.INVALID_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.enums.MISSING_VALUE_TREATMENT_METHOD;
 import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.api.exceptions.KiePMMLInputDataException;
 import org.kie.pmml.api.models.MiningField;
 import org.kie.pmml.api.runtime.PMMLContext;
 import org.kie.pmml.commons.model.KiePMMLModel;
@@ -215,7 +216,7 @@ public class PreProcess {
         Object originalValue = parameterInfo.getValue();
         switch (invalidValueTreatmentMethod) {
             case RETURN_INVALID:
-                throw new KiePMMLException("Invalid value " + originalValue + " for " + miningField.getName());
+                throw new KiePMMLInputDataException("Invalid value " + originalValue + " for " + miningField.getName());
             case AS_MISSING:
                 toRemove.add(parameterInfo);
                 break;
@@ -224,7 +225,7 @@ public class PreProcess {
             case AS_VALUE:
                 String invalidValueReplacement = miningField.getInvalidValueReplacement();
                 if (invalidValueReplacement == null) {
-                    throw new KiePMMLException("Missing required invalidValueReplacement for " + miningField.getName());
+                    throw new KiePMMLInputDataException("Missing required invalidValueReplacement for " + miningField.getName());
                 } else {
                     Object requiredValue =
                             miningField.getDataType().getActualValue(invalidValueReplacement);
@@ -250,7 +251,7 @@ public class PreProcess {
                         : MISSING_VALUE_TREATMENT_METHOD.RETURN_INVALID;
         switch (missingValueTreatmentMethod) {
             case RETURN_INVALID:
-                throw new KiePMMLException("Missing required value for " + miningField.getName());
+                throw new KiePMMLInputDataException("Missing required value for " + miningField.getName());
             case AS_IS:
             case AS_MEAN:
             case AS_MODE:
