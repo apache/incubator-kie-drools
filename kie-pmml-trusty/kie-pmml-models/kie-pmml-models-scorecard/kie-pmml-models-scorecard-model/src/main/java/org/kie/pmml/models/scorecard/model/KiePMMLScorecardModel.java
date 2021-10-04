@@ -17,6 +17,7 @@ package org.kie.pmml.models.scorecard.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,13 +67,15 @@ public class KiePMMLScorecardModel extends KiePMMLModel {
         if (localTransformations != null) {
             derivedFields.addAll(localTransformations.getDerivedFields());
         }
-        outputFieldsMap.clear();
-        return characteristics.evaluate(defineFunctions, derivedFields, kiePMMLOutputFields, requestData,
-                                                   outputFieldsMap,
+        Map<String, Object> holder = new HashMap<>();
+        Object toReturn = characteristics.evaluate(defineFunctions, derivedFields, kiePMMLOutputFields, requestData,
+                                                             holder,
                                                              initialScore,
                                                              reasonCodeAlgorithm,
                                                              useReasonCodes,
                                                              baselineScore).orElse(null);
+        outputFieldsMap = holder;
+        return toReturn;
     }
 
     @Override
