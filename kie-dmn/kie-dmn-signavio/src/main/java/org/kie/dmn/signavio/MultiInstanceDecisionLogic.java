@@ -39,9 +39,7 @@ import org.kie.dmn.core.compiler.DecisionCompiler;
 import org.kie.dmn.core.impl.DMNContextImpl;
 import org.kie.dmn.core.impl.DMNModelImpl;
 import org.kie.dmn.core.impl.DMNResultImpl;
-import org.kie.dmn.core.util.Msg;
 import org.kie.dmn.feel.FEEL;
-import org.kie.dmn.feel.lang.CompiledExpression;
 import org.kie.dmn.feel.runtime.functions.AllFunction;
 import org.kie.dmn.feel.runtime.functions.AnyFunction;
 import org.kie.dmn.feel.runtime.functions.FEELFnResult;
@@ -118,16 +116,8 @@ public class MultiInstanceDecisionLogic {
             MultiInstanceDecisionLogic midl =
                     getMIDL(node).orElseThrow(() -> new IllegalStateException("Node doesn't contain multi instance decision logic!" + node.toString()));
             
-            CompiledExpression iterExpr = ctx.getFeelHelper().compileFeelExpression(ctx,
-                                                                                    midl.iterationExpression,
-                                                                                    model,
-                                                                                    di.getDecision(),
-                                                                                    Msg.ERR_COMPILING_FEEL_EXPR_FOR_NAME_ON_NODE,
-                                                                                    midl.iterationExpression,
-                                                                                    node.getName(),
-                                                                                    node.getId());
             // set the evaluator accordingly to Signavio logic.
-            di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance(), iterExpr));
+            di.setEvaluator(new MultiInstanceDecisionNodeEvaluator(midl, model, di, ctx.getFeelHelper().newFEELInstance()));
             
             // Remove the top level decision and its dependencies, from the DMN Model (Decision|BKM|InputData) indexes
             // Remember that as the dependencies will be removed from indexes, are no longer available at evalutation from the DMNExpressionEvaluator
@@ -156,14 +146,12 @@ public class MultiInstanceDecisionLogic {
         private String contextIteratorName;
         private DecisionNodeImpl topLevelDecision;
         private final FEEL feel;
-        private final CompiledExpression iterExpr;
         
-        public MultiInstanceDecisionNodeEvaluator(MultiInstanceDecisionLogic mi, DMNModelImpl model, DecisionNodeImpl di, FEEL feel, CompiledExpression iterExpr) {
+        public MultiInstanceDecisionNodeEvaluator(MultiInstanceDecisionLogic mi, DMNModelImpl model, DecisionNodeImpl di, FEEL feel) {
             this.mi = mi;
             this.model = model;
             this.di = di;
             this.feel = feel;
-            this.iterExpr = iterExpr;
             contextIteratorName = model.getInputById( mi.iteratorShapeId ).getName();
             topLevelDecision = (DecisionNodeImpl) model.getDecisionById(mi.topLevelDecisionId);
         }
@@ -178,7 +166,7 @@ public class MultiInstanceDecisionLogic {
             List<? super Object> invokationResults = new ArrayList<>();
             
             try {
-                Object cycleOnRaw = feel.evaluate(iterExpr, dmnContext.getAll());
+                Object cycleOnRaw = feel.evaluate(mi.iterationExpression, dmnContext.getAll());
                 Collection<?> cycleOn = null;
                 if ( cycleOnRaw instanceof Collection ) {
                     cycleOn = (Collection<?>) cycleOnRaw;
