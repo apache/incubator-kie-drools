@@ -158,19 +158,19 @@ public class DMNModelIOSets {
                     outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
                 }
             } else {
-                CompositeTypeImpl is = new CompositeTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet");
+                CompositeTypeImpl os = new CompositeTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet");
                 for (DMNElementReference er : ds.getDecisionService().getOutputDecision()) {
                     String id = DMNCompilerImpl.getId(er);
                     DecisionNode outputDecision = model.getDecisionById(id);
                     if (outputDecision != null) {
-                        is.addField(outputDecision.getName(), outputDecision.getResultType());
+                        os.addField(outputDecision.getName(), outputDecision.getResultType());
                         outputDoc.put(outputDecision.getName(), ((DecisionNodeImpl) outputDecision).getDecision().getDescription());
                     } else {
                         this.outputSet = new SimpleTypeImpl(ds.getModelNamespace(), TEMP, ds.getId() + "DSOutputSet", false, null, ds.getResultType(), null);
                         return; // since cannot lookup correctly, just assign the model-defined DS variable type.
                     }
-                    this.outputSet = is;
                 }
+                this.outputSet = os;
             }
         }
 
