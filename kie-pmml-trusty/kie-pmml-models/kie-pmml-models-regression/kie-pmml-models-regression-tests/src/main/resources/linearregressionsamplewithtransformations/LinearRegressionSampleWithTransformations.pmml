@@ -9,6 +9,10 @@
     </DataField>
     <DataField name="number_of_claims" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6" />
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6" />
+    </DataField>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -142,6 +146,7 @@
       <MiningField name="car_location"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
       <MiningField name="number_of_claims" usageType="target"/>
+      <MiningField name="input3" usageType="active" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
       <OutputField name="Number of Claims" feature="predictedValue" dataType="double" optype="continuous"/>

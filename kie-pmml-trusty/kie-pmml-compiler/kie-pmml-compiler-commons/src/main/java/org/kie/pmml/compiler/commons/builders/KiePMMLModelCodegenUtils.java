@@ -15,10 +15,7 @@
  */
 package org.kie.pmml.compiler.commons.builders;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
 import com.github.javaparser.ast.body.ConstructorDeclaration;
@@ -29,11 +26,9 @@ import com.github.javaparser.ast.expr.NullLiteralExpr;
 import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.expr.ThisExpr;
 import com.github.javaparser.ast.stmt.BlockStmt;
-import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.Field;
 import org.dmg.pmml.Model;
 import org.dmg.pmml.TransformationDictionary;
-import org.kie.pmml.api.enums.DATA_TYPE;
 import org.kie.pmml.api.enums.MINING_FUNCTION;
 import org.kie.pmml.api.enums.PMML_MODEL;
 import org.kie.pmml.api.exceptions.KiePMMLInternalException;
@@ -60,7 +55,8 @@ public class KiePMMLModelCodegenUtils {
     }
 
     /**
-     * Initialize the given <code>ClassOrInterfaceDeclaration</code> with all the <b>common</b> code needed to generate a <code>KiePMMLModel</code>
+     * Initialize the given <code>ClassOrInterfaceDeclaration</code> with all the <b>common</b> code needed to
+     * generate a <code>KiePMMLModel</code>
      * @param modelTemplate
      * @param fields
      * @param transformationDictionary
@@ -70,10 +66,12 @@ public class KiePMMLModelCodegenUtils {
                             final List<Field<?>> fields,
                             final TransformationDictionary transformationDictionary,
                             final Model pmmlModel) {
-        final ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
+        final ConstructorDeclaration constructorDeclaration =
+                modelTemplate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, modelTemplate.getName())));
         final String name = pmmlModel.getModelName();
         final String generatedClassName = getSanitizedClassName(name);
-        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(pmmlModel.getMiningSchema(), fields);
+        final List<MiningField> miningFields = ModelUtils.convertToKieMiningFieldList(pmmlModel.getMiningSchema(),
+                                                                                      fields);
         final List<OutputField> outputFields = ModelUtils.convertToKieOutputFieldList(pmmlModel.getOutput(), fields);
         final Expression miningFunctionExpression;
         if (pmmlModel.getMiningFunction() != null) {
@@ -83,7 +81,8 @@ public class KiePMMLModelCodegenUtils {
             miningFunctionExpression = new NullLiteralExpr();
         }
         final PMML_MODEL pmmlModelEnum = PMML_MODEL.byName(pmmlModel.getClass().getSimpleName());
-        final NameExpr pmmlMODELExpression = new NameExpr(pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name());
+        final NameExpr pmmlMODELExpression =
+                new NameExpr(pmmlModelEnum.getClass().getName() + "." + pmmlModelEnum.name());
         String targetFieldName = getTargetFieldName(fields, pmmlModel).orElse(null);
         final Expression targetFieldExpression;
         if (targetFieldName != null) {
@@ -91,9 +90,13 @@ public class KiePMMLModelCodegenUtils {
         } else {
             targetFieldExpression = new NullLiteralExpr();
         }
-        Map<String, Pair<DATA_TYPE, String>> missingValueReplacements = getMissingValueReplacementsMap(fields, pmmlModel);
-        setKiePMMLModelConstructor(generatedClassName, constructorDeclaration, name, miningFields, outputFields, missingValueReplacements);
-        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary, pmmlModel.getLocalTransformations());
+        setKiePMMLModelConstructor(generatedClassName,
+                                   constructorDeclaration,
+                                   name,
+                                   miningFields,
+                                   outputFields);
+        addTransformationsInClassOrInterfaceDeclaration(modelTemplate, transformationDictionary,
+                                                        pmmlModel.getLocalTransformations());
         final BlockStmt body = constructorDeclaration.getBody();
         CommonCodegenUtils.setAssignExpressionValue(body, "pmmlMODEL", pmmlMODELExpression);
         CommonCodegenUtils.setAssignExpressionValue(body, "miningFunction", miningFunctionExpression);
@@ -105,20 +108,5 @@ public class KiePMMLModelCodegenUtils {
             getCreatedKiePMMLOutputFieldsExpr.setName(GET_CREATED_KIEPMMLOUTPUTFIELDS);
             CommonCodegenUtils.setAssignExpressionValue(body, "kiePMMLOutputFields", getCreatedKiePMMLOutputFieldsExpr);
         }
-    }
-
-    static Map<String, Pair<DATA_TYPE, String>> getMissingValueReplacementsMap(final List<Field<?>> fields, Model pmmlModel) {
-        Map<String, DATA_TYPE> dataTypeMap = fields.stream()
-                .collect(Collectors.toMap(i -> i.getName().getValue(),
-                                          i -> DATA_TYPE.byName(i.getDataType().value()),
-                                          (prevDataType, newDataType) -> newDataType));
-        return pmmlModel.getMiningSchema() == null
-                ? Collections.emptyMap()
-                : pmmlModel.getMiningSchema().getMiningFields().stream()
-                        .filter(mf -> mf.getMissingValueReplacement() instanceof String)
-                        .collect(Collectors.toMap(
-                                mf -> mf.getName().getValue(),
-                                mf -> new Pair<>(dataTypeMap.get(mf.getName().getValue()), (String) mf.getMissingValueReplacement())
-                        ));
     }
 }

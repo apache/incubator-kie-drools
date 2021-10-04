@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import org.dmg.pmml.Array;
+import org.dmg.pmml.DataDictionary;
 import org.dmg.pmml.DataField;
 import org.dmg.pmml.DataType;
 import org.dmg.pmml.DerivedField;
@@ -329,10 +330,10 @@ public class ModelUtils {
                 DATA_TYPE.byName(field.getDataType().value()) : null;
         final MISSING_VALUE_TREATMENT_METHOD missingValueTreatmentMethod =
                 toConvert.getMissingValueTreatment() != null ?
-                MISSING_VALUE_TREATMENT_METHOD.byName(toConvert.getMissingValueTreatment().value()) : null;
+                        MISSING_VALUE_TREATMENT_METHOD.byName(toConvert.getMissingValueTreatment().value()) : null;
         final INVALID_VALUE_TREATMENT_METHOD invalidValueTreatmentMethod =
                 toConvert.getInvalidValueTreatment() != null ?
-                INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()) : null;
+                        INVALID_VALUE_TREATMENT_METHOD.byName(toConvert.getInvalidValueTreatment().value()) : null;
         final String missingValueReplacement = toConvert.getMissingValueReplacement() != null ?
                 toConvert.getMissingValueReplacement().toString() : null;
         final String invalidValueReplacement = toConvert.getInvalidValueReplacement() != null ?
@@ -521,6 +522,37 @@ public class ModelUtils {
     public static String getBoxedClassName(DataType dataType) {
         Class<?> c = dataType == null ? Object.class : DATA_TYPE.byName(dataType.value()).getMappedClass();
         return getKiePMMLPrimitiveBoxed(c).map(primitiveBoxed -> primitiveBoxed.getBoxed().getName()).orElse(c.getName());
+    }
+
+    public static List<Field<?>> getFieldsFromDataDictionaryAndTransformationDictionary(final DataDictionary dataDictionary,
+                                                                                             final TransformationDictionary transformationDictionary) {
+        final List<Field<?>> toReturn = new ArrayList<>();
+        if (dataDictionary != null && dataDictionary.hasDataFields()) {
+            dataDictionary.getDataFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        if (transformationDictionary != null && transformationDictionary.hasDerivedFields()) {
+            transformationDictionary.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        return toReturn;
+    }
+
+    public static List<Field<?>> getFieldsFromDataDictionaryTransformationDictionaryAndModel(final DataDictionary dataDictionary,
+                                                                                             final TransformationDictionary transformationDictionary,
+                                                                                             final Model model) {
+        final List<Field<?>> toReturn = getFieldsFromDataDictionaryAndTransformationDictionary(dataDictionary, transformationDictionary);
+        LocalTransformations localTransformations = model.getLocalTransformations();
+        if (localTransformations != null && localTransformations.hasDerivedFields()) {
+            localTransformations.getDerivedFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        Output output = model.getOutput();
+        if (output != null && output.hasOutputFields()) {
+            output.getOutputFields().stream().map(Field.class::cast)
+                    .forEach(toReturn::add);
+        }
+        return toReturn;
     }
 
     static List<String> convertDataFieldValues(List<Value> toConvert) {
