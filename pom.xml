@@ -242,7 +242,7 @@
     <version.org.junit>5.5.2</version.org.junit>
     <version.org.keycloak>13.0.0</version.org.keycloak>
     <version.org.apache.logging.log4j>2.13.2</version.org.apache.logging.log4j>
-    <version.org.mvel>2.4.12.Final</version.org.mvel>
+    <version.org.mvel>2.4.13.Final</version.org.mvel>
     <version.org.ocpsoft.prettytime>3.0.2.Final</version.org.ocpsoft.prettytime>
     <version.org.ops4j.pax.exam>4.13.4</version.org.ops4j.pax.exam>
     <version.org.owasp.encoder>1.2</version.org.owasp.encoder>
