@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.2"
-      xsi:schemaLocation="http://www.dmg.org/PMML-4_2
-      http://www.dmg.org/v4-2-1/pmml-4-2.xsd"
-      xmlns="http://www.dmg.org/PMML-4_2">
+<PMML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="4.4"
+      xsi:schemaLocation="http://www.dmg.org/PMML-4_4
+      http://www.dmg.org/v4-4-1/pmml-4-4.xsd"
+      xmlns="http://www.dmg.org/PMML-4_4">
   <Header copyright="KNIME">
     <Application name="KNIME" version="2.8.0"/>
   </Header>
@@ -21,6 +21,10 @@
     </DataField>
     <DataField name="class" optype="categorical" dataType="string"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6"/>
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6"/>
+    </DataField>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -89,10 +93,11 @@
       <MiningField name="petal_length" invalidValueTreatment="asIs"/>
       <MiningField name="petal_width" invalidValueTreatment="asIs"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
+      <MiningField name="input3" missingValueTreatment="returnInvalid"/>
       <MiningField name="class" usageType="predicted"/>
     </MiningSchema>
     <Output>
-      <OutputField name="out_class" feature="predictedValue" dataType="string" optype="categorical">
+      <OutputField name="out_class" dataType="string" optype="categorical">
         <FieldRef field="class"/>
       </OutputField>
       <OutputField name="out_normcontinuous_field" feature="transformedValue" dataType="double" optype="continuous">

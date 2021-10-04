@@ -33,6 +33,10 @@
     <DataField name="validLicense" optype="categorical" dataType="boolean"/>
     <DataField name="overallScore" optype="continuous" dataType="double"/>
     <DataField name="text_input" optype="categorical" dataType="string"/>
+    <DataField name="input3" optype="continuous" dataType="double">
+      <Interval closure="closedClosed" leftMargin="12.1" rightMargin="14.6"/>
+      <Interval closure="closedClosed" leftMargin="29.1" rightMargin="44.6"/>
+    </DataField>
   </DataDictionary>
   <TransformationDictionary>
     <DefineFunction name="discretize_function" optype="categorical" dataType="string">
@@ -48,7 +52,7 @@
     </DefineFunction>
     <DefineFunction name="norm_discrete_function" optype="categorical" dataType="string">
       <ParameterField name="eval_occupation"/>
-      <NormDiscrete field="eval_occupation" value="SKYDIVER" />
+      <NormDiscrete field="eval_occupation" value="SKYDIVER"/>
     </DefineFunction>
     <DefineFunction name="fun_occupation_referred" optype="categorical" dataType="string">
       <ParameterField name="occupation_referred"/>
@@ -132,14 +136,15 @@
   </TransformationDictionary>
   <MiningModel functionName="regression" modelName="MixedMining">
     <MiningSchema>
-      <MiningField name="categoricalX" usageType="active" invalidValueTreatment="returnInvalid"/>
-      <MiningField name="categoricalY" usageType="active" invalidValueTreatment="returnInvalid"/>
-      <MiningField name="age" usageType="active" invalidValueTreatment="asMissing"/>
-      <MiningField name="occupation" usageType="active" invalidValueTreatment="asMissing"/>
-      <MiningField name="residenceState" usageType="active" invalidValueTreatment="asMissing"/>
-      <MiningField name="validLicense" usageType="active" invalidValueTreatment="asMissing"/>
+      <MiningField name="categoricalX"/>
+      <MiningField name="categoricalY"/>
+      <MiningField name="age" invalidValueTreatment="asMissing"/>
+      <MiningField name="occupation" invalidValueTreatment="asMissing"/>
+      <MiningField name="residenceState" invalidValueTreatment="asMissing"/>
+      <MiningField name="validLicense" invalidValueTreatment="asMissing"/>
       <MiningField name="text_input" invalidValueTreatment="asIs"/>
-      <MiningField name="categoricalResult" usageType="predicted" invalidValueTreatment="returnInvalid"/>
+      <MiningField name="categoricalResult" usageType="predicted"/>
+      <MiningField name="input3" missingValueTreatment="returnInvalid"/>
     </MiningSchema>
     <Output>
       <OutputField name="Number of Claims" feature="predictedValue" dataType="double" optype="continuous"/>
@@ -158,20 +163,20 @@
         <FieldRef field="normcontinuous_field"/>
       </OutputField>
       <OutputField name="out_normdiscrete_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="norm_discrete_function" >
+        <Apply function="norm_discrete_function">
           <FieldRef field="occupation"/>
         </Apply>
       </OutputField>
       <OutputField name="out_discretize_field" feature="transformedValue" dataType="string" optype="categorical">
-        <Apply function="discretize_function" >
+        <Apply function="discretize_function">
           <FieldRef field="age"/>
         </Apply>
       </OutputField>
       <OutputField name="out_mapvalued_field" feature="transformedValue" dataType="string" optype="categorical">
         <FieldRef field="mapvalued_field"/>
       </OutputField>
-      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous" >
-        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION" >
+      <OutputField name="out_text_index_normalization_field" feature="transformedValue" dataType="double" optype="continuous">
+        <Apply function="TEXT_INDEX_NORMALIZATION_FUNCTION">
           <FieldRef field="text_input"/>
           <Constant>ui_good</Constant>
         </Apply>

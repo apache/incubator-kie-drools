@@ -16,41 +16,139 @@
 
 package org.kie.pmml.compiler.commons.builders;
 
-import java.io.IOException;
-import java.util.Map;
+import java.util.List;
 
-import javax.xml.bind.JAXBException;
-
-import com.github.javaparser.utils.Pair;
+import com.github.javaparser.ast.CompilationUnit;
+import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
+import com.github.javaparser.ast.body.ConstructorDeclaration;
+import com.github.javaparser.ast.stmt.BlockStmt;
+import com.github.javaparser.ast.stmt.Statement;
+import org.dmg.pmml.Field;
+import org.dmg.pmml.Model;
 import org.dmg.pmml.PMML;
+import org.dmg.pmml.TransformationDictionary;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.kie.pmml.api.enums.DATA_TYPE;
+import org.kie.pmml.api.exceptions.KiePMMLException;
+import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
-import org.xml.sax.SAXException;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.kie.pmml.compiler.commons.CommonTestingUtils.getFieldsFromDataDictionary;
-import static org.kie.pmml.compiler.commons.builders.KiePMMLModelCodegenUtils.getMissingValueReplacementsMap;
+import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE;
+import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE_JAVA;
+import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
+import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelCodegenUtilsTest {
 
-    private static final String MODEL_FILE = "MissingDataRegression.pmml";
+    private static final String MODEL_FILE = "TreeSample.pmml";
+    private static TransformationDictionary transformationDictionary;
+    private static Model model;
+    private static List<Field<?>> fields;
+    private static ClassOrInterfaceDeclaration modelTemplate;
 
-    @Test
-    public void testGetMissingValueReplacementsMap() throws IOException, JAXBException, SAXException {
-        PMML pmml = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
-
-        Map<String, Pair<DATA_TYPE, String>> output = getMissingValueReplacementsMap(getFieldsFromDataDictionary(pmml.getDataDictionary()), pmml.getModels().get(0));
-
-        assertTrue(output.containsKey("x"));
-        assertEquals(DATA_TYPE.DOUBLE, output.get("x").a);
-        assertEquals("5", output.get("x").b);
-
-        assertTrue(output.containsKey("y"));
-        assertEquals(DATA_TYPE.STRING, output.get("y").a);
-        assertEquals("classB", output.get("y").b);
+    @BeforeClass
+    public static void setup() throws Exception {
+        PMML pmmlModel = KiePMMLUtil.load(getFileInputStream(MODEL_FILE), MODEL_FILE);
+        transformationDictionary = pmmlModel.getTransformationDictionary();
+        model = pmmlModel.getModels().get(0);
+        fields = getFieldsFromDataDictionaryTransformationDictionaryAndModel(pmmlModel.getDataDictionary(),
+                                                                             transformationDictionary,
+                                                                             model);
+        CompilationUnit cloneCU = JavaParserUtils.getKiePMMLModelCompilationUnit("className", "packageName",
+                                                                                 KIE_PMML_TEST_MODEL_TEMPLATE_JAVA,
+                                                                                 KIE_PMML_TEST_MODEL_TEMPLATE);
+        modelTemplate = cloneCU.getClassByName("className")
+                .orElseThrow(() -> new KiePMMLException(MAIN_CLASS_NOT_FOUND + ": " + "className"));
     }
 
+    @Test
+    public void init() {
+        ConstructorDeclaration constructorDeclaration = modelTemplate.getDefaultConstructor().get();
+        KiePMMLModelCodegenUtils.init(modelTemplate, fields, transformationDictionary, model);
+        BlockStmt body = constructorDeclaration.getBody();
+        Statement expected = JavaParserUtils.parseConstructorBlock("{\n" +
+                                                                           "super(\"golfing\", Collections.emptyList" +
+                                                                           "());\n" +
+                                                                           "    pmmlMODEL = org.kie.pmml.api.enums" +
+                                                                           ".PMML_MODEL" +
+                                                                           ".TREE_MODEL;\n" +
+                                                                           "    transformationDictionary = this" +
+                                                                           ".createTransformationDictionary();\n" +
+                                                                           "    localTransformations = this" +
+                                                                           ".createLocalTransformations();\n" +
+                                                                           "    miningFunction = org.kie.pmml.api" +
+                                                                           ".enums" +
+                                                                           ".MINING_FUNCTION.CLASSIFICATION;\n" +
+                                                                           "    targetField = \"whatIdo\";\n" +
+                                                                           "    miningFields.add(new org.kie.pmml.api" +
+                                                                           ".models" +
+                                                                           ".MiningField(\"temperature\", org.kie" +
+                                                                           ".pmml.api.enums" +
+                                                                           ".FIELD_USAGE_TYPE.ACTIVE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.DATA_TYPE.DOUBLE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.INVALID_VALUE_TREATMENT_METHOD" +
+                                                                           ".RETURN_INVALID, null, null, java.util" +
+                                                                           ".Arrays.asList" +
+                                                                           "(), java.util.Arrays.asList()));\n" +
+                                                                           "    miningFields.add(new org.kie.pmml.api" +
+                                                                           ".models" +
+                                                                           ".MiningField(\"humidity\", org.kie.pmml" +
+                                                                           ".api.enums" +
+                                                                           ".FIELD_USAGE_TYPE.ACTIVE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.DATA_TYPE.DOUBLE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.INVALID_VALUE_TREATMENT_METHOD" +
+                                                                           ".RETURN_INVALID, null, null, java.util" +
+                                                                           ".Arrays.asList" +
+                                                                           "(), java.util.Arrays.asList()));\n" +
+                                                                           "    miningFields.add(new org.kie.pmml.api" +
+                                                                           ".models" +
+                                                                           ".MiningField(\"windy\", org.kie.pmml.api" +
+                                                                           ".enums" +
+                                                                           ".FIELD_USAGE_TYPE.ACTIVE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.DATA_TYPE.STRING, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.INVALID_VALUE_TREATMENT_METHOD" +
+                                                                           ".RETURN_INVALID, null, null, java.util" +
+                                                                           ".Arrays.asList" +
+                                                                           "(\"true\", \"false\"), java.util.Arrays" +
+                                                                           ".asList()));" +
+                                                                           "\n" +
+                                                                           "    miningFields.add(new org.kie.pmml.api" +
+                                                                           ".models" +
+                                                                           ".MiningField(\"outlook\", org.kie.pmml" +
+                                                                           ".api.enums" +
+                                                                           ".FIELD_USAGE_TYPE.ACTIVE, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.DATA_TYPE.STRING, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.INVALID_VALUE_TREATMENT_METHOD" +
+                                                                           ".RETURN_INVALID, null, null, java.util" +
+                                                                           ".Arrays.asList" +
+                                                                           "(\"sunny\", \"overcast\", \"rain\"), java" +
+                                                                           ".util" +
+                                                                           ".Arrays.asList()));\n" +
+                                                                           "    miningFields.add(new org.kie.pmml.api" +
+                                                                           ".models" +
+                                                                           ".MiningField(\"whatIdo\", org.kie.pmml" +
+                                                                           ".api.enums" +
+                                                                           ".FIELD_USAGE_TYPE.TARGET, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.DATA_TYPE.STRING, null, org.kie" +
+                                                                           ".pmml.api" +
+                                                                           ".enums.INVALID_VALUE_TREATMENT_METHOD" +
+                                                                           ".RETURN_INVALID, null, null, java.util.Arrays.asList" +
+                                                                           "(\"will play\", \"may play\", \"no play\"), java" +
+                                                                           ".util.Arrays.asList()));\n" +
+                                                                           "}");
+        assertEquals(expected.toString(), body.toString());
+        assertTrue(JavaParserUtils.equalsNode(expected, body));
+    }
 }
