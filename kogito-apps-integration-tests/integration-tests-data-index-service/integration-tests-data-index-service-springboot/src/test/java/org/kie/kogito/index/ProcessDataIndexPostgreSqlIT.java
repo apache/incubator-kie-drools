@@ -30,7 +30,7 @@ import io.restassured.RestAssured;
 import static org.kie.kogito.index.spring.DataIndexInfinispanSpringTestResource.KOGITO_DATA_INDEX_SERVICE_URL;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { KogitoApplication.class })
-@ContextConfiguration(initializers = { DataIndexPostgreSqlSpringTestResource.class, KogitoServiceRandomPortSpringTestResource.class })
+@ContextConfiguration(initializers = { KogitoServiceRandomPortSpringTestResource.class, DataIndexPostgreSqlSpringTestResource.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
 
@@ -47,11 +47,6 @@ public class ProcessDataIndexPostgreSqlIT extends AbstractProcessDataIndexIT {
 
     @Override
     public boolean validateDomainData() {
-        return false;
-    }
-
-    @Override
-    public boolean checkRuntimeConnectionsResponses() {
         return false;
     }
 

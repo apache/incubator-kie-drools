@@ -123,8 +123,9 @@ public class GraphQLSchemaManager {
                     builder.dataFetcher("NodeInstanceCancel", this::cancelNodeInstance);
                     builder.dataFetcher("JobCancel", this::cancelJob);
                     builder.dataFetcher("JobReschedule", this::rescheduleJob);
-                    builder.dataFetcher("TaskUpdate", this::updateUserTask);
-                    builder.dataFetcher("TaskPartialUpdate", this::partialUpdateUserTask);
+                    builder.dataFetcher("UserTaskInstanceUpdate", this::updateUserTaskInstance);
+                    builder.dataFetcher("UserTaskInstanceCommentCreate", this::createTaskInstanceComment);
+                    builder.dataFetcher("UserTaskInstanceAttachmentCreate", this::createTaskInstanceAttachment);
                     return builder;
                 })
                 .type("ProcessInstance", builder -> {
@@ -136,7 +137,7 @@ public class GraphQLSchemaManager {
                     return builder;
                 })
                 .type("UserTaskInstance", builder -> {
-                    builder.dataFetcher("schema", this::getUserTaskSchema);
+                    builder.dataFetcher("schema", this::getUserTaskInstanceSchema);
                     return builder;
                 })
                 .type("ProcessInstanceMeta", builder -> {
@@ -279,7 +280,7 @@ public class GraphQLSchemaManager {
         return execute.size() > 0 ? execute.get(0) : null;
     }
 
-    private CompletableFuture getUserTaskSchema(DataFetchingEnvironment env) {
+    private CompletableFuture getUserTaskInstanceSchema(DataFetchingEnvironment env) {
         UserTaskInstance userTaskInstance = env.getSource();
         return dataIndexApiExecutor.getUserTaskSchema(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
@@ -287,23 +288,32 @@ public class GraphQLSchemaManager {
                 env.getArgument("groups"));
     }
 
-    private CompletableFuture<String> updateUserTask(DataFetchingEnvironment env) {
+    private CompletableFuture<String> updateUserTaskInstance(DataFetchingEnvironment env) {
         UserTaskInstance userTaskInstance = cacheService.getUserTaskInstancesCache().get(env.getArgument("taskId"));
-        Map taskData = env.getArgument("taskData");
-        return dataIndexApiExecutor.updateUserTask(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+        return dataIndexApiExecutor.updateUserTaskInstance(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
                 env.getArgument("user"),
                 env.getArgument("groups"),
-                env.getArgument("taskInfo"));
+                env.getArguments());
     }
 
-    private CompletableFuture<String> partialUpdateUserTask(DataFetchingEnvironment env) {
+    private CompletableFuture<String> createTaskInstanceComment(DataFetchingEnvironment env) {
         UserTaskInstance userTaskInstance = cacheService.getUserTaskInstancesCache().get(env.getArgument("taskId"));
-        return dataIndexApiExecutor.partialUpdateUserTask(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+        return dataIndexApiExecutor.createUserTaskInstanceComment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
                 userTaskInstance,
                 env.getArgument("user"),
                 env.getArgument("groups"),
-                env.getArgument("taskInfo"));
+                env.getArgument("comment"));
+    }
+
+    private CompletableFuture<String> createTaskInstanceAttachment(DataFetchingEnvironment env) {
+        UserTaskInstance userTaskInstance = cacheService.getUserTaskInstancesCache().get(env.getArgument("taskId"));
+        return dataIndexApiExecutor.createUserTaskInstanceAttachment(getServiceUrl(userTaskInstance.getEndpoint(), userTaskInstance.getProcessId()),
+                userTaskInstance,
+                env.getArgument("user"),
+                env.getArgument("groups"),
+                env.getArgument("name"),
+                env.getArgument("uri"));
     }
 
     private Collection<ProcessInstance> getProcessInstancesValues(DataFetchingEnvironment env) {

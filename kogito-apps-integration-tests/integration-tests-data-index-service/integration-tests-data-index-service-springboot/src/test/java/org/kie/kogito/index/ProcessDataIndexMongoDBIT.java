@@ -30,7 +30,7 @@ import io.restassured.RestAssured;
 import static org.kie.kogito.index.spring.DataIndexInfinispanSpringTestResource.KOGITO_DATA_INDEX_SERVICE_URL;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = { KogitoApplication.class })
-@ContextConfiguration(initializers = { DataIndexMongoDBSpringTestResource.class, KogitoServiceRandomPortSpringTestResource.class })
+@ContextConfiguration(initializers = { KogitoServiceRandomPortSpringTestResource.class, DataIndexMongoDBSpringTestResource.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
 
@@ -50,8 +50,4 @@ public class ProcessDataIndexMongoDBIT extends AbstractProcessDataIndexIT {
         RestAssured.port = httpPort;
     }
 
-    @Override
-    public boolean checkRuntimeConnectionsResponses() {
-        return false;
-    }
 }

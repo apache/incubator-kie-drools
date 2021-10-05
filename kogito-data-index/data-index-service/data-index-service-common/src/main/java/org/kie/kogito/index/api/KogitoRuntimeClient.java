@@ -49,9 +49,15 @@ public interface KogitoRuntimeClient {
 
     CompletableFuture<String> rescheduleJob(String serviceURL, Job job, String newJobData);
 
-    CompletableFuture<String> getUserTaskSchema(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups);
+    CompletableFuture<String> getUserTaskSchema(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups);
 
-    CompletableFuture<String> updateUserTask(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups, Map taskInfo);
+    CompletableFuture<String> updateUserTaskInstance(String serviceURL, UserTaskInstance userTaskInstance, String user,
+            List<String> groups, Map taskInfo);
 
-    CompletableFuture<String> partialUpdateUserTask(String serviceURL, UserTaskInstance userTaskInstance, String user, List<String> groups, Map taskInfo);
+    CompletableFuture<String> createUserTaskInstanceComment(String serviceURL, UserTaskInstance userTaskInstance,
+            String user, List<String> groups, String commentInfo);
+
+    CompletableFuture<String> createUserTaskInstanceAttachment(String serviceURL, UserTaskInstance userTaskInstance,
+            String user, List<String> groups, String name, String uri);
 }

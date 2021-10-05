@@ -15,6 +15,7 @@
  */
 package org.kie.kogito.index.api;
 
+import java.nio.Buffer;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -58,6 +59,7 @@ import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.SKIP_PROCESS_INST
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.TRIGGER_NODE_INSTANCE_PATH;
 import static org.kie.kogito.index.api.KogitoRuntimeClientImpl.UPDATE_VARIABLES_PROCESS_INSTANCE_PATH;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -114,13 +116,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -136,13 +132,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -159,13 +149,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -182,13 +166,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(pI.getVariables().toString());
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -205,13 +183,7 @@ public class KogitoRuntimeClientTest {
                 "Trigger Node " + nodeDefId + "from ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -229,13 +201,7 @@ public class KogitoRuntimeClientTest {
                         "from ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -253,13 +219,7 @@ public class KogitoRuntimeClientTest {
                         "from ProcessInstance with id: " + pI.getId());
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -275,13 +235,7 @@ public class KogitoRuntimeClientTest {
                 "CANCEL Job with id: " + JOB_ID);
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -299,13 +253,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(newJobData);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -323,13 +271,7 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -350,10 +292,15 @@ public class KogitoRuntimeClientTest {
         HttpResponse response = mock(HttpResponse.class);
 
         handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
+        verify(response).statusMessage();
+        verify(response).body();
         verify(response, never()).bodyAsJson(List.class);
 
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsJson(List.class);
+        HttpResponse responseWithoutError = mock(HttpResponse.class);
+        handlerCaptor.getValue().handle(createResponseMocks(responseWithoutError, true, 200));
+        verify(responseWithoutError, never()).statusMessage();
+        verify(responseWithoutError, never()).body();
+        verify(responseWithoutError).bodyAsJson(List.class);
     }
 
     @Test
@@ -369,47 +316,11 @@ public class KogitoRuntimeClientTest {
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         verify(httpRequestMock).send(handlerCaptor.capture());
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-        HttpResponse response = mock(HttpResponse.class);
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
-    public void testUpdateUserTask() {
-        Map taskInfo = new HashMap();
-        taskInfo.put("description", "NewDescription");
-        setupIdentityMock();
-        when(webClientMock.put(any())).thenReturn(httpRequestMock);
-
-        UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
-
-        client.updateUserTask(SERVICE_URL, taskInstance, "jdoe", Collections.singletonList("managers"), taskInfo);
-        ArgumentCaptor<JsonObject> jsonCaptor = ArgumentCaptor.forClass(JsonObject.class);
-        verify(client).sendPutClientRequest(eq(webClientMock),
-                eq("/management/processes/travels/instances/" + PROCESS_INSTANCE_ID + "/tasks/" + TASK_ID + "?user=jdoe&group=managers"),
-                eq("Update UserTask: " + taskInstance.getName() + " with id: " + taskInstance.getId()),
-                jsonCaptor.capture());
-        assertThat(jsonCaptor.getValue().getString("description")).isEqualTo("NewDescription");
-        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
-        JsonObject jsonOject = new JsonObject(taskInfo);
-        verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
-        verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
-
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
-    }
-
-    @Test
-    public void testPartialUpdateUserTask() {
-
+    public void testUpdateUserTaskInstance() {
         setupIdentityMock();
         when(webClientMock.patch(any())).thenReturn(httpRequestMock);
 
@@ -417,24 +328,59 @@ public class KogitoRuntimeClientTest {
         Map taskInfo = new HashMap();
         taskInfo.put("description", "NewDescription");
 
-        client.partialUpdateUserTask(SERVICE_URL, taskInstance, "jdoe", Collections.singletonList("managers"), taskInfo);
+        client.updateUserTaskInstance(SERVICE_URL, taskInstance, "jdoe", Collections.singletonList("managers"), taskInfo);
         ArgumentCaptor<JsonObject> jsonCaptor = ArgumentCaptor.forClass(JsonObject.class);
         verify(client).sendPatchClientRequest(eq(webClientMock),
                 eq("/management/processes/travels/instances/" + PROCESS_INSTANCE_ID + "/tasks/" + TASK_ID + "?user=jdoe&group=managers"),
-                eq("Partial update UserTask:" + taskInstance.getName() + " with id: " + taskInstance.getId()),
+                eq("Update user task instance:" + taskInstance.getName() + " with id: " + taskInstance.getId()),
                 jsonCaptor.capture());
         assertThat(jsonCaptor.getValue().getString("description")).isEqualTo("NewDescription");
         ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
         JsonObject jsonOject = new JsonObject(taskInfo);
         verify(httpRequestMock).sendJson(eq(jsonOject), handlerCaptor.capture());
-        HttpResponse response = mock(HttpResponse.class);
         verify(httpRequestMock).putHeader(eq("Authorization"), eq("Bearer " + AUTHORIZED_TOKEN));
+        checkResponseHandling(handlerCaptor.getValue());
+    }
 
-        handlerCaptor.getValue().handle(createResponseMocks(response, false, 404));
-        verify(response, never()).bodyAsString();
+    @Test
+    public void testCreateUserTaskInstanceComment() {
+        String commentInfo = "newComment";
+        setupIdentityMock();
+        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
 
-        handlerCaptor.getValue().handle(createResponseMocks(response, true, 200));
-        verify(response).bodyAsString();
+        UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
+
+        client.createUserTaskInstanceComment(SERVICE_URL, taskInstance, "jdoe", Collections.singletonList("managers"), commentInfo);
+        verify(client).sendPostWithBodyClientRequest(eq(webClientMock),
+                eq("/travels/" + PROCESS_INSTANCE_ID + "/" + taskInstance.getName() + "/" + TASK_ID + "/comments?user=jdoe&group=managers"),
+                eq("Adding comment to  UserTask:" + taskInstance.getName() + " with id: " + taskInstance.getId()),
+                any(), eq("text/plain"));
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        verify(httpRequestMock).sendBuffer(any(), handlerCaptor.capture());
+        checkResponseHandling(handlerCaptor.getValue());
+    }
+
+    @Test
+    public void testCreateUserTaskInstanceAttachment() {
+        String attachmentUri = "nhttps://drive.google.com/file/d/AttachmentUri";
+        String attachmentName = "newAttachmentName";
+        setupIdentityMock();
+        when(webClientMock.post(any())).thenReturn(httpRequestMock);
+        when(httpRequestMock.putHeader(eq("Content-Type"), anyString())).thenReturn(httpRequestMock);
+
+        UserTaskInstance taskInstance = createUserTaskInstance(PROCESS_INSTANCE_ID, TASK_ID, "InProgress");
+
+        client.createUserTaskInstanceAttachment(SERVICE_URL, taskInstance, "jdoe", Collections.singletonList("managers"), attachmentName, attachmentUri);
+        verify(client).sendPostWithBodyClientRequest(eq(webClientMock),
+                eq("/travels/" + PROCESS_INSTANCE_ID + "/" + taskInstance.getName() + "/" + TASK_ID + "/attachments?user=jdoe&group=managers"),
+                eq("Adding attachment to  UserTask:" + taskInstance.getName() + " with id: " + taskInstance.getId()),
+                eq("{ \"name\": \"" + attachmentName + "\", \"uri\": \"" + attachmentUri + "\" }"), eq("application/json"));
+        ArgumentCaptor<Handler> handlerCaptor = ArgumentCaptor.forClass(Handler.class);
+        JsonObject jsonObject = new JsonObject("{ \"name\": \"" + attachmentName + "\", \"uri\": \"" + attachmentUri + "\" }");
+
+        verify(httpRequestMock).sendJson(eq(jsonObject), handlerCaptor.capture());
+        checkResponseHandling(handlerCaptor.getValue());
     }
 
     @Test
@@ -502,6 +448,21 @@ public class KogitoRuntimeClientTest {
 
     private Job createJob(String jobId, String processInstanceId, String status) {
         return TestUtils.getJob(jobId, "travels", processInstanceId, null, null, status);
+    }
+
+    protected void checkResponseHandling(Handler<AsyncResult<HttpResponse<Buffer>>> handler) {
+        HttpResponse response = mock(HttpResponse.class);
+        HttpResponse responseWithoutError = mock(HttpResponse.class);
+
+        handler.handle(createResponseMocks(response, false, 404));
+        verify(response).statusMessage();
+        verify(response).body();
+        verify(response, never()).bodyAsString();
+
+        handler.handle(createResponseMocks(responseWithoutError, true, 200));
+        verify(responseWithoutError, never()).statusMessage();
+        verify(responseWithoutError, never()).body();
+        verify(responseWithoutError).bodyAsString();
     }
 
     protected void setupIdentityMock() {
