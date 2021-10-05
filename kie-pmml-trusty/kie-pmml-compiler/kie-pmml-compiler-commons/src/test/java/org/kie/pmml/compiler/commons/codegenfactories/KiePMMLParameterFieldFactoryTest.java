@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,15 +31,19 @@ import org.junit.Test;
 import org.kie.pmml.commons.transformations.KiePMMLParameterField;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLParameterFieldFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLParameterFieldFactoryTest_01.txt";
+
     @Test
-    public void getParameterFieldVariableDeclaration() {
+    public void getParameterFieldVariableDeclaration() throws IOException {
         String variableName = "variableName";
         ParameterField parameterField = new ParameterField(FieldName.create(variableName));
         parameterField.setDataType(DataType.DOUBLE);
@@ -49,15 +54,8 @@ public class KiePMMLParameterFieldFactoryTest {
 
         BlockStmt retrieved = KiePMMLParameterFieldFactory.getParameterFieldVariableDeclaration(variableName,
                                                                                                 parameterField);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLParameterField %1$s" +
-                                                                              " = KiePMMLParameterField.builder" +
-                                                                              "(\"%1$s\", Collections" +
-                                                                              ".emptyList()).withDataType(%2$s)" +
-                                                                              ".withOpType(%3$s)" +
-                                                                              ".withDisplayName(\"%4$s\")" +
-                                                                              ".build();\n" +
-                                                                              "}", variableName,
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
                                                                       dataType,
                                                                       opType,
                                                                       parameterField.getDisplayName()));

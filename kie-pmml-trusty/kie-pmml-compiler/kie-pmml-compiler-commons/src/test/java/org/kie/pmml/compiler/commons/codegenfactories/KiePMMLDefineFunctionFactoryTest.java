@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +43,7 @@ import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getDATA_TYPEString;
 import static org.kie.pmml.compiler.commons.CommonTestingUtils.getOP_TYPEString;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLDefineFunctionFactoryTest {
 
@@ -49,9 +51,10 @@ public class KiePMMLDefineFunctionFactoryTest {
     private static final String PARAM_1 = "PARAM_1";
     private static final String PARAM_2 = "PARAM_2";
     private static final Double value1 = 100.0;
+    private static final String TEST_01_SOURCE = "KiePMMLDefineFunctionFactoryTest_01.txt";
 
     @Test
-    public void getDefineFunctionVariableDeclaration() {
+    public void getDefineFunctionVariableDeclaration() throws IOException {
         ParameterField parameterField1 = new ParameterField(FieldName.create(PARAM_1));
         parameterField1.setDataType(DataType.DOUBLE);
         parameterField1.setOpType(OpType.CONTINUOUS);
@@ -80,44 +83,9 @@ public class KiePMMLDefineFunctionFactoryTest {
         String opType2 = getOP_TYPEString(parameterField2.getOpType());
         String opType3 = getOP_TYPEString(defineFunction.getOpType());
         BlockStmt retrieved = KiePMMLDefineFunctionFactory.getDefineFunctionVariableDeclaration(defineFunction);
+        String text = getFileContent(TEST_01_SOURCE);
         Statement expected = JavaParserUtils
-                .parseBlock(String.format("{\n" +
-                                                  "    KiePMMLParameterField CUSTOM_FUNCTION_0 = " +
-                                                  "KiePMMLParameterField.builder(\"%s\", Collections" +
-                                                  ".emptyList())" +
-                                                  ".withDataType(%s)" +
-                                                  ".withOpType(%s)" +
-                                                  ".withDisplayName(\"%s\")" +
-                                                  ".build();\n" +
-                                                  "    KiePMMLParameterField CUSTOM_FUNCTION_1 = " +
-                                                  "KiePMMLParameterField.builder(\"%s\", Collections" +
-                                                  ".emptyList()).withDataType(%s)" +
-                                                  ".withOpType(%s)" +
-                                                  ".withDisplayName(\"%s\")" +
-                                                  ".build();\n" +
-                                                  "    KiePMMLConstant CUSTOM_FUNCTION_Expression_0 = " +
-                                                  "new KiePMMLConstant(\"CUSTOM_FUNCTION_Expression_0\", " +
-                                                  "Collections.emptyList(), %s, null);\n" +
-                                                  "    KiePMMLFieldRef CUSTOM_FUNCTION_Expression_1 = " +
-                                                  "new KiePMMLFieldRef(\"%s\", Collections.emptyList(), null);" +
-                                                  "\n" +
-                                                  "    KiePMMLApply CUSTOM_FUNCTION_Expression = " +
-                                                  "KiePMMLApply.builder(\"CUSTOM_FUNCTION_Expression\", Collections" +
-                                                  ".emptyList(), \"%s\")" +
-                                                  ".withDefaultValue(null)" +
-                                                  ".withMapMissingTo(null)" +
-                                                  ".withInvalidValueTreatmentMethod" +
-                                                  "(\"%s\")" +
-                                                  ".withKiePMMLExpressions(Arrays.asList" +
-                                                  "(CUSTOM_FUNCTION_Expression_0, CUSTOM_FUNCTION_Expression_1))" +
-                                                  ".build()" +
-                                                  ";\n" +
-                                                  "    KiePMMLDefineFunction CUSTOM_FUNCTION = " +
-                                                  "new KiePMMLDefineFunction(\"CUSTOM_FUNCTION\", Collections" +
-                                                  ".emptyList(), %s, %s, Arrays" +
-                                                  ".asList(CUSTOM_FUNCTION_0, CUSTOM_FUNCTION_1), " +
-                                                  "CUSTOM_FUNCTION_Expression);\n" +
-                                                  "}",
+                .parseBlock(String.format(text,
                                           parameterField1.getName().getValue(),
                                           dataType1,
                                           opType1,

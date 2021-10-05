@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,11 +31,14 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLIntervalFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLIntervalFactoryTest_01.txt";
+
     @Test
-    public void getIntervalVariableDeclaration() {
+    public void getIntervalVariableDeclaration() throws IOException {
         String variableName = "variableName";
         double leftMargin = 45.32;
 
@@ -47,17 +51,10 @@ public class KiePMMLIntervalFactoryTest {
                                                                                     interval);
         String closureString =
                 CLOSURE.class.getName() + "." + CLOSURE.byName(interval.getClosure().value()).name();
-
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLInterval " +
-                                                                              "%s = new " +
-                                                                              "KiePMMLInterval(%s, " +
-                                                                              "null, " +
-                                                                              "%s);\n" +
-                                                                              "}", variableName, leftMargin, closureString));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, leftMargin, closureString));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLInterval.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
-
 }

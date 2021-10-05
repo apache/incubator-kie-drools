@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,22 +28,21 @@ import org.junit.Test;
 import org.kie.pmml.commons.model.predicates.KiePMMLFalsePredicate;
 import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLFalsePredicateFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLFalsePredicateFactoryTest_01.txt";
+
     @Test
-    public void getFalsePredicateVariableDeclaration() {
+    public void getFalsePredicateVariableDeclaration() throws IOException {
         String variableName = "variableName";
-        BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateVariableDeclaration(variableName, new False());
-        Statement expected = JavaParserUtils.parseBlock(String.format("{" +
-                                                                                  "KiePMMLFalsePredicate %1$s = new " +
-                                                                                  "KiePMMLFalsePredicate(\"%1$s\", " +
-                                                                                  "Collections" +
-                                                                                  ".emptyList());" +
-                                                                                  "}", variableName));
+        BlockStmt retrieved = KiePMMLFalsePredicateFactory.getFalsePredicateVariableDeclaration(variableName,
+                                                                                                new False());
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLFalsePredicate.class, Collections.class);
         commonValidateCompilationWithImports(retrieved, imports);
