@@ -40,10 +40,6 @@ import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProv
 import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
 import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 import static org.kie.test.util.filesystem.FileUtils.getFileContent;
-import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE;
-import static org.kie.pmml.compiler.commons.mocks.TestingModelImplementationProvider.KIE_PMML_TEST_MODEL_TEMPLATE_JAVA;
-import static org.kie.pmml.compiler.commons.utils.JavaParserUtils.MAIN_CLASS_NOT_FOUND;
-import static org.kie.pmml.compiler.commons.utils.ModelUtils.getFieldsFromDataDictionaryTransformationDictionaryAndModel;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLModelCodegenUtilsTest {
