@@ -16,9 +16,10 @@
 
 package org.kie.kogito.serialization.process.protobuf;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,6 +51,7 @@ import com.google.protobuf.Descriptors.DescriptorValidationException;
  */
 public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvider {
 
+    @Override
     public Collection<Descriptors.Descriptor> descriptors() {
         try {
             return build().stream().flatMap(e -> e.getMessageTypes().stream()).collect(Collectors.toList());
@@ -58,8 +60,8 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
         }
     }
 
-    private Collection<String> protostreamDescriptors() {
-        return Arrays.asList("META-INF/kogito-types.proto", "META-INF/application-types.proto");
+    private Collection<Path> protostreamDescriptors() {
+        return Arrays.asList(Paths.get("META-INF","kogito-types.proto"), Paths.get("META-INF","application-types.proto"));
     }
 
     private boolean isKogitoPackage(FileDescriptor fd){
@@ -88,26 +90,24 @@ public class ProtostreamProtobufAdapterTypeProvider implements ProtobufTypeProvi
         return protos;
     }
 
-    private SerializationContextImpl buildSerializationContext() throws IOException, DescriptorValidationException {
+    private SerializationContextImpl buildSerializationContext() throws IOException {
         SerializationContextImpl context = new SerializationContextImpl(Configuration.builder().build());
-        for (String protoFile : protostreamDescriptors()) {
+        for (Path protoFile : protostreamDescriptors()) {
             try (InputStream is = getInputStream(protoFile)) {
                 if (is == null) {
                     continue;
                 }
-                int idx = protoFile.indexOf(File.separator);
-                String fileName = idx >= 0 && idx + 1 < protoFile.length() ? protoFile.substring(idx + 1) : protoFile;
-                FileDescriptorSource source = new FileDescriptorSource().addProtoFile(fileName, is);
+                FileDescriptorSource source = new FileDescriptorSource().addProtoFile(protoFile.getFileName().toString(), is);
                 context.registerProtoFiles(source);
             }
         }
         return context;
     }
 
-    private InputStream getInputStream(String protoFile) {
-        InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoFile);
+    private InputStream getInputStream(Path protoFile) {
+        InputStream is = ProtostreamProtobufAdapterTypeProvider.class.getClassLoader().getResourceAsStream(protoFile.toString());
         if(is == null && Thread.currentThread().getContextClassLoader() != null) {
-            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(protoFile);
+            is = Thread.currentThread().getContextClassLoader().getResourceAsStream(protoFile.toString());
         }
         return is;
     }
