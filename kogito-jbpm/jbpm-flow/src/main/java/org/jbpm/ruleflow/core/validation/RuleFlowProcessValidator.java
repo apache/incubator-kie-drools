@@ -82,6 +82,7 @@ import com.github.javaparser.ParseResult;
 import com.github.javaparser.ParserConfiguration;
 import com.github.javaparser.ast.CompilationUnit;
 import com.github.javaparser.ast.expr.AssignExpr;
+import com.github.javaparser.ast.expr.BinaryExpr;
 import com.github.javaparser.ast.expr.Expression;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.NameExpr;
@@ -828,6 +829,24 @@ public class RuleFlowProcessValidator implements ProcessValidator {
                         resolveVariablesTypes(arg, knownVariables);
                     } else {
                         arg.findAll(NameExpr.class).stream().filter(ex -> !knownVariables.contains(ex.getNameAsString())).forEach(ex -> ex.calculateResolvedType());
+                    }
+                });
+        node.findAll(BinaryExpr.class).stream()
+                .map(bex -> bex.asBinaryExpr())
+                .forEach(bex -> {
+                    if (bex.getLeft().isNameExpr()) {
+                        if (!knownVariables.contains(bex.getLeft().asNameExpr().getNameAsString())) {
+                            bex.getLeft().calculateResolvedType();
+                        }
+                    } else {
+                        resolveVariablesTypes(bex.getLeft(), knownVariables);
+                    }
+                    if (bex.getRight().isNameExpr()) {
+                        if (!knownVariables.contains(bex.getRight().asNameExpr().getNameAsString())) {
+                            bex.getRight().calculateResolvedType();
+                        }
+                    } else {
+                        resolveVariablesTypes(bex.getRight(), knownVariables);
                     }
                 });
     }

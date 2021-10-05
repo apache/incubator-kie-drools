@@ -101,6 +101,9 @@ public class ProcessToExecModelGeneratorTest {
                         "a.toString(); Integer i = Integer.valueOf(\"1\");",
                         "uses unknown variable in the script: a" }),
                 Arguments.of(new String[] {
+                        "System.out.println(\"Order has been created \" + x);",
+                        "uses unknown variable in the script: x" }),
+                Arguments.of(new String[] {
                         "System.out.println(\"[\" + (new java.util.Date()) + \"] [\" + java.lang.Thread.currentThread().getName() +\"]\");\n" +
                                 "java.util.ArrayList list = new java.util.ArrayList();\n" +
                                 "System.out.println(Integer.valueOf(x));",
