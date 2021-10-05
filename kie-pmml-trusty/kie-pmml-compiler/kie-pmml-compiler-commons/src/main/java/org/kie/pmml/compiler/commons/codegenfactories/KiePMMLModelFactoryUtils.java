@@ -18,7 +18,6 @@ package org.kie.pmml.compiler.commons.codegenfactories;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.github.javaparser.ast.Modifier;
@@ -37,7 +36,6 @@ import com.github.javaparser.ast.stmt.ExplicitConstructorInvocationStmt;
 import com.github.javaparser.ast.stmt.ExpressionStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
 import com.github.javaparser.ast.type.ClassOrInterfaceType;
-import com.github.javaparser.utils.Pair;
 import org.dmg.pmml.LocalTransformations;
 import org.dmg.pmml.TransformationDictionary;
 import org.kie.pmml.api.enums.DATA_TYPE;
@@ -63,10 +61,9 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLLocalTransfo
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLOutputFieldFactory.getOutputFieldVariableDeclaration;
 import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLTransformationDictionaryFactory.TRANSFORMATION_DICTIONARY;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addListPopulation;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.addMapPopulationExpressions;
+import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.createArraysAsListFromList;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getReturnStmt;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.getTypedClassOrInterfaceType;
-import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.literalExprFrom;
 import static org.kie.pmml.compiler.commons.utils.CommonCodegenUtils.setAssignExpressionValue;
 
 /**
@@ -94,7 +91,7 @@ public class KiePMMLModelFactoryUtils {
         final BlockStmt body = constructorDeclaration.getBody();
         final ExplicitConstructorInvocationStmt superStatement =
                 CommonCodegenUtils.getExplicitConstructorInvocationStmt(body)
-                .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
+                        .orElseThrow(() -> new KiePMMLException(String.format(MISSING_CONSTRUCTOR_IN_BODY, body)));
         CommonCodegenUtils.setExplicitConstructorInvocationStmtArgument(superStatement, "name", String.format("\"%s\"",
                                                                                                               name));
     }
@@ -104,28 +101,24 @@ public class KiePMMLModelFactoryUtils {
      * @param generatedClassName
      * @param constructorDeclaration
      * @param name
+     * @param miningFields
+     * @param outputFields
      */
     public static void setKiePMMLModelConstructor(final String generatedClassName,
                                                   final ConstructorDeclaration constructorDeclaration,
                                                   final String name,
                                                   final List<MiningField> miningFields,
-                                                  final List<OutputField> outputFields,
-                                                  final Map<String, Pair<DATA_TYPE, String>> missingValueReplacements) {
+                                                  final List<OutputField> outputFields) {
         setConstructorSuperNameInvocation(generatedClassName, constructorDeclaration, name);
         final BlockStmt body = constructorDeclaration.getBody();
         final List<ObjectCreationExpr> miningFieldsObjectCreations = getMiningFieldsObjectCreations(miningFields);
         addListPopulation(miningFieldsObjectCreations, body, "miningFields");
         final List<ObjectCreationExpr> outputFieldsObjectCreations = getOutputFieldsObjectCreations(outputFields);
         addListPopulation(outputFieldsObjectCreations, body, "outputFields");
-
-        Map<String, Expression> missingValueReplacementsExpr = missingValueReplacements.entrySet().stream().collect(Collectors.toMap(
-                Map.Entry::getKey,
-                entry -> literalExprFrom(entry.getValue().a, entry.getValue().b)
-        ));
-        addMapPopulationExpressions(missingValueReplacementsExpr, body, "missingValueReplacementMap");
     }
 
-    public static void addGetCreatedKiePMMLOutputFieldsMethod(final ClassOrInterfaceDeclaration modelTemplate, final List<org.dmg.pmml.OutputField> outputFields) {
+    public static void addGetCreatedKiePMMLOutputFieldsMethod(final ClassOrInterfaceDeclaration modelTemplate,
+                                                              final List<org.dmg.pmml.OutputField> outputFields) {
         final MethodDeclaration methodDeclaration = modelTemplate.addMethod(GET_CREATED_KIEPMMLOUTPUTFIELDS,
                                                                             Modifier.Keyword.PRIVATE);
         final ClassOrInterfaceType returnedType =
@@ -162,25 +155,30 @@ public class KiePMMLModelFactoryUtils {
                                                                        final LocalTransformations localTransformations) {
         String createTransformationDictionary = null;
         if (transformationDictionary != null) {
-            BlockStmt createTransformationDictionaryBody = KiePMMLTransformationDictionaryFactory.getKiePMMLTransformationDictionaryVariableDeclaration(transformationDictionary);
+            BlockStmt createTransformationDictionaryBody =
+                    KiePMMLTransformationDictionaryFactory.getKiePMMLTransformationDictionaryVariableDeclaration(transformationDictionary);
             createTransformationDictionaryBody.addStatement(getReturnStmt(TRANSFORMATION_DICTIONARY));
             createTransformationDictionary = "createTransformationDictionary";
-            MethodDeclaration createTransformationDictionaryMethod = toPopulate.addMethod(createTransformationDictionary, Modifier.Keyword.PRIVATE);
+            MethodDeclaration createTransformationDictionaryMethod =
+                    toPopulate.addMethod(createTransformationDictionary, Modifier.Keyword.PRIVATE);
             createTransformationDictionaryMethod.setType(KiePMMLTransformationDictionary.class.getName());
             createTransformationDictionaryMethod.setBody(createTransformationDictionaryBody);
         }
         String createLocalTransformations = null;
         if (localTransformations != null) {
-            BlockStmt createLocalTransformationsBody = KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
+            BlockStmt createLocalTransformationsBody =
+                    KiePMMLLocalTransformationsFactory.getKiePMMLLocalTransformationsVariableDeclaration(localTransformations);
             createLocalTransformationsBody.addStatement(getReturnStmt(LOCAL_TRANSFORMATIONS));
             createLocalTransformations = "createLocalTransformations";
-            MethodDeclaration createLocalTransformationsMethod = toPopulate.addMethod(createLocalTransformations, Modifier.Keyword.PRIVATE);
+            MethodDeclaration createLocalTransformationsMethod = toPopulate.addMethod(createLocalTransformations,
+                                                                                      Modifier.Keyword.PRIVATE);
             createLocalTransformationsMethod.setType(KiePMMLLocalTransformations.class.getName());
             createLocalTransformationsMethod.setBody(createLocalTransformationsBody);
         }
         final ConstructorDeclaration constructorDeclaration =
                 toPopulate.getDefaultConstructor().orElseThrow(() -> new KiePMMLInternalException(String.format(MISSING_DEFAULT_CONSTRUCTOR, toPopulate.getName())));
-        populateTransformationsInConstructor(constructorDeclaration, createTransformationDictionary, createLocalTransformations);
+        populateTransformationsInConstructor(constructorDeclaration, createTransformationDictionary,
+                                             createLocalTransformations);
     }
 
     /**
@@ -208,11 +206,11 @@ public class KiePMMLModelFactoryUtils {
                     Expression dataType = dtT != null ?
                             new NameExpr(dtT.getClass().getName() + "." + dtT.name())
                             : new NullLiteralExpr();
-                    MISSING_VALUE_TREATMENT_METHOD mVTM =  miningField.getMissingValueTreatmentMethod();
+                    MISSING_VALUE_TREATMENT_METHOD mVTM = miningField.getMissingValueTreatmentMethod();
                     Expression missingValueTreatmentMethod = mVTM != null ?
                             new NameExpr(mVTM.getClass().getName() + "." + mVTM.name())
                             : new NullLiteralExpr();
-                    INVALID_VALUE_TREATMENT_METHOD iVTM =  miningField.getInvalidValueTreatmentMethod();
+                    INVALID_VALUE_TREATMENT_METHOD iVTM = miningField.getInvalidValueTreatmentMethod();
                     Expression invalidValueTreatmentMethod = iVTM != null ?
                             new NameExpr(iVTM.getClass().getName() + "." + iVTM.name())
                             : new NullLiteralExpr();
@@ -223,7 +221,7 @@ public class KiePMMLModelFactoryUtils {
                             new StringLiteralExpr(miningField.getInvalidValueReplacement())
                             : new NullLiteralExpr();
                     Expression allowedValues = miningField.getAllowedValues() != null ?
-                            CommonCodegenUtils.createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
+                            createArraysAsListFromList(miningField.getAllowedValues()).getExpression()
                             : new NullLiteralExpr();
                     Expression intervals = miningField.getIntervals() != null ?
                             createIntervalsExpression(miningField.getIntervals())
@@ -271,8 +269,6 @@ public class KiePMMLModelFactoryUtils {
         return toReturn;
     }
 
-
-
     /**
      * Create a <code>List&lt;ObjectCreationExpr&gt;</code> for the given <code>List&lt;OutputField&gt;</code>
      * @param outputFields
@@ -302,14 +298,14 @@ public class KiePMMLModelFactoryUtils {
                             new NameExpr(rsltF.getClass().getName() + "." + rsltF.name())
                             : new NullLiteralExpr();
                     Expression allowedValues = outputField.getAllowedValues() != null ?
-                            CommonCodegenUtils.createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
+                            createArraysAsListFromList(outputField.getAllowedValues()).getExpression()
                             : new NullLiteralExpr();
-                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature, allowedValues));
+                    toReturn.setArguments(NodeList.nodeList(name, opType, dataType, targetField, resultFeature,
+                                                            allowedValues));
                     return toReturn;
                 })
                 .collect(Collectors.toList());
     }
-
 
     /**
      * Populating the <b>transformationDictionary</b> and <b>localTransformations</b> variables inside the constructor
@@ -318,13 +314,17 @@ public class KiePMMLModelFactoryUtils {
      * @param createLocalTransformations
      */
     static void populateTransformationsInConstructor(final ConstructorDeclaration constructorDeclaration,
-                                                     final String createTransformationDictionary, final String createLocalTransformations) {
+                                                     final String createTransformationDictionary,
+                                                     final String createLocalTransformations) {
         Expression createTransformationDictionaryInitializer = createTransformationDictionary != null ?
-                new MethodCallExpr(new NameExpr("this"), createTransformationDictionary, NodeList.nodeList()) : new NullLiteralExpr();
-        setAssignExpressionValue(constructorDeclaration.getBody(), TRANSFORMATION_DICTIONARY, createTransformationDictionaryInitializer);
-        Expression createLocalTransformationsInitializer =  createLocalTransformations != null ?
-                new MethodCallExpr(new NameExpr("this"), createLocalTransformations, NodeList.nodeList()) : new NullLiteralExpr();
-        setAssignExpressionValue(constructorDeclaration.getBody(), LOCAL_TRANSFORMATIONS, createLocalTransformationsInitializer);
+                new MethodCallExpr(new NameExpr("this"), createTransformationDictionary, NodeList.nodeList()) :
+                new NullLiteralExpr();
+        setAssignExpressionValue(constructorDeclaration.getBody(), TRANSFORMATION_DICTIONARY,
+                                 createTransformationDictionaryInitializer);
+        Expression createLocalTransformationsInitializer = createLocalTransformations != null ?
+                new MethodCallExpr(new NameExpr("this"), createLocalTransformations, NodeList.nodeList()) :
+                new NullLiteralExpr();
+        setAssignExpressionValue(constructorDeclaration.getBody(), LOCAL_TRANSFORMATIONS,
+                                 createLocalTransformationsInitializer);
     }
-
 }
