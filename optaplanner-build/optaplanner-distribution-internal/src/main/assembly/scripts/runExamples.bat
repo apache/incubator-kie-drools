@@ -8,7 +8,7 @@ set "mainClasspath=examples/binaries/*"
 
 echo Usage: runExamples.bat
 echo Notes:
-echo - Java 11 or higher must be installed. Get the latest OpenJDK from ^(https://adoptopenjdk.net/^).
+echo - Java 11 or higher must be installed. Get the latest OpenJDK from ^(https://adoptium.net/^).
 echo - For JDK, the environment variable JAVA_HOME should be set to the JDK installation directory
 echo   For example: set "JAVA_HOME=C:\Program Files\Java\jdk-11"
 echo.
@@ -49,7 +49,7 @@ if exist "%JAVA_HOME%\bin\java.exe" (
 :failure
     echo.
     echo ERROR Java not found.
-    echo Maybe install OpenJDK 11 from ^(https://adoptopenjdk.net/^) and check the environment variable JAVA_HOME ^(%JAVA_HOME%^).
+    echo Maybe install the latest OpenJDK from ^(https://adoptium.net/^) and check the environment variable JAVA_HOME ^(%JAVA_HOME%^).
     rem Prevent the terminal window to disappear before the user has seen the error message
     echo Press any key to close this window.
     pause

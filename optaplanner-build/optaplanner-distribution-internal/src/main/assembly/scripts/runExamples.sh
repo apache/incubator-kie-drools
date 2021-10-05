@@ -10,7 +10,7 @@ mainClasspath="examples/binaries/*"
 
 echo "Usage: ./runExamples.sh"
 echo "Notes:"
-echo "- Java 11 or higher must be installed. Get the latest OpenJDK from (https://adoptopenjdk.net/)."
+echo "- Java 11 or higher must be installed. Get the latest OpenJDK from (https://adoptium.net/)."
 echo "- For JDK, the environment variable JAVA_HOME should be set to the JDK installation directory"
 echo "  For example (Linux): export JAVA_HOME=/usr/lib/jvm/java-openjdk"
 echo "  For example (macOS): export JAVA_HOME=/Library/Java/Home"
@@ -27,7 +27,7 @@ fi
 if [ $? != 0 ]; then
     echo
     echo "ERROR Failed running the java command."
-    echo "Maybe install OpenJDK 11 from (https://adoptopenjdk.net/) and check the environment variable JAVA_HOME ($JAVA_HOME)."
+    echo "Maybe install the latest OpenJDK from (https://adoptium.net/) and check the environment variable JAVA_HOME ($JAVA_HOME)."
     # Prevent the terminal window to disappear before the user has seen the error message
     read -p "Press [Enter] key to close this window." dummyVar
 fi
