@@ -57,10 +57,7 @@ public class MaterializedLambdaPredicateTest {
                 "        }\n" +
                 "        @Override()\n" +
                 "        public org.drools.model.functions.PredicateInformation predicateInformation() {\n" +
-                "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\");\n" +
-                "            info.addRuleName(\"rule1\", \"rulefilename1.drl\");\n" +
-                "            info.addRuleName(\"rule2\", \"rulefilename2.drl\");\n" +
-                "            info.addRuleName(\"rule3\", \"rulefilename3.drl\");\n" +
+                "            org.drools.model.functions.PredicateInformation info = new org.drools.model.functions.PredicateInformation(\"p.age > 35\", \"rule1\", \"rulefilename1.drl\", \"rule2\", \"rulefilename2.drl\", \"rule3\", \"rulefilename3.drl\");\n" +
                 "            return info;\n" +
                 "        }\n" +
                 "" +
@@ -78,12 +75,12 @@ public class MaterializedLambdaPredicateTest {
 
         //language=JAVA
         String expectedResult = "" +
-                "package org.drools.modelcompiler.util.lambdareplace.PB4;\n" +
+                "package org.drools.modelcompiler.util.lambdareplace.PC2;\n" +
                 "import static rulename.*; " +
                 "import org.drools.modelcompiler.dsl.pattern.D; " +
                 "" +
                 "@org.drools.compiler.kie.builder.MaterializedLambda() " +
-                "public enum LambdaPredicateB43A7DAEE6E92A2B4A203826B1336F22 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
+                "public enum LambdaPredicateC2DA82347AA534CD4CACE85D44B46921 implements org.drools.model.functions.Predicate2<org.drools.modelcompiler.domain.Person, org.drools.modelcompiler.domain.Person>, org.drools.model.functions.HashedExpression  {\n" +
                 " INSTANCE; \n" +
                 "public static final String EXPRESSION_HASH = \"DC57C20B4AF3C2BFEB2552943994B6F7\";" +
                 "       public java.lang.String getExpressionHash() {\n" +

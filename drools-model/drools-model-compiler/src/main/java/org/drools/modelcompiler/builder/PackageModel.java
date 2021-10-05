@@ -91,6 +91,7 @@ import static java.util.stream.Collectors.toList;
 import static org.drools.core.impl.StatefulKnowledgeSessionImpl.DEFAULT_RULE_UNIT;
 import static org.drools.core.util.StringUtils.getPkgUUID;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toVar;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.GLOBAL_OF_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
@@ -809,8 +810,8 @@ public class PackageModel {
 
         MethodCallExpr declarationOfCall = createDslTopLevelMethod(GLOBAL_OF_CALL);
         declarationOfCall.addArgument(new ClassExpr(declType ));
-        declarationOfCall.addArgument(new StringLiteralExpr(packageName));
-        declarationOfCall.addArgument(new StringLiteralExpr(globalName));
+        declarationOfCall.addArgument(toStringLiteral(packageName));
+        declarationOfCall.addArgument(toStringLiteral(globalName));
 
         FieldDeclaration field = classDeclaration.addField(varType, toVar(globalName), publicModifier().getKeyword(), staticModifier().getKeyword(), finalModifier().getKeyword());
 

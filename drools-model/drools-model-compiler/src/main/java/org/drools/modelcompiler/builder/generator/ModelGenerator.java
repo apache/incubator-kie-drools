@@ -77,6 +77,7 @@ import static org.drools.modelcompiler.builder.PackageModel.DOMAIN_CLASS_METADAT
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.classToReferenceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.generateLambdaWithoutParameters;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ATTRIBUTE_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BUILD_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.DECLARATION_OF_CALL;
@@ -223,9 +224,9 @@ public class ModelGenerator {
 
         MethodCallExpr ruleCall = createDslTopLevelMethod(RULE_CALL);
         if (!ruleDescr.getNamespace().isEmpty()) {
-            ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getNamespace() ) );
+            ruleCall.addArgument( toStringLiteral( ruleDescr.getNamespace() ) );
         }
-        ruleCall.addArgument( new StringLiteralExpr( ruleDescr.getName() ) );
+        ruleCall.addArgument( toStringLiteral( ruleDescr.getName() ) );
 
         MethodCallExpr buildCallScope = ruleUnitDescr != null ?
                 new MethodCallExpr(ruleCall, UNIT_CALL).addArgument( new ClassExpr( toClassOrInterfaceType(ruleUnitDescr.getCanonicalName()) ) ) :
@@ -308,11 +309,11 @@ public class ModelGenerator {
                 case "activation-group":
                 case "ruleflow-group":
                 case "duration":
-                    attributeCall.addArgument( new StringLiteralExpr( value ) );
+                    attributeCall.addArgument( toStringLiteral( value ) );
                     break;
                 case "timer":
                     if (validateTimer(value)) {
-                        attributeCall.addArgument( new StringLiteralExpr( value ) );
+                        attributeCall.addArgument( toStringLiteral( value ) );
                     } else {
                         context.addCompilationError( new InvalidExpressionErrorResult(value) );
                     }
@@ -374,7 +375,7 @@ public class ModelGenerator {
         List<MethodCallExpr> ruleMetaAttributes = new ArrayList<>();
         for (String metaAttr : ruleDescr.getAnnotationNames()) {
             MethodCallExpr metaAttributeCall = new MethodCallExpr(METADATA_CALL);
-            metaAttributeCall.addArgument(new StringLiteralExpr(metaAttr));
+            metaAttributeCall.addArgument(toStringLiteral(metaAttr));
             AnnotationDescr ad = ruleDescr.getAnnotation( metaAttr );
             String adFqn = ad.getFullyQualifiedName();
             if ("Propagation".equals(metaAttr)) { // legacy case, as explained in the javadoc annotation above, ref. DROOLS-5685
@@ -390,7 +391,7 @@ public class ModelGenerator {
                 }
                 if ( annotationDefinition.getValues().size() == 1 && annotationDefinition.getValues().containsKey( AnnotationDescr.VALUE ) ) {
                     Object annValue = annotationDefinition.getPropertyValue(AnnotationDescr.VALUE);
-                    metaAttributeCall.addArgument(new StringLiteralExpr(annValue.toString()));
+                    metaAttributeCall.addArgument(toStringLiteral(annValue.toString()));
                 } else {
                     Map<String, Object> map = new HashMap<>( annotationDefinition.getValues().size() );
                     for ( String key : annotationDefinition.getValues().keySet() ) {
@@ -467,7 +468,7 @@ public class ModelGenerator {
         MethodCallExpr unitDataCall = createDslTopLevelMethod(UNIT_DATA_CALL);
 
         unitDataCall.addArgument(new ClassExpr( declType ));
-        unitDataCall.addArgument(new StringLiteralExpr(unitVar.getName()));
+        unitDataCall.addArgument(toStringLiteral(unitVar.getName()));
 
         AssignExpr var_assign = new AssignExpr(var_, unitDataCall, AssignExpr.Operator.ASSIGN);
         ruleBlock.addStatement(var_assign);
@@ -502,13 +503,13 @@ public class ModelGenerator {
             declarationOfCall.addArgument( DOMAIN_CLASSESS_METADATA_FILE_NAME + context.getPackageModel().getPackageUUID() + "." + domainClassSourceName + DOMAIN_CLASS_METADATA_INSTANCE );
         }
 
-        declarationOfCall.addArgument(new StringLiteralExpr(declaration.getVariableName().orElse(declaration.getBindingId())));
+        declarationOfCall.addArgument(toStringLiteral(declaration.getVariableName().orElse(declaration.getBindingId())));
 
         declaration.getDeclarationSource().ifPresent(declarationOfCall::addArgument);
 
         declaration.getEntryPoint().ifPresent( ep -> {
             MethodCallExpr entryPointCall = createDslTopLevelMethod(ENTRY_POINT_CALL);
-            entryPointCall.addArgument( new StringLiteralExpr(ep ) );
+            entryPointCall.addArgument( toStringLiteral(ep ) );
             declarationOfCall.addArgument( entryPointCall );
         } );
         for ( BehaviorDescr behaviorDescr : declaration.getBehaviors() ) {

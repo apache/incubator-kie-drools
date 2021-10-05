@@ -48,6 +48,7 @@ import org.drools.modelcompiler.builder.generator.UnificationTypedExpression;
 
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.util.ClassUtil.toNonPrimitiveType;
 
 public class CoercedExpression {
@@ -181,7 +182,7 @@ public class CoercedExpression {
         final Expression expression = typedExpression.getExpression();
         TypedExpression coercedExpression;
         if (expression instanceof CharLiteralExpr) {
-            coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(((CharLiteralExpr) expression).getValue()));
+            coercedExpression = typedExpression.cloneWithNewExpression(toStringLiteral(((CharLiteralExpr) expression).getValue()));
         } else if (typedExpression.isPrimitive()) {
             coercedExpression = typedExpression.cloneWithNewExpression(new MethodCallExpr(new NameExpr("String"), "valueOf", NodeList.nodeList(expression)));
         } else if (typedExpression.getType() == Object.class) {
@@ -189,7 +190,7 @@ public class CoercedExpression {
         } else if (expression instanceof NameExpr) {
                 coercedExpression = typedExpression.cloneWithNewExpression(new CastExpr(toClassOrInterfaceType(String.class), expression));
         } else {
-            coercedExpression = typedExpression.cloneWithNewExpression(new StringLiteralExpr(expression.toString()));
+            coercedExpression = typedExpression.cloneWithNewExpression(toStringLiteral(expression.toString()));
         }
         return coercedExpression.setType(String.class);
     }

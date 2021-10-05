@@ -37,7 +37,6 @@ import com.github.javaparser.ast.expr.LambdaExpr;
 import com.github.javaparser.ast.expr.MethodCallExpr;
 import com.github.javaparser.ast.expr.Name;
 import com.github.javaparser.ast.expr.NameExpr;
-import com.github.javaparser.ast.expr.StringLiteralExpr;
 import com.github.javaparser.ast.nodeTypes.NodeWithMembers;
 import com.github.javaparser.ast.stmt.BlockStmt;
 import com.github.javaparser.ast.stmt.ReturnStmt;
@@ -49,16 +48,16 @@ import org.drools.model.functions.HashedExpression;
 import static org.drools.core.util.StringUtils.md5Hash;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.createSimpleAnnotation;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
-import static org.drools.modelcompiler.util.lambdareplace.ExecModelLambdaPostProcessor.MATERIALIZED_LAMBDA_PRETTY_PRINTER;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 
 abstract class MaterializedLambda {
 
     final List<LambdaParameter> lambdaParameters = new ArrayList<>();
 
     protected final String packageName;
-    protected String temporaryClassHash;
 
-    LambdaExpr lambdaExpr;
+    protected LambdaExpr lambdaExpr;
+    private String lambdaHash;
     private String ruleClassName;
 
     MaterializedLambda(String packageName, String ruleClassName) {
@@ -78,7 +77,8 @@ abstract class MaterializedLambda {
 
     public CreatedClass create(LambdaExpr lambdaExpr, Collection<String> imports, Collection<String> staticImports) {
         this.lambdaExpr = lambdaExpr;
-        this.temporaryClassHash = classHash(lambdaExpr.toString());
+        this.lambdaHash = classHash(lambdaExpr.toString());
+        String classHash = classHash(lambdaHash + imports);
 
         parseParameters();
 
@@ -89,7 +89,6 @@ abstract class MaterializedLambda {
 
         createMethodsDeclaration(classDeclaration);
 
-        String classHash = classHash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(compilationUnit));
         String isolatedPackageName = getIsolatedPackageName(classHash);
         String className = String.format("%s%s", getPrefix(), classHash);
 
@@ -143,14 +142,13 @@ abstract class MaterializedLambda {
     }
 
     protected EnumDeclaration create(CompilationUnit compilationUnit) {
-        EnumDeclaration lambdaClass = compilationUnit.addEnum(temporaryClassHash);
+        EnumDeclaration lambdaClass = compilationUnit.addEnum(lambdaHash);
         lambdaClass.addAnnotation(createSimpleAnnotation(org.drools.compiler.kie.builder.MaterializedLambda.class));
         lambdaClass.setImplementedTypes(createImplementedTypes());
         lambdaClass.addEntry(new EnumConstantDeclaration("INSTANCE"));
 
-        String expressionHash = md5Hash(MATERIALIZED_LAMBDA_PRETTY_PRINTER.print(lambdaExpr));
         String expressionHashFieldName = "EXPRESSION_HASH";
-        lambdaClass.addFieldWithInitializer(String.class, expressionHashFieldName, new StringLiteralExpr(expressionHash),
+        lambdaClass.addFieldWithInitializer(String.class, expressionHashFieldName, toStringLiteral(lambdaHash),
                                                                                    Modifier.Keyword.PUBLIC, Modifier.Keyword.STATIC, Modifier.Keyword.FINAL);
 
         createGetterForExpressionHashField(lambdaClass, expressionHashFieldName);
