@@ -40,6 +40,7 @@ import org.kie.kogito.explainability.model.PerturbationContext;
 import org.kie.kogito.explainability.model.Prediction;
 import org.kie.kogito.explainability.model.Saliency;
 import org.kie.kogito.explainability.model.SimplePrediction;
+import org.kie.kogito.jitexecutor.dmn.requests.MultipleResourcesPayload;
 import org.kie.kogito.jitexecutor.dmn.responses.DMNResultWithExplanation;
 import org.kie.kogito.trusty.service.common.responses.SalienciesResponse;
 import org.kie.kogito.trusty.storage.api.model.FeatureImportanceModel;
@@ -80,6 +81,16 @@ public class JITDMNServiceImpl implements JITDMNService {
     @Override
     public DMNResultWithExplanation evaluateModelAndExplain(String modelXML, Map<String, Object> context) {
         DMNEvaluator dmnEvaluator = DMNEvaluator.fromXML(modelXML);
+        return evaluateModelAndExplain(dmnEvaluator, context);
+    }
+
+    @Override
+    public DMNResultWithExplanation evaluateModelAndExplain(MultipleResourcesPayload payload, Map<String, Object> context) {
+        DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
+        return evaluateModelAndExplain(dmnEvaluator, context);
+    }
+
+    public DMNResultWithExplanation evaluateModelAndExplain(DMNEvaluator dmnEvaluator, Map<String, Object> context) {
         LocalDMNPredictionProvider localDMNPredictionProvider = new LocalDMNPredictionProvider(dmnEvaluator);
 
         DMNResult dmnResult = dmnEvaluator.evaluate(context);
@@ -132,5 +143,12 @@ public class JITDMNServiceImpl implements JITDMNService {
             return null;
         }
         return new FeatureImportanceModel(model.getFeature().getName(), model.getScore());
+    }
+
+    @Override
+    public KogitoDMNResult evaluateModel(MultipleResourcesPayload payload, Map<String, Object> context) {
+        DMNEvaluator dmnEvaluator = DMNEvaluator.fromMultiple(payload);
+        DMNResult dmnResult = dmnEvaluator.evaluate(context);
+        return new KogitoDMNResult(dmnEvaluator.getNamespace(), dmnEvaluator.getName(), dmnResult);
     }
 }

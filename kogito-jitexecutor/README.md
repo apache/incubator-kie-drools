@@ -164,3 +164,50 @@ The native mode is supported by this application. You can create the native Quar
 ```bash
 mvn clean package -DskipTests -Pnative
 ```
+
+## Multiple models
+
+Each endpoint does support a multiple DMN models variant of the payload; this is helpful for the use-case where the main model to be evaluated has some DMN-import references to other DMNs.
+
+For DMN Evaluation and eXplainability, the payload require specify `mainURI` and `resources` instead of `model`.
+Example:
+```json
+{
+    "mainURI": "/multiple/importing.dmn",
+    "resources": [
+        {
+            "URI": "/multiple/importing.dmn",
+            "content": "< ... xml ... >"
+        },
+        {
+            "URI": "/multiple/stdlib.dmn",
+            "content": "< ... xml ... >"
+        }
+    ],
+    "model": null,
+    "context": {
+        "a person": {
+            "age": 47,
+            "full name": "John Doe"
+        }
+    }
+}
+```
+
+For Schema and Validation, the payload require to specify a JSON payload with  `mainURI` and `resources`.
+Example:
+```json
+{
+    "mainURI": "/multiple/importing.dmn",
+    "resources": [
+        {
+            "URI": "/multiple/importing.dmn",
+            "content": "< ... xml ... >"
+        },
+        {
+            "URI": "/multiple/stdlib.dmn",
+            "content": "< ... xml ... >"
+        }
+    ]
+}
+```
