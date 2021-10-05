@@ -16,7 +16,7 @@
 
 package org.kie.pmml.compiler.commons.builders;
 
-import java.io.IOException;
+import java.io.IOException
 import java.util.List;
 
 import com.github.javaparser.ast.CompilationUnit;
