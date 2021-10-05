@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -30,11 +31,14 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLNormDiscreteFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLNormDiscreteFactoryTest_01.txt";
+
     @Test
-    public void getNormDiscreteVariableDeclaration() {
+    public void getNormDiscreteVariableDeclaration() throws IOException {
         String variableName = "variableName";
         String fieldName = "fieldName";
         String fieldValue = "fieldValue";
@@ -47,14 +51,8 @@ public class KiePMMLNormDiscreteFactoryTest {
 
         BlockStmt retrieved = KiePMMLNormDiscreteFactory.getNormDiscreteVariableDeclaration(variableName,
                                                                                                 normDiscrete);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLNormDiscrete " +
-                                                                              "%s = new " +
-                                                                              "KiePMMLNormDiscrete(\"%s\", " +
-                                                                              "Collections.emptyList(), " +
-                                                                              "\"%s\", " +
-                                                                              "%s);\n" +
-                                                                              "}", variableName, fieldName, fieldValue, mapMissingTo));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, fieldValue, mapMissingTo));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLNormDiscrete.class);
         commonValidateCompilationWithImports(retrieved, imports);
