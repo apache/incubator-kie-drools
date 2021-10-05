@@ -40,15 +40,15 @@ public class PostgresStorage<V> implements Storage<String, V> {
     private static final String LISTENER_NOT_AVAILABLE_IN_POSTGRES_SQL = "Listener not available in PostgresSQL";
     private CacheEntityRepository repository;
     private String cacheName;
-    private Class type;
+    private Class<V> type;
     private ObjectMapper mapper;
     private String rootType;
 
-    public PostgresStorage(String cacheName, CacheEntityRepository repository, ObjectMapper mapper, Class type) {
+    public PostgresStorage(String cacheName, CacheEntityRepository repository, ObjectMapper mapper, Class<V> type) {
         this(cacheName, repository, mapper, type, type.getCanonicalName());
     }
 
-    public PostgresStorage(String cacheName, CacheEntityRepository repository, ObjectMapper mapper, Class type, String rootType) {
+    public PostgresStorage(String cacheName, CacheEntityRepository repository, ObjectMapper mapper, Class<V> type, String rootType) {
         this.repository = repository;
         this.cacheName = cacheName;
         this.type = type;
@@ -73,7 +73,7 @@ public class PostgresStorage<V> implements Storage<String, V> {
 
     @Override
     public Query<V> query() {
-        throw new UnsupportedOperationException("Custom query not available in PostgresSQL");
+        return new PostgresQuery<V>(cacheName, repository, mapper, type);
     }
 
     @Override

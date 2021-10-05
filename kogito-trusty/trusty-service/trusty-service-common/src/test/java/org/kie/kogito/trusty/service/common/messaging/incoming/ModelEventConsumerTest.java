@@ -16,6 +16,9 @@
 
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
+import java.time.Duration;
+
+import org.awaitility.Awaitility;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -86,7 +89,14 @@ class ModelEventConsumerTest {
     private void testNumberOfInvocations(final Message<String> message,
             final int wantedNumberOfServiceInvocations) {
         consumer.handleMessage(message);
-        verify(trustyService, times(wantedNumberOfServiceInvocations)).storeModel(any(), any());
-        verify(message, times(1)).ack();
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(30))
+                .pollInterval(Duration.ofSeconds(1))
+                .untilAsserted(
+                        () -> {
+                            verify(trustyService, times(wantedNumberOfServiceInvocations)).storeModel(any(), any());
+                            verify(message, times(1)).ack();
+                        });
     }
 }

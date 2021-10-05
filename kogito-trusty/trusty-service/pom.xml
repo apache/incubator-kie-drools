@@ -19,5 +19,6 @@
     <module>trusty-service-common</module>
     <module>trusty-service-infinispan</module>
     <module>trusty-service-redis</module>
+    <module>trusty-service-postgresql</module>
   </modules>
 </project>

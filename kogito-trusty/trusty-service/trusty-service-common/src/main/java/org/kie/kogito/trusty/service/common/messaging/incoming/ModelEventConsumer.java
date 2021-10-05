@@ -16,6 +16,7 @@
 
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -44,7 +45,7 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     private static final TypeReference<ModelEvent> CLOUD_EVENT_TYPE = new TypeReference<>() {
     };
 
-    private ModelEventConsumer() {
+    protected ModelEventConsumer() {
         //CDI proxy
     }
 
@@ -56,7 +57,7 @@ public class ModelEventConsumer extends BaseEventConsumer<ModelEvent> {
     @Override
     @Incoming("kogito-tracing-model")
     public CompletionStage<Void> handleMessage(final Message<String> message) {
-        return super.handleMessage(message);
+        return CompletableFuture.runAsync(() -> super.handleMessage(message));
     }
 
     @Override

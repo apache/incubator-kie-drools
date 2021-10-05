@@ -30,5 +30,10 @@
             <outputDirectory>postgresql</outputDirectory>
             <destName>jobs_service_create.sql</destName>
         </file>
+        <file>
+            <source>${project.root.dir}/persistence-commons/persistence-commons-postgresql/src/main/resources/cache_entity_create.sql</source>
+            <outputDirectory>postgresql</outputDirectory>
+            <destName>trusty_service_create.sql</destName>
+        </file>
     </files>
 </assembly>

@@ -17,6 +17,7 @@
 package org.kie.kogito.trusty.service.common.messaging.incoming;
 
 import java.net.URI;
+import java.time.Duration;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 
 import javax.enterprise.inject.Instance;
 
+import org.awaitility.Awaitility;
 import org.eclipse.microprofile.reactive.messaging.Message;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -274,7 +276,14 @@ class ExplainabilityResultConsumerTest {
 
     private void testNumberOfInvocations(Message<String> message, int wantedNumberOfServiceInvocations) {
         consumer.handleMessage(message);
-        verify(trustyService, times(wantedNumberOfServiceInvocations)).storeExplainabilityResult(any(), any());
-        verify(message, times(1)).ack();
+
+        Awaitility.await()
+                .atMost(Duration.ofSeconds(30))
+                .pollInterval(Duration.ofSeconds(1))
+                .untilAsserted(
+                        () -> {
+                            verify(trustyService, times(wantedNumberOfServiceInvocations)).storeExplainabilityResult(any(), any());
+                            verify(message, times(1)).ack();
+                        });
     }
 }

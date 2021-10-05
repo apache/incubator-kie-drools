@@ -46,7 +46,7 @@ public abstract class AbstractModelEventConsumerIT {
     KafkaTestClient kafkaClient;
 
     @ConfigProperty(name = KafkaQuarkusTestResource.KOGITO_KAFKA_PROPERTY)
-    private String kafkaBootstrapServers;
+    String kafkaBootstrapServers;
 
     @BeforeEach
     public void setup() {
