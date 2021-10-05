@@ -18,7 +18,6 @@ package org.kie.dmn.core.compiler.execmodelbased;
 
 import java.util.List;
 
-import com.github.javaparser.JavaParser;
 import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.ArrayCreationLevel;
 import com.github.javaparser.ast.CompilationUnit;
@@ -108,6 +107,10 @@ public class JavaParserSourceGenerator {
         final String finalTestClass = testClass;
         classOrInterfaceDeclaration
                 .setName(finalTestClass);
+
+        classOrInterfaceDeclaration.findAll(ClassOrInterfaceType.class,
+                                            ce -> ce.getNameAsString().equals("TemplateCompiledFEELExpression"))
+                .forEach(n -> n.replace(new ClassOrInterfaceType(null, finalTestClass)));
 
         classOrInterfaceDeclaration.findAll(ConstructorDeclaration.class)
                 .forEach(n -> n.replace(new ConstructorDeclaration(finalTestClass)));
