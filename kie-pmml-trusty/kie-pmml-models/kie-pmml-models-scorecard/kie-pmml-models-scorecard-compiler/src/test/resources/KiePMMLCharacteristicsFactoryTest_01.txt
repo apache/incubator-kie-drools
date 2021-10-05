@@ -1,0 +1,12 @@
+private static KiePMMLCharacteristic get%1$s() {
+    KiePMMLSimplePredicate %1$s_0_Predicate = KiePMMLSimplePredicate.builder("input1", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.GREATER_THAN).withValue(-1000.0).build();
+    KiePMMLFieldRef %1$s_0_ComplexPartialScore_0_0 = new KiePMMLFieldRef("input1", Collections.emptyList(), null);
+    KiePMMLFieldRef %1$s_0_ComplexPartialScore_0_1 = new KiePMMLFieldRef("input2", Collections.emptyList(), null);
+    KiePMMLApply %1$s_0_ComplexPartialScore_0 = KiePMMLApply.builder("%1$s_0_ComplexPartialScore_0", Collections.emptyList(), "+").withDefaultValue(null).withMapMissingTo(null).withInvalidValueTreatmentMethod("returnInvalid").withKiePMMLExpressions(Arrays.asList(%1$s_0_ComplexPartialScore_0_0, %1$s_0_ComplexPartialScore_0_1)).build();
+    KiePMMLComplexPartialScore %1$s_0_ComplexPartialScore = new KiePMMLComplexPartialScore("%1$s_0_ComplexPartialScore", Collections.emptyList(), %1$s_0_ComplexPartialScore_0);
+    KiePMMLAttribute %1$s_0 = KiePMMLAttribute.builder("%1$s_0", Collections.emptyList(), %1$s_0_Predicate).withPartialScore(null).withComplexPartialScore(%1$s_0_ComplexPartialScore).build();
+    KiePMMLTruePredicate %1$s_1_Predicate = new KiePMMLTruePredicate("%1$s_1_Predicate", Collections.emptyList());
+    KiePMMLAttribute %1$s_1 = KiePMMLAttribute.builder("%1$s_1", Collections.emptyList(), %1$s_1_Predicate).withPartialScore(25).withComplexPartialScore(null).build();
+    KiePMMLCharacteristic %1$s = KiePMMLCharacteristic.builder("%1$s", Collections.emptyList(), Arrays.asList(%1$s_0, %1$s_1)).withBaselineScore(20).withReasonCode("characteristic1ReasonCode").build();
+    return %1$s;
+}

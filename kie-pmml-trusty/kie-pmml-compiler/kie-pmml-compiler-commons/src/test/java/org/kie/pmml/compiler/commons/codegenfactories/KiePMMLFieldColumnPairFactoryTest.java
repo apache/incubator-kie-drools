@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -40,12 +41,15 @@ import org.kie.pmml.compiler.commons.utils.KiePMMLUtil;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 import static org.kie.test.util.filesystem.FileUtils.getFileInputStream;
 
 public class KiePMMLFieldColumnPairFactoryTest {
 
+    private static final String TEST_01_SOURCE = "KiePMMLFieldColumnPairFactoryTest_01.txt";
+
     @Test
-    public void getRowVariableDeclaration() {
+    public void getRowVariableDeclaration() throws IOException {
         String variableName = "variableName";
         String fieldName = "fieldName";
         String column = "column";
@@ -55,11 +59,8 @@ public class KiePMMLFieldColumnPairFactoryTest {
 
         BlockStmt retrieved = KiePMMLFieldColumnPairFactory.getFieldColumnPairVariableDeclaration(variableName,
                                                                                                   fieldColumnPair);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLFieldColumnPair %s = " +
-                                                                              "new KiePMMLFieldColumnPair(\"%s\", Collections.emptyList(), \"%s\");" +
-                                                                              "\n" +
-                                                                              "}", variableName, fieldName, column));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName, fieldName, column));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(Collections.class, KiePMMLFieldColumnPair.class);
         commonValidateCompilationWithImports(retrieved, imports);

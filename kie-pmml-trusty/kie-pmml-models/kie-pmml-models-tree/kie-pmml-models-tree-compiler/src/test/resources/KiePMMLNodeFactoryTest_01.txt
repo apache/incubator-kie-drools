@@ -1,0 +1,26 @@
+{
+    KiePMMLSimplePredicate predicate_0 = KiePMMLSimplePredicate
+            .builder("temperature", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.GREATER_THAN)
+            .withValue(60.0)
+            .build();
+    KiePMMLSimplePredicate predicate_1 = KiePMMLSimplePredicate
+            .builder("temperature", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.LESS_THAN)
+            .withValue(100.0)
+            .build();
+    KiePMMLSimplePredicate predicate_2 = KiePMMLSimplePredicate
+            .builder("outlook", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.EQUAL)
+            .withValue("overcast")
+            .build();
+    KiePMMLSimplePredicate predicate_3 = KiePMMLSimplePredicate
+            .builder("humidity", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.LESS_THAN)
+            .withValue(70.0)
+            .build();
+    KiePMMLSimplePredicate predicate_4 = KiePMMLSimplePredicate
+            .builder("windy", Collections.emptyList(), org.kie.pmml.api.enums.OPERATOR.EQUAL)
+            .withValue("false")
+            .build();
+    KiePMMLCompoundPredicate predicate = KiePMMLCompoundPredicate
+            .builder(Collections.emptyList(), org.kie.pmml.api.enums.BOOLEAN_OPERATOR.AND)
+            .withKiePMMLPredicates(Arrays.asList(predicate_0, predicate_1, predicate_2, predicate_3, predicate_4))
+            .build();
+}

@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.tree.compiler.factories;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -74,12 +75,14 @@ import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.NOD
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE;
 import static org.kie.pmml.models.tree.compiler.factories.KiePMMLNodeFactory.SCORE_DISTRIBUTIONS;
 import static org.kie.pmml.models.tree.compiler.utils.KiePMMLTreeModelUtils.createNodeClassName;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLNodeFactoryTest {
 
     private static final String SOURCE_1 = "TreeSample.pmml";
     private static final String SOURCE_2 = "TreeSimplified.pmml";
     private static final String PACKAGE_NAME = "packagename";
+    private static final String TEST_01_SOURCE = "KiePMMLNodeFactoryTest_01.txt";
     private static PMML pmml1;
     private static Node node1;
     private static DataDictionary dataDictionary1;
@@ -105,7 +108,6 @@ public class KiePMMLNodeFactoryTest {
         nodeRoot = model2.getNode();
         compoundPredicateNode = nodeRoot.getNodes().get(0);
         nodeLeaf = nodeRoot.getNodes().get(0).getNodes().get(0).getNodes().get(0);
-
     }
 
     @Test
@@ -191,7 +193,8 @@ public class KiePMMLNodeFactoryTest {
         KiePMMLNodeFactory.JavaParserDTO toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
         KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
                                                 nodeNamesDTO,
-                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
+                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
+                                                                                            derivedFields2),
                                                 isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
 
@@ -201,7 +204,8 @@ public class KiePMMLNodeFactoryTest {
         toPopulate = new KiePMMLNodeFactory.JavaParserDTO(nodeNamesDTO, packageName);
         KiePMMLNodeFactory.populateEvaluateNode(toPopulate,
                                                 nodeNamesDTO,
-                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2),
+                                                getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2,
+                                                                                            derivedFields2),
                                                 isRoot);
         commonVerifyEvaluateNode(toPopulate, nodeNamesDTO, isRoot);
     }
@@ -288,45 +292,18 @@ public class KiePMMLNodeFactoryTest {
         assertTrue(variableDeclarator.getInitializer().isPresent());
         Expression expression = variableDeclarator.getInitializer().get();
         assertTrue(expression instanceof DoubleLiteralExpr);
-        DoubleLiteralExpr doubleLiteralExpr = (DoubleLiteralExpr)expression;
+        DoubleLiteralExpr doubleLiteralExpr = (DoubleLiteralExpr) expression;
         assertEquals(missingValuePenalty, doubleLiteralExpr.asDouble(), 0.0);
     }
 
-
     @Test
-    public void populateEvaluateNodeWithPredicateFunction() {
+    public void populateEvaluateNodeWithPredicateFunction() throws IOException {
         BlockStmt toPopulate = new BlockStmt();
         KiePMMLNodeFactory.populateEvaluateNodeWithPredicate(toPopulate,
                                                              compoundPredicateNode.getPredicate(),
                                                              getFieldsFromDataDictionaryAndDerivedFields(dataDictionary2, derivedFields2));
-        Statement expected = JavaParserUtils.parseBlock("{\n" +
-                                                                "    KiePMMLSimplePredicate predicate_0 = " +
-                                                                "KiePMMLSimplePredicate.builder(\"temperature\", " +
-                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
-                                                                ".OPERATOR.GREATER_THAN).withValue(60.0).build();\n" +
-                                                                "    KiePMMLSimplePredicate predicate_1 = " +
-                                                                "KiePMMLSimplePredicate.builder(\"temperature\", " +
-                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
-                                                                ".OPERATOR.LESS_THAN).withValue(100.0).build();\n" +
-                                                                "    KiePMMLSimplePredicate predicate_2 = " +
-                                                                "KiePMMLSimplePredicate.builder(\"outlook\", " +
-                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
-                                                                ".OPERATOR.EQUAL).withValue(\"overcast\").build();\n" +
-                                                                "    KiePMMLSimplePredicate predicate_3 = " +
-                                                                "KiePMMLSimplePredicate.builder(\"humidity\", " +
-                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
-                                                                ".OPERATOR.LESS_THAN).withValue(70.0).build();\n" +
-                                                                "    KiePMMLSimplePredicate predicate_4 = " +
-                                                                "KiePMMLSimplePredicate.builder(\"windy\", " +
-                                                                "Collections.emptyList(), org.kie.pmml.api.enums" +
-                                                                ".OPERATOR.EQUAL).withValue(\"false\").build();\n" +
-                                                                "    KiePMMLCompoundPredicate predicate = " +
-                                                                "KiePMMLCompoundPredicate.builder(Collections" +
-                                                                ".emptyList(), org.kie.pmml.api.enums" +
-                                                                ".BOOLEAN_OPERATOR.AND).withKiePMMLPredicates(Arrays" +
-                                                                ".asList(predicate_0, predicate_1, predicate_2, " +
-                                                                "predicate_3, predicate_4)).build();\n" +
-                                                                "}");
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(text);
         assertTrue(JavaParserUtils.equalsNode(expected, toPopulate));
     }
 
@@ -386,11 +363,12 @@ public class KiePMMLNodeFactoryTest {
         }
     }
 
-    private void commonVerifyEvaluateNodeWithScoreDistributions(final VariableDeclarator variableDeclarator, final List<ScoreDistribution> scoreDistributions) {
+    private void commonVerifyEvaluateNodeWithScoreDistributions(final VariableDeclarator variableDeclarator,
+                                                                final List<ScoreDistribution> scoreDistributions) {
         assertTrue(variableDeclarator.getInitializer().isPresent());
         Expression expression = variableDeclarator.getInitializer().get();
         assertTrue(expression instanceof MethodCallExpr);
-        MethodCallExpr methodCallExpr = (MethodCallExpr)expression;
+        MethodCallExpr methodCallExpr = (MethodCallExpr) expression;
         assertEquals("Arrays", methodCallExpr.getScope().get().toString());
         assertEquals("asList", methodCallExpr.getName().toString());
         NodeList<Expression> arguments = methodCallExpr.getArguments();
@@ -398,21 +376,22 @@ public class KiePMMLNodeFactoryTest {
         arguments.forEach(argument -> assertTrue(argument instanceof ObjectCreationExpr));
         List<ObjectCreationExpr> objectCreationExprs = arguments.stream()
                 .map(ObjectCreationExpr.class::cast)
-                        .collect(Collectors.toList());
+                .collect(Collectors.toList());
         scoreDistributions.forEach(scoreDistribution -> {
-                                       Optional<ObjectCreationExpr> retrieved = objectCreationExprs.stream()
-                                               .filter(objectCreationExpr -> scoreDistribution.getValue().equals(objectCreationExpr.getArgument(2).asStringLiteralExpr().asString()))
-                                               .findFirst();
-                                       assertTrue(retrieved.isPresent());
-                                       Expression recordCountExpected = getExpressionForObject(scoreDistribution.getRecordCount().intValue());
-                                       Expression confidenceExpected = getExpressionForObject(scoreDistribution.getConfidence().doubleValue());
-                                       Expression probabilityExpected = scoreDistribution.getProbability() != null ? getExpressionForObject(scoreDistribution.getProbability().doubleValue()) : new NullLiteralExpr();
-                                       retrieved.ifPresent(objectCreationExpr -> {
-                                           assertEquals(recordCountExpected, objectCreationExpr.getArgument(3));
-                                           assertEquals(confidenceExpected, objectCreationExpr.getArgument(4));
-                                           assertEquals(probabilityExpected, objectCreationExpr.getArgument(5));
-                                       });
-                                   });
+            Optional<ObjectCreationExpr> retrieved = objectCreationExprs.stream()
+                    .filter(objectCreationExpr -> scoreDistribution.getValue().equals(objectCreationExpr.getArgument(2).asStringLiteralExpr().asString()))
+                    .findFirst();
+            assertTrue(retrieved.isPresent());
+            Expression recordCountExpected = getExpressionForObject(scoreDistribution.getRecordCount().intValue());
+            Expression confidenceExpected = getExpressionForObject(scoreDistribution.getConfidence().doubleValue());
+            Expression probabilityExpected = scoreDistribution.getProbability() != null ?
+                    getExpressionForObject(scoreDistribution.getProbability().doubleValue()) : new NullLiteralExpr();
+            retrieved.ifPresent(objectCreationExpr -> {
+                assertEquals(recordCountExpected, objectCreationExpr.getArgument(3));
+                assertEquals(confidenceExpected, objectCreationExpr.getArgument(4));
+                assertEquals(probabilityExpected, objectCreationExpr.getArgument(5));
+            });
+        });
     }
 
     private void commonVerifyNode(KiePMMLNode toVerify, Node original) {
@@ -425,5 +404,4 @@ public class KiePMMLNodeFactoryTest {
         CompilationUnit nodeCompilationUnit = getFromSource(toVerify);
         assertEquals(packageName, nodeCompilationUnit.getPackageDeclaration().get().getName().asString());
     }
-
 }

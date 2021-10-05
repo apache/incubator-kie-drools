@@ -16,6 +16,7 @@
 
 package org.kie.pmml.compiler.commons.codegenfactories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -35,6 +36,7 @@ import org.kie.pmml.compiler.commons.utils.JavaParserUtils;
 
 import static org.junit.Assert.assertTrue;
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLApplyFactoryTest {
 
@@ -43,9 +45,12 @@ public class KiePMMLApplyFactoryTest {
     private static final Double value2 = 5.0;
     private static final String PARAM_1 = "PARAM_1";
     private static final String PARAM_2 = "PARAM_2";
+    private static final String TEST_01_SOURCE = "KiePMMLApplyFactoryTest_01.txt";
+    private static final String TEST_02_SOURCE = "KiePMMLApplyFactoryTest_02.txt";
+    private static final String TEST_03_SOURCE = "KiePMMLApplyFactoryTest_03.txt";
 
     @Test
-    public void getApplyVariableDeclarationWithConstants() {
+    public void getApplyVariableDeclarationWithConstants() throws IOException {
         String variableName = "variableName";
         Apply apply = new Apply();
         apply.setFunction(function);
@@ -61,35 +66,18 @@ public class KiePMMLApplyFactoryTest {
         constant2.setValue(value2);
         apply.addExpressions(constant1, constant2);
         BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLConstant variableName_0 = " +
-                                                                              "new KiePMMLConstant" +
-                                                                              "(\"variableName_0\", Collections" +
-                                                                              ".emptyList(), %1$s, null);\n" +
-                                                                              "    KiePMMLConstant variableName_1 = " +
-                                                                              "new KiePMMLConstant" +
-                                                                              "(\"variableName_1\", Collections" +
-                                                                              ".emptyList(), %2$s, null);\n" +
-                                                                              "    KiePMMLApply %3$s = " +
-                                                                              "KiePMMLApply.builder(\"%3$s\"," +
-                                                                              " Collections.emptyList(), " +
-                                                                              "\"%4$s\").withDefaultValue" +
-                                                                              "(\"%5$s\").withMapMissingTo" +
-                                                                              "(\"%6$s\")" +
-                                                                              ".withInvalidValueTreatmentMethod" +
-                                                                              "(\"%7$s\")" +
-                                                                              ".withKiePMMLExpressions(Arrays.asList" +
-                                                                              "(variableName_0, variableName_1))" +
-                                                                              ".build();\n" +
-                                                                              "}", value1, value2, variableName, function,
-                                                                      defaultValue, mapMissingTo, invalidValueTreatmentMethod.value()));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, value1, value2, variableName, function,
+                                                                      defaultValue, mapMissingTo,
+                                                                      invalidValueTreatmentMethod.value()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, KiePMMLApply.class, Collections.class, Arrays.class);
+        List<Class<?>> imports = Arrays.asList(KiePMMLConstant.class, KiePMMLApply.class, Collections.class,
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getApplyVariableDeclarationWithFieldRefs() {
+    public void getApplyVariableDeclarationWithFieldRefs() throws IOException {
         String variableName = "variableName";
         Apply apply = new Apply();
         apply.setFunction(function);
@@ -105,35 +93,18 @@ public class KiePMMLApplyFactoryTest {
         fieldRef2.setField(FieldName.create(PARAM_2));
         apply.addExpressions(fieldRef1, fieldRef2);
         BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLFieldRef variableName_0 = " +
-                                                                              "new KiePMMLFieldRef" +
-                                                                              "(\"%1$s\", Collections" +
-                                                                              ".emptyList(), null);\n" +
-                                                                              "    KiePMMLFieldRef variableName_1 = " +
-                                                                              "new KiePMMLFieldRef" +
-                                                                              "(\"%2$s\", Collections" +
-                                                                              ".emptyList(), null);\n" +
-                                                                              "    KiePMMLApply %3$s = " +
-                                                                              "KiePMMLApply.builder(\"%3$s\"," +
-                                                                              " Collections.emptyList(), " +
-                                                                              "\"%4$s\").withDefaultValue" +
-                                                                              "(\"%5$s\").withMapMissingTo" +
-                                                                              "(\"%6$s\")" +
-                                                                              ".withInvalidValueTreatmentMethod" +
-                                                                              "(\"%7$s\")" +
-                                                                              ".withKiePMMLExpressions(Arrays.asList" +
-                                                                              "(variableName_0, variableName_1))" +
-                                                                              ".build();\n" +
-                                                                              "}",  PARAM_1, PARAM_2, variableName, function,
-                                                                      defaultValue, mapMissingTo, invalidValueTreatmentMethod.value()));
+        String text = getFileContent(TEST_02_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, PARAM_1, PARAM_2, variableName, function,
+                                                                      defaultValue, mapMissingTo,
+                                                                      invalidValueTreatmentMethod.value()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class, Arrays.class);
+        List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
 
     @Test
-    public void getApplyVariableDeclarationWithApply() {
+    public void getApplyVariableDeclarationWithApply() throws IOException {
         String variableName = "variableName";
         Apply nestedApply = new Apply();
         nestedApply.setFunction("nested_function");
@@ -154,38 +125,15 @@ public class KiePMMLApplyFactoryTest {
         apply.setInvalidValueTreatment(invalidValueTreatmentMethod);
         apply.addExpressions(nestedApply);
         BlockStmt retrieved = KiePMMLApplyFactory.getApplyVariableDeclaration(variableName, apply);
-        Statement expected = JavaParserUtils.parseBlock(String.format("{\n" +
-                                                                              "    KiePMMLFieldRef variableName_0_0 =" +
-                                                                              " new KiePMMLFieldRef(\"%1$s\", Collections.emptyList(), null);\n" +
-                                                                              "    KiePMMLFieldRef variableName_0_1 =" +
-                                                                              " new KiePMMLFieldRef(\"%2$s\", " +
-                                                                              "Collections.emptyList(), null);\n" +
-                                                                              "    KiePMMLApply variableName_0 = " +
-                                                                              "KiePMMLApply.builder" +
-                                                                              "(\"variableName_0\", Collections" +
-                                                                              ".emptyList(), \"nested_function\")" +
-                                                                              ".withDefaultValue(\"%3$s\")" +
-                                                                              ".withMapMissingTo(\"%4$s\")" +
-                                                                              ".withInvalidValueTreatmentMethod" +
-                                                                              "(\"%5$s\").withKiePMMLExpressions" +
-                                                                              "(Arrays.asList(variableName_0_0, " +
-                                                                              "variableName_0_1)).build();\n" +
-                                                                              "    KiePMMLApply %6$s = " +
-                                                                              "KiePMMLApply.builder(\"variableName\"," +
-                                                                              " Collections.emptyList(), " +
-                                                                              "\"function\").withDefaultValue(null)" +
-                                                                              ".withMapMissingTo(null)" +
-                                                                              ".withInvalidValueTreatmentMethod" +
-                                                                              "(\"%7$s\")" +
-                                                                              ".withKiePMMLExpressions(Arrays.asList" +
-                                                                              "(variableName_0)).build();\n" +
-                                                                              "}",  PARAM_1, PARAM_2,
-                                                                      defaultValue, mapMissingTo, nestedInvalidValueTreatmentMethod.value(),
-                                                                      variableName, invalidValueTreatmentMethod.value()));
+        String text = getFileContent(TEST_03_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, PARAM_1, PARAM_2,
+                                                                      defaultValue, mapMissingTo,
+                                                                      nestedInvalidValueTreatmentMethod.value(),
+                                                                      variableName,
+                                                                      invalidValueTreatmentMethod.value()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
-        List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class, Arrays.class);
+        List<Class<?>> imports = Arrays.asList(KiePMMLFieldRef.class, KiePMMLApply.class, Collections.class,
+                                               Arrays.class);
         commonValidateCompilationWithImports(retrieved, imports);
     }
-
-
 }

@@ -16,6 +16,7 @@
 
 package org.kie.pmml.models.scorecard.compiler.factories;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -51,6 +52,7 @@ import static org.kie.pmml.compiler.commons.codegenfactories.KiePMMLSimpleSetPre
 import static org.kie.pmml.compiler.commons.testutils.CodegenTestUtils.commonValidateCompilationWithImports;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getSimplePredicate;
 import static org.kie.pmml.compiler.commons.testutils.PMMLModelTestUtils.getStringObjects;
+import static org.kie.test.util.filesystem.FileUtils.getFileContent;
 
 public class KiePMMLCharacteristicFactoryTest {
 
@@ -61,9 +63,10 @@ public class KiePMMLCharacteristicFactoryTest {
     private static final Double value2 = 5.0;
     private static final SimplePredicate.Operator operator1 = SimplePredicate.Operator.EQUAL;
     private static final SimplePredicate.Operator operator2 = SimplePredicate.Operator.GREATER_THAN;
+    private static final String TEST_01_SOURCE = "KiePMMLCharacteristicFactoryTest_01.txt";
 
     @Test
-    public void getAttributeVariableDeclarationWithComplexPartialScore() {
+    public void getAttributeVariableDeclarationWithComplexPartialScore() throws IOException {
         final String variableName = "variableName";
         Array.Type arrayType = Array.Type.STRING;
         List<String> values1 = getStringObjects(arrayType, 4);
@@ -78,11 +81,11 @@ public class KiePMMLCharacteristicFactoryTest {
             DataField toAdd = null;
             if (predicate instanceof SimplePredicate) {
                 toAdd = new DataField();
-                toAdd.setName(((SimplePredicate)predicate).getField());
+                toAdd.setName(((SimplePredicate) predicate).getField());
                 toAdd.setDataType(DataType.DOUBLE);
             } else if (predicate instanceof SimpleSetPredicate) {
                 toAdd = new DataField();
-                toAdd.setName(((SimpleSetPredicate)predicate).getField());
+                toAdd.setName(((SimpleSetPredicate) predicate).getField());
                 toAdd.setDataType(DataType.DOUBLE);
             }
             if (toAdd != null) {
@@ -93,18 +96,17 @@ public class KiePMMLCharacteristicFactoryTest {
             DataField toAdd = null;
             if (predicate instanceof SimplePredicate) {
                 toAdd = new DataField();
-                toAdd.setName(((SimplePredicate)predicate).getField());
+                toAdd.setName(((SimplePredicate) predicate).getField());
                 toAdd.setDataType(DataType.DOUBLE);
             } else if (predicate instanceof SimpleSetPredicate) {
                 toAdd = new DataField();
-                toAdd.setName(((SimpleSetPredicate)predicate).getField());
+                toAdd.setName(((SimpleSetPredicate) predicate).getField());
                 toAdd.setDataType(DataType.DOUBLE);
             }
             if (toAdd != null) {
                 dataDictionary.addDataFields(toAdd);
             }
         }
-
 
         String valuesString1 = values1.stream()
                 .map(valueString -> "\"" + valueString + "\"")
@@ -117,79 +119,15 @@ public class KiePMMLCharacteristicFactoryTest {
         characteristic.setBaselineScore(22);
         characteristic.setReasonCode(REASON_CODE);
 
-
-        BlockStmt retrieved = KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration(variableName, characteristic, getFieldsFromDataDictionary(dataDictionary));
-        Statement expected = JavaParserUtils
-                .parseBlock(String.format("{\n" +
-                                                  "    KiePMMLSimplePredicate %1$s_0_Predicate_0 = " +
-                                                  "KiePMMLSimplePredicate.builder(\"PARAM_1\", Collections.emptyList" +
-                                                  "(), org.kie.pmml.api.enums.OPERATOR.EQUAL).withValue(100.0).build" +
-                                                  "();\n" +
-                                                  "    KiePMMLSimplePredicate %1$s_0_Predicate_1 = " +
-                                                  "KiePMMLSimplePredicate.builder(\"PARAM_2\", Collections.emptyList" +
-                                                  "(), org.kie.pmml.api.enums.OPERATOR.GREATER_THAN).withValue(5.0)" +
-                                                  ".build();\n" +
-                                                  "    KiePMMLSimpleSetPredicate %1$s_0_Predicate_2 = " +
-                                                  "KiePMMLSimpleSetPredicate.builder(\"SIMPLESETPREDICATENAME\", " +
-                                                  "Collections.emptyList(), org.kie.pmml.api.enums.ARRAY_TYPE.STRING," +
-                                                  " org.kie.pmml.api.enums.IN_NOTIN.IN).withValues(Arrays.asList" +
-                                                  "(%2$s)).build();\n" +
-                                                  "    KiePMMLCompoundPredicate %1$s_0_Predicate = " +
-                                                  "KiePMMLCompoundPredicate.builder(Collections.emptyList(), org.kie" +
-                                                  ".pmml.api.enums.BOOLEAN_OPERATOR.AND).withKiePMMLPredicates(Arrays" +
-                                                  ".asList(%1$s_0_Predicate_0, %1$s_0_Predicate_1, " +
-                                                  "%1$s_0_Predicate_2)).build();\n" +
-                                                  "    KiePMMLConstant %1$s_0_ComplexPartialScore_0 = new " +
-                                                  "KiePMMLConstant(\"%1$s_0_ComplexPartialScore_0\", " +
-                                                  "Collections.emptyList(), 100.0, null);\n" +
-                                                  "    KiePMMLComplexPartialScore %1$s_0_ComplexPartialScore " +
-                                                  "= new KiePMMLComplexPartialScore" +
-                                                  "(\"%1$s_0_ComplexPartialScore\", Collections.emptyList(), " +
-                                                  "%1$s_0_ComplexPartialScore_0);\n" +
-                                                  "    KiePMMLAttribute %1$s_0 = KiePMMLAttribute.builder" +
-                                                  "(\"%1$s_0\", Collections.emptyList(), " +
-                                                  "%1$s_0_Predicate).withPartialScore(null)" +
-                                                  ".withComplexPartialScore(%1$s_0_ComplexPartialScore).build" +
-                                                  "();\n" +
-                                                  "    KiePMMLSimplePredicate %1$s_1_Predicate_0 = " +
-                                                  "KiePMMLSimplePredicate.builder(\"PARAM_1\", Collections.emptyList" +
-                                                  "(), org.kie.pmml.api.enums.OPERATOR.EQUAL).withValue(100.0).build" +
-                                                  "();\n" +
-                                                  "    KiePMMLSimplePredicate %1$s_1_Predicate_1 = " +
-                                                  "KiePMMLSimplePredicate.builder(\"PARAM_2\", Collections.emptyList" +
-                                                  "(), org.kie.pmml.api.enums.OPERATOR.GREATER_THAN).withValue(5.0)" +
-                                                  ".build();\n" +
-                                                  "    KiePMMLSimpleSetPredicate %1$s_1_Predicate_2 = " +
-                                                  "KiePMMLSimpleSetPredicate.builder(\"SIMPLESETPREDICATENAME\", " +
-                                                  "Collections.emptyList(), org.kie.pmml.api.enums.ARRAY_TYPE.STRING," +
-                                                  " org.kie.pmml.api.enums.IN_NOTIN.IN).withValues(Arrays.asList" +
-                                                  "(%3$s)).build();\n" +
-                                                  "    KiePMMLCompoundPredicate %1$s_1_Predicate = " +
-                                                  "KiePMMLCompoundPredicate.builder(Collections.emptyList(), org.kie" +
-                                                  ".pmml.api.enums.BOOLEAN_OPERATOR.AND).withKiePMMLPredicates(Arrays" +
-                                                  ".asList(%1$s_1_Predicate_0, %1$s_1_Predicate_1, " +
-                                                  "%1$s_1_Predicate_2)).build();\n" +
-                                                  "    KiePMMLConstant %1$s_1_ComplexPartialScore_0 = new " +
-                                                  "KiePMMLConstant(\"%1$s_1_ComplexPartialScore_0\", " +
-                                                  "Collections.emptyList(), 100.0, null);\n" +
-                                                  "    KiePMMLComplexPartialScore %1$s_1_ComplexPartialScore " +
-                                                  "= new KiePMMLComplexPartialScore" +
-                                                  "(\"%1$s_1_ComplexPartialScore\", Collections.emptyList(), " +
-                                                  "%1$s_1_ComplexPartialScore_0);\n" +
-                                                  "    KiePMMLAttribute %1$s_1 = KiePMMLAttribute.builder" +
-                                                  "(\"%1$s_1\", Collections.emptyList(), " +
-                                                  "%1$s_1_Predicate).withPartialScore(null)" +
-                                                  ".withComplexPartialScore(%1$s_1_ComplexPartialScore).build" +
-                                                  "();\n" +
-                                                  "    KiePMMLCharacteristic %1$s = KiePMMLCharacteristic" +
-                                                  ".builder(\"%1$s\", Collections.emptyList(), Arrays.asList" +
-                                                  "(%1$s_0, %1$s_1)).withBaselineScore(%4$s)" +
-                                                  ".withReasonCode(\"%5$s\").build();\n" +
-                                                  "}", variableName,
-                                          valuesString1,
-                                          valuesString2,
-                                          characteristic.getBaselineScore(),
-                                          characteristic.getReasonCode()));
+        BlockStmt retrieved = KiePMMLCharacteristicFactory.getCharacteristicVariableDeclaration(variableName,
+                                                                                                characteristic,
+                                                                                                getFieldsFromDataDictionary(dataDictionary));
+        String text = getFileContent(TEST_01_SOURCE);
+        Statement expected = JavaParserUtils.parseBlock(String.format(text, variableName,
+                                                                      valuesString1,
+                                                                      valuesString2,
+                                                                      characteristic.getBaselineScore(),
+                                                                      characteristic.getReasonCode()));
         assertTrue(JavaParserUtils.equalsNode(expected, retrieved));
         List<Class<?>> imports = Arrays.asList(KiePMMLAttribute.class,
                                                KiePMMLCharacteristic.class,
@@ -205,11 +143,11 @@ public class KiePMMLCharacteristicFactoryTest {
 
     private Attribute getAttribute(List<String> values, int id) {
         Attribute toReturn = new Attribute();
-        toReturn.setReasonCode(REASON_CODE+id);
+        toReturn.setReasonCode(REASON_CODE + id);
         Array.Type arrayType = Array.Type.STRING;
         toReturn.setPredicate(getCompoundPredicate(values, arrayType));
         toReturn.setComplexPartialScore(getComplexPartialScore());
-       return toReturn;
+        return toReturn;
     }
 
     private CompoundPredicate getCompoundPredicate(List<String> values, Array.Type arrayType) {
