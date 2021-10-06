@@ -76,12 +76,11 @@ public abstract class KiePMMLDroolsModel extends KiePMMLModel implements IsDrool
         String fullClassName = this.getClass().getName();
         String packageName = fullClassName.contains(".") ?
                 fullClassName.substring(0, fullClassName.lastIndexOf('.')) : "";
-        Map<String, Object> holder = new HashMap<>();
+        outputFieldsMap.clear();
         KiePMMLSessionUtils.Builder builder = KiePMMLSessionUtils.builder((KieBase) knowledgeBase, name, packageName,
                                                                           toReturn)
                 .withObjectsInSession(requestData, fieldTypeMap)
-                .withOutputFieldsMap(holder);
-        outputFieldsMap = holder;
+                .withOutputFieldsMap(outputFieldsMap);
         if (logger.isDebugEnabled()) {
             builder = builder.withAgendaEventListener(agendaEventListener);
         }
