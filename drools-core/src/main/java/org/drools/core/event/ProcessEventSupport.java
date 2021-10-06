@@ -17,11 +17,14 @@
 package org.drools.core.event;
 
 import java.util.List;
+import java.util.Map;
 
+import org.drools.core.common.InternalKnowledgeRuntime;
 import org.kie.api.event.process.MessageEvent;
 import org.kie.api.event.process.ProcessCompletedEvent;
 import org.kie.api.event.process.ProcessEventListener;
 import org.kie.api.event.process.ProcessNodeLeftEvent;
+import org.kie.api.event.process.ProcessAsyncNodeScheduledEvent;
 import org.kie.api.event.process.ProcessNodeTriggeredEvent;
 import org.kie.api.event.process.ProcessStartedEvent;
 import org.kie.api.event.process.ProcessVariableChangedEvent;
@@ -58,6 +61,14 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
         if ( hasListeners() ) {
             final ProcessCompletedEvent event = new ProcessCompletedEventImpl(instance, kruntime);
             notifyAllListeners( event, ( l, e ) -> l.afterProcessCompleted( e ) );
+        }
+    }
+
+
+    public void fireOnAsyncNodeScheduledEvent(final NodeInstance nodeInstance, InternalKnowledgeRuntime kruntime, Map<String, Object> data) {
+        if ( hasListeners() ) {
+            final ProcessAsyncNodeScheduledEvent event = new ProcessAsyncNodeScheduledEventImpl(nodeInstance, kruntime, data);
+            notifyAllListeners( event, ( l, e ) -> l.onAsyncNodeScheduledEvent( e ) );
         }
     }
 
@@ -171,4 +182,5 @@ public class ProcessEventSupport extends AbstractEventSupport<ProcessEventListen
     public void reset() {
         this.clear();
     }
+
 }
