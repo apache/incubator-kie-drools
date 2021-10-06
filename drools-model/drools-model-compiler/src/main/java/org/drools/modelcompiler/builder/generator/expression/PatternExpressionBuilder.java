@@ -41,6 +41,7 @@ import static java.util.Optional.of;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.THIS_PLACEHOLDER;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.findLastMethodInChain;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toJavaParserType;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.ALPHA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BETA_INDEXED_BY_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.BIND_CALL;
@@ -52,7 +53,6 @@ import static org.drools.modelcompiler.builder.generator.DslMethodNames.EXPR_OR_
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.NO_OP_EXPR;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.REACT_ON_CALL;
 import static org.drools.modelcompiler.builder.generator.DslMethodNames.createDslTopLevelMethod;
-import static org.drools.mvelcompiler.util.TypeUtils.toJPType;
 
 public class PatternExpressionBuilder extends AbstractExpressionBuilder {
 
@@ -185,7 +185,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
             indexedByLeftOperandExtractor.setBody(new ExpressionStmt(typedExpression.getExpression()));
 
             MethodCallExpr indexedByDSL = createDslTopLevelMethod(drlxParseResult.isBetaConstraint() ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-            indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
+            indexedByDSL.addArgument(new ClassExpr(toJavaParserType(left.getRawClass())));
             indexedByDSL.addArgument(org.drools.model.Index.ConstraintType.class.getCanonicalName() + ".EQUAL");
             indexedByDSL.addArgument("-1");
             indexedByDSL.addArgument(indexedByLeftOperandExtractor);
@@ -214,7 +214,7 @@ public class PatternExpressionBuilder extends AbstractExpressionBuilder {
         indexedBy_leftOperandExtractor.setBody(new ExpressionStmt(leftContainsThis ? left.getExpression() : right.getExpression()));
 
         MethodCallExpr indexedByDSL = createDslTopLevelMethod(isBeta ? BETA_INDEXED_BY_CALL : ALPHA_INDEXED_BY_CALL);
-        indexedByDSL.addArgument(new ClassExpr(toJPType(left.getRawClass())));
+        indexedByDSL.addArgument(new ClassExpr(toJavaParserType(left.getRawClass())));
         indexedByDSL.addArgument( indexedBy_constraintType );
         indexedByDSL.addArgument( getIndexIdArgument( drlxParseResult, left ) );
         indexedByDSL.addArgument(indexedBy_leftOperandExtractor );
