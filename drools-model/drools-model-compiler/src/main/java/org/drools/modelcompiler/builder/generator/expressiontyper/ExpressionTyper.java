@@ -111,6 +111,7 @@ import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.prepend;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.replaceAllHalfBinaryChildren;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.safeResolveType;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toClassOrInterfaceType;
+import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.toStringLiteral;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.transformDrlNameExprToNameExpr;
 import static org.drools.modelcompiler.builder.generator.DrlxParseUtil.trasformHalfBinaryToBinary;
 import static org.drools.modelcompiler.builder.generator.expressiontyper.FlattenScope.flattenScope;
@@ -886,7 +887,7 @@ public class ExpressionTyper {
                 && Arrays.equals(argsType, new Class[]{char.class})) {
 
             MethodCallExpr methodCallExprWithString = methodCallExpr.clone();
-            methodCallExprWithString.findAll(CharLiteralExpr.class).forEach(c ->  c.replace(new StringLiteralExpr(c.getValue())));
+            methodCallExprWithString.findAll(CharLiteralExpr.class).forEach(c ->  c.replace(toStringLiteral(c.getValue())));
             return Optional.of(new TypedExpressionCursor(methodCallExprWithString, boolean.class));
         } else {
             return Optional.empty();
