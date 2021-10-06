@@ -43,7 +43,7 @@ public class QuarkusTopicsInformationResourceIT {
                 .body()
                 .jsonPath().getList(".", Topic.class);
 
-        assertThat(topicList).hasSize(2).containsExactly(
+        assertThat(topicList).hasSize(2).containsOnly(
                 new Topic("cloudevents-addon-it-requests", ChannelType.INCOMING),
                 new Topic("cloudevents-addon-it-responses", ChannelType.OUTGOING));
     }
